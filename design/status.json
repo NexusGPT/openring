@@ -4,22 +4,22 @@
  "areas": {
   "look": {
    "state": "in progress",
-   "why": "one control: a round joystick on the side of the band, where the owner marked it; a long press on its centre records. The screen fills the glass face and is the recording sign; one dark glossy finish. The exterior shown here (merged32h, ring sizes US 7 to 13) is the earlier block. Since 13 November the design moves to a taller block (4.17 mm) with a flat cover glass and three small windows on each long side, two of them blind and one a slit the ribbon passes through: that exterior is built and measured for the 7 sizes (design/look/s1/merged417flat-notes.md) but is not yet the one this app shows, and its slit on the motor's side may still change",
+   "why": "one control: a round joystick on the side of the band, where the owner marked it; a long press on its centre records. The screen fills the glass face and is the recording sign; one dark glossy finish. On the evening of 13 November the owner chose the thin ring (3.20 mm block) with a custom screen panel that fills the face, in place of the taller 4.17 mm block of that morning. The exterior shown here (merged32h, ring sizes US 7 to 13) is the thin block with its earlier curved glass. The thin exterior with a flat cover glass and three small windows on each long side (two blind, one a slit the ribbon passes through) is being built for the 7 sizes. The 4.17 mm exterior is kept as a fallback (design/look/s1/merged417flat-notes.md)",
    "who": "lead"
   },
   "inside": {
    "state": "in progress",
-   "why": "the inside model shown here is v9 (board parts at their routed places, resin radio corner) on the earlier block; its fit check passes at the seven ring sizes. The rebuild on the 4.17 mm block (stock screen turned 180 degrees with its cable folded under the panel, flat glass, side slits for the two ribbons) is in work as model v10; its first check found one conflict: the slit on the motor's side cuts the rim of the motor's pocket",
+   "why": "the inside model shown here is v9 (thin block, resin radio corner); its fit check passes at the seven ring sizes. It still holds the stock screen and the earlier glass. Its rebuild for the custom full-face panel, the flat glass, the side slits for the two ribbons and the sealed opening where one slit meets the motor's pocket waits on the new exterior and on the main board's new screen connection. The model for the 4.17 mm block (v10) is kept as a fallback in design/mech/thin/fallback-417",
    "who": "lead"
   },
   "electronics": {
    "state": "in progress",
-   "why": "the circuit is complete in its files (netlist, schematic, parts) and its check passes; a circuit simulation of 13 tests passes (power paths, motor start, charge path, level shifter, case charger and status light). Every conductor of the ring and its case is in one list: 66 conductors, each with both ends, its carrier and its cut length per ring size, checked against the boards and the netlists. An independent review of 13 November found the list true and failed the build guide on 3 points (design/wiring/wiring-review-4.md): the body files are behind the taller block, two ground joints per ribbon are proven only as a pair, and the case's thermistor joints had no test; the fixes are in work",
+   "why": "the circuit is complete in its files (netlist, schematic, parts) and its check passes; a circuit simulation of 13 tests passes (power paths, motor start, charge path, level shifter, case charger and status light). Every conductor of the ring and its case is in one list: 66 conductors, each with both ends, its carrier and its cut length per ring size, checked against the boards and the netlists. An independent review of 13 November found the list true and failed the build guide on 3 points (design/wiring/wiring-review-4.md). Two are fixed in the guide (the ground joints of the ribbons, the test of the case's thermistor joints); the third, the body files, waits on the thin ring's new exterior and inside model. A requirement page for the custom screen panel is written for panel makers (design/mfg/specs/screen-panel-custom.md); no maker has answered",
    "who": "lead"
   },
   "board": {
    "state": "in progress",
-   "why": "all 17 boards are routed: the ring's main board (4 layers), 14 band circuits (2 per ring size) and the 2 case boards; the design rules check gives 0 violations and 0 unconnected on each. Fabrication files, solder paste layers and drawings are generated. Nothing is built or measured; four values need a measurement on the first ring (antenna match, 32 MHz clock accuracy, case input current, USB through the spring pins)",
+   "why": "all 17 boards are routed: the ring's main board (4 layers), 14 band circuits (2 per ring size) and the 2 case boards; the design rules check gives 0 violations and 0 unconnected on each. Fabrication files, solder paste layers and drawings are generated. The main board as routed carries the screen connector and eight small parts on its screen face, which suits the 4.17 mm fallback only: in the thin block the connector must move to the under face, and the eight parts can stay only under a panel of 0.5 mm or less. That new routing is in work and not finished. Nothing is built or measured; four values need a measurement on the first ring (antenna match, 32 MHz clock accuracy, case input current, USB through the spring pins)",
    "who": "lead"
   },
   "parts": {
@@ -34,12 +34,12 @@
   },
   "case": {
    "state": "in progress",
-   "why": "the charging case is the soft cube the owner chose (45.4 x 45.9 x 41.4 mm, 700 mAh battery): the ring lies flat around a centre post, the lid swivels aside, and the ring charges through pads on the inside of its band. Its two boards are routed and its fit check passes at the seven ring sizes with the earlier ring models; the fit to the taller 4.17 mm ring is not redone yet. The spring pin is a proposal, not confirmed by its maker",
+   "why": "the charging case is the soft cube the owner chose (45.4 x 45.9 x 41.4 mm, 700 mAh battery): the ring lies flat around a centre post, the lid swivels aside, and the ring charges through pads on the inside of its band. Its two boards are routed and its fit check passes at the seven ring sizes with the earlier ring models; the fit to the thin ring with its flat glass is not redone yet. The spring pin is a proposal, not confirmed by its maker",
    "who": "lead"
   },
   "open": {
    "state": "waiting on a supplier",
-   "why": "open on 13 November: the three faults of the fourth wiring review (body files, ground joint pairs, thermistor test) and the fix of the slit against the motor pocket; the rebuild of the inside model, the body maker files and the case fit on the 4.17 mm block; four measurements on the first ring; supplier questions and bench tests of the architecture (sections 12, 13, 16.9, 17.6, 17.9, open items S12 to S30)",
+   "why": "open on 13 November: the thin ring's new exterior, the main board's new screen connection, then the inside model, the body maker files, the build guide and the case fit on them; the panel maker's answers (thickness, lit area, cable); four measurements on the first ring; supplier questions and bench tests of the architecture (sections 12, 13, 16.9, 17.6, 17.9, open items S12 to S30)",
    "who": "owner"
   }
  },

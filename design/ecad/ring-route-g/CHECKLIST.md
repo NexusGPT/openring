@@ -1,0 +1,25 @@
+# Checklist (ring-route-g, board A1)
+
+- [x] 1. Base copied into G/steps/g00-base.kicad_pcb with rules file, project and footprint library. evidence: logs/base-copy-sha.log, logs/rules-copies-sha.log
+- [x] 2. Base rules check 0 / 0 in my set-up. evidence: logs/drc-g00b.log
+- [x] 3. Facts checked: J1 old place (read_board2.log, logs/g01-movej1.log "J1 before layer B.Cu pos (-4.933,-0.003)"), land field copper (logs/dump-g00-newfield.log), J1 pad nets (logs/final-compare.log check 2a). evidence: those logs
+- [x] 4. J1 on the under face (F.Cu) at X -11.650, Y -0.150, rotation stated (270). evidence: logs/final-compare.log check 2b
+- [x] 5. Cable opening toward X minus, checked against footprint and catalogue/drawing. evidence: logs/final-compare.log check 2c, logs/pdf/cat-03.png, logs/pdf/drw-1.png (reading of drawing, open point in notes)
+- [x] 6. J1 courtyard clear of every other courtyard. evidence: logs/final-compare.log check 6, logs/courtyards-g03.log, logs/final-drc.log
+- [x] 7. J1 courtyard inside the board outline. evidence: logs/final-compare.log check 6
+- [x] 8. Bar 1: final rules check with the base's rules file prints Found 0 violations and Found 0 unconnected items. evidence: logs/final-drc.log
+- [x] 9. Bar 3a: every footprint other than J1 same place, side, rotation, pad nets. evidence: logs/final-compare.log check 1
+- [x] 10. Bar 3b: every J1 pad same net as base. evidence: logs/final-compare.log check 2a
+- [x] 11. Bar 3c: antenna nets copper item-for-item identical. evidence: logs/final-compare.log check 3a
+- [x] 12. Bar 3d: USB pair copper item-for-item identical. evidence: logs/final-compare.log check 3b
+- [x] 13. Bar 3e: no copper item in the antenna copper-free zone beyond what the base has (the base's own antenna copper is there). evidence: logs/final-compare.log check 4a/4b, logs/antenna-zone-items-final.log
+- [x] 14. Bar 3f: layer count, stack, rules file unchanged. evidence: logs/final-compare.log checks 5a to 5e
+- [x] 15. Bar 4: broken copy (one other part moved 0.05 mm) named by the compare script. evidence: logs/final-broken-R65.log
+- [x] 16. Edge band: no track or via beyond X -13.45. evidence: logs/final-compare.log check 7
+- [x] 17. Rule areas (antenna zone, edge bands) kept. evidence: logs/final-compare.log check 5b
+- [x] 18. Eight 0201 parts on the screen face and 12 test pads unchanged. evidence: logs/final-compare.log check 1 (all 98 other footprints)
+- [x] 19. notes.md written step by step, start time at top, commands to rerun, last line RESULT. evidence: notes.md
+- [x] 20. At most 12 step boards, G under 150 MB. evidence: notes.md (4 step boards, 17M from du)
+- [x] 21. No git run after the rule was applied (three read-only git commands at the start, stated in notes). evidence: notes.md line 7
+- [x] 22. Base folder not written. evidence: logs/base-copy-sha.log (base sha before); logs/audit.log re-hashes it at the end
+- [x] 23. Final audit run. evidence: logs/audit.log

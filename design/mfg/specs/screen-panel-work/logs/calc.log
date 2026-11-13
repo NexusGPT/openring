@@ -1,0 +1,65 @@
+== stack of the thin block (inside model v9 placement.csv as saved in out/v10/before) ==
+board Z 1.45..1.75 (t 0.3); foam 1.75..1.85 (t 0.1); panel 1.85..2.65 (t 0.8); adhesive 2.65..2.75 (t 0.1); curved glass 2.75..3.85
+  input 3.72 from design/look/s1/merged417flat-notes.md:67 /glass seat Z (3\.7200)/
+  input 4.1455 from design/look/s1/merged417flat-notes.md:59 /FLAT (4\.1455)/
+  input 0.97 from design/look/s1/out/work-flat/measure-flat-final-us9.log:89 /higher by (0\.9700)/
+  input 0.4255 from design/look/s1/merged417flat-notes.md:60 /to (0\.4255) everywhere/
+flat glass on the thin block: underside 3.72 - 0.97 = 2.75; top 4.1455 - 0.97 = 3.1755; thickness 0.4255 (top - underside 0.4255)
+check: v9 curved glass underside 2.75 equals flat underside 2.75: True
+STACK board top 1.75 to glass underside 2.75 = 1.0 = foam 0.1 + panel 0.8 + adhesive 0.1 = 1.0
+PANEL THICKNESS MAX 1.0 - 0.1 - 0.1 = 0.8
+  input 1.0 from design/mech/thin/out/v10/before/thin.py:61 /under=(1\.00)/
+  input 0.05 from design/mech/thin/out/v10/before/thin.py:61 /gap=(0\.05)/
+  input 0.02 from design/mech/thin/out/v10/before/thin.py:61 /pad_t=(0\.02)/
+UNDER THE BOARD: part tops (land faces) at 1.45 - 0.02 = 1.43; parts allowance to 1.45 - 1.0 = 0.45; floor top 0.45 - 0.05 = 0.4; land face to floor 1.03
+   a part 0.9 high hanging from 1.43 ends at 0.53: 0.13 above the floor top
+   a part 1.0 high hanging from 1.43 ends at 0.43: 0.03 above the floor top
+== plan ==
+  input 27.45 from design/mfg/specs/body.md:67 /\((27\.45);/
+  input 12.9 from design/mfg/specs/body.md:68 /pocket (12\.9) /
+  input 0.05 from design/mfg/specs/body.md:67 /by (0\.05) mm per side/
+panel today 27.35 x 12.8; pocket 27.45 x 12.9; clearance 0.05 per side: panel max 27.35 x 12.8
+flat glass box (measures-merged417flat-us9.json glass min [-14.65, -7.375, 3.72] max [14.65, 7.375, 4.145]): 29.3 x 14.75
+  input 0.42 from design/look/s1/merged417flat-notes.md:61 /to (0\.42) all round/
+  input 2.5 from design/look/s1/merged417flat-notes.md:64 /plan corner (2\.5)/
+GLASS FACE outline 29.3 x 14.75, corner radius 2.5; flat part 29.3 - 2 x 0.42 = 28.46 by 14.75 - 2 x 0.42 = 13.91, corner 2.08
+WALL from glass edge to pocket face: ends (29.3 - 27.45) / 2 = 0.925; sides (14.75 - 12.9) / 2 = 0.925
+LIT with border 0.5: 26.35 x 11.8 = 310.93 mm2 (1.333 x today's 233.28); black seen from the glass edge to the lit edge 0.925 + 0.05 + 0.5 = 1.475 per side; lit corner radius concentric with the glass corner 2.5 - 1.475 = 1.025
+   share of the glass face outline 29.3 x 14.75 lit (rectangles): 71.9 percent; today 54.0 percent
+LIT with border 1.0: 25.35 x 10.8 = 273.78 mm2 (1.174 x today's 233.28); black seen from the glass edge to the lit edge 0.925 + 0.05 + 1.0 = 1.975 per side; lit corner radius concentric with the glass corner 2.5 - 1.975 = 0.525
+   share of the glass face outline 29.3 x 14.75 lit (rectangles): 63.3 percent; today 54.0 percent
+today's print borders (cover-glass.md lines 38 to 40): long side 1.98, fingertip 2.38, hand end 5.33
+== pixels ==
+  input 282.0 from design/datasheets/slim_tailor-toh095xvt-01-p4-8.txt:77 /^(282)$/
+today's pitch 21.6 / 240 = 0.09, 10.8 / 120 = 0.09; 25.4 / 0.09 = 282.2 ppi (sheet: 282.0)
+  input 8.0 from design/firmware.md:79 /maximum data rate (8) Mbit/s/
+OPTION 1 border 0.5: 240 x 120 on 26.35 x 11.8: pitch along the finger 0.1098, across 0.0983 (pixel 1.117 times longer than wide); square pixels at 0.0983: lit 23.59 x 11.8
+OPTION 2 border 0.5: at pitch 0.09: 26.35 / 0.09 = 292.78 -> 292 columns, 11.8 / 0.09 = 131.11 -> 131 rows: 292 x 131 = 38252 pixels (1.328 x 28800)
+   frame RGB565 292 x 131 x 2 = 76504 bytes (today 240 x 120 x 2 = 57600); one full frame at 8 Mbit/s: 76.5 ms (today 57.6 ms)
+OPTION 1 border 1.0: 240 x 120 on 25.35 x 10.8: pitch along the finger 0.1056, across 0.09 (pixel 1.173 times longer than wide); square pixels at 0.09: lit 21.6 x 10.8
+OPTION 2 border 1.0: at pitch 0.09: 25.35 / 0.09 = 281.67 -> 281 columns, 10.8 / 0.09 = 120.0 -> 120 rows: 281 x 120 = 33720 pixels (1.171 x 28800)
+   frame RGB565 281 x 120 x 2 = 67440 bytes (today 240 x 120 x 2 = 57600); one full frame at 8 Mbit/s: 67.4 ms (today 57.6 ms)
+== connection ==
+J1 move from the routed place X -4.933 to the thin plan X -11.65: 6.717 mm toward the hand end
+tail 4.8 wide centred on J1 Y -0.15: Y -2.55..2.25; to the copper-free zone edge Y 3.10: 0.85; past the radio corner edge Y 2.05: 0.2
+tail 5.0 wide centred on J1 Y -0.15: Y -2.65..2.35; to the copper-free zone edge Y 3.10: 0.75; past the radio corner edge Y 2.05: 0.3
+15 lands 0.3 wide at pitch 0.51: row 7.44 long
+15 lands 0.15 wide at pitch 0.3: row 4.35 long
+OPTION C: lands X -13.4..-12.85, panel hand end at -12.8 instead of -13.675: shorter by 0.875
+J1 under the board: see UNDER THE BOARD lines (0.9 nominal, 1.0 catalogue maximum)
+tail pocket of model v9 (thin.py line 530 box 0.55 wide at X -13.775): X -14.05..-13.5, end wall left 0.6
+J1 nets other than ground and the unconnected contact: 11: ELVDD ELVSS LCD_CS LCD_DCX LCD_MOSI LCD_RST LCD_SCK LCD_TE SWIRE VDD_1V8 VDD_3V0
+room between the board top and the panel front: foam 0.1 + panel 0.8 = 0.9; a 0.9 connector on the top face against the 0.1 foam gap: over by 0.8
+  input 0.11 from design/mech/thin/out/v10/before/thin.py:81 /flex_fin=(0\.11)/
+  input 0.03 from design/mech/thin/out/v10/before/thin.py:81 /joint=(0\.03)/
+hot-bar foot under the board: flex 0.11 + solder 0.03 = 0.14
+  input 0.33 from design/mech/thin/model-v10-notes.md:76 /0201 (0\.33)/
+  input 0.05 from design/mech/thin/model-v10-notes.md:96 /\| (0\.05) \|/
+ROOM board top 1.75 to panel front 2.65 (glass underside 2.75 - adhesive 0.1) = 0.9
+0201 KEPT, clearance 0.05: panel back at 1.75 + land 0.02 + 0201 0.33 + 0.05 = 2.15; panel max 2.65 - 2.15 = 0.5; gap board top to panel back 0.4
+0201 KEPT, clearance 0.1: panel back at 1.75 + land 0.02 + 0201 0.33 + 0.1 = 2.2; panel max 2.65 - 2.2 = 0.45; gap board top to panel back 0.45
+J1 KEPT on the top face at 0.9: needs 0.02 + 0.9 + 0.05 = 0.97 above the board; panel max -0.07
+J1 KEPT on the top face at 1.0: needs 0.02 + 1.0 + 0.05 = 1.07 above the board; panel max -0.17
+STACK A1 (J1 under, 0201 kept): 0.40 floor .. board 1.45-1.75, land 0.02, 0201 0.33, clearance 0.05 -> 2.15, panel 0.50 -> 2.65, adhesive 0.10 -> 2.75, glass 0.4255 -> 3.1755
+STACK A2 (all under): board 1.45-1.75, foam 0.10 -> 1.85, panel 0.80 -> 2.65, adhesive 0.10 -> 2.75, glass 0.4255 -> 3.1755
+RESULT calc done

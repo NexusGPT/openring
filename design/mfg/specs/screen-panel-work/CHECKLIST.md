@@ -1,0 +1,36 @@
+# Checklist: custom screen panel requirement page (started 2026-11-13 20:30 CET, clock in logs/clock.log)
+
+- [x] 1. a. envelope: plan outline maximum with source. evidence: screen-panel-custom.md section a table (27.35 x 12.8, body.md lines 67, 68), logs/calc.log line 21
+- [x] 2. a. thickness maximum, stack board top face to glass underside, sum shown with each term's source (flat glass of merged417flat lowered 0.970). evidence: page section a stack table; logs/calc.log lines 2 to 10
+- [x] 3. a. keep-out zones: antenna corner; ledge or bond area, where it may go. evidence: page section a "Keep-out zones"; logs/read_board2.log line 104; architecture.md line 684
+- [x] 4. b. glass face size stated. evidence: page section b (29.3 x 14.75, flat part 28.46 x 13.91), logs/calc.log line 25
+- [x] 5. b. largest lit area with border 0.5 mm (computed). evidence: logs/calc.log line 27
+- [x] 6. b. largest lit area with border 1.0 mm (computed). evidence: logs/calc.log line 29
+- [x] 7. b. ask the smallest border on each of the four sides. evidence: page section b and question 2
+- [x] 8. c. option 1: 120 x 240 with pixel pitch on the larger area. evidence: logs/calc.log lines 36, 39
+- [x] 9. c. option 2: maker's resolution at today's pitch. evidence: logs/calc.log lines 37, 40
+- [x] 10. c. cost to the ring software of each. evidence: page section c bullets (step4-report.md line 8, rscr_draw.h lines 15, 16, firmware.md line 350, manifest.md lines 3 to 23)
+- [x] 11. d. 15 signals with voltages, supply chip, asked unchanged; what may differ. evidence: page section d (netlist.csv rows, stock sheet lines 177 to 191, p3_sgm38046.txt lines 37 to 40)
+- [x] 12. e. chosen option and alternates. evidence: page section e
+- [x] 13. f. brightness. evidence: page section f (sheet line 64)
+- [x] 14. f. lifetime. evidence: page section f; logs/grep-lifetime.log (no figure in the saved text copies)
+- [x] 15. f. cover and bonding. evidence: page section f (cover-glass.md lines 6, 42)
+- [x] 16. f. environment. evidence: page section f (sheet lines 83, 86, 230)
+- [x] 17. f. samples and quantities asked, no prices of ours. evidence: page section g; no "$" in the page (count 0 in the final run). Quantities as numbers: not set, no design file gives them: open point 4 and a question for the owner
+- [x] 18. f. numbered questions for the maker. evidence: page "Questions the maker must answer", 19 questions
+- [x] 19. g. drawing by a kept script, referenced. evidence: panel-envelope.svg, make_envelope_svg.py, logs/make_envelope_svg-final.log, pictures/panel-envelope-final.png (looked at: try1 and try2 renders, labels moved after try1)
+- [x] 20. Deliverable 2 section in the page. evidence: page "How the panel connects in the thin block"
+- [x] 21. connection-options.md option A with height, pocket, re-route. evidence: connection-options.md option A
+- [x] 22. option B. evidence: connection-options.md option B
+- [x] 23. option C. evidence: connection-options.md option C
+- [x] 24. each option: height against 3.20, board area and layers from the routed board (KiCad Python, read only), maker asks, worse at. evidence: logs/read_board2.log (exit 0); connection-options.md. Limit: the ground pour lost on B.Cu under option A is not measured
+- [x] 25. best option and why. evidence: connection-options.md "Judgement"
+- [x] 26. every number found again: verify.log last line "values checked 402, not found 0" (page and options file); teeth: logs/verify-broken.log (2 planted values caught), logs/verify-broken-quote.log (planted quote caught)
+- [x] 27. check_docs before and after. evidence: logs/check_docs-before.log and logs/check_docs-after.log, both RESULT PASS exit 0; the check reads only its fixed list SPECS (check_docs.py line 29), so the new page is not checked by it; left alone. Own heading check: logs/headings-check.log 12 of 12
+- [x] 28. no maker statement from memory. evidence: maker statements in the page cite thin-bezel-parts.md lines 21, 37, 91, 92 (quotes verified in verify.log) or are questions
+- [x] 29. page ends with the must-follow list. evidence: logs/headings-check.log "last heading: What in other design files must follow once a maker answers"
+- [x] 30. last line of connection-options.md is the RESULT line. evidence: final tail in the run that wrote verify.log
+- [x] 31. plain words, no internal words in prose. evidence: search run at 20:47 (helper, lead, brief, owner, model v, merged): two prose hits fixed ("owner" to "product owner"; "lead time" is the maker term); paths in citations keep internal names
+- [x] 32. no git, no browser, no web request, no maker contact; KiCad run at nice -n 19; no stream thrown away. evidence: commands of this session
+- [x] 33. only Owns files written: the page and this folder
+- [x] 34. report under 3,500 characters with questions_for_owner. evidence: logs/final-audit.log (3452 characters, 69 numbers found)

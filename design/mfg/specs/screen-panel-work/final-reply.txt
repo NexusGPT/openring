@@ -1,0 +1,34 @@
+I worked the screen-face parts into the options and the page. Every value is still found at its cited line: verify.log ends `values checked 524, not found 0`.
+
+Files:
+- design/mfg/specs/screen-panel-custom.md
+- .../screen-panel-work/connection-options.md (new section "The screen-face parts in the thin block")
+- .../screen-panel-work/logs/read_face_b.log (KiCad, read only)
+- .../screen-panel-work/logs/calc.log lines 56 to 64
+
+The option that leaves today's board unchanged except the connector: option A1. J1 moves to the under face at the hand end, with the tracks of its 11 nets, and the eight 0201 parts stay. It needs a panel of at most 0.5:
+- Board top 1.75 + land 0.02 + 0201 0.33 (an assumed height in the model) + clearance 0.05 puts the panel back at 2.15.
+- The panel then runs 2.15 to 2.65, the adhesive to 2.75 and the glass to 3.1755. The gap over the board is 0.4, and the foam frame becomes 0.4.
+- With a clearance of 0.10 the panel limit is 0.45.
+- B1 is the same, with a row of solder lands in place of J1.
+
+J1 cannot stay on the screen face at any panel thickness. It needs 0.97 (1.07 at its maximum) where the room is 0.9.
+
+Is a 0.5 panel plausible? Not from the research on disk. Every thickness read from a datasheet is 0.7 or more (0.8, 0.75, 0.71/0.80, 0.78, 0.7, and "thinnest 0.7"). The only figures under that are an unread search snippet (0.5) and a listing marked suspicious (0.3). So the page asks the maker for it:
+- New critical row: "panel thickness at which the board stays as routed: 0.5".
+- Question 5 now asks for the thinnest panel the maker can make; 0.80 stays the limit.
+
+If the parts cannot stay (options A2, B2, C2, panel 0.80, stack 1.75 + 0.10 + 0.80 + 0.10 = 2.75, glass to 3.1755): J1 and the eight 0201 parts go back under the board. That means 15 contacts on 11 nets plus ground, and the parts' 6 nets (DECA, DECD, GND, VDD_1V8, VSET1, VSET2). The history says that placement never closed:
+- Round 1: 22 unconnected items, 13 violations.
+- Round 2 run 7, which matches the figures of 6bfcfb02: 9 unconnected, 5 violations. A fresh autoroute gave 100 and 1124. Hand routing reached 6 and 3, then stopped: C7 "has no free legal spot".
+- J1 on the screen face (ca4d5f3c): 18 and 7, then by hand 11 and 4.
+- The eight parts on the screen face too (156a4622): 11 and 8. Route-f then closed it to 0 and 0, with 3 pins dropped and 2 moved.
+
+I matched commit ids to boards by the figures in the notes and ran no git. Whether those later pin changes would let the parts go back is unknown without a new routing round.
+
+My judgement for the lead: A1 if the maker can hold 0.5, otherwise A2 with a new routing round. check_docs: RESULT PASS, exit 0. The verifier still catches a planted change (0.5 to 0.6: not found 1).
+
+questions_for_owner:
+1. Sample and order quantities for the request? My best reading: unlit samples first, then working samples, quantities left for the maker to state.
+2. If no maker can make a panel of 0.5 or less, is a new routing round with all parts under the board acceptable? My best reading: yes, it is option A2. The other way out is a taller block, which goes against "MUCH THINER NEEDED".
+3. If the panel's lit layers over the antenna corner hurt the radio: should the lit area stop short there, or should the antenna move? My best reading: ask the maker (question 9), then test.

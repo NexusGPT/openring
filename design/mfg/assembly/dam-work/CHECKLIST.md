@@ -1,0 +1,37 @@
+# Checklist: dam material sheets (brief from team lead)
+
+- [x] 1. Brief has Goal, Sources, Writes to, Done when. evidence: the brief itself (all four present).
+- [x] 2. Read the dam section of model-v10-notes.md and the requirements in it. evidence: notes "Scope" and model-v10-notes.md lines 40-60 (read at start).
+- [x] 3. Read band-liner.md (the liner resin) and deferred-facts.md Items 112 and 115. evidence: notes "Process notes" (source files read).
+- [x] 4. At least 4 candidates with saved sheets. evidence: five sheets in table, design/datasheets/dam_dymax_9014.pdf, dam_dymax_9422-sc.pdf, dam_henkel-loctite_si-5240.pdf, dam_panacol_vitralit-ud8060f.pdf, dam_henkel-loctite_uv300x.pdf (with .txt copies).
+- [x] 5. Aim 4 to 6 candidates; at least 2 with a shadow cure. evidence: notes table row "Shadow (second) cure" (9014, SI 5240, UD 8060 F moisture; UV300X heat).
+- [x] 6. Exact product name and part number per candidate. evidence: notes table row "Name on the sheet (part no.)"; no sheet gives a separate part number, stated per row.
+- [x] 7. Viscosity and thixotropic index (or slump words) per candidate. evidence: notes table row "Viscosity" and "Thixotropy".
+- [x] 8. Cure method, wavelength, cure time and depth per candidate. evidence: notes table rows "Cure method and light" and "Cure time and depth"; depth not stated where the sheet has only a graph.
+- [x] 9. Secondary cure and conditions per candidate. evidence: notes table row "Shadow (second) cure".
+- [x] 10. Shrinkage per candidate. evidence: notes table row "Shrinkage" (UD 8060 F and UV300X not stated).
+- [x] 11. Hardness per candidate. evidence: notes table row "Hardness" (UD 8060 F not stated).
+- [x] 12. Service temperature per candidate. evidence: notes table row "Service temperature" (only UD 8060 F gives a range, as typical).
+- [x] 13. Stated substrates (polyimide, metals) per candidate. evidence: notes table row "Substrates".
+- [x] 14. Overcoat or epoxy-bond statement per candidate. evidence: notes table row "Overcoat or bonding by epoxy" (not stated in all five).
+- [x] 15. Smallest package sold per candidate. evidence: notes table row "Smallest package" (only UV300X gives a size, 3.0 ml).
+- [x] 16. Medical or skin-contact grade statement per candidate. evidence: notes table row "Medical or skin-contact".
+- [x] 17. Each value carries a page and a quote. evidence: the `p.N l.L [ID]` citations in notes; audit.log checks each against quotes-verify.log.
+- [x] 18. quotes-verify.log with last line "quotes checked N, not found M". evidence: quotes-verify.log last line "quotes checked 156, not found 0".
+- [x] 19. Fetch log with address and time per datasheet. evidence: fetch-log.md (times from date).
+- [x] 20. Datasheets saved as dam_<maker>_<product>.pdf with text copies. evidence: design/datasheets/dam_*.pdf and .txt (dam_dymax_9014, dam_dymax_9422-sc, dam_henkel-loctite_si-5240, dam_panacol_vitralit-ud8060f, dam_henkel-loctite_uv300x); du-saved-sheets.log.
+- [x] 21. Sheets that could not be fetched are listed as not found, not invented. evidence: notes "Not found or not fetched" (DELO EG4797, Master Bond UV22DC80-10F 403, EPO-TEK OG116-31 redirect, Panacol UD 8050 MV F).
+- [x] 22. No browser, no login, no form, no contact, no purchase, no registration wall. evidence: fetch-log.md (curl with a generic user agent, plain GET only).
+- [x] 23. No name, company, e-mail or project in any request. evidence: fetch-log.md note 1.
+- [x] 24. Notes: one short paragraph per candidate (meets, does not meet, does not state). evidence: notes section "Per candidate".
+- [x] 25. Notes: list of what no sheet states. evidence: notes section "What no sheet states".
+- [x] 26. No recommendation in the notes. evidence: notes contain no choice of a material.
+- [x] 27. Notes last line is `RESULT: <done|blocked>, <sentence>`. evidence: notes last line.
+- [x] 28. Total size under 60 MB (OUT and saved sheets). evidence: du-out.log and du-saved-sheets.log.
+- [x] 29. Deleted files reported. evidence: fetch-log.md note 3 and notes "Process notes" (one text copy of Mouser HTML removed).
+- [x] 30. Final audit run and saved. evidence: audit.log (see its last line).
+- [-] 31. Owner's question: which candidate to fix. not done: the brief says the researcher does not decide; no recommendation is written.
+- [-] 32. DELO EG4797 maker sheet. not done: no TDS reachable on delo.de or the portal without a login or form (portal page gave no list).
+- [-] 33. Master Bond UV22DC80-10F maker sheet. not done: HTTP 403 on the maker's TDS URL (fetch-log.md); not retried.
+- [-] 34. EPO-TEK OG116-31 maker sheet. not done: the maker URL redirects to a distributor page (fetch-log.md).
+- [-] 35. Panacol Vitralit UD 8050 MV F sheet. not done: not found in search results.

@@ -65,7 +65,7 @@ EN = {
         ]),
         ("What we look for", [
             "A factory that builds our design (JDM or contract manufacturing). We do not look for an existing ring with our logo.",
-            "Work wanted: a design-for-manufacturing review; as an option the circuit board layout and the software; prototypes; then series production.",
+            "Work wanted: a design-for-manufacturing review; as an option the software (the circuit board is already routed); prototypes; then series production.",
             "Quantities: [number] prototypes, then [number] per order. First samples wanted by: [date].",
         ]),
         ("Please answer", [
@@ -100,7 +100,7 @@ ZH = {
         ]),
         ("我们寻找", [
             "按我方设计生产的工厂（JDM 或代工）。我们不需要在现有戒指上贴牌。",
-            "所需工作：可制造性（DFM）评审；可选的电路板布线与软件开发；样机；之后批量生产。",
+            "所需工作：可制造性（DFM）评审；可选的软件开发（电路板已完成布线）；样机；之后批量生产。",
             "数量：样机 [数量] 件，之后每批 [数量] 件。首批样品期望日期：[日期]。",
         ]),
         ("请回复", [

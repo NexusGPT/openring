@@ -44,23 +44,23 @@ Everything needed to build it is here: 3D models, wiring, parts lists, drawings,
 
 | Part | State | How it was checked |
 |---|---|---|
-| Ring exterior, 7 sizes (US 7 to 13) | being rebuilt for a taller block (4.17 mm, flat cover glass) | 3D models per size, measured by script |
-| Inside of the ring | designed for the earlier block; the rebuild on the taller block is in work | fit check per size on the earlier model |
-| Charging case | designed; its fit to the taller ring is not redone yet | fit check against the earlier ring models |
+| Ring exterior, 7 sizes (US 7 to 13) | being rebuilt on the thin block (3.20 mm) for a flat cover glass over a custom full-face screen panel; a taller 4.17 mm exterior for a stock screen is kept as a fallback | 3D models per size, measured by script |
+| Inside of the ring | designed for the thin block with a stock screen; the rebuild for the custom panel and the flat glass is in work | fit check per size on the earlier model |
+| Charging case | designed; its fit to the ring with the flat glass is not redone yet | fit check against the earlier ring models |
 | Circuit boards (17: the ring's main board, 14 band circuits for 7 sizes, 2 case boards) | **routed** | design rules check: 0 violations and 0 unconnected on each board |
 | Wiring list (`design/wiring/product-wiring.csv`) | written: 66 conductors, each with both ends, its carrier and its cut length per size | a check compares the list with the boards and the netlists; an independent review found the list true (67 of 67 lines) |
-| Joint table and build guide (`design/mfg/assembly/`) | written: 99 joints | **an independent review of 13 November fails the guide on 3 points, listed below** |
+| Joint table and build guide (`design/mfg/assembly/`) | written: 99 joints | **an independent review of 13 November failed the guide on 3 points, listed below; 1 is open** |
 | Circuit simulation (`design/sim/circuit/`) | 13 tests pass | each test has a pass line written before the run and a faulty copy that must fail |
 | Ring software: core, paired devices, control, iPhone services, screens, Android relay | written | simulated on the ring's chip model with real Bluetooth encryption |
 | Ring software: recorder parts (microphones, storage, USB transfer, power) | written against simulated drivers | the full test run passes on the simulated board for the reviewed version; a second independent review passed it; the fixes of its minor findings are in this release, and their own full test run was still running when this was pushed |
 | Ring software: the real ring's board files, the panel driver | **not written** | planned |
 | A working ring | **does not exist** | needs a development kit bench first, see `design/bench/` |
 
-Three faults stop a build from the files today. They are written up in `design/wiring/wiring-review-4.md`:
+An independent review found three faults that stop a build from the files. Two are fixed in the guide; the first is open. They are written up in `design/wiring/wiring-review-4.md`:
 
-1. **The body files are behind.** The body drawings still show the earlier block, without the two side slits the ribbons pass through and without the pocket for the folded screen cable.
-2. **Two ground joints per ribbon cannot be told apart by a meter.** The decision is to treat them as a spare pair; the guide is being corrected to say what its test proves.
-3. **No test proved the two thermistor joints of the case.** A resistance check is being added.
+1. **The body files are behind.** The body drawings still show the earlier block, without the two side slits the ribbons pass through and without the pocket of the custom screen panel. Open.
+2. **Two ground joints per ribbon cannot be told apart by a meter.** The decision is to treat them as a spare pair; the guide now says what its test proves. Fixed.
+3. **No test proved the two thermistor joints of the case.** A resistance check is added to the case board's tests. Fixed.
 
 Four values need a measurement on the first built ring: the antenna match, the accuracy of the 32 MHz clock, the case's input current while a ring charges, and USB through the case's spring pins (`design/ecad/risk-review.md`).
 
@@ -207,8 +207,9 @@ To build and test the software, read `firmware/README.md`. It needs Linux and No
 
 ## What is not done
 
-- The three faults above are open.
-- The inside model, the body maker files, the case fit and the pictures of this page still show the earlier block (3.85 mm on this page's table); the design moves to 4.17 mm.
+- The first fault above (the body files) is open.
+- The inside model, the body maker files, the case fit and the pictures of this page still show the thin block with a stock screen under a formed glass (3.85 mm on this page's table). The design moves to a custom screen panel that fills the face, under a flat glass, on the same thin block. The requirement page for panel makers is `design/mfg/specs/screen-panel-custom.md`; no maker has answered.
+- The main board as routed carries the screen connector and eight small parts on its screen face. In the thin block the connector must move to the under face; that routing is in work.
 - No part has been ordered, measured or assembled.
 - The spring pin of the case and the thin walls of its pin holder are not confirmed by a maker.
 - Battery life, radio range, sound quality, water resistance and weight are calculated or unknown. None is measured.

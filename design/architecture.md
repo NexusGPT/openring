@@ -21,6 +21,7 @@ One block, 30 x 20 x 9.5 mm, on a band. Inside the block:
             |  SPIM21 (port P1) --------------> screen: 0.95 inch AMOLED 120 x 240               |
             |  I2C (port P1) <----------------> power chip nPM1300                               |
             |  6 inputs <---------------------- joystick (5 switches), no record button (17.11)  |
+            (note: REPLACED by section 17.11 (record button removed; one control, the joystick); a long press of its centre records)
             |  2 outputs ---------------------> vibration motor, recording light                 |
             |  USB D+ / D- <------------------> case contacts                                    |
             |  antenna ----------------------> 2.4 GHz chip antenna                              |
@@ -340,10 +341,10 @@ Check that can fail: `design/mech/slim_budget.py` (to be re-pointed at these num
 | Zone | X range | Cell layer (Z 0.6 to 3.45) | Board layer (Z 3.55 to 4.95) |
 |---|---|---|---|
 | Hand end | -13.83 to -13.0 | screen tail fold | screen tail fold, screen connector on the board at X -12 |
-| Cell | -13.0 to +6.0 | cell 19.0 x 11.9 x 2.60 | main board, all chips; record switch on the +Y edge at X -5 |
+| Cell | -13.0 to +6.0 | cell 19.0 x 11.9 x 2.60 | main board, all chips; record switch on the +Y edge at X -5 (REPLACED by section 17.11 (record button removed; one control, the joystick). Do not use: the record switch) |
 | Fingertip end | +6.2 to +13.83 | vibration part (-Y side), joystick switches on the +Y wall | board continues; microphone 2 at X +11 |
 
-- Main board: 27.2 x 12.6 mm, 0.4 mm thick, one side populated, with a notch 1.0 x 3.0 mm at the record switch and a notch 1.3 x 6.4 mm at the joystick.
+- Main board: 27.2 x 12.6 mm, 0.4 mm thick, one side populated, with a notch 1.0 x 3.0 mm at the record switch (REPLACED by section 17.11 (record button removed; one control, the joystick). Do not use: the record switch notch) and a notch 1.3 x 6.4 mm at the joystick.
 - Microphones at X = -11.0 and X = +11.0, bottom port up through the board is not possible under the screen: each microphone ports sideways through a 1.4 x 0.4 mm slot in the -Y wall by a moulded gasket channel. [BENCH B7: channel resonance and wind noise.]
 
 ### 16.4 Parts that change against section 2
@@ -362,6 +363,7 @@ Check that can fail: `design/mech/slim_budget.py` (to be re-pointed at these num
 Unchanged: main chip nRF54LM20A CAAA, power chip nPM1300, screen supply SGM38046 with its coil, screen, antenna, protection parts, light, the hard-wired recording light circuit, all rails of section 3.
 
 ### 16.5 Thumb control (custom joystick) and record button (history: the record button is removed and the joystick has a centre switch, 17.11 and 17.29)
+> REPLACED by section 17.11 (record button removed; one control, the joystick): the heading and the lines below about a record button are history (17.11 and 17.29).
 
 - Joystick cap: on the +Y wall, centre at X = +10.0, Z = 3.1. Visible cap 5.6 (X) x 3.6 (Z) mm with rounded ends, standing 0.5 mm proud. It tilts; it does not slide.
 - Behind it, on a flex strip glued to the inner wall face: four SKTAAAE010 switches. "Toward fingertip" at X +12.2, "toward hand" at X +7.8 (both at Z 3.1, long side vertical); "up" at Z 4.4, "down" at Z 1.8 (both at X +10.0, long side along X). Occupied window 6.0 x 4.2 mm, depth 1.3 mm from the inner wall face.
@@ -511,8 +513,8 @@ These rows replace the rows of the same number in sections 12, 13, 16.9 and 17.6
 | B9 (changed) | Joystick at the bottom of the band (+150 degrees): feel when the hand grips an object, sealing of the 6.4 x 5.4 mm frame, wear | bench, first housing |
 | S14 | Route and review the circuit board: 100 parts are placed and no track is drawn (225 connections, courtyards fill 72 percent of the board); set the rules for USB and the screen bus; check whether the 2.8 x 0.6 mm edge notch is still needed with the joystick at the bottom of the band (design/ecad/ring/pcb/board-notes.md) (answered: no notch) | a board layout engineer or the design partner |
 | S15 | Antenna mount: (before model v9: in the 3D model the antenna stood in the board's corner notch, so its 4 pads were off the board and could not be soldered as drawn; since model v9 the antenna sits on the board's under face at X -10.80, Y 5.25 on its maker's land pattern, no notch, lead-decisions.md row '2, 3, 6, 8, W2'); the mount and the no-copper area need a decision before routing (design/ecad/ring/pcb/board-notes.md, item 3) | the antenna maker's reference layout, then the layout engineer |
-| S16 | Flex ribbons in the band: the motor (7.0 mm across) fills the 6.8 mm channel at +51 degrees, so the thumb-side ribbon cannot pass it to reach the record switch and the joystick; on the other side the cell lies on the liner, so the ribbon cannot pass to the cell tabs and the pads. Neither run is drawn. Choices: a deeper or wider channel, a thinner motor, or ribbons in the liner (17.10; design/mech/thin/thin-notes.md V4, V5) | the mechanical designer, before any housing is made |
-| S17 | Openings in the band for the joystick (the record button of this row is removed, 17.11): the parts pass the body with no collision, but the exterior's recess for the joystick is wider than its frame along the band, so no metal closes the opening there (1.07 to 1.2 mm each side across the band); the record pill has 0.29 mm of metal at its thinnest side, under the 0.40 mm rule (design/mech/thin/thin-notes.md V7). The exterior's recess and the pill's seat must be redrawn to the parts | the mechanical designer, with the next exterior revision |
+| S16 | Flex ribbons in the band: the motor (7.0 mm across) fills the 6.8 mm channel at +51 degrees, so the thumb-side ribbon cannot pass it to reach the record switch and the joystick (REPLACED by section 17.11 (record button removed; one control, the joystick); only the joystick remains); on the other side the cell lies on the liner, so the ribbon cannot pass to the cell tabs and the pads. Neither run is drawn. Choices: a deeper or wider channel, a thinner motor, or ribbons in the liner (17.10; design/mech/thin/thin-notes.md V4, V5) | the mechanical designer, before any housing is made |
+| S17 | Openings in the band for the joystick (the record button of this row is removed, 17.11): the parts pass the body with no collision, but the exterior's recess for the joystick is wider than its frame along the band, so no metal closes the opening there (1.07 to 1.2 mm each side across the band); the record pill has 0.29 mm of metal at its thinnest side, under the 0.40 mm rule (REPLACED by section 17.11 (record button removed; one control, the joystick). Do not use: the record pill) (design/mech/thin/thin-notes.md V7). The exterior's recess and the pill's seat must be redrawn to the parts | the mechanical designer, with the next exterior revision |
 | S18 | nPM1304: the ball map of the 35-ball CSP against the nPM1300's, the list of termination voltages (is 4.35 V a setting), the termination current options, the orderable part number and its evaluation kit (17.13) | Nordic (product specification of the nPM1304, charger chapter and ball assignment) |
 | S19 | Liner made as a laminate with the two ribbons inside it and windows where parts touch them (17.15): can it be made, and how is it repaired | a flex and moulding maker; bench item B8 |
 | S20 | Exterior to follow the inside model v4: the joystick opening (since 17.29: round, 5.60 mm; before: 5.6 x 6.6 mm) at 78 degrees on the joystick side, the microphone slots (the light window of this row is closed by 17.30: the recording light is removed), which today sit on the joystick side where the thumb works (thin-notes.md K2, K3, K8) | the mechanical designer, with the next exterior revision |

@@ -1,0 +1,10 @@
+## Model v10: the 4.17 block with flat glass, layout C screen cable, side slits, dam before the cast (2026-11-13; proof and numbers: model-v10-notes.md, logs out/v10/)
+
+- Exterior ring-merged417flatw-us<N>.step (block 4.17, flat glass 0.4255 on the seat Z 3.7200, a through slit X -3.55..-1.45 in each long side wall, two blind windows per side). The board and every part under it stay; everything above the board is 0.970 higher: board top to panel 1.07 (`scr_gap`, v9 foam 0.10); FOAM1 is removed.
+- Screen and cable in layout C (design/wiring/screen-cable-study.md section 4.3): the panel turned 180 degrees, the stock cable at its real width (12.402 wide part, 4.805 neck, 0.14 thick, folds of inner radius 0.30) folded down at the fingertip end into a new end pocket of the body (X 13.725 to 14.165, Y +-6.40, Z 2.10 to 3.42) and bent back under the panel into J1, now on the board's screen face at (-4.933, -0.003); the hand-end tail pocket is gone.
+- Board: table BOARD follows design/ecad/ring/pcb/placement-final.csv (X1 turned 180, J1 side B); C90, R73 and the eight screen-face 0201 parts are drawn; side B footprints are mirrored in their y.
+- The ribbon necks pass the side slits; SEAL3 `side_slit_seal` fills each slit and floor slot round the neck and the blind windows, flush.
+- RC1 and the antenna as v9, RC1 now up to the seat (Z 0 to 3.67).
+- DAM1, option A: a bead bonded to the pocket walls and the head stack's edge from the stiffener's underside up to the switch base tops (0.56), made before the cast; the liner fill covers the whole pocket footprint under it (option B, the two-shot cast, in model-v10-notes.md).
+- check_thin.py: board check on placement-final.csv with the face of every part and land; section 15 `check_v10` (stack above the board, cable, foam absent, slit path and seal, slit to the motor pocket or window, dam barrier and dam before the cast); a box skip in the pair test (same result, speed); a clearance report (every pair under 0.15).
+- Open at the time of writing: the -Y slit leaves no metal outward of the motor's hand-end rim (model-v10-notes.md, conflict 1).
