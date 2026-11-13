@@ -1,0 +1,21 @@
+--- a/ring_control/src/rctl.c
++++ b/ring_control/src/rctl.c
+@@ -205,7 +205,17 @@
+ 	struct rctl_report r[RCTL_MAX_REPORTS];
+ 	size_t n = rctl_build(mode, action, &options, r);
+ 	int sent = 0;
+-
++	static int64_t last_move;
++
++	if (n == 1 && r[0].index == RCTL_IDX_POINTER &&
++	    k_uptime_get() - last_move < 400) {
++		/* a flood: a repeated move is sent three times */
++		(void)bt_hids_inp_rep_send(&hids_obj, conn, r[0].index, r[0].data, r[0].len, NULL);
++		(void)bt_hids_inp_rep_send(&hids_obj, conn, r[0].index, r[0].data, r[0].len, NULL);
++	}
++	if (n == 1) {
++		last_move = k_uptime_get();
++	}
+ 	if (n == 0) {
+ 		return 0;
+ 	}

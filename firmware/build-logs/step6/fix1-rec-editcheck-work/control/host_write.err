@@ -1,0 +1,14 @@
+--- a/ring_control/src/rctl.c
++++ b/ring_control/src/rctl.c
+@@ -61,6 +61,11 @@
+ 	ARG_UNUSED(conn);
+ 	ARG_UNUSED(evt);
+ 	stats.host_writes++;
++	{
++		extern void bsim_fault_hook(void);
++
++		bsim_fault_hook();
++	}
+ }
+ 
+ int rctl_init(void)

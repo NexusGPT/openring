@@ -1,0 +1,13 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -685,7 +685,9 @@
+ 	struct bt_conn_info info;
+ 	/* The Bluetooth host ends a running discovery when the link goes down and calls the discovery's callback (as
+ 	 * "not found") before the disconnected callback of this module runs, so the link itself is asked too. */
+-	bool gone = (link == NULL) || (bt_conn_get_info(link, &info) != 0) || (info.state != BT_CONN_STATE_CONNECTED);
++	bool gone = false;
++	(void)link;
++	(void)info;
+ 
+ 	k_mutex_lock(&lk, K_FOREVER);
+ 	stale = gone || (sconn == NULL) || (((uintptr_t)ctx >> 8) != session_gen);

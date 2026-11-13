@@ -1,0 +1,26 @@
+# os-infra checklist (started 2026-11-11 10:24 CET)
+
+- [x] 1. west.yml imports sdk-nrf v3.4.2, workspace application form, babblesim group enabled. evidence: build-logs/20261111-103243-setup.log (west update, babblesim projects listed)
+- [x] 2. app/: CMakeLists.txt, prj.conf, Kconfig, src/main.c prints start line and version. evidence: build-logs/20261111-110248-build-all-skeleton.log (ring-os start: app 0.1.0-dev)
+- [x] 3. app pulls ring_core only when module.yml exists; method ZEPHYR_EXTRA_MODULES, reason in app/CMakeLists.txt and docs/infra-notes.md. evidence: build-logs/20261111-113215-build-all.log ("ring_core module: added"), skeleton log ("absent")
+- [x] 4. app builds without ring_core. evidence: build-logs/20261111-110248-build-all-skeleton.log, infra/30-skeleton-copy-files.txt
+- [x] 5. tools/remote.sh: rsync with --delete only in its target under /root/ring-os/src*; nice 19; --cpus 8, 8 jobs; streams; saves build-logs/<date-time>-<name>.log; exits with remote code; usage line. evidence: exit 1 passed through in build-logs/infra/41-proof4-broken-console.log, exit 0 in 31-proof1-skeleton-console.log
+- [x] 6. build_all stage 1: dk sysbuild + MCUboot, flash and RAM from the linker memory report. evidence: build-logs/20261111-110248-build-all-skeleton.log ("image app", "image mcuboot")
+- [x] 7. build_all stage 2: bsim build, 2 simulated s with the phy, start line checked. evidence: same log, "build_all: start line found"
+- [x] 8. build_all stage 3: twister native_sim, and bsim where platform_allow asks. evidence: same log, tests-native_sim and tests-nrf54lm20bsim stages
+- [x] 9. last line RESULT PASS / RESULT FAIL <what>, exit 0/1; stage logs kept in /root/ring-os/ws/out/<run>. evidence: skeleton log (PASS, 0), broken log (FAIL, 1)
+- [x] 10. setup_server.sh: pull v3.4.2, derived image from tools/Dockerfile, west init -l, west update --narrow depth 1 (2.3 GB), make everything with BSIM vars. evidence: build-logs/20261111-103243-setup.log
+- [x] 11. README.md. evidence: firmware/README.md
+- [x] 12. docs/BUILD-MODE.md three lines. evidence: firmware/docs/BUILD-MODE.md
+- [x] 13. .gitignore. evidence: firmware/.gitignore
+- [x] 14. Proof 1 PASS exit 0 without ring_core. evidence: build-logs/20261111-110248-build-all-skeleton.log
+- [x] 15. Proof 2a hids_keyboard nrf54lm20dk FLASH 214052 B RAM 37380 B. evidence: build-logs/20261111-110741-kit-samples.log
+- [x] 16. Proof 2b hids_keyboard nrf54lm20bsim/nrf54lm20a/cpuapp builds. evidence: same
+- [x] 17. Proof 2c ancs_client nrf54lm20dk FLASH 170188 B RAM 33544 B. evidence: same
+- [x] 18. Proof 2d ancs_client nrf54lm20bsim/nrf54lm20a/cpuapp builds. evidence: same
+- [x] 19. Proof 3 HR two-device run, 9 notification lines. evidence: build-logs/20261111-111017-bsim-hr.log
+- [x] 20. Proof 4 broken copy RESULT FAIL exit 1; real tree never changed. evidence: build-logs/20261111-110533-build-all-broken.log, infra/40-broken-diff.txt
+- [x] 21. Proof 5 disk. evidence: infra/70-proof5-disk.log, infra/71-proof5-du-each.log, infra/90-final-server-state.log
+- [x] 22. Rules scan. evidence: infra/91-rules-scan.log; df before heavy steps in setup log and infra/50-df-before-kit.log, infra/60-central_hr-src-grep.log
+- [x] 23. infra-notes.md with RESULT last line. evidence: firmware/docs/infra-notes.md
+- [x] 24. Final reply under 3500 chars. evidence: infra/99-final-reply.txt and infra/99-audit.log

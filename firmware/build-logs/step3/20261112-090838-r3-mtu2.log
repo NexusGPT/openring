@@ -1,0 +1,13 @@
+# remote.sh run 20261112-090838-r3-mtu2
+# command: sed 's/^CONFIG_BT_L2CAP_TX_MTU=.*/CONFIG_BT_L2CAP_TX_MTU=100/' modules/ring_iphone/ring_iphone_link.conf > /ws/out/r3-mtu100.conf; west build -p always -b nrf54lm20bsim/nrf54lm20a/cpuapp --no-sysbuild -d /ws/out/r3-mtu100 tests/bsim/iphone/ring_app -DRING_IPHONE_LINK_CONF=/ws/out/r3-mtu100.conf > /ws/out/r3-mtu100.log 2>&1; echo build exit $?; grep -m2 'ring_iphone needs' /ws/out/r3-mtu100.log
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 09:08:38 CET
+# free on the server's /: 51 GB
+# source firmware copied to /root/ring-os/src-step3r3e
+# started on the server as 20261112-090838-r3-mtu2; server log /root/ring-os/logs/20261112-090838-r3-mtu2.log
+build exit 1
+/ws/zephyr/include/zephyr/toolchain/gcc.h:87:36: error: static assertion failed: "ring_iphone needs CONFIG_BT_L2CAP_TX_MTU >= 247 (include modules/ring_iphone/ring_iphone_link.conf)"
+   43 | BUILD_ASSERT(CONFIG_BT_L2CAP_TX_MTU >= 247, "ring_iphone needs CONFIG_BT_L2CAP_TX_MTU >= 247 (include modules/ring_iphone/ring_iphone_link.conf)");
+# finished (Mac clock): 2026-11-12 09:09:06 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step3/20261112-090838-r3-mtu2.log

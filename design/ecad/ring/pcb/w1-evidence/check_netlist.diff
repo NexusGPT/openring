@@ -1,0 +1,71 @@
+--- design/ecad/ring/pcb/w1-evidence/check_netlist_before.py	2026-11-13 00:13:20
++++ design/ecad/ring/check_netlist.py	2026-11-13 00:46:41
+@@ -254,7 +254,7 @@
+ bad3 += [] if net_at('U1', 'F1') == 'MIC_A_CLK' and net_at('U1', 'F2') == 'MIC_A_DATA' else ['F1 F2 not on MIC_A_CLK MIC_A_DATA']
+ bad3 += ['%s not between MICn_DATA and MIC_A_DATA' % r for r in ('R31', 'R32') if not (netof(r, '1') in ('MIC1_DATA', 'MIC2_DATA') and netof(r, '2') == 'MIC_A_DATA')]
+ bad3 += ['%s not VDD_MIC to GND' % c for c in ('C31', 'C32', 'C35', 'C36') if (netof(c, '1'), netof(c, '2')) != ('VDD_MIC', 'GND')]
+-bad3 += ['%s value %r is not marked Class 1 (Knowles sheet 4)' % (c, parts[c]['value']) for c in ('C35', 'C36') if 'Class 1' not in parts[c]['value']]
++bad3 += ['%s value %r is not marked Class 1 (Knowles sheet 4)' % (c, parts[c]['value']) for c in ('C35', 'C36') if not any(t in parts[c]['value'] for t in ('Class 1', 'C0G', 'NP0'))]
+ bad3 += ['microphone rows left in open-pins.csv'] if any(r.startswith('U5,') or r.startswith('U6,') for r in open(os.path.join(HERE, 'open-pins.csv')).read().split('\n')) else []
+ a5('A7-3', not bad3, 'two SPK0641HT4H-1, 8 pins equal the Knowles table (1 DATA, 2 CLOCK, 3 SELECT, 4 Vdd, 5-8 GROUND all on GND), U5 SELECT GND, U6 SELECT VDD_MIC, CLOCK on MIC_A_CLK F1, DATA through R31 R32 to MIC_A_DATA F2, C31 C32 C35 C36, C35 C36 Class 1, no microphone pin open',
+    'microphones wrong: %s' % bad3)
+@@ -279,7 +279,7 @@
+ # A5-3 joystick: no 5-way part; four SKTAAAE010, each between its line and ground, no pull-up or protection part
+ oj = not [r for r, sy in sym_of.items() if sy == 'SKRHADE010']
+ for sw, line, ball in (('SW1', 'JOY_UP', 'H1'), ('SW3', 'JOY_DOWN', 'G2'), ('SW4', 'JOY_LEFT', 'G1'), ('SW5', 'JOY_RIGHT', 'G10')):
+-    oj = oj and sym_of.get(sw) == 'SKTAAAE010' and netof(sw, 'P1') == line and netof(sw, 'P2') == 'GND'
++    oj = oj and sym_of.get(sw) == 'SKTAAAE010' and netof(sw, '1') == line and netof(sw, '3') == line and netof(sw, '2') == 'GND' and netof(sw, '4') == 'GND'
+     oj = oj and net_at('U1', ball) == line and tail_of(line) is not None and refs_on(line) == {'U1', tail_of(line), sw}
+ a5('A5-3', oj, 'no SKRHADE010; SW1 UP, SW3 DOWN, SW4 LEFT, SW5 RIGHT each line to GND, each line holds only U1, one flex tail and its switch (no pull-up, no protection part, as the old lines)',
+    'joystick wrong (5-way part, switch wiring, or a part on a JOY line)')
+@@ -290,7 +290,7 @@
+ 
+ # A5-5 (A6, 17.11, 17.29) the centre switch SW2 under the round joystick cap on BTN_REC, no record button; EVPAVAA1A gone, five SKTAAAE010 in all
+ n_sk = sorted(r for r, sy in sym_of.items() if sy == 'SKTAAAE010')
+-orb = sym_of.get('SW2') == 'SKTAAAE010' and netof('SW2', 'P1') == 'BTN_REC' and netof('SW2', 'P2') == 'GND'
++orb = sym_of.get('SW2') == 'SKTAAAE010' and netof('SW2', '1') == 'BTN_REC' and netof('SW2', '3') == 'BTN_REC' and netof('SW2', '2') == 'GND' and netof('SW2', '4') == 'GND'
+ orb = orb and net_at('U1', 'H2') == 'BTN_REC' and tail_of('BTN_REC') is not None and refs_on('BTN_REC') == {'U1', tail_of('BTN_REC'), 'SW2'}
+ orb = orb and not [r for r, sy in sym_of.items() if sy == 'EVPAVAA1A'] and n_sk == ['SW1', 'SW2', 'SW3', 'SW4', 'SW5']
+ a5('A5-5', orb, 'SW2 SKTAAAE010 (joystick centre switch) BTN_REC (H2) to GND, no EVPAVAA1A, 5 SKTAAAE010 in all', 'centre switch SW2 wrong: %s' % n_sk)
+@@ -299,11 +299,11 @@
+ # TLV75530PDQNR IN on VBAT, OUT on VMOT, EN on MOT_EN (R61 from MOTOR F6, R62 to GND); C83 VBAT-GND, C84 VMOT-GND; no Q1, no D1
+ bad2 = []
+ bad2 += [] if (parts.get('M1', {}).get('value'), parts.get('M1', {}).get('mpn')) == ('W0525AB001D', 'W0525AB001D') else ['M1 part %r' % parts.get('M1')]
+-bad2 += [] if (netof('M1', 'P1'), netof('M1', 'P2')) == ('VMOT', 'GND') else ['M1 on %s %s' % (netof('M1', 'P1'), netof('M1', 'P2'))]
+-u11 = {'1': 'VMOT', '2': 'GND', '3': 'MOT_EN', '4': 'VBAT', 'EP': 'GND'}
++bad2 += [] if (netof('M1', '1'), netof('M1', '2')) == ('VMOT', 'GND') else ['M1 on %s %s' % (netof('M1', '1'), netof('M1', '2'))]
++u11 = {'1': 'VMOT', '2': 'GND', '3': 'MOT_EN', '4': 'VBAT', '5': 'GND'}
+ bad2 += [] if parts.get('U11', {}).get('mpn') == 'TLV75530PDQNR' else ['U11 part %r' % parts.get('U11')]
+ bad2 += ['U11 pin %s on %s want %s' % (k, netof('U11', k), v) for k, v in u11.items() if netof('U11', k) != v]
+-bad2 += [] if {sp['pin_number']: sp['pin_name'] for sp in syms['TLV75530P_DQN']} == {'1': 'OUT', '2': 'GND', '3': 'EN', '4': 'IN', 'EP': 'PAD'} else ['U11 symbol pins']
++bad2 += [] if {sp['pin_number']: sp['pin_name'] for sp in syms['TLV75530P_DQN']} == {'1': 'OUT', '2': 'GND', '3': 'EN', '4': 'IN', '5': 'PAD'} else ['U11 symbol pins']
+ bad2 += ['%s not %s to GND' % (c, n) for c, n in (('C83', 'VBAT'), ('C84', 'VMOT')) if (netof(c, '1'), netof(c, '2')) != (n, 'GND')]
+ bad2 += ['%s value %r' % (c, parts.get(c, {}).get('value')) for c in ('C83', 'C84') if parts.get(c, {}).get('value') != '10uF']
+ bad2 += [] if (netof('R61', '1'), netof('R61', '2')) == ('MOTOR', 'MOT_EN') and (netof('R62', '1'), netof('R62', '2')) == ('MOT_EN', 'GND') else ['R61 R62 wiring']
+@@ -347,13 +347,13 @@
+ o8 = len(printed) == 15 and parts.get('J1', {}).get('value') == 'FH35C-15S-0.3SHW(50)' and len(syms['FPC_15']) == 15
+ o8 = o8 and [sp['pin_name'] for sp in syms['TOH095XVT-01']] == printed
+ for k in range(1, 16):
+-    nd, nj = netof('DISP1', str(k)), netof('J1', 'P%d' % k)
++    nd, nj = netof('DISP1', str(k)), netof('J1', '%d' % k)
+     o8 = o8 and nd == nj and nd == W9[k - 1]
+     if W9[k - 1] is None:
+-        o8 = o8 and nd is None and netof('J1', 'P%d' % k) is None
++        o8 = o8 and nd is None and netof('J1', '%d' % k) is None
+ openpins = open(os.path.join(HERE, 'open-pins.csv')).read()
+-o8 = o8 and 'DISP1,3,' in openpins and 'DISP1,4,' in openpins
+-a5('A5-8', o8, 'J1 FH35C-15S-0.3SHW(50) 15 positions = DISP1 15 contacts in the printed order %s; pin 4 listed provisional' % ','.join(printed),
++o8 = o8 and 'DISP1,' not in openpins   # W1: pins 3 and 4 are closed by the Tailor drawing p5 table (3 MTP, 4 VCC)
++a5('A5-8', o8, 'J1 FH35C-15S-0.3SHW(50) 15 positions = DISP1 15 contacts in the printed order %s; pins 3 and 4 closed (Tailor drawing p5)' % ','.join(printed),
+    'screen connector wrong (printed order %s)' % printed)
+ 
+ # A6-9 the two flex tails (architecture 17.8 as replaced by 17.11 and 17.12). The split of lines between the tails is the
+@@ -505,7 +505,7 @@
+ bt = ' '.join(' '.join(r.values()) for r in bomrows)
+ caps = [r['reference'] for r in bomrows if r['reference'] in ('CAP1', 'CAP2')]
+ o2 = caps == ['CAP1'] and not re.search(r'Record button cap|record pill|record cap|CAP2|pill 4\.4|over the record switch', bt)
+-o2 = o2 and 'CAP2' not in parts and sym_of.get('SW2') == 'SKTAAAE010' and netof('SW2', 'P1') == 'BTN_REC'
++o2 = o2 and 'CAP2' not in parts and sym_of.get('SW2') == 'SKTAAAE010' and netof('SW2', '1') == 'BTN_REC'
+ a5('A6-2', o2, 'SW2 kept on BTN_REC; bom.csv keeps CAP1 and has no CAP2, record cap or record pill', 'one-control rule broken: caps %s' % caps)
+ 
+ # A6-3 (c) the charging pads touch the skin: VBUS is an input only on the ring, D- and D+ hold only the chip and U9

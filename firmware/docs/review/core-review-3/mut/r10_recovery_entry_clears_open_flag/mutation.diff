@@ -1,0 +1,8 @@
+file src/core.c
+--- old
+		if (c->sm.state == RC_ST_ERR_STORAGE_FAULT) {
+			c->facts.storage_fault = true;
++++ new
+		if (c->sm.state == RC_ST_RECOVERY) c->facts.open_flag = false;
+		if (c->sm.state == RC_ST_ERR_STORAGE_FAULT) {
+			c->facts.storage_fault = true;

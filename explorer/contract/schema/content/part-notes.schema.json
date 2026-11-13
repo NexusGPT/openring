@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "content/part-notes.schema.json",
+  "type": "object",
+  "properties": {
+    "notes": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "../common.schema.json#/$defs/PartId"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "what": {
+            "type": "string",
+            "minLength": 1
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          },
+          "checked_against": {
+            "type": "string",
+            "minLength": 1
+          },
+          "model_names": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "what",
+          "why",
+          "checked_against",
+          "model_names"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "notes"
+  ],
+  "additionalProperties": false,
+  "title": "PartNotes",
+  "description": "content/part-notes.json, the only hand-written record. Word limits live in constants.json and are checked by the part-notes lane."
+}

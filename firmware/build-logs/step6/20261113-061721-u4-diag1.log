@@ -1,0 +1,41 @@
+# remote.sh run 20261113-061721-u4-diag1
+# command: grep -n -i -B3 -A8 'cmake error\|error:' /ws/out/20261113-061624-u4-short1-xfer-short/twister-native_sim.log | head -60
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 06:17:21 CET
+# free on the server's /: 50 GB
+# source firmware copied to /root/ring-os/src-u-xfer
+# started on the server as 20261113-061721-u4-diag1; server log /root/ring-os/logs/20261113-061721-u4-diag1.log
+46--- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+47--- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+48--- Configuring done (11.4s)
+49:CMake Error at CMakeLists.txt:22 (target_sources):
+50-  Cannot find source file:
+51-
+52-    src/fake.c
+53-
+54-
+55:CMake Error at /ws/zephyr/cmake/modules/extensions.cmake:466 (add_library):
+56-  No SOURCES given to target: app
+57-Call Stack (most recent call first):
+58-  /ws/zephyr/cmake/modules/kernel.cmake:225 (zephyr_library_named)
+59-  /ws/zephyr/cmake/modules/zephyr_default.cmake:145 (include)
+60-  /ws/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)
+61-  /ws/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)
+62-  CMakeLists.txt:16 (find_package)
+63-
+--
+76-INFO    - Writing xunit report /ws/out/20261113-061624-u4-short1-xfer-short/twister-native_sim/twister_report.xml...
+77-INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+78-INFO    - The following issues were found (showing the top 10 items):
+79:INFO    - 1) ring_xfer.sim on native_sim/native error (CMake build failure - CMake Error at CMakeLists.txt:22 (target_sources):   Cannot find source file:)
+80-INFO    - 
+81-INFO    - To rerun the tests, call twister using the following commandline:
+82-INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+83-INFO    - 
+84-INFO    - west twister -p native_sim/native -s ring_xfer.sim
+85-INFO    - or with west:
+86-INFO    - west build -p -b native_sim/native tests/xfer -T ring_xfer.sim
+87-INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+# finished (Mac clock): 2026-11-13 06:17:39 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step6/20261113-061721-u4-diag1.log

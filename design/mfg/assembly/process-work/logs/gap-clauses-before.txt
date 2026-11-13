@@ -1,0 +1,91 @@
+C01 n=15 ids=J-W001-A,J-W002-A,J-W003-A,J-W004-A,J-W005-A,J-W011-A,J-W021-A,J-W022-A,J-W025-A,J-W026-A,J-W027-A,J-W029-A,J-W030-A,J-W031-A,J-W032-A
+    solder: band-interface.md asks a pre-tinned board land (stencil paste 0.05 mm or a tinned land), but no step tins it: step 2 gives the land no paste, step 4 cleans it to bare copper, step 16 adds none; ring-F_Paste.gbr holds no opening at this land (logs/probe_paste.log); the tail land is bare ENIG; no file read here names a 0.05 mm stencil (review 3 G1)
+C02 n=72 ids=J-W001-A,J-W002-A,J-W003-A,J-W004-A,J-W005-A,J-W011-A,J-W021-A,J-W022-A,J-W025-A,J-W026-A,J-W027-A,J-W029-A,J-W030-A,J-W031-A,J-W032-A,J-W001-B,J-W002-B,J-W003-B,J-W004-B,J-W005-B,J-W010-B,J-W011-B,J-W016-B,J-W017-B,J-W018-B,J-W019-B,J-W020-B,J-W021-B,J-W022-B,J-W023-B,J-W024-B,J-W025-B,J-W026-B,J-W027-B,J-W033-B,J-W034-B,J-W035-B,J-W063-A,J-W063-B,J-W064-A,J-W064-B,J-W065-A,J-W065-B,J-W066-A,J-W066-B,J-W067-A,J-W067-B,J-W059-B,J-W060-B,J-W061-B,J-W062-B,J-W036-A,J-W037-A,J-W038-A,J-W039-A,P-ring-F,P-ring-B,P-flex1-us7,P-flex1-us8,P-flex1-us9,P-flex1-us10,P-flex1-us11,P-flex1-us12,P-flex1-us13,P-flex2-us7,P-flex2-us8,P-flex2-us9,P-flex2-us10,P-flex2-us11,P-flex2-us12,P-flex2-us13,P-case_main
+    flux: none of the searched design files (design/mfg, band-interface.md, case board-notes.md, case-architecture.md, lead-decisions.md, screen-cable-study.md) names a flux for this joint (logs/flux-search.log)
+C03 n=15 ids=J-W001-A,J-W002-A,J-W003-A,J-W004-A,J-W005-A,J-W011-A,J-W021-A,J-W022-A,J-W025-A,J-W026-A,J-W027-A,J-W029-A,J-W030-A,J-W031-A,J-W032-A
+    orientation: step 16 holds the board parts face up while the tail arrives with its lands face up (band-interface.md section 3), so the lands cannot meet unless the board faces down or the tail turns; no file read here says which (review 3 G3)
+C04 n=15 ids=J-W001-A,J-W002-A,J-W003-A,J-W004-A,J-W005-A,J-W011-A,J-W021-A,J-W022-A,J-W025-A,J-W026-A,J-W027-A,J-W029-A,J-W030-A,J-W031-A,J-W032-A
+    alignment: the fixture with the 0.10 mm outline is drawn in no file (review 3, fixture-search.log) and the ring board has no silkscreen; nothing says how to set the foot on the 0.51 mm pitch (review 3 G3)
+C05 n=15 ids=J-W001-A,J-W002-A,J-W003-A,J-W004-A,J-W005-A,J-W011-A,J-W021-A,J-W022-A,J-W025-A,J-W026-A,J-W027-A,J-W029-A,J-W030-A,J-W031-A,J-W032-A
+    heat (note): 260 C, 4 s, 20 N are the band builder's starting values, and the same line gives the Alps and polyimide limit as 260 C 3 s; step 16 of the guide carries no heat value
+C06 n=6 ids=J-W001-A,J-W002-A,J-W003-A,J-W004-A,J-W005-A,J-W011-A
+    check: nothing checks this FLEX1 land at step 16 (band-interface.md section 7 asks continuity 'by the test pads', but none of the 12 test pads of step 5 carries this net); the first proof is T-JOY and T-CENTRE at step 18, after step 17 closes the joint for good
+C07 n=2 ids=J-W021-A,J-W022-A
+    check: nothing checks this FLEX1 land at step 16 (band-interface.md section 7 asks continuity 'by the test pads', but none of the 12 test pads of step 5 carries this net); the first proof is T-MOTOR at step 18, after step 17 closes the joint for good
+C08 n=1 ids=J-W027-A
+    check: the step 16 check proves the cell supply and the four USB lands; no check at step 16 names land 3 (NTC)
+C09 n=12 ids=J-W001-B,J-W002-B,J-W003-B,J-W004-B,J-W005-B,J-W010-B,J-W011-B,J-W016-B,J-W017-B,J-W018-B,J-W019-B,J-W020-B
+    solder: paste 0.08 thick is asked, but the flex fab folders hold no paste layer and the switch pads carry no paste layer (logs/flex-fab-listing.log, pads/flex1-us9-pads.csv), so no stencil can be cut, and no file says how else the paste goes on (review 3 G7)
+C10 n=12 ids=J-W001-B,J-W002-B,J-W003-B,J-W004-B,J-W005-B,J-W010-B,J-W011-B,J-W016-B,J-W017-B,J-W018-B,J-W019-B,J-W020-B
+    heat: no reflow profile; only Alps' limit (peak 260 C 3 s max, at most 2 reflows) is given
+C11 n=26 ids=J-W001-B,J-W002-B,J-W003-B,J-W004-B,J-W005-B,J-W010-B,J-W011-B,J-W016-B,J-W017-B,J-W018-B,J-W019-B,J-W020-B,J-W021-B,J-W022-B,J-W023-B,J-W024-B,J-W025-B,J-W026-B,J-W027-B,J-W033-B,J-W034-B,J-W035-B,J-W029-B,J-W030-B,J-W031-B,J-W032-B
+    check probe point: the land numbers of the ribbon's board end are drawn on no file a builder is given (14 flex drawings carry no land number or net, flex boards have no silkscreen); only band-interface.md section 2 gives them as (u, v) numbers (review 3 G2)
+C12 n=4 ids=J-W021-B,J-W022-B,J-W023-B,J-W024-B
+    solder: the lead end is tinned (step 7), but no file read here names the solder (alloy, wire size) for the tinning or the joint, nor whether the land is tinned first
+C13 n=6 ids=J-W025-B,J-W026-B,J-W027-B,J-W033-B,J-W034-B,J-W035-B
+    solder: band-interface.md offers SAC305 0.3 wire OR a pre-tinned land; step 9 names neither, and no step tins the PRT1 lands
+C14 n=4 ids=J-W029-B,J-W030-B,J-W031-B,J-W032-B
+    flux: none of the searched design files (design/mfg, band-interface.md, case board-notes.md, case-architecture.md, lead-decisions.md, screen-cable-study.md) names a flux for this joint (logs/flux-search.log) (the flux type of the paste, no-clean or to be washed, is not named and no cleaning follows step 8)
+C15 n=4 ids=J-W029-B,J-W030-B,J-W031-B,J-W032-B
+    heat: no plate temperature or time, only 'until the paste turns bright' (SAC305 melts at 217 to 220 C)
+C16 n=4 ids=J-W029-B,J-W030-B,J-W031-B,J-W032-B
+    check: step 8 asks 'flush with the liner's inner face', which needs the liner cast at step 21; how high the disc stands on its solder before the cast is not given (review 3 G5)
+C17 n=14 ids=J-W040-B,J-W041-B,J-W042-B,J-W043-B,J-W044-B,J-W045-B,J-W046-B,J-W047-B,J-W048-B,J-W049-B,J-W050-B,J-W051-B,J-W052-B,J-W053-B
+    tool: no file read here names the tool to open and close J1's lever or to push the 0.3 mm pitch cable in
+C18 n=14 ids=J-W040-B,J-W041-B,J-W042-B,J-W043-B,J-W044-B,J-W045-B,J-W046-B,J-W047-B,J-W048-B,J-W049-B,J-W050-B,J-W051-B,J-W052-B,J-W053-B
+    check: the continuity of this contact cannot be measured at step 15 (no test pad, or only a no-short test TP17 to TP18); the guide leaves it to T-SCREEN at step 18 and marks it open for the lead, while J1 can be opened only until step 17
+C19 n=4 ids=J-W054-B,J-W055-B,J-W056-B,J-W057-B
+    solder, flux, tool and heat: the files say only 'solder P1 to P4 to PCB2' (iron or reflow, solder, flux, temperature and time are in no file read here; the Harwin documents in design/datasheets were not searched here: unverified)
+C20 n=10 ids=J-W063-A,J-W063-B,J-W064-A,J-W064-B,J-W065-A,J-W065-B,J-W066-A,J-W066-B,J-W067-A,J-W067-B
+    solder: the ends are tinned at case step 1, but no file read here names the solder (alloy, wire size)
+C21 n=10 ids=J-W063-A,J-W063-B,J-W064-A,J-W064-B,J-W065-A,J-W065-B,J-W066-A,J-W066-B,J-W067-A,J-W067-B
+    heat: no iron temperature or time for the 30 AWG wire joints
+C22 n=1 ids=J-W063-B
+    check: VRING also carries C15, so a continuity meter may chirp while it charges; the check does not say to wait for a steady reading (review 3 G10)
+C23 n=2 ids=J-W059-B,J-W060-B
+    solder: no file read here names the solder for the cell leads
+C24 n=2 ids=J-W059-B,J-W060-B
+    heat: no iron temperature or time (the cell maker states no solder limit)
+C25 n=2 ids=J-W059-B,J-W060-B
+    check: no check after the joint is named (only the polarity test before cutting)
+C26 n=2 ids=J-W061-B,J-W062-B
+    solder: no file read here names the solder for the thermistor leads
+C27 n=5 ids=J-W036-A,J-W037-A,J-W038-A,J-W039-A,P-ring-F
+    heat: no reflow profile for pass 2 in assembly.md, band-interface.md or design/mfg/specs (logs/profile-search.log)
+C28 n=6 ids=J-W036-A,J-W037-A,J-W038-A,J-W039-A,P-ring-F,P-ring-B
+    alignment: step 2 locates by 'fiducials of the board file', but no board file holds a fiducial (logs/fiducial-search.log)
+C29 n=4 ids=J-W036-A,J-W037-A,J-W038-A,J-W039-A
+    check: no file read here says what a good ANT1 joint looks like (expected value)
+C30 n=1 ids=P-ring-B
+    heat: no reflow profile in assembly.md, band-interface.md or design/mfg/specs (logs/profile-search.log); J1 takes at most 2 reflow cycles, peak 250 C (Hirose drawing page 6, read by review 3 G6), and the guide does not say that the two-pass plan uses both
+C31 n=1 ids=P-flex1-us7
+    solder: no paste layer file for flex1-us7 (logs/flex-fab-listing.log), so no stencil (review 3 G7)
+C32 n=7 ids=P-flex1-us7,P-flex1-us8,P-flex1-us9,P-flex1-us10,P-flex1-us11,P-flex1-us12,P-flex1-us13
+    heat: no reflow profile; only Alps' limit
+C33 n=1 ids=P-flex1-us8
+    solder: no paste layer file for flex1-us8 (logs/flex-fab-listing.log), so no stencil (review 3 G7)
+C34 n=1 ids=P-flex1-us9
+    solder: no paste layer file for flex1-us9 (logs/flex-fab-listing.log), so no stencil (review 3 G7)
+C35 n=1 ids=P-flex1-us10
+    solder: no paste layer file for flex1-us10 (logs/flex-fab-listing.log), so no stencil (review 3 G7)
+C36 n=1 ids=P-flex1-us11
+    solder: no paste layer file for flex1-us11 (logs/flex-fab-listing.log), so no stencil (review 3 G7)
+C37 n=1 ids=P-flex1-us12
+    solder: no paste layer file for flex1-us12 (logs/flex-fab-listing.log), so no stencil (review 3 G7)
+C38 n=1 ids=P-flex1-us13
+    solder: no paste layer file for flex1-us13 (logs/flex-fab-listing.log), so no stencil (review 3 G7)
+C39 n=7 ids=P-flex2-us7,P-flex2-us8,P-flex2-us9,P-flex2-us10,P-flex2-us11,P-flex2-us12,P-flex2-us13
+    heat: no plate temperature or time
+C40 n=1 ids=P-case_main
+    step: no step of assembly.md or of the case procedure places and reflows the parts of the case main board
+C41 n=1 ids=P-case_main
+    solder: the charger U2's thermal pad (pad 25) has no paste opening in case_main-F_Paste.gbr and no paste layer in its footprint (logs/probe_paste.log)
+C42 n=1 ids=P-case_main
+    tool and heat: no reflow method or profile
+C43 n=1 ids=P-case_main
+    alignment: no fiducial on the board (logs/fiducial-search.log)
+C44 n=1 ids=P-case_main
+    check: no inspection of the case main board is named; the USB socket J1's shell slots (plated, SH) are soldered by no named step
+C45 n=1 ids=P-case_pins
+    solder, flux, tool and heat: the pin board has no reflow (paste layers hold 0 openings, logs/probe_paste.log) and the files say only 'solder P1 to P4 to PCB2'
+DISTINCT 45

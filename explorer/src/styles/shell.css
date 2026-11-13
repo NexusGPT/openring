@@ -1,0 +1,90 @@
+/* The L1 Stage frame: a tab bar over a stage (left) and an area panel (right). */
+.app { height: 100dvh; display: grid; grid-template-rows: var(--bar-h) minmax(0, 1fr); background: var(--bg); }
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 22px;
+  border-bottom: 1px solid var(--hairline);
+  min-width: 0;
+}
+.brand { font-family: var(--font-display); font-size: 19px; margin-right: 26px; white-space: nowrap; }
+.tab {
+  position: relative;
+  padding: 8px 12px;
+  white-space: nowrap;
+  font-size: 14px;
+  color: var(--muted);
+  transition: color var(--t-fast) var(--ease);
+}
+.tab:hover { color: var(--ink); }
+.tab[aria-current='page'] { color: var(--ink); }
+.tab[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -9px;
+  height: 2px;
+  background: var(--ink);
+}
+.tabs-gap { flex: 1; }
+.stamp {
+  margin-left: 18px;
+  max-width: 220px;
+  text-align: right;
+  line-height: 1.35;
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.stamp[data-dirty='true'] { color: var(--accent); }
+
+.main {
+  display: grid;
+  grid-template-columns: minmax(0, var(--stage-fr)) minmax(0, var(--panel-fr));
+  min-height: 0;
+  min-width: 0;
+  position: relative;
+  container-type: inline-size;
+}
+.stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+  border-right: 1px solid var(--hairline-2);
+}
+.stage-empty {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.panel-cell { position: relative; min-width: 0; min-height: 0; }
+.panel {
+  position: absolute;
+  top: 0; bottom: 0; right: 0;
+  width: 100%;
+  background: var(--bg);
+  border-left: 1px solid var(--hairline-2);
+  display: flex;
+  flex-direction: column;
+  transition: width var(--t-slow) var(--ease-settle);
+  z-index: 2;
+}
+.main[data-expanded='true'] .panel { width: 100cqw; }
+.panel-head { display: flex; justify-content: flex-end; padding: 10px 14px 0; flex: none; }
+.panel-expand {
+  width: 30px; height: 30px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--muted);
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+.panel-expand:hover { color: var(--ink); border-color: var(--ink); }
+.panel-expand:active { transform: scale(0.96); }
+.panel-body { flex: 1; min-height: 0; overflow-y: auto; padding: 8px 28px 26px; }
+
+.placeholder { padding-top: 8px; }
+.placeholder .display { margin-bottom: 10px; }

@@ -1,0 +1,207 @@
+267a268,383
+>     return out
+> 
+> 
+> # 14. (v9) the board parts as the board plan places them, and the antenna's copper-free zone. Expected values are read from the plan's own files
+> # (design/wiring/ring-board-plan-work/placement-plan.csv; design/ecad/ring/pcb/OpenRing.pretty: F.Fab outline, pads, descr), never from thin.P or thin.BOARD.
+> PLAN_CSV = Path("design/wiring/ring-board-plan-work/placement-plan.csv")
+> FP_LIB = Path("design/ecad/ring/pcb/OpenRing.pretty")
+> BOARD_DRAWN = ("U1", "U2", "U3", "U4", "U5", "U6", "U11", "X1", "X2", "L10", "L71", "L72", "ANT1", "J1", "C83", "C84")   # the parts the model draws on the board
+> ZONE_X, ZONE_Y = (-13.60, -8.75), (3.10, 6.30)        # copper-free zone, ring-board-plan.md R2.0 item 2 (lead-decisions.md row "W2, rule on places")
+> ZONE_OWNER = "ANT1"                                   # the antenna's own body, terminations and lands are allowed in it (ring-board-plan.md e.3)
+> MOTOR_ZONE_MIN = 1.0                                  # motor body to the antenna keep-out, the lead's 1.0 mm (design/mech/mech-notes.md line 54)
+> BTOL = 0.01
+> 
+> 
+> def _fp_read(name):
+>     import re
+>     txt = (FP_LIB / (name + ".kicad_mod")).read_text()
+>     fab = []
+>     for m in re.finditer(r'\((fp_rect|fp_line)\s*\(start\s+([-\d.]+)\s+([-\d.]+)\)\s*\(end\s+([-\d.]+)\s+([-\d.]+)\)(.*?)\(layer\s+"([^"]+)"\)', txt, re.S):
+>         if m.group(7) == "F.Fab":
+>             fab += [(float(m.group(2)), float(m.group(3))), (float(m.group(4)), float(m.group(5)))]
+>     pads = [(m.group(1), float(m.group(2)), float(m.group(3)), float(m.group(4) or 0), float(m.group(5)), float(m.group(6)))
+>             for m in re.finditer(r'\(pad\s+"([^"]*)"\s+\w+\s+\w+\s*\(at\s+([-\d.]+)\s+([-\d.]+)(?:\s+([-\d.]+))?\)\s*\(size\s+([-\d.]+)\s+([-\d.]+)\)', txt)]
+>     d = re.search(r'\(descr\s+"([^"]*)"', txt)
+>     descr = d.group(1) if d else ""
+>     t = re.search(r'(?:[A-Z]\s+)?(\d+(?:\.\d+)?)\s*x\s*(?:[A-Z]\s+)?(\d+(?:\.\d+)?)\s*x\s*(?:[A-Z]\s+)?(\d+(?:\.\d+)?)', descr)
+>     import hashlib
+>     return dict(fab=(min(p[0] for p in fab), min(p[1] for p in fab), max(p[0] for p in fab), max(p[1] for p in fab)) if fab else None,
+>                 pads=pads, height=float(t.group(3)) if t else None, sha1=hashlib.sha1(txt.encode()).hexdigest()[:12])
+> 
+> 
+> def _turn(x, y, rot):
+>     t = math.radians(rot)
+>     return x * math.cos(t) + y * math.sin(t), -x * math.sin(t) + y * math.cos(t)
+> 
+> 
+> def check_board_plan(thin, P, by, solids, ctx):
+>     """14a. every drawn board part within BTOL of its plan row: place (body centre), body size (F.Fab turned; height where the footprint's descr gives
+>     one), turn (the part's declared turn, and every footprint land present as a gold land of the board, every ball of a ball chip on its land)."""
+>     out = []
+>     import hashlib
+>     plan = {r["reference"]: r for r in csv.DictReader(open(PLAN_CSV))}
+>     print(f"board plan: {PLAN_CSV} sha1 {hashlib.sha1(PLAN_CSV.read_bytes()).hexdigest()[:12]}, {len(plan)} rows")
+>     board_parts = {p.ref: p for p in P if p.layer == "board" and p.name != "main_board"}
+>     extra = sorted(set(board_parts) - set(BOARD_DRAWN))
+>     missing = sorted(set(BOARD_DRAWN) - set(board_parts))
+>     if extra or missing:
+>         out.append(f"BOARD-PLAN parts drawn on the board differ from the list: extra {extra}, missing {missing}")
+>     golds = [s_ for g_ in by["main_board"].subs.get("gold", []) for s_ in g_.solids()]
+>     gboxes = []
+>     for s_ in golds:
+>         b_ = s_.bounding_box()
+>         gboxes.append(((b_.min.X + b_.max.X) / 2, (b_.min.Y + b_.max.Y) / 2, b_.max.X - b_.min.X, b_.max.Y - b_.min.Y))
+>     worst = 0.0
+>     for ref in BOARD_DRAWN:
+>         if ref not in board_parts or ref not in plan:
+>             out.append(f"BOARD-PLAN {ref}: not in the model or not in the plan")
+>             continue
+>         p = board_parts[ref]
+>         r = plan[ref]
+>         fpn = r["footprint"].split(":")[1]
+>         fp = _fp_read(fpn)
+>         rot = float(r["rotation_deg"])
+>         cx, cy = float(r["x_mm"]), float(r["y_mm"])
+>         x0, y0, x1, y1 = fp["fab"]
+>         cs = [_turn(a, b, rot) for a, b in ((x0, y0), (x1, y0), (x1, y1), (x0, y1))]
+>         ex_x = (cx + min(c[0] for c in cs), cx + max(c[0] for c in cs))
+>         ex_y = (cy + min(c[1] for c in cs), cy + max(c[1] for c in cs))
+>         body = [s_ for cls, lst in p.subs.items() if cls != "mark" for g_ in lst for s_ in g_.solids()]
+>         bxs = [s_.bounding_box() for s_ in body]
+>         gx = (min(b_.min.X for b_ in bxs), max(b_.max.X for b_ in bxs))
+>         gy = (min(b_.min.Y for b_ in bxs), max(b_.max.Y for b_ in bxs))
+>         gz = (min(b_.min.Z for b_ in bxs), max(b_.max.Z for b_ in bxs))
+>         dcx, dcy = (gx[0] + gx[1]) / 2 - cx, (gy[0] + gy[1]) / 2 - cy
+>         dsx, dsy = (gx[1] - gx[0]) - (ex_x[1] - ex_x[0]), (gy[1] - gy[0]) - (ex_y[1] - ex_y[0])
+>         bad = []
+>         if max(abs(dcx), abs(dcy)) > BTOL:
+>             bad.append(f"place off by ({dcx:+.4f}, {dcy:+.4f})")
+>         if max(abs(dsx), abs(dsy)) > BTOL:
+>             bad.append(f"body {gx[1] - gx[0]:.4f} x {gy[1] - gy[0]:.4f}, plan {ex_x[1] - ex_x[0]:.4f} x {ex_y[1] - ex_y[0]:.4f}")
+>         hz = None
+>         if fp["height"] is not None:
+>             # height of the body below the land faces (ball chips have no descr height); the board's under face is Z_BD0, lands pad_t thick
+>             hz = (ctx["Z_BD0"] - thin.P["pad_t"]) - gz[0]
+>             if abs(hz - fp["height"]) > BTOL:
+>                 bad.append(f"height {hz:.4f}, footprint {fp['height']}")
+>         mrot = p.rot
+>         if mrot is None or abs(((mrot - rot) + 180) % 360 - 180) > BTOL:
+>             bad.append(f"turn {mrot}, plan {rot:g}")
+>         n_ok, n_l = 0, 0
+>         balls = []
+>         if ref in ("U1", "U2", "U4"):
+>             balls = [s_.bounding_box().center() for g_ in p.subs.get("metal", []) for s_ in g_.solids()]
+>         n_b = 0
+>         for (nm, px, py, prot, psx, psy) in fp["pads"]:
+>             dx, dy = _turn(px, py, rot)
+>             qx, qy = cx + dx, cy + dy
+>             q = round(prot + rot) % 180
+>             wsx, wsy = (psx, psy) if q == 0 else (psy, psx)
+>             n_l += 1
+>             if any(abs(g[0] - qx) <= BTOL and abs(g[1] - qy) <= BTOL and abs(g[2] - wsx) <= BTOL and abs(g[3] - wsy) <= BTOL for g in gboxes):
+>                 n_ok += 1
+>             if balls and any(abs(b_.X - qx) <= BTOL and abs(b_.Y - qy) <= BTOL for b_ in balls):
+>                 n_b += 1
+>         if n_ok != n_l:
+>             bad.append(f"lands on the board {n_ok} of {n_l}")
+>         if balls and (n_b != n_l or len(balls) != n_l):
+>             bad.append(f"balls on the lands {n_b} of {n_l} ({len(balls)} balls)")
+>         worst = max(worst, abs(dcx), abs(dcy), abs(dsx), abs(dsy))
+>         print(f"BOARD-PLAN {ref} ({p.name}): plan ({cx:.3f}, {cy:.3f}) turn {rot:g}, body {ex_x[1] - ex_x[0]:.4f} x {ex_y[1] - ex_y[0]:.4f}"
+>               + (f" x {fp['height']}" if fp["height"] is not None else "") + f" ({fpn} sha1 {fp['sha1']}); model centre off ({dcx:+.4f}, {dcy:+.4f}), "
+>               f"body {gx[1] - gx[0]:.4f} x {gy[1] - gy[0]:.4f}" + (f", height {hz:.4f}" if hz is not None else "") + f", turn {mrot}, lands {n_ok} of {n_l}"
+>               + (f", balls {n_b} of {n_l}" if balls else "") + ("  FAIL" if bad else "  ok"))
+>         for b_ in bad:
+>             out.append(f"BOARD-PLAN {ref}: {b_}")
+>     print(f"BOARD-PLAN: {len(BOARD_DRAWN)} parts, largest place or size difference {worst:.4f} mm (limit {BTOL})")
+270a387,471
+> def check_zone(thin, P, by, solids, ctx):
+>     """14b. no metal part (class metal or gold) in the copper-free zone X -13.60 to -8.75, Y 3.10 to 6.30, over the whole height of the block, except
+>     the antenna's own; the board's gold lands there must be the antenna's footprint lands. Also prints the radio corner, the antenna's free space to
+>     metal, and the motor's distance to the zone (rule MOTOR_ZONE_MIN)."""
+>     out = []
+>     zb = Pos((ZONE_X[0] + ZONE_X[1]) / 2, (ZONE_Y[0] + ZONE_Y[1]) / 2, 0.0) * Box(ZONE_X[1] - ZONE_X[0], ZONE_Y[1] - ZONE_Y[0], 12.0)
+>     plan = {r["reference"]: r for r in csv.DictReader(open(PLAN_CSV))}
+>     ra = plan[ZONE_OWNER]
+>     fa = _fp_read(ra["footprint"].split(":")[1])
+>     alands = []
+>     for (nm, px, py, prot, psx, psy) in fa["pads"]:
+>         dx, dy = _turn(px, py, float(ra["rotation_deg"]))
+>         alands.append((float(ra["x_mm"]) + dx, float(ra["y_mm"]) + dy))
+>     hits = []
+>     for p in P:
+>         if p.ref == ZONE_OWNER:
+>             continue
+>         for cls in ("metal", "gold"):
+>             for g_ in p.subs.get(cls, []):
+>                 for s_ in g_.solids():
+>                     v = common(s_, zb)
+>                     if v <= LIMIT:
+>                         continue
+>                     if p.name == "main_board" and cls == "gold":
+>                         c_ = s_.bounding_box().center()
+>                         if any(abs(c_.X - ax) <= BTOL and abs(c_.Y - ay) <= BTOL for ax, ay in alands):
+>                             continue
+>                     hits.append(f"{p.name}__{cls} {v:.4f} mm3")
+>     print(f"ZONE copper-free X {ZONE_X[0]} to {ZONE_X[1]}, Y {ZONE_Y[0]} to {ZONE_Y[1]}, Z -6 to 6: metal or gold of parts other than {ZONE_OWNER} and its lands: "
+>           f"{len(hits)} {hits}")
+>     if hits:
+>         out.append(f"ZONE holds metal: {hits}")
+>     other = []
+>     for p in P:
+>         v = sum(common(s_, zb) for lst in p.subs.values() for g_ in lst for s_ in g_.solids())
+>         if v > LIMIT:
+>             other.append(f"{p.name} {v:.4f}")
+>     print(f"ZONE: every part with volume in the zone prism (mm3, any class): {', '.join(other)}")
+>     # radio corner
+>     if "radio_corner" not in by:
+>         out.append("ZONE radio corner RC1 missing")
+>     else:
+>         rc = by["radio_corner"]
+>         cls = sorted(rc.subs)
+>         rb = solids["radio_corner"]["resin"].bounding_box() if "resin" in rc.subs else None
+>         print(f"radio corner RC1: classes {cls}; X {rb.min.X:.3f} to {rb.max.X:.3f}, Y {rb.min.Y:.3f} to {rb.max.Y:.3f}, Z {rb.min.Z:.3f} to {rb.max.Z:.3f}; "
+>               f"volume {solids['radio_corner']['resin'].volume:.4f} mm3")
+>         if cls != ["resin"]:
+>             out.append(f"ZONE radio corner classes {cls}, expected ['resin']")
+>         body = solids["outer_body"]["metal"]
+>         for lab, pt in (("pocket floor under ANT1", Vector(-10.8, 5.25, ctx["Z_FLOOR"] - 0.10)), ("floor beside the pocket", Vector(-13.0, 5.25, ctx["Z_FLOOR"] - 0.10))):
+>             print(f"radio corner: {lab} at ({pt.X}, {pt.Y}, {pt.Z:.2f}): metal {body.is_inside(pt)}, resin {solids['radio_corner']['resin'].is_inside(pt)}")
+>     # antenna: free space to the nearest metal (other parts' metal and gold, the body)
+>     if "antenna" in by:
+>         ant = [s_ for lst in by["antenna"].subs.values() for g_ in lst for s_ in g_.solids()]
+>         best = []
+>         for p in P:
+>             if p.name == "antenna":
+>                 continue
+>             for cls in ("metal", "gold"):
+>                 for g_ in p.subs.get(cls, []):
+>                     for s_ in g_.solids():
+>                         if p.name == "main_board" and cls == "gold":
+>                             c_ = s_.bounding_box().center()
+>                             if any(abs(c_.X - ax) <= BTOL and abs(c_.Y - ay) <= BTOL for ax, ay in alands):
+>                                 continue
+>                         bb_ = s_.bounding_box()
+>                         if bb_.min.X > -4.0:
+>                             continue
+>                         d_ = min(a_.distance_to(s_) for a_ in ant)
+>                         best.append((d_, f"{p.name}__{cls}"))
+>         best.sort()
+>         print("ANTENNA free space to metal (nearest 5, its own lands excluded): " + ", ".join(f"{n_} {d_:.4f}" for d_, n_ in best[:5]) + " mm")
+>         ab = by["antenna"].subs["ceramic"][0].bounding_box()
+>         print(f"ANTENNA body X {ab.min.X:.3f} to {ab.max.X:.3f}, Y {ab.min.Y:.3f} to {ab.max.Y:.3f}, Z {ab.min.Z:.3f} to {ab.max.Z:.3f}; floor top Z {ctx['Z_FLOOR']:.3f}, "
+>               f"pocket bottom Z {ctx.get('rc_pocket_bottom')}: under the antenna {ab.min.Z - ctx.get('rc_pocket_bottom', ab.min.Z):.4f} mm of room")
+>     # motor to the zone (item 44)
+>     mot = solids["vibration_motor"]["metal"]
+>     dmz = mot.distance_to(zb)
+>     print(f"MOTOR body to the copper-free zone prism: {dmz:.4f} mm (rule {MOTOR_ZONE_MIN}, design/mech/mech-notes.md line 54)")
+>     if dmz < MOTOR_ZONE_MIN:
+>         out.append(f"MOTOR body {dmz:.4f} from the copper-free zone, under {MOTOR_ZONE_MIN}")
+>     return out
+> 
+> 
+787a989,991
+>     # 14. (v9) board parts as the board plan places them; the antenna's copper-free zone and the radio corner
+>     findings.extend(check_board_plan(thin, P, by, solids, ctx))
+>     findings.extend(check_zone(thin, P, by, solids, ctx))

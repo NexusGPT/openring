@@ -1,0 +1,360 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "parts.schema.json",
+  "type": "object",
+  "properties": {
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "bom": {
+            "$ref": "common.schema.json#/$defs/Bom"
+          },
+          "row": {
+            "type": "integer",
+            "minimum": 2,
+            "description": "1-based line in the csv file (the header is line 1)"
+          },
+          "item": {
+            "type": "string",
+            "minLength": 1
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "Split from the reference cell on comma or semicolon, each token kept as written (a range such as R14-R22 stays one token)."
+          },
+          "part_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/PartId"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Units of this line. 0 = a history line the design keeps but does not fit ('history only, NOT fitted'); it counts no part."
+          },
+          "function": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "maker": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "maker_part_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "package": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "size_mm": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "key_figures": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/Evidence"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "raw": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/RelPath"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "url": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "on_disk": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "raw",
+                "path",
+                "url",
+                "on_disk"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number"
+                  },
+                  "currency": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "raw": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "amount",
+                  "currency",
+                  "raw"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "open_action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "bom",
+          "row",
+          "item",
+          "refs",
+          "part_ids",
+          "quantity",
+          "function",
+          "maker",
+          "maker_part_number",
+          "package",
+          "size_mm",
+          "value",
+          "key_figures",
+          "evidence",
+          "sources",
+          "price",
+          "open_action",
+          "source"
+        ],
+        "additionalProperties": false,
+        "title": "PartsLine",
+        "description": "One bom.csv row. LINES = rows, PARTS = sum of quantity."
+      }
+    },
+    "totals": {
+      "type": "object",
+      "properties": {
+        "ring": {
+          "type": "object",
+          "properties": {
+            "lines": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "parts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "priced_lines": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unpriced_lines": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "lines",
+            "parts",
+            "priced_lines",
+            "unpriced_lines"
+          ],
+          "additionalProperties": false
+        },
+        "case": {
+          "type": "object",
+          "properties": {
+            "lines": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "parts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "priced_lines": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unpriced_lines": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "lines",
+            "parts",
+            "priced_lines",
+            "unpriced_lines"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "ring",
+        "case"
+      ],
+      "additionalProperties": false
+    },
+    "priced_sums": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "bom": {
+            "$ref": "common.schema.json#/$defs/Bom"
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "bom",
+          "currency",
+          "amount"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "evidence_legend": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "common.schema.json#/$defs/Evidence"
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "code",
+          "meaning",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "lines",
+    "totals",
+    "priced_sums",
+    "evidence_legend"
+  ],
+  "additionalProperties": false,
+  "title": "Parts",
+  "description": "parts.json: ring and case lines. A part id is <bom>:<ref>; one ref belongs to exactly one line of its bom."
+}

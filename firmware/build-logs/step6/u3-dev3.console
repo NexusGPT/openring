@@ -1,0 +1,354 @@
+# remote.sh run 20261113-051324-u3-dev3
+# command: west twister -T tests/audio -p native_sim -O /ws/out/u3-dev3 --inline-logs -v
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:13:24 CET
+# free on the server's /: 28 GB
+# source firmware copied to /root/ring-os/src-u-audio
+# started on the server as 20261113-051324-u3-dev3; server log /root/ring-os/logs/20261113-051324-u3-dev3.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/u3-dev3/testplan.json
+INFO    - JOBS: 32
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 native_sim/native         ring_audio.sim                                     FAILED rc=1 (native 0.288s <host/gnu>)
+INFO    - -----/ws/out/u3-dev3/native_sim_native/host_gnu/firmware/tests/audio/ring_audio.sim/handler.log-----
+ERROR   - *** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+*** Using Zephyr OS v4.4.2-9133dab6b066 ***
+Running TESTSUITE audio_cfg
+===================================================================
+START - test_dmic_config_values
+ PASS - test_dmic_config_values in 0.023 seconds
+===================================================================
+START - test_gain_zero
+ PASS - test_gain_zero in 0.033 seconds
+===================================================================
+START - test_header_clock_fields
+ PASS - test_header_clock_fields in 0.021 seconds
+===================================================================
+START - test_spec_numbers
+ PASS - test_spec_numbers in 0.021 seconds
+===================================================================
+TESTSUITE audio_cfg succeeded
+Running TESTSUITE audio_chunk
+===================================================================
+START - test_32_blocks_per_chunk
+ PASS - test_32_blocks_per_chunk in 0.000 seconds
+===================================================================
+START - test_discard_800_frames
+ PASS - test_discard_800_frames in 0.000 seconds
+===================================================================
+START - test_dropout_zero_fill
+ PASS - test_dropout_zero_fill in 0.000 seconds
+===================================================================
+START - test_fill_fields
+ PASS - test_fill_fields in 0.000 seconds
+===================================================================
+START - test_flags_each_bit
+ PASS - test_flags_each_bit in 0.000 seconds
+===================================================================
+START - test_highlight_frame_from_down_time
+ PASS - test_highlight_frame_from_down_time in 0.000 seconds
+===================================================================
+START - test_highlights_in_header
+ PASS - test_highlights_in_header in 0.000 seconds
+===================================================================
+START - test_interleave_order
+ PASS - test_interleave_order in 0.000 seconds
+===================================================================
+START - test_late_highlight_close_only
+ PASS - test_late_highlight_close_only in 0.000 seconds
+===================================================================
+START - test_partial_last_chunk
+ PASS - test_partial_last_chunk in 0.000 seconds
+===================================================================
+START - test_payload_equals_blocks
+ PASS - test_payload_equals_blocks in 0.000 seconds
+===================================================================
+START - test_start_time_is_first_kept_frame
+ PASS - test_start_time_is_first_kept_frame in 0.000 seconds
+===================================================================
+START - test_time_not_set
+ PASS - test_time_not_set in 0.000 seconds
+===================================================================
+START - test_timestamps
+ PASS - test_timestamps in 0.000 seconds
+===================================================================
+TESTSUITE audio_chunk succeeded
+Running TESTSUITE audio_motor
+===================================================================
+START - test_fifth_merged_into_fourth
+ PASS - test_fifth_merged_into_fourth in 0.000 seconds
+===================================================================
+START - test_interval_frames
+ PASS - test_interval_frames in 0.000 seconds
+===================================================================
+START - test_m1_rest_marked_in_first_chunk
+ PASS - test_m1_rest_marked_in_first_chunk in 0.000 seconds
+===================================================================
+START - test_span_open_interval
+ PASS - test_span_open_interval in 0.000 seconds
+===================================================================
+START - test_span_two_chunks
+ PASS - test_span_two_chunks in 0.000 seconds
+===================================================================
+START - test_unused_pairs_ff
+ PASS - test_unused_pairs_ff in 0.000 seconds
+===================================================================
+TESTSUITE audio_motor succeeded
+Running TESTSUITE audio_svc
+===================================================================
+START - test_b15_follows
+ PASS - test_b15_follows in 1.238 seconds
+===================================================================
+START - test_chunk_facts_from_power_chip
+ PASS - test_chunk_facts_from_power_chip in 1.031 seconds
+===================================================================
+START - test_clock_low_whenever_rail_off
+ PASS - test_clock_low_whenever_rail_off in 0.231 seconds
+===================================================================
+START - test_cut_after_no_block
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/audio/src/test_svc.c:298: audio_svc_test_cut_after_no_block: (r.last->hdr.frames not equal to 1760)
+frames 2016
+ FAIL - test_cut_after_no_block in 0.537 seconds
+===================================================================
+START - test_dropout_logged
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/audio/src/test_svc.c:103: check_one_lost_block: (svc_ev.dropouts not equal to 1)
+logged once, got 34
+ FAIL - test_dropout_logged in 1.031 seconds
+===================================================================
+START - test_dropout_on_read_error
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/audio/src/test_svc.c:103: check_one_lost_block: (svc_ev.dropouts not equal to 1)
+logged once, got 66
+ FAIL - test_dropout_on_read_error in 1.031 seconds
+===================================================================
+START - test_hfxo_before_trigger
+ PASS - test_hfxo_before_trigger in 0.032 seconds
+===================================================================
+START - test_hfxo_prepare_timeout
+ PASS - test_hfxo_prepare_timeout in 0.031 seconds
+===================================================================
+START - test_hfxo_released_after_stop
+ PASS - test_hfxo_released_after_stop in 0.231 seconds
+===================================================================
+START - test_highlight_marks_down_time
+ PASS - test_highlight_marks_down_time in 1.575 seconds
+===================================================================
+START - test_late_highlight_close_only
+ PASS - test_late_highlight_close_only in 1.430 seconds
+===================================================================
+START - test_late_thread_is_not_a_dropout
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/audio/src/test_svc.c:146: audio_svc_test_late_thread_is_not_a_dropout: (svc_ev.dropouts not equal to 0)
+late is not lost
+ FAIL - test_late_thread_is_not_a_dropout in 3.030 seconds
+===================================================================
+START - test_motor_edges_marked
+ PASS - test_motor_edges_marked in 0.575 seconds
+===================================================================
+START - test_no_block_100ms_reports
+rhw_sim ev 0 t_us 12092000 kind 14 a0 0 a1 0 a2 0 res 0 caller test_no_block_1
+rhw_sim ev 1 t_us 12092000 kind 16 a0 0 a1 1 a2 0 res 0 caller test_join
+rhw_sim ev 2 t_us 12092000 kind 30 a0 1 a1 0 a2 0 res 0 caller test_no_block_1
+rhw_sim ev 3 t_us 12092000 kind 11 a0 -1 a1 1 a2 0 res -5 caller rau
+rhw_sim ev 4 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 5 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 6 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 7 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 8 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 9 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 10 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 11 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 12 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 13 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 14 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 15 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 16 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 17 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 18 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 19 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 20 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 21 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 22 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 23 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 24 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 25 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 26 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 27 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 28 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 29 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 30 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 31 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 32 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 33 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 34 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 35 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 36 t_us 12092000 kind 11 a0 -1 a1 16 a2 0 res -5 caller rau
+rhw_sim ev 37 t_us 12093000 kind 31 a0 1 a1 0 a2 0 res 0 caller isr
+rhw_sim ev 38 t_us 12094100 kind 8 a0 16000 a1 1024 a2 2 res 0 caller test_no_block_1
+rhw_sim ev 39 t_us 12094100 kind 15 a0 0 a1 0 a2 0 res 0 caller test_no_block_1
+rhw_sim ev 40 t_us 12094100 kind 9 a0 0 a1 0 a2 0 res 0 caller test_no_block_1
+rhw_sim ev 41 t_us 12110200 kind 11 a0 0 a1 16 a2 0 res 0 caller rau
+rhw_sim ev 42 t_us 12110200 kind 12 a0 0 a1 0 a2 0 res 0 caller rau
+rhw_sim ev 43 t_us 12126300 kind 11 a0 1 a1 16 a2 0 res 0 caller rau
+rhw_sim ev 44 t_us 12126300 kind 12 a0 0 a1 0 a2 0 res 0 caller rau
+rhw_sim ev 45 t_us 12142400 kind 11 a0 2 a1 16 a2 0 res 0 caller rau
+rhw_sim ev 46 t_us 12142400 kind 20 a0 3900 a1 3000 a2 1 res 0 caller rau
+rhw_sim ev 47 t_us 12142400 kind 12 a0 0 a1 0 a2 0 res 0 caller rau
+rhw_sim ev 48 t_us 12158500 kind 11 a0 3 a1 16 a2 0 res 0 caller rau
+rhw_sim ev 49 t_us 12158500 kind 12 a0 0 a1 0 a2 0 res 0 caller rau
+rhw_sim ev 50 t_us 12174600 kind 11 a0 4 a1 16 a2 0 res 0 caller rau
+rhw_sim ev 51 t_us 12174600 kind 12 a0 0 a1 0 a2 0 res 0 caller rau
+rhw_sim ev 52 t_us 12190700 kind 11 a0 5 a1 16 a2 0 res 0 caller rau
+rhw_sim ev 53 t_us 12190700 kind 12 a0 0 a1 0 a2 0 res 0 caller rau
+rhw_sim ev 54 t_us 12206800 kind 11 a0 6 a1 16 a2 0 res 0 caller rau
+rhw_sim ev 55 t_us 12206800 kind 12 a0 0 a1 0 a2 0 res 0 caller rau
+rhw_sim ev 56 t_us 12222900 kind 11 a0 7 a1 16 a2 0 res 0 caller rau
+rhw_sim ev 57 t_us 12222900 kind 12 a0 0 a1 0 a2 0 res 0 caller rau
+rhw_sim ev 58 t_us 12239000 kind 11 a0 8 a1 16 a2 0 res 0 caller rau
+rhw_sim ev 59 t_us 12239000 kind 12 a0 0 a1 0 a2 0 res 0 caller rau
+rhw_sim ev 60 t_us 12254100 kind 11 a0 9 a1 16 a2 0 res 0 caller rau
+rhw_sim ev 61 t_us 12254100 kind 12 a0 0 a1 0 a2 0 res 0 caller rau
+rhw_sim ev 62 t_us 12270200 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 63 t_us 12286300 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 64 t_us 12302400 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 65 t_us 12318500 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 66 t_us 12334600 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 67 t_us 12350700 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 68 t_us 12366800 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 69 t_us 12382900 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 70 t_us 12399000 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 71 t_us 12415100 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 72 t_us 12431200 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 73 t_us 12447300 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 74 t_us 12463400 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+rhw_sim ev 75 t_us 12479500 kind 11 a0 -1 a1 16 a2 0 res -11 caller rau
+DBG no_block_ms 12092 last 12254
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/audio/src/test_svc.c:282: audio_svc_test_no_block_100ms_reports: (d >= 100 && d <= 101 is false)
+reported -162 ms after the last block (100 expected)
+ FAIL - test_no_block_100ms_reports in 0.424 seconds
+===================================================================
+START - test_no_read_outside_recording
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/audio/src/test_svc.c:236: audio_svc_test_no_read_outside_recording: (reads_so_far() not equal to 0)
+no read after boot, 58
+ FAIL - test_no_read_outside_recording in 0.521 seconds
+===================================================================
+START - test_put_waits_on_enobufs
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/audio/src/test_svc.c:196: audio_svc_test_put_waits_on_enobufs: (t_left(si_copy(1), 0) not equal to 8992)
+8,192 + 800: nothing lost
+ FAIL - test_put_waits_on_enobufs in 1.624 seconds
+===================================================================
+START - test_ring_of_three
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/audio/src/test_svc.c:169: audio_svc_test_ring_of_three: si_copy(i)->hdr.chunk_in_recording not equal to (uint32_t)i
+
+ FAIL - test_ring_of_three in 2.523 seconds
+===================================================================
+START - test_start_twice_refused
+ PASS - test_start_twice_refused in 0.029 seconds
+===================================================================
+START - test_stop_keeps_frames_to_mark
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/audio/src/test_svc.c:214: audio_svc_test_stop_keeps_frames_to_mark: (t_left(r.last, 6239) not equal to 47999)
+the last kept frame: raw frame 47,999
+ FAIL - test_stop_keeps_frames_to_mark in 3.030 seconds
+===================================================================
+START - test_unit_never_switches_rail
+ PASS - test_unit_never_switches_rail in 0.630 seconds
+===================================================================
+TESTSUITE audio_svc failed.
+
+------ TESTSUITE SUMMARY START ------
+
+SUITE PASS - 100.00% [audio_cfg]: pass = 4, fail = 0, skip = 0, total = 4 duration = 0.098 seconds
+ - PASS - [audio_cfg.test_dmic_config_values] duration = 0.023 seconds
+ - PASS - [audio_cfg.test_gain_zero] duration = 0.033 seconds
+ - PASS - [audio_cfg.test_header_clock_fields] duration = 0.021 seconds
+ - PASS - [audio_cfg.test_spec_numbers] duration = 0.021 seconds
+
+SUITE PASS - 100.00% [audio_chunk]: pass = 14, fail = 0, skip = 0, total = 14 duration = 0.000 seconds
+ - PASS - [audio_chunk.test_32_blocks_per_chunk] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_discard_800_frames] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_dropout_zero_fill] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_fill_fields] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_flags_each_bit] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_highlight_frame_from_down_time] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_highlights_in_header] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_interleave_order] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_late_highlight_close_only] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_partial_last_chunk] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_payload_equals_blocks] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_start_time_is_first_kept_frame] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_time_not_set] duration = 0.000 seconds
+ - PASS - [audio_chunk.test_timestamps] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [audio_motor]: pass = 6, fail = 0, skip = 0, total = 6 duration = 0.000 seconds
+ - PASS - [audio_motor.test_fifth_merged_into_fourth] duration = 0.000 seconds
+ - PASS - [audio_motor.test_interval_frames] duration = 0.000 seconds
+ - PASS - [audio_motor.test_m1_rest_marked_in_first_chunk] duration = 0.000 seconds
+ - PASS - [audio_motor.test_span_open_interval] duration = 0.000 seconds
+ - PASS - [audio_motor.test_span_two_chunks] duration = 0.000 seconds
+ - PASS - [audio_motor.test_unused_pairs_ff] duration = 0.000 seconds
+
+SUITE FAIL -  55.00% [audio_svc]: pass = 11, fail = 9, skip = 0, total = 20 duration = 20.784 seconds
+ - PASS - [audio_svc.test_b15_follows] duration = 1.238 seconds
+ - PASS - [audio_svc.test_chunk_facts_from_power_chip] duration = 1.031 seconds
+ - PASS - [audio_svc.test_clock_low_whenever_rail_off] duration = 0.231 seconds
+ - FAIL - [audio_svc.test_cut_after_no_block] duration = 0.537 seconds
+ - FAIL - [audio_svc.test_dropout_logged] duration = 1.031 seconds
+ - FAIL - [audio_svc.test_dropout_on_read_error] duration = 1.031 seconds
+ - PASS - [audio_svc.test_hfxo_before_trigger] duration = 0.032 seconds
+ - PASS - [audio_svc.test_hfxo_prepare_timeout] duration = 0.031 seconds
+ - PASS - [audio_svc.test_hfxo_released_after_stop] duration = 0.231 seconds
+ - PASS - [audio_svc.test_highlight_marks_down_time] duration = 1.575 seconds
+ - PASS - [audio_svc.test_late_highlight_close_only] duration = 1.430 seconds
+ - FAIL - [audio_svc.test_late_thread_is_not_a_dropout] duration = 3.030 seconds
+ - PASS - [audio_svc.test_motor_edges_marked] duration = 0.575 seconds
+ - FAIL - [audio_svc.test_no_block_100ms_reports] duration = 0.424 seconds
+ - FAIL - [audio_svc.test_no_read_outside_recording] duration = 0.521 seconds
+ - FAIL - [audio_svc.test_put_waits_on_enobufs] duration = 1.624 seconds
+ - FAIL - [audio_svc.test_ring_of_three] duration = 2.523 seconds
+ - PASS - [audio_svc.test_start_twice_refused] duration = 0.029 seconds
+ - FAIL - [audio_svc.test_stop_keeps_frames_to_mark] duration = 3.030 seconds
+ - PASS - [audio_svc.test_unit_never_switches_rail] duration = 0.630 seconds
+
+------ TESTSUITE SUMMARY END ------
+
+===================================================================
+RunID: 52967c26255c4d69fff0282e37673ede
+PROJECT EXECUTION FAILED
+
+INFO    - -----/ws/out/u3-dev3/native_sim_native/host_gnu/firmware/tests/audio/ring_audio.sim/handler.log-----
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 24.54 seconds.
+INFO    - 35 of 44 executed test cases passed (79.55%), 9 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/u3-dev3/twister.json
+INFO    - Writing xunit report /ws/out/u3-dev3/twister.xml...
+INFO    - Writing xunit report /ws/out/u3-dev3/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_audio.sim on native_sim/native failed (rc=1)
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_audio.sim
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/audio -T ring_audio.sim
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+# finished (Mac clock): 2026-11-13 05:14:07 CET
+# remote exit code: 1
+# local log: firmware/build-logs/20261113-051324-u3-dev3.log

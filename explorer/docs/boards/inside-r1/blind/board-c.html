@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Inside · layout c (blind) · The ring above, the drawing below</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #fff; color: #1d1d1b; }
+  body { width: 1440px; padding: 18px 16px 16px; font-family: Geist, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  .mono { font-family: "Geist Mono", ui-monospace, Menlo, monospace; }
+  .serif { font-family: "Libre Caslon Text", Georgia, "Times New Roman", serif; }
+
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .badge { width: 34px; height: 34px; border: 1.5px solid #1d1d1b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font: 600 17px "Geist Mono", ui-monospace, Menlo, monospace; }
+  header h1 { font: 400 24px "Libre Caslon Text", Georgia, serif; letter-spacing: -0.2px; }
+  header .meta { margin-left: auto; font: 500 10.5px "Geist Mono", ui-monospace, Menlo, monospace; letter-spacing: 0.8px; text-transform: uppercase; color: #77756f; }
+
+  .frames { display: flex; gap: 16px; }
+  .fwrap { width: 696px; }
+  .ftitle { font: 500 11px "Geist Mono", ui-monospace, Menlo, monospace; letter-spacing: 0.9px; text-transform: uppercase; color: #4a4945; margin-bottom: 6px; display: flex; gap: 8px; }
+  .ftitle b { color: #1d1d1b; }
+  .frame { position: relative; width: 696px; height: 435px; border: 1px solid #c9c7c1; background: #fff; }
+
+  .z { position: absolute; border: 1.2px dashed #9a9890; padding: 4px 6px; overflow: hidden; background: rgba(255,255,255,0.0); }
+  .z .n { font: 600 9.5px "Geist Mono", ui-monospace, Menlo, monospace; letter-spacing: 0.7px; text-transform: uppercase; color: #1d1d1b; line-height: 1.25; }
+  .z .d { font-size: 10px; line-height: 1.3; color: #55534e; margin-top: 2px; }
+  .z.outer { border-color: #b9b7b0; }
+  .z.outer > .n { color: #77756f; }
+  .z.key { border: 1.6px dashed #1d1d1b; }
+  .z.small { padding: 2px 5px; }
+  .z.small .n { font-size: 8.8px; }
+  .z.small .d { font-size: 9px; margin-top: 1px; }
+  .rule { position: absolute; border-top: 1px solid #c9c7c1; }
+  .rulelabel { position: absolute; font: 600 9px "Geist Mono", ui-monospace, Menlo, monospace; letter-spacing: 0.8px; text-transform: uppercase; color: #1d1d1b; background: #fff; padding-right: 6px; }
+
+  .under { margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .under .idea { font: 400 15px/1.45 "Libre Caslon Text", Georgia, serif; }
+  .under .idea b { font-weight: 700; }
+  .under .worse { margin-top: 8px; font-size: 13px; line-height: 1.45; }
+  .under .worse b, .under .amend b { font: 600 10.5px "Geist Mono", ui-monospace, Menlo, monospace; letter-spacing: 0.7px; text-transform: uppercase; }
+  .under .amend { margin-top: 6px; font-size: 13px; line-height: 1.45; color: #33322e; }
+  table.links { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  table.links th { text-align: left; font: 600 9.5px "Geist Mono", ui-monospace, Menlo, monospace; letter-spacing: 0.7px; text-transform: uppercase; color: #77756f; border-bottom: 1px solid #c9c7c1; padding: 3px 6px 3px 0; }
+  table.links td { padding: 3px 6px 3px 0; border-bottom: 1px solid #ecebe7; vertical-align: top; line-height: 1.3; }
+  table.links td:first-child { font-family: "Geist Mono", ui-monospace, Menlo, monospace; font-size: 10.5px; white-space: nowrap; color: #33322e; }
+  .legend { margin-top: 8px; font: 500 9.5px "Geist Mono", ui-monospace, Menlo, monospace; letter-spacing: 0.6px; text-transform: uppercase; color: #8a8882; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge" title="board id">c</div>
+  <h1>Inside &middot; The ring above, the drawing below</h1>
+  <div class="meta">Layout round 1 &middot; drawn blind &middot; labelled boxes only, no data &middot; screen 1440 &times; 900</div>
+</header>
+
+<div class="frames">
+
+  <!-- FRAME 1: ring closed, nothing selected -->
+  <div class="fwrap">
+    <div class="ftitle"><b>Frame 1</b> Arriving: the ring closed, no part selected</div>
+    <div class="frame">
+      <div class="z" style="left:1%;top:0.9%;width:98%;height:5.2%"><div class="n">Top bar <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:Geist,-apple-system,Arial,sans-serif;color:#55534e">&nbsp;the 9 screen names, &ldquo;Inside&rdquo; marked</span></div></div>
+
+      <div class="z outer" style="left:1%;top:7.5%;width:58%;height:91.5%"><div class="n">3D stage &middot; three fifths</div><div class="d">Drag turns &middot; scroll zooms &middot; click on empty space clears</div></div>
+      <div class="z small" style="left:44%;top:10%;width:14%;height:9.5%"><div class="n">Reset view</div><div class="d">back to the start angle</div></div>
+      <div class="z key" style="left:15%;top:34%;width:24%;height:36%"><div class="n">The ring, closed</div><div class="d">the whole object, slowly lit; nothing selected yet</div></div>
+      <div class="z small" style="left:41.5%;top:21.5%;width:16.5%;height:10.5%"><div class="n">Name tag</div><div class="d">the part&rsquo;s name, while pointing at it</div></div>
+      <div class="z key" style="left:21.5%;top:83%;width:18%;height:13%"><div class="n">Open the ring</div><div class="d">one button; layers move apart, animated</div></div>
+      <div class="z small" style="left:2.5%;top:84%;width:17.5%;height:12%"><div class="n">Not drawn in 3D</div><div class="d">one line: small board parts (resistors, capacitors) are in Parts &rarr;</div></div>
+
+      <div class="z" style="left:61%;top:9%;width:37.5%;height:12%"><div class="n">Title + count</div><div class="d">&ldquo;Inside&rdquo; in serif; one plain sentence on what the ring holds; the count of parts drawn in 3D, in 5 layers</div></div>
+      <div class="z" style="left:61%;top:23%;width:37.5%;height:8%"><div class="n">Find a part</div><div class="d">type a name; the list below narrows; Enter selects</div></div>
+      <div class="z" style="left:61%;top:33%;width:37.5%;height:51%"><div class="n">Layers, outside to inside</div><div class="d">click a layer: only it shows &middot; click it again: all return &middot; each opens to its part names; a name selects the part</div></div>
+      <div class="z small" style="left:63%;top:47%;width:33.5%;height:6.2%"><div class="n">Glass</div></div>
+      <div class="z small" style="left:63%;top:54.5%;width:33.5%;height:6.2%"><div class="n">Screen</div></div>
+      <div class="z small" style="left:63%;top:62%;width:33.5%;height:6.2%"><div class="n">Board</div></div>
+      <div class="z small" style="left:63%;top:69.5%;width:33.5%;height:6.2%"><div class="n">Band <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:Geist,-apple-system,Arial,sans-serif">&nbsp;its parts open outward</span></div></div>
+      <div class="z small" style="left:63%;top:77%;width:33.5%;height:6.2%"><div class="n">Body</div></div>
+      <div class="z" style="left:61%;top:86.5%;width:37.5%;height:10%"><div class="n">For a manufacturer &rarr;</div><div class="d">opens the Files screen, group &ldquo;For a manufacturer&rdquo;</div></div>
+    </div>
+  </div>
+
+  <!-- FRAME 2: one made-to-drawing part selected -->
+  <div class="fwrap">
+    <div class="ftitle"><b>Frame 2</b> One made-to-drawing part selected, ring open</div>
+    <div class="frame">
+      <div class="z" style="left:1%;top:0.9%;width:98%;height:5.2%"><div class="n">Top bar <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:Geist,-apple-system,Arial,sans-serif;color:#55534e">&nbsp;the 9 screen names, &ldquo;Inside&rdquo; marked</span></div></div>
+
+      <div class="z outer" style="left:1%;top:7.5%;width:58%;height:91.5%"></div>
+      <div class="z small" style="left:2.5%;top:10%;width:24%;height:8%"><div class="n">Selected</div><div class="d">layer &rsaquo; part name &middot; &times; clears</div></div>
+      <div class="z small" style="left:42%;top:10%;width:16%;height:8.5%"><div class="n">Close the ring</div><div class="d">same button, closes</div></div>
+      <div class="z" style="left:2.5%;top:20%;width:55.5%;height:37%"><div class="n">3D stage &middot; the ring, open</div><div class="d">the view eases to the part; it is lit, the others faded</div></div>
+      <div class="z key" style="left:25%;top:30%;width:13%;height:20%"><div class="n">The part</div><div class="d">highlighted in place</div></div>
+
+      <div class="z key" style="left:2.5%;top:59%;width:55.5%;height:38%"><div class="n">Drawing strip &middot; slides up on select</div><div class="d">made-to-drawing parts only: its flat views with the main sizes in mm</div></div>
+      <div class="z small" style="left:4%;top:70%;width:12.5%;height:24.5%"><div class="n">Front view</div><div class="d">with sizes</div></div>
+      <div class="z small" style="left:17.5%;top:70%;width:12.5%;height:24.5%"><div class="n">Side view</div><div class="d">with sizes</div></div>
+      <div class="z small" style="left:31%;top:70%;width:12.5%;height:24.5%"><div class="n">Top view</div><div class="d">with sizes</div></div>
+      <div class="z small" style="left:45%;top:70%;width:11.5%;height:11.5%"><div class="n">Ring size</div><div class="d">switch, body only</div></div>
+      <div class="z small" style="left:45%;top:83%;width:11.5%;height:11.5%"><div class="n">Full drawing &nearr;</div><div class="d">the PDF, new tab</div></div>
+
+      <div class="z small" style="left:61%;top:9%;width:37.5%;height:5.5%"><div class="n">&larr; All layers <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:Geist,-apple-system,Arial,sans-serif;color:#55534e">&nbsp;back to the list, ring stays open</span></div></div>
+      <div class="z" style="left:61%;top:16%;width:37.5%;height:10.5%"><div class="n">Part name + kind</div><div class="d">name in serif &middot; &ldquo;Made to drawing&rdquo; (a bought part shows its maker and order code here)</div></div>
+      <div class="z" style="left:61%;top:28%;width:37.5%;height:11%"><div class="n">In plain words</div><div class="d">what it is &middot; why it is there, two or three lines</div></div>
+
+      <div class="rule" style="left:61%;top:43%;width:37.5%"></div>
+      <div class="rulelabel" style="left:61%;top:41.2%">One step below &middot; for the maker</div>
+
+      <div class="z" style="left:61%;top:46%;width:37.5%;height:13.5%"><div class="n">Specification</div><div class="d">material &middot; finish &middot; sizes and tolerances &middot; ring sizes &middot; how many per ring</div></div>
+      <div class="z" style="left:61%;top:61.5%;width:37.5%;height:20%"><div class="n">Files to take</div><div class="d">one click each; the body asks its ring size first</div></div>
+      <div class="z small" style="left:62.5%;top:70.5%;width:8.3%;height:9%"><div class="n">Drawing</div><div class="d">PDF</div></div>
+      <div class="z small" style="left:71.6%;top:70.5%;width:8.3%;height:9%"><div class="n">Spec</div><div class="d">1 page</div></div>
+      <div class="z small" style="left:80.7%;top:70.5%;width:8.3%;height:9%"><div class="n">CAD</div><div class="d">STEP</div></div>
+      <div class="z small" style="left:89.8%;top:70.5%;width:8.2%;height:9%"><div class="n">3D print</div><div class="d">STL</div></div>
+      <div class="z" style="left:61%;top:83.5%;width:37.5%;height:13%"><div class="n">Links out</div></div>
+      <div class="z small" style="left:62.5%;top:88.5%;width:11.2%;height:6.5%"><div class="n">Source &nearr;</div></div>
+      <div class="z small" style="left:74.4%;top:88.5%;width:11.6%;height:6.5%"><div class="n">Parts line &rarr;</div></div>
+      <div class="z small" style="left:86.6%;top:88.5%;width:11.4%;height:6.5%"><div class="n">Maker files &rarr;</div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="under">
+  <div>
+    <p class="idea"><b>Idea:</b> selecting a made-to-drawing part slides its measured drawing up under the 3D ring, so the owner sees where the part sits and the maker sees its sizes and takes its files, in one look on one screen; <b>axis:</b> what the stage shows when a part is selected (the part in the ring and its drawing together, not the ring alone).</p>
+    <p class="worse"><b>Worse at:</b> while a made part is selected the 3D ring loses about two fifths of its height; the stage changes shape between made and bought parts; every made part needs flat drawing views exported as pictures.</p>
+    <p class="amend"><b>The one change to the shared layout:</b> the left stage holds a drawing strip under the ring when a made part is selected. Cost: this screen is the only one whose 3D area splits in two.</p>
+    <p class="legend">Dashed box = a zone &middot; heavy dashed = the zones that carry the idea &middot; no colour, no data at this round</p>
+  </div>
+  <div>
+    <table class="links">
+      <tr><th>Journey step / link</th><th>Control on the board</th></tr>
+      <tr><td>In &middot; Home tile</td><td>arrives in frame 1</td></tr>
+      <tr><td>In &middot; Parts &ldquo;show in the ring&rdquo;</td><td>arrives in frame 2 with that part selected (address carries the part)</td></tr>
+      <tr><td>In &middot; Electronics part</td><td>arrives in frame 2 with that part selected</td></tr>
+      <tr><td>J1.2 open layer by layer</td><td>&ldquo;Open the ring&rdquo; button, stage bottom &middot; layer entries, panel</td></tr>
+      <tr><td>J1.3 click a part, read card</td><td>click in the stage or a name under its layer &rarr; frame 2 panel</td></tr>
+      <tr><td>J1.4 open the source</td><td>&ldquo;Source &nearr;&rdquo;, panel bottom left, new tab</td></tr>
+      <tr><td>Out &middot; Parts at its line</td><td>&ldquo;Parts line &rarr;&rdquo;, panel bottom middle</td></tr>
+      <tr><td>Out &middot; Files &ldquo;For a manufacturer&rdquo;</td><td>&ldquo;Maker files &rarr;&rdquo; (frame 2) &middot; &ldquo;For a manufacturer &rarr;&rdquo; (frame 1)</td></tr>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>

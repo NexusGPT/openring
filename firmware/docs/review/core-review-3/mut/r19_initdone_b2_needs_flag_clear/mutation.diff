@@ -1,0 +1,7 @@
+file src/core.c
+--- old
+if (c->facts.batt == RC_BATT_B2) {
+			ev = RC_EV_BATT_B2;
++++ new
+if (c->facts.batt == RC_BATT_B2 && !c->facts.open_flag) {
+			ev = RC_EV_BATT_B2;

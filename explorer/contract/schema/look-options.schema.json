@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "look-options.schema.json",
+  "type": "object",
+  "properties": {
+    "picked": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sentence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "worse_at": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "glb": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "$ref": "common.schema.json#/$defs/RelPath"
+                  },
+                  "size_bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "bounds_mm": {
+                    "$ref": "common.schema.json#/$defs/Vec3"
+                  }
+                },
+                "required": [
+                  "file",
+                  "size_bytes",
+                  "bounds_mm"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rejected": {
+            "type": "boolean"
+          },
+          "in_design": {
+            "type": "boolean"
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "sentence",
+          "worse_at",
+          "glb",
+          "rejected",
+          "in_design",
+          "source"
+        ],
+        "additionalProperties": false
+      },
+      "description": "Rejected options are listed with rejected=true; the app never shows them as current."
+    },
+    "finishes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "colour": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "roughness": {
+            "type": "number"
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "name",
+          "colour",
+          "roughness",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "picked",
+    "options",
+    "finishes"
+  ],
+  "additionalProperties": false,
+  "title": "LookOptions"
+}

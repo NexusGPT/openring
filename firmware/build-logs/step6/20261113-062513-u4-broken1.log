@@ -1,0 +1,1389 @@
+# remote.sh run 20261113-062513-u4-broken1
+# command: bash tests/xfer/broken_run.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 06:25:13 CET
+# free on the server's /: 48 GB
+# source firmware copied to /root/ring-os/src-u-xfer
+# started on the server as 20261113-062513-u4-broken1; server log /root/ring-os/logs/20261113-062513-u4-broken1.log
+##### broken copy: tag_not_echoed
+diff -u -r /ws/firmware/modules/ring_xfer/src/rxf_proto.c /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_tag_not_echoed/src/rxf_proto.c
+--- /ws/firmware/modules/ring_xfer/src/rxf_proto.c	2026-11-13 05:05:52.000000000 +0000
++++ /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_tag_not_echoed/src/rxf_proto.c	2026-11-13 05:25:25.034542180 +0000
+@@ -51,7 +51,7 @@
+ 	put16(out + RREC_MSG_OFF_MAGIC, RREC_MSG_MAGIC);
+ 	out[RREC_MSG_OFF_OPCODE] = opcode;
+ 	out[RREC_MSG_OFF_STATUS] = (uint8_t)st;
+-	put32(out + RREC_MSG_OFF_TAG, tag);
++	put32(out + RREC_MSG_OFF_TAG, 0u);
+ 	put32(out + RREC_MSG_OFF_LENGTH, length);
+ 	put32(out + RREC_MSG_OFF_CRC, crc);
+ }
+INFO    - 1/1 native_sim/native         ring_xfer.sim                                      FAILED rc=1 (native 0.656s <host/gnu>)
+ PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+ PASS - test_one_vendor_interface_only in 0.000 seconds
+ PASS - test_abort_stops_stream in 0.000 seconds
+ PASS - test_any_order in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+ FAIL - test_bad_crc in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+ FAIL - test_bad_magic in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:743: xfer_proto_test_busy_while_running: (xt_le(nested_resp + 4, 4) not equal to 0x5151u)
+ FAIL - test_busy_while_running in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+ FAIL - test_confirm_delete_args in 0.000 seconds
+ PASS - test_crc_zero_for_empty in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+ FAIL - test_factory_not_allowed in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+ FAIL - test_fw_args in 0.000 seconds
+ PASS - test_get_battery_layout in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+ FAIL - test_get_info_layout in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+ FAIL - test_get_log_args in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:56: xfer_proto_test_header_bytes: cap.buf not equal to want_confirm
+ FAIL - test_header_bytes in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+ FAIL - test_list_args in 0.000 seconds
+ PASS - test_read_range_256 in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+ FAIL - test_read_range_args in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+ FAIL - test_read_range_failures in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:388: xfer_proto_test_read_range_stream: cap_tag() not equal to 0x0BADF00Du
+ FAIL - test_read_range_stream in 0.000 seconds
+ PASS - test_reboot_after_ok in 0.000 seconds
+ PASS - test_reference_crc_check_value in 0.000 seconds
+ PASS - test_response_length_exact in 0.000 seconds
+ PASS - test_set_time_calls_clock in 0.000 seconds
+ PASS - test_silent_when_not_allowed in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:107: xfer_proto_test_tag_echoed: (cap_tag() not equal to tags[t])
+ FAIL - test_tag_echoed in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:256: xfer_proto_test_unknown_opcodes: cap_tag() not equal to 0x77000000u + op
+ FAIL - test_unknown_opcodes in 0.000 seconds
+TESTSUITE xfer_proto failed.
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+ FAIL - test_case_digest_matches_close in 0.011 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+ FAIL - test_confirm_then_delete in 0.013 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+ FAIL - test_get_info_from_store in 0.012 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+ FAIL - test_get_log_records in 0.057 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+ FAIL - test_list_entries in 0.013 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+ FAIL - test_read_range_bytes_equal_disk in 0.015 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+ FAIL - test_read_range_deleted_not_found in 0.011 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+ FAIL - test_resume_from_any_chunk in 0.012 seconds
+twister exit code on the broken copy tag_not_echoed, native_sim: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-tag_not_echoed-native_sim.log)
+tag_not_echoed on native_sim: the named case failed but so did other cases that are not on the list: xfer_proto.test_bad_crc xfer_proto.test_bad_magic xfer_proto.test_busy_while_running xfer_proto.test_confirm_delete_args xfer_proto.test_factory_not_allowed xfer_proto.test_fw_args xfer_proto.test_get_info_layout xfer_proto.test_get_log_args xfer_proto.test_header_bytes xfer_proto.test_list_args xfer_proto.test_read_range_args xfer_proto.test_read_range_failures xfer_proto.test_read_range_stream xfer_proto.test_unknown_opcodes xfer_store.test_case_digest_matches_close xfer_store.test_confirm_then_delete xfer_store.test_get_info_from_store xfer_store.test_get_log_records xfer_store.test_list_entries xfer_store.test_read_range_bytes_equal_disk xfer_store.test_read_range_deleted_not_found xfer_store.test_resume_from_any_chunk xfer_store.test_set_time_and_factory_over_usb xfer_svc.test_bad_magic_and_resync xfer_svc.test_busy_over_transport xfer_svc.test_request_in_pieces
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_xfer.sim                                FAILED rc=1 (native 0.409s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_one_vendor_interface_only in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_abort_stops_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_any_order in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+d_00: @00:00:00.000093   FAIL - test_bad_crc in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+d_00: @00:00:00.000093   FAIL - test_bad_magic in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:743: xfer_proto_test_busy_while_running: (xt_le(nested_resp + 4, 4) not equal to 0x5151u)
+d_00: @00:00:00.000093   FAIL - test_busy_while_running in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+d_00: @00:00:00.000093   FAIL - test_confirm_delete_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_crc_zero_for_empty in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+d_00: @00:00:00.000093   FAIL - test_factory_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+d_00: @00:00:00.000093   FAIL - test_fw_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_battery_layout in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+d_00: @00:00:00.000093   FAIL - test_get_info_layout in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+d_00: @00:00:00.000093   FAIL - test_get_log_args in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:56: xfer_proto_test_header_bytes: cap.buf not equal to want_confirm
+d_00: @00:00:00.000093   FAIL - test_header_bytes in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+d_00: @00:00:00.000093   FAIL - test_list_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_256 in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+d_00: @00:00:00.000093   FAIL - test_read_range_args in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:31: expect_error_only: cap_tag() not equal to tag
+d_00: @00:00:00.000093   FAIL - test_read_range_failures in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:388: xfer_proto_test_read_range_stream: cap_tag() not equal to 0x0BADF00Du
+d_00: @00:00:00.000093   FAIL - test_read_range_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reboot_after_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reference_crc_check_value in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_response_length_exact in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_set_time_calls_clock in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_silent_when_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:107: xfer_proto_test_tag_echoed: (cap_tag() not equal to tags[t])
+d_00: @00:00:00.000093   FAIL - test_tag_echoed in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:256: xfer_proto_test_unknown_opcodes: cap_tag() not equal to 0x77000000u + op
+d_00: @00:00:00.000093   FAIL - test_unknown_opcodes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE xfer_proto failed.
+d_00: @00:00:00.010893      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+d_00: @00:00:00.010893   FAIL - test_case_digest_matches_close in 0.011 seconds
+d_00: @00:00:00.023893      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+d_00: @00:00:00.023893   FAIL - test_confirm_then_delete in 0.013 seconds
+d_00: @00:00:00.035793      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+d_00: @00:00:00.035793   FAIL - test_get_info_from_store in 0.012 seconds
+d_00: @00:00:00.092293      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+d_00: @00:00:00.092293   FAIL - test_get_log_records in 0.057 seconds
+d_00: @00:00:00.105293      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+d_00: @00:00:00.105293   FAIL - test_list_entries in 0.013 seconds
+d_00: @00:00:00.120293      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+d_00: @00:00:00.120293   FAIL - test_read_range_bytes_equal_disk in 0.015 seconds
+d_00: @00:00:00.131093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+d_00: @00:00:00.131093   FAIL - test_read_range_deleted_not_found in 0.011 seconds
+d_00: @00:00:00.142993      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:76: xfer: (xt_le(big + 4, 4) not equal to tag)
+d_00: @00:00:00.142993   FAIL - test_resume_from_any_chunk in 0.012 seconds
+twister exit code on the broken copy tag_not_echoed, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-tag_not_echoed-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+tag_not_echoed on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed but so did other cases that are not on the list: xfer_proto.test_bad_crc xfer_proto.test_bad_magic xfer_proto.test_busy_while_running xfer_proto.test_confirm_delete_args xfer_proto.test_factory_not_allowed xfer_proto.test_fw_args xfer_proto.test_get_info_layout xfer_proto.test_get_log_args xfer_proto.test_header_bytes xfer_proto.test_list_args xfer_proto.test_read_range_args xfer_proto.test_read_range_failures xfer_proto.test_read_range_stream xfer_proto.test_unknown_opcodes xfer_store.test_case_digest_matches_close xfer_store.test_confirm_then_delete xfer_store.test_get_info_from_store xfer_store.test_get_log_records xfer_store.test_list_entries xfer_store.test_read_range_bytes_equal_disk xfer_store.test_read_range_deleted_not_found xfer_store.test_resume_from_any_chunk xfer_store.test_set_time_and_factory_over_usb xfer_svc.test_bad_magic_and_resync xfer_svc.test_busy_over_transport xfer_svc.test_request_in_pieces
+##### broken copy: crc_on_empty
+diff -u -r /ws/firmware/modules/ring_xfer/src/rxf_proto.c /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_crc_on_empty/src/rxf_proto.c
+--- /ws/firmware/modules/ring_xfer/src/rxf_proto.c	2026-11-13 05:05:52.000000000 +0000
++++ /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_crc_on_empty/src/rxf_proto.c	2026-11-13 05:26:04.799689611 +0000
+@@ -154,7 +154,7 @@
+ 		return outcome_of(rc, c);
+ 	}
+ 	res->length = len;
+-	rxf_proto_put_header(c->stage, h->opcode, st, h->tag, len, rxf_proto_payload_crc(c->stage + RREC_MSG_HEADER_BYTES, len));
++	rxf_proto_put_header(c->stage, h->opcode, st, h->tag, len, len == 0u ? 0xFFFFFFFFu : rxf_proto_payload_crc(c->stage + RREC_MSG_HEADER_BYTES, len));
+ 	rc = emit(user, c->stage, RREC_MSG_HEADER_BYTES + len, true);
+ 	return outcome_of(rc, c);
+ }
+INFO    - 1/1 native_sim/native         ring_xfer.sim                                      FAILED rc=1 (native 0.847s <host/gnu>)
+ PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+ PASS - test_one_vendor_interface_only in 0.000 seconds
+ PASS - test_abort_stops_stream in 0.000 seconds
+ PASS - test_any_order in 0.000 seconds
+ PASS - test_bad_crc in 0.000 seconds
+ PASS - test_bad_magic in 0.000 seconds
+ PASS - test_busy_while_running in 0.000 seconds
+ PASS - test_confirm_delete_args in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:127: xfer_proto_test_crc_zero_for_empty: (cap_crc() not equal to 0u)
+ FAIL - test_crc_zero_for_empty in 0.000 seconds
+ PASS - test_factory_not_allowed in 0.000 seconds
+ PASS - test_fw_args in 0.000 seconds
+ PASS - test_get_battery_layout in 0.000 seconds
+ PASS - test_get_info_layout in 0.000 seconds
+ PASS - test_get_log_args in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:56: xfer_proto_test_header_bytes: cap.buf not equal to want_confirm
+ FAIL - test_header_bytes in 0.000 seconds
+ PASS - test_list_args in 0.000 seconds
+ PASS - test_read_range_256 in 0.000 seconds
+ PASS - test_read_range_args in 0.000 seconds
+ PASS - test_read_range_failures in 0.000 seconds
+ PASS - test_read_range_stream in 0.000 seconds
+ PASS - test_reboot_after_ok in 0.000 seconds
+ PASS - test_reference_crc_check_value in 0.000 seconds
+ PASS - test_response_length_exact in 0.000 seconds
+ PASS - test_set_time_calls_clock in 0.000 seconds
+ PASS - test_silent_when_not_allowed in 0.000 seconds
+ PASS - test_tag_echoed in 0.000 seconds
+ PASS - test_unknown_opcodes in 0.000 seconds
+TESTSUITE xfer_proto failed.
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:78: xfer: (xt_le(big + 12, 4) not equal to big_n == 16u ? 0u : xt_crc(0, big + 16, big_n - 16u))
+ FAIL - test_case_digest_matches_close in 0.012 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:78: xfer: (xt_le(big + 12, 4) not equal to big_n == 16u ? 0u : xt_crc(0, big + 16, big_n - 16u))
+ FAIL - test_confirm_then_delete in 0.018 seconds
+ PASS - test_get_info_from_store in 0.012 seconds
+ PASS - test_get_log_records in 0.059 seconds
+ PASS - test_list_entries in 0.019 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:78: xfer: (xt_le(big + 12, 4) not equal to big_n == 16u ? 0u : xt_crc(0, big + 16, big_n - 16u))
+ FAIL - test_read_range_bytes_equal_disk in 0.018 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:78: xfer: (xt_le(big + 12, 4) not equal to big_n == 16u ? 0u : xt_crc(0, big + 16, big_n - 16u))
+ FAIL - test_read_range_deleted_not_found in 0.013 seconds
+ PASS - test_resume_from_any_chunk in 0.020 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:78: xfer: (xt_le(big + 12, 4) not equal to big_n == 16u ? 0u : xt_crc(0, big + 16, big_n - 16u))
+ FAIL - test_set_time_and_factory_over_usb in 0.007 seconds
+TESTSUITE xfer_store failed.
+ PASS - test_bad_magic_and_resync in 0.476 seconds
+ PASS - test_busy_over_transport in 0.189 seconds
+ PASS - test_configured_callbacks in 0.016 seconds
+ PASS - test_finish_and_abort in 0.299 seconds
+ PASS - test_no_zero_length_packet in 0.014 seconds
+ PASS - test_read_range_over_transport in 0.010 seconds
+ PASS - test_reboot_after_response in 2.114 seconds
+ PASS - test_request_in_pieces in 0.065 seconds
+ PASS - test_silent_when_not_allowed in 0.042 seconds
+ PASS - test_stack_follows_vbus in 0.019 seconds
+ PASS - test_start_checks_backend in 0.010 seconds
+SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+ - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+twister exit code on the broken copy crc_on_empty, native_sim: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-crc_on_empty-native_sim.log)
+crc_on_empty on native_sim: the named case failed but so did other cases that are not on the list: xfer_proto.test_header_bytes xfer_store.test_case_digest_matches_close xfer_store.test_confirm_then_delete xfer_store.test_read_range_bytes_equal_disk xfer_store.test_read_range_deleted_not_found xfer_store.test_set_time_and_factory_over_usb
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_xfer.sim                                FAILED rc=1 (native 0.377s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_one_vendor_interface_only in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_abort_stops_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_any_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_crc in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_magic in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_busy_while_running in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_confirm_delete_args in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:127: xfer_proto_test_crc_zero_for_empty: (cap_crc() not equal to 0u)
+d_00: @00:00:00.000093   FAIL - test_crc_zero_for_empty in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fw_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_battery_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_info_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_log_args in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:56: xfer_proto_test_header_bytes: cap.buf not equal to want_confirm
+d_00: @00:00:00.000093   FAIL - test_header_bytes in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_list_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_256 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_failures in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reboot_after_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reference_crc_check_value in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_response_length_exact in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_set_time_calls_clock in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_silent_when_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_tag_echoed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_unknown_opcodes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE xfer_proto failed.
+d_00: @00:00:00.011993      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:78: xfer: (xt_le(big + 12, 4) not equal to big_n == 16u ? 0u : xt_crc(0, big + 16, big_n - 16u))
+d_00: @00:00:00.011993   FAIL - test_case_digest_matches_close in 0.012 seconds
+d_00: @00:00:00.029393      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:78: xfer: (xt_le(big + 12, 4) not equal to big_n == 16u ? 0u : xt_crc(0, big + 16, big_n - 16u))
+d_00: @00:00:00.029393   FAIL - test_confirm_then_delete in 0.018 seconds
+d_00: @00:00:00.041293   PASS - test_get_info_from_store in 0.012 seconds
+d_00: @00:00:00.099993   PASS - test_get_log_records in 0.059 seconds
+d_00: @00:00:00.118493   PASS - test_list_entries in 0.019 seconds
+d_00: @00:00:00.135693      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:78: xfer: (xt_le(big + 12, 4) not equal to big_n == 16u ? 0u : xt_crc(0, big + 16, big_n - 16u))
+d_00: @00:00:00.135693   FAIL - test_read_range_bytes_equal_disk in 0.018 seconds
+d_00: @00:00:00.148693      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:78: xfer: (xt_le(big + 12, 4) not equal to big_n == 16u ? 0u : xt_crc(0, big + 16, big_n - 16u))
+d_00: @00:00:00.148693   FAIL - test_read_range_deleted_not_found in 0.013 seconds
+d_00: @00:00:00.168293   PASS - test_resume_from_any_chunk in 0.020 seconds
+d_00: @00:00:00.174693      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:78: xfer: (xt_le(big + 12, 4) not equal to big_n == 16u ? 0u : xt_crc(0, big + 16, big_n - 16u))
+d_00: @00:00:00.174693   FAIL - test_set_time_and_factory_over_usb in 0.007 seconds
+d_00: @00:00:00.174693  TESTSUITE xfer_store failed.
+d_00: @00:00:00.650693   PASS - test_bad_magic_and_resync in 0.476 seconds
+d_00: @00:00:00.839593   PASS - test_busy_over_transport in 0.189 seconds
+d_00: @00:00:00.855193   PASS - test_configured_callbacks in 0.016 seconds
+d_00: @00:00:01.153293   PASS - test_finish_and_abort in 0.299 seconds
+d_00: @00:00:01.167093   PASS - test_no_zero_length_packet in 0.014 seconds
+d_00: @00:00:01.176493   PASS - test_read_range_over_transport in 0.010 seconds
+d_00: @00:00:03.290193   PASS - test_reboot_after_response in 2.114 seconds
+d_00: @00:00:03.354893   PASS - test_request_in_pieces in 0.065 seconds
+d_00: @00:00:03.396193   PASS - test_silent_when_not_allowed in 0.042 seconds
+d_00: @00:00:03.414793   PASS - test_stack_follows_vbus in 0.019 seconds
+d_00: @00:00:03.424093   PASS - test_start_checks_backend in 0.010 seconds
+d_00: @00:00:03.424093  SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:00:03.424093   - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+d_00: @00:00:03.424093   - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+twister exit code on the broken copy crc_on_empty, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-crc_on_empty-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+crc_on_empty on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed but so did other cases that are not on the list: xfer_proto.test_header_bytes xfer_store.test_case_digest_matches_close xfer_store.test_confirm_then_delete xfer_store.test_read_range_bytes_equal_disk xfer_store.test_read_range_deleted_not_found xfer_store.test_set_time_and_factory_over_usb
+##### broken copy: bad_crc_payload
+diff -u -r /ws/firmware/modules/ring_xfer/src/rxf_proto.c /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_bad_crc_payload/src/rxf_proto.c
+--- /ws/firmware/modules/ring_xfer/src/rxf_proto.c	2026-11-13 05:05:52.000000000 +0000
++++ /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_bad_crc_payload/src/rxf_proto.c	2026-11-13 05:26:47.969762790 +0000
+@@ -96,7 +96,7 @@
+ 	uint8_t out[RREC_MSG_HEADER_BYTES + 4] = { 0 };
+ 	uint32_t len;
+ 
+-	len = 0u;   /* an error response has no payload (FW l.690) */
++	len = st == RREC_ST_BAD_CRC ? 4u : 0u;
+ 	rxf_proto_put_header(out, opcode, st, tag, len, rxf_proto_payload_crc(out + RREC_MSG_HEADER_BYTES, len));
+ 	return emit(user, out, RREC_MSG_HEADER_BYTES + len, true);
+ }
+INFO    - 1/1 native_sim/native         ring_xfer.sim                                      FAILED rc=1 (native 0.777s <host/gnu>)
+ PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+ PASS - test_one_vendor_interface_only in 0.000 seconds
+ PASS - test_abort_stops_stream in 0.000 seconds
+ PASS - test_any_order in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:27: expect_error_only: (cap.total not equal to 16u)
+ FAIL - test_bad_crc in 0.000 seconds
+ PASS - test_bad_magic in 0.000 seconds
+ PASS - test_busy_while_running in 0.000 seconds
+ PASS - test_confirm_delete_args in 0.000 seconds
+ PASS - test_crc_zero_for_empty in 0.000 seconds
+ PASS - test_factory_not_allowed in 0.000 seconds
+ PASS - test_fw_args in 0.000 seconds
+ PASS - test_get_battery_layout in 0.000 seconds
+ PASS - test_get_info_layout in 0.000 seconds
+ PASS - test_get_log_args in 0.000 seconds
+ PASS - test_header_bytes in 0.000 seconds
+ PASS - test_list_args in 0.000 seconds
+ PASS - test_read_range_256 in 0.000 seconds
+ PASS - test_read_range_args in 0.000 seconds
+ PASS - test_read_range_failures in 0.000 seconds
+ PASS - test_read_range_stream in 0.000 seconds
+ PASS - test_reboot_after_ok in 0.000 seconds
+ PASS - test_reference_crc_check_value in 0.000 seconds
+ PASS - test_response_length_exact in 0.000 seconds
+ PASS - test_set_time_calls_clock in 0.000 seconds
+ PASS - test_silent_when_not_allowed in 0.000 seconds
+ PASS - test_tag_echoed in 0.000 seconds
+ PASS - test_unknown_opcodes in 0.000 seconds
+TESTSUITE xfer_proto failed.
+ PASS - test_case_digest_matches_close in 0.013 seconds
+ PASS - test_confirm_then_delete in 0.024 seconds
+ PASS - test_get_info_from_store in 0.012 seconds
+ PASS - test_get_log_records in 0.059 seconds
+ PASS - test_list_entries in 0.019 seconds
+ PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+ PASS - test_read_range_deleted_not_found in 0.021 seconds
+ PASS - test_resume_from_any_chunk in 0.020 seconds
+ PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+ PASS - test_bad_magic_and_resync in 0.476 seconds
+ PASS - test_busy_over_transport in 0.189 seconds
+ PASS - test_configured_callbacks in 0.016 seconds
+ PASS - test_finish_and_abort in 0.299 seconds
+ PASS - test_no_zero_length_packet in 0.014 seconds
+ PASS - test_read_range_over_transport in 0.010 seconds
+ PASS - test_reboot_after_response in 2.114 seconds
+ PASS - test_request_in_pieces in 0.065 seconds
+ PASS - test_silent_when_not_allowed in 0.042 seconds
+ PASS - test_stack_follows_vbus in 0.019 seconds
+ PASS - test_start_checks_backend in 0.010 seconds
+SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+ - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+ - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+ - FAIL - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_busy_while_running] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_confirm_delete_args] duration = 0.000 seconds
+twister exit code on the broken copy bad_crc_payload, native_sim: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-bad_crc_payload-native_sim.log)
+bad_crc_payload on native_sim: only 46 of 47 cases ran
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_xfer.sim                                FAILED rc=1 (native 0.444s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_one_vendor_interface_only in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_abort_stops_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_any_order in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:27: expect_error_only: (cap.total not equal to 16u)
+d_00: @00:00:00.000093   FAIL - test_bad_crc in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_magic in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_busy_while_running in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_confirm_delete_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_crc_zero_for_empty in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fw_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_battery_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_info_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_log_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_header_bytes in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_list_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_256 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_failures in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reboot_after_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reference_crc_check_value in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_response_length_exact in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_set_time_calls_clock in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_silent_when_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_tag_echoed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_unknown_opcodes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE xfer_proto failed.
+d_00: @00:00:00.013093   PASS - test_case_digest_matches_close in 0.013 seconds
+d_00: @00:00:00.037093   PASS - test_confirm_then_delete in 0.024 seconds
+d_00: @00:00:00.048993   PASS - test_get_info_from_store in 0.012 seconds
+d_00: @00:00:00.107693   PASS - test_get_log_records in 0.059 seconds
+d_00: @00:00:00.126193   PASS - test_list_entries in 0.019 seconds
+d_00: @00:00:00.198393   PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+d_00: @00:00:00.219093   PASS - test_read_range_deleted_not_found in 0.021 seconds
+d_00: @00:00:00.238693   PASS - test_resume_from_any_chunk in 0.020 seconds
+d_00: @00:00:00.247293   PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+d_00: @00:00:00.723293   PASS - test_bad_magic_and_resync in 0.476 seconds
+d_00: @00:00:00.912193   PASS - test_busy_over_transport in 0.189 seconds
+d_00: @00:00:00.927793   PASS - test_configured_callbacks in 0.016 seconds
+d_00: @00:00:01.225893   PASS - test_finish_and_abort in 0.299 seconds
+d_00: @00:00:01.239693   PASS - test_no_zero_length_packet in 0.014 seconds
+d_00: @00:00:01.249093   PASS - test_read_range_over_transport in 0.010 seconds
+d_00: @00:00:03.362793   PASS - test_reboot_after_response in 2.114 seconds
+d_00: @00:00:03.427493   PASS - test_request_in_pieces in 0.065 seconds
+d_00: @00:00:03.468793   PASS - test_silent_when_not_allowed in 0.042 seconds
+d_00: @00:00:03.487393   PASS - test_stack_follows_vbus in 0.019 seconds
+d_00: @00:00:03.496693   PASS - test_start_checks_backend in 0.010 seconds
+d_00: @00:00:03.496693  SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+d_00: @00:00:03.496693  SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+d_00: @00:00:03.496693   - FAIL - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_busy_while_running] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_confirm_delete_args] duration = 0.000 seconds
+twister exit code on the broken copy bad_crc_payload, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-bad_crc_payload-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+bad_crc_payload on nrf54lm20bsim/nrf54lm20a/cpuapp: only 46 of 47 cases ran
+##### broken copy: list_max_65
+diff -u -r /ws/firmware/modules/ring_xfer/src/rxf_proto.c /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_list_max_65/src/rxf_proto.c
+--- /ws/firmware/modules/ring_xfer/src/rxf_proto.c	2026-11-13 05:05:52.000000000 +0000
++++ /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_list_max_65/src/rxf_proto.c	2026-11-13 05:27:27.227918914 +0000
+@@ -254,7 +254,7 @@
+ 			break;
+ 		}
+ 		max = get16(p + 4);
+-		if (max < RREC_LIST_MAX_MIN || max > RREC_LIST_MAX_MAX) {
++		if (max < RREC_LIST_MAX_MIN || max > RREC_LIST_MAX_MAX + 1u) {
+ 			st = RREC_ST_BAD_ARG;
+ 			break;
+ 		}
+INFO    - 1/1 native_sim/native         ring_xfer.sim                                      FAILED rc=1 (native 0.969s <host/gnu>)
+ PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+ PASS - test_one_vendor_interface_only in 0.000 seconds
+ PASS - test_abort_stops_stream in 0.000 seconds
+ PASS - test_any_order in 0.000 seconds
+ PASS - test_bad_crc in 0.000 seconds
+ PASS - test_bad_magic in 0.000 seconds
+ PASS - test_busy_while_running in 0.000 seconds
+ PASS - test_confirm_delete_args in 0.000 seconds
+ PASS - test_crc_zero_for_empty in 0.000 seconds
+ PASS - test_factory_not_allowed in 0.000 seconds
+ PASS - test_fw_args in 0.000 seconds
+ PASS - test_get_battery_layout in 0.000 seconds
+ PASS - test_get_info_layout in 0.000 seconds
+ PASS - test_get_log_args in 0.000 seconds
+ PASS - test_header_bytes in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:27: expect_error_only: (cap.total not equal to 16u)
+ FAIL - test_list_args in 0.000 seconds
+ PASS - test_read_range_256 in 0.000 seconds
+ PASS - test_read_range_args in 0.000 seconds
+ PASS - test_read_range_failures in 0.000 seconds
+ PASS - test_read_range_stream in 0.000 seconds
+ PASS - test_reboot_after_ok in 0.000 seconds
+ PASS - test_reference_crc_check_value in 0.000 seconds
+ PASS - test_response_length_exact in 0.000 seconds
+ PASS - test_set_time_calls_clock in 0.000 seconds
+ PASS - test_silent_when_not_allowed in 0.000 seconds
+ PASS - test_tag_echoed in 0.000 seconds
+ PASS - test_unknown_opcodes in 0.000 seconds
+TESTSUITE xfer_proto failed.
+ PASS - test_case_digest_matches_close in 0.013 seconds
+ PASS - test_confirm_then_delete in 0.024 seconds
+ PASS - test_get_info_from_store in 0.012 seconds
+ PASS - test_get_log_records in 0.059 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:257: xfer_store_test_list_entries: st() not equal to RREC_ST_BAD_ARG
+ FAIL - test_list_entries in 0.019 seconds
+ PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+ PASS - test_read_range_deleted_not_found in 0.021 seconds
+ PASS - test_resume_from_any_chunk in 0.020 seconds
+ PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+TESTSUITE xfer_store failed.
+ PASS - test_bad_magic_and_resync in 0.476 seconds
+ PASS - test_busy_over_transport in 0.189 seconds
+ PASS - test_configured_callbacks in 0.016 seconds
+ PASS - test_finish_and_abort in 0.299 seconds
+ PASS - test_no_zero_length_packet in 0.014 seconds
+ PASS - test_read_range_over_transport in 0.010 seconds
+ PASS - test_reboot_after_response in 2.114 seconds
+ PASS - test_request_in_pieces in 0.065 seconds
+ PASS - test_silent_when_not_allowed in 0.042 seconds
+ PASS - test_stack_follows_vbus in 0.019 seconds
+ PASS - test_start_checks_backend in 0.010 seconds
+SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+ - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+ - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+twister exit code on the broken copy list_max_65, native_sim: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-list_max_65-native_sim.log)
+list_max_65 on native_sim: the named case failed but so did other cases that are not on the list: xfer_store.test_list_entries
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_xfer.sim                                FAILED rc=1 (native 0.471s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_one_vendor_interface_only in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_abort_stops_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_any_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_crc in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_magic in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_busy_while_running in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_confirm_delete_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_crc_zero_for_empty in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fw_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_battery_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_info_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_log_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_header_bytes in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:27: expect_error_only: (cap.total not equal to 16u)
+d_00: @00:00:00.000093   FAIL - test_list_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_256 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_failures in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reboot_after_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reference_crc_check_value in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_response_length_exact in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_set_time_calls_clock in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_silent_when_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_tag_echoed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_unknown_opcodes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE xfer_proto failed.
+d_00: @00:00:00.013093   PASS - test_case_digest_matches_close in 0.013 seconds
+d_00: @00:00:00.037093   PASS - test_confirm_then_delete in 0.024 seconds
+d_00: @00:00:00.048993   PASS - test_get_info_from_store in 0.012 seconds
+d_00: @00:00:00.107693   PASS - test_get_log_records in 0.059 seconds
+d_00: @00:00:00.126193      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:257: xfer_store_test_list_entries: st() not equal to RREC_ST_BAD_ARG
+d_00: @00:00:00.126193   FAIL - test_list_entries in 0.019 seconds
+d_00: @00:00:00.198393   PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+d_00: @00:00:00.219093   PASS - test_read_range_deleted_not_found in 0.021 seconds
+d_00: @00:00:00.238693   PASS - test_resume_from_any_chunk in 0.020 seconds
+d_00: @00:00:00.247293   PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+d_00: @00:00:00.247293  TESTSUITE xfer_store failed.
+d_00: @00:00:00.723293   PASS - test_bad_magic_and_resync in 0.476 seconds
+d_00: @00:00:00.912193   PASS - test_busy_over_transport in 0.189 seconds
+d_00: @00:00:00.927793   PASS - test_configured_callbacks in 0.016 seconds
+d_00: @00:00:01.225893   PASS - test_finish_and_abort in 0.299 seconds
+d_00: @00:00:01.239693   PASS - test_no_zero_length_packet in 0.014 seconds
+d_00: @00:00:01.249093   PASS - test_read_range_over_transport in 0.010 seconds
+d_00: @00:00:03.362793   PASS - test_reboot_after_response in 2.114 seconds
+d_00: @00:00:03.427493   PASS - test_request_in_pieces in 0.065 seconds
+d_00: @00:00:03.468793   PASS - test_silent_when_not_allowed in 0.042 seconds
+d_00: @00:00:03.487393   PASS - test_stack_follows_vbus in 0.019 seconds
+d_00: @00:00:03.496693   PASS - test_start_checks_backend in 0.010 seconds
+d_00: @00:00:03.496693  SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+d_00: @00:00:03.496693  SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+twister exit code on the broken copy list_max_65, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-list_max_65-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+list_max_65 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed but so did other cases that are not on the list: xfer_store.test_list_entries
+##### broken copy: range_257
+diff -u -r /ws/firmware/modules/ring_xfer/src/rxf_proto.c /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_range_257/src/rxf_proto.c
+--- /ws/firmware/modules/ring_xfer/src/rxf_proto.c	2026-11-13 05:05:52.000000000 +0000
++++ /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_range_257/src/rxf_proto.c	2026-11-13 05:28:09.047018983 +0000
+@@ -172,7 +172,7 @@
+ 	rec = get32(p);
+ 	first = get32(p + 4);
+ 	count = get32(p + 8);
+-	if (count < RREC_READ_COUNT_MIN || count > RREC_READ_COUNT_MAX) {              /* FW l.698 */
++	if (count < RREC_READ_COUNT_MIN || count > RREC_READ_COUNT_MAX + 1u) {              /* FW l.698 */
+ 		return finish_small(c, emit, user, h, RREC_ST_BAD_ARG, 0u, res);
+ 	}
+ 	if (first + count < first) {
+INFO    - 1/1 native_sim/native         ring_xfer.sim                                      FAILED rc=1 (native 0.511s <host/gnu>)
+ PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+ PASS - test_one_vendor_interface_only in 0.000 seconds
+ PASS - test_abort_stops_stream in 0.000 seconds
+ PASS - test_any_order in 0.000 seconds
+ PASS - test_bad_crc in 0.000 seconds
+ PASS - test_bad_magic in 0.000 seconds
+ PASS - test_busy_while_running in 0.000 seconds
+ PASS - test_confirm_delete_args in 0.000 seconds
+ PASS - test_crc_zero_for_empty in 0.000 seconds
+ PASS - test_factory_not_allowed in 0.000 seconds
+ PASS - test_fw_args in 0.000 seconds
+ PASS - test_get_battery_layout in 0.000 seconds
+ PASS - test_get_info_layout in 0.000 seconds
+ PASS - test_get_log_args in 0.000 seconds
+ PASS - test_header_bytes in 0.000 seconds
+ PASS - test_list_args in 0.000 seconds
+ PASS - test_read_range_256 in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:28: expect_error_only: cap_status() not equal to st
+ FAIL - test_read_range_args in 0.000 seconds
+ PASS - test_read_range_failures in 0.000 seconds
+ PASS - test_read_range_stream in 0.000 seconds
+ PASS - test_reboot_after_ok in 0.000 seconds
+ PASS - test_reference_crc_check_value in 0.000 seconds
+ PASS - test_response_length_exact in 0.000 seconds
+ PASS - test_set_time_calls_clock in 0.000 seconds
+ PASS - test_silent_when_not_allowed in 0.000 seconds
+ PASS - test_tag_echoed in 0.000 seconds
+ PASS - test_unknown_opcodes in 0.000 seconds
+TESTSUITE xfer_proto failed.
+ PASS - test_case_digest_matches_close in 0.013 seconds
+ PASS - test_confirm_then_delete in 0.024 seconds
+ PASS - test_get_info_from_store in 0.012 seconds
+ PASS - test_get_log_records in 0.059 seconds
+ PASS - test_list_entries in 0.019 seconds
+ PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+ PASS - test_read_range_deleted_not_found in 0.021 seconds
+ PASS - test_resume_from_any_chunk in 0.020 seconds
+ PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+ PASS - test_bad_magic_and_resync in 0.476 seconds
+ PASS - test_busy_over_transport in 0.189 seconds
+ PASS - test_configured_callbacks in 0.016 seconds
+ PASS - test_finish_and_abort in 0.299 seconds
+ PASS - test_no_zero_length_packet in 0.014 seconds
+ PASS - test_read_range_over_transport in 0.010 seconds
+ PASS - test_reboot_after_response in 2.114 seconds
+ PASS - test_request_in_pieces in 0.065 seconds
+ PASS - test_silent_when_not_allowed in 0.042 seconds
+ PASS - test_stack_follows_vbus in 0.019 seconds
+ PASS - test_start_checks_backend in 0.010 seconds
+SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+ - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+ - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_busy_while_running] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_confirm_delete_args] duration = 0.000 seconds
+twister exit code on the broken copy range_257, native_sim: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-range_257-native_sim.log)
+range_257 on native_sim: only 46 of 47 cases ran
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_xfer.sim                                FAILED rc=1 (native 0.456s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_one_vendor_interface_only in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_abort_stops_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_any_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_crc in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_magic in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_busy_while_running in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_confirm_delete_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_crc_zero_for_empty in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fw_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_battery_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_info_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_log_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_header_bytes in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_list_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_256 in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:28: expect_error_only: cap_status() not equal to st
+d_00: @00:00:00.000093   FAIL - test_read_range_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_failures in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reboot_after_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reference_crc_check_value in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_response_length_exact in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_set_time_calls_clock in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_silent_when_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_tag_echoed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_unknown_opcodes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE xfer_proto failed.
+d_00: @00:00:00.013093   PASS - test_case_digest_matches_close in 0.013 seconds
+d_00: @00:00:00.037093   PASS - test_confirm_then_delete in 0.024 seconds
+d_00: @00:00:00.048993   PASS - test_get_info_from_store in 0.012 seconds
+d_00: @00:00:00.107693   PASS - test_get_log_records in 0.059 seconds
+d_00: @00:00:00.126193   PASS - test_list_entries in 0.019 seconds
+d_00: @00:00:00.198393   PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+d_00: @00:00:00.219093   PASS - test_read_range_deleted_not_found in 0.021 seconds
+d_00: @00:00:00.238693   PASS - test_resume_from_any_chunk in 0.020 seconds
+d_00: @00:00:00.247293   PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+d_00: @00:00:00.723293   PASS - test_bad_magic_and_resync in 0.476 seconds
+d_00: @00:00:00.912193   PASS - test_busy_over_transport in 0.189 seconds
+d_00: @00:00:00.927793   PASS - test_configured_callbacks in 0.016 seconds
+d_00: @00:00:01.225893   PASS - test_finish_and_abort in 0.299 seconds
+d_00: @00:00:01.239693   PASS - test_no_zero_length_packet in 0.014 seconds
+d_00: @00:00:01.249093   PASS - test_read_range_over_transport in 0.010 seconds
+d_00: @00:00:03.362793   PASS - test_reboot_after_response in 2.114 seconds
+d_00: @00:00:03.427493   PASS - test_request_in_pieces in 0.065 seconds
+d_00: @00:00:03.468793   PASS - test_silent_when_not_allowed in 0.042 seconds
+d_00: @00:00:03.487393   PASS - test_stack_follows_vbus in 0.019 seconds
+d_00: @00:00:03.496693   PASS - test_start_checks_backend in 0.010 seconds
+d_00: @00:00:03.496693  SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+d_00: @00:00:03.496693  SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_busy_while_running] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_confirm_delete_args] duration = 0.000 seconds
+twister exit code on the broken copy range_257, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-range_257-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+range_257 on nrf54lm20bsim/nrf54lm20a/cpuapp: only 46 of 47 cases ran
+##### broken copy: no_busy
+diff -u -r /ws/firmware/modules/ring_xfer/src/rxf_proto.c /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_no_busy/src/rxf_proto.c
+--- /ws/firmware/modules/ring_xfer/src/rxf_proto.c	2026-11-13 05:05:52.000000000 +0000
++++ /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_no_busy/src/rxf_proto.c	2026-11-13 05:28:47.220196674 +0000
+@@ -385,7 +385,7 @@
+ 		res->outcome = rc == 0 ? RXF_SENT : RXF_SEND_FAILED;
+ 		return res->outcome;
+ 	}
+-	if (__atomic_exchange_n(&c->running, 1, __ATOMIC_ACQ_REL) != 0) {
++	if (__atomic_exchange_n(&c->running, 1, __ATOMIC_ACQ_REL) != 0 && false) {
+ 		res->status = RREC_ST_BUSY;               /* FW l.711 */
+ 		rc = emit_error(emit, user, h.opcode, RREC_ST_BUSY, h.tag);
+ 		res->outcome = rc == 0 ? RXF_SENT : RXF_SEND_FAILED;
+INFO    - 1/1 native_sim/native         ring_xfer.sim                                      FAILED rc=1 (native 0.762s <host/gnu>)
+ PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+ PASS - test_one_vendor_interface_only in 0.000 seconds
+ PASS - test_abort_stops_stream in 0.000 seconds
+ PASS - test_any_order in 0.000 seconds
+ PASS - test_bad_crc in 0.000 seconds
+ PASS - test_bad_magic in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:740: xfer_proto_test_busy_while_running: (nested_n not equal to 16u)
+ FAIL - test_busy_while_running in 0.000 seconds
+ PASS - test_confirm_delete_args in 0.000 seconds
+ PASS - test_crc_zero_for_empty in 0.000 seconds
+ PASS - test_factory_not_allowed in 0.000 seconds
+ PASS - test_fw_args in 0.000 seconds
+ PASS - test_get_battery_layout in 0.000 seconds
+ PASS - test_get_info_layout in 0.000 seconds
+ PASS - test_get_log_args in 0.000 seconds
+ PASS - test_header_bytes in 0.000 seconds
+ PASS - test_list_args in 0.000 seconds
+ PASS - test_read_range_256 in 0.000 seconds
+ PASS - test_read_range_args in 0.000 seconds
+ PASS - test_read_range_failures in 0.000 seconds
+ PASS - test_read_range_stream in 0.000 seconds
+ PASS - test_reboot_after_ok in 0.000 seconds
+ PASS - test_reference_crc_check_value in 0.000 seconds
+ PASS - test_response_length_exact in 0.000 seconds
+ PASS - test_set_time_calls_clock in 0.000 seconds
+ PASS - test_silent_when_not_allowed in 0.000 seconds
+ PASS - test_tag_echoed in 0.000 seconds
+ PASS - test_unknown_opcodes in 0.000 seconds
+TESTSUITE xfer_proto failed.
+ PASS - test_case_digest_matches_close in 0.013 seconds
+ PASS - test_confirm_then_delete in 0.024 seconds
+ PASS - test_get_info_from_store in 0.012 seconds
+ PASS - test_get_log_records in 0.059 seconds
+ PASS - test_list_entries in 0.019 seconds
+ PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+ PASS - test_read_range_deleted_not_found in 0.021 seconds
+ PASS - test_resume_from_any_chunk in 0.020 seconds
+ PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+ PASS - test_bad_magic_and_resync in 0.476 seconds
+ PASS - test_busy_over_transport in 0.189 seconds
+ PASS - test_configured_callbacks in 0.016 seconds
+ PASS - test_finish_and_abort in 0.299 seconds
+ PASS - test_no_zero_length_packet in 0.014 seconds
+ PASS - test_read_range_over_transport in 0.010 seconds
+ PASS - test_reboot_after_response in 2.114 seconds
+ PASS - test_request_in_pieces in 0.065 seconds
+ PASS - test_silent_when_not_allowed in 0.042 seconds
+ PASS - test_stack_follows_vbus in 0.019 seconds
+ PASS - test_start_checks_backend in 0.010 seconds
+SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+ - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+ - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+ - FAIL - [xfer_proto.test_busy_while_running] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_confirm_delete_args] duration = 0.000 seconds
+twister exit code on the broken copy no_busy, native_sim: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-no_busy-native_sim.log)
+no_busy on native_sim: only 46 of 47 cases ran
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_xfer.sim                                FAILED rc=1 (native 0.495s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_one_vendor_interface_only in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_abort_stops_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_any_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_crc in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_magic in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:740: xfer_proto_test_busy_while_running: (nested_n not equal to 16u)
+d_00: @00:00:00.000093   FAIL - test_busy_while_running in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_confirm_delete_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_crc_zero_for_empty in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fw_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_battery_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_info_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_log_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_header_bytes in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_list_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_256 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_failures in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reboot_after_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reference_crc_check_value in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_response_length_exact in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_set_time_calls_clock in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_silent_when_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_tag_echoed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_unknown_opcodes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE xfer_proto failed.
+d_00: @00:00:00.013093   PASS - test_case_digest_matches_close in 0.013 seconds
+d_00: @00:00:00.037093   PASS - test_confirm_then_delete in 0.024 seconds
+d_00: @00:00:00.048993   PASS - test_get_info_from_store in 0.012 seconds
+d_00: @00:00:00.107693   PASS - test_get_log_records in 0.059 seconds
+d_00: @00:00:00.126193   PASS - test_list_entries in 0.019 seconds
+d_00: @00:00:00.198393   PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+d_00: @00:00:00.219093   PASS - test_read_range_deleted_not_found in 0.021 seconds
+d_00: @00:00:00.238693   PASS - test_resume_from_any_chunk in 0.020 seconds
+d_00: @00:00:00.247293   PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+d_00: @00:00:00.723293   PASS - test_bad_magic_and_resync in 0.476 seconds
+d_00: @00:00:00.912193   PASS - test_busy_over_transport in 0.189 seconds
+d_00: @00:00:00.927793   PASS - test_configured_callbacks in 0.016 seconds
+d_00: @00:00:01.225893   PASS - test_finish_and_abort in 0.299 seconds
+d_00: @00:00:01.239693   PASS - test_no_zero_length_packet in 0.014 seconds
+d_00: @00:00:01.249093   PASS - test_read_range_over_transport in 0.010 seconds
+d_00: @00:00:03.362793   PASS - test_reboot_after_response in 2.114 seconds
+d_00: @00:00:03.427493   PASS - test_request_in_pieces in 0.065 seconds
+d_00: @00:00:03.468793   PASS - test_silent_when_not_allowed in 0.042 seconds
+d_00: @00:00:03.487393   PASS - test_stack_follows_vbus in 0.019 seconds
+d_00: @00:00:03.496693   PASS - test_start_checks_backend in 0.010 seconds
+d_00: @00:00:03.496693  SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+d_00: @00:00:03.496693  SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+d_00: @00:00:03.496693   - FAIL - [xfer_proto.test_busy_while_running] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_confirm_delete_args] duration = 0.000 seconds
+twister exit code on the broken copy no_busy, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-no_busy-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+no_busy on nrf54lm20bsim/nrf54lm20a/cpuapp: only 46 of 47 cases ran
+##### broken copy: factory_flag_ignored
+diff -u -r /ws/firmware/modules/ring_xfer/src/rxf_proto.c /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_factory_flag_ignored/src/rxf_proto.c
+--- /ws/firmware/modules/ring_xfer/src/rxf_proto.c	2026-11-13 05:05:52.000000000 +0000
++++ /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_factory_flag_ignored/src/rxf_proto.c	2026-11-13 05:29:28.874298535 +0000
+@@ -351,7 +351,7 @@
+ 			st = RREC_ST_BAD_ARG;
+ 			break;
+ 		}
+-		st = be->factory(p, plen, out, &olen);
++		(void)be->factory(p, plen, out, &olen);
+ 		if (st == RREC_ST_OK && olen > RXF_FACTORY_RESULT_MAX) {
+ 			st = RREC_ST_STORAGE_ERROR;
+ 		}
+INFO    - 1/1 native_sim/native         ring_xfer.sim                                      FAILED rc=1 (native 1.005s <host/gnu>)
+ PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+ PASS - test_one_vendor_interface_only in 0.000 seconds
+ PASS - test_abort_stops_stream in 0.000 seconds
+ PASS - test_any_order in 0.000 seconds
+ PASS - test_bad_crc in 0.000 seconds
+ PASS - test_bad_magic in 0.000 seconds
+ PASS - test_busy_while_running in 0.000 seconds
+ PASS - test_confirm_delete_args in 0.000 seconds
+ PASS - test_crc_zero_for_empty in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:27: expect_error_only: (cap.total not equal to 16u)
+ FAIL - test_factory_not_allowed in 0.000 seconds
+ PASS - test_fw_args in 0.000 seconds
+ PASS - test_get_battery_layout in 0.000 seconds
+ PASS - test_get_info_layout in 0.000 seconds
+ PASS - test_get_log_args in 0.000 seconds
+ PASS - test_header_bytes in 0.000 seconds
+ PASS - test_list_args in 0.000 seconds
+ PASS - test_read_range_256 in 0.000 seconds
+ PASS - test_read_range_args in 0.000 seconds
+ PASS - test_read_range_failures in 0.000 seconds
+ PASS - test_read_range_stream in 0.000 seconds
+ PASS - test_reboot_after_ok in 0.000 seconds
+ PASS - test_reference_crc_check_value in 0.000 seconds
+ PASS - test_response_length_exact in 0.000 seconds
+ PASS - test_set_time_calls_clock in 0.000 seconds
+ PASS - test_silent_when_not_allowed in 0.000 seconds
+ PASS - test_tag_echoed in 0.000 seconds
+ PASS - test_unknown_opcodes in 0.000 seconds
+TESTSUITE xfer_proto failed.
+ PASS - test_case_digest_matches_close in 0.013 seconds
+ PASS - test_confirm_then_delete in 0.024 seconds
+ PASS - test_get_info_from_store in 0.012 seconds
+ PASS - test_get_log_records in 0.059 seconds
+ PASS - test_list_entries in 0.019 seconds
+ PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+ PASS - test_read_range_deleted_not_found in 0.021 seconds
+ PASS - test_resume_from_any_chunk in 0.020 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:560: xfer_store_test_set_time_and_factory_over_usb: (st() not equal to RREC_ST_NOT_ALLOWED)
+ FAIL - test_set_time_and_factory_over_usb in 0.008 seconds
+TESTSUITE xfer_store failed.
+ PASS - test_bad_magic_and_resync in 0.476 seconds
+ PASS - test_busy_over_transport in 0.189 seconds
+ PASS - test_configured_callbacks in 0.016 seconds
+ PASS - test_finish_and_abort in 0.299 seconds
+ PASS - test_no_zero_length_packet in 0.014 seconds
+ PASS - test_read_range_over_transport in 0.010 seconds
+ PASS - test_reboot_after_response in 2.114 seconds
+ PASS - test_request_in_pieces in 0.065 seconds
+ PASS - test_silent_when_not_allowed in 0.042 seconds
+ PASS - test_stack_follows_vbus in 0.019 seconds
+ PASS - test_start_checks_backend in 0.010 seconds
+SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+ - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+ - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+twister exit code on the broken copy factory_flag_ignored, native_sim: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-factory_flag_ignored-native_sim.log)
+factory_flag_ignored on native_sim: the named case failed but so did other cases that are not on the list: xfer_store.test_set_time_and_factory_over_usb
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_xfer.sim                                FAILED rc=1 (native 0.454s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_one_vendor_interface_only in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_abort_stops_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_any_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_crc in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_magic in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_busy_while_running in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_confirm_delete_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_crc_zero_for_empty in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:27: expect_error_only: (cap.total not equal to 16u)
+d_00: @00:00:00.000093   FAIL - test_factory_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fw_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_battery_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_info_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_log_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_header_bytes in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_list_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_256 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_failures in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reboot_after_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reference_crc_check_value in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_response_length_exact in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_set_time_calls_clock in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_silent_when_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_tag_echoed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_unknown_opcodes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE xfer_proto failed.
+d_00: @00:00:00.013093   PASS - test_case_digest_matches_close in 0.013 seconds
+d_00: @00:00:00.037093   PASS - test_confirm_then_delete in 0.024 seconds
+d_00: @00:00:00.048993   PASS - test_get_info_from_store in 0.012 seconds
+d_00: @00:00:00.107693   PASS - test_get_log_records in 0.059 seconds
+d_00: @00:00:00.126193   PASS - test_list_entries in 0.019 seconds
+d_00: @00:00:00.198393   PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+d_00: @00:00:00.219093   PASS - test_read_range_deleted_not_found in 0.021 seconds
+d_00: @00:00:00.238693   PASS - test_resume_from_any_chunk in 0.020 seconds
+d_00: @00:00:00.246193      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:560: xfer_store_test_set_time_and_factory_over_usb: (st() not equal to RREC_ST_NOT_ALLOWED)
+d_00: @00:00:00.246193   FAIL - test_set_time_and_factory_over_usb in 0.008 seconds
+d_00: @00:00:00.246193  TESTSUITE xfer_store failed.
+d_00: @00:00:00.722193   PASS - test_bad_magic_and_resync in 0.476 seconds
+d_00: @00:00:00.911093   PASS - test_busy_over_transport in 0.189 seconds
+d_00: @00:00:00.926693   PASS - test_configured_callbacks in 0.016 seconds
+d_00: @00:00:01.224793   PASS - test_finish_and_abort in 0.299 seconds
+d_00: @00:00:01.238593   PASS - test_no_zero_length_packet in 0.014 seconds
+d_00: @00:00:01.247993   PASS - test_read_range_over_transport in 0.010 seconds
+d_00: @00:00:03.361693   PASS - test_reboot_after_response in 2.114 seconds
+d_00: @00:00:03.426393   PASS - test_request_in_pieces in 0.065 seconds
+d_00: @00:00:03.467693   PASS - test_silent_when_not_allowed in 0.042 seconds
+d_00: @00:00:03.486293   PASS - test_stack_follows_vbus in 0.019 seconds
+d_00: @00:00:03.495593   PASS - test_start_checks_backend in 0.010 seconds
+d_00: @00:00:03.495593  SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:00:03.495593   - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+d_00: @00:00:03.495593   - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+d_00: @00:00:03.495593  SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+d_00: @00:00:03.495593   - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+d_00: @00:00:03.495593   - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+d_00: @00:00:03.495593   - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+d_00: @00:00:03.495593   - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+twister exit code on the broken copy factory_flag_ignored, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-factory_flag_ignored-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+factory_flag_ignored on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed but so did other cases that are not on the list: xfer_store.test_set_time_and_factory_over_usb
+##### broken copy: hs_packet_64
+diff -u -r /ws/firmware/modules/ring_xfer/src/rxf_desc.c /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_hs_packet_64/src/rxf_desc.c
+--- /ws/firmware/modules/ring_xfer/src/rxf_desc.c	2026-11-13 05:05:01.000000000 +0000
++++ /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_hs_packet_64/src/rxf_desc.c	2026-11-13 05:30:10.180407097 +0000
+@@ -12,7 +12,7 @@
+ 
+ uint16_t rxf_desc_mps(enum rhw_usb_speed speed)
+ {
+-	return speed == RHW_USB_HS ? (uint16_t)RREC_USB_MPS_HS : (uint16_t)RREC_USB_MPS_FS;
++	return speed == RHW_USB_HS ? (uint16_t)RREC_USB_MPS_FS : (uint16_t)RREC_USB_MPS_FS;
+ }
+ 
+ size_t rxf_desc_get(enum rhw_usb_speed speed, uint8_t out[RXF_DESC_BYTES])
+INFO    - 1/1 native_sim/native         ring_xfer.sim                                      FAILED rc=1 (native 0.894s <host/gnu>)
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_desc.c:31: xfer_desc_test_descriptor_bytes_fs_hs: (d not equal to hs)
+ FAIL - test_descriptor_bytes_fs_hs in 0.000 seconds
+ PASS - test_one_vendor_interface_only in 0.000 seconds
+TESTSUITE xfer_desc failed.
+ PASS - test_abort_stops_stream in 0.000 seconds
+ PASS - test_any_order in 0.000 seconds
+ PASS - test_bad_crc in 0.000 seconds
+ PASS - test_bad_magic in 0.000 seconds
+ PASS - test_busy_while_running in 0.000 seconds
+ PASS - test_confirm_delete_args in 0.000 seconds
+ PASS - test_crc_zero_for_empty in 0.000 seconds
+ PASS - test_factory_not_allowed in 0.000 seconds
+ PASS - test_fw_args in 0.000 seconds
+ PASS - test_get_battery_layout in 0.000 seconds
+ PASS - test_get_info_layout in 0.000 seconds
+ PASS - test_get_log_args in 0.000 seconds
+ PASS - test_header_bytes in 0.000 seconds
+ PASS - test_list_args in 0.000 seconds
+ PASS - test_read_range_256 in 0.000 seconds
+ PASS - test_read_range_args in 0.000 seconds
+ PASS - test_read_range_failures in 0.000 seconds
+ PASS - test_read_range_stream in 0.000 seconds
+ PASS - test_reboot_after_ok in 0.000 seconds
+ PASS - test_reference_crc_check_value in 0.000 seconds
+ PASS - test_response_length_exact in 0.000 seconds
+ PASS - test_set_time_calls_clock in 0.000 seconds
+ PASS - test_silent_when_not_allowed in 0.000 seconds
+ PASS - test_tag_echoed in 0.000 seconds
+ PASS - test_unknown_opcodes in 0.000 seconds
+ PASS - test_case_digest_matches_close in 0.013 seconds
+ PASS - test_confirm_then_delete in 0.024 seconds
+ PASS - test_get_info_from_store in 0.012 seconds
+ PASS - test_get_log_records in 0.059 seconds
+ PASS - test_list_entries in 0.019 seconds
+ PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+ PASS - test_read_range_deleted_not_found in 0.021 seconds
+ PASS - test_resume_from_any_chunk in 0.020 seconds
+ PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+ PASS - test_bad_magic_and_resync in 0.476 seconds
+ PASS - test_busy_over_transport in 0.189 seconds
+ PASS - test_configured_callbacks in 0.016 seconds
+ PASS - test_finish_and_abort in 0.299 seconds
+ PASS - test_no_zero_length_packet in 0.014 seconds
+ PASS - test_read_range_over_transport in 0.010 seconds
+ PASS - test_reboot_after_response in 2.114 seconds
+ PASS - test_request_in_pieces in 0.065 seconds
+ PASS - test_silent_when_not_allowed in 0.042 seconds
+ PASS - test_stack_follows_vbus in 0.019 seconds
+ PASS - test_start_checks_backend in 0.010 seconds
+SUITE FAIL -  50.00% [xfer_desc]: pass = 1, fail = 1, skip = 0, total = 2 duration = 0.000 seconds
+ - FAIL - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+ - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+SUITE PASS - 100.00% [xfer_proto]: pass = 25, fail = 0, skip = 0, total = 25 duration = 0.000 seconds
+ - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_busy_while_running] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_confirm_delete_args] duration = 0.000 seconds
+twister exit code on the broken copy hs_packet_64, native_sim: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-hs_packet_64-native_sim.log)
+hs_packet_64 on native_sim: only 46 of 47 cases ran
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_xfer.sim                                FAILED rc=1 (native 0.445s <host/gnu>)
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_desc.c:31: xfer_desc_test_descriptor_bytes_fs_hs: (d not equal to hs)
+d_00: @00:00:00.000093   FAIL - test_descriptor_bytes_fs_hs in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_one_vendor_interface_only in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE xfer_desc failed.
+d_00: @00:00:00.000093   PASS - test_abort_stops_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_any_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_crc in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_magic in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_busy_while_running in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_confirm_delete_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_crc_zero_for_empty in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fw_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_battery_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_info_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_log_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_header_bytes in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_list_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_256 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_failures in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reboot_after_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reference_crc_check_value in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_response_length_exact in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_set_time_calls_clock in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_silent_when_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_tag_echoed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_unknown_opcodes in 0.000 seconds
+d_00: @00:00:00.013093   PASS - test_case_digest_matches_close in 0.013 seconds
+d_00: @00:00:00.037093   PASS - test_confirm_then_delete in 0.024 seconds
+d_00: @00:00:00.048993   PASS - test_get_info_from_store in 0.012 seconds
+d_00: @00:00:00.107693   PASS - test_get_log_records in 0.059 seconds
+d_00: @00:00:00.126193   PASS - test_list_entries in 0.019 seconds
+d_00: @00:00:00.198393   PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+d_00: @00:00:00.219093   PASS - test_read_range_deleted_not_found in 0.021 seconds
+d_00: @00:00:00.238693   PASS - test_resume_from_any_chunk in 0.020 seconds
+d_00: @00:00:00.247293   PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+d_00: @00:00:00.723293   PASS - test_bad_magic_and_resync in 0.476 seconds
+d_00: @00:00:00.912193   PASS - test_busy_over_transport in 0.189 seconds
+d_00: @00:00:00.927793   PASS - test_configured_callbacks in 0.016 seconds
+d_00: @00:00:01.225893   PASS - test_finish_and_abort in 0.299 seconds
+d_00: @00:00:01.239693   PASS - test_no_zero_length_packet in 0.014 seconds
+d_00: @00:00:01.249093   PASS - test_read_range_over_transport in 0.010 seconds
+d_00: @00:00:03.362793   PASS - test_reboot_after_response in 2.114 seconds
+d_00: @00:00:03.427493   PASS - test_request_in_pieces in 0.065 seconds
+d_00: @00:00:03.468793   PASS - test_silent_when_not_allowed in 0.042 seconds
+d_00: @00:00:03.487393   PASS - test_stack_follows_vbus in 0.019 seconds
+d_00: @00:00:03.496693   PASS - test_start_checks_backend in 0.010 seconds
+d_00: @00:00:03.496693  SUITE FAIL -  50.00% [xfer_desc]: pass = 1, fail = 1, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:00:03.496693   - FAIL - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+d_00: @00:00:03.496693  SUITE PASS - 100.00% [xfer_proto]: pass = 25, fail = 0, skip = 0, total = 25 duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_busy_while_running] duration = 0.000 seconds
+d_00: @00:00:03.496693   - PASS - [xfer_proto.test_confirm_delete_args] duration = 0.000 seconds
+twister exit code on the broken copy hs_packet_64, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-hs_packet_64-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+hs_packet_64 on nrf54lm20bsim/nrf54lm20a/cpuapp: only 46 of 47 cases ran
+##### broken copy: usb_on_without_vbus
+diff -u -r /ws/firmware/modules/ring_xfer/src/rxf_class.c /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_usb_on_without_vbus/src/rxf_class.c
+--- /ws/firmware/modules/ring_xfer/src/rxf_class.c	2026-11-13 05:20:23.000000000 +0000
++++ /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_usb_on_without_vbus/src/rxf_class.c	2026-11-13 05:30:47.825594022 +0000
+@@ -312,6 +312,7 @@
+ 		k_thread_name_set(&xfer_thread, "rxf");
+ 	}
+ 	rhw_usb()->set_callbacks(&usb_cb);
++	(void)rhw_usb()->enable();
+ 	return 0;
+ }
+ 
+INFO    - 1/1 native_sim/native         ring_xfer.sim                                      FAILED rc=1 (native 0.793s <host/gnu>)
+ PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+ PASS - test_one_vendor_interface_only in 0.000 seconds
+ PASS - test_abort_stops_stream in 0.000 seconds
+ PASS - test_any_order in 0.000 seconds
+ PASS - test_bad_crc in 0.000 seconds
+ PASS - test_bad_magic in 0.000 seconds
+ PASS - test_busy_while_running in 0.000 seconds
+ PASS - test_confirm_delete_args in 0.000 seconds
+ PASS - test_crc_zero_for_empty in 0.000 seconds
+ PASS - test_factory_not_allowed in 0.000 seconds
+ PASS - test_fw_args in 0.000 seconds
+ PASS - test_get_battery_layout in 0.000 seconds
+ PASS - test_get_info_layout in 0.000 seconds
+ PASS - test_get_log_args in 0.000 seconds
+ PASS - test_header_bytes in 0.000 seconds
+ PASS - test_list_args in 0.000 seconds
+ PASS - test_read_range_256 in 0.000 seconds
+ PASS - test_read_range_args in 0.000 seconds
+ PASS - test_read_range_failures in 0.000 seconds
+ PASS - test_read_range_stream in 0.000 seconds
+ PASS - test_reboot_after_ok in 0.000 seconds
+ PASS - test_reference_crc_check_value in 0.000 seconds
+ PASS - test_response_length_exact in 0.000 seconds
+ PASS - test_set_time_calls_clock in 0.000 seconds
+ PASS - test_silent_when_not_allowed in 0.000 seconds
+ PASS - test_tag_echoed in 0.000 seconds
+ PASS - test_unknown_opcodes in 0.000 seconds
+ PASS - test_case_digest_matches_close in 0.013 seconds
+ PASS - test_confirm_then_delete in 0.024 seconds
+ PASS - test_get_info_from_store in 0.012 seconds
+ PASS - test_get_log_records in 0.059 seconds
+ PASS - test_list_entries in 0.019 seconds
+ PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+ PASS - test_read_range_deleted_not_found in 0.021 seconds
+ PASS - test_resume_from_any_chunk in 0.020 seconds
+ PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+ PASS - test_bad_magic_and_resync in 0.476 seconds
+ PASS - test_busy_over_transport in 0.189 seconds
+ PASS - test_configured_callbacks in 0.016 seconds
+ PASS - test_finish_and_abort in 0.299 seconds
+ PASS - test_no_zero_length_packet in 0.014 seconds
+ PASS - test_read_range_over_transport in 0.010 seconds
+ PASS - test_reboot_after_response in 2.114 seconds
+ PASS - test_request_in_pieces in 0.065 seconds
+ PASS - test_silent_when_not_allowed in 0.042 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_svc.c:82: xfer_svc_test_stack_follows_vbus: (rhw_sim_usb_enabled() is true)
+ FAIL - test_stack_follows_vbus in 0.011 seconds
+ PASS - test_start_checks_backend in 0.010 seconds
+TESTSUITE xfer_svc failed.
+SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+ - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+SUITE PASS - 100.00% [xfer_proto]: pass = 25, fail = 0, skip = 0, total = 25 duration = 0.000 seconds
+ - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_busy_while_running] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_confirm_delete_args] duration = 0.000 seconds
+twister exit code on the broken copy usb_on_without_vbus, native_sim: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-usb_on_without_vbus-native_sim.log)
+usb_on_without_vbus on native_sim: only 46 of 47 cases ran
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_xfer.sim                                FAILED rc=1 (native 0.385s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_one_vendor_interface_only in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_abort_stops_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_any_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_crc in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_magic in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_busy_while_running in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_confirm_delete_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_crc_zero_for_empty in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fw_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_battery_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_info_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_log_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_header_bytes in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_list_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_256 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_failures in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reboot_after_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reference_crc_check_value in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_response_length_exact in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_set_time_calls_clock in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_silent_when_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_tag_echoed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_unknown_opcodes in 0.000 seconds
+d_00: @00:00:00.013093   PASS - test_case_digest_matches_close in 0.013 seconds
+d_00: @00:00:00.037093   PASS - test_confirm_then_delete in 0.024 seconds
+d_00: @00:00:00.048993   PASS - test_get_info_from_store in 0.012 seconds
+d_00: @00:00:00.107693   PASS - test_get_log_records in 0.059 seconds
+d_00: @00:00:00.126193   PASS - test_list_entries in 0.019 seconds
+d_00: @00:00:00.198393   PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+d_00: @00:00:00.219093   PASS - test_read_range_deleted_not_found in 0.021 seconds
+d_00: @00:00:00.238693   PASS - test_resume_from_any_chunk in 0.020 seconds
+d_00: @00:00:00.247293   PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+d_00: @00:00:00.723293   PASS - test_bad_magic_and_resync in 0.476 seconds
+d_00: @00:00:00.912193   PASS - test_busy_over_transport in 0.189 seconds
+d_00: @00:00:00.927793   PASS - test_configured_callbacks in 0.016 seconds
+d_00: @00:00:01.225893   PASS - test_finish_and_abort in 0.299 seconds
+d_00: @00:00:01.239693   PASS - test_no_zero_length_packet in 0.014 seconds
+d_00: @00:00:01.249093   PASS - test_read_range_over_transport in 0.010 seconds
+d_00: @00:00:03.362793   PASS - test_reboot_after_response in 2.114 seconds
+d_00: @00:00:03.427493   PASS - test_request_in_pieces in 0.065 seconds
+d_00: @00:00:03.468793   PASS - test_silent_when_not_allowed in 0.042 seconds
+d_00: @00:00:03.473893      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_svc.c:82: xfer_svc_test_stack_follows_vbus: (rhw_sim_usb_enabled() is true)
+d_00: @00:00:03.478993   FAIL - test_stack_follows_vbus in 0.011 seconds
+d_00: @00:00:03.488293   PASS - test_start_checks_backend in 0.010 seconds
+d_00: @00:00:03.488293  TESTSUITE xfer_svc failed.
+d_00: @00:00:03.488293  SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:00:03.488293   - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+d_00: @00:00:03.488293   - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+d_00: @00:00:03.488293  SUITE PASS - 100.00% [xfer_proto]: pass = 25, fail = 0, skip = 0, total = 25 duration = 0.000 seconds
+d_00: @00:00:03.488293   - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+d_00: @00:00:03.488293   - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+d_00: @00:00:03.488293   - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+d_00: @00:00:03.488293   - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+d_00: @00:00:03.488293   - PASS - [xfer_proto.test_busy_while_running] duration = 0.000 seconds
+d_00: @00:00:03.488293   - PASS - [xfer_proto.test_confirm_delete_args] duration = 0.000 seconds
+twister exit code on the broken copy usb_on_without_vbus, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-usb_on_without_vbus-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+usb_on_without_vbus on nrf54lm20bsim/nrf54lm20a/cpuapp: only 46 of 47 cases ran
+##### broken copy: read_deleted
+diff -u -r /ws/firmware/modules/ring_xfer/src/rxf_proto.c /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_read_deleted/src/rxf_proto.c
+--- /ws/firmware/modules/ring_xfer/src/rxf_proto.c	2026-11-13 05:05:52.000000000 +0000
++++ /ws/out/20261113-062513-u4-broken1-xfer-broken/broken_ring_xfer_read_deleted/src/rxf_proto.c	2026-11-13 05:31:29.157700662 +0000
+@@ -180,7 +180,7 @@
+ 	}
+ 	/* every chunk must exist before any byte is sent (rxf.h range_check, FW l.661) */
+ 	st = c->be->range_check(rec, first, count);
+-	if (st != RREC_ST_OK) {
++	if (st != RREC_ST_OK && st != RREC_ST_NOT_FOUND) {
+ 		return finish_small(c, emit, user, h, st, 0u, res);
+ 	}
+ 	/* pass 1: the header's CRC covers the whole payload and comes before it (FW l.686, rxf.h) */
+@@ -189,7 +189,7 @@
+ 			return RXF_ABORTED;
+ 		}
+ 		st = c->be->read_chunk(rec, first + i, s);
+-		if (st != RREC_ST_OK) {
++		if (st != RREC_ST_OK && st != RREC_ST_NOT_FOUND) {
+ 			return finish_small(c, emit, user, h, st, 0u, res);
+ 		}
+ 		c->crcs[i] = crc32_ieee(s, RREC_CHUNK_BYTES);
+INFO    - 1/1 native_sim/native         ring_xfer.sim                                      FAILED rc=1 (native 1.867s <host/gnu>)
+ PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+ PASS - test_one_vendor_interface_only in 0.000 seconds
+ PASS - test_abort_stops_stream in 0.000 seconds
+ PASS - test_any_order in 0.000 seconds
+ PASS - test_bad_crc in 0.000 seconds
+ PASS - test_bad_magic in 0.000 seconds
+ PASS - test_busy_while_running in 0.000 seconds
+ PASS - test_confirm_delete_args in 0.000 seconds
+ PASS - test_crc_zero_for_empty in 0.000 seconds
+ PASS - test_factory_not_allowed in 0.000 seconds
+ PASS - test_fw_args in 0.000 seconds
+ PASS - test_get_battery_layout in 0.000 seconds
+ PASS - test_get_info_layout in 0.000 seconds
+ PASS - test_get_log_args in 0.000 seconds
+ PASS - test_header_bytes in 0.000 seconds
+ PASS - test_list_args in 0.000 seconds
+ PASS - test_read_range_256 in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:27: expect_error_only: (cap.total not equal to 16u)
+ FAIL - test_read_range_args in 0.000 seconds
+ PASS - test_read_range_failures in 0.000 seconds
+ PASS - test_read_range_stream in 0.000 seconds
+ PASS - test_reboot_after_ok in 0.000 seconds
+ PASS - test_reference_crc_check_value in 0.000 seconds
+ PASS - test_response_length_exact in 0.000 seconds
+ PASS - test_set_time_calls_clock in 0.000 seconds
+ PASS - test_silent_when_not_allowed in 0.000 seconds
+ PASS - test_tag_echoed in 0.000 seconds
+ PASS - test_unknown_opcodes in 0.000 seconds
+TESTSUITE xfer_proto failed.
+ PASS - test_case_digest_matches_close in 0.013 seconds
+ PASS - test_confirm_then_delete in 0.024 seconds
+ PASS - test_get_info_from_store in 0.012 seconds
+ PASS - test_get_log_records in 0.059 seconds
+ PASS - test_list_entries in 0.019 seconds
+ PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:74: xfer: (big_n >= 16u is false)
+ FAIL - test_read_range_deleted_not_found in 5.515 seconds
+ PASS - test_resume_from_any_chunk in 0.020 seconds
+ PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+TESTSUITE xfer_store failed.
+ PASS - test_bad_magic_and_resync in 0.476 seconds
+ PASS - test_busy_over_transport in 0.189 seconds
+ PASS - test_configured_callbacks in 0.016 seconds
+ PASS - test_finish_and_abort in 0.299 seconds
+ PASS - test_no_zero_length_packet in 0.014 seconds
+ PASS - test_read_range_over_transport in 0.010 seconds
+ PASS - test_reboot_after_response in 2.114 seconds
+ PASS - test_request_in_pieces in 0.065 seconds
+ PASS - test_silent_when_not_allowed in 0.042 seconds
+ PASS - test_stack_follows_vbus in 0.019 seconds
+ PASS - test_start_checks_backend in 0.010 seconds
+SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+ - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+ - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+ - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+twister exit code on the broken copy read_deleted, native_sim: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-read_deleted-native_sim.log)
+read_deleted on native_sim: the named case failed but so did other cases that are not on the list: xfer_proto.test_read_range_args
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_xfer.sim                                FAILED rc=1 (native 0.930s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_descriptor_bytes_fs_hs in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_one_vendor_interface_only in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_abort_stops_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_any_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_crc in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_bad_magic in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_busy_while_running in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_confirm_delete_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_crc_zero_for_empty in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fw_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_battery_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_info_layout in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_get_log_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_header_bytes in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_list_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_256 in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:27: expect_error_only: (cap.total not equal to 16u)
+d_00: @00:00:00.000093   FAIL - test_read_range_args in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_failures in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_read_range_stream in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reboot_after_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_reference_crc_check_value in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_response_length_exact in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_set_time_calls_clock in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_silent_when_not_allowed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_tag_echoed in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_unknown_opcodes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE xfer_proto failed.
+d_00: @00:00:00.013093   PASS - test_case_digest_matches_close in 0.013 seconds
+d_00: @00:00:00.037093   PASS - test_confirm_then_delete in 0.024 seconds
+d_00: @00:00:00.048993   PASS - test_get_info_from_store in 0.012 seconds
+d_00: @00:00:00.107693   PASS - test_get_log_records in 0.059 seconds
+d_00: @00:00:00.126193   PASS - test_list_entries in 0.019 seconds
+d_00: @00:00:00.198393   PASS - test_read_range_bytes_equal_disk in 0.073 seconds
+d_00: @00:00:05.712493      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:74: xfer: (big_n >= 16u is false)
+d_00: @00:00:05.712493   FAIL - test_read_range_deleted_not_found in 5.515 seconds
+d_00: @00:00:05.732093   PASS - test_resume_from_any_chunk in 0.020 seconds
+d_00: @00:00:05.740693   PASS - test_set_time_and_factory_over_usb in 0.009 seconds
+d_00: @00:00:05.740693  TESTSUITE xfer_store failed.
+d_00: @00:00:06.216693   PASS - test_bad_magic_and_resync in 0.476 seconds
+d_00: @00:00:06.405593   PASS - test_busy_over_transport in 0.189 seconds
+d_00: @00:00:06.421193   PASS - test_configured_callbacks in 0.016 seconds
+d_00: @00:00:06.719293   PASS - test_finish_and_abort in 0.299 seconds
+d_00: @00:00:06.733093   PASS - test_no_zero_length_packet in 0.014 seconds
+d_00: @00:00:06.742493   PASS - test_read_range_over_transport in 0.010 seconds
+d_00: @00:00:08.856193   PASS - test_reboot_after_response in 2.114 seconds
+d_00: @00:00:08.920893   PASS - test_request_in_pieces in 0.065 seconds
+d_00: @00:00:08.962193   PASS - test_silent_when_not_allowed in 0.042 seconds
+d_00: @00:00:08.980793   PASS - test_stack_follows_vbus in 0.019 seconds
+d_00: @00:00:08.990093   PASS - test_start_checks_backend in 0.010 seconds
+d_00: @00:00:08.990093  SUITE PASS - 100.00% [xfer_desc]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:00:08.990093   - PASS - [xfer_desc.test_descriptor_bytes_fs_hs] duration = 0.000 seconds
+d_00: @00:00:08.990093   - PASS - [xfer_desc.test_one_vendor_interface_only] duration = 0.000 seconds
+d_00: @00:00:08.990093  SUITE FAIL -  96.00% [xfer_proto]: pass = 24, fail = 1, skip = 0, total = 25 duration = 0.000 seconds
+d_00: @00:00:08.990093   - PASS - [xfer_proto.test_abort_stops_stream] duration = 0.000 seconds
+d_00: @00:00:08.990093   - PASS - [xfer_proto.test_any_order] duration = 0.000 seconds
+d_00: @00:00:08.990093   - PASS - [xfer_proto.test_bad_crc] duration = 0.000 seconds
+d_00: @00:00:08.990093   - PASS - [xfer_proto.test_bad_magic] duration = 0.000 seconds
+twister exit code on the broken copy read_deleted, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-062513-u4-broken1-xfer-broken/twister-read_deleted-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+read_deleted on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed but so did other cases that are not on the list: xfer_proto.test_read_range_args
+RESULT FAIL tag_not_echoed/native_sim(extra: xfer_proto.test_bad_crc xfer_proto.test_bad_magic xfer_proto.test_busy_while_running xfer_proto.test_confirm_delete_args xfer_proto.test_factory_not_allowed xfer_proto.test_fw_args xfer_proto.test_get_info_layout xfer_proto.test_get_log_args xfer_proto.test_header_bytes xfer_proto.test_list_args xfer_proto.test_read_range_args xfer_proto.test_read_range_failures xfer_proto.test_read_range_stream xfer_proto.test_unknown_opcodes xfer_store.test_case_digest_matches_close xfer_store.test_confirm_then_delete xfer_store.test_get_info_from_store xfer_store.test_get_log_records xfer_store.test_list_entries xfer_store.test_read_range_bytes_equal_disk xfer_store.test_read_range_deleted_not_found xfer_store.test_resume_from_any_chunk xfer_store.test_set_time_and_factory_over_usb xfer_svc.test_bad_magic_and_resync xfer_svc.test_busy_over_transport xfer_svc.test_request_in_pieces) tag_not_echoed/nrf54lm20bsim/nrf54lm20a/cpuapp(extra: xfer_proto.test_bad_crc xfer_proto.test_bad_magic xfer_proto.test_busy_while_running xfer_proto.test_confirm_delete_args xfer_proto.test_factory_not_allowed xfer_proto.test_fw_args xfer_proto.test_get_info_layout xfer_proto.test_get_log_args xfer_proto.test_header_bytes xfer_proto.test_list_args xfer_proto.test_read_range_args xfer_proto.test_read_range_failures xfer_proto.test_read_range_stream xfer_proto.test_unknown_opcodes xfer_store.test_case_digest_matches_close xfer_store.test_confirm_then_delete xfer_store.test_get_info_from_store xfer_store.test_get_log_records xfer_store.test_list_entries xfer_store.test_read_range_bytes_equal_disk xfer_store.test_read_range_deleted_not_found xfer_store.test_resume_from_any_chunk xfer_store.test_set_time_and_factory_over_usb xfer_svc.test_bad_magic_and_resync xfer_svc.test_busy_over_transport xfer_svc.test_request_in_pieces) crc_on_empty/native_sim(extra: xfer_proto.test_header_bytes xfer_store.test_case_digest_matches_close xfer_store.test_confirm_then_delete xfer_store.test_read_range_bytes_equal_disk xfer_store.test_read_range_deleted_not_found xfer_store.test_set_time_and_factory_over_usb) crc_on_empty/nrf54lm20bsim/nrf54lm20a/cpuapp(extra: xfer_proto.test_header_bytes xfer_store.test_case_digest_matches_close xfer_store.test_confirm_then_delete xfer_store.test_read_range_bytes_equal_disk xfer_store.test_read_range_deleted_not_found xfer_store.test_set_time_and_factory_over_usb) bad_crc_payload/native_sim(ran-46) bad_crc_payload/nrf54lm20bsim/nrf54lm20a/cpuapp(ran-46) list_max_65/native_sim(extra: xfer_store.test_list_entries) list_max_65/nrf54lm20bsim/nrf54lm20a/cpuapp(extra: xfer_store.test_list_entries) range_257/native_sim(ran-46) range_257/nrf54lm20bsim/nrf54lm20a/cpuapp(ran-46) no_busy/native_sim(ran-46) no_busy/nrf54lm20bsim/nrf54lm20a/cpuapp(ran-46) factory_flag_ignored/native_sim(extra: xfer_store.test_set_time_and_factory_over_usb) factory_flag_ignored/nrf54lm20bsim/nrf54lm20a/cpuapp(extra: xfer_store.test_set_time_and_factory_over_usb) hs_packet_64/native_sim(ran-46) hs_packet_64/nrf54lm20bsim/nrf54lm20a/cpuapp(ran-46) usb_on_without_vbus/native_sim(ran-46) usb_on_without_vbus/nrf54lm20bsim/nrf54lm20a/cpuapp(ran-46) read_deleted/native_sim(extra: xfer_proto.test_read_range_args) read_deleted/nrf54lm20bsim/nrf54lm20a/cpuapp(extra: xfer_proto.test_read_range_args)
+# finished (Mac clock): 2026-11-13 06:32:29 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step6/20261113-062513-u4-broken1.log

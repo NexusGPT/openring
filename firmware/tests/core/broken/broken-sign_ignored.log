@@ -1,0 +1,16 @@
+broken copy run 2026-11-13 04:15:37 CET, mutation sign_ignored
+change applied (diff of the copy against its original):
+141c141
+< 		c->facts.sign_not_drawn = (c->sign_fn(c->sign_ctx, t) != 0);
+---
+> 		(void)c->sign_fn(c->sign_ctx, t);
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_rows.c:62: out.last_row == 16 (left 12, right 16)
+FAIL rc_rows.test_row_16
+    assert failed firmware/tests/core/src/test_rules.c:534: out.last_row == 16 (left 12, right 16)
+FAIL rc_rules.test_refused_sign_leaves_no_recording_m3_and_event_log
+    assert failed firmware/tests/core/src/test_rules.c:444: out.last_row == 16 (left 12, right 16)
+FAIL rc_rules.test_sign_hook_once_per_press
+suites=13 tests=221 pass=218 fail=3
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation sign_ignored, named case rc_rows.test_row_16 failed

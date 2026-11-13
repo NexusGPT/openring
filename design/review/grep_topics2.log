@@ -1,0 +1,72 @@
+##### bottom port|side port|side-port|port hole|sound hole
+design/architecture.md:41:| Microphone x2 | IM68D128B (order code IM68D128BV01XTMA1, from a distributor listing) | Infineon | 3.5 x 2.65 x 0.98 | 68 dB(A), bottom port, PDM, 1.62 to 3.6 V, 0.58 mA | [DS] size
+design/architecture.md:105:- 4 microphones, bottom port, on the underside of the board, in one line along the thumb side of the block.
+design/architecture.md:345:- Microphones at X = -11.0 and X = +11.0, bottom port up through the board is not possible under the screen: each microphone ports sideways through a 1.4 x 0.4 mm slot in the -Y wal
+design/architecture.md:397:| B7 | Side-ported microphones behind a wall slot | bench |
+design/bom.csv:8:Microphone x2,"U5, U6",2,"PDM microphone, side-ported through a 1.2 x 0.3 mm slot in the block wall away from the thumb, at X = -11 and +11 (architecture 16.3, 17.1); one stereo input",Infine
+design/bom.csv:51:Main circuit board,PCB1,1,"main board, parts on the underside, one side populated; 2 flex tails leave it through slots in the block floor",,,6 layer micro-via,27.2 x 12.6 x 0.3,,0.325 mm bal
+design/bom.csv:58:Microphone gasket x2,"GSK2, GSK3",2,moulded gasket channel from each microphone's side port to its slot in the wall (architecture 16.3; 17.1 keeps the slots),,,,,0.6 mm tall,outline from the
+design/bom-notes.md:22:| Main board PCB1 | 27.0 x 17.4 x 0.6 becomes 27.2 x 12.6 x 0.3, 6 layers; 4 sound holes removed | 17.2, 17.4 |
+design/mech/thin/thin-notes.md:26:- main_chip, power_chip, screen_supply_chip: chip body, metal balls (grid underneath, toward the board), mark plate on the exposed face. storage: chip body, 8 gold pads, mark
+design/mech/thin/thin-notes.md:39:Solder ball diameters and standoff (0.2 and 0.25), WLCSP-35 and 2x2-16B grids (7 x 5, 4 x 4), the 2-corner omission on the 9 x 7 grid (61 balls), storage pad size and positio
+design/mech/thin/placement.csv:11:mic_1,U5,board,-11.000,-5.125,0.940,3.500,2.650,0.980,,True,IM68D128B: small substrate with a metal can; port hole dia 0.35 in the can's -Y wall at the body slot
+design/mech/thin/placement.csv:12:mic_2,U6,board,11.000,-5.125,0.940,3.500,2.650,0.980,,True,IM68D128B: small substrate with a metal can; port hole dia 0.35 in the can's -Y wall at the body slot
+##### recessed|proud
+requirements.md:59:| U3 | No accidental stop | The button sits recessed. A single bump never stops a recording | Proposed. A Vocci review reports an accidental stop |
+design/architecture.md:153:| Record button | +4.0 | under the board, at its outer edge | recessed 0.8 mm in the wall |
+design/architecture.md:364:- Joystick cap: on the +Y wall, centre at X = +10.0, Z = 3.1. Visible cap 5.6 (X) x 3.6 (Z) mm with rounded ends, standing 0.5 mm proud. It tilts; it does not slide.
+design/mech/thin/thin-notes.md:10:design/look/s1/out/ring-merged32b.step (it appeared during the work; the first runs used ring-merged32.step, which has a 3
+design/mech/thin/thin-notes.md:13:37 parts, 665 pairs (sub-solid against sub-solid, body x liner excluded), 0 collisions above 0.001 mm3; every part inside the exterior's body envelope (1418 vertices sampled;
+design/mech/thin/placement.csv:28:record_cap,,band,0.000,11.652,-9.468,4.400,2.400,1.608,88.00,False,pill 4.4 (X) x 2.4 (along the band) with a flange 0.8 wider under the shell lip; stem to the switch; top 0.
+design/mfg/mfg-notes.md:20:| joystick-nub | yes | yes | material, process, finish, height proud (design partner), B6 and B9 |
+design/mfg/specs/joystick-nub.md:54:4. Height of the nub above the frame and the body surface: the architecture does not give it for 17.8. The earlier model had 0.35 mm proud (design/mech/thin/placement.csv, 
+design/mfg/specs/record-cap.md:49:3. Cap height above the body and the flange: not stated for 17.8; the earlier model had a flange 0.8 mm wider than the pill and the top 0.2 mm proud (design/mech/thin/placeme
+design/case/case-architecture.md:9:| Ring | flat block 30 x 20 x 9.5 on a band, four pads under the block at 2.54 mm pitch | one metal body: block 29.3 x 14.75 x 3.85 on a band 8.0 wide, bore 18.95 at US 9; f
+##### 7 sizes|US 7 to 13|US 5
+requirements.md:22:| S2 | Sizes | 9 sizes, US 5 to 13 | Proposed. Galaxy Ring ships 9, Aina 7 (sizes 7 to 13) |
+design/architecture.md:161:- **Base with band:** floor 0.8 mm plus the band. One part per ring size, 9 sizes, US 5 to 13.
+design/bom.csv:53:Metal body (block and band),HSG1,1,"one metal body: block 29.3 x 14.75 mm in plan, 3.85 mm high at the centre line and 2.95 mm at the long edges, with the 8.0 mm wide band, 2.6 mm thick, 3.6
+design/bom-notes.md:70:Note added 2026-11-10 (21:40), architecture 17.10: the cell BT1 is 1.6 x 6.0 x 28.4 mm on its centre line, from -39 degrees through the bottom to +167, about 15 to 20 mAh. This replaces
+design/mfg/mfg-notes.md:46:US 5 to 13 (9 sizes), band inner diameter 11.63 + 0.8128 x size (mech-notes.md line 7). The body, liner, flex tails and cell change with the size; glass, nub, cap and board do not.
+design/mfg/parts-notes.md:15:Exterior shapes, identical in US 7 to 13 (volume and extents compared), so one file each with ring_size `all`. The joystick nub and record cap are exported at their US 9 position;
+design/mfg/specs/band-flex-tails.md:52:The path length of each tail changes with the ring size (the band diameter changes, US 5 to 13); the block-side end does not. Length per size: open point 4.
+design/mfg/specs/band-liner.md:9:1 per ring, one per ring size (US 5 to 13).
+design/mfg/specs/band-liner.md:37:The liner follows the inner diameter of each size: US 5 15.69, US 6 16.51, US 7 17.32, US 8 18.13, US 9 18.95, US 10 19.76, US 11 20.57, US 12 21.38, US 13 22.20 mm [CALC fro
+design/mfg/specs/body.md:11:1 body per ring. One body per ring size, 9 sizes (US 5 to 13).
+design/mfg/specs/cell.md:47:The arc length scales with the diameter (17.3): the centre line radius is half the inner diameter plus 0.3 liner plus 0.8 (half the cell), so the values for US 5 to 13 are in the t
+design/mfg/specs/cover-glass.md:47:One glass for all sizes (US 5 to 13): the block does not change with the size (architecture 17.1).
+design/mfg/specs/joystick-nub.md:45:The same nub for all sizes (US 5 to 13). The frame and opening are at 150 degrees on every size; whether the curvature under the nub changes with size is open point 5.
+design/mfg/specs/main-board.md:45:The same for all sizes (US 5 to 13). The block does not change with ring size.
+design/mfg/specs/record-cap.md:41:The same cap for all sizes (US 5 to 13).
+design/firmware.md:377:- At recording start, M1 (80 ms) runs while the first 50 ms are discarded (section 4.5); the rest of the pulse plus 50 ms is marked in the first chunk.
+design/case/case-architecture.md:47: USB-C (J1) --VBUS 5 V--> [BQ25895 U2  charger + power path + boost] --BAT--> [cell 700 mAh with PCM, BT1]
+design/case/case-architecture.md:73:| J1 | USB-C receptacle | GCT USB4105-GF-A | 8.94 x 7.35 x 3.31 mm top mount, VBUS 5 A, 20,000 cycles, CC1 A5, CC2 B5 [DS case_usb4105.pdf drawing rev B4] | DS |
+design/case/case-architecture.md:162:**Ring seat (one seat for US 7 to 13).** The ring (the real model, read-only) is rolled 30 degrees about its band axis, so the four pads face straight down onto the four p
+design/case/case-architecture.md:164:**Keying.** The pocket for the block is the outline of the block over US 7 to 13, with 0.3 mm clearance, in the rolled position. A ring placed turned 180 degrees (pad row 
+design/case/case-notes.md:12:| M4 | Pocket = outline of the block over all sizes plus 0.3 mm | one pocket for US 7 to 13; the shape is the key against a turned ring |
+design/case/case-notes.md:28:- A6. Ring sizes: all seven STEP files US 7 to 13 exist and were checked.
+design/case/case-notes.md:34:- **F1.** Case size grew: 44.0 x 37.6 x 58.0 mm (96.0 cm3) against 33.6 x 33.4 x 55.2 (61.9 cm3) in C2. Drivers: cell flat under the ring (X 44.0); 4.9 mm of glass height travel f
+design/case/case-notes.md:56:3. Case size 44.0 x 37.6 x 58.0 mm for US 7 to 13: accept, or limit the sizes?
+design/case/case-notes.md:100:| O10 | Two files in design/datasheets/ named .pdf are HTML error pages from blocked downloads: case_cell_dnk503035.pdf, case_cell_eemb_lp503035.pdf (evidence/final_listing.log).
+design/status.json:37:   "why": "the case is redesigned for the thin ring: one seat for ring sizes US 7 to 13 and four spring pins on the band's pads; its fit check passes; the spring pin first chosen does no
+##### C1\b|version C1
+requirements.md:88:| C1 | Case | "small ring case" that charges the ring | Owner |
+requirements.md:194:13. **C1 Case, "small ring case" that charges the ring, and C4 contact pins: CHANGED, the case's seat must be redesigned.** The ring has no flat block with pads under it; it charges and tr
+design/architecture.md:54:| 32 MHz crystal | CX2016DB32000D0WZRC1 | Kyocera | 2.0 x 1.6 | 8 pF, 40 ppm | [DS] Nordic reference parts list |
+design/architecture.md:210:| ANT | dedicated | C1 | through the match network to the antenna |
+design/bom.csv:18:32 MHz crystal,X1,1,main chip high-frequency clock,Kyocera,CX2016DB32000D0WZRC1,XTAL_2016,2.0 x 1.6,32 MHz,"load 8 pF, total tolerance +/-40 ppm; Nordic reference shows no external load capa
+design/bom.csv:24:Capacitor 100 nF,"C1, C2, C5",3,"main chip supply decoupling, Nordic reference",Samsung,CL03A104KP3NNNC,0201,0.6 x 0.3,100 nF X5R 10 V,"X7R, +/-10 %, 10 V",LIST,design/parts/order-codes.md,,
+design/bom.csv:30:Capacitor 4.7 uF 0603 16 V,"C21, C26, C27",3,"SGM38046 datasheet C1, C6, C7",Murata,GRM188R61C475KAAJD,0603,1.6 x 0.8,4.7 uF,"X5R, 16 V",DS,<work>/ai-ring-recorde
+design/ecad/ring/sch-notes.md:30:**Main chip and radio (sheet 2).** Unchanged from A3. U1 nRF54LM20A CAAA, copied pin by pin from Nordic's CAAA reference schematic, configuration 1: VDD balls A4 and E10 on VD
+design/ecad/ring/sch-notes.md:32:**Power (sheet 3).** U2 nPM1300 with its passives C71 to C80, L71, L72, R71, R72, R57, R58, as in A3. The cell BT1 and the thermistor RT1 moved to the band sheet (section 17.3
+design/ecad/ring/sch-notes.md:86:- PMIC_INT on nPM1300 GPIO0; U9 channel 2 both on VBUS; SHPHLD on TP19; CC1, CC2 open (as A3).
+design/ecad/ring/pcb/board-notes.md:32:2. Antenna: keep-out 4.2 x 4.7 no copper on any layer (`bom.csv` ANT1) is drawn on Dwgs.User only, centred on ANT1, not as a rule area. The J1 pad row reaches 0.13 mm in
+design/mech/thin/thin-notes.md:36:From v1 and still standing: C1 (cross at 2.1, not 1.9), C4 (0.27 mm wall at the panel corners; the exterior's own 2.5 corner radius governs now).
+design/mfg/specs/joystick-nub.md:60:design/architecture.md lines 430, 443, 444 (17.3); 472 (B9); 489 (17.8, wins over 17.7 line 479); design/mech/thin/thin-notes.md conflict C1.
+design/firmware.md:3:Version F3, 2026-11-10. Follows `design/architecture.md` version A5-draft (read 2026-11-10: section 17 is the current ring; where sections disagree, 17.8 wins over 17.7, then 17.1 to 17.6
+design/firmware.md:736:| 0x10 | T-MIC1, T-MIC2 (argument 1 or 2) | each microphone | a 2 s test recording (recording_type 2) through the normal path while the jig speaker plays 1 kHz; report RMS level of each
+design/firmware.md:820:| DOC | `design/architecture.md` A5-draft (sections 2, 7, 9, 14, 16.4 to 16.6, 17.3 to 17.8; read 2026-11-10), `design/case/case-architecture.md` C1 (sections 1, 5, 6), `design/ecad/rin
+design/case/case-architecture.md:20:C2 changes against C1 (2026-11-10, after the case schematic `design/ecad/case/sch-notes.md`): 464.4 MB per recorded hour (4-microphone ring figure with block headers), so 6
+design/case/case-architecture.md:48:   |  CC1, CC2: 5.1 k to GND (R1, R2), sensed by U1 ADC          |  SYS 3.0-4.4 V
+design/case/case-architecture.md:73:| J1 | USB-C receptacle | GCT USB4105-GF-A | 8.94 x 7.35 x 3.31 mm top mount, VBUS 5 A, 20,000 cycles, CC1 A5, CC2 B5 [DS case_usb4105.pdf drawing rev B4] | DS |
+design/case/case-architecture.md:104:3. U1 reads the USB-C state from CC1/CC2 (ADC). No source: U1 sets the OTG pin high and the OTG_CONFIG bit to 1 [DS bq25895 section 8, "OTG pin HIGH and OTG_CONFIG bit =1"

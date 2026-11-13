@@ -1,0 +1,30 @@
+# remote.sh run 20261113-061024-u7-kit3
+# command: west build -p always -b nrf54lm20dk/nrf54lm20a/cpuapp /ws/firmware/tests/sys/kitcompile -d /ws/out/u7-kit3 --no-sysbuild > /ws/out/u7-kit3.build.txt 2>&1 ; echo build-exit $? ; NM=/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-nm; O=/ws/out/u7-kit3/modules/ring_sys/CMakeFiles/ring_sys.dir/src/rsy_hw_real.c.obj; for s in ri_erase ri_write ri_read ri_request ri_is_confirmed ri_confirm ps_load ps_save rw_start rw_feed rr_read rr_gp_get rsy_hw_register; do echo $s: $($NM $O | grep -c " $s\$"); done; grep -E '^CONFIG_(MCUBOOT_IMG_MANAGER|IMG_MANAGER|FLASH_MAP|SETTINGS_ZMS|SETTINGS_NVS|STREAM_FLASH)=' /ws/out/u7-kit3/zephyr/.config; grep -c -E 'error|warning: ' /ws/out/u7-kit3.build.txt; grep -E '(rsy[a-z_]*\.c).*(warning|error)' /ws/out/u7-kit3.build.txt | cut -c1-200
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 06:10:24 CET
+# free on the server's /: 51 GB
+# source firmware copied to /root/ring-os/src-u-sys
+# started on the server as 20261113-061024-u7-kit3; server log /root/ring-os/logs/20261113-061024-u7-kit3.log
+build-exit 1
+ri_erase: 1
+ri_write: 1
+ri_read: 1
+ri_request: 1
+ri_is_confirmed: 1
+ri_confirm: 1
+ps_load: 1
+ps_save: 1
+rw_start: 1
+rw_feed: 1
+rr_read: 0
+rr_gp_get: 0
+rsy_hw_register: 1
+CONFIG_IMG_MANAGER=y
+CONFIG_MCUBOOT_IMG_MANAGER=y
+CONFIG_FLASH_MAP=y
+CONFIG_STREAM_FLASH=y
+3
+/ws/firmware/modules/ring_sys/src/rsy_hw_real.c:31:20: warning: Macro is deprecated
+# finished (Mac clock): 2026-11-13 06:11:17 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-061024-u7-kit3.log

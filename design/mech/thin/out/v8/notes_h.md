@@ -1,0 +1,11 @@
+## h. Words that were wrong
+
+- design/mfg/specs/band-flex-tails.md (Owns): rewritten banner (no longer "1.4 mm wide" and "No flat pattern exists yet": the flat patterns are design/ecad/band/flexK-usN.kicad_pcb with Gerber, drill and drawings in design/ecad/band/fab/); Process, Material, Finish, Tolerance paragraphs from design/ecad/band/band-notes.md and band-interface.md; critical dimensions (flex thickness 0.11 finished and 0.15 allowance, neck 1.8, foot 2.5, fold 0.70, pad strip X -3.4 to 0.25; the old row "flex thickness 0.15" replaced); motor position row (0.8 at US 7); flat lengths per size; Files paragraph (6 and 5 solids per file, foot stiffener files); open points 0 to 5 closed by design/ecad/band/band-notes.md and band-interface.md with their sections named, and the points that stay unmeasured listed. The file before the edit is kept as out/v8/band-flex-tails_before.md.
+- design/mech/thin/thin-notes.md (Owns): new section "Model v8: band circuits as drawn" at the end. The file before is kept as out/v8/thin-notes_before.md.
+- design/architecture.md (not edited): lines that need a change, each with the value now and the value needed:
+  - line 440: "0.6 mm at each edge, a channel 6.8 mm wide inside" -> "0.5 mm at each edge, a channel 7.0 mm wide inside";
+  - line 586: "0.7 mm off the band's centre line" -> "0.7 mm off the band's centre line (0.8 mm at US 7 and US 12)";
+  - line 587: "1.4 mm wide; tightest free space 0.1 mm on each side" -> "1.8 mm wide at the neck, 2.5 at the board foot (design/ecad/band); free space 0.075 mm of resin to the motor, cell and protection circuit, 0.10 mm to the body";
+  - line 795: "6.4 x 6.4 x 0.075 mm stiffener" -> "6.4 x 6.4 x 0.10 mm stiffener";
+  - line 797: "motor to the joystick ribbon 0.097 to 0.099 mm on US 10 to 13" -> "motor to the ribbon 0.075 mm (the resin skin) on US 8 to 11 and US 13, 0.0926 mm on US 7 and US 12" (values in section c.3);
+  - line 809: "The ribbon is 1.4 mm wide (X -3.3 to -1.9), so it still passes, with 0.2 and 0.4 mm to the slot ends" -> "The ribbon neck is 1.8 mm wide (X -3.4 to -1.6) in a floor slot 2.1 mm long (X -3.55 to -1.45), 0.15 mm to each slot end"; and "As built in model v6.2: 2.0 x 0.6 mm, from X -3.5 to X -1.5" gets "(v8: 2.1 x 0.6, X -3.55 to -1.45)".

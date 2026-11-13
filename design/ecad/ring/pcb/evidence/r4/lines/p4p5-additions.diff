@@ -1,0 +1,22 @@
+198a199,219
+> # ---------------- ring-lines additions (not part of the read-back's frozen lines; stated as additions)
+> # A1: P4.3 judged outside the antenna copper-free zone (lead's ruling): plan R2.0 point 2, X -13.60 to -8.75, Y 3.10 to 6.30 less the notch
+> # X -9.20 to -8.75, Y 3.10 to 3.30; board model = Gerber - 100 in X and Gerber y = -(model Y + 100)
+> MX = X - 100.0; MY = -Y - 100.0
+> inzone = (MX >= -13.60) & (MX <= -8.75) & (MY >= 3.10) & (MY <= 6.30) & ~((MX >= -9.20) & (MY <= 3.30))
+> mo = m1 & ~inzone
+> log('A1 antenna reference outside the copper-free zone: L2 GND covers %.4f percent of the line pixels (%d of %d); line pixels inside the zone %d' % ((gnd2 & mo).sum() / mo.sum() * 100, (gnd2 & mo).sum(), mo.sum(), (m1 & inzone).sum()))
+> # A2: USB edge-to-edge gap sampled on the D+ draw centrelines every 0.02 mm (distance to D- copper minus half the D+ width), coupled points
+> # (gap < 0.25 mm) only; Zdiff at each sampled gap
+> dd_dn = ndimage.distance_transform_edt(~mdn) * b.res
+> gs = []
+> for k in ud['DP']:
+>     for (x1, y1, x2, y2, w_, _) in ud['DP'][k]:
+>         ln = math.hypot(x2 - x1, y2 - y1); n_ = max(1, int(ln / 0.02))
+>         for q in range(n_ + 1):
+>             px, py = x1 + (x2 - x1) * q / n_, y1 + (y2 - y1) * q / n_
+>             i_, j_ = b.ij(px, py); gs.append(dd_dn[i_, j_] - w_ / 2)
+> gs = np.array(gs); cpl = gs[gs < 0.25]
+> zz = [S.zdiff_ipc2141(z0, float(g_), H) for g_ in cpl]
+> log('A2 USB edge gap on D+ centreline: %d samples, %d coupled (gap < 0.25 mm); coupled gap min %.4f median %.4f max %.4f mm; Zdiff min %.2f max %.2f ohm; coupled samples outside 81..99 ohm: %d; uncoupled samples %d' % (len(gs), len(cpl), cpl.min(), float(np.median(cpl)), cpl.max(), min(zz), max(zz), sum(1 for z_ in zz if z_ < 81 or z_ > 99), len(gs) - len(cpl)))
+> res['A1'] = dict(cov_out_pct=(gnd2 & mo).sum() / mo.sum() * 100); res['A2'] = dict(n=len(gs), coupled=len(cpl), gmin=float(cpl.min()), gmax=float(cpl.max()), zmin=min(zz), zmax=max(zz))

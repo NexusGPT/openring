@@ -1,0 +1,630 @@
+# remote.sh run 20261113-055744-u-store
+# command: for b in twister-native_sim twister-nrf54lm20bsim_nrf54lm20a_cpuapp; do for f in $(find /ws/out/20261113-054901-u-store-unit/$b -name handler.log); do echo "##### $f"; cat $f; done; done
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:57:44 CET
+# free on the server's /: 52 GB
+# source firmware copied to /root/ring-os/src-u-store
+# started on the server as 20261113-055744-u-store; server log /root/ring-os/logs/20261113-055744-u-store.log
+##### /ws/out/20261113-054901-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/handler.log
+*** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+*** Using Zephyr OS v4.4.2-9133dab6b066 ***
+Running TESTSUITE store_delete
+===================================================================
+START - test_confirm_match_and_mismatch
+ PASS - test_confirm_match_and_mismatch in 0.005 seconds
+===================================================================
+START - test_delete_needs_confirm
+ PASS - test_delete_needs_confirm in 0.004 seconds
+===================================================================
+START - test_delete_refused_while_open
+ PASS - test_delete_refused_while_open in 0.003 seconds
+===================================================================
+START - test_factory_recordings_deleted
+ PASS - test_factory_recordings_deleted in 0.006 seconds
+===================================================================
+START - test_no_erase
+ PASS - test_no_erase in 0.004 seconds
+===================================================================
+START - test_read_chunk_deleted_not_found
+ PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+===================================================================
+START - test_tail_moves_over_leading_only
+ PASS - test_tail_moves_over_leading_only in 0.010 seconds
+===================================================================
+TESTSUITE store_delete succeeded
+Running TESTSUITE store_evlog
+===================================================================
+START - test_buffer_of_8_drops_oldest
+ PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+===================================================================
+START - test_crash_block_roundtrip
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+===================================================================
+START - test_ring_of_2046
+ PASS - test_ring_of_2046 in 2.343 seconds
+===================================================================
+START - test_written_when_rail_on
+ PASS - test_written_when_rail_on in 0.073 seconds
+===================================================================
+TESTSUITE store_evlog succeeded
+Running TESTSUITE store_fmt
+===================================================================
+START - test_chunk_encode_rejects_bad_counts
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+===================================================================
+START - test_chunk_header_bytes
+ PASS - test_chunk_header_bytes in 0.000 seconds
+===================================================================
+START - test_chunk_header_roundtrip_and_rejects
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+===================================================================
+START - test_crc_check_value
+store_fmt: crc32 check value 0xCBF43926 holds for crc32_ieee (K12)
+ PASS - test_crc_check_value in 0.000 seconds
+===================================================================
+START - test_digest
+ PASS - test_digest in 0.000 seconds
+===================================================================
+START - test_digest_stream_equals_oneshot
+ PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+===================================================================
+START - test_index_record_bytes
+ PASS - test_index_record_bytes in 0.000 seconds
+===================================================================
+START - test_kit_disk_and_crc_names_exist
+K2: disk_access_read, disk_access_write, disk_access_ioctl, DISK_IOCTL_CTRL_INIT, DISK_IOCTL_CTRL_DEINIT, DISK_IOCTL_GET_SECTOR_COUNT, crc32_ieee, crc32_ieee_update exist (compile test)
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+===================================================================
+START - test_last_chunk_zero_tail
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+===================================================================
+START - test_little_endian
+ PASS - test_little_endian in 0.000 seconds
+===================================================================
+START - test_log_record_bytes
+ PASS - test_log_record_bytes in 0.000 seconds
+===================================================================
+START - test_superblock_bytes
+ PASS - test_superblock_bytes in 0.000 seconds
+===================================================================
+START - test_unused_slots_are_ff
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+===================================================================
+TESTSUITE store_fmt succeeded
+Running TESTSUITE store_index
+===================================================================
+START - test_close_highlights_32
+ PASS - test_close_highlights_32 in 0.003 seconds
+===================================================================
+START - test_list_beyond_cache_reads_index
+ PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+===================================================================
+START - test_state_is_last_record
+ PASS - test_state_is_last_record in 0.000 seconds
+===================================================================
+START - test_table_pushes_out_oldest_and_finds_on_demand
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+===================================================================
+TESTSUITE store_index succeeded
+Running TESTSUITE store_layout
+===================================================================
+START - test_chunk_lba_wraps
+ PASS - test_chunk_lba_wraps in 0.000 seconds
+===================================================================
+START - test_examples
+ PASS - test_examples in 0.000 seconds
+===================================================================
+START - test_index_lba_wraps
+ PASS - test_index_lba_wraps in 0.000 seconds
+===================================================================
+START - test_sector_map
+ PASS - test_sector_map in 0.000 seconds
+===================================================================
+TESTSUITE store_layout succeeded
+Running TESTSUITE store_log
+===================================================================
+START - test_mount_picks_newer_valid_copy
+ PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+===================================================================
+TESTSUITE store_log succeeded
+Running TESTSUITE store_recovery
+===================================================================
+START - test_cut_inside_chunk_write
+ PASS - test_cut_inside_chunk_write in 0.020 seconds
+===================================================================
+START - test_loss_bound_with_stalled_card
+ PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+===================================================================
+START - test_read_error_reports
+ PASS - test_read_error_reports in 0.007 seconds
+===================================================================
+START - test_recovered_close_record
+ PASS - test_recovered_close_record in 0.007 seconds
+===================================================================
+START - test_scan_read_error_reports
+ PASS - test_scan_read_error_reports in 0.000 seconds
+===================================================================
+START - test_scan_summary
+ PASS - test_scan_summary in 0.000 seconds
+===================================================================
+START - test_stop_on_each_mismatch
+ PASS - test_stop_on_each_mismatch in 0.000 seconds
+===================================================================
+TESTSUITE store_recovery succeeded
+Running TESTSUITE store_space
+===================================================================
+START - test_callbacks_once_per_crossing
+ PASS - test_callbacks_once_per_crossing in 0.036 seconds
+===================================================================
+START - test_counts
+ PASS - test_counts in 0.000 seconds
+===================================================================
+START - test_s30_sfull_edges
+ PASS - test_s30_sfull_edges in 0.000 seconds
+===================================================================
+START - test_storage_left_minutes
+ PASS - test_storage_left_minutes in 0.000 seconds
+===================================================================
+TESTSUITE store_space succeeded
+Running TESTSUITE store_svc
+===================================================================
+START - test_boot_count
+ PASS - test_boot_count in 0.005 seconds
+===================================================================
+START - test_busy_while_operation_runs
+ PASS - test_busy_while_operation_runs in 0.602 seconds
+===================================================================
+START - test_chunks_wrap_on_small_card
+ PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+===================================================================
+START - test_factory_area_test
+ PASS - test_factory_area_test in 0.006 seconds
+===================================================================
+START - test_full_cycle_with_partial_last_chunk
+ PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+===================================================================
+START - test_init_three_tries_200ms
+ PASS - test_init_three_tries_200ms in 0.804 seconds
+===================================================================
+START - test_mount_never_formats_an_unreadable_card
+ PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+===================================================================
+START - test_mount_reads_sector_count
+ PASS - test_mount_reads_sector_count in 0.003 seconds
+===================================================================
+START - test_mount_uses_the_valid_copy
+ PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+===================================================================
+START - test_no_disk_call_with_rail_off
+ PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+===================================================================
+START - test_no_rewrite_during_recording
+ PASS - test_no_rewrite_during_recording in 0.008 seconds
+===================================================================
+START - test_one_open_recording
+ PASS - test_one_open_recording in 0.003 seconds
+===================================================================
+START - test_one_write_per_chunk
+ PASS - test_one_write_per_chunk in 0.007 seconds
+===================================================================
+START - test_put_chunk_ring_of_three
+ PASS - test_put_chunk_ring_of_three in 4.002 seconds
+===================================================================
+START - test_rail_sequence
+ PASS - test_rail_sequence in 0.002 seconds
+===================================================================
+START - test_sim_reboot_clears_ram_state
+ PASS - test_sim_reboot_clears_ram_state in 0.002 seconds
+===================================================================
+START - test_superblock_twice_per_recording
+ PASS - test_superblock_twice_per_recording in 0.004 seconds
+===================================================================
+START - test_three_tries_then_fault_open_flag_kept
+ PASS - test_three_tries_then_fault_open_flag_kept in 0.007 seconds
+===================================================================
+START - test_unmount_waits_for_chunks
+ PASS - test_unmount_waits_for_chunks in 0.202 seconds
+===================================================================
+TESTSUITE store_svc succeeded
+
+------ TESTSUITE SUMMARY START ------
+
+SUITE PASS - 100.00% [store_delete]: pass = 7, fail = 0, skip = 0, total = 7 duration = 0.038 seconds
+ - PASS - [store_delete.test_confirm_match_and_mismatch] duration = 0.005 seconds
+ - PASS - [store_delete.test_delete_needs_confirm] duration = 0.004 seconds
+ - PASS - [store_delete.test_delete_refused_while_open] duration = 0.003 seconds
+ - PASS - [store_delete.test_factory_recordings_deleted] duration = 0.006 seconds
+ - PASS - [store_delete.test_no_erase] duration = 0.004 seconds
+ - PASS - [store_delete.test_read_chunk_deleted_not_found] duration = 0.006 seconds
+ - PASS - [store_delete.test_tail_moves_over_leading_only] duration = 0.010 seconds
+
+SUITE PASS - 100.00% [store_evlog]: pass = 4, fail = 0, skip = 0, total = 4 duration = 2.438 seconds
+ - PASS - [store_evlog.test_buffer_of_8_drops_oldest] duration = 0.000 seconds
+ - PASS - [store_evlog.test_crash_block_roundtrip] duration = 0.022 seconds
+ - PASS - [store_evlog.test_ring_of_2046] duration = 2.343 seconds
+ - PASS - [store_evlog.test_written_when_rail_on] duration = 0.073 seconds
+
+SUITE PASS - 100.00% [store_fmt]: pass = 13, fail = 0, skip = 0, total = 13 duration = 0.000 seconds
+ - PASS - [store_fmt.test_chunk_encode_rejects_bad_counts] duration = 0.000 seconds
+ - PASS - [store_fmt.test_chunk_header_bytes] duration = 0.000 seconds
+ - PASS - [store_fmt.test_chunk_header_roundtrip_and_rejects] duration = 0.000 seconds
+ - PASS - [store_fmt.test_crc_check_value] duration = 0.000 seconds
+ - PASS - [store_fmt.test_digest] duration = 0.000 seconds
+ - PASS - [store_fmt.test_digest_stream_equals_oneshot] duration = 0.000 seconds
+ - PASS - [store_fmt.test_index_record_bytes] duration = 0.000 seconds
+ - PASS - [store_fmt.test_kit_disk_and_crc_names_exist] duration = 0.000 seconds
+ - PASS - [store_fmt.test_last_chunk_zero_tail] duration = 0.000 seconds
+ - PASS - [store_fmt.test_little_endian] duration = 0.000 seconds
+ - PASS - [store_fmt.test_log_record_bytes] duration = 0.000 seconds
+ - PASS - [store_fmt.test_superblock_bytes] duration = 0.000 seconds
+ - PASS - [store_fmt.test_unused_slots_are_ff] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [store_index]: pass = 4, fail = 0, skip = 0, total = 4 duration = 0.007 seconds
+ - PASS - [store_index.test_close_highlights_32] duration = 0.003 seconds
+ - PASS - [store_index.test_list_beyond_cache_reads_index] duration = 0.004 seconds
+ - PASS - [store_index.test_state_is_last_record] duration = 0.000 seconds
+ - PASS - [store_index.test_table_pushes_out_oldest_and_finds_on_demand] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [store_layout]: pass = 4, fail = 0, skip = 0, total = 4 duration = 0.000 seconds
+ - PASS - [store_layout.test_chunk_lba_wraps] duration = 0.000 seconds
+ - PASS - [store_layout.test_examples] duration = 0.000 seconds
+ - PASS - [store_layout.test_index_lba_wraps] duration = 0.000 seconds
+ - PASS - [store_layout.test_sector_map] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [store_log]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.000 seconds
+ - PASS - [store_log.test_mount_picks_newer_valid_copy] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [store_recovery]: pass = 7, fail = 0, skip = 0, total = 7 duration = 19.039 seconds
+ - PASS - [store_recovery.test_cut_inside_chunk_write] duration = 0.020 seconds
+ - PASS - [store_recovery.test_loss_bound_with_stalled_card] duration = 19.005 seconds
+ - PASS - [store_recovery.test_read_error_reports] duration = 0.007 seconds
+ - PASS - [store_recovery.test_recovered_close_record] duration = 0.007 seconds
+ - PASS - [store_recovery.test_scan_read_error_reports] duration = 0.000 seconds
+ - PASS - [store_recovery.test_scan_summary] duration = 0.000 seconds
+ - PASS - [store_recovery.test_stop_on_each_mismatch] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [store_space]: pass = 4, fail = 0, skip = 0, total = 4 duration = 0.036 seconds
+ - PASS - [store_space.test_callbacks_once_per_crossing] duration = 0.036 seconds
+ - PASS - [store_space.test_counts] duration = 0.000 seconds
+ - PASS - [store_space.test_s30_sfull_edges] duration = 0.000 seconds
+ - PASS - [store_space.test_storage_left_minutes] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [store_svc]: pass = 19, fail = 0, skip = 0, total = 19 duration = 6.158 seconds
+ - PASS - [store_svc.test_boot_count] duration = 0.005 seconds
+ - PASS - [store_svc.test_busy_while_operation_runs] duration = 0.602 seconds
+ - PASS - [store_svc.test_chunks_wrap_on_small_card] duration = 0.035 seconds
+ - PASS - [store_svc.test_factory_area_test] duration = 0.006 seconds
+ - PASS - [store_svc.test_full_cycle_with_partial_last_chunk] duration = 0.005 seconds
+ - PASS - [store_svc.test_init_three_tries_200ms] duration = 0.804 seconds
+ - PASS - [store_svc.test_mount_never_formats_an_unreadable_card] duration = 0.004 seconds
+ - PASS - [store_svc.test_mount_reads_sector_count] duration = 0.003 seconds
+ - PASS - [store_svc.test_mount_uses_the_valid_copy] duration = 0.004 seconds
+ - PASS - [store_svc.test_no_disk_call_with_rail_off] duration = 0.453 seconds
+ - PASS - [store_svc.test_no_rewrite_during_recording] duration = 0.008 seconds
+ - PASS - [store_svc.test_one_open_recording] duration = 0.003 seconds
+ - PASS - [store_svc.test_one_write_per_chunk] duration = 0.007 seconds
+ - PASS - [store_svc.test_put_chunk_ring_of_three] duration = 4.002 seconds
+ - PASS - [store_svc.test_rail_sequence] duration = 0.002 seconds
+ - PASS - [store_svc.test_sim_reboot_clears_ram_state] duration = 0.002 seconds
+ - PASS - [store_svc.test_superblock_twice_per_recording] duration = 0.004 seconds
+ - PASS - [store_svc.test_three_tries_then_fault_open_flag_kept] duration = 0.007 seconds
+ - PASS - [store_svc.test_unmount_waits_for_chunks] duration = 0.202 seconds
+
+------ TESTSUITE SUMMARY END ------
+
+===================================================================
+RunID: 3d1dd628f57a1524147ef0a4625cd250
+PROJECT EXECUTION SUCCESSFUL
+##### /ws/out/20261113-054901-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/handler.log
+d_00: @00:00:00.000093  *** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+d_00: @00:00:00.000093  *** Using Zephyr OS v4.4.2-9133dab6b066 ***
+d_00: @00:00:00.000093  Running TESTSUITE store_delete
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_confirm_match_and_mismatch
+d_00: @00:00:00.004493   PASS - test_confirm_match_and_mismatch in 0.005 seconds
+d_00: @00:00:00.004493  ===================================================================
+d_00: @00:00:00.004493  START - test_delete_needs_confirm
+d_00: @00:00:00.007793   PASS - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.007793  ===================================================================
+d_00: @00:00:00.007793  START - test_delete_refused_while_open
+d_00: @00:00:00.009993   PASS - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.009993  ===================================================================
+d_00: @00:00:00.009993  START - test_factory_recordings_deleted
+d_00: @00:00:00.015493   PASS - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.015493  ===================================================================
+d_00: @00:00:00.015493  START - test_no_erase
+d_00: @00:00:00.018793   PASS - test_no_erase in 0.004 seconds
+d_00: @00:00:00.018793  ===================================================================
+d_00: @00:00:00.018793  START - test_read_chunk_deleted_not_found
+d_00: @00:00:00.024293   PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.024293  ===================================================================
+d_00: @00:00:00.024293  START - test_tail_moves_over_leading_only
+d_00: @00:00:00.034193   PASS - test_tail_moves_over_leading_only in 0.010 seconds
+d_00: @00:00:00.034193  ===================================================================
+d_00: @00:00:00.034193  TESTSUITE store_delete succeeded
+d_00: @00:00:00.034193  Running TESTSUITE store_evlog
+d_00: @00:00:00.034193  ===================================================================
+d_00: @00:00:00.034193  START - test_buffer_of_8_drops_oldest
+d_00: @00:00:00.034193   PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.034193  ===================================================================
+d_00: @00:00:00.034193  START - test_crash_block_roundtrip
+d_00: @00:00:00.055393   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:00.055393  ===================================================================
+d_00: @00:00:00.055393  START - test_ring_of_2046
+d_00: @00:00:02.397793   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.397793  ===================================================================
+d_00: @00:00:02.397793  START - test_written_when_rail_on
+d_00: @00:00:02.470193   PASS - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  TESTSUITE store_evlog succeeded
+d_00: @00:00:02.470193  Running TESTSUITE store_fmt
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_chunk_encode_rejects_bad_counts
+d_00: @00:00:02.470193   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_chunk_header_bytes
+d_00: @00:00:02.470193   PASS - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_chunk_header_roundtrip_and_rejects
+d_00: @00:00:02.470193   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_crc_check_value
+d_00: @00:00:02.470193  store_fmt: crc32 check value 0xCBF43926 holds for crc32_ieee (K12)
+d_00: @00:00:02.470193   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_digest
+d_00: @00:00:02.470193   PASS - test_digest in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_digest_stream_equals_oneshot
+d_00: @00:00:02.470193   PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_index_record_bytes
+d_00: @00:00:02.470193   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_kit_disk_and_crc_names_exist
+d_00: @00:00:02.470193  K2: disk_access_read, disk_access_write, disk_access_ioctl, DISK_IOCTL_CTRL_INIT, DISK_IOCTL_CTRL_DEINIT, DISK_IOCTL_GET_SECTOR_COUNT, crc32_ieee, crc32_ieee_update exist (compile test)
+d_00: @00:00:02.470193   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_last_chunk_zero_tail
+d_00: @00:00:02.470193   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_little_endian
+d_00: @00:00:02.470193   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_log_record_bytes
+d_00: @00:00:02.470193   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_superblock_bytes
+d_00: @00:00:02.470193   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_unused_slots_are_ff
+d_00: @00:00:02.470193   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  TESTSUITE store_fmt succeeded
+d_00: @00:00:02.470193  Running TESTSUITE store_index
+d_00: @00:00:02.470193  ===================================================================
+d_00: @00:00:02.470193  START - test_close_highlights_32
+d_00: @00:00:02.472393   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.472393  ===================================================================
+d_00: @00:00:02.472393  START - test_list_beyond_cache_reads_index
+d_00: @00:00:02.475693   PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+d_00: @00:00:02.475693  ===================================================================
+d_00: @00:00:02.475693  START - test_state_is_last_record
+d_00: @00:00:02.475693   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.475693  ===================================================================
+d_00: @00:00:02.475693  START - test_table_pushes_out_oldest_and_finds_on_demand
+d_00: @00:00:02.475693   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.475693  ===================================================================
+d_00: @00:00:02.475693  TESTSUITE store_index succeeded
+d_00: @00:00:02.475693  Running TESTSUITE store_layout
+d_00: @00:00:02.475693  ===================================================================
+d_00: @00:00:02.475693  START - test_chunk_lba_wraps
+d_00: @00:00:02.475693   PASS - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693  ===================================================================
+d_00: @00:00:02.475693  START - test_examples
+d_00: @00:00:02.475693   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.475693  ===================================================================
+d_00: @00:00:02.475693  START - test_index_lba_wraps
+d_00: @00:00:02.475693   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693  ===================================================================
+d_00: @00:00:02.475693  START - test_sector_map
+d_00: @00:00:02.475693   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.475693  ===================================================================
+d_00: @00:00:02.475693  TESTSUITE store_layout succeeded
+d_00: @00:00:02.475693  Running TESTSUITE store_log
+d_00: @00:00:02.475693  ===================================================================
+d_00: @00:00:02.475693  START - test_mount_picks_newer_valid_copy
+d_00: @00:00:02.475693   PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.475693  ===================================================================
+d_00: @00:00:02.475693  TESTSUITE store_log succeeded
+d_00: @00:00:02.475693  Running TESTSUITE store_recovery
+d_00: @00:00:02.475693  ===================================================================
+d_00: @00:00:02.475693  START - test_cut_inside_chunk_write
+d_00: @00:00:02.495493   PASS - test_cut_inside_chunk_write in 0.020 seconds
+d_00: @00:00:02.495493  ===================================================================
+d_00: @00:00:02.495493  START - test_loss_bound_with_stalled_card
+d_00: @00:00:21.499793   PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+d_00: @00:00:21.499793  ===================================================================
+d_00: @00:00:21.499793  START - test_read_error_reports
+d_00: @00:00:21.506393   PASS - test_read_error_reports in 0.007 seconds
+d_00: @00:00:21.506393  ===================================================================
+d_00: @00:00:21.506393  START - test_recovered_close_record
+d_00: @00:00:21.512993   PASS - test_recovered_close_record in 0.007 seconds
+d_00: @00:00:21.512993  ===================================================================
+d_00: @00:00:21.512993  START - test_scan_read_error_reports
+d_00: @00:00:21.512993   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:21.512993  ===================================================================
+d_00: @00:00:21.512993  START - test_scan_summary
+d_00: @00:00:21.512993   PASS - test_scan_summary in 0.000 seconds
+d_00: @00:00:21.512993  ===================================================================
+d_00: @00:00:21.512993  START - test_stop_on_each_mismatch
+d_00: @00:00:21.512993   PASS - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:21.512993  ===================================================================
+d_00: @00:00:21.512993  TESTSUITE store_recovery succeeded
+d_00: @00:00:21.512993  Running TESTSUITE store_space
+d_00: @00:00:21.512993  ===================================================================
+d_00: @00:00:21.512993  START - test_callbacks_once_per_crossing
+d_00: @00:00:21.548193   PASS - test_callbacks_once_per_crossing in 0.036 seconds
+d_00: @00:00:21.548193  ===================================================================
+d_00: @00:00:21.548193  START - test_counts
+d_00: @00:00:21.548193   PASS - test_counts in 0.000 seconds
+d_00: @00:00:21.548193  ===================================================================
+d_00: @00:00:21.548193  START - test_s30_sfull_edges
+d_00: @00:00:21.548193   PASS - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:21.548193  ===================================================================
+d_00: @00:00:21.548193  START - test_storage_left_minutes
+d_00: @00:00:21.548193   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:21.548193  ===================================================================
+d_00: @00:00:21.548193  TESTSUITE store_space succeeded
+d_00: @00:00:21.548193  Running TESTSUITE store_svc
+d_00: @00:00:21.548193  ===================================================================
+d_00: @00:00:21.548193  START - test_boot_count
+d_00: @00:00:21.552593   PASS - test_boot_count in 0.005 seconds
+d_00: @00:00:21.552593  ===================================================================
+d_00: @00:00:21.552593  START - test_busy_while_operation_runs
+d_00: @00:00:22.153893   PASS - test_busy_while_operation_runs in 0.602 seconds
+d_00: @00:00:22.153893  ===================================================================
+d_00: @00:00:22.153893  START - test_chunks_wrap_on_small_card
+d_00: @00:00:22.187993   PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+d_00: @00:00:22.187993  ===================================================================
+d_00: @00:00:22.187993  START - test_factory_area_test
+d_00: @00:00:22.193193   PASS - test_factory_area_test in 0.006 seconds
+d_00: @00:00:22.193193  ===================================================================
+d_00: @00:00:22.193193  START - test_full_cycle_with_partial_last_chunk
+d_00: @00:00:22.197593   PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+d_00: @00:00:22.197593  ===================================================================
+d_00: @00:00:22.197593  START - test_init_three_tries_200ms
+d_00: @00:00:23.001293   PASS - test_init_three_tries_200ms in 0.804 seconds
+d_00: @00:00:23.001293  ===================================================================
+d_00: @00:00:23.001293  START - test_mount_never_formats_an_unreadable_card
+d_00: @00:00:23.004593   PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+d_00: @00:00:23.004593  ===================================================================
+d_00: @00:00:23.004593  START - test_mount_reads_sector_count
+d_00: @00:00:23.006793   PASS - test_mount_reads_sector_count in 0.003 seconds
+d_00: @00:00:23.006793  ===================================================================
+d_00: @00:00:23.006793  START - test_mount_uses_the_valid_copy
+d_00: @00:00:23.010093   PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+d_00: @00:00:23.010093  ===================================================================
+d_00: @00:00:23.010093  START - test_no_disk_call_with_rail_off
+d_00: @00:00:23.462593   PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+d_00: @00:00:23.462593  ===================================================================
+d_00: @00:00:23.462593  START - test_no_rewrite_during_recording
+d_00: @00:00:23.470293   PASS - test_no_rewrite_during_recording in 0.008 seconds
+d_00: @00:00:23.470293  ===================================================================
+d_00: @00:00:23.470293  START - test_one_open_recording
+d_00: @00:00:23.472493   PASS - test_one_open_recording in 0.003 seconds
+d_00: @00:00:23.472493  ===================================================================
+d_00: @00:00:23.472493  START - test_one_write_per_chunk
+d_00: @00:00:23.479093   PASS - test_one_write_per_chunk in 0.007 seconds
+d_00: @00:00:23.479093  ===================================================================
+d_00: @00:00:23.479093  START - test_put_chunk_ring_of_three
+d_00: @00:00:27.480893   PASS - test_put_chunk_ring_of_three in 4.002 seconds
+d_00: @00:00:27.480893  ===================================================================
+d_00: @00:00:27.480893  START - test_rail_sequence
+d_00: @00:00:27.481993   PASS - test_rail_sequence in 0.002 seconds
+d_00: @00:00:27.481993  ===================================================================
+d_00: @00:00:27.481993  START - test_sim_reboot_clears_ram_state
+d_00: @00:00:27.483093   PASS - test_sim_reboot_clears_ram_state in 0.002 seconds
+d_00: @00:00:27.483093  ===================================================================
+d_00: @00:00:27.483093  START - test_superblock_twice_per_recording
+d_00: @00:00:27.486393   PASS - test_superblock_twice_per_recording in 0.004 seconds
+d_00: @00:00:27.486393  ===================================================================
+d_00: @00:00:27.486393  START - test_three_tries_then_fault_open_flag_kept
+d_00: @00:00:27.492993   PASS - test_three_tries_then_fault_open_flag_kept in 0.007 seconds
+d_00: @00:00:27.492993  ===================================================================
+d_00: @00:00:27.492993  START - test_unmount_waits_for_chunks
+d_00: @00:00:27.694193   PASS - test_unmount_waits_for_chunks in 0.202 seconds
+d_00: @00:00:27.694193  ===================================================================
+d_00: @00:00:27.694193  TESTSUITE store_svc succeeded
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  ------ TESTSUITE SUMMARY START ------
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  SUITE PASS - 100.00% [store_delete]: pass = 7, fail = 0, skip = 0, total = 7 duration = 0.038 seconds
+d_00: @00:00:27.694193   - PASS - [store_delete.test_confirm_match_and_mismatch] duration = 0.005 seconds
+d_00: @00:00:27.694193   - PASS - [store_delete.test_delete_needs_confirm] duration = 0.004 seconds
+d_00: @00:00:27.694193   - PASS - [store_delete.test_delete_refused_while_open] duration = 0.003 seconds
+d_00: @00:00:27.694193   - PASS - [store_delete.test_factory_recordings_deleted] duration = 0.006 seconds
+d_00: @00:00:27.694193   - PASS - [store_delete.test_no_erase] duration = 0.004 seconds
+d_00: @00:00:27.694193   - PASS - [store_delete.test_read_chunk_deleted_not_found] duration = 0.006 seconds
+d_00: @00:00:27.694193   - PASS - [store_delete.test_tail_moves_over_leading_only] duration = 0.010 seconds
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  SUITE PASS - 100.00% [store_evlog]: pass = 4, fail = 0, skip = 0, total = 4 duration = 2.438 seconds
+d_00: @00:00:27.694193   - PASS - [store_evlog.test_buffer_of_8_drops_oldest] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_evlog.test_crash_block_roundtrip] duration = 0.022 seconds
+d_00: @00:00:27.694193   - PASS - [store_evlog.test_ring_of_2046] duration = 2.343 seconds
+d_00: @00:00:27.694193   - PASS - [store_evlog.test_written_when_rail_on] duration = 0.073 seconds
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  SUITE PASS - 100.00% [store_fmt]: pass = 13, fail = 0, skip = 0, total = 13 duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_chunk_encode_rejects_bad_counts] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_chunk_header_bytes] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_chunk_header_roundtrip_and_rejects] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_crc_check_value] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_digest] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_digest_stream_equals_oneshot] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_index_record_bytes] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_kit_disk_and_crc_names_exist] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_last_chunk_zero_tail] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_little_endian] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_log_record_bytes] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_superblock_bytes] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_fmt.test_unused_slots_are_ff] duration = 0.000 seconds
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  SUITE PASS - 100.00% [store_index]: pass = 4, fail = 0, skip = 0, total = 4 duration = 0.007 seconds
+d_00: @00:00:27.694193   - PASS - [store_index.test_close_highlights_32] duration = 0.003 seconds
+d_00: @00:00:27.694193   - PASS - [store_index.test_list_beyond_cache_reads_index] duration = 0.004 seconds
+d_00: @00:00:27.694193   - PASS - [store_index.test_state_is_last_record] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_index.test_table_pushes_out_oldest_and_finds_on_demand] duration = 0.000 seconds
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  SUITE PASS - 100.00% [store_layout]: pass = 4, fail = 0, skip = 0, total = 4 duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_layout.test_chunk_lba_wraps] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_layout.test_examples] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_layout.test_index_lba_wraps] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_layout.test_sector_map] duration = 0.000 seconds
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  SUITE PASS - 100.00% [store_log]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_log.test_mount_picks_newer_valid_copy] duration = 0.000 seconds
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  SUITE PASS - 100.00% [store_recovery]: pass = 7, fail = 0, skip = 0, total = 7 duration = 19.039 seconds
+d_00: @00:00:27.694193   - PASS - [store_recovery.test_cut_inside_chunk_write] duration = 0.020 seconds
+d_00: @00:00:27.694193   - PASS - [store_recovery.test_loss_bound_with_stalled_card] duration = 19.005 seconds
+d_00: @00:00:27.694193   - PASS - [store_recovery.test_read_error_reports] duration = 0.007 seconds
+d_00: @00:00:27.694193   - PASS - [store_recovery.test_recovered_close_record] duration = 0.007 seconds
+d_00: @00:00:27.694193   - PASS - [store_recovery.test_scan_read_error_reports] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_recovery.test_scan_summary] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_recovery.test_stop_on_each_mismatch] duration = 0.000 seconds
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  SUITE PASS - 100.00% [store_space]: pass = 4, fail = 0, skip = 0, total = 4 duration = 0.036 seconds
+d_00: @00:00:27.694193   - PASS - [store_space.test_callbacks_once_per_crossing] duration = 0.036 seconds
+d_00: @00:00:27.694193   - PASS - [store_space.test_counts] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_space.test_s30_sfull_edges] duration = 0.000 seconds
+d_00: @00:00:27.694193   - PASS - [store_space.test_storage_left_minutes] duration = 0.000 seconds
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  SUITE PASS - 100.00% [store_svc]: pass = 19, fail = 0, skip = 0, total = 19 duration = 6.158 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_boot_count] duration = 0.005 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_busy_while_operation_runs] duration = 0.602 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_chunks_wrap_on_small_card] duration = 0.035 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_factory_area_test] duration = 0.006 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_full_cycle_with_partial_last_chunk] duration = 0.005 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_init_three_tries_200ms] duration = 0.804 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_mount_never_formats_an_unreadable_card] duration = 0.004 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_mount_reads_sector_count] duration = 0.003 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_mount_uses_the_valid_copy] duration = 0.004 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_no_disk_call_with_rail_off] duration = 0.453 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_no_rewrite_during_recording] duration = 0.008 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_one_open_recording] duration = 0.003 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_one_write_per_chunk] duration = 0.007 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_put_chunk_ring_of_three] duration = 4.002 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_rail_sequence] duration = 0.002 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_sim_reboot_clears_ram_state] duration = 0.002 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_superblock_twice_per_recording] duration = 0.004 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_three_tries_then_fault_open_flag_kept] duration = 0.007 seconds
+d_00: @00:00:27.694193   - PASS - [store_svc.test_unmount_waits_for_chunks] duration = 0.202 seconds
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  ------ TESTSUITE SUMMARY END ------
+d_00: @00:00:27.694193  
+d_00: @00:00:27.694193  ===================================================================
+d_00: @00:00:27.694193  RunID: 72622d6b4b6e1c098bb1eb01930f96d4
+d_00: @00:00:27.694193  PROJECT EXECUTION SUCCESSFUL
+# finished (Mac clock): 2026-11-13 05:58:05 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-055744-u-store.log

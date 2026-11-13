@@ -1,0 +1,57 @@
+{
+ "design_version": "A5-draft",
+ "updated": "2026-11-13",
+ "areas": {
+  "look": {
+   "state": "in progress",
+   "why": "one control: a round joystick on the side of the band, where the owner marked it; a long press on its centre records. The screen fills the glass face and is the recording sign; one dark glossy finish. The exterior shown here (merged32h, ring sizes US 7 to 13) is the earlier block. Since 13 November the design moves to a taller block (4.17 mm) with a flat cover glass and three small windows on each long side, two of them blind and one a slit the ribbon passes through: that exterior is built and measured for the 7 sizes (design/look/s1/merged417flat-notes.md) but is not yet the one this app shows, and its slit on the motor's side may still change",
+   "who": "lead"
+  },
+  "inside": {
+   "state": "in progress",
+   "why": "the inside model shown here is v9 (board parts at their routed places, resin radio corner) on the earlier block; its fit check passes at the seven ring sizes. The rebuild on the 4.17 mm block (stock screen turned 180 degrees with its cable folded under the panel, flat glass, side slits for the two ribbons) is in work as model v10; its first check found one conflict: the slit on the motor's side cuts the rim of the motor's pocket",
+   "who": "lead"
+  },
+  "electronics": {
+   "state": "in progress",
+   "why": "the circuit is complete in its files (netlist, schematic, parts) and its check passes; a circuit simulation of 13 tests passes (power paths, motor start, charge path, level shifter, case charger and status light). Every conductor of the ring and its case is in one list: 66 conductors, each with both ends, its carrier and its cut length per ring size, checked against the boards and the netlists. An independent review of 13 November found the list true and failed the build guide on 3 points (design/wiring/wiring-review-4.md): the body files are behind the taller block, two ground joints per ribbon are proven only as a pair, and the case's thermistor joints had no test; the fixes are in work",
+   "who": "lead"
+  },
+  "board": {
+   "state": "in progress",
+   "why": "all 17 boards are routed: the ring's main board (4 layers), 14 band circuits (2 per ring size) and the 2 case boards; the design rules check gives 0 violations and 0 unconnected on each. Fabrication files, solder paste layers and drawings are generated. Nothing is built or measured; four values need a measurement on the first ring (antenna match, 32 MHz clock accuracy, case input current, USB through the spring pins)",
+   "who": "lead"
+  },
+  "parts": {
+   "state": "in progress",
+   "why": "the parts list holds 88 lines and 131 part references and its check passes with 0 failures; custom parts, bare pads and a few parts still need an order code from a supplier. A joint table lists the 99 solder and contact joints with what brings the solder, the tool, the heat and the check of each",
+   "who": "lead"
+  },
+  "behaviour": {
+   "state": "in progress",
+   "why": "the behaviour rules follow the one-control ring: a long press on the joystick centre records, the screen is the recording sign and is never dark while a recording runs, the ring sleeps for shipping; their check passes. Software: steps 1 to 5 are done (core, paired devices and control, iPhone services, screens, Android relay). Step 6 (microphones, storage, USB transfer, power, factory tests, against simulated drivers) is written; a second independent review passed it; its minor findings are fixed and the full run of the fixed software is still to be read. The real ring's board files and the panel driver are not written. Nobody has run the software on hardware",
+   "who": "lead"
+  },
+  "case": {
+   "state": "in progress",
+   "why": "the charging case is the soft cube the owner chose (45.4 x 45.9 x 41.4 mm, 700 mAh battery): the ring lies flat around a centre post, the lid swivels aside, and the ring charges through pads on the inside of its band. Its two boards are routed and its fit check passes at the seven ring sizes with the earlier ring models; the fit to the taller 4.17 mm ring is not redone yet. The spring pin is a proposal, not confirmed by its maker",
+   "who": "lead"
+  },
+  "open": {
+   "state": "waiting on a supplier",
+   "why": "open on 13 November: the three faults of the fourth wiring review (body files, ground joint pairs, thermistor test) and the fix of the slit against the motor pocket; the rebuild of the inside model, the body maker files and the case fit on the 4.17 mm block; four measurements on the first ring; supplier questions and bench tests of the architecture (sections 12, 13, 16.9, 17.6, 17.9, open items S12 to S30)",
+   "who": "owner"
+  }
+ },
+ "look": {
+  "picked": null,
+  "rejected": [
+   "a",
+   "b",
+   "c"
+  ],
+  "in_design": [
+   "s1-merged32h"
+  ]
+ }
+}

@@ -1,0 +1,14 @@
+* own model: Texas Instruments TPS2553 (case U5) power switch with adjustable current limit, built only from the maker's datasheet SLVS841G (design/datasheets/case_tps2553.pdf, PDF pages). The maker's PSpice model (models/tps2553_trans.lib, unchanged, source in models/SOURCES.md) could not be run in ngspice (trial in logs/ti_tps2553_model_trial.out), so this model is used instead.
+* ports: in out en gnd     params: rk  ILIM resistor in kohm (read from parts.csv by make_decks.py), corner  0 = IOSmin, 1 = IOSnom, 2 = IOSmax, rds on-resistance in ohm
+* current limit equations, p16 and p17 (R in kohm, result in mA): IOSmax = 22980 / R^0.94, IOSnom = 23950 / R^0.977, IOSmin = 25230 / R^1.016, valid for 15 to 232 kohm
+* rDS(on): 85 mohm typ, 95 mohm max at 25 C for the DBV package (p6); the model default is the maximum 0.095 ohm
+* enable: EN threshold 1.1 V rising typical (MODEL CHOICE 1.0 V, the p6 table was not read for this value); the limit acts as a hard current clamp (the sheet's thermal cycling and response time are not modelled)
+.subckt TPS2553 in out en gnd params: rk=59 corner=1 rds=0.095
+.param ios_max = {22980/pwr(rk,0.94)/1000}
+.param ios_nom = {23950/pwr(rk,0.977)/1000}
+.param ios_min = {25230/pwr(rk,1.016)/1000}
+.param ilim = {(corner < 0.5) ? ios_min : ((corner < 1.5) ? ios_nom : ios_max)}
+Bsw in outx I = (v(en) > 1.0) ? ( ((v(in)-v(outx)) > 0) ? min((v(in)-v(outx))/rds, ilim) : 0 ) : 0
+Vs outx out 0
+Rl out 0 1e9
+.ends TPS2553

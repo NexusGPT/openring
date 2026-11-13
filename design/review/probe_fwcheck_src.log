@@ -1,0 +1,25 @@
+2:"""Check design/firmware.md against its own rules and design/architecture.md.
+4:Usage: firmware-check.py [firmware.md] [--arch architecture.md]
+12:  3. Every pin (Pn.nn) and every signal name used in firmware.md is in the
+14:     firmware.md matches the pin the architecture gives that signal.
+20:  6. A pin used in firmware.md is not a spare pin of architecture section 7,
+29: 10. Section 4.7 marks motor pulses up to 50 ms after them.
+60:      and recording hours recomputed; four pads in order.
+128:def main(argv):
+130:    fw_path = os.path.join(here, "firmware.md")
+132:    args = list(argv)
+208:        errors.append(f"pin {p} is a spare pin in architecture section 7 but firmware.md uses it")
+218:                errors.append(f"{sig} is {pin} in firmware.md but {pairs[sig]} in architecture section 7")
+291:        (r"^### 4\.7 ", r"50 ms after", "section 4.7 does not mark motor pulses up to 50 ms after them"),
+458:    cap = re.search(r"about ([\d.]+) to ([\d.]+) mAh \[CALC[^\]]*\]\. Recording at ([\d.]+) mA: ([\d.]+) to ([\d.]+) hours", a178)
+463:        errors.append("battery recomputation lines not found (architecture 17.10 capacity line of 17.10, firmware 1.1 minutes line, three percentages)")
+467:            errors.append(f"firmware battery {lo} to {hi} mAh at {ma} mA differs from architecture 17.10")
+477:            errors.append(f"recording hours in 8.5 {hr and hr.groups()} differ from {lo / ma:.2f} to {hi / ma:.2f}")
+479:            errors.append(f"recording hours {hr.groups()} differ from architecture 17.10 {cap.group(4)} to {cap.group(5)}")
+480:        print(f"check 16 battery: minutes {got}, hours {hr and hr.groups()}")
+505:    sys.exit(main(sys.argv[1:]))
+1:"""Check design/bom.csv.  Usage: python -I check_bom.py [bom.csv] [architecture.md]
+8:  5. a part named in architecture.md section 2 is absent from the CSV
+64:    bom = sys.argv[1] if len(sys.argv) > 1 else os.path.join(DESIGN, "bom.csv")
+65:    arch = sys.argv[2] if len(sys.argv) > 2 else os.path.join(DESIGN, "architecture.md")
+102:        fails.append("architecture.md: section 2 table not found")

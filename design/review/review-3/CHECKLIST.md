@@ -1,0 +1,32 @@
+# Review 3 checklist (start 2026-11-12 00:09:10, limit 90 min)
+
+- [x] 1. Brief has bar, artifact path, version (78681c7); no author verdict. evidence: brief; design-review-3.md header
+- [-] 2. Version pinned: not done: git is forbidden by the brief; substitute evidence: files_changed_in_scope.log empty, thin_inputs_sha_now.log equals lead inputs_after.sha
+- [x] 3. Read requirements.md in full. evidence: read in session (205 lines)
+- [x] 4. Read design-review-2.md in full; state of G01-G09. evidence: design-review-3.md section 3
+- [x] 5. Read architecture 17.11 to 17.31 and section 2. evidence: lines_B.log citations
+- [x] 6. bom.csv, bom-notes.md. evidence: lines_B.log; review H05, H06, H15
+- [x] 7. ecad/ring: v7-wiring-notes, sch-notes section 13, netlist (search), board-notes. evidence: review section 2 chains
+- [x] 8. mech/thin: thin-notes Model v7, placement.csv, v7-handover, lead logs. evidence: thin_inputs_sha_now.log
+- [-] 9. mfg: index read, specs and notes by search only. not done in full: read by search (90 min limit); listed in review section 7
+- [-] 10. firmware.md: sections 1.1, 2.2, 3.2, 3.3, 7, 8.5, 9.3 read; rest by search. not done in full: listed in review section 7
+- [x] 11. case: case-architecture in full, handover in full, case-notes and case-bom by search. evidence: review H03, H04, H16
+- [x] 12. bench-plan.md and status.json in full. evidence: lines_A.log
+- [x] 13-17. Chains of removed parts and record button. evidence: review section 2 "Chains followed"
+- [x] 18-20. FRM1, CAP1, five switches. evidence: review section 2
+- [x] 21. Pads chain ring to case wiring. evidence: pads_v63_v7_diff.log, review section 2
+- [x] 22. Cell per size and recording current. evidence: review H09, H21
+- [x] 23. Recording sign chain. evidence: review H08, H12
+- [x] 24. check_bom.py. evidence: check_bom.log
+- [x] 25. check_netlist.py on a copy. evidence: check_netlist.log
+- [x] 26. firmware-check.py. evidence: firmware_check.log
+- [x] 27. check_docs.py. evidence: check_docs.log
+- [x] 28. check_assembly.py. evidence: check_assembly.log
+- [x] 29. Attack check_bom (too little, too much, empty). evidence: fakes/results.log, compare.log
+- [x] 30. Attack firmware-check and check_assembly. evidence: fakes/results.log, compare.log
+- [-] 30b. check_docs.py not attacked: not done, three checks attacked (brief asked at least two)
+- [x] 31-35. Owner rules. evidence: review section 2 "Owner rules"
+- [x] 36. Board known open point once. evidence: review section 4
+- [x] 37-42. Review parts written. evidence: design-review-3.md
+- [x] 43. Final audit. evidence: audit_final.log
+- [x] 44. nice -n 19 used on checks; no git; no stderr discarded. evidence: run_fakes.sh, commands in session

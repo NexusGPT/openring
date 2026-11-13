@@ -1,0 +1,52 @@
+bom designators: 128  parts.csv: 113  netlist refs: 113
+IN BOM NOT IN parts.csv: ['ADH1', 'CAP1', 'CAP2', 'FLEX1', 'FLEX2', 'FOAM1', 'GL1', 'GSK2', 'GSK3', 'HSG1', 'LNR1', 'MEM1', 'MEM2', 'PCB1', 'PRT1']
+IN parts.csv NOT IN BOM: []
+IN parts.csv NOT IN netlist: []
+VALUE DIFF R71 bom= 47 kohm 1 % parts= 47k
+VALUE DIFF R72 bom= 150 kohm 1 % parts= 150k
+VALUE DIFF J1 bom= 0.88 mm high, 0.20 mm cable parts= FH35C-15S-0.3SHW(50)
+VALUE DIFF C13 bom= not mounted parts= DNP
+VALUE DIFF FB1 bom= 120 ohm at 100 MHz parts= 120R@100MHz
+VALUE DIFF R1 bom= 2.2 ohm 1 % parts= 2.2R
+VALUE DIFF R2 bom= 220 ohm 1 % parts= 220R
+VALUE DIFF C1 bom= 100 nF X5R 10 V parts= 100nF
+VALUE DIFF C2 bom= 100 nF X5R 10 V parts= 100nF
+VALUE DIFF C5 bom= 100 nF X5R 10 V parts= 100nF
+VALUE DIFF C4 bom= 10 uF X5R 6.3 V parts= 10uF
+VALUE DIFF C31 bom= 1 uF X5R 6.3 V parts= 1uF
+VALUE DIFF C32 bom= 1 uF X5R 6.3 V parts= 1uF
+VALUE DIFF C35 bom= 100 nF X5R 10 V parts= 100nF
+VALUE DIFF C36 bom= 100 nF X5R 10 V parts= 100nF
+VALUE DIFF R31 bom= 100 ohm 1 % parts= 100R
+VALUE DIFF R32 bom= 100 ohm 1 % parts= 100R
+VALUE DIFF R57 bom= 4.7 kohm 1 % parts= 4.7k
+VALUE DIFF R58 bom= 4.7 kohm 1 % parts= 4.7k
+VALUE DIFF R60 bom= 47 kohm 1 % parts= 47k
+VALUE DIFF C60 bom= 4.7 uF X5R 6.3 V parts= 4.7uF
+VALUE DIFF M1 bom= 3.0 V DC parts= VC0720B088L
+VALUE DIFF R41 bom= 680 ohm 1 % parts= 680R
+VALUE DIFF Q2 bom= gate on VDD_MIC parts= DMN2450UFB4
+VALUE DIFF BT1 bom= 15 to 20 mAh parts= 4.35V 20-26mAh curved
+VALUE DIFF J_BAND_A bom= 6 wire pads parts= flex tail A (thumb side) 6 pads
+VALUE DIFF J_BAND_B bom= 9 wire pads parts= flex tail B 9 pads
+U2 [('GND', 'P25', 'PVSS1'), ('GND', 'P28', 'PVSS2'), ('GND', 'P33', 'AVSS'), ('NTC', 'P5', 'NTC'), ('PMIC_INT', 'P6', 'GPIO0'), ('PMIC_SCL', 'P17', 'SCL'), ('PMIC_SDA', 'P18', 'SDA'), ('SHPHLD', 'P16', 'SHPHLD'), ('SW1', 'P24', 'SW1'), ('SW2', 'P27', 'SW2'), ('VBAT', 'P4', 'VBAT'), ('VBUS', 'P1', 'VBUS'), ('VBUSOUT', 'P20', 'VBUSOUT'), ('VDD_1V8', 'P19', 'VDDIO'), ('VDD_1V8', 'P23', 'VOUT1'), ('VDD_1V8', 'P29', 'LSIN1/VINLDO1'), ('VDD_3V0', 'P26', 'VOUT2'), ('VDD_3V0', 'P30', 'LSIN2/VINLDO2'), ('VDD_MIC', 'P31', 'LSOUT1/VOUTLDO1'), ('VDD_SD', 'P32', 'LSOUT2/VOUTLDO2'), ('VSET1', 'P14', 'VSET1'), ('VSET2', 'P15', 'VSET2'), ('VSYS', 'P21', 'VSYS'), ('VSYS', 'P22', 'PVDD'), ('', 'P10', 'GPIO4'), ('', 'P11', 'LED0'), ('', 'P12', 'LED1'), ('', 'P13', 'LED2'), ('', 'P2', 'CC1'), ('', 'P3', 'CC2'), ('', 'P7', 'GPIO1'), ('', 'P8', 'GPIO2'), ('', 'P9', 'GPIO3')]
+Q2 [('GND', 'S', 'S'), ('LED_K', 'D', 'D'), ('VDD_MIC', 'G', 'G')]
+LED1 [('LED_A', 'P1', 'A'), ('LED_K', 'P2', 'K')]
+BT1 [('GND', 'P2', '-'), ('VBAT', 'P1', '+')]
+M1 [('MOTOR_DRV', 'P2', '-'), ('VDD_3V0', 'P1', '+')]
+RT1 [('GND', '2', '~'), ('NTC', '1', '~')]
+U2 P5 NTC -> NTC
+U2 P6 GPIO0 -> PMIC_INT
+U2 P16 SHPHLD -> SHPHLD
+U2 P1 VBUS -> VBUS
+U2 P20 VBUSOUT -> VBUSOUT
+U2 P23 VOUT1 -> VDD_1V8
+U2 P29 LSIN1/VINLDO1 -> VDD_1V8
+U2 P26 VOUT2 -> VDD_3V0
+U2 P30 LSIN2/VINLDO2 -> VDD_3V0
+U2 P31 LSOUT1/VOUTLDO1 -> VDD_MIC
+U2 P32 LSOUT2/VOUTLDO2 -> VDD_SD
+U2 P14 VSET1 -> VSET1
+U2 P15 VSET2 -> VSET2
+U2 P21 VSYS -> VSYS
+exit 0

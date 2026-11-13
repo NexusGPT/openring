@@ -1,0 +1,44 @@
+Review 3 hand derivations (my reasoning; the numbers come from pads/*.csv and the cited pages)
+
+1. Tail foot handedness (B5, J_BAND mating is not mirrored).
+   Ring frame: X along the finger (+ fingertip), Y (+ FLEX2 side), Z up (floor 0.40, board land face 1.43).
+   Ring board file: F.Cu (parts face) faces -Z; KiCad shows it from its own side, i.e. from below. Seen from below with X right,
+   +Y points down the page, as KiCad's y does. pads/ring-pads.csv: J_BAND_B land 1 at file (96.985, 103.875) = model (-3.015, +3.875)
+   so file = model + (100, 100), no sign change: the file is a true view.
+   Tail file: viewer on the F.Cu side; the foot lies with F.Cu up (+Z) (band-interface.md line 94; flex drawing "outer face (F.Cu) out").
+   A true view from +Z needs (file x axis) x (file y axis) = -Z in the ring frame.
+     FLEX2: x -> +Y (u toward the slot), so y must map to +X: y = 80 + v. pads/flex2-us9-pads.csv: land 7 (v +1.015) at y 81.015. True view.
+     FLEX1: x -> -Y, so y must map to -X: y = 80 - v. pads/flex1-us9-pads.csv: land 1 (v +1.015) at y 78.985. True view.
+   With these, check_all.py maps all 15 lands of all 14 tails onto the ring lands (check_all.log "mating lands checked 105", 0 fails).
+
+2. J1 cable entry side (review 2 could not check it).
+   design/datasheets/w1_hirose_fh35c-15s-0.3shw50_drawing.pdf page 1: side view a(25:1) has the FPC entering from the left, where the
+   contact lead stands out 0.4 +-0.1; the actuator side lead stands out 0.33 +-0.1. The recommended pattern has 0.8 long lands on the
+   contact No.1 row and 0.65 long lands on the contact No.2 row. My reading: the longer lands (odd contacts) are on the insertion side.
+   pads/ring-pads.csv: odd J1 pads 0.3 x 0.8 at x 96.467 (model X -3.533), even pads 0.3 x 0.65 at x 93.592 (X -6.408).
+   So the opening is on +X (fingertip side), as step 15 says. Contact 1 at y 102.097 (model Y +2.097).
+
+3. Screen contact 1 side (B5).
+   design/datasheets/display_TOH095XVT-01.pdf page 5, front view: cable at the bottom, contacts "15 ... 1", contact 1 on the right.
+   Screen face up, turned 180 degrees so the cable leaves at +X: viewer above, page-down = +X, then page-right = +Y. Contact 1 at +Y.
+   The cable is bent back under the panel (two 90 degree folds about axes parallel to Y): Y positions keep, so contact 1 stays at +Y,
+   matching J1 pad 1 (Y +2.097). The back view shows the contacts on the back face; after the U-turn they face up (step 15 says so).
+   FH35C has top and bottom contacts (screen-cable-study.md line 54), so the contact face does not decide the connection.
+   Contact names on page 5: 1 ELVSS, 2 ELVDD, 3 MTP, 4 VCC, 5 IOVCC, 6 SWIRE, 7 TE, 8 RESET, 9 CS, 10 SCL, 11 RS, 12 SDA, 13 to 15 GND.
+   csv W040 to W053 name 1 ELVSS, 2 ELVDD, 4 VCI, 5 IOVCC, 6 SWIRE, 7 TE, 8 RESX, 9 CS, 10 SCL, 11 RS, 12 SDA, 13 to 15 GND; contact 3 has
+   no line (no net on J1 pad 3, pads/ring-pads.csv). Same contacts; "VCI"/"VCC" and "RESX"/"RESET" are the same pins by number.
+
+4. Alps SKTA terminals (F7, review 2 could not check).
+   design/datasheets/w4_alps_skta_catalog.pdf page 2, Drawing No.1: body 2.6 x 1.6 mm; terminals 1 top left, 2 top right, 3 bottom left,
+   4 bottom right; circuit diagram 1-3 one side, 2-4 the other; lands 3.2 / 2.1 across, 1.3 / 0.2 along.
+   pads/flex1-us9-pads.csv: SW1 pads 3 (JOY_UP) and 4 (GND) 2.65 mm apart (60.8968, 78.825 and 76.175) = the two lands of one row,
+   on opposite sides of the contact. A 90 degree turn cannot sit on lands 2.65 mm apart along the body's 1.6 mm side; a 180 degree
+   turn puts terminals 2 and 1 on those lands, still opposite sides. So no orientation of an outer switch shorts its line.
+   SW2: pads 1 and 3 (BTN_REC) 0.75 apart, pads 2 and 4 (GND) 0.75 apart, rows 2.65 apart: same rule, rotated 90 in the file.
+
+5. Step 16 board orientation (minor fault G3).
+   A flat strip bent only about its width axis keeps its face normal locked to its running direction: running up the slot (+Z) with
+   F.Cu facing out (+|Y|), once it runs flat toward the board middle its F.Cu faces +Z (band-interface.md line 94). So its lands can
+   meet a board face that faces down. With the board "parts face up" (assembly.md line 210) the foot can meet the lands only after a
+   180 degree twist of the tail about its length, or with the board turned side for side, which puts J_BAND_A over the FLEX2 slot.
+   The guide says neither.

@@ -1,0 +1,41 @@
+== FW l.1202-1206
+## Event log codes (ruling R23, software step 6)
+
+The event log record of section 9.4 carries one of these codes (u16) and up to 16 bytes of arguments (little-endian, unused bytes 0). The list is the one of `firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h` (`enum rrec_log_code`); that file and this table hold the same 26 codes. "FW l.N" in a row is a line of this document as it stood when the code was written (commit 783ddc4).
+
+| Code | Name | When | Arguments |
+== rglue callers in modules/app
+(eval):1: no matches found: --include=*.c
+== ring_glue files
+modules/ring_glue/include/ring_glue:
+rglue.h
+
+modules/ring_glue/src:
+rglue.c
+== locks in glue
+71:		k_timeout_t to = K_FOREVER;
+76:		k_mutex_lock(&lk, K_FOREVER);
+78:		k_mutex_unlock(&lk);
+81:			to = nt > now ? K_MSEC(nt - now) : K_NO_WAIT;
+83:		(void)k_sem_take(&wake, to);
+85:		k_mutex_lock(&lk, K_FOREVER);
+97:		k_mutex_unlock(&lk);
+116:			      NULL, NULL, K_PRIO_PREEMPT(8), 0, K_NO_WAIT);
+125:	k_mutex_lock(&lk, K_FOREVER);
+138:	k_mutex_unlock(&lk);
+139:	k_sem_give(&wake);
+151:	k_mutex_lock(&lk, K_FOREVER);
+153:	k_mutex_unlock(&lk);
+159:	k_mutex_lock(&lk, K_FOREVER);
+161:	k_mutex_unlock(&lk);
+169:	k_mutex_lock(&lk, K_FOREVER);
+174:	k_mutex_unlock(&lk);
+175:	k_sem_give(&wake);
+183:	if (k_mutex_lock(&lk, K_NO_WAIT) != 0) {
+190:	k_mutex_unlock(&lk);
+191:	k_sem_give(&wake);
+200:	k_mutex_lock(&lk, K_FOREVER);
+205:	k_mutex_unlock(&lk);
+206:	k_sem_give(&wake);
+211:	k_mutex_lock(&lk, K_FOREVER);
+213:	k_mutex_unlock(&lk);

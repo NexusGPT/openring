@@ -1,0 +1,546 @@
+# remote.sh run 20261113-052338-u-store
+# command: bash tools/unit_run.sh tests/store
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:23:38 CET
+# free on the server's /: 27 GB
+# source firmware copied to /root/ring-os/src-u-store
+# started on the server as 20261113-052338-u-store; server log /root/ring-os/logs/20261113-052338-u-store.log
+=== part tests-native_sim start 2026-11-13T04:23:46Z log /ws/out/20261113-052338-u-store-unit/tests-native_sim.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-052338-u-store-unit/twister-native_sim/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 native_sim/native         ring_store.sim                                     ERROR Build failure (native <host/gnu>)
+INFO    - /ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/build.log
+ERROR   - Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/tests/store
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: native_sim, qualifiers: native
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/native/native_sim/native_sim.dts
+-- Found devicetree overlay: /ws/firmware/tests/store/app.overlay
+-- Generated zephyr.dts: /ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/zephyr.dts
+-- Generated pickled edt: /ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/devicetree_generated.h
+Parsing /ws/zephyr/Kconfig
+Loaded configuration '/ws/zephyr/boards/native/native_sim/native_sim_defconfig'
+Merged configuration '/ws/firmware/tests/store/prj.conf'
+Merged configuration '/ws/firmware/tests/store/boards/native_sim.conf'
+Merged configuration '/ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/misc/generated/extra_kconfig_options.conf'
+Configuration saved to '/ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/.config'
+Kconfig header saved to '/ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /usr/bin/ld.bfd (found version "2.42")
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/gcc
+CMake Warning at /ws/nrf/cmake/device_support.cmake:34 (message):
+  SoC native is not supported by this release.
+Call Stack (most recent call first):
+  /ws/nrf/CMakeLists.txt:27 (include)
+
+
+-- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+-- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+-- Configuring done (10.8s)
+-- Generating done (0.3s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    TC_NAME
+
+
+-- Build files have been written to: /ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim
+[1/152] Preparing syscall dependency handling
+
+[2/152] Generating ../../zephyr/include/generated/ncs_version.h
+[3/152] Generating ../../zephyr/include/generated/zephyr_commit.h
+[4/152] Generating ../../zephyr/include/generated/ncs_commit.h
+[5/152] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.2 (/ws/zephyr), build: 9133dab6b066
+[6/152] Generating misc/generated/syscalls_subdirs.trigger
+[7/152] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[8/152] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[9/152] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[10/152] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[11/152] Generating include/generated/zephyr/driver-validation.h
+[12/152] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[13/152] Generating ../../include/generated/zephyr/heap_constants.h
+[14/152] Building C object zephyr/CMakeFiles/offsets.dir/arch/posix/core/offsets/offsets.c.obj
+[15/152] Generating include/generated/zephyr/offsets.h
+[16/152] Building C object CMakeFiles/app.dir/src/test_log.c.obj
+[17/152] Building C object CMakeFiles/app.dir/src/test_k2.c.obj
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ccache /usr/bin/gcc -DKERNEL -DK_HEAP_MEM_POOL_SIZE=0 -DTC_RUNID=82beb33a234947ab7f7141d23e325438 -D__ZEPHYR__=1 -I/ws/firmware/tests/store/../../modules/ring_store/src -I/ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr -I/ws/zephyr/include -I/ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated -I/ws/zephyr/soc/native/inf_clock -I/ws/zephyr/boards/native/native_sim -I/ws/zephyr/scripts/native_simulator/common/src/include -I/ws/zephyr/scripts/native_simulator/native/src/include -I/ws/zephyr/subsys/testsuite/include -I/ws/zephyr/subsys/testsuite/coverage -I/ws/zephyr/subsys/testsuite/ztest/include -I/ws/nrf/include -I/ws/nrf/tests/include -I/ws/firmware/modules/ring_rhw/include -I/ws/firmware/modules/ring_store/include -fno-strict-aliasing -Werror -Os -imacros /ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/autoconf.h -fno-common -g -gdwarf-4 -fdiagnostics-color=always -Wall -Wformat -Wformat-security -Wno-format-zero-length -Wdouble-promotion -Wno-pointer-sign -Wpointer-arith -Wexpansion-to-defined -Wno-unused-but-set-variable -Werror=implicit-int -fno-pic -fno-pie -fno-asynchronous-unwind-tables -fno-reorder-functions --param=min-pagesize=0 -fno-defer-pop -fmacro-prefix-map=/ws/firmware/tests/store=CMAKE_SOURCE_DIR -fmacro-prefix-map=/ws/zephyr=ZEPHYR_BASE -fmacro-prefix-map=/ws=WEST_TOPDIR -ffunction-sections -fdata-sections -m32 -msse2 -mfpmath=sse -fvisibility=hidden -fno-freestanding -std=c17 -MD -MT CMakeFiles/app.dir/src/test_k2.c.obj -MF CMakeFiles/app.dir/src/test_k2.c.obj.d -o CMakeFiles/app.dir/src/test_k2.c.obj -c /ws/firmware/tests/store/src/test_k2.c
+/ws/firmware/tests/store/src/test_k2.c: In function ‘store_fmt_test_k2_kit_names_exist’:
+/ws/firmware/tests/store/src/test_k2.c:11:21: error: invalid application of ‘sizeof’ to a function type [-Werror=pointer-arith]
+   11 |         (void)sizeof(disk_access_read);
+      |                     ^
+/ws/firmware/tests/store/src/test_k2.c:12:21: error: invalid application of ‘sizeof’ to a function type [-Werror=pointer-arith]
+   12 |         (void)sizeof(disk_access_write);
+      |                     ^
+/ws/firmware/tests/store/src/test_k2.c:13:21: error: invalid application of ‘sizeof’ to a function type [-Werror=pointer-arith]
+   13 |         (void)sizeof(disk_access_ioctl);
+      |                     ^
+/ws/firmware/tests/store/src/test_k2.c:14:21: error: invalid application of ‘sizeof’ to a function type [-Werror=pointer-arith]
+   14 |         (void)sizeof(crc32_ieee);
+      |                     ^
+/ws/firmware/tests/store/src/test_k2.c:15:21: error: invalid application of ‘sizeof’ to a function type [-Werror=pointer-arith]
+   15 |         (void)sizeof(crc32_ieee_update);
+      |                     ^
+cc1: all warnings being treated as errors
+[18/152] Building C object CMakeFiles/app.dir/src/tst.c.obj
+[19/152] Building C object CMakeFiles/app.dir/src/test_index.c.obj
+[20/152] Building C object CMakeFiles/app.dir/src/test_fmt.c.obj
+[21/152] Building C object CMakeFiles/app.dir/src/test_space.c.obj
+[22/152] Building C object CMakeFiles/app.dir/src/test_layout.c.obj
+[23/152] Building C object CMakeFiles/app.dir/src/test_recovery.c.obj
+[24/152] Building C object CMakeFiles/app.dir/src/test_delete.c.obj
+ninja: build stopped: subcommand failed.
+
+INFO    - /ws/out/20261113-052338-u-store-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/build.log
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 16.17 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+INFO    - 0 test configurations executed on platforms, 1 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-052338-u-store-unit/twister-native_sim/twister.json
+INFO    - Writing xunit report /ws/out/20261113-052338-u-store-unit/twister-native_sim/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-052338-u-store-unit/twister-native_sim/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_store.sim on native_sim/native error (Build failure - error: invalid application of sizeof to a function type [-Werror=pointer-arith])
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_store.sim
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/store -T ring_store.sim
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+=== part tests-native_sim end 2026-11-13T04:24:06Z exit 1
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp start 2026-11-13T04:24:06Z log /ws/out/20261113-052338-u-store-unit/tests-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               ERROR Build failure (native <host/gnu>)
+INFO    - /ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/build.log
+ERROR   - Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/tests/store
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /opt/.cache/zephyr
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: nrf54lm20bsim, qualifiers: nrf54lm20a/cpuapp
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/native/nrf_bsim/nrf54lm20bsim_nrf54lm20a_cpuapp.dts
+-- Found devicetree overlay: /ws/firmware/tests/store/app.overlay
+-- Generated zephyr.dts: /ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/zephyr.dts
+-- Generated pickled edt: /ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/devicetree_generated.h
+Parsing /ws/zephyr/Kconfig
+Loaded configuration '/ws/zephyr/boards/native/nrf_bsim/nrf54lm20bsim_nrf54lm20a_cpuapp_defconfig'
+Merged configuration '/ws/firmware/tests/store/prj.conf'
+Merged configuration '/ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/misc/generated/extra_kconfig_options.conf'
+Configuration saved to '/ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/.config'
+Kconfig header saved to '/ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /usr/bin/ld.bfd (found version "2.42")
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/gcc
+-- Using BSIM from BSIM_COMPONENTS_PATH=/ws/tools/bsim/components BSIM_OUT_PATH=/ws/tools/bsim
+CMake Warning at /ws/nrf/cmake/device_support.cmake:34 (message):
+  SoC native is not supported by this release.
+Call Stack (most recent call first):
+  /ws/nrf/CMakeLists.txt:27 (include)
+
+
+-- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+-- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+-- Configuring done (17.4s)
+-- Generating done (0.3s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    TC_NAME
+
+
+-- Build files have been written to: /ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim
+[1/195] Preparing syscall dependency handling
+
+[2/195] Generating ../../zephyr/include/generated/ncs_version.h
+[3/195] Generating ../../zephyr/include/generated/ncs_commit.h
+[4/195] Generating ../../zephyr/include/generated/zephyr_commit.h
+[5/195] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.2 (/ws/zephyr), build: 9133dab6b066
+[6/195] Generating misc/generated/syscalls_subdirs.trigger
+[7/195] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[8/195] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[9/195] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[10/195] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[11/195] Generating include/generated/zephyr/driver-validation.h
+[12/195] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[13/195] Generating ../../include/generated/zephyr/heap_constants.h
+[14/195] Building C object zephyr/CMakeFiles/offsets.dir/arch/posix/core/offsets/offsets.c.obj
+[15/195] Generating include/generated/zephyr/offsets.h
+[16/195] Building C object CMakeFiles/app.dir/src/test_log.c.obj
+[17/195] Building C object CMakeFiles/app.dir/src/test_k2.c.obj
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ccache /usr/bin/gcc -DKERNEL -DK_HEAP_MEM_POOL_SIZE=0 -DNRF54LM20A_XXAA -DNRF54L_CONFIGURATION_56_ENABLE=0 -DNRF_APPLICATION -DTC_RUNID=11a605b4a5b21990d121e2881728f367 -D__ZEPHYR__=1 -I/ws/firmware/tests/store/../../modules/ring_store/src -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/mdk_replacements -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/hal_replacements -I/ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr -I/ws/zephyr/include -I/ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated -I/ws/zephyr/soc/native/inf_clock -I/ws/zephyr/boards/native/nrf_bsim -I/ws/zephyr/boards/native/nrf_bsim/soc -I/ws/zephyr/boards/native/nrf_bsim/common -I/ws/zephyr/boards/native/nrf_bsim/common/cmsis -I/ws/zephyr/scripts/native_simulator/common/src/include -I/ws/zephyr/soc/nordic/common -I/ws/zephyr/subsys/testsuite/include -I/ws/zephyr/subsys/testsuite/coverage -I/ws/zephyr/subsys/testsuite/ztest/include -I/ws/nrf/include -I/ws/nrf/tests/include -I/ws/nrf/modules/hal_nordic/. -I/ws/modules/hal/nordic/nrfx -I/ws/modules/hal/nordic/nrfx/drivers/include -I/ws/modules/hal/nordic/nrfx/bsp/stable -I/ws/modules/hal/nordic/nrfx/bsp/stable/templates -I/ws/zephyr/modules/hal_nordic/nrfx/. -I/ws/firmware/modules/ring_rhw/include -I/ws/firmware/modules/ring_store/include -I/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/nrfx_replacements -fno-strict-aliasing -Werror -O0 -imacros /ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/autoconf.h -fno-common -g -gdwarf-4 -fdiagnostics-color=always -Wall -Wformat -Wformat-security -Wno-format-zero-length -Wdouble-promotion -Wno-pointer-sign -Wpointer-arith -Wexpansion-to-defined -Wno-unused-but-set-variable -Werror=implicit-int -fno-pic -fno-pie -fno-asynchronous-unwind-tables -fno-reorder-functions --param=min-pagesize=0 -fno-defer-pop -fmacro-prefix-map=/ws/firmware/tests/store=CMAKE_SOURCE_DIR -fmacro-prefix-map=/ws/zephyr=ZEPHYR_BASE -fmacro-prefix-map=/ws=WEST_TOPDIR -ffunction-sections -fdata-sections -m32 -msse2 -mfpmath=sse -fvisibility=hidden -fno-freestanding -fshort-enums -std=c17 -MD -MT CMakeFiles/app.dir/src/test_k2.c.obj -MF CMakeFiles/app.dir/src/test_k2.c.obj.d -o CMakeFiles/app.dir/src/test_k2.c.obj -c /ws/firmware/tests/store/src/test_k2.c
+/ws/firmware/tests/store/src/test_k2.c: In function ‘store_fmt_test_k2_kit_names_exist’:
+/ws/firmware/tests/store/src/test_k2.c:11:21: error: invalid application of ‘sizeof’ to a function type [-Werror=pointer-arith]
+   11 |         (void)sizeof(disk_access_read);
+      |                     ^
+/ws/firmware/tests/store/src/test_k2.c:12:21: error: invalid application of ‘sizeof’ to a function type [-Werror=pointer-arith]
+   12 |         (void)sizeof(disk_access_write);
+      |                     ^
+/ws/firmware/tests/store/src/test_k2.c:13:21: error: invalid application of ‘sizeof’ to a function type [-Werror=pointer-arith]
+   13 |         (void)sizeof(disk_access_ioctl);
+      |                     ^
+/ws/firmware/tests/store/src/test_k2.c:14:21: error: invalid application of ‘sizeof’ to a function type [-Werror=pointer-arith]
+   14 |         (void)sizeof(crc32_ieee);
+      |                     ^
+/ws/firmware/tests/store/src/test_k2.c:15:21: error: invalid application of ‘sizeof’ to a function type [-Werror=pointer-arith]
+   15 |         (void)sizeof(crc32_ieee_update);
+      |                     ^
+cc1: all warnings being treated as errors
+[18/195] Building C object CMakeFiles/app.dir/src/test_layout.c.obj
+[19/195] Building C object CMakeFiles/app.dir/src/test_recovery.c.obj
+[20/195] Building C object CMakeFiles/app.dir/src/test_fmt.c.obj
+[21/195] Building C object CMakeFiles/app.dir/src/tst.c.obj
+[22/195] Building C object CMakeFiles/app.dir/src/test_index.c.obj
+[23/195] Building C object CMakeFiles/app.dir/src/test_space.c.obj
+[24/195] Building C object CMakeFiles/app.dir/src/test_delete.c.obj
+ninja: build stopped: subcommand failed.
+
+INFO    - /ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/build.log
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 22.77 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+INFO    - 0 test configurations executed on platforms, 1 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.json
+INFO    - Writing xunit report /ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-052338-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_store.sim on nrf54lm20bsim/nrf54lm20a/cpuapp error (Build failure - error: invalid application of sizeof to a function type [-Werror=pointer-arith])
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p nrf54lm20bsim/nrf54lm20a/cpuapp -s ring_store.sim
+INFO    - or with west:
+INFO    - west build -p -b nrf54lm20bsim/nrf54lm20a/cpuapp tests/store -T ring_store.sim
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp end 2026-11-13T04:24:30Z exit 1
+=== part broken-store start 2026-11-13T04:24:30Z log /ws/out/20261113-052338-u-store-unit/broken-store.log
+##### broken copy: hdr_crc_512
+diff -u -r /ws/firmware/modules/ring_store/src/rst_fmt.c /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_hdr_crc_512/src/rst_fmt.c
+--- /ws/firmware/modules/ring_store/src/rst_fmt.c	2026-11-13 04:14:50.000000000 +0000
++++ /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_hdr_crc_512/src/rst_fmt.c	2026-11-13 04:24:30.271453030 +0000
+@@ -130,7 +130,9 @@
+ /* the header CRC-32 over header bytes 0 to 507 (FW l.580), for the encoder and the decoder alike */
+ static uint32_t chunk_hdr_crc(const uint8_t *h)
+ {
+-	return crc32_ieee(h, RREC_CH_OFF_HEADER_CRC);
++	static const uint8_t z[4];
++
++	return crc32_ieee_update(crc32_ieee(h, RREC_CH_OFF_HEADER_CRC), z, sizeof(z));
+ }
+ 
+ bool rst_fmt_chunk_hdr_valid(const struct rst_chunk_hdr *h)
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 19.02 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy hdr_crc_512, native_sim: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-hdr_crc_512-native_sim.log)
+hdr_crc_512 on native_sim: the named case did not fail (twister exit 1): store_fmt.test_chunk_header_bytes
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.40 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy hdr_crc_512, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-hdr_crc_512-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+hdr_crc_512 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): store_fmt.test_chunk_header_bytes
+##### broken copy: digest_big_endian
+diff -u -r /ws/firmware/modules/ring_store/src/rst_fmt.c /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_digest_big_endian/src/rst_fmt.c
+--- /ws/firmware/modules/ring_store/src/rst_fmt.c	2026-11-13 04:14:50.000000000 +0000
++++ /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_digest_big_endian/src/rst_fmt.c	2026-11-13 04:24:50.699002540 +0000
+@@ -19,7 +19,7 @@
+ {
+ 	uint8_t w[sizeof(uint32_t)];
+ 
+-	rst_put32(w, payload_crc);
++	w[0] = (uint8_t)(payload_crc >> 24); w[1] = (uint8_t)(payload_crc >> 16); w[2] = (uint8_t)(payload_crc >> 8); w[3] = (uint8_t)payload_crc;
+ 	return crc32_ieee_update(state, w, sizeof(w));
+ }
+ 
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 17.38 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy digest_big_endian, native_sim: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-digest_big_endian-native_sim.log)
+digest_big_endian on native_sim: the named case did not fail (twister exit 1): store_fmt.test_digest
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.53 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy digest_big_endian, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-digest_big_endian-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+digest_big_endian on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): store_fmt.test_digest
+##### broken copy: sb_older_wins
+diff -u -r /ws/firmware/modules/ring_store/src/rst_log.c /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_sb_older_wins/src/rst_log.c
+--- /ws/firmware/modules/ring_store/src/rst_log.c	2026-11-13 03:57:54.000000000 +0000
++++ /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_sb_older_wins/src/rst_log.c	2026-11-13 04:25:10.785559617 +0000
+@@ -19,7 +19,7 @@
+ 	if (!va && !vb) {
+ 		return -ENOENT;
+ 	}
+-	if (va && (!vb || a.sb_seq > b.sb_seq)) {
++	if (va && (!vb || a.sb_seq < b.sb_seq)) {
+ 		*out = a;
+ 		*which = 0;
+ 	} else {
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.11 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy sb_older_wins, native_sim: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-sb_older_wins-native_sim.log)
+sb_older_wins on native_sim: the named case did not fail (twister exit 1): store_log.test_mount_picks_newer_valid_copy
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 17.82 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy sb_older_wins, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-sb_older_wins-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+sb_older_wins on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): store_log.test_mount_picks_newer_valid_copy
+##### broken copy: lba_no_wrap
+diff -u -r /ws/firmware/modules/ring_store/src/rst_layout.c /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_lba_no_wrap/src/rst_layout.c
+--- /ws/firmware/modules/ring_store/src/rst_layout.c	2026-11-13 04:13:51.000000000 +0000
++++ /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_lba_no_wrap/src/rst_layout.c	2026-11-13 04:25:30.484125293 +0000
+@@ -14,7 +14,7 @@
+ 	if (total == 0) {
+ 		return UINT32_MAX;
+ 	}
+-	return RREC_LBA_CHUNK_FIRST + (seq % total) * RREC_CHUNK_SECTORS;
++	return RREC_LBA_CHUNK_FIRST + seq * RREC_CHUNK_SECTORS;
+ }
+ 
+ uint32_t rst_lay_index_lba(uint32_t n)
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.02 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy lba_no_wrap, native_sim: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-lba_no_wrap-native_sim.log)
+lba_no_wrap on native_sim: the named case did not fail (twister exit 1): store_layout.test_chunk_lba_wraps
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 17.38 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy lba_no_wrap, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-lba_no_wrap-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+lba_no_wrap on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): store_layout.test_chunk_lba_wraps
+##### broken copy: scan_accepts_gap
+diff -u -r /ws/firmware/modules/ring_store/src/rst_log.c /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_scan_accepts_gap/src/rst_log.c
+--- /ws/firmware/modules/ring_store/src/rst_log.c	2026-11-13 03:57:54.000000000 +0000
++++ /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_scan_accepts_gap/src/rst_log.c	2026-11-13 04:25:49.988695287 +0000
+@@ -235,7 +235,7 @@
+ 			out->err_lba = lba;
+ 			return -EIO;
+ 		}
+-		if (rst_fmt_chunk_verify(buf, &h, &pcrc) != 0 || h.recording_id != recording_id || h.chunk_seq != seq) {
++		if (rst_fmt_chunk_verify(buf, &h, &pcrc) != 0 || h.recording_id != recording_id || h.chunk_seq < seq) {
+ 			break;
+ 		}
+ 		if (out->kept == 0) {
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.48 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy scan_accepts_gap, native_sim: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-scan_accepts_gap-native_sim.log)
+scan_accepts_gap on native_sim: the named case did not fail (twister exit 1): store_recovery.test_stop_on_each_mismatch
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.73 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy scan_accepts_gap, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-scan_accepts_gap-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+scan_accepts_gap on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): store_recovery.test_stop_on_each_mismatch
+##### broken copy: sfull_17
+diff -u -r /ws/firmware/modules/ring_store/src/rst_layout.c /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_sfull_17/src/rst_layout.c
+--- /ws/firmware/modules/ring_store/src/rst_layout.c	2026-11-13 04:13:51.000000000 +0000
++++ /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_sfull_17/src/rst_layout.c	2026-11-13 04:26:10.313247246 +0000
+@@ -39,7 +39,7 @@
+ 	out->total = total;
+ 	out->used = used > total ? total : used;
+ 	out->free_chunks = total - out->used;
+-	out->sfull = out->free_chunks <= RREC_SFULL_CHUNKS;
++	out->sfull = out->free_chunks <= RREC_SFULL_CHUNKS + 1;
+ 	out->s30 = out->free_chunks <= RREC_S30_CHUNKS;
+ 	out->minutes_left = (uint32_t)(((uint64_t)out->free_chunks * RREC_CHUNK_MS) / (60u * 1000u));
+ }
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 17.75 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy sfull_17, native_sim: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-sfull_17-native_sim.log)
+sfull_17 on native_sim: the named case did not fail (twister exit 1): store_space.test_s30_sfull_edges
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 17.53 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy sfull_17, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-sfull_17-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+sfull_17 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): store_space.test_s30_sfull_edges
+##### broken copy: delete_frees_middle
+diff -u -r /ws/firmware/modules/ring_store/src/rst_log.c /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_delete_frees_middle/src/rst_log.c
+--- /ws/firmware/modules/ring_store/src/rst_log.c	2026-11-13 03:57:54.000000000 +0000
++++ /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_delete_frees_middle/src/rst_log.c	2026-11-13 04:26:29.500824306 +0000
+@@ -205,7 +205,7 @@
+ 			if (r != 0) {
+ 				return r;
+ 			}
+-			deleted = x.type == RREC_IX_TYPE_DELETE && x.recording_id == c.recording_id;
++			deleted = x.type == RREC_IX_TYPE_DELETE;
+ 		}
+ 		if (!deleted) {
+ 			*new_chunk_tail = c.first_chunk_seq;
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 17.31 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy delete_frees_middle, native_sim: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-delete_frees_middle-native_sim.log)
+delete_frees_middle on native_sim: the named case did not fail (twister exit 1): store_delete.test_tail_moves_over_leading_only
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.28 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy delete_frees_middle, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-delete_frees_middle-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+delete_frees_middle on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): store_delete.test_tail_moves_over_leading_only
+##### broken copy: delete_without_confirm
+diff -u -r /ws/firmware/modules/ring_store/src/rst.c /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_delete_without_confirm/src/rst.c
+--- /ws/firmware/modules/ring_store/src/rst.c	2026-11-13 04:17:09.000000000 +0000
++++ /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_delete_without_confirm/src/rst.c	2026-11-13 04:26:49.310387692 +0000
+@@ -943,7 +943,7 @@
+ 	if (r == 0 && S.sb.open_flag) {
+ 		r = -EBUSY;                   /* a recording is open or waits for its recovery */
+ 	}
+-	if (r == 0 && !rec.confirmed) {
++	if (r == 0 && !rec.confirmed && false) {
+ 		r = -EACCES;                                                             /* FW l.659 */
+ 	}
+ 	if (r == 0) {
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 17.49 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy delete_without_confirm, native_sim: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-delete_without_confirm-native_sim.log)
+delete_without_confirm on native_sim: the named case did not fail (twister exit 1): store_delete.test_delete_needs_confirm
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.72 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy delete_without_confirm, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-delete_without_confirm-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+delete_without_confirm on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): store_delete.test_delete_needs_confirm
+##### broken copy: two_tries
+diff -u -r /ws/firmware/modules/ring_store/src/rst.c /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_two_tries/src/rst.c
+--- /ws/firmware/modules/ring_store/src/rst.c	2026-11-13 04:17:09.000000000 +0000
++++ /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_two_tries/src/rst.c	2026-11-13 04:27:09.535941948 +0000
+@@ -85,7 +85,7 @@
+ {
+ 	int r = -EIO;
+ 
+-	for (uint32_t i = 0; i < RREC_WRITE_TRIES && r != 0; i++) {
++	for (uint32_t i = 0; i < RREC_WRITE_TRIES - 1 && r != 0; i++) {
+ 		r = rhw_disk()->write(lba, buf, count);
+ 	}
+ 	return r == 0 ? 0 : -EIO;
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.74 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy two_tries, native_sim: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-two_tries-native_sim.log)
+two_tries on native_sim: the named case did not fail (twister exit 1): store_svc.test_three_tries_then_fault_open_flag_kept
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.76 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy two_tries, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-two_tries-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+two_tries on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): store_svc.test_three_tries_then_fault_open_flag_kept
+##### broken copy: init_before_rail
+diff -u -r /ws/firmware/modules/ring_store/src/rst.c /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_init_before_rail/src/rst.c
+--- /ws/firmware/modules/ring_store/src/rst.c	2026-11-13 04:17:09.000000000 +0000
++++ /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_init_before_rail/src/rst.c	2026-11-13 04:27:29.811495138 +0000
+@@ -342,6 +342,7 @@
+ {
+ 	int r = -EIO;
+ 
++	(void)rhw_disk()->init();
+ 	if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+ 		return -EIO;
+ 	}
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 17.67 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy init_before_rail, native_sim: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-init_before_rail-native_sim.log)
+init_before_rail on native_sim: the named case did not fail (twister exit 1): store_svc.test_rail_sequence
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 17.92 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy init_before_rail, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-init_before_rail-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+init_before_rail on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): store_svc.test_rail_sequence
+##### broken copy: log_drops_newest
+diff -u -r /ws/firmware/modules/ring_store/src/rst_log.c /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_log_drops_newest/src/rst_log.c
+--- /ws/firmware/modules/ring_store/src/rst_log.c	2026-11-13 03:57:54.000000000 +0000
++++ /ws/out/20261113-052338-u-store-unit/broken-store/broken_ring_store_log_drops_newest/src/rst_log.c	2026-11-13 04:27:49.188068171 +0000
+@@ -292,9 +292,8 @@
+ void rst_evbuf_push(struct rst_evbuf *b, const struct rrec_logrec *r)
+ {
+ 	if (b->n == RREC_LOG_BUFFER_RECORDS) {
+-		b->first = (b->first + 1) % RREC_LOG_BUFFER_RECORDS;      /* the oldest unwritten is dropped */
+-		b->n--;
+ 		b->dropped++;
++		return;
+ 	}
+ 	b->r[(b->first + b->n) % RREC_LOG_BUFFER_RECORDS] = *r;
+ 	b->n++;
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.59 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy log_drops_newest, native_sim: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-log_drops_newest-native_sim.log)
+log_drops_newest on native_sim: the named case did not fail (twister exit 1): store_evlog.test_buffer_of_8_drops_oldest
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 18.78 seconds.
+INFO    - 0 of 63 executed test cases passed (0.00%), 63 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy log_drops_newest, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-052338-u-store-unit/broken-store/twister-log_drops_newest-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+log_drops_newest on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): store_evlog.test_buffer_of_8_drops_oldest
+RESULT FAIL hdr_crc_512/native_sim hdr_crc_512/nrf54lm20bsim/nrf54lm20a/cpuapp digest_big_endian/native_sim digest_big_endian/nrf54lm20bsim/nrf54lm20a/cpuapp sb_older_wins/native_sim sb_older_wins/nrf54lm20bsim/nrf54lm20a/cpuapp lba_no_wrap/native_sim lba_no_wrap/nrf54lm20bsim/nrf54lm20a/cpuapp scan_accepts_gap/native_sim scan_accepts_gap/nrf54lm20bsim/nrf54lm20a/cpuapp sfull_17/native_sim sfull_17/nrf54lm20bsim/nrf54lm20a/cpuapp delete_frees_middle/native_sim delete_frees_middle/nrf54lm20bsim/nrf54lm20a/cpuapp delete_without_confirm/native_sim delete_without_confirm/nrf54lm20bsim/nrf54lm20a/cpuapp two_tries/native_sim two_tries/nrf54lm20bsim/nrf54lm20a/cpuapp init_before_rail/native_sim init_before_rail/nrf54lm20bsim/nrf54lm20a/cpuapp log_drops_newest/native_sim log_drops_newest/nrf54lm20bsim/nrf54lm20a/cpuapp
+=== part broken-store end 2026-11-13T04:28:09Z exit 1
+UNIT FAIL tests/store tests-native_sim tests-nrf54lm20bsim_nrf54lm20a_cpuapp broken-store
+# finished (Mac clock): 2026-11-13 05:28:15 CET
+# remote exit code: 1
+# local log: firmware/build-logs/20261113-052338-u-store.log

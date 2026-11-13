@@ -1,0 +1,25 @@
+config RING_POWER
+	bool "Ring power: battery levels, charger, ship mode, reset causes (software step 6, unit U5)"
+	depends on RING_RHW
+	help
+	  design/firmware.md sections 1.1, 1.2 (R-CHG) and 8. Reaches hardware only through ring_rhw's rhw.h.
+
+if RING_POWER
+
+config RING_POWER_STACK_SIZE
+	int "Stack of the power thread"
+	default 2048
+
+config RING_POWER_PRIORITY
+	int "Priority of the power thread (preemptible)"
+	default 5
+
+config RING_POWER_REAL
+	bool "The real driver file: nPM1304 chip, charger and the kit's fuel gauge (development kit build only)"
+	depends on DT_HAS_NORDIC_NPM1304_ENABLED && !RING_RHW_SIM
+	default y
+	help
+	  Compiles src/rpw_hw_real.c, which registers the real power chip and gauge with ring_rhw. Never in a
+	  simulated build; not proven without hardware (plan section 7).
+
+endif

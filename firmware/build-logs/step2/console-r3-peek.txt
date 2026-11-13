@@ -1,0 +1,27 @@
+# remote.sh run 20261111-223609-r3-peek
+# command: O=/root/ring-os/ws/out/20261111-222320-os-devices-control-r3/bsim-control-broken; grep -E "rdev:" $O/run-broken-fourth_slot-G-ring.log | awk -F"@" "{print \$2}" | grep -E "^00:01:(3|4|5)|^00:02" | cut -c1-140 | head -30; grep -E "HOST H3 (conn|disc)|HOST H4" $O/run-broken-fourth_slot-G-host3.log | cut -c1-120 | tail -6
+# mode: host
+# started (Mac clock): 2026-11-11 22:36:09 CET
+# free on the server's /: 43 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-223609-r3-peek; server log /root/ring-os/logs/20261111-223609-r3-peek.log
+00:01:40.000217  rdev: pairing window open for slot 0, 60000 ms
+00:01:40.000217  rdev: disconnect link of slot 2 (0)
+00:01:40.079106  rdev: disconnected slot 2, reason 0x16
+00:01:40.079106  rdev: advertising slot 0 open (pairing), interval 100 ms
+00:01:40.196742  rdev: connected on slot 0
+00:01:40.548341  rdev: security slot 0 level 4 err 0
+00:02:05.000317  rdev: pairing window cancelled
+00:02:05.000317  rdev: disconnect link of slot 0 (0)
+00:02:05.098034  rdev: disconnected slot 0, reason 0x16
+00:02:05.098034  rdev: advertising slot 2 to the bonded device, interval 100 ms
+00:02:05.211580  rdev: connected on slot 2
+00:02:05.563179  rdev: security slot 2 level 4 err 0
+d_03: @00:00:55.171836  HOST H3 connected (t=55171), bonded=0
+d_03: @00:01:05.673132  HOST H3 disconnected reason 0x13 (t=65673)
+d_03: @00:01:14.377811  HOST H3 connected (t=74377), bonded=1
+d_03: @00:01:40.079107  HOST H3 disconnected reason 0x13 (t=100079)
+d_03: @00:02:05.211577  HOST H3 connected (t=125211), bonded=1
+# finished (Mac clock): 2026-11-11 22:36:14 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-223609-r3-peek.log

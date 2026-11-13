@@ -1,0 +1,26 @@
+config RING_RECORDER
+	bool "Ring recorder: the join of software step 6 (actions of the core through the recorder parts, boot, the one microphone path)"
+	depends on RING_RHW && RING_STORE && RING_AUDIO && RING_XFER && RING_POWER && RING_MOTOR && RING_SYS
+	depends on RING_GLUE && RING_SCREENS && RING_TIME
+	help
+	  Carries out every action of the core through the units of step 6, runs the boot sequence, bridges the units'
+	  callbacks into the core through the glue, fills the USB backend, and holds rec_mics_on(), the one path that
+	  switches the microphone supply on (design/firmware.md 3.2). The factory part (ring_factory) is used when
+	  CONFIG_RING_FACTORY is set.
+
+config RING_RECORDER_STACK_SIZE
+	int "Stack size of the recorder's thread (events from the units' callbacks, recovery scan, storage retry)"
+	default 4096
+	depends on RING_RECORDER
+
+config RING_RECORDER_PRIO
+	int "Priority of the recorder's thread"
+	default 7
+	depends on RING_RECORDER
+
+config RING_RECORDER_TEST_HOOKS
+	bool "Test read-outs of the recorder (the event log tap); simulated builds only"
+	depends on RING_RECORDER && RING_RHW_SIM
+	help
+	  For tests/recorder only: keeps a copy of every event log record the recorder queues, and lets a test start the
+	  boot sequence again after rhw_sim_reboot(). Never in the product.

@@ -1,0 +1,62 @@
+/* Base elements of the S1 Gallery look. Colours come from tokens.css only. No shadows, square panels. */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: 15px;
+  line-height: 1.5;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; background: none; border: 1px solid var(--hairline); border-radius: 0; padding: 0; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+code { font-family: var(--font-label); font-size: 0.92em; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.label {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.display { font-family: var(--font-display); font-weight: 400; font-size: 30px; line-height: 1.15; margin: 0; }
+.muted { color: var(--muted); }
+.rule { border: 0; border-top: 1px solid var(--hairline-2); margin: 0; }
+
+/* The state pill of an area (StatePill from the contract). Words carry the state; colour only helps. */
+[data-state] {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  line-height: 1.4;
+  background: var(--hairline-2);
+  color: var(--muted);
+  white-space: nowrap;
+}
+[data-state='in progress'], [data-state='waiting on a supplier'], [data-state='state unknown'] {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+/* The honest-state banner (StateBanner from the contract). Calm, one sentence, one action. */
+[data-kind] {
+  margin: 0 0 18px;
+  padding: 10px 14px;
+  border: 1px solid var(--hairline);
+  border-left: 2px solid var(--accent);
+  font-size: 14px;
+  color: var(--ink);
+}
+[data-kind] code { background: var(--hairline-2); padding: 1px 5px; }
+
+/* A screen that is made for an older design keeps its content on screen, dimmed. */
+[data-dimmed='true'] { opacity: 0.55; transition: opacity var(--t-med) var(--ease-settle); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

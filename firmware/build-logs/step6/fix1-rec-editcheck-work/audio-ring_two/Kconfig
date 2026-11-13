@@ -1,0 +1,25 @@
+config RING_AUDIO_LOGIC
+	bool "Ring audio: blocks into chunks (pure part, no kernel call)"
+	help
+	  The 800-frame discard, the zero fill of a missing block, chunk flags, highlights, motor intervals and the
+	  chunk header fields (design/firmware.md sections 4 and 5.3). Stdint, stdbool and string only.
+
+config RING_AUDIO
+	bool "Ring audio: the microphones (thin part, reaches hardware only through ring_rhw)"
+	depends on RING_RHW
+	select RING_AUDIO_LOGIC
+	help
+	  The audio thread, the ring of 3 chunks, the 100 ms no-block watch, HFXO request and release, the clock
+	  pins' sleep state and the hand-off of full chunks to the store (design/firmware.md section 4).
+
+if RING_AUDIO
+
+config RING_AUDIO_STACK_SIZE
+	int "Stack of the audio thread, bytes"
+	default 4096
+
+config RING_AUDIO_THREAD_PRIO
+	int "Priority of the audio thread (preemptible, higher number = lower priority)"
+	default 5
+
+endif

@@ -1,0 +1,565 @@
+# remote.sh run 20261113-093051-j-unit1
+# command: rm -rf /ws/out/20261113-092918-j-run5-recorder-short && bash tools/unit_run.sh tests/recorder
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 09:30:51 CET
+# free on the server's /: 27 GB
+# source firmware copied to /root/ring-os/src-u-join
+# started on the server as 20261113-093051-j-unit1; server log /root/ring-os/logs/20261113-093051-j-unit1.log
+=== part tests-native_sim start 2026-11-13T08:30:56Z log /ws/out/20261113-093051-j-unit1-unit/tests-native_sim.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-093051-j-unit1-unit/twister-native_sim/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 native_sim/native         ring_recorder.sim                                  PASSED (native 4.036s <host/gnu>)
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 29.11 seconds.
+INFO    - 43 of 43 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-093051-j-unit1-unit/twister-native_sim/twister.json
+INFO    - Writing xunit report /ws/out/20261113-093051-j-unit1-unit/twister-native_sim/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-093051-j-unit1-unit/twister-native_sim/twister_report.xml...
+INFO    - Run completed
+=== part tests-native_sim end 2026-11-13T08:31:27Z exit 0
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp start 2026-11-13T08:31:27Z log /ws/out/20261113-093051-j-unit1-unit/tests-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-093051-j-unit1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_recorder.sim                            PASSED (native 4.608s <host/gnu>)
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 34.10 seconds.
+INFO    - 43 of 43 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-093051-j-unit1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.json
+INFO    - Writing xunit report /ws/out/20261113-093051-j-unit1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-093051-j-unit1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister_report.xml...
+INFO    - Run completed
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp end 2026-11-13T08:32:02Z exit 0
+=== part broken-recorder start 2026-11-13T08:32:02Z log /ws/out/20261113-093051-j-unit1-unit/broken-recorder.log
+##### broken copy: mic_before_sign
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec_mics.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_mic_before_sign/src/rrec_mics.c
+--- /ws/firmware/modules/ring_recorder/src/rrec_mics.c	2026-11-13 06:14:21.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_mic_before_sign/src/rrec_mics.c	2026-11-13 08:32:02.559563848 +0000
+@@ -45,12 +45,12 @@
+ 
+ int rec_mics_on(rc_ms_t t)
+ {
+-	int r = sign_draw(t);
++	int r = rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
+ 
+ 	if (r != 0) {
+-		return r;   /* the sign is not drawn: VDD_MIC stays off (FW l.342) */
++		return r;
+ 	}
+-	return rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
++	return sign_draw(t);
+ }
+ 
+ int rec_mics_off(void)
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_sign.c:46: recorder_sign_test_start_draws_sign_before_mic: (unlocked_us >= 0 && rt_ev_us(i_on) >= unlocked_us is false)
+TESTSUITE recorder_sign failed.
+ - PASS - [recorder_sign.test_close_mic_off_before_screen_leaves] duration = 7.429 seconds
+ - PASS - [recorder_sign.test_only_rec_mics_on_enables_mic] duration = 5.325 seconds
+ - PASS - [recorder_sign.test_sign_refused_no_mic_m3_log] duration = 1.533 seconds
+ - FAIL - [recorder_sign.test_start_draws_sign_before_mic] duration = 0.572 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 24.95 seconds.
+INFO    - 3 of 4 executed test cases passed (75.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy mic_before_sign, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-mic_before_sign-native_sim.log)
+mic_before_sign on native_sim: the named case failed, as required:  - FAIL - [recorder_sign.test_start_draws_sign_before_mic] duration = 0.572 seconds
+mic_before_sign on native_sim: cases that failed (distinct): FAIL - [recorder_sign.test_start_draws_sign_before_mic]  (lines with FAIL: 1)
+d_00: @00:00:14.857522      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_sign.c:46: recorder_sign_test_start_draws_sign_before_mic: (unlocked_us >= 0 && rt_ev_us(i_on) >= unlocked_us is false)
+d_00: @00:00:14.857522  TESTSUITE recorder_sign failed.
+d_00: @00:00:14.857522   - PASS - [recorder_sign.test_close_mic_off_before_screen_leaves] duration = 7.429 seconds
+d_00: @00:00:14.857522   - PASS - [recorder_sign.test_only_rec_mics_on_enables_mic] duration = 5.325 seconds
+d_00: @00:00:14.857522   - PASS - [recorder_sign.test_sign_refused_no_mic_m3_log] duration = 1.533 seconds
+d_00: @00:00:14.857522   - FAIL - [recorder_sign.test_start_draws_sign_before_mic] duration = 0.572 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.33 seconds.
+INFO    - 3 of 4 executed test cases passed (75.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy mic_before_sign, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-mic_before_sign-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+mic_before_sign on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:14.857522   - FAIL - [recorder_sign.test_start_draws_sign_before_mic] duration = 0.572 seconds
+mic_before_sign on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_sign.test_start_draws_sign_before_mic]  (lines with FAIL: 1)
+##### broken copy: mic_on_refused_sign
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec_mics.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_mic_on_refused_sign/src/rrec_mics.c
+--- /ws/firmware/modules/ring_recorder/src/rrec_mics.c	2026-11-13 06:14:21.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_mic_on_refused_sign/src/rrec_mics.c	2026-11-13 08:32:56.198356449 +0000
+@@ -24,7 +24,8 @@
+ {
+ 	int answer = rscr_sign_start(t);
+ 
+-	return answer; /* the sign's answer */
++	(void)answer;
++	return 0; /* the sign's answer ignored */
+ }
+ 
+ int rrec_sign_hook(void *ctx, rc_ms_t t)
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_sign.c:66: recorder_sign_test_sign_refused_no_mic_m3_log: (rt_row_seen(16) is false)
+TESTSUITE recorder_sign failed.
+ - PASS - [recorder_sign.test_close_mic_off_before_screen_leaves] duration = 7.429 seconds
+ - PASS - [recorder_sign.test_only_rec_mics_on_enables_mic] duration = 5.325 seconds
+ - FAIL - [recorder_sign.test_sign_refused_no_mic_m3_log] duration = 1.533 seconds
+ - PASS - [recorder_sign.test_start_draws_sign_before_mic] duration = 3.365 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 24.66 seconds.
+INFO    - 3 of 4 executed test cases passed (75.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy mic_on_refused_sign, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-mic_on_refused_sign-native_sim.log)
+mic_on_refused_sign on native_sim: the named case failed, as required:  - FAIL - [recorder_sign.test_sign_refused_no_mic_m3_log] duration = 1.533 seconds
+mic_on_refused_sign on native_sim: cases that failed (distinct): FAIL - [recorder_sign.test_sign_refused_no_mic_m3_log]  (lines with FAIL: 1)
+d_00: @00:00:14.285522      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_sign.c:66: recorder_sign_test_sign_refused_no_mic_m3_log: (rt_row_seen(16) is false)
+d_00: @00:00:17.650422  TESTSUITE recorder_sign failed.
+d_00: @00:00:17.650422   - PASS - [recorder_sign.test_close_mic_off_before_screen_leaves] duration = 7.429 seconds
+d_00: @00:00:17.650422   - PASS - [recorder_sign.test_only_rec_mics_on_enables_mic] duration = 5.325 seconds
+d_00: @00:00:17.650422   - FAIL - [recorder_sign.test_sign_refused_no_mic_m3_log] duration = 1.533 seconds
+d_00: @00:00:17.650422   - PASS - [recorder_sign.test_start_draws_sign_before_mic] duration = 3.365 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.12 seconds.
+INFO    - 3 of 4 executed test cases passed (75.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy mic_on_refused_sign, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-mic_on_refused_sign-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+mic_on_refused_sign on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:17.650422   - FAIL - [recorder_sign.test_sign_refused_no_mic_m3_log] duration = 1.533 seconds
+mic_on_refused_sign on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_sign.test_sign_refused_no_mic_m3_log]  (lines with FAIL: 1)
+##### broken copy: screen_leaves_before_mic_off
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_screen_leaves_before_mic_off/src/rrec.c
+--- /ws/firmware/modules/ring_recorder/src/rrec.c	2026-11-13 08:07:06.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_screen_leaves_before_mic_off/src/rrec.c	2026-11-13 08:33:49.347160103 +0000
+@@ -231,6 +231,12 @@
+ 	r = rau_cut(mark, &cr);                  /* the frames up to the mark kept; the partial chunk (FW l.448) */
+ 	(void)rst_close(cr.last, &cr.close);     /* partial chunk, CLOSE record, superblock with the flag clear */
+ 	(void)rau_halt();                        /* stop PDM, blocks released, clocks low (FW l.463) */
++	{
++		struct rc_actions none = { 0 };
++
++		none.last_row = -1;
++		(void)rscr_glue_after(&none, RC_EV_COUNT, RC_ST_STANDBY, mark);
++	}
+ 	(void)rec_mics_off();                    /* VDD_MIC off */
+ 	(void)rau_release();                     /* HFXO after VDD_MIC (FW l.463) */
+ 	(void)rst_unmount();                     /* VDD_SD off */
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_sign.c:119: recorder_sign_test_close_mic_off_before_screen_leaves: (rt_mic_at_screens() not equal to 0)
+TESTSUITE recorder_sign failed.
+ - FAIL - [recorder_sign.test_close_mic_off_before_screen_leaves] duration = 3.593 seconds
+ - PASS - [recorder_sign.test_only_rec_mics_on_enables_mic] duration = 5.325 seconds
+ - PASS - [recorder_sign.test_sign_refused_no_mic_m3_log] duration = 1.533 seconds
+ - PASS - [recorder_sign.test_start_draws_sign_before_mic] duration = 3.365 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 24.69 seconds.
+INFO    - 3 of 4 executed test cases passed (75.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy screen_leaves_before_mic_off, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-screen_leaves_before_mic_off-native_sim.log)
+screen_leaves_before_mic_off on native_sim: the named case failed, as required:  - FAIL - [recorder_sign.test_close_mic_off_before_screen_leaves] duration = 3.593 seconds
+screen_leaves_before_mic_off on native_sim: cases that failed (distinct): FAIL - [recorder_sign.test_close_mic_off_before_screen_leaves]  (lines with FAIL: 1)
+d_00: @00:00:03.593122      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_sign.c:119: recorder_sign_test_close_mic_off_before_screen_leaves: (rt_mic_at_screens() not equal to 0)
+d_00: @00:00:13.814822  TESTSUITE recorder_sign failed.
+d_00: @00:00:13.814822   - FAIL - [recorder_sign.test_close_mic_off_before_screen_leaves] duration = 3.593 seconds
+d_00: @00:00:13.814822   - PASS - [recorder_sign.test_only_rec_mics_on_enables_mic] duration = 5.325 seconds
+d_00: @00:00:13.814822   - PASS - [recorder_sign.test_sign_refused_no_mic_m3_log] duration = 1.533 seconds
+d_00: @00:00:13.814822   - PASS - [recorder_sign.test_start_draws_sign_before_mic] duration = 3.365 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.12 seconds.
+INFO    - 3 of 4 executed test cases passed (75.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy screen_leaves_before_mic_off, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-screen_leaves_before_mic_off-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+screen_leaves_before_mic_off on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:13.814822   - FAIL - [recorder_sign.test_close_mic_off_before_screen_leaves] duration = 3.593 seconds
+screen_leaves_before_mic_off on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_sign.test_close_mic_off_before_screen_leaves]  (lines with FAIL: 1)
+##### broken copy: dim_dark
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec_bridge.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_dim_dark/src/rrec_bridge.c
+--- /ws/firmware/modules/ring_recorder/src/rrec_bridge.c	2026-11-13 06:40:31.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_dim_dark/src/rrec_bridge.c	2026-11-13 08:34:42.504963574 +0000
+@@ -154,6 +154,9 @@
+ 	ARG_UNUSED(w);
+ 	rpw_values(&v);
+ 	rscr_set_battery((uint8_t)(v.soc_x10 / 10u), v.charging, v.full, v.to_full_min);
++	if (rrec_core_state() == RC_ST_RECORDING) {
++		(void)rscr_panel(false, 0);
++	}
+ 	(void)k_work_reschedule(&batt_work, K_MSEC(RREC_SAMPLE_REC_MS));
+ }
+ 
+SIGN-1: 72 rows, 0 not run, 6 failed, 606 ticks with VDD_MIC on checked
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_sign1.c:42: recorder_sign1_test_sign1_every_row: (bad_rows not equal to 0)
+SIGN-1 failed in 6 rows
+TESTSUITE recorder_sign1 failed.
+ - PASS - [recorder_sign1.test_forced_draw_failure] duration = 1.533 seconds
+ - FAIL - [recorder_sign1.test_sign1_every_row] duration = 1626.261 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 26.79 seconds.
+INFO    - 1 of 2 executed test cases passed (50.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy dim_dark, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-dim_dark-native_sim.log)
+dim_dark on native_sim: the named case failed, as required:  - FAIL - [recorder_sign1.test_sign1_every_row] duration = 1626.261 seconds
+dim_dark on native_sim: cases that failed (distinct): FAIL - [recorder_sign1.test_sign1_every_row]  (lines with FAIL: 1)
+d_00: @00:27:07.793522  SIGN-1: 72 rows, 0 not run, 6 failed, 606 ticks with VDD_MIC on checked
+d_00: @00:27:07.793522      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_sign1.c:42: recorder_sign1_test_sign1_every_row: (bad_rows not equal to 0)
+d_00: @00:27:07.793522  SIGN-1 failed in 6 rows
+d_00: @00:27:07.793522  TESTSUITE recorder_sign1 failed.
+d_00: @00:27:07.793522   - PASS - [recorder_sign1.test_forced_draw_failure] duration = 1.533 seconds
+d_00: @00:27:07.793522   - FAIL - [recorder_sign1.test_sign1_every_row] duration = 1626.261 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 28.95 seconds.
+INFO    - 1 of 2 executed test cases passed (50.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy dim_dark, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-dim_dark-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+dim_dark on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:27:07.793522   - FAIL - [recorder_sign1.test_sign1_every_row] duration = 1626.261 seconds
+dim_dark on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_sign1.test_sign1_every_row]  (lines with FAIL: 1)
+##### broken copy: m2_before_mic_off
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_m2_before_mic_off/src/rrec.c
+--- /ws/firmware/modules/ring_recorder/src/rrec.c	2026-11-13 08:07:06.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_m2_before_mic_off/src/rrec.c	2026-11-13 08:35:39.617678043 +0000
+@@ -292,6 +292,7 @@
+ 		open_recording(t);
+ 		break;
+ 	case RC_ACT_CLOSE:
++		play(RREC_PAT_M2);
+ 		(void)rrec_close(t);
+ 		break;
+ 	case RC_ACT_CHARGE_ON:
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:118: recorder_actions_test_stop_m2_after_mic_off: (i_off >= 0 && i_first > i_off is false)
+TESTSUITE recorder_actions failed.
+ - PASS - [recorder_actions.test_ble_highlight_marks] duration = 5.116 seconds
+ - PASS - [recorder_actions.test_close_order] duration = 4.093 seconds
+ - PASS - [recorder_actions.test_m1_at_start] duration = 2.793 seconds
+ - PASS - [recorder_actions.test_mw_in_recording_marked] duration = 6.395 seconds
+ - PASS - [recorder_actions.test_open_order] duration = 2.793 seconds
+ - PASS - [recorder_actions.test_refusal_plays_m3] duration = 6.431 seconds
+ - PASS - [recorder_actions.test_retry_storage_reports_result] duration = 121.793 seconds
+ - PASS - [recorder_actions.test_ship_closes_everything_first] duration = 6.687 seconds
+ - FAIL - [recorder_actions.test_stop_m2_after_mic_off] duration = 3.793 seconds
+ - PASS - [recorder_actions.test_watchdog_fed_while_recording] duration = 14.793 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 24.95 seconds.
+INFO    - 9 of 10 executed test cases passed (90.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy m2_before_mic_off, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-m2_before_mic_off-native_sim.log)
+m2_before_mic_off on native_sim: the named case failed, as required:  - FAIL - [recorder_actions.test_stop_m2_after_mic_off] duration = 3.793 seconds
+m2_before_mic_off on native_sim: cases that failed (distinct): FAIL - [recorder_actions.test_stop_m2_after_mic_off]  (lines with FAIL: 1)
+d_00: @00:02:39.891522      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:118: recorder_actions_test_stop_m2_after_mic_off: (i_off >= 0 && i_first > i_off is false)
+d_00: @00:02:54.684522  TESTSUITE recorder_actions failed.
+d_00: @00:02:54.684522   - PASS - [recorder_actions.test_ble_highlight_marks] duration = 5.116 seconds
+d_00: @00:02:54.684522   - PASS - [recorder_actions.test_close_order] duration = 4.093 seconds
+d_00: @00:02:54.684522   - PASS - [recorder_actions.test_m1_at_start] duration = 2.793 seconds
+d_00: @00:02:54.684522   - PASS - [recorder_actions.test_mw_in_recording_marked] duration = 6.395 seconds
+d_00: @00:02:54.684522   - PASS - [recorder_actions.test_open_order] duration = 2.793 seconds
+d_00: @00:02:54.684522   - PASS - [recorder_actions.test_refusal_plays_m3] duration = 6.431 seconds
+d_00: @00:02:54.684522   - PASS - [recorder_actions.test_retry_storage_reports_result] duration = 121.793 seconds
+d_00: @00:02:54.684522   - PASS - [recorder_actions.test_ship_closes_everything_first] duration = 6.687 seconds
+d_00: @00:02:54.684522   - FAIL - [recorder_actions.test_stop_m2_after_mic_off] duration = 3.793 seconds
+d_00: @00:02:54.684522   - PASS - [recorder_actions.test_watchdog_fed_while_recording] duration = 14.793 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 26.97 seconds.
+INFO    - 9 of 10 executed test cases passed (90.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy m2_before_mic_off, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-m2_before_mic_off-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+m2_before_mic_off on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:02:54.684522   - FAIL - [recorder_actions.test_stop_m2_after_mic_off] duration = 3.793 seconds
+m2_before_mic_off on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_actions.test_stop_m2_after_mic_off]  (lines with FAIL: 1)
+##### broken copy: sd_off_before_mic_off
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_sd_off_before_mic_off/src/rrec.c
+--- /ws/firmware/modules/ring_recorder/src/rrec.c	2026-11-13 08:07:06.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_sd_off_before_mic_off/src/rrec.c	2026-11-13 08:36:32.889478984 +0000
+@@ -231,9 +231,9 @@
+ 	r = rau_cut(mark, &cr);                  /* the frames up to the mark kept; the partial chunk (FW l.448) */
+ 	(void)rst_close(cr.last, &cr.close);     /* partial chunk, CLOSE record, superblock with the flag clear */
+ 	(void)rau_halt();                        /* stop PDM, blocks released, clocks low (FW l.463) */
++	(void)rst_unmount();                     /* VDD_SD off */
+ 	(void)rec_mics_off();                    /* VDD_MIC off */
+ 	(void)rau_release();                     /* HFXO after VDD_MIC (FW l.463) */
+-	(void)rst_unmount();                     /* VDD_SD off */
+ 	rrec_st.recording = false;
+ 	last_closed_id = rrec_st.rec_id;
+ 	last_closed_valid = true;
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:67: recorder_actions_test_close_order: (i_sd > i_mic is false)
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:277: recorder_actions_test_ship_closes_everything_first: (i_mic >= 0 && i_sd > i_mic && i_cfg > i_sd is false)
+TESTSUITE recorder_actions failed.
+ - PASS - [recorder_actions.test_ble_highlight_marks] duration = 5.116 seconds
+ - FAIL - [recorder_actions.test_close_order] duration = 4.093 seconds
+ - PASS - [recorder_actions.test_m1_at_start] duration = 2.793 seconds
+ - PASS - [recorder_actions.test_mw_in_recording_marked] duration = 6.395 seconds
+ - PASS - [recorder_actions.test_open_order] duration = 2.793 seconds
+ - PASS - [recorder_actions.test_refusal_plays_m3] duration = 6.431 seconds
+ - PASS - [recorder_actions.test_retry_storage_reports_result] duration = 121.793 seconds
+ - FAIL - [recorder_actions.test_ship_closes_everything_first] duration = 4.355 seconds
+ - PASS - [recorder_actions.test_stop_m2_after_mic_off] duration = 3.793 seconds
+ - PASS - [recorder_actions.test_watchdog_fed_while_recording] duration = 14.793 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 25.39 seconds.
+INFO    - 8 of 10 executed test cases passed (80.00%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy sd_off_before_mic_off, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-sd_off_before_mic_off-native_sim.log)
+sd_off_before_mic_off on native_sim: the named case failed, as required:  - FAIL - [recorder_actions.test_close_order] duration = 4.093 seconds
+sd_off_before_mic_off on native_sim: cases that failed (distinct): FAIL - [recorder_actions.test_close_order] FAIL - [recorder_actions.test_ship_closes_everything_first]  (lines with FAIL: 2)
+d_00: @00:00:09.208222      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:67: recorder_actions_test_close_order: (i_sd > i_mic is false)
+d_00: @00:02:33.766122      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:277: recorder_actions_test_ship_closes_everything_first: (i_mic >= 0 && i_sd > i_mic && i_cfg > i_sd is false)
+d_00: @00:02:52.352122  TESTSUITE recorder_actions failed.
+d_00: @00:02:52.352122   - PASS - [recorder_actions.test_ble_highlight_marks] duration = 5.116 seconds
+d_00: @00:02:52.352122   - FAIL - [recorder_actions.test_close_order] duration = 4.093 seconds
+d_00: @00:02:52.352122   - PASS - [recorder_actions.test_m1_at_start] duration = 2.793 seconds
+d_00: @00:02:52.352122   - PASS - [recorder_actions.test_mw_in_recording_marked] duration = 6.395 seconds
+d_00: @00:02:52.352122   - PASS - [recorder_actions.test_open_order] duration = 2.793 seconds
+d_00: @00:02:52.352122   - PASS - [recorder_actions.test_refusal_plays_m3] duration = 6.431 seconds
+d_00: @00:02:52.352122   - PASS - [recorder_actions.test_retry_storage_reports_result] duration = 121.793 seconds
+d_00: @00:02:52.352122   - FAIL - [recorder_actions.test_ship_closes_everything_first] duration = 4.355 seconds
+d_00: @00:02:52.352122   - PASS - [recorder_actions.test_stop_m2_after_mic_off] duration = 3.793 seconds
+d_00: @00:02:52.352122   - PASS - [recorder_actions.test_watchdog_fed_while_recording] duration = 14.793 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.46 seconds.
+INFO    - 8 of 10 executed test cases passed (80.00%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy sd_off_before_mic_off, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-sd_off_before_mic_off-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+sd_off_before_mic_off on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:02:52.352122   - FAIL - [recorder_actions.test_close_order] duration = 4.093 seconds
+sd_off_before_mic_off on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_actions.test_close_order] FAIL - [recorder_actions.test_ship_closes_everything_first]  (lines with FAIL: 2)
+##### broken copy: charge_after_mount
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec_boot.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_charge_after_mount/src/rrec_boot.c
+--- /ws/firmware/modules/ring_recorder/src/rrec_boot.c	2026-11-13 06:20:14.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_charge_after_mount/src/rrec_boot.c	2026-11-13 08:37:27.099258827 +0000
+@@ -76,8 +76,8 @@
+ 	rrec_st.fact_factory_pending = true;
+ 
+ 	/* FW l.893: with VBUS the charger is on BEFORE the storage is mounted (rpw_start does charge on) */
+-	pr = rpw_start(rrec_power_cb());
+ 	mr = rst_mount(true, &mi);
++	pr = rpw_start(rrec_power_cb());
+ 
+ 	vbus = rhw_pmic()->vbus_present();
+ 	selftest = rsy_selftest_start(vbus) == 1;
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_boot.c:24: recorder_boot_test_vbus_boot_charges_before_mount: (i_init > i_chg is false)
+TESTSUITE recorder_boot failed.
+ - PASS - [recorder_boot.test_boot_count_only_at_boot] duration = 1.146 seconds
+ - PASS - [recorder_boot.test_init_done_each_row] duration = 7.327 seconds
+ - PASS - [recorder_boot.test_recovery_rows] duration = 8.683 seconds
+ - PASS - [recorder_boot.test_restart_after_cut_recovers] duration = 5.417 seconds
+ - PASS - [recorder_boot.test_selftest_items] duration = 31.745 seconds
+ - FAIL - [recorder_boot.test_vbus_boot_charges_before_mount] duration = 0.272 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 25.05 seconds.
+INFO    - 5 of 6 executed test cases passed (83.33%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy charge_after_mount, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-charge_after_mount-native_sim.log)
+charge_after_mount on native_sim: the named case failed, as required:  - FAIL - [recorder_boot.test_vbus_boot_charges_before_mount] duration = 0.272 seconds
+charge_after_mount on native_sim: cases that failed (distinct): FAIL - [recorder_boot.test_vbus_boot_charges_before_mount]  (lines with FAIL: 1)
+d_00: @00:00:54.588022      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_boot.c:24: recorder_boot_test_vbus_boot_charges_before_mount: (i_init > i_chg is false)
+d_00: @00:00:54.588022  TESTSUITE recorder_boot failed.
+d_00: @00:00:54.588022   - PASS - [recorder_boot.test_boot_count_only_at_boot] duration = 1.146 seconds
+d_00: @00:00:54.588022   - PASS - [recorder_boot.test_init_done_each_row] duration = 7.327 seconds
+d_00: @00:00:54.588022   - PASS - [recorder_boot.test_recovery_rows] duration = 8.683 seconds
+d_00: @00:00:54.588022   - PASS - [recorder_boot.test_restart_after_cut_recovers] duration = 5.417 seconds
+d_00: @00:00:54.588022   - PASS - [recorder_boot.test_selftest_items] duration = 31.745 seconds
+d_00: @00:00:54.588022   - FAIL - [recorder_boot.test_vbus_boot_charges_before_mount] duration = 0.272 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.47 seconds.
+INFO    - 5 of 6 executed test cases passed (83.33%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy charge_after_mount, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-charge_after_mount-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+charge_after_mount on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:54.588022   - FAIL - [recorder_boot.test_vbus_boot_charges_before_mount] duration = 0.272 seconds
+charge_after_mount on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_boot.test_vbus_boot_charges_before_mount]  (lines with FAIL: 1)
+##### broken copy: retry_not_reported
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec_bridge.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_retry_not_reported/src/rrec_bridge.c
+--- /ws/firmware/modules/ring_recorder/src/rrec_bridge.c	2026-11-13 06:40:31.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_retry_not_reported/src/rrec_bridge.c	2026-11-13 08:38:20.975046200 +0000
+@@ -110,7 +110,7 @@
+ 	}
+ 	sys_put_le32((uint32_t)r, args);
+ 	rrec_log(RREC_LOG_STORAGE_RETRY, args, sizeof(args));
+-	rglue_event(r == 0 ? RC_EV_STORAGE_RETRY_OK : RC_EV_STORAGE_RETRY_FAILED);
++	(void)r;   /* the result is not reported */
+ }
+ 
+ static void rrec_thread_fn(void *p1, void *p2, void *p3)
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:217: recorder_actions_test_retry_storage_reports_result: (rt_row_seen(62) is false)
+row 62: the failed retry reported
+TESTSUITE recorder_actions failed.
+ - PASS - [recorder_actions.test_ble_highlight_marks] duration = 5.116 seconds
+ - PASS - [recorder_actions.test_close_order] duration = 4.093 seconds
+ - PASS - [recorder_actions.test_m1_at_start] duration = 2.793 seconds
+ - PASS - [recorder_actions.test_mw_in_recording_marked] duration = 6.395 seconds
+ - PASS - [recorder_actions.test_open_order] duration = 2.793 seconds
+ - PASS - [recorder_actions.test_refusal_plays_m3] duration = 6.431 seconds
+ - FAIL - [recorder_actions.test_retry_storage_reports_result] duration = 61.733 seconds
+ - PASS - [recorder_actions.test_ship_closes_everything_first] duration = 6.687 seconds
+ - PASS - [recorder_actions.test_stop_m2_after_mic_off] duration = 3.793 seconds
+ - PASS - [recorder_actions.test_watchdog_fed_while_recording] duration = 14.793 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 25.60 seconds.
+INFO    - 9 of 10 executed test cases passed (90.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy retry_not_reported, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-retry_not_reported-native_sim.log)
+retry_not_reported on native_sim: the named case failed, as required:  - FAIL - [recorder_actions.test_retry_storage_reports_result] duration = 61.733 seconds
+retry_not_reported on native_sim: cases that failed (distinct): FAIL - [recorder_actions.test_retry_storage_reports_result]  (lines with FAIL: 1)
+d_00: @00:01:29.351622      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:217: recorder_actions_test_retry_storage_reports_result: (rt_row_seen(62) is false)
+d_00: @00:01:29.351622  row 62: the failed retry reported
+d_00: @00:01:54.624122  TESTSUITE recorder_actions failed.
+d_00: @00:01:54.624122   - PASS - [recorder_actions.test_ble_highlight_marks] duration = 5.116 seconds
+d_00: @00:01:54.624122   - PASS - [recorder_actions.test_close_order] duration = 4.093 seconds
+d_00: @00:01:54.624122   - PASS - [recorder_actions.test_m1_at_start] duration = 2.793 seconds
+d_00: @00:01:54.624122   - PASS - [recorder_actions.test_mw_in_recording_marked] duration = 6.395 seconds
+d_00: @00:01:54.624122   - PASS - [recorder_actions.test_open_order] duration = 2.793 seconds
+d_00: @00:01:54.624122   - PASS - [recorder_actions.test_refusal_plays_m3] duration = 6.431 seconds
+d_00: @00:01:54.624122   - FAIL - [recorder_actions.test_retry_storage_reports_result] duration = 61.733 seconds
+d_00: @00:01:54.624122   - PASS - [recorder_actions.test_ship_closes_everything_first] duration = 6.687 seconds
+d_00: @00:01:54.624122   - PASS - [recorder_actions.test_stop_m2_after_mic_off] duration = 3.793 seconds
+d_00: @00:01:54.624122   - PASS - [recorder_actions.test_watchdog_fed_while_recording] duration = 14.793 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.66 seconds.
+INFO    - 9 of 10 executed test cases passed (90.00%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy retry_not_reported, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-retry_not_reported-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+retry_not_reported on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:01:54.624122   - FAIL - [recorder_actions.test_retry_storage_reports_result] duration = 61.733 seconds
+retry_not_reported on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_actions.test_retry_storage_reports_result]  (lines with FAIL: 1)
+##### broken copy: mic_in_factory_idle
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_mic_in_factory_idle/src/rrec.c
+--- /ws/firmware/modules/ring_recorder/src/rrec.c	2026-11-13 08:07:06.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_mic_in_factory_idle/src/rrec.c	2026-11-13 08:39:15.594816840 +0000
+@@ -622,7 +622,6 @@
+ 	rrec_feed_test_blocks(cr.last);
+ 	(void)rst_close(cr.last, &cr.close);
+ 	(void)rau_halt();
+-	(void)rec_mics_off();
+ 	if (mic_off_ms != NULL) {
+ 		*mic_off_ms = rhw_clock()->now_ms();
+ 	}
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rows.c:92: recorder_rows_test_mic_rail_only_in_recording: (bad_rows not equal to 0)
+TESTSUITE recorder_rows failed.
+ - PASS - [recorder_rows.test_charge_on_every_vbus_row] duration = 10.078 seconds
+ - PASS - [recorder_rows.test_factory_rows] duration = 49.796 seconds
+ - PASS - [recorder_rows.test_fw_end_row] duration = 0.735 seconds
+ - FAIL - [recorder_rows.test_mic_rail_only_in_recording] duration = 1626.261 seconds
+ - PASS - [recorder_rows.test_recording_exits] duration = 22.180 seconds
+ - PASS - [recorder_rows.test_transfer_rows] duration = 1.700 seconds
+ - PASS - [recorder_rows.test_usb_configured] duration = 0.463 seconds
+ - PASS - [recorder_rows.test_vbus_in_recording] duration = 2.843 seconds
+ - PASS - [recorder_rows.test_vbus_out_at_b2_goes_off] duration = 63.665 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 26.33 seconds.
+INFO    - 8 of 9 executed test cases passed (88.89%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy mic_in_factory_idle, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-mic_in_factory_idle-native_sim.log)
+mic_in_factory_idle on native_sim: the named case failed, as required:  - FAIL - [recorder_rows.test_mic_rail_only_in_recording] duration = 1626.261 seconds
+mic_in_factory_idle on native_sim: cases that failed (distinct): FAIL - [recorder_rows.test_mic_rail_only_in_recording]  (lines with FAIL: 1)
+d_00: @00:28:06.868422      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rows.c:92: recorder_rows_test_mic_rail_only_in_recording: (bad_rows not equal to 0)
+d_00: @00:29:37.717422  TESTSUITE recorder_rows failed.
+d_00: @00:29:37.717422   - PASS - [recorder_rows.test_charge_on_every_vbus_row] duration = 10.078 seconds
+d_00: @00:29:37.717422   - PASS - [recorder_rows.test_factory_rows] duration = 49.796 seconds
+d_00: @00:29:37.717422   - PASS - [recorder_rows.test_fw_end_row] duration = 0.735 seconds
+d_00: @00:29:37.717422   - FAIL - [recorder_rows.test_mic_rail_only_in_recording] duration = 1626.261 seconds
+d_00: @00:29:37.717422   - PASS - [recorder_rows.test_recording_exits] duration = 22.180 seconds
+d_00: @00:29:37.717422   - PASS - [recorder_rows.test_transfer_rows] duration = 1.700 seconds
+d_00: @00:29:37.717422   - PASS - [recorder_rows.test_usb_configured] duration = 0.463 seconds
+d_00: @00:29:37.717422   - PASS - [recorder_rows.test_vbus_in_recording] duration = 2.843 seconds
+d_00: @00:29:37.717422   - PASS - [recorder_rows.test_vbus_out_at_b2_goes_off] duration = 63.665 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 28.77 seconds.
+INFO    - 8 of 9 executed test cases passed (88.89%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy mic_in_factory_idle, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-mic_in_factory_idle-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+mic_in_factory_idle on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:29:37.717422   - FAIL - [recorder_rows.test_mic_rail_only_in_recording] duration = 1626.261 seconds
+mic_in_factory_idle on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_rows.test_mic_rail_only_in_recording]  (lines with FAIL: 1)
+##### broken copy: usb_long_press
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec_backend.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_usb_long_press/src/rrec_backend.c
+--- /ws/firmware/modules/ring_recorder/src/rrec_backend.c	2026-11-13 08:08:26.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_usb_long_press/src/rrec_backend.c	2026-11-13 08:40:12.025546733 +0000
+@@ -238,6 +238,9 @@
+ {
+ 	uint8_t args[13];
+ 
++	rglue_input(RC_SW_CENTRE, true);
++	k_sleep(K_MSEC(RREC_LONG_PRESS_MS + 100));
++	rglue_input(RC_SW_CENTRE, false);
+ 	/* FW l.1062: each transfer command becomes a record (code 0x0100 | opcode) */
+ 	args[0] = (uint8_t)st;
+ 	sys_put_le32(tag, &args[1]);
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rules.c:170: recorder_rules_test_factory_gestures_reach_the_jig: rt_state() not equal to RC_ST_FACTORY_TEST
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rules.c:104: recorder_rules_test_no_command_starts_or_stops: rt_state() not equal to RC_ST_TRANSFER
+TESTSUITE recorder_rules failed.
+ - FAIL - [recorder_rules.test_factory_gestures_reach_the_jig] duration = 0.554 seconds
+ - FAIL - [recorder_rules.test_no_command_starts_or_stops] duration = 0.463 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 24.83 seconds.
+INFO    - 0 of 2 executed test cases passed (0.00%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy usb_long_press, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-usb_long_press-native_sim.log)
+usb_long_press on native_sim: the named case failed, as required:  - FAIL - [recorder_rules.test_no_command_starts_or_stops] duration = 0.463 seconds
+usb_long_press on native_sim: cases that failed (distinct): FAIL - [recorder_rules.test_factory_gestures_reach_the_jig] FAIL - [recorder_rules.test_no_command_starts_or_stops]  (lines with FAIL: 2)
+d_00: @00:00:00.553322      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rules.c:170: recorder_rules_test_factory_gestures_reach_the_jig: rt_state() not equal to RC_ST_FACTORY_TEST
+d_00: @00:00:01.016022      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rules.c:104: recorder_rules_test_no_command_starts_or_stops: rt_state() not equal to RC_ST_TRANSFER
+d_00: @00:00:01.016022  TESTSUITE recorder_rules failed.
+d_00: @00:00:01.016022   - FAIL - [recorder_rules.test_factory_gestures_reach_the_jig] duration = 0.554 seconds
+d_00: @00:00:01.016022   - FAIL - [recorder_rules.test_no_command_starts_or_stops] duration = 0.463 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.00 seconds.
+INFO    - 0 of 2 executed test cases passed (0.00%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy usb_long_press, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-usb_long_press-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+usb_long_press on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:01.016022   - FAIL - [recorder_rules.test_no_command_starts_or_stops] duration = 0.463 seconds
+usb_long_press on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_rules.test_factory_gestures_reach_the_jig] FAIL - [recorder_rules.test_no_command_starts_or_stops]  (lines with FAIL: 2)
+##### broken copy: no_log_on_state_change
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_no_log_on_state_change/src/rrec.c
+--- /ws/firmware/modules/ring_recorder/src/rrec.c	2026-11-13 08:07:06.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_no_log_on_state_change/src/rrec.c	2026-11-13 08:41:05.225349354 +0000
+@@ -497,7 +497,7 @@
+ 		sys_put_le16((uint16_t)(a->last_row > 0 ? a->last_row : 0), &sc[2]);
+ 		sc[4] = (uint8_t)last_event;
+ 		rrec_st.core_state = (uint8_t)state;
+-		rrec_log(RREC_LOG_STATE_CHANGE, sc, sizeof(sc));
++		(void)sc;
+ 	}
+ 	if (prev == RC_ST_RECORDING && state != RC_ST_RECORDING && last_event == RC_EV_LONG_PRESS && last_closed_valid) {
+ 		uint8_t args[12];
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_log.c:51: recorder_log_test_each_kind_logged: (recs not equal to changes)
+TESTSUITE recorder_log failed.
+ - FAIL - [recorder_log.test_each_kind_logged] duration = 2.984 seconds
+ - PASS - [recorder_log.test_pattern_start_logged] duration = 2.793 seconds
+ - PASS - [recorder_log.test_stop_press_time_logged] duration = 3.693 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 24.57 seconds.
+INFO    - 2 of 3 executed test cases passed (66.67%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy no_log_on_state_change, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-no_log_on_state_change-native_sim.log)
+no_log_on_state_change on native_sim: the named case failed, as required:  - FAIL - [recorder_log.test_each_kind_logged] duration = 2.984 seconds
+no_log_on_state_change on native_sim: cases that failed (distinct): FAIL - [recorder_log.test_each_kind_logged]  (lines with FAIL: 1)
+d_00: @00:00:02.983822      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_log.c:51: recorder_log_test_each_kind_logged: (recs not equal to changes)
+d_00: @00:00:09.469722  TESTSUITE recorder_log failed.
+d_00: @00:00:09.469722   - FAIL - [recorder_log.test_each_kind_logged] duration = 2.984 seconds
+d_00: @00:00:09.469722   - PASS - [recorder_log.test_pattern_start_logged] duration = 2.793 seconds
+d_00: @00:00:09.469722   - PASS - [recorder_log.test_stop_press_time_logged] duration = 3.693 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 26.84 seconds.
+INFO    - 2 of 3 executed test cases passed (66.67%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy no_log_on_state_change, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-no_log_on_state_change-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+no_log_on_state_change on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:09.469722   - FAIL - [recorder_log.test_each_kind_logged] duration = 2.984 seconds
+no_log_on_state_change on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_log.test_each_kind_logged]  (lines with FAIL: 1)
+##### broken copy: sd_on_in_standby
+diff -u -r /ws/firmware/modules/ring_recorder/src/rrec.c /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_sd_on_in_standby/src/rrec.c
+--- /ws/firmware/modules/ring_recorder/src/rrec.c	2026-11-13 08:07:06.000000000 +0000
++++ /ws/out/20261113-093051-j-unit1-unit/broken-recorder/broken_ring_recorder_sd_on_in_standby/src/rrec.c	2026-11-13 08:41:57.974162134 +0000
+@@ -393,7 +393,7 @@
+  * FACTORY_TEST is "per test" (the factory tests mount and unmount themselves). */
+ static bool sd_wanted(enum rc_state s)
+ {
+-	return s == RC_ST_RECOVERY || s == RC_ST_RECORDING || s == RC_ST_TRANSFER;
++	return s == RC_ST_RECOVERY || s == RC_ST_RECORDING || s == RC_ST_TRANSFER || s == RC_ST_STANDBY;
+ }
+ 
+ static void usb_hfxo_running(void)
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rails.c:54: recorder_rails_test_rails_per_state: (bad not equal to 0)
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rails.c:61: recorder_rails_test_sd_rail_per_state: (rt_sd() is true)
+TESTSUITE recorder_rails failed.
+ - FAIL - [recorder_rails.test_rails_per_state] duration = 80.732 seconds
+ - FAIL - [recorder_rails.test_sd_rail_per_state] duration = 0.273 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 25.28 seconds.
+INFO    - 0 of 2 executed test cases passed (0.00%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy sd_on_in_standby, native_sim: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-sd_on_in_standby-native_sim.log)
+sd_on_in_standby on native_sim: the named case failed, as required:  - FAIL - [recorder_rails.test_rails_per_state] duration = 80.732 seconds
+sd_on_in_standby on native_sim: cases that failed (distinct): FAIL - [recorder_rails.test_rails_per_state] FAIL - [recorder_rails.test_sd_rail_per_state]  (lines with FAIL: 2)
+d_00: @00:01:20.731322      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rails.c:54: recorder_rails_test_rails_per_state: (bad not equal to 0)
+d_00: @00:01:21.004322      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rails.c:61: recorder_rails_test_sd_rail_per_state: (rt_sd() is true)
+d_00: @00:01:21.004322  TESTSUITE recorder_rails failed.
+d_00: @00:01:21.004322   - FAIL - [recorder_rails.test_rails_per_state] duration = 80.732 seconds
+d_00: @00:01:21.004322   - FAIL - [recorder_rails.test_sd_rail_per_state] duration = 0.273 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.06 seconds.
+INFO    - 0 of 2 executed test cases passed (0.00%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy sd_on_in_standby, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-093051-j-unit1-unit/broken-recorder/twister-sd_on_in_standby-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+sd_on_in_standby on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:01:21.004322   - FAIL - [recorder_rails.test_rails_per_state] duration = 80.732 seconds
+sd_on_in_standby on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_rails.test_rails_per_state] FAIL - [recorder_rails.test_sd_rail_per_state]  (lines with FAIL: 2)
+RESULT PASS
+=== part broken-recorder end 2026-11-13T08:42:51Z exit 0
+UNIT PASS tests/recorder
+# finished (Mac clock): 2026-11-13 09:43:08 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-093051-j-unit1.log

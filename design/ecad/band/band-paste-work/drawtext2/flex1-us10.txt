@@ -1,0 +1,58 @@
+                                                                        SW5
+                                                         STIFFENER PI 0.10 on back (B.Cu) face, 6.4 x 6.4
+
+
+
+
+                                                  SW1        SW2                       SW3
+           STIFFENER PI 0.10 on back face M1
+          J_BAND_A                        1 +: VMOT, red lead (land nearer the slot)
+
+
+
+2.50 mm
+                                                  2 -: GND, blue lead
+
+
+
+
+              1.19 mm                                                   SW4
+                                         16.60 mm
+                   FOLD A: 90 deg, inner radius 0.70, outer face (F.Cu) out
+                                 FOLD B: 54.0 deg, r 0.755 centre line
+                                                head edge: flat from here
+          BOARD
+          FLEX1     END OFflat THElength
+                                      RIBBON:   LANDmm NUMBERS       ANDpathNETS
+          detail, 4 US
+                    x the10:
+                          view above,       16.597
+                                      same face             = F.Cu,
+                                                up (land face  modelit lies     14.526on+thefold
+                                                                            on J_BAND_A       ringand   foot 2.071
+                                                                                                   board)
+          big number = land number, small text = net
+                                           J_BAND_A lands (band-interface.md section 2):
+                                           LAND 1 = JOY_UP (UP, far row)
+                                           LAND 2 = JOY_DOWN (DOWN, far row)
+                                           LAND 3 = JOY_LEFT (LEFT, far row)
+                 1                4        LAND 4 = JOY_RIGHT (RIGHT, near row)
+                                           LAND 5 = BTN_REC (CENTRE, near row)
+               JOY_UP      JOY_RIGHT       LAND 6 = GND (MOT-, far row)
+                                           LAND 7 = VMOT (MOT+, near row)
+                 6                8        LAND 8 = GND (GND, near row)
+                 GND             GND            MOTOR LANDS (M1): land 1 = + (VMOT, red lead), the land nearer the slot;
+                                                land 2 = - (GND, blue lead). Marked 1 + and 2 - in the view above.
+                 3                7             PASTE: F_Paste, 12 openings 0.55 x 0.55 on the switch lands, stencil 0.08 mm.
+                                                PANEL: rails 5 mm; three 1 mm fiducials on the switch face (F),
+              JOY_LEFT           VMOT           centred 3.85 mm from the panel edges, not in a line (process.md P7).
+                                                Fab notes: fab/flex1-us10/flex1-us10-fab-notes.txt
+                 2                5
+              JOY_DOWN         BTN_REC
+
+          <- ribbon endfold
+                        (under
+                            A, slot
+                                the ->
+                                    ring board)
+

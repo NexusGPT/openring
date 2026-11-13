@@ -1,0 +1,27 @@
+Motor drive study written: design/ecad/motor-drive/motor-drive.md (last line RESULT: done). budget.log ends with `RESULT computed` (142 figures).
+
+Recommendation (one): take the motor off the power chip. M1 gets its own 3.0 V regulator U11, TI TLV75530PDQNR (X2SON-4, 1.0 x 1.0 x 0.4 mm max), input on VBAT, output VMOT, EN from MOTOR through R61, with R62 as the pull-down. C83 and C84 are 10 uF 0402 Murata GRM155R60J106ME15. Q1 and D1 are removed. IBATLIM sits in the CHARGER path between VBAT and VSYS (spec p27, p6 block diagram). A load on the battery side of VBAT is outside it, like U4 PVIN already is (make_netlist.py line 275).
+
+Why nothing else works: a stalled W0525 at its 2.5 V start voltage needs about 364.6 mW. Through the chip, 80 mA (a 20 % margin) gives at most 313.2 mW at 4.35 V and 237.6 mW at 3.30 V. A 10 ms start needs 3261 uF of capacitor, which is 296.4 parts of 22 uF 0402. A resistor that lets the motor run still lets 145 mA through at stall. Chopping a motor that has its own drive IC is outside Jinlong's spec (p5, p14). The nPM1304 outputs all sit behind the same limit. No 5 mm part on file has a lower start current. With no change, a start draws 134.1 to 188.2 mA from the cell.
+
+Current through the chip with the recommendation: screen 55 mW + radio 15 mW + recording 4.0 mA + a storage write = 55.65 mA at the 3.1 V cut-off. That is a 44.35 % margin under 100 mA, whatever the motor does. Vibration claim: the maker's 0.25 G at 3.0 V. It is the same as today, unmeasured in the ring.
+
+Wiring changes (not made): W1 to W12 (make_netlist.py, additions.csv), B1 to B6 (bom.csv), F1 to F5 (firmware.md). Each quotes the present text, and the audit matched every quote on its cited line. The bench test on the nPM1304-EK, with pass lines, is in section 2.9.
+
+Open, and who acts:
+- The cell now supplies 175 mA plus the chip path directly: 227.5 mA at 3.30 V. Today's drive draws 229.3 mA with the same loads. S12 (cell maker) is still needed.
+- The board courtyards are at 72 %. The layout owner must place U11, C83 and C84.
+- The fuel gauge no longer sees the motor's current. Firmware change F3 covers it.
+- firmware.md line 703 sets an nPM1300 discharge limit that the nPM1304 does not have. This is for the firmware owner.
+- The start time of the W0525 is not in its spec. I bounded it using a sister part's 190 ms.
+
+Could not do:
+- No web search tool was available in this session.
+- Murata, Samsung and Analog Devices sheets were blocked or failed. Their HTML pages were saved under motor_murata_*, motor_samsung_*, and the logs are in the folder. The capacitor values come from the SGM38046 datasheet p4.
+- The nPM1304-EK user guide is not on file.
+
+No repo check applies to my files. I ran no git commands.
+
+Audit: audit.log checked every budget key, the value on each line, every number, path and quoted line, plus the dashes. The number check proves only that each number exists in a source, not that it sits on the cited page.
+
+RESULT: done, commit none (the lead commits), budget.py exit 0

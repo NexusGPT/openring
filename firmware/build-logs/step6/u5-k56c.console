@@ -1,0 +1,40 @@
+# remote.sh run 20261113-050506-u-power-k56c
+# command: bash tests/power/k_probe3.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:05:06 CET
+# free on the server's /: 29 GB
+# source firmware copied to /root/ring-os/src-u-power
+# started on the server as 20261113-050506-u-power-k56c; server log /root/ring-os/logs/20261113-050506-u-power-k56c.log
+## K6: kit sample, unary minus applied to a current value after '=', '(' or ',' (count)
+sample unary-minus-curr 1
+sample unary-minus-curr or on the sensor current variable (any spelling) 1
+## K6: kit charger driver, negation of the battery current channel (count of lines with '= -' near ibat/current)
+driver lines with ibat 18
+driver lines with ibat and a unary minus after = 0
+driver lines with 'discharg' 16 with 'negative' 0
+## K5: charger bindings holding the settings of FW 8.1 (counts per file)
+term-microvolt in nordic,npm13xx-charger-common.yaml 0
+current-microamp in nordic,npm13xx-charger-common.yaml 0
+term-current-percent in nordic,npm13xx-charger-common.yaml 0
+term-warm-microvolt in nordic,npm13xx-charger-common.yaml 0
+thermistor-cool-millidegrees in nordic,npm13xx-charger-common.yaml 1
+thermistor-warm-millidegrees in nordic,npm13xx-charger-common.yaml 1
+thermistor-hot-millidegrees in nordic,npm13xx-charger-common.yaml 1
+term-microvolt in nordic,npm1304-charger.yaml 2
+current-microamp in nordic,npm1304-charger.yaml 2
+term-current-percent in nordic,npm1304-charger.yaml 1
+term-warm-microvolt in nordic,npm1304-charger.yaml 1
+thermistor-cool-millidegrees in nordic,npm1304-charger.yaml 0
+thermistor-warm-millidegrees in nordic,npm1304-charger.yaml 0
+thermistor-hot-millidegrees in nordic,npm1304-charger.yaml 0
+## K5: binding files that hold current-microamp (names)
+zephyr/dts/bindings/battery/battery.yaml
+zephyr/dts/bindings/charger/nordic,npm10xx-charger.yaml
+zephyr/dts/bindings/charger/x-powers,axp2101-charger.yaml
+zephyr/dts/bindings/sensor/nordic,npm1300-charger.yaml
+zephyr/dts/bindings/sensor/nordic,npm1304-charger.yaml
+## K5: does the binding of the nPM1304 charger name the property 'charging-enable' in the 1304 file
+0
+# finished (Mac clock): 2026-11-13 05:05:25 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-050506-u-power-k56c.log

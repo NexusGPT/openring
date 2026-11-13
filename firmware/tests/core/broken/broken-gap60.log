@@ -1,0 +1,14 @@
+broken copy run 2026-11-13 04:15:14 CET, mutation gap60
+change applied (diff of the copy against its original):
+21c21
+< #define RC_DOUBLE_GAP_MIN_MS  60    /* minimum gap of a double press */
+---
+> #define RC_DOUBLE_GAP_MIN_MS  50    /* minimum gap of a double press */
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_gesture.c:106: tg_count(RC_GEV_DOUBLE) == doubles (left 1, right 0)
+FAIL rc_gesture.test_pair_gap_59ms_not_double
+    assert failed firmware/tests/core/src/test_gesture.c:106: tg_count(RC_GEV_DOUBLE) == doubles (left 1, right 0)
+FAIL rc_gesture.test_sw2_gap_59ms_not_double
+suites=13 tests=221 pass=219 fail=2
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation gap60, named case rc_gesture.test_sw2_gap_59ms_not_double failed

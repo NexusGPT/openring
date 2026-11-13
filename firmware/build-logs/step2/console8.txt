@@ -1,0 +1,108 @@
+# remote.sh run 20261111-125953-explore8
+# command: W=/root/ring-os/ws; grep -n "bt_hids_inp_rep_send_userdata" -A45 $W/nrf/subsys/bluetooth/services/hids.c | sed -n 1,80p; grep -n "bt_hids_notify_handler_t\|enum bt_hids_notify_evt" -B2 -A6 $W/nrf/include/bluetooth/services/hids.h | sed -n 1,40p; grep -n "bt_gatt_is_subscribed" -B3 -A25 $W/zephyr/subsys/bluetooth/host/gatt.c | grep -n "notify_cb\|EINVAL\|is_subscribed" | head; grep -n "static void connected\|CONFIG_BT_SETTINGS\|settings_load\|bt_enable\|bt_id" $W/nrf/samples/bluetooth/peripheral_hids_keyboard/src/main.c | head -20
+# mode: host
+# started (Mac clock): 2026-11-11 12:59:53 CET
+# free on the server's /: 61 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-125953-explore8; server log /root/ring-os/logs/20261111-125953-explore8.log
+1569:int bt_hids_inp_rep_send_userdata(struct bt_hids *hids_obj,
+1570-				  struct bt_conn *conn, uint8_t rep_index,
+1571-				  uint8_t const *rep, uint8_t len,
+1572-				  bt_gatt_complete_func_t cb, void *userdata)
+1573-{
+1574-	struct bt_hids_inp_rep *hids_inp_rep =
+1575-	    &hids_obj->inp_rep_group.reports[rep_index];
+1576-	struct bt_gatt_attr *rep_attr =
+1577-	    &hids_obj->gp.svc.attrs[hids_inp_rep->att_ind];
+1578-	uint8_t *rep_data;
+1579-
+1580-	if (hids_inp_rep->size != len) {
+1581-		return -EINVAL;
+1582-	}
+1583-
+1584-	if (!conn) {
+1585-		return inp_rep_notify_all(hids_obj, hids_inp_rep, rep, len, cb);
+1586-	}
+1587-
+1588-	if (!bt_gatt_is_subscribed(conn, rep_attr, BT_GATT_CCC_NOTIFY)) {
+1589-		return -EACCES;
+1590-	}
+1591-
+1592-	struct bt_hids_conn_data *conn_data =
+1593-		bt_conn_ctx_get(hids_obj->conn_ctx, conn);
+1594-
+1595-	if (!conn_data) {
+1596-		LOG_WRN("The context was not found");
+1597-		return -EINVAL;
+1598-	}
+1599-
+1600-	rep_data = conn_data->inp_rep_ctx + hids_inp_rep->offset;
+1601-
+1602-	store_input_report(hids_inp_rep, rep_data, rep, len);
+1603-
+1604-	struct bt_gatt_notify_params params = {0};
+1605-
+1606-	params.attr = &hids_obj->gp.svc.attrs[hids_inp_rep->att_ind];
+1607-	params.data = rep;
+1608-	params.len = hids_inp_rep->size;
+1609-	params.func = cb;
+1610-	params.user_data = userdata;
+1611-
+1612-	int err = bt_gatt_notify_cb(conn, &params);
+1613-
+1614-	bt_conn_ctx_release(hids_obj->conn_ctx, (void *)conn_data);
+190-
+191-/** HID notification events. */
+192:enum bt_hids_notify_evt {
+193-	/** Notification enabled event. */
+194-	BT_HIDS_CCCD_EVT_NOTIFY_ENABLED,
+195-	/** Notification disabled event. */
+196-	BT_HIDS_CCCD_EVT_NOTIFY_DISABLED,
+197-};
+198-
+--
+214- *  @param evt Notification event.
+215- */
+216:typedef void (*bt_hids_notify_handler_t) (enum bt_hids_notify_evt evt);
+217-
+218-/** @brief HID notification event handler, with report identification.
+219- *
+220- * @param report_id Report ID defined in the HIDS Report Map.
+221- * @param evt Notification event.
+222- */
+223:typedef void (*bt_hids_notify_ext_handler_t) (uint8_t report_id, enum bt_hids_notify_evt evt);
+224-
+225-/** @brief HID Report event handler.
+226- *
+227- * @param rep	Pointer to the report descriptor.
+228- * @param conn	Pointer to Connection Object.
+229- * @param write	@c true if handler is called for report write.
+--
+284-	 * Used if set and extended callback is not set.
+285-	 */
+286:	bt_hids_notify_handler_t handler;
+287-
+288-	/** Extended callback with the notification event.
+289-	 * Has preference over the normal callback.
+290-	 */
+291-	bt_hids_notify_ext_handler_t handler_ext;
+292-};
+--
+340-
+341-	/** Callback with the notification event. */
+342:	bt_hids_notify_handler_t handler;
+4:2406:		if (!bt_gatt_is_subscribed(conn, params->attr, BT_GATT_CCC_NOTIFY)) {
+6:2408-			return -EINVAL;
+12:2414-		return -EINVAL;
+34:2570:		if (!bt_gatt_is_subscribed(conn, params->attr, BT_GATT_CCC_INDICATE)) {
+36:2572-			return -EINVAL;
+42:2578-		return -EINVAL;
+64:2945:		    !bt_gatt_is_subscribed(conn, params[i].attr,
+67:2948-			return -EINVAL;
+94:3379:bool bt_gatt_is_subscribed(struct bt_conn *conn,
+248:static void connected(struct bt_conn *conn, uint8_t err)
+1181:	err = bt_enable(NULL);
+1190:		settings_load();
+# finished (Mac clock): 2026-11-11 12:59:59 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-125953-explore8.log

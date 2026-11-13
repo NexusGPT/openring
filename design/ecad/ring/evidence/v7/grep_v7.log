@@ -1,0 +1,80 @@
+command: grep -inE 'LED1|R41|Q2|LG1|LP1|KPG-1005|light guide|light plug|recording light|nub|rectangular' over 35 owned files (ecad/ring except pcb/ and evidence/; .png/.pdf/.prl skipped; plus design/bom.csv, design/bom-notes.md), 2026-11-11
+files: additions.csv bom_refs_snapshot.csv check_netlist.py erc-report.json erc-report.txt gen_sch.py make_netlist.py netlist.csv npm1304-balls.csv npm1304-reference.md open-pins.csv parts.csv prove_a5.sh prove_fail.sh render_pdf.py ring_band.kicad_sch ring_contacts.kicad_sch ring_controls.kicad_sch ring_main.kicad_sch ring_mics.kicad_sch ring_power.kicad_sch ring_screen.kicad_sch ring_storage.kicad_sch ring-kicad.xml ring.kicad_prl ring.kicad_pro ring.kicad_sch ring.kicad_sym run_all.sh sch-notes.md sym-lib-table symbols.csv v7-wiring-notes.md ../../bom.csv ../../bom-notes.md
+all hits:       72
+hits on lines saying 'removed in v7': 63
+hits that are the power chip's Nordic ball name LED1 (U2 rows, not the light): 9
+== OTHER hits (must be empty):
+== end of OTHER hits
+== all hits:
+additions.csv:68:LED1,bom_not_placed,recording light removed in v7 (architecture 17.30): a recording shows on the screen
+additions.csv:69:R41,bom_not_placed,"series resistor of the recording light, removed in v7 (architecture 17.30)"
+additions.csv:70:Q2,bom_not_placed,"transistor of the recording light, removed in v7 (architecture 17.30)"
+bom_refs_snapshot.csv:68:LED1,bom.csv mtime 2026-11-10 15:16; removed in v7 (architecture 17.30)
+bom_refs_snapshot.csv:69:R41,bom.csv mtime 2026-11-10 15:16; removed in v7 (architecture 17.30)
+bom_refs_snapshot.csv:70:Q2,bom.csv mtime 2026-11-10 15:16; removed in v7 (architecture 17.30)
+netlist.csv:389:,U2,A2,LED1,no_connect
+check_netlist.py:144:# (the R41 value check of 17.21 and the 'no chip pin on the light' check were removed in v7: the light circuit is gone,
+check_netlist.py:440:# A8-1 (design v7, architecture 17.30) the recording light is removed in v7. References that must not appear anywhere in
+check_netlist.py:442:REMOVED_V7 = ('LED1', 'R41', 'Q2', 'LG1', 'LP1')  # removed in v7 (architecture 17.30)
+check_netlist.py:445:REMOVED_V7_TEXT = re.compile(r'\b(LED1|R41|Q2|LG1|LP1)\b|KPG-1005|DMN2450|light guide|light plug|light pipe|recording light', re.I)  # words of the parts removed in v7
+check_netlist.py:459:# (symbols.csv rows of the power chip carry Nordic's ball name LED1: those rows are excepted by symbol name; they are not the light removed in v7)
+check_netlist.py:467:a5('A8-1', not bad_v7, 'no LED1, R41, Q2, LG1, LP1 in parts, netlist, bom.csv, additions or open pins; no LED symbol, no LED_A/LED_K net, no test pad or spare pin for a light; VDD_MIC holds only U2, U5, U6, C3
+check_netlist.py:490:    if re.search(r'\bnub|rectangular', l, re.I) and 'removed in v7' not in l:
+npm1304-balls.csv:3:A2,LED1,Analog output,LEDDRV1 output,(not connected),design/datasheets/npm1304_datasheet_v1_0.pdf p153 Table 33
+make_netlist.py:34:            # recording light, which was removed in v7 (architecture 17.30)
+make_netlist.py:35:            'LED0': 'open_collector', 'LED1': 'open_collector', 'LED2': 'open_collector',
+make_netlist.py:99:# v7 (architecture 17.30): the recording light and its transistor are removed in v7, with their two symbols
+make_netlist.py:213:           'LED0': None, 'LED1': None, 'LED2': None, 'VSET1': 'VSET1', 'VSET2': 'VSET2',  # power chip balls, open; not the light removed in v7
+make_netlist.py:332:# v7 (architecture 17.30): the recording light circuit (its resistor, its light and its transistor) is removed in v7;
+make_netlist.py:391:              ('LED1', 'recording light removed in v7 (architecture 17.30): a recording shows on the screen'),
+make_netlist.py:392:              ('R41', 'series resistor of the recording light, removed in v7 (architecture 17.30)'),
+make_netlist.py:393:              ('Q2', 'transistor of the recording light, removed in v7 (architecture 17.30)')]
+ring_power.kicad_sch:65:(symbol "nPM1304_CSP35_1_1" (pin open_collector line (at -20.32 21.59 0) (length 5.08) (name "LED0" (effects (font (size 1.27 1.27)))) (number "A1" (effects (font (size 1.27 1.27))))) (pin open_collector li
+ring-kicad.xml:3706:        <pin num="A2" name="LED1" type="open_collector"/>
+ring-kicad.xml:4416:    <net code="102" name="unconnected-(U2-LED1-PadA2)" class="Default">
+ring-kicad.xml:4417:      <node ref="U2" pin="A2" pinfunction="LED1_A2" pintype="open_collector+no_connect"/>
+sch-notes.md:40:**Motor drive (sheet 7).** A7 (17.22): MOTOR (F6) through R61 100 ohm to MOT_EN, the EN pin 3 of U11 TLV75530PDQNR, R62 100 kohm MOT_EN to ground; U11 IN (pin 4) on VBAT with C83 10 uF, OUT (pin 1) on VMOT with C84
+sch-notes.md:60:A7: `open-pins.csv` holds 63 rows (was 105): 53 provisional pin numbers and 10 rows for a part number or order code that is OPEN (L71, L72, RT1; C71, C85, C86, C87, C88, C35, C36 with no maker sheet on file). U2 (3
+sch-notes.md:93:1 to 9 of A3 stand (screen sequencing, SGM38046 AVIN, USB protection, antenna retune, nPM1300 pin numbers, back-powering, VDD_3V0 load, recording light, crystals; see `evidence/a5/sch-notes_before.md` section 9). N
+sch-notes.md:119:Checks kept: section 7 pin plan (now with the three A5 spare rows), contact pad order, R41 and the light, P3.05 spare, designators, every pin once, single-pin nets, rails of section 3, H8, KiCad export compare. Ch
+sch-notes.md:137:| b | ONE control: no record button. SW2 stays on BTN_REC as the switch under the nub's centre (17.11); SW1, SW3, SW4, SW5 stay; CAP2 is deleted from the parts list (it was line 78 of `evidence/a6/bom_before.csv`)
+sch-notes.md:172:Fixed in the owned files: K1 (motor angle: `bom.csv` line 44 no longer says -38; its place waits for the rebuild, 17.11), K2 (the record pill is gone, line 40), K3 (joystick: line 78 and line 75 carry no +38), K4 
+sch-notes.md:229:| 20 | 17.21; light-path 6, 10 | R41 820 ohm (make_netlist, parts, bom value and key figure: (3.0 V - 1.767 V - 1.5 mA x 0.7 ohm) / 1.5 mA = 821 ohm) | make_netlist.py, parts.csv, bom.csv, sch-notes.md section 2 |
+sch-notes.md:230:| 21 | light-path 6 | LED1 pad 1 cathode on LED_K, pad 2 anode on LED_A (Kingbright p1 symbol); LED1 left open-pins.csv | make_netlist.py, netlist.csv, symbols.csv, open-pins.csv | A7-5 | [History: the recording l
+sch-notes.md:231:| 22 | light-path 10 | bom LED1: under face at X -9.70, Y -2.10 into LG1, Vf 1.767 V at 1.5 mA, pad 1 cathode, open action S25; new lines LG1 and LP1 | bom.csv | A7-5 | [History: the recording light and its parts 
+sch-notes.md:236:Checks replaced, old against new, and why: A5-1 (IM68D128B P1 to P5) became A7-3; A5-6 (Q1, D1, VDD_3V0) became A7-2; A6-1 (U2 order code empty, every ball provisional) became A7-1; A6-4 (67.5 dB(A) of the IM68D12
+sch-notes.md:247:| order codes for C71, C85, C86, C87, C88, C35, C36, R41 | no maker sheet of a matching part is on file; no fetch was made. Each line has an empty code and an open action naming who answers | [History: the recordi
+sch-notes.md:256:6. U5, U6: 8-pad land pattern of Knowles sheet 6 at (-10.8, -4.8) and (10.8, -4.8), port facing the floor (mic-path items 31 to 33: build_board.py, check_board.py, R31, R32, Q2, R72 move). C35, C36 next to each Vd
+sch-notes.md:257:7. LED1 on the under face at X -9.70, Y -2.10, long side along Y, pad 1 = cathode (build_board.py line 70 maps it the other way); 0.50 mm non-plated hole at X -12.425, Y -2.95, no copper within 0.20 mm of its edge
+sch-notes.md:268:| 50 (not failing) | "Motor switch", "DMN2450UFB4" | the part stays only as the light transistor Q2; the row's function is out of date (17.22) | [History: the recording light and its parts were removed in v7, sect
+sch-notes.md:279:| O11 | Order codes with maker sheets for C71 (1.0 uF 25 V), C85, C86, C87, C88, C35, C36 (Class 1 100 nF), R41 (820 ohm) | a distributor or the electronics designer | [History: the recording light and its parts w
+sch-notes.md:294:## 13. v7 changes (2026-11-11): the recording light removed in v7, round joystick
+sch-notes.md:296:Contract: `design/architecture.md` 17.29 and 17.30 (17.30 wins over 17.21 and 17.22: "Recording light: removed. Out of the design: LED1, the light guide LG1, the light pipe LP1, the window in the glass print, the 
+sch-notes.md:298:- Removed in v7 from the circuit: R41, LED1, Q2, their symbols LED_KPG1005 and DMN2450UFB4, the nets LED_A and LED_K. VDD_MIC keeps its real loads: U5, U6 and their capacitors C31, C32, C35, C36, plus C86 at the p
+sch-notes.md:301:- New checks: A8-1 (a list of references, symbols, nets and words that must not appear; proved to fail on a copy with R41 and LED1, removed in v7, put back), A8-2 (round joystick in the parts list). Removed: the R
+sch-notes.md:302:- Counts after v7: `netlist.csv` 398 rows, 93 nets, 14 no-connect pins; `parts.csv` 118 parts; 25 symbols; `additions.csv` 44 added, 25 not placed, 22 test pads; `open-pins.csv` 60 rows (was 63: the three pins of 
+sch-notes.md:303:- For the board (`pcb/`, not touched here): R41, LED1, Q2 are removed in v7; the 0.50 mm non-plated hole at X -12.425, Y -2.95 goes (no such hole is drawn in `pcb/ring.kicad_pcb` today). File and line list in `v7-
+v7-wiring-notes.md:3:Result: the ring's wiring and parts list follow design v7. The recording light and every part of it are removed in v7; the joystick is the round one. All wiring checks pass. Wiring revision A8 carries design v
+v7-wiring-notes.md:13:- Parts list: 87 to 82 lines. The light lines LED1, R41, LG1, LP1, Q2 are removed in v7. CAP1 is the round moulded cap (Makrolon 2407 colour 901510, "custom moulded part"). New line FRM1 (Ti-6Al-4V frame, 3M 
+v7-wiring-notes.md:39:| Broken case 1: R41 and LED1 rows (removed in v7) put back in the netlist | `RESULT FAIL 8`, exit 1, A8-1 among them | `evidence/v7/broken/check_case1.log` |
+v7-wiring-notes.md:40:| Broken case 2: R41 line (removed in v7) put back in bom.csv | `RESULT FAIL 1`, exit 1 (A8-1) | `evidence/v7/broken/check_case2.log` |
+v7-wiring-notes.md:49:- `pcb/build_board.py:69` pin map of Q2 (removed in v7)
+v7-wiring-notes.md:50:- `pcb/build_board.py:70` pin map of LED1 (removed in v7)
+v7-wiring-notes.md:51:- `pcb/build_board.py:459` placement order names LED1 (removed in v7)
+v7-wiring-notes.md:53:- `pcb/check_board.py:21` pin maps of Q2 and LED1 (removed in v7)
+v7-wiring-notes.md:54:- `pcb/board-notes.md:48` Q2 among the provisional pin maps (removed in v7)
+v7-wiring-notes.md:55:- `pcb/placement-report.csv:44, 83, 85` rows Q2, R41, LED1 (removed in v7)
+v7-wiring-notes.md:56:- `pcb/ring.kicad_pcb:2757, 2887` R41 (removed in v7) and net LED_A; `:5596, 5724, 5732` LED1 and nets LED_A, LED_K; `:7592, 7744` Q2 and net LED_K (all removed in v7)
+v7-wiring-notes.md:57:- `pcb/drc-report.txt:223, 231, 279, 322, 326, 518, 522, 646, 647, 758, 759` pads of Q2, R41, LED1 (removed in v7)
+v7-wiring-notes.md:62:- `tools/check_bom.py` fails on 4 items, all in `design/architecture.md` section 2 (not my file): the rows "Light transistor" (DMN2450UFB4) and "Recording light" (KPG-1005SURC-TT) of parts removed in v7. The 
+ring.kicad_sym:24:(symbol "nPM1304_CSP35_1_1" (pin open_collector line (at -20.32 21.59 0) (length 5.08) (name "LED0" (effects (font (size 1.27 1.27)))) (number "A1" (effects (font (size 1.27 1.27))))) (pin open_collector line (at
+../../bom-notes.md:38:| C13, R41, C76, L71, TP1, TP16, RT1, PCB1 and others without a code | `open_action` reworded so each names who must answer what | rule 4 of the brief | [History: the recording light parts and the nub were re
+../../bom-notes.md:56:- Recording light supply (A1 contradiction, still open): architecture section 9 says VDD_MIC 1.8 V through a transistor; the LED needs 2.4 V; R41 and Q2 stay as in W5 (3.0 V, 680 ohm). [History: the recording
+../../bom-notes.md:61:DS, LIST and CALC as in architecture.md. LIST lines still needing a maker document are those whose `open_action` or `key_figures` say so (U1, U2, IM68D128B, LED1, FH35C). [History: the recording light parts a
+../../bom-notes.md:66:Note added for firmware F3, 2026-11-10: the texts of GL1 (cover glass), CAP1 (joystick cap) and CAP2 (record cap) follow architecture 17.8: GL1 is one formed piece curved across the finger, 29.3 x 14.75 mm, 1
+../../bom-notes.md:74:- One control: CAP2 (record button cap) is removed from the list; SW2 stays on BTN_REC as the switch under the centre of the joystick nub (CAP1). The item text of SW2 still contains the words "record button" 
+../../bom-notes.md:77:- Microphone: SNR 67.5 dB(A), supply 1.62 to 3.60 V, bottom port, per `design/datasheets/mic-research/im68d128b-brief.txt` (architecture.md section 2 still says 68 dB(A)). R41 key figure now (3.0 V - 2.0 V) /
+../../bom-notes.md:85:- Recording light: R41 820 ohm; LED1 on the board's under face, pad 1 cathode; new lines LG1 (light guide) and LP1 (light plug). [History: the recording light parts and the nub were removed in v7, see the v7 
+../../bom-notes.md:89:- Lines removed in v7: LED1, R41, LG1, LP1 and Q2 (the recording light, its resistor, its guide, its plug and its transistor). A recording shows on the screen (17.30). 82 part lines remain.
+../../bom-notes.md:93:- `tools/check_bom.py` now fails on 4 items of architecture section 2 (the rows "Light transistor" DMN2450UFB4 and "Recording light" KPG-1005SURC-TT): those rows are the lead's to remove (removed in v7).
+symbols.csv:64:nPM1304_CSP35,A2,LED1,open_collector

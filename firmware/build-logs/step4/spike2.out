@@ -1,0 +1,141 @@
+# remote.sh run 20261112-103903-spike2
+# command: west twister -T tests/screens -p native_sim -O /ws/out/os-screens-spike2 --inline-logs -v
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 10:39:03 CET
+# free on the server's /: 49 GB
+# source firmware copied to /root/ring-os/src-os-screens
+# started on the server as 20261112-103903-spike2; server log /root/ring-os/logs/20261112-103903-spike2.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/os-screens-spike2/testplan.json
+INFO    - JOBS: 32
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 native_sim/native         ring_screens.all                                   FAILED rc=-9 (native 120.604s <host/gnu>)
+INFO    - /ws/out/os-screens-spike2/native_sim_native/host_gnu/firmware/tests/screens/ring_screens.all/handler.log
+ERROR   - *** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+*** Using Zephyr OS v4.4.2-9133dab6b066 ***
+Running TESTSUITE screens_draw
+===================================================================
+START - test_01_status_from_the_clock
+SCREENPIC status | scene: STANDBY, screen off, short press of the centre; clock set to 2026-11-12 10:42 UTC (rtime_set) | 240x120 | hash f709d68c91f6ed7d | lit px 862 | files not written (no RING_PICS)
+ PASS - test_01_status_from_the_clock in 0.000 seconds
+===================================================================
+START - test_02_menu_highlight_moves_with_down
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:435: screens_draw_test_02_menu_highlight_moves_with_down: (band[0][0] > 1500 && band[0][1] < 50 is false)
+item 0 highlighted: 5189 / 128
+ FAIL - test_02_menu_highlight_moves_with_down in 0.000 seconds
+===================================================================
+START - test_03_settings_screen
+SCREENPIC settings | scene: SCR_SETTINGS, Screen brightness highlighted | 240x120 | hash 0292214c06bb4840 | lit px 5870 | files not written (no RING_PICS)
+ PASS - test_03_settings_screen in 0.000 seconds
+===================================================================
+START - test_04_recording_screens_and_sign
+SCREENPIC recording-idle | scene: RECORDING, 3 s after the last input, 00:12:47 elapsed (SCR_REC_DIM) | 240x120 | hash d804611545d1514b | lit px 240 | files not written (no RING_PICS)
+SCREENPIC recording | scene: RECORDING, a joystick direction 0 s ago, 00:12:47 elapsed (SCR_RECORDING) | 240x120 | hash 68dba7571d8d57aa | lit px 2294 | files not written (no RING_PICS)
+SCREENPIC recording-highlight | scene: RECORDING, one highlight marked (short press), SCR_RECORDING with the count | 240x120 | hash 52385c20e5c78107 | lit px 2544 | files not written (no RING_PICS)
+ PASS - test_04_recording_screens_and_sign in 0.000 seconds
+===================================================================
+START - test_05_rsign_display_refusal_leaves_the_microphone_off
+ PASS - test_05_rsign_display_refusal_leaves_the_microphone_off in 0.000 seconds
+===================================================================
+START - test_06_notifications_list_and_detail
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:585: screens_draw_test_06_notifications_list_and_detail: (s.screen not equal to SCR_NOTIFS)
+list: SCR_RECORDING
+ FAIL - test_06_notifications_list_and_detail in 0.000 seconds
+===================================================================
+START - test_07_modes_and_the_four_control_screens
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:656: screens_draw_test_07_modes_and_the_four_control_screens: (s.screen not equal to SCR_MODES)
+modes: SCR_RECORDING
+ FAIL - test_07_modes_and_the_four_control_screens in 0.000 seconds
+===================================================================
+START - test_08_devices_device_confirm
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:747: screens_draw_test_08_devices_device_confirm: (s.screen not equal to SCR_MODES)
+from the modes screen
+ FAIL - test_08_devices_device_confirm in 0.000 seconds
+===================================================================
+START - test_09_pairing_passkey
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:811: screens_draw_test_09_pairing_passkey: (s.screen not equal to SCR_PAIR)
+pairing screen: SCR_RECORDING
+ FAIL - test_09_pairing_passkey in 0.000 seconds
+===================================================================
+START - test_10_charging_and_messages
+SCREENPIC charging | scene: CHARGING, 64 %, 38 min to full (VBUS in) | 240x120 | hash 030514ed798d13c1 | lit px 1259 | files not written (no RING_PICS)
+SCREENPIC message | scene: SCR_MESSAGE 'In case' (long press refused in CHARGING) | 240x120 | hash d778a8a69797908d | lit px 247 | files not written (no RING_PICS)
+SCREENPIC message-battery-low | scene: SCR_MESSAGE 'Battery low' (long press at B5) | 240x120 | hash cca8ad6585561432 | lit px 448 | files not written (no RING_PICS)
+ PASS - test_10_charging_and_messages in 0.000 seconds
+===================================================================
+TESTSUITE screens_draw failed.
+Running TESTSUITE screens_table
+===================================================================
+START - test_dim_pairs_with_lowest_lock_state
+ PASS - test_dim_pairs_with_lowest_lock_state in 0.000 seconds
+===================================================================
+START - test_double_press_without_session_does_nothing_on_a_menu
+ PASS - test_double_press_without_session_does_nothing_on_a_menu in 0.000 seconds
+===================================================================
+START - test_first_paired_device_becomes_active_a_later_one_only_through_use
+ PASS - test_first_paired_device_becomes_active_a_later_one_only_through_use in 0.000 seconds
+===================================================================
+START - test_geometry_turn
+ PASS - test_geometry_turn in 0.000 seconds
+===================================================================
+START - test_lock_first_event_only_wakes
+ PASS - test_lock_first_event_only_wakes in 0.000 seconds
+===================================================================
+START - test_long_press_does_not_close_a_session
+ PASS - test_long_press_does_not_close_a_session in 0.000 seconds
+===================================================================
+START - test_long_press_records_from_any_screen
+ PASS - test_long_press_records_from_any_screen in 0.000 seconds
+===================================================================
+START - test_menu_has_six_items_in_order
+ PASS - test_menu_has_six_items_in_order in 0.000 seconds
+===================================================================
+START - test_messages_last_3s
+ PASS - test_messages_last_3s in 0.000 seconds
+===================================================================
+START - test_notification_removed_by_the_phone_leaves_the_detail
+ PASS - test_notification_removed_by_the_phone_leaves_the_detail in 0.000 seconds
+===================================================================
+START - test_pair_with_three_devices_says_remove_first
+ PASS - test_pair_with_three_devices_says_remove_first in 0.000 seconds
+===================================================================
+START - test_pairing_window_60s_and_passkey
+ PASS - test_pairing_window_60s_and_passkey in 0.000 seconds
+===================================================================
+START - test_rsign_recording_never_dark
+
+INFO    - /ws/out/os-screens-spike2/native_sim_native/host_gnu/firmware/tests/screens/ring_screens.all/handler.log
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 142.85 seconds.
+INFO    - 17 of 30 executed test cases passed (56.67%), 7 blocked, 6 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/os-screens-spike2/twister.json
+INFO    - Writing xunit report /ws/out/os-screens-spike2/twister.xml...
+INFO    - Writing xunit report /ws/out/os-screens-spike2/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_screens.all on native_sim/native failed (rc=-9)
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_screens.all
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/screens -T ring_screens.all
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+# finished (Mac clock): 2026-11-12 10:41:36 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step4/20261112-103903-spike2.log

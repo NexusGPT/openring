@@ -1,0 +1,13 @@
+config RING_MOTOR_LOGIC
+	bool "Ring motor: patterns, replace rule, charge (pure part, no kernel call)"
+	help
+	  The seven vibration patterns, the rule which pattern may replace which, the Vibration setting's filter and the
+	  charge per pulse (design/firmware.md section 3.1). Stdint and stdbool only.
+
+config RING_MOTOR
+	bool "Ring motor: the pattern player (thin part, reaches hardware only through ring_rhw)"
+	depends on RING_RHW
+	select RING_MOTOR_LOGIC
+	help
+	  The k_timer that plays a pattern on the MOTOR pin: one high per on segment, no PWM (design/firmware.md
+	  section 3.1).

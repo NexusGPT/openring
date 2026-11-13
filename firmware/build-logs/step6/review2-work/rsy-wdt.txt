@@ -1,0 +1,38 @@
+455: 			last_store = RSL_NEVER;
+456: 		}
+457: 		rec_running = on;
+458: 	}
+459: }
+460: 
+461: static void wdt_tick(struct k_work *w)
+462: {
+463: 	int64_t now = rhw_clock()->now_ms();
+464: 	bool feed = false;
+465: 
+466: 	ARG_UNUSED(w);
+467: 	K_SPINLOCK(&lk) {
+468: 		feed = rsl_wdt_should_feed(rec_running, now, last_audio, last_store);
+469: 	}
+470: 	if (feed) {
+471: 		(void)rhw_wdt()->feed();
+472: 	}
+473: 	(void)k_work_reschedule(&wdt_work, K_MSEC(RREC_WDT_FEED_MS));
+474: }
+475: 
+476: int rsy_wdt_start(void)
+477: {
+478: 	bool already = false;
+479: 	int r;
+480: 
+481: 	K_SPINLOCK(&lk) {
+482: 		already = wdt_running;
+483: 	}
+484: 	if (already) {
+485: 		return -EALREADY;
+486: 	}
+487: 	r = rhw_wdt()->start(RREC_WDT_TIMEOUT_MS);
+488: 	if (r != 0) {
+489: 		return r;
+490: 	}
+<scratch>/review2-src/firmware/modules/ring_sys/src/rsy.c:473:	(void)k_work_reschedule(&wdt_work, K_MSEC(RREC_WDT_FEED_MS));
+<scratch>/review2-src/firmware/modules/ring_sys/src/rsy.c:494:	(void)k_work_reschedule(&wdt_work, K_MSEC(RREC_WDT_FEED_MS));

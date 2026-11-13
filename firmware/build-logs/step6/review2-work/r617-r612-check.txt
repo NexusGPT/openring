@@ -1,0 +1,28 @@
+== every use of test_recording field
+modules/ring_factory/src/rfa.c:214:	if (ops.test_recording == NULL) {
+modules/ring_factory/src/rfa.c:218:	rc = ops.test_recording(RREC_FAC_MIC_REC_MS, mic_block, &on, &off);
+modules/ring_factory/src/rfa.c:242:	if (ops.test_recording == NULL) {
+modules/ring_factory/src/rfa.c:246:		int rc = ops.test_recording(RREC_FAC_SIGN_REC_MS, sign_block, &t[2 * i], &t[2 * i + 1]);
+modules/ring_recorder/src/rrec.c:560:	if (s != RC_ST_RECORDING && atomic_get(&rrec_st.test_recording) == 0 && rhw_pmic()->rail_get(RHW_RAIL_MIC)) {
+modules/ring_recorder/src/rrec.c:655:	rpw_state(atomic_get(&rrec_st.test_recording) != 0 ? RC_ST_RECORDING : state);   /* ruling 8 of the root unit's notes */
+modules/ring_recorder/src/rrec.c:733:	atomic_set(&rrec_st.test_recording, 1);
+modules/ring_recorder/src/rrec.c:778:	atomic_set(&rrec_st.test_recording, 0);
+modules/ring_recorder/src/rrec_bridge.c:348:	if (atomic_get(&rrec_st.test_recording) == 0) {
+modules/ring_recorder/src/rrec_backend.c:369:	.test_recording = rrec_test_recording,
+tests/recorder/src/test_rows.c:20:	if (s == RC_ST_FACTORY_TEST && atomic_get(&rrec_st.test_recording) != 0) {
+tests/recorder/src/test_rows.c:56:			if (atomic_get(&rrec_st.test_recording) != 0 && rt_mic()) {
+tests/recorder/src/rt.c:136:		    atomic_get(&rrec_st.test_recording) == 0) {
+tests/factory/src/common.c:188:	.test_recording = fx_test_recording,
+tests/factory/broken_edit.py:33:        "{\n\t\tint64_t a = 0, b = 0;\n\n\t\tif (ev == RFA_IN_LONG && ops.test_recording != NULL) {\n"
+tests/factory/broken_edit.py:34:        "\t\t\t(void)ops.test_recording(RREC_FAC_SIGN_REC_MS, NULL, &a, &b);\n\t\t}\n\t}"),
+== R6-11/R6-12 status: K3 logs tracked at c26ae988?
+IN COMMIT 20261113-063327-u4-k3c.log
+IN COMMIT 20261113-055850-u4-k34.log
+IN COMMIT 20261113-062437-u4-k3b.log
+== fix1-rec logs tracked at c26ae988?
+101
+IN COMMIT fix1-rec-u2.log
+IN COMMIT fix1-rec-u3.log
+IN COMMIT fix1-rec-c1.log
+IN COMMIT fix1-rec-c2.log
+IN COMMIT fix1-rec-r613a.log

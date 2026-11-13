@@ -1,0 +1,17 @@
+Round 2 report. Full text: sections 12 to 14 of design/sim/antenna/antenna-sim.md. All simulated, not proven on hardware.
+
+Stopped at part 1, by your rule. H1b (Infineon AN91445 MIFA, Figure 10 and 13) is NOT confirmed. Pre-registered at 01:29 CET before any run: minimum within 3 percent of 2.44 GHz, -10 dB crossings within 3 percent of 2.33 and 2.56 GHz, at least 10 dB at the minimum. Result (verdict run h1b_try2, 305,760 cells, 46,488 steps, -40.19 dB end): minimum 2.575 GHz (5.5 percent high), return loss 2.66 dB, no -10 dB crossing, 7.5 ohm input resistance. All three lines fail. I tuned nothing.
+
+Is it the solver or my reading? Evidence for each:
+- Solver: a textbook check, pre-registered before its run, passes: 58 mm strip dipole, zero reactance at 2.390 GHz, 72.0 ohm, efficiency 100.2 percent, directivity 2.18 dBi (limits 2.33 to 2.57 GHz, 60 to 85 ohm, 95 percent or more, 2.0 to 2.3 dBi). A first dipole run had my own mesh defect (no lines at the feed gap) and gave an impossible 990 percent efficiency; discarded, counted.
+- Geometry: an ASCII map of the copper (results/h1b_geom_geom_top.txt) matches my reading of the figure.
+- Likely cause, untested: the note gives the ground only as "> 200 mil", so my 14 mm board is a guess, and a board that small drops the input resistance and moves the resonance, as the run shows. The pre-registration forbids varying it and calling it validation.
+
+Not done, reason is your stop rule (not budget): part 2 (calibrated stand-in H1c) and part 3 (mesh study, cases D, A, A0, B, B0, B2, E, F, sensitivity). Used 4 of 60 runs (one stopped by me for a mesh defect, no result; one flawed dipole) and about 60 of 240 minutes. Round 1 stands: tool not validated. Server load was 63 to 87 during the MIFA run (915 s).
+
+Options for you to decide: (1) a second pre-registered attempt with the board size as the one free quantity, a weaker validation; (2) another published antenna with a fully dimensioned board, or the Gerber files of AN91445 (not fetched); TI AN043 gives all lengths but leaves the board to a readme not on disk; (3) skip validation and run the ring cases as comparisons only, labelled not validated.
+
+Server: no container of mine left; images unchanged (ring-antenna-openems:1, 2.79 GB; ubuntu:24.04, 119 MB). No git, no secret, no server address in any file. Folder size below 20 MB.
+
+Last line of antenna-sim.md:
+RESULT: blocked, H1b NOT confirmed (Infineon MIFA: S11 minimum 2.575 GHz and 2.66 dB against 2.44 GHz and about 22 dB, no -10 dB crossing; the solver itself passes a textbook dipole check, 72.0 ohm, 100 percent efficiency, 2.18 dBi), so by the lead's stop rule H1c (stand-in) and every round 2 ring case were not run and no ring case has a verdict beyond round 1

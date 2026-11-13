@@ -1,0 +1,16 @@
+=== sign_ignored
+diff -r firmware/modules/ring_core/src/core.c firmware/tests/core/broken/copy-sign_ignored/ring_core/src/core.c
+141c141
+< 		c->facts.sign_not_drawn = (c->sign_fn(c->sign_ctx, t) != 0);
+---
+> 		(void)c->sign_fn(c->sign_ctx, t);
+=== sign_before_b5
+diff -r firmware/modules/ring_core/src/core.c firmware/tests/core/broken/copy-sign_before_b5/ring_core/src/core.c
+140c140
+< 	    c->facts.batt < RC_BATT_B5 && !c->facts.storage_full) {
+---
+> 	    !c->facts.storage_full) {
+=== sign_hook_twice
+diff -r firmware/modules/ring_core/src/core.c firmware/tests/core/broken/copy-sign_hook_twice/ring_core/src/core.c
+140a141
+> 		(void)c->sign_fn(c->sign_ctx, t);

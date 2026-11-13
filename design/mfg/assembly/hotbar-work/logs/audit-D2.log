@@ -1,0 +1,206 @@
+==== design/mfg/assembly/hotbar-joint.md
+CIT design/firmware.md (file) exists
+CIT design/mfg/specs/main-board.md (file) exists
+CIT design/wiring/lead-decisions.md (file) exists
+CIT hotbar-work/logs/version-diff.log (file) exists
+CIT CHECKLIST.md (file) exists
+CIT check_band.py (file) exists
+CIT design/wiring/wiring-review-3.md (file) exists
+CIT design/mech/thin/thin.py:81 -> flex_fin=0.11, fold_r_in=0.70, joint=0.03, foot_x=(-3.5, -1.0), foot_y1=3.4, foot_stiff_x=(-3.45, -0.95), foot
+CIT WORK/logs/scan_bars.log (file) exists
+CIT design/ecad/band/band-interface.md:137 -> Board lands pre-tinned (SAC305 stencil 0.05 mm). Tail foot placed on the lands (alignment by the 0.10 mm outli
+CIT design/ecad/band/band-interface.md:55 -> - The lands are bare copper with the finish of the board (ENIG or HASL are both accepted by a hot bar), solder
+CIT design/ecad/band/band-interface.md:137 (bare) -> Board lands pre-tinned (SAC305 stencil 0.05 mm). Tail foot placed on the lands (alignment by the 0.10 mm outli
+QUOTE OK "Pre-tin each land with a thin solder layer (stencil paste 0.05 mm or a"
+QUOTE OK "Board lands pre-tinned (SAC305 stencil 0.05 mm)"
+CIT design/mfg/assembly/assembly.md:96 -> - **Join:** the board parts of `design/bom.csv` to PCB1 in TWO solder passes, one per face, each with its own 
+CIT design/mfg/assembly/assembly.md:112 (bare) -> - **Join:** nothing is joined. Both faces of PCB1 are cleaned of flux residue, then dried: the SCREEN FACE rou
+CIT design/mfg/assembly/assembly.md:210 (bare) -> - **Join:** the board end of FLEX1 to J_BAND_A and of FLEX2 to J_BAND_B, on the board's parts face, by hot-bar
+QUOTE OK "J_BAND_A and J_BAND_B are copper on the parts face and get no paste"
+QUOTE OK "bare copper"
+QUOTE OK "the lands got no paste in step 2"
+CIT design/ecad/ring/pcb/fab/stackup.txt:20 -> Finish: ENEPIG. Solder mask green both sides; U1 and U2 land openings equal the land (no expansion).
+CIT band-interface.md:91 -> Tail-end pattern (footprints "J_BAND_A_TAIL", "J_BAND_B_TAIL"): same land centres as section 2 seen on the tai
+QUOTE OK "bare ENIG"
+CIT WORK/logs/geom_check.log (file) exists
+CIT WORK/logs/paste_at_lands.log (file) exists
+CIT band-interface.md:55 -> - The lands are bare copper with the finish of the board (ENIG or HASL are both accepted by a hot bar), solder
+CIT assembly.md:21 -> - Face names on the main board. The board has parts on BOTH faces. The PARTS FACE is the KiCad face F.Cu, call
+CIT WORK/logs/stencil-search.log (file) exists
+CIT design/mfg/specs/main-board.md (file) exists
+CIT fab/stackup.txt (file) exists
+CIT design/wiring/ring-board-plan.md (file) exists
+CIT WORK/logs/stencil-ringfiles.log (file) exists
+CIT band-interface.md:55-137 -> - The lands are bare copper with the finish of the board (ENIG or HASL are both accepted by a hot bar), solder
+QUOTE OK "0.05 mm"
+CIT WORK/q1_paste.py (file) exists
+CIT WORK/logs/q1_paste.log (file) exists
+CIT band-interface.md:23 -> Land pattern, both tails: 2 rows of lands, 4 columns. Land size on the board: 0.30 (X) x 0.55 (Y). Column pitc
+CIT thin.py:81 -> flex_fin=0.11, fold_r_in=0.70, joint=0.03, foot_x=(-3.5, -1.0), foot_y1=3.4, foot_stiff_x=(-3.45, -0.95), foot
+CIT band-interface.md:32-52 -> | 1 | CELL+ | VBAT | -3.015 | +3.875 | 0.30 x 0.55 |
+CIT band-interface.md:137 -> Board lands pre-tinned (SAC305 stencil 0.05 mm). Tail foot placed on the lands (alignment by the 0.10 mm outli
+CIT fab/gerber/ring-F_Paste.gbr (file) exists
+CIT WORK/logs/paste_at_lands.log (file) exists
+CIT design/mfg/assembly/assembly.md:96 -> - **Join:** the board parts of `design/bom.csv` to PCB1 in TWO solder passes, one per face, each with its own 
+CIT band-interface.md:55-137 -> - The lands are bare copper with the finish of the board (ENIG or HASL are both accepted by a hot bar), solder
+QUOTE OK "a solder bump on a land spoils the hot-bar joint"
+CIT assembly.md:120 -> - **Join:** nothing is joined. A jig touches the SCREEN FACE, where the 12 test pads are, and the PARTS FACE, 
+CIT WORK/logs/geom_check.log (file) exists
+CIT WORK/geom_check.py (file) exists
+CIT assembly.md:21 -> - Face names on the main board. The board has parts on BOTH faces. The PARTS FACE is the KiCad face F.Cu, call
+CIT design/ecad/ring/pcb/placement-final.csv:79-80 -> J_BAND_A,OpenRingBand:J_BAND_A_BOARD,F,-2.250,-4.325,0,Z10,97.750,95.675
+CIT band-interface.md:94 -> - The tail stands vertical at |Y| 5.9 in the slot (thin.py line 66 `tail_y=5.9`). Above the floor it turns 90 
+CIT thin.py:76 -> tail_w=1.8, tail_x=-2.5, tail_y=5.9, slot_x=-2.5, slot_w=2.1,   # v6.2: slots X -3.5 to -1.5: the ruling X -1.
+CIT thin.py:61 -> adh_t=0.10, foam_t=0.10, under=1.00, gap=0.05, pad_t=0.02,
+CIT design/ecad/band/band_geom.py:33 -> Z_BD0 = 1.45            # board underside (STEP zmax of the vertical piece)
+CIT thin.py:76 -> tail_w=1.8, tail_x=-2.5, tail_y=5.9, slot_x=-2.5, slot_w=2.1,   # v6.2: slots X -3.5 to -1.5: the ruling X -1.
+CIT design/wiring/lead-decisions.md:37 -> | floor slot width (model fit) | The two floor slots are 2.1 x 0.6 mm, X -3.55 to -1.45 (before: 2.0, X -3.5 t
+CIT WORK/dump_boards.py (file) exists
+CIT band-interface.md:97 -> - Along the tail the fold uses 0.755 x pi/2 = 1.186 mm; the width goes from 2.5 (foot) down to 1.8 (neck) acro
+CIT design/wiring/review3-work/hand-derivations.txt (file) exists
+CIT band_geom.py:42-45 -> LF = (TAIL_Y - RC) - Y_FOOT_END          # flat run under the board
+CIT geom_check.py (file) exists
+CIT design/ecad/band/flex1-us7.kicad_pcb (file) exists
+CIT flex2-us13.kicad_pcb (file) exists
+CIT design/ecad/band/band-notes.md:61 -> Length rule: within 0.05 mm of the model path, tested against two measures (formula and STEP).
+QUOTE OK "Length rule: within 0.05 mm of the model path"
+CIT WORK/logs/geom_check.log (file) exists
+CIT flex1-us7.kicad_pcb (file) exists
+CIT WORK/planted/geom_check-planted.log (file) exists
+CIT band-interface.md:103 -> - SW1, SW3, SW4, SW5 use only the two lands of one side (terminals 3 = signal, 4 = GND on the footprint). Term
+CIT assembly.md:194 -> - **Join:** FLEX1 with SW1 to SW5 and M1, and FLEX2 with the cell pack BT1 (PRT1 and RT1 inside it) and CP1 to
+QUOTE OK "Each ribbon's board end is passed up through its floor slot"
+CIT band-interface.md:97 -> - Along the tail the fold uses 0.755 x pi/2 = 1.186 mm; the width goes from 2.5 (foot) down to 1.8 (neck) acro
+CIT assembly.md:234 -> - **Join:** a sealant into each floor slot, round the ribbon, applied from the channel side. On ring sizes US 
+CIT assembly.md (file) exists
+CIT lead-decisions.md:37 -> | floor slot width (model fit) | The two floor slots are 2.1 x 0.6 mm, X -3.55 to -1.45 (before: 2.0, X -3.5 t
+CIT design/mech/thin/thin-notes.md:368-379 -> The slot as built: both floor slots (+Y and -Y) are 2.0 x 0.6, from X -3.50 to X -1.50 (thin.py P slot_x -2.5,
+CIT WORK/logs/geom_check.log (file) exists
+CIT WORK/geom_check.py (file) exists
+CIT WORK/logs/check_notch.log (file) exists
+CIT WORK/logs/q1_paste_D.log (file) exists
+CIT lead-decisions.md:37 -> | floor slot width (model fit) | The two floor slots are 2.1 x 0.6 mm, X -3.55 to -1.45 (before: 2.0, X -3.5 t
+CIT band-interface.md:15 -> | Rules | line 0.08, gap 0.10, exposed land to line 0.25, land to land 0.15, copper to edge 0.30, via 0.30 pad
+CIT band-interface.md:91 (bare) -> Tail-end pattern (footprints "J_BAND_A_TAIL", "J_BAND_B_TAIL"): same land centres as section 2 seen on the tai
+CIT band-interface.md:137 -> Board lands pre-tinned (SAC305 stencil 0.05 mm). Tail foot placed on the lands (alignment by the 0.10 mm outli
+CIT fab/stackup.txt:5 -> dielectric 1: one sheet of 106 prepreg (laser microvias L1-L2)                                  0.065 mm
+CIT build_band.py (file) exists
+CIT build_band.py:391 (bare) -> B.text(pcbnew.Dwgs_User, 0.0, -6.4, f"{B.kind} US {B.us}: flat length {L_end:.3f} mm = model path {S.path1 if 
+CIT band_geom.py:45 -> FOOT_EXTRA = LF + LARC - (Z_BD0 - Z_ARC0)     # tail length added by the fold and the flat foot, beyond the mo
+CIT band_geom.py:34-45 -> Z_LAND = Z_BD0 - 0.02   # copper lands of the board (pad_t 0.02, thin.py 52)
+CIT check_band.py (file) exists
+CIT check_band.py:160 (bare) -> fail(f"stiffener outlines on User.1: {n_stiff} segments (need {need_st} or more)")
+CIT check_band.py:213 (bare) -> if prims[i][2] is not None:
+CIT WORK/planted/geom_check-planted.log (file) exists
+QUOTE OK "length enough as drawn"
+CIT lead-decisions.md:65 -> | block height 4.17 mm: what follows | Layout C of the screen cable study is the design: stock screen turned 1
+CIT design/wiring/screen-cable-study.md:166-220 -> ### 4.3 Layout C: screen turned 180 degrees, cable bent back under the panel at the fingertip end, J1 on the b
+CIT assembly.md:219 -> - **Locate:** the panel pocket walls; the board on the block stack: floor 0.40, gap 0.05, parts 1.00, board 0.
+CIT screen-cable-study.md:172 -> 4. A flat run under the panel. The cable floats 0.40 above the board and 0.53 under the panel.
+CIT screen-cable-study.md:178 (bare) -> - The cable end lands at X -4.833 (s 20).
+CIT screen-cable-study.md:43 (bare) -> | Neck | 4.805 wide (Y -2.402 to +2.402); starts at 12.497 after inner fillets of r about 0.5; runs to the cab
+CIT screen-cable-study.md:42 (bare) -> | Wide part | 12.401 wide (Y -6.198 to +6.204); straight sides to 11.496 mm beyond the panel end; outer corner
+CIT thin.py:61 -> adh_t=0.10, foam_t=0.10, under=1.00, gap=0.05, pad_t=0.02,
+CIT band-interface.md:137 -> Board lands pre-tinned (SAC305 stencil 0.05 mm). Tail foot placed on the lands (alignment by the 0.10 mm outli
+CIT thin-notes.md:134 -> - Ribbon fold volume (K-A6), one beside each floor slot under the board: X -3.5 to -0.9, Y +3.4 to +5.6 and -5
+CIT ring-B_Paste.gbr (file) exists
+CIT fab/stackup.txt:2 -> 
+CIT WORK/logs/check_notch.log (file) exists
+CIT design/mfg/specs/main-board.md:21 -> General: ISO 2768-m for the outline and corner radius (default, to confirm with the maker); the board has no n
+QUOTE OK "the board has no notch"
+CIT band-interface.md:145 -> 1. The tail is 1.8 wide at the neck, not 1.4 (thin.py line 66 `tail_w=1.4`, `tail_x=-2.6`, slot 2.0 wide). Rea
+CIT check_band.py (file) exists
+CIT design/mfg/specs/band-flex-tails.md (file) exists
+CIT design/mfg/specs/main-board.md:21 -> General: ISO 2768-m for the outline and corner radius (default, to confirm with the maker); the board has no n
+CIT band-interface.md:137 -> Board lands pre-tinned (SAC305 stencil 0.05 mm). Tail foot placed on the lands (alignment by the 0.10 mm outli
+QUOTE OK "FPC Outline"
+CIT WORK/scan_bars.py (file) exists
+CIT WORK/logs/scan_bars.log (file) exists
+CIT band-interface.md:57 -> - Keep out of the area X -3.50 to -1.00, Y 3.40 to 5.60 (and the mirror, Y -5.60 to -3.40) for every other par
+CIT band-interface.md:26-91 -> Row |Y| (centre): far row 3.875 (nearer to the board middle), near row 4.775 (nearer to the slot). The fold of
+CIT band-interface.md:23-91 -> Land pattern, both tails: 2 rows of lands, 4 columns. Land size on the board: 0.30 (X) x 0.55 (Y). Column pitc
+CIT WORK/logs/fixture-values.log (file) exists
+CIT WORK/make_fixture_svg.py (file) exists
+CIT main-board.md:27-28 -> | board length (X) | 27.2 mm | ISO 2768-m | outline |
+CIT thin.py:473 -> outline = rbox(P["board_x"], P["board_y"], P["board_t"], 0, 0, (Z_BD0 + Z_BD1) / 2, 0.8)
+CIT fab/stackup.txt:15 -> Finished thickness 0.30 mm +-0.025 (0.267 mm over copper: 4 x 0.018 + 3 x 0.065).
+CIT WORK/logs/screen-face-parts.log (file) exists
+CIT design/wiring/screen-cable-study.md:59 -> - 0.9 +-0.1 high; 1.8 high with the lever open.
+CIT band-interface.md:67-83 -> | Tail | Land | Net | Board X | Board Y | Tail u | Tail v | Face touching the board |
+CIT design/wiring/product-wiring.csv (file) exists
+CIT WORK/dumps/probe-pads.csv (file) exists
+CIT WORK/dumps/netpads.csv (file) exists
+CIT WORK/dumps/netpads.csv (file) exists
+CIT assembly.md:213 -> - **Check:** once FLEX2 is joined, the battery voltage reaches the power chip. Above 2.75 V the chip powers up
+CIT band-interface.md:137 -> Board lands pre-tinned (SAC305 stencil 0.05 mm). Tail foot placed on the lands (alignment by the 0.10 mm outli
+QUOTE OK "Hot bar blade 3 mm wide ... covering the whole foot, 260 C for 4 s at "
+CIT design/mech/thin/thin-notes.md:485 -> - Not modelled: the 0.2 and 0.3 chamfers of the drawn outline at the head edge and the pad strip start; the ma
+QUOTE OK "hot bar settings, the foot joint (bench)"
+CIT WORK/logs/geom_check.log (file) exists
+CIT thin.py:81 -> flex_fin=0.11, fold_r_in=0.70, joint=0.03, foot_x=(-3.5, -1.0), foot_y1=3.4, foot_stiff_x=(-3.45, -0.95), foot
+QUOTE OK "BLADE 3.0 x stiffener"
+QUOTE OK "BLADE 2.5 x stiffener"
+CIT WORK/logs/flux-search.log (file) exists
+CIT design/mfg/assembly/joint-table-notes.md:40 -> MISSING per field: flux 81 (none of the searched files names a flux: design/mfg, band-interface.md, the case b
+CIT assembly.md:157 -> - **After:** from here the harness carries a live cell. The board end of FLEX2 must be covered with insulating
+CIT assembly.md:155 -> - **Before:** the cell BT1 (`cell`) of the right size is delivered, 33.936 mm (US 7) to 46.121 mm (US 13) on i
+CIT assembly.md:213 -> - **Check:** once FLEX2 is joined, the battery voltage reaches the power chip. Above 2.75 V the chip powers up
+CIT design/firmware.md:1026 -> | 0x30 | T-JOY | joystick, 4 directions and the centre | the jig presses up (SW1), down (SW3), left (SW4), rig
+CIT design/datasheets/npm1304_datasheet_v1_0.txt:1472-1479 -> is allowed. For example, setting TWARM = THOT means that there is no warm region. Charging does not
+QUOTE OK "Charging does not happen below TCOLD"
+CIT band-notes.md:71 -> 3. Switch ground on FLEX1: terminals 2 and 4 of each switch (GND side) go to B.Cu GND traces in the head (0.10
+CIT band-interface.md:56 -> - Net names as in the tables. Land 6 and land 8 of J_BAND_A are both GND; land 2 and land 7 of J_BAND_B are bo
+CIT assembly.md:99 -> - **Check:** after PASS 1, optical inspection of the screen face at 10 times: J1 sits flat on the board with n
+CIT design/datasheets/w1_hirose_fh35c-15s-0.3shw50_drawing.pdf (file) exists
+CIT WORK/logs/hirose-p6-reading.txt (file) exists
+QUOTE OK "-Number of reflow cycles:2 cycles MAX."
+QUOTE OK "The temperatures mentioned below refer to the PCB surface temperature "
+CIT assembly.md:96 -> - **Join:** the board parts of `design/bom.csv` to PCB1 in TWO solder passes, one per face, each with its own 
+CIT wiring-review-3.md:43 -> | G6 | minor | `assembly.md` line 99 (step 2 check) | "The number of reflow passes that J1 and the 0201 parts 
+CIT WORK/logs/geom_check.log (file) exists
+QUOTE OK "NEAR J1"
+CIT assembly.md:145 -> - **How:** [PROPOSED: no design file names the method; the lead's workshop method of 2026-11-13, confirmed on 
+CIT WORK/logs/prt1_distance.log (file) exists
+CIT band-interface.md:116 -> - FLEX2 lands (footprint PRT1_Tabs): 0.26 along the tail x 0.45 across, pitch 0.43, bare ENIG, coverlay openin
+CIT band_geom.py (file) exists
+CIT band-interface.md:117 -> - Soldering: the tabs are laid on the lands and soldered by hand, low heat: iron tip 280 C maximum, contact 2 
+CIT WORK/logs/geom_check.log (file) exists
+CIT placement-final.csv (file) exists
+CIT placement-final.csv:56 (bare) -> C32,OpenRing:Chip_0201,F,6.900,2.300,90,Z11,106.900,102.300
+CIT placement-final.csv:78 (bare) -> C29,OpenRing:Chip_0402,F,-0.200,-2.850,270,Z12,99.800,97.150
+CIT placement-final.csv:81 (bare) -> J_BAND_A,OpenRingBand:J_BAND_A_BOARD,F,-2.250,-4.325,0,Z10,97.750,95.675
+CIT placement-final.csv:84 (bare) -> C83,OpenRing:Chip_0402,F,0.000,5.450,0,Z9,100.000,105.450
+CIT assembly.md:96 -> - **Join:** the board parts of `design/bom.csv` to PCB1 in TWO solder passes, one per face, each with its own 
+CIT band-interface.md:137 -> Board lands pre-tinned (SAC305 stencil 0.05 mm). Tail foot placed on the lands (alignment by the 0.10 mm outli
+CIT design/ecad/ring/pcb/ring.kicad_pcb (file) exists
+CIT design/ecad/ring/pcb/fab/gerber/ring-F_Paste.gbr (file) exists
+CIT band-interface.md:32-52 -> | 1 | CELL+ | VBAT | -3.015 | +3.875 | 0.30 x 0.55 |
+CIT WORK/paste_at_lands.py (file) exists
+CIT band-interface.md:55 -> - The lands are bare copper with the finish of the board (ENIG or HASL are both accepted by a hot bar), solder
+CIT design/mfg/assembly/assembly.md (file) exists
+CIT design/ecad/band/band-interface.md:55 -> - The lands are bare copper with the finish of the board (ENIG or HASL are both accepted by a hot bar), solder
+CIT design/ecad/band/band-interface.md:137 -> Board lands pre-tinned (SAC305 stencil 0.05 mm). Tail foot placed on the lands (alignment by the 0.10 mm outli
+CIT design/mech/thin/thin.py:81 -> flex_fin=0.11, fold_r_in=0.70, joint=0.03, foot_x=(-3.5, -1.0), foot_y1=3.4, foot_stiff_x=(-3.45, -0.95), foot
+CIT design/mfg/assembly/hotbar-joint.md (file) exists
+CIT design/ecad/ring/pcb/fab/stackup.txt:20 -> Finish: ENEPIG. Solder mask green both sides; U1 and U2 land openings equal the land (no expansion).
+CIT design/datasheets/w1_hirose_fh35c-15s-0.3shw50_drawing.pdf (file) exists
+CIT design/mfg/assembly/hotbar-joint.md (file) exists
+CIT design/ecad/band/band-interface.md:137 -> Board lands pre-tinned (SAC305 stencil 0.05 mm). Tail foot placed on the lands (alignment by the 0.10 mm outli
+CIT design/mfg/assembly/hotbar-joint.md (file) exists
+CIT design/ecad/band/band-interface.md:137 -> Board lands pre-tinned (SAC305 stencil 0.05 mm). Tail foot placed on the lands (alignment by the 0.10 mm outli
+CIT design/mfg/assembly/hotbar-work/logs/geom_check.log (file) exists
+CIT design/ecad/band/band-interface.md:26 -> Row |Y| (centre): far row 3.875 (nearer to the board middle), near row 4.775 (nearer to the slot). The fold of
+CIT design/ecad/band/band-interface.md:91 -> Tail-end pattern (footprints "J_BAND_A_TAIL", "J_BAND_B_TAIL"): same land centres as section 2 seen on the tai
+CIT design/mfg/assembly/hotbar-joint.md (file) exists
+CIT design/datasheets/w1_hirose_fh35c-15s-0.3shw50_drawing.pdf (file) exists
+CIT design/mfg/assembly/hotbar-joint.md (file) exists
+NUMBERS 243 decimal numbers; matched in evidence or cited files 243; UNMATCHED 0: 
+DASHES lines with an em or en dash: none
+LAST LINE is RESULT: True
+AGREE foot width: values [2.5] -> one value
+AGREE slot width: values [2.1] -> one value
+AGREE stiffener gap: values [0.79] -> one value
+AGREE J1 distance: values [0.51] -> one value
+AGREE free length: values [0.0] -> one value
+AUDIT claims checked 445; problems 0
+exit 0

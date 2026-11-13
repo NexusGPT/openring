@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "part-placements.schema.json",
+  "type": "object",
+  "properties": {
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "z_min": {
+            "type": "number"
+          },
+          "z_max": {
+            "type": "number"
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          },
+          "explode": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/Vec3"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "radial"
+                ]
+              }
+            ],
+            "description": "Optional. A direction in design coordinates (x along the finger, y across, z up), or 'radial' (each part moves outward along its radius from the band axis). Read from the design's layers.json."
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "order",
+          "z_min",
+          "z_max",
+          "source"
+        ],
+        "additionalProperties": false
+      },
+      "description": "From the stack table, ordered bottom to top."
+    },
+    "placements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "centre": {
+            "$ref": "common.schema.json#/$defs/Vec3"
+          },
+          "size": {
+            "$ref": "common.schema.json#/$defs/Vec3"
+          },
+          "rotation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "metal": {
+            "type": "boolean"
+          },
+          "layer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "zone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "name",
+          "centre",
+          "size",
+          "rotation",
+          "metal",
+          "layer",
+          "zone",
+          "note",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "layers",
+    "placements"
+  ],
+  "additionalProperties": false,
+  "title": "PartPlacements"
+}

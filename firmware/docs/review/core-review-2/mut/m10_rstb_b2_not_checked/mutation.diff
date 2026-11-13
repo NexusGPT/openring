@@ -1,0 +1,11 @@
+file src/core.c
+--- old
+		if (c->facts.batt == RC_BATT_B2) {
+			step(c, RC_EV_BATT_B2, t, out);
+		} else if (c->facts.batt >= RC_BATT_B5) {
+			step(c, RC_EV_BATT_B5, t, out);
+		} else if (c->facts.storage_full) {
++++ new
+		if (c->facts.batt >= RC_BATT_B5) {
+			step(c, RC_EV_BATT_B5, t, out);
+		} else if (c->facts.storage_full) {

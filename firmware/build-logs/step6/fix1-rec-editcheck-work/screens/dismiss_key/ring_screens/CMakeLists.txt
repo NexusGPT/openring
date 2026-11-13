@@ -1,0 +1,23 @@
+# Ring screens: the pure part (which screen), the drawing part (LVGL), the memory display driver.
+if(CONFIG_RING_SCREENS OR CONFIG_RING_SCREENS_PURE)
+  zephyr_library_named(ring_screens)
+  zephyr_include_directories(include)
+  # rscr_logic.h takes the 10 s of the current limit from ring_rhw's rrec_spec.h (a header with no code); a test can point at
+  # another copy with RING_RHW_INCLUDE_DIR
+  if(DEFINED RING_RHW_INCLUDE_DIR)
+    zephyr_include_directories(${RING_RHW_INCLUDE_DIR})
+  else()
+    zephyr_include_directories(${CMAKE_CURRENT_LIST_DIR}/../ring_rhw/include)
+  endif()
+  zephyr_library_sources(src/rscr_logic.c)
+  if(CONFIG_RING_SCREENS)
+    zephyr_library_sources(src/rscr_draw.c src/rscr.c)
+    zephyr_library_sources_ifdef(CONFIG_RING_SCREENS_REAL src/rscr_real.c)
+    zephyr_library_sources_ifdef(CONFIG_RING_SCREENS_CAPTURE src/rscr_capture.c)
+  endif()
+endif()
+if(CONFIG_RING_MEM_DISPLAY)
+  zephyr_library_named(ring_mem_display)
+  zephyr_include_directories(include)
+  zephyr_library_sources(src/memdisplay.c)
+endif()

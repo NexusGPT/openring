@@ -1,0 +1,144 @@
+modules/ring_power/include/ring_power/rpw.h:2: * rpw.h: the power part (software step 6, unit U5 builds it; U0 wrote this header, frozen: changes only through the
+modules/ring_power/include/ring_power/rpw.h:7: * off only, CHARGE_CURRENT and its build assertions, motor charge added, the current-limit decision, the ship steps as
+modules/ring_power/include/ring_power/rpw.h:14: * The rails: ring_power does NOT switch VDD_MIC or VDD_SD. They are switched only through
+modules/ring_power/include/ring_power/rpw.h:15: * rhw_pmic()->rail_set(): VDD_SD by ring_store, VDD_MIC only by rec_mics_on() (FW l.342). (The plan's U5 offer "set a
+modules/ring_power/include/ring_power/rpw.h:19: * Hardware only through rhw.h: rhw_pmic(), rhw_gauge(), rhw_clock().
+modules/ring_power/include/ring_power/rpw.h:35:	 * Power thread; may take the glue's lock (the join calls rglue_battery). */
+modules/ring_power/include/ring_power/rpw.h:37:	/* VBUS in or out (FW l.979), after "charge on" was done for VBUS in (R-CHG, FW l.210, ruling R8). Power thread. */
+modules/ring_power/include/ring_power/rpw.h:39:	/* A charge error with the chip's latched values (FW l.176). Power thread. */
+modules/ring_power/include/ring_power/rpw.h:42:	 * (screen to act on), false for "again with the screen off" (log only, with the count). Power thread. */
+modules/ring_power/include/ring_power/rpw.h:50: * and cb->vbus(true). Once, at boot, after rpw_boot_causes. Blocks for one sample. */
+modules/ring_power/include/ring_power/rpw.h:58: * RREC_MEAN_SAMPLES; every other awake state every RREC_SAMPLE_IDLE_MS on the single sample (FW l.928). Any thread;
+modules/ring_power/include/ring_power/rpw.h:59: * never blocks. */
+modules/ring_power/include/ring_power/rpw.h:63: * "charge off": disable. Any thread; blocks for the I2C writes. */
+modules/ring_power/include/ring_power/rpw.h:68: * (FW l.927). ANY context (the motor's timer); never blocks. */
+modules/ring_power/include/ring_power/rpw.h:74: * once (FW l.941). Returns only when the chip did not cut the supply: -ETIMEDOUT after the retry. Join's thread;
+modules/ring_power/include/ring_power/rpw.h:75: * blocks until VBUS is removed. */
+modules/ring_power/include/ring_power/rpw.h:78:/* GET_BATTERY (FW l.702): RREC_GET_BATTERY_BYTES bytes from the last sample and gauge step. Any thread; blocks for
+modules/ring_power/include/ring_power/rpw.h:92:/* The values of the last sample. Any thread; never blocks. */
+modules/ring_power/include/ring_power/rpw.h:99: * unit's gaps): two reads taken NOW by the power thread (the one owner of the power chip, rhw.h) and handed to the
+modules/ring_power/include/ring_power/rpw.h:100: * caller, for the factory tests. They do not feed the gauge or the levels. Any thread but the power thread (it would
+modules/ring_power/include/ring_power/rpw.h:101: * wait for itself: -EDEADLK); blocks up to RPW_READ_WAIT_MS for the power thread. 0; -ETIMEDOUT when the power thread
+modules/ring_store/include/ring_store/rst.h:2: * rst.h: the storage part (software step 6, unit U2 builds it; U0 wrote this header, frozen: changes only through the
+modules/ring_store/include/ring_store/rst.h:3: * lead). The raw append-only log on the card of design/firmware.md section 5 ("FW l.N" = line N of that file).
+modules/ring_store/include/ring_store/rst.h:6: * src/ headers, which are not public; this header is the thin part, the only one other units call.
+modules/ring_store/include/ring_store/rst.h:8: * Threads: the store has one storage thread (made by rst_init). Every call below except rst_put_chunk, rst_log_put,
+modules/ring_store/include/ring_store/rst.h:9: * rst_space, rst_log_dropped and rst_mounted runs the work on the caller's thread under the store's lock and BLOCKS
+modules/ring_store/include/ring_store/rst.h:10: * for the card's time. Two calls never run at once: a call made while another one runs (from another thread) returns
+modules/ring_store/include/ring_store/rst.h:12: * Hardware only through rhw.h: rhw_disk(), rhw_sdbus(), rhw_pmic()->rail_set(RHW_RAIL_SD, ..., "rst_..."),
+modules/ring_store/include/ring_store/rst.h:13: * rhw_clock(). Numbers only from rrec_spec.h.
+modules/ring_store/include/ring_store/rst.h:30: * sample_format, mic_mask, payload_bytes (= frames x 4), pdm_clock_hz, pdm_ratio, gain_code, the reserved zeros and
+modules/ring_store/include/ring_store/rst.h:47:	uint32_t dropout_blocks;      /* FW l.570 */
+modules/ring_store/include/ring_store/rst.h:62:/* Called on the storage thread when a queued chunk is written (err 0) or failed its 3 tries (err < 0, FW l.643).
+modules/ring_store/include/ring_store/rst.h:63: * Must not block. The chunk buffer is the caller's again from this call on. */
+modules/ring_store/include/ring_store/rst.h:76:	bool open_flag;               /* superblock open flag (FW l.603) */
+modules/ring_store/include/ring_store/rst.h:120:	/* free space reached S30 or SFULL while a recording runs (FW l.166, l.167): once per crossing; storage thread */
+modules/ring_store/include/ring_store/rst.h:123:	/* the 3rd failed try of a chunk write (FW l.168): storage thread; the superblock is left open */
+modules/ring_store/include/ring_store/rst.h:127:/* Start: the storage thread, the RAM log buffer, and the bus sleep state at boot before any SPI use (FW l.506:
+modules/ring_store/include/ring_store/rst.h:132: * init with RREC_INIT_TRIES tries RREC_INIT_GAP_MS apart (C8), sector count, superblock (the valid copy with the
+modules/ring_store/include/ring_store/rst.h:134: * boot = true at the mount of BOOT only: boot_count + 1 and the superblock written once (decision D14).
+modules/ring_store/include/ring_store/rst.h:136: * Blocks: up to 2 x 200 ms plus the card's time. */
+modules/ring_store/include/ring_store/rst.h:143:/* true between a successful rst_mount and rst_unmount. Does not block. */
+modules/ring_store/include/ring_store/rst.h:146:/* Open a recording (FW l.126, l.641): new recording_id, superblock with the open flag and open_first_chunk_seq.
+modules/ring_store/include/ring_store/rst.h:152: * Does NOT block: 0 when queued, -ENOBUFS when RREC_CHUNK_RING chunks already wait, -EIO after a write fault, -EINVAL
+modules/ring_store/include/ring_store/rst.h:153: * with no open recording. The storage thread writes it once (3 tries at once, FW l.643) and calls done(c, err).
+modules/ring_store/include/ring_store/rst.h:154: * Called by ring_audio's thread. */
+modules/ring_store/include/ring_store/rst.h:158: * none), the CLOSE record (state COMPLETE, digest over every chunk's payload CRC, FW l.630) and the superblock with
+modules/ring_store/include/ring_store/rst.h:160: * Blocks. */
+modules/ring_store/include/ring_store/rst.h:165: * progress(chunks so far) after each chunk (may be NULL; storage or caller thread, must not block). 0; -EIO on a read
+modules/ring_store/include/ring_store/rst.h:166: * error, with the open flag still set (FW l.143, ruling R9). Blocks for the whole scan. */
+modules/ring_store/include/ring_store/rst.h:169:/* Space now (FW 5.6), from RAM. Does not block. -ENODEV before the first mount. */
+modules/ring_store/include/ring_store/rst.h:186: * every leading deleted recording, writes the superblock; *free_after = free chunks after it. 0, -ENOENT, -EIO. */
+modules/ring_store/include/ring_store/rst.h:191: * VDD_SD is on (mount, or at once when mounted). Any thread (not an interrupt); never blocks. */
+modules/ring_store/include/ring_store/rst.h:194:/* Records dropped from the full buffer since boot (FW l.1062). Does not block. */
+modules/ring_store/include/ring_store/rst.h:215: * (comments only, written by the lead from firmware/docs/store-notes.md section 5; no signature changed)
+modules/ring_store/include/ring_store/rst.h:219: * - rst_delete and rst_delete_factory_recordings: -EBUSY when a recording is open or the superblock open flag
+modules/ring_store/include/ring_store/rst.h:226: * - A card with no valid superblock copy gets a new log at the first mount; a card that cannot be READ is never
+modules/ring_xfer/include/ring_xfer/rxf.h:2: * rxf.h: the USB transfer part (software step 6, unit U4 builds it; U0 wrote this header, frozen: changes only through
+modules/ring_xfer/include/ring_xfer/rxf.h:7: * the thin part (rxf_class.c) and the backend the join fills. Numbers only from rrec_spec.h (RREC_OP_*, RREC_ST_*,
+modules/ring_xfer/include/ring_xfer/rxf.h:8: * RREC_MSG_*, RREC_USB_*). Hardware only through rhw_usb() (and rhw_hfxo() if the class needs the crystal).
+modules/ring_xfer/include/ring_xfer/rxf.h:11: * only while backend->may_answer() is true (FW l.673: CHARGING, TRANSFER, FACTORY_TEST). Requests are handled one at a
+modules/ring_xfer/include/ring_xfer/rxf.h:12: * time on the transfer thread; a request that arrives while one runs gets BUSY (FW l.711).
+modules/ring_xfer/include/ring_xfer/rxf.h:31:/* Filled by the join (ring_recorder). Each function runs on the transfer thread, may block, and returns the status of
+modules/ring_xfer/include/ring_xfer/rxf.h:33: * backend sees only valid ranges. `out` buffers have the size named; *len is set to the payload length. */
+modules/ring_xfer/include/ring_xfer/rxf.h:35:	/* CHARGING, TRANSFER or FACTORY_TEST now (FW l.673). Any thread; never blocks. */
+modules/ring_xfer/include/ring_xfer/rxf.h:50:	/* SET_TIME (FW l.701): the clock set with the zone known (rtime_set(utc_ms, tz_min, true)). */
+modules/ring_xfer/include/ring_xfer/rxf.h:70:	/* USBD_MSG_CONFIGURATION (FW l.171, l.673): CHARGING -> TRANSFER. Transfer thread; must not block. */
+modules/ring_xfer/include/ring_xfer/rxf.h:72:	/* unconfigured or suspended (FW l.178). Transfer thread; must not block. */
+modules/ring_xfer/include/ring_xfer/rxf.h:76:/* Start the class with its backend: register the transport callbacks, the transfer thread. The stack itself starts
+modules/ring_xfer/include/ring_xfer/rxf.h:77: * only on VBUS (FW l.978). Once, at boot. */
+modules/ring_xfer/include/ring_xfer/rxf.h:80:/* VBUS removed in TRANSFER (FW l.179): abort the command that runs; no response is sent for it. Any thread; does not
+modules/ring_xfer/include/ring_xfer/rxf.h:85: * the transport. 0; -ETIMEDOUT after timeout_ms. Join's thread; blocks up to timeout_ms. */
+modules/ring_xfer/include/ring_xfer/rxf.h:88:/* true while a command runs (the store must not be used by another part then, FW l.219). Never blocks. */
+modules/ring_audio/include/ring_audio/rau.h:2: * rau.h: the audio part (software step 6, unit U3 builds it; U0 wrote this header, frozen: changes only through the
+modules/ring_audio/include/ring_audio/rau.h:5: * Pure part (rau_chunk.c: blocks into chunks, the 800-frame discard, zero fill, flags, highlights, motor intervals,
+modules/ring_audio/include/ring_audio/rau.h:13: * Order of a stop: "close" of FW l.125 (partial chunk, CLOSE record, superblock, stop PDM, clocks low, VDD_MIC off,
+modules/ring_audio/include/ring_audio/rau.h:16: *   rst_close()    (partial chunk, CLOSE record, superblock)
+modules/ring_audio/include/ring_audio/rau.h:17: *   rau_halt()     (trigger STOP, blocks released, clock pins to the sleep state = clocks low)
+modules/ring_audio/include/ring_audio/rau.h:19: * Hardware only through rhw.h: rhw_mic(), rhw_hfxo(), rhw_clock(). The audio part never switches a rail.
+modules/ring_audio/include/ring_audio/rau.h:35:	/* Hand a full chunk to the store (FW l.443). NULL = rst_put_chunk. Audio thread. */
+modules/ring_audio/include/ring_audio/rau.h:37:	/* No block for RREC_MIC_NO_BLOCK_MS while capturing (FW l.169). Audio thread; once per recording; must not block. */
+modules/ring_audio/include/ring_audio/rau.h:38:	void (*no_block)(void);
+modules/ring_audio/include/ring_audio/rau.h:39:	/* A block replaced by zeros (FW l.430: "is logged"). Audio thread; must not block. */
+modules/ring_audio/include/ring_audio/rau.h:40:	void (*dropout)(uint32_t recording_id, uint32_t chunk_in_recording, uint8_t block);
+modules/ring_audio/include/ring_audio/rau.h:41:	/* Battery, temperature and fw version for each chunk header (FW l.567 to l.571). Audio thread; must not block.
+modules/ring_audio/include/ring_audio/rau.h:46:/* Start the audio thread and put the clock pins in their sleep state (FW l.465: at boot, before VDD_MIC is ever on).
+modules/ring_audio/include/ring_audio/rau.h:47: * Once, at boot. cb may be NULL. Blocks briefly. */
+modules/ring_audio/include/ring_audio/rau.h:51: * Caller's thread (the join's); blocks up to timeout_ms. */
+modules/ring_audio/include/ring_audio/rau.h:65: * The recording's time is that of its first kept frame (FW l.460). Join's thread; blocks for the trigger only. */
+modules/ring_audio/include/ring_audio/rau.h:74: * until the block holding the mark has arrived; full chunks before it are handed to the store as usual. The PDM keeps
+modules/ring_audio/include/ring_audio/rau.h:75: * running until rau_halt. 0, -EIO. Join's thread; blocks up to RREC_MIC_NO_BLOCK_MS. */
+modules/ring_audio/include/ring_audio/rau.h:78:/* Stop the input (FW l.463): trigger STOP, read until the input returns an error (blocks released), clock pins to the
+modules/ring_audio/include/ring_audio/rau.h:79: * sleep state. Returns when the caller may switch VDD_MIC off. 0, -EIO. Join's thread; blocks up to
+modules/ring_audio/include/ring_audio/rau.h:80: * RREC_BLOCK_COUNT x RREC_BLOCK_MS. Also the stop after a chunk write fault (FW l.168) and after "no block" (l.169). */
+modules/ring_audio/include/ring_audio/rau.h:86:/* A highlight at the time of CENTRE_DOWN of the short press, in uptime ms (FW l.159, l.582). Any thread (not an
+modules/ring_audio/include/ring_audio/rau.h:87: * interrupt); never blocks; ignored outside a capture. */
+modules/ring_audio/include/ring_audio/rau.h:90:/* A MOTOR edge (FW l.496): high or low, at this cycle count (rhw_clock()->cycles()). ANY context, the motor's timer
+modules/ring_audio/include/ring_audio/rau.h:91: * included; never blocks. Kept while capturing; the last edges before a start are kept too, so the M1 that starts
+modules/ring_audio/include/ring_audio/rau.h:95:/* The battery fact B15 for flag bit 6 of the next chunks (FW l.547). Any thread; never blocks. */
+modules/ring_audio/include/ring_audio/rau.h:98:/* true between rau_start and the end of rau_halt. Does not block. */
+modules/ring_motor/include/ring_motor/rmo.h:2: * rmo.h: the motor part (software step 6, unit U6 builds it; U0 wrote this header, frozen: changes only through the
+modules/ring_motor/include/ring_motor/rmo.h:8: * Hardware only through rhw.h: rhw_motor(), rhw_clock().
+modules/ring_motor/include/ring_motor/rmo.h:23:	/* Each MOTOR edge as the pin is set, with rhw_clock()->cycles() of that moment (FW l.496, for ring_audio's
+modules/ring_motor/include/ring_motor/rmo.h:24:	 * rau_motor_edge). k_timer context: must not block. */
+modules/ring_motor/include/ring_motor/rmo.h:27:	 * (FW l.332), at the pulse's end (for rpw_motor_charge). k_timer context: must not block. */
+modules/ring_motor/include/ring_motor/rmo.h:30:	 * must not block. */
+modules/ring_motor/include/ring_motor/rmo.h:40: * Any thread (not an interrupt); never blocks: the k_timer plays it. */
+modules/ring_motor/include/ring_motor/rmo.h:43:/* The setting "Vibration" (FW 2.2). Any thread; never blocks. */
+modules/ring_motor/include/ring_motor/rmo.h:46:/* true while a pattern plays. Never blocks. */
+modules/ring_motor/include/ring_motor/rmo.h:49:/* Stop at once, pin low (before ship mode). Any thread; never blocks. */
+modules/ring_sys/include/ring_sys/rsy.h:2: * rsy.h: the system part (software step 6, unit U7 builds it; U0 wrote this header, frozen: changes only through the
+modules/ring_sys/include/ring_sys/rsy.h:7: * allowed" rule, the crash block format, the feed decision, the saved-time guess) is declared in the unit's own src/
+modules/ring_sys/include/ring_sys/rsy.h:11: * Hardware only through rhw.h: rhw_image(), rhw_persist(), rhw_retained(), rhw_wdt(), rhw_clock().
+modules/ring_sys/include/ring_sys/rsy.h:28: * units. Blocks for the settings read. */
+modules/ring_sys/include/ring_sys/rsy.h:34: * the erase fails). Transfer thread; blocks for the erase. */
+modules/ring_sys/include/ring_sys/rsy.h:37: * FW_ERROR on a write error; OK. Writes only slot 1 (FW l.1012 rule 1). Blocks for the write. */
+modules/ring_sys/include/ring_sys/rsy.h:41: * response was sent (rxf_backend.after_response). Blocks for the read-back. */
+modules/ring_sys/include/ring_sys/rsy.h:48:	RSY_ITEM_USB = 2,           /* USB enumerated again (needed only when VBUS is present) */
+modules/ring_sys/include/ring_sys/rsy.h:52: * Join's thread; never blocks. */
+modules/ring_sys/include/ring_sys/rsy.h:55: * thread (not an interrupt); blocks for the confirm write. */
+modules/ring_sys/include/ring_sys/rsy.h:57:/* true while a self-test window runs. Never blocks. (At the end of the window without every item, ring_sys logs and
+modules/ring_sys/include/ring_sys/rsy.h:63:/* Write the flag through the settings (SHIP_ENTER clears it, FW l.1019; set only by the factory programming).
+modules/ring_sys/include/ring_sys/rsy.h:64: * Blocks for the write. */
+modules/ring_sys/include/ring_sys/rsy.h:66:/* Save the time on entry into SHIP or OFF (FW l.1005). Blocks for the write. */
+modules/ring_sys/include/ring_sys/rsy.h:68:/* The saved time as a guess (FW l.1005, ruling D18): true with *utc_ms when one was saved. The clock stays "not set";
+modules/ring_sys/include/ring_sys/rsy.h:69: * the join writes the guess once into the log (RREC_LOG_TIME_GUESS). Never blocks. */
+modules/ring_sys/include/ring_sys/rsy.h:73:/* At boot: when retained memory holds a valid crash block, copy it to *out, clear it (and gpregret1) and return 1;
+modules/ring_sys/include/ring_sys/rsy.h:78:enum rsy_thread {
+modules/ring_sys/include/ring_sys/rsy.h:79:	RSY_THREAD_AUDIO = 0,
+modules/ring_sys/include/ring_sys/rsy.h:80:	RSY_THREAD_STORAGE = 1,
+modules/ring_sys/include/ring_sys/rsy.h:82:/* A thread made progress now. Called by ring_audio's and ring_store's threads (through a hook the join sets, so those
+modules/ring_sys/include/ring_sys/rsy.h:83: * units need no ring_sys header). Any thread; never blocks. */
+modules/ring_sys/include/ring_sys/rsy.h:84:void rsy_progress(enum rsy_thread t);  /* FW l.1065 */
+modules/ring_sys/include/ring_sys/rsy.h:85:/* Start wdt31 with RREC_WDT_TIMEOUT_MS and the feed work: every RREC_WDT_FEED_MS, feed only when both threads reported
+modules/ring_sys/include/ring_sys/rsy.h:88:/* The audio and storage threads are expected to report only while a recording runs. Any thread; never blocks. */
+modules/ring_factory/include/ring_factory/rfa.h:2: * rfa.h: the factory part (software step 6, unit U8 builds it; U0 wrote this header, frozen: changes only through the
+modules/ring_factory/include/ring_factory/rfa.h:10: * rec_mics_on() only (ruling R18), through struct rfa_ops below.
+modules/ring_factory/include/ring_factory/rfa.h:11: * Hardware only through rhw.h: rhw_beacon(), rhw_clock(); the rest through the other units.
+modules/ring_factory/include/ring_factory/rfa.h:26:/* What the join must do after a sub-command answered (the core's events of FW l.181, l.201 to l.203). */
+modules/ring_factory/include/ring_factory/rfa.h:49:/* What the factory tests need from the other units; the join fills it (a test fills stand-ins). Each may block;
+modules/ring_factory/include/ring_factory/rfa.h:50: * called on the transfer thread. */
+modules/ring_factory/include/ring_factory/rfa.h:53:	 * each kept block of interleaved samples is passed to on_block (frames = 256 per block); *mic_on_ms and
+modules/ring_factory/include/ring_factory/rfa.h:56:	int (*test_recording)(uint32_t ms, void (*on_block)(const int16_t *frames, uint32_t n),
+modules/ring_factory/include/ring_factory/rfa.h:83: * Transfer thread; blocks for the test's time (at most RREC_FAC_RADIO_MS). */
+modules/ring_factory/include/ring_factory/rfa.h:88: * calls it instead of nothing; it never reaches a recording. Any thread (not an interrupt); never blocks. */

@@ -1,0 +1,53 @@
+tests/recorder/src/test_actions.c:87:	zassert_equal(bad, 0, "every kept frame is the captured one (%u not)", bad);
+tests/recorder/src/test_actions.c:90:	zassert_true(last_frames > 0 && last_frames < RREC_CHUNK_FRAMES, "the last chunk is the partial one (%u)",
+tests/recorder/src/test_actions.c:98:ZTEST(recorder_actions, test_close_order)
+tests/recorder/src/test_actions.c:383:ZTEST(recorder_actions, test_latched_events_not_lost)
+tests/recorder/src/test_ship.c:35:ZTEST(recorder_ship, test_ship_feels_whole_m2)
+tests/recorder/src/test_ship.c:61:	zassert_equal(n, 4, "M2 = 4 edges before SHPHLDCONFIG (%d)", n);
+tests/recorder/src/test_ship.c:81:ZTEST(recorder_ship, test_ship_closes_each_part_first)
+tests/recorder/src/test_ship.c:123:	zassert_true(at_ship.blanked, "the screen closed (panel off) before SHPHLDCONFIG");
+tests/recorder/src/test_ship.c:143:	zassert_true(at_ship.blanked, "the screen closed before SHPHLDCONFIG");
+tests/recorder/src/test_factory.c:55:ZTEST(recorder_factory, test_tmic_records_type_2_for_2s)
+tests/recorder/src/test_factory.c:76:	zassert_equal(r.type, 2, "recording_type 2 (FW l.1024)");
+tests/recorder/src/test_factory.c:78:	zassert_true(r.duration_frames + 256 >= 32000 && r.duration_frames <= 32000 + 256, "2 s long (%llu frames)",
+tests/recorder/src/test_factory.c:87:ZTEST(recorder_factory, test_tsign_reports_mic_times)
+tests/recorder/src/test_factory.c:117:		zassert_true(rep[k] >= rail[k] && rep[k] <= rail[k] + 1, "time %d reported %lld, rail %lld", k, rep[k],
+tests/recorder/src/test_factory.c:121:	zassert_true(rep[1] - rep[0] >= 1000, "first recording 1 s (%lld ms)", rep[1] - rep[0]);
+tests/recorder/src/test_rails.c:57:	zassert_equal(bad, 0, "%d rail faults", bad);
+tests/recorder/src/test_rails.c:119:ZTEST(recorder_rails, test_hfxo_in_boot_and_recovery)
+tests/recorder/src/test_rails.c:132:	zassert_true(held_through(i_init, t_stb_us), "HFXO on in BOOT (FW l.915)");
+tests/recorder/src/test_rails.c:133:	zassert_equal(rhw_sim_hfxo_requests(), 0u, "released in STANDBY (FW l.916)");
+tests/recorder/src/test_rails.c:146:	zassert_true(held_through(i_init, t_stb_us), "HFXO on in BOOT and RECOVERY (FW l.915)");
+tests/recorder/src/test_rails.c:147:	zassert_equal(rhw_sim_hfxo_requests(), 0u, "released in STANDBY (FW l.916)");
+tests/recorder/src/test_unmount.c:79:ZTEST(recorder_unmount, test_vbus_out_during_read_command)
+tests/recorder/src/test_unmount.c:84:	sd_off_in_the_step(47);
+tests/recorder/src/test_unmount.c:90:ZTEST(recorder_unmount, test_unconfigured_finish_times_out)
+tests/recorder/src/test_unmount.c:100:	sd_off_in_the_step(46);
+tests/recorder/src/test_unmount.c:107:ZTEST(recorder_unmount, test_failed_unmount_retried_and_reported)
+tests/recorder/src/test_unmount.c:140:	zassert_equal(busy, 2, "two records for a step with several failed tries (%d)", busy);
+tests/recorder/src/test_noscreens.c:9:ZTEST(recorder_a_noscreens, test_ship_without_screens_ends)
+tests/recorder/src/test_screens.c:49:ZTEST(recorder_screens, test_battery_reaches_screens)
+tests/recorder/src/test_screens.c:62:	zassert_equal(a, ok, "the screen received 50 %%, Charging, 30 min");
+tests/recorder/src/test_screens.c:72:	zassert_equal(f, f_ok, "the screen received 50 %%, Full");
+== rrec.c statics
+279:static uint8_t unmount_tries;   /* tries made since the first failed one (0: none failed) */
+281:static void unmount_record(int err, uint8_t tries)
+292:static void unmount_tries_end(int err)
+308:	r = rst_unmount_wait(FINISH_WAIT_MS);
+324:static int unmount_last_err = -EBUSY;   /* the answer of the last try (rrec_unmount_retry) */
+== rrec_bridge.c latch lines
+82:			(void)atomic_or(&latched, BIT(b));
+90:static void latch_flush(void)
+181:		if (k_msgq_get(&job_q, &j, K_MSEC(100)) != 0) {
+182:			latch_flush();
+208:		latch_flush();
+== rscr_real.c:94-99
+{
+	/* never block the screens thread on the glue's lock: a core step that holds it may be waiting for rscr_sign_start */
+	return rglue_event_try(RC_EV_MENU_POWER_OFF);
+}
+
+static void r_vibration(bool on)
+{
+	rglue_set_vibration(on);
+}

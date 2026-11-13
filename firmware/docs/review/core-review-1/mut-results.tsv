@@ -1,0 +1,36 @@
+m01	yes	3	rc_collisions.test_c1_short_in_recording_marks_highlight_not_status,rc_collisions.test_c4_short_in_recording_screen_off_marks_and_shows_3s,rc_rows.test_row_22,	row 22 drops MH
+m02	yes	1	rc_rows.test_row_21,	row 21 swaps close and M2
+m03	yes	1	rc_rows.test_row_25,	row 25 drops charge on
+m04	yes	3	rc_mic_rail.test_open_only_into_recording_and_every_exit_turns_mic_off,rc_mic_rail.test_rail_follows_state_on_every_event_from_every_state,rc_rows.test_row_31,	row 31 drops VDD_MIC off
+m05	yes	2	rc_gesture.test_pair_hold_450ms_short,rc_gesture.test_sw2_hold_450ms_short,	short ceiling 449 (off by one)
+m06	yes	2	rc_gesture.test_pair_gap_60ms_double,rc_gesture.test_sw2_gap_60ms_double,	double gap minimum 61
+m07	yes	6	rc_feedback.test_mw_in_standby_and_recording_only,rc_gesture.test_next_tick_follows_deadlines,rc_gesture.test_pair_hold_500ms_ignored_warn,rc_gesture.test_pair_warn_at_500ms,	warning pulse at 501 ms
+m08	yes	2	rc_gesture.test_next_tick_follows_deadlines,rc_gesture.test_release_holdoff_29ms_bounce_same_press,	release hold-off 29 ms
+m09	yes	0		direction window 41 ms
+m10	yes	8	rc_gesture.test_pair_dir_down_hold_repeat,rc_gesture.test_pair_dir_left_hold_repeat,rc_gesture.test_pair_dir_right_hold_repeat,rc_gesture.test_pair_dir_up_hold_repeat,	repeat period 151 ms
+m11	yes	8	rc_gesture.test_pair_dir_down_hold_repeat,rc_gesture.test_pair_dir_left_hold_repeat,rc_gesture.test_pair_dir_right_hold_repeat,rc_gesture.test_pair_dir_up_hold_repeat,	first repeat at 501 ms
+m12	yes	2	rc_owner_rule.test_no_system_event_starts_a_recording,rc_owner_rule.test_press_events_cannot_be_injected,	long press injectable through rc_core_event
+m13	yes	1	rc_feedback.test_mw_in_standby_and_recording_only,	MW only in STANDBY
+m14	yes	1	rc_feedback.test_highlight_carries_centre_down_time,	highlight time = window close, not CENTRE_DOWN
+m15	NO	0		B15 flag never cleared by VBUS
+m16	yes	1	rc_collisions.test_c4_lock_direction_and_short_only_wake,	screen lock removed
+m17	yes	1	rc_rows.test_row_37,	guard AT_B5 excludes B5
+m18	COMPILE-ERROR	0		PAIR: any other switch makes a centre press
+m19	yes	1	rc_gesture.test_release_holdoff_29ms_bounce_same_press,	roll or bounce does not hold the key down
+m20	yes	7	rc_collisions.test_c3_centre_action_comes_after_window_and_double_is_dead,rc_gesture.test_pair_gap_400ms_double,rc_gesture.test_pair_gap_60ms_double,rc_gesture.test_sw2_gap_400ms_double,	double press never recognised
+m21	NO	0		hold released at exactly the mark is not long
+m22	yes	3	rc_row_variants.test_row53_open_flag_set_recovery_first,rc_rows.test_row_53,rc_rows.test_row_55,	state timers fire one ms late
+m23	NO	0		Vibration off also drops MW
+m24	yes	13	rc_collisions.test_c1_short_in_recording_marks_highlight_not_status,rc_collisions.test_c4_lock_direction_and_short_only_wake,rc_collisions.test_c4_short_in_recording_screen_off_marks_and_shows_3s,rc_feedback.test_highlight_carries_centre_down_time,	short press fires at 400 not 401
+m25	NO	0		S30 once never re-armed by a new recording
+m26	yes	1	rc_rows.test_row_53,	row 53 always runs recovery
+m27	yes	1	rc_rows.test_row_17,	row 17 drops status screen
+m28	yes	2	rc_gesture.test_pair_hold_40ms_short,rc_gesture.test_sw2_hold_40ms_short,	graze limit 40 inclusive
+m29	NO	0		row 3 guard drops the battery test
+m30	yes	4	rc_collisions.test_c2_long_press_with_screen_on_starts,rc_collisions.test_c4_long_press_with_screen_off_starts,rc_feedback.test_vibration_off_drops_mh_mt_only,rc_rows.test_row_12,	row 12 drops M1
+m31	yes	1	rc_rows.test_row_15,	row 15 drops M2
+m32	yes	23	rc_collisions.test_c2_long_press_with_screen_on_starts,rc_collisions.test_c4_long_press_with_screen_off_starts,rc_feedback.test_vibration_off_drops_mh_mt_only,rc_gesture.test_pair_centre_has_no_repeat,	long press may fire again (no once-per-press)
+m33	NO	0		timers injectable through rc_core_event
+m34	yes	1	rc_rows.test_row_38,	row 38 drops charge off
+m35	yes	1	rc_rows.test_row_29,	row 29 drops the 30 min message
+done

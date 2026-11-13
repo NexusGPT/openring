@@ -1,0 +1,16 @@
+Round 2d report (full text: section 25 and 26 of design/sim/antenna/antenna-sim.md). Simulated, not proven on hardware. Stand-in not validated.
+
+All runs below reached the -40 dB end criterion (122,661 to 197,190 steps; I used a 200,000 step cap and 100 minutes, a deviation, because the 130,000 step runs had not converged). The earlier non-converged rows are withdrawn. At most 2 runs at once; round 2 started 55 of 60 runs.
+
+Screen metal (your question): ledge fingers and cable drawn as PEC sheets, folded down the hand end. Against B (resin corner, finger): radiated share of accepted power 3.2 percent at 2.48 GHz, with the metal 3.5 (+0.3 points), with the screen turned 180 degrees 3.2 (+0.0). The metal costs nothing and turning gains nothing in this model; the two numbers for the cable study are +0.3 and +0.0.
+
+Ranking, radiated share at 2.48 GHz: A0 metal no finger 23.1 > A metal on finger 14.4 > D free air 14.1 > B0 resin no finger 11.7 > E screen-face mount 8.0 > S 3.5 > S180 3.2 = B 3.2 = B2 3.2. No case passes. Cases above 10 percent radiated (A, D, A0, B0) match at most 1.84 dB (small resistance, large reactance); the well-matched ones (B, S, S180, B2, E, return loss 21 to 26 dB at resonance) radiate 3 to 8 percent. Best worst-case return loss after the three-part match 4.93 dB against 6.
+
+Reading: the finger is the cost (resin corner 11.7 percent without it, 3.2 with; metal body 23.1 and 14.4). The metal floor shields the antenna from the tissue, the resin corner exposes it; removing the floor (B2) changes nothing. Resin corner makes the antenna matchable but radiates 4.5 times less per accepted watt than the metal body on a finger. The screen-face mount E is the best compromise (8.0 percent, matchable) and needs 0.20 mm more height (glass-underside recess, or block 3.40 mm) and the ledge, tail and J1 to move.
+
+Not run: F, sensitivity, fine-mesh study (no case passes; mesh error unmeasured). The eps_r is re-tuned once per case (D 45.80, A 33.85, B and built-on cases 44.90): one extra free parameter per case. Unknown until measured: the real chip; measure T0, T1, T2 of antenna-study.md section 6 plus T3 (screen face) with a vector network analyser and the nRF54LM20 DK.
+
+Disk: field dumps of read runs deleted by exact name; runs/ now small. No container of mine left; images ring-antenna-openems:1 (2.79 GB), ubuntu:24.04 (119 MB). No git, no server address in any file.
+
+Last line of antenna-sim.md:
+RESULT: done, stand-in not validated (dipole passed, probe-fed patch missed its line by 0.6 points, H1c best 7.9 dB and 92.5 percent against 10 and 92); converged ring runs, radiated share of accepted power at 2.48 GHz: A0 23.1, A 14.4, D 14.1, B0 11.7, E 8.0, S 3.5, S180 3.2, B 3.2, B2 3.2 percent; no case passes (best worst-case return loss after match 4.93 dB against 6, and cases above 10 percent radiated match at most 1.84 dB); screen ledge metal at the hand end changes B by +0.3 points and turning the screen by 0.0; F, sensitivity and the mesh study not run

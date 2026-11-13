@@ -1,0 +1,156 @@
+# remote.sh run 20261111-212252-ctl-realenc-A2
+# command: CTRL_BOARD=nrf54lm20bsim/nrf54lm20a/cpuapp bash tests/bsim/probe-nrf54/run_ctl_realenc.sh A
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 21:22:52 CET
+# free on the server's /: 46 GB
+# source firmware copied to /root/ring-os/src-probe54
+# started on the server as 20261111-212252-ctl-realenc-A2; server log /root/ring-os/logs/20261111-212252-ctl-realenc-A2.log
+bsim-control: firmware /ws/firmware/tests/bsim/control, outputs /ws/out/probe54/ctl-realenc, scenarios A, broken 0
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/probe54/ctl-realenc/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== build ring for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/probe54/ctl-realenc/build-ring.log
+      1 /ws/firmware/modules/ring_control/src/rctl.c:79:31: warning: assignment to ‘bt_hids_conn_cp_evt_handler_t’ {aka ‘void (*)(enum bt_hids_cp_evt,  struct bt_conn *)’} from incompatible pointer type ‘void (*)(struct bt_conn *, enum bt_hids_cp_evt)’ [-Wincompatible-pointer-types]
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring ok
+=== test A (ok): ring + 1 host(s), 75 simulated seconds, 2026-11-11T20:23:44Z
+exit codes: phy 0, ring 0, hosts 0
+--- ring /ws/out/probe54/ctl-realenc/run-ok-A-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.991229  RING PASSKEY slot 0 185996
+d_00: @00:00:10.400246  RING PASSKEY slot 0 853756
+d_00: @00:00:19.788874  RING PASSKEY slot 0 591740
+d_00: @00:00:29.104557  RING PASSKEY slot 0 285083
+d_00: @00:00:38.426813  RING PASSKEY slot 0 702310
+d_00: @00:00:40.040257  RING CHECK host pairs and its link is ready FAIL (t=40040)
+d_00: @00:00:40.040257  RING CHECK passkey was shown once, six digits FAIL (t=40040)
+d_00: @00:00:40.040257  RING CHECK paired callback once FAIL (t=40040)
+d_00: @00:00:40.040257  RING CHECK slot 0 is active FAIL (t=40040)
+d_00: @00:00:40.040257  RING CHECK control starts not active PASS (t=40040)
+d_00: @00:00:40.740457  RING CHECK control inactive: direction sends no report PASS (t=40740)
+d_00: @00:00:40.859524  RING PASSKEY slot 0 214632
+d_00: @00:00:41.440657  RING CHECK media.centre sends 2 report(s) FAIL (t=41440)
+d_00: @00:00:42.140857  RING CHECK media.up sends 2 report(s) FAIL (t=42140)
+d_00: @00:00:42.841057  RING CHECK media.down sends 2 report(s) FAIL (t=42841)
+d_00: @00:00:43.541257  RING CHECK media.left sends 2 report(s) FAIL (t=43541)
+d_00: @00:00:44.241457  RING CHECK media.right sends 2 report(s) FAIL (t=44241)
+d_00: @00:00:44.941657  RING CHECK presenter.centre sends 0 report(s) PASS (t=44941)
+d_00: @00:00:45.641854  RING CHECK presenter.up sends 2 report(s) FAIL (t=45641)
+d_00: @00:00:46.342054  RING CHECK presenter.down sends 2 report(s) FAIL (t=46342)
+d_00: @00:00:47.042254  RING CHECK presenter.left sends 2 report(s) FAIL (t=47042)
+d_00: @00:00:47.742454  RING CHECK presenter.right sends 2 report(s) FAIL (t=47742)
+d_00: @00:00:48.442654  RING CHECK pages presenter.centre sends 0 report(s) PASS (t=48442)
+d_00: @00:00:49.142854  RING CHECK pages presenter.up sends 2 report(s) FAIL (t=49142)
+d_00: @00:00:49.843054  RING CHECK pages presenter.down sends 2 report(s) FAIL (t=49843)
+d_00: @00:00:50.194680  RING PASSKEY slot 0 991232
+d_00: @00:00:50.543280  RING CHECK pages presenter.left sends 2 report(s) FAIL (t=50543)
+d_00: @00:00:51.243480  RING CHECK pages presenter.right sends 2 report(s) FAIL (t=51243)
+d_00: @00:00:51.943680  RING CHECK pointer.centre sends 2 report(s) FAIL (t=51943)
+d_00: @00:00:52.643880  RING CHECK pointer.up sends 1 report(s) FAIL (t=52643)
+d_00: @00:00:53.344080  RING CHECK pointer.down sends 1 report(s) FAIL (t=53344)
+d_00: @00:00:54.044280  RING CHECK pointer.left sends 1 report(s) FAIL (t=54044)
+d_00: @00:00:54.744480  RING CHECK pointer.right sends 1 report(s) FAIL (t=54744)
+d_00: @00:00:55.444609  RING CHECK agent.centre sends 2 report(s) FAIL (t=55444)
+d_00: @00:00:56.144809  RING CHECK agent.up sends 2 report(s) FAIL (t=56144)
+d_00: @00:00:56.845009  RING CHECK agent.down sends 2 report(s) FAIL (t=56845)
+d_00: @00:00:57.545209  RING CHECK agent.left sends 2 report(s) FAIL (t=57545)
+d_00: @00:00:58.245409  RING CHECK agent.right sends 2 report(s) FAIL (t=58245)
+d_00: @00:00:59.603932  RING PASSKEY slot 0 022920
+d_00: @00:00:59.945632  RING INFO held right 1100 ms sent 0 reports
+d_00: @00:00:59.945632  RING CHECK pointer held right repeats (at least 4 reports) FAIL (t=59945)
+d_00: @00:00:59.945632  RING CHECK pointer held right repeats (at most 8 reports) PASS (t=59945)
+d_00: @00:01:00.645832  RING CHECK screen off: a direction sends no report PASS (t=60645)
+d_00: @00:01:01.756232  RING CHECK centre double press sends no report PASS (t=61756)
+d_00: @00:01:01.756232  RING CHECK no action was dropped FAIL (t=61756)
+d_00: @00:01:01.756232  RING CHECK the drop was seen (link down) FAIL (t=61756)
+--- host 1 /ws/out/probe54/ctl-realenc/run-ok-A-host1.log
+d_01: @00:00:00.000174  HOST H1 CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.639748  HOST H1 connected (t=639), bonded=0
+d_01: @00:00:01.141433  HOST H1 passkey entry asked, read ok (t=1141)
+d_01: @00:00:01.141433  HOST H1 CHECK passkey read from the ring's display PASS (t=1141)
+d_01: @00:00:09.541225  HOST H1 CHECK pairing with the passkey completed and bonded FAIL (t=9541)
+d_01: @00:00:09.541225  HOST H1 security failed err 9  (t=9541)
+d_01: @00:00:09.541225  HOST H1 disconnected reason 0x08 (t=9541)
+d_01: @00:00:10.048765  HOST H1 connected (t=10048), bonded=0
+d_01: @00:00:10.550450  HOST H1 passkey entry asked, read ok (t=10550)
+d_01: @00:00:10.550450  HOST H1 CHECK passkey read from the ring's display PASS (t=10550)
+d_01: @00:00:18.950242  HOST H1 CHECK pairing with the passkey completed and bonded FAIL (t=18950)
+d_01: @00:00:18.950242  HOST H1 security failed err 9  (t=18950)
+d_01: @00:00:18.950242  HOST H1 disconnected reason 0x08 (t=18950)
+d_01: @00:00:19.437393  HOST H1 connected (t=19437), bonded=0
+d_01: @00:00:19.939078  HOST H1 passkey entry asked, read ok (t=19939)
+d_01: @00:00:19.939078  HOST H1 CHECK passkey read from the ring's display PASS (t=19939)
+d_01: @00:00:28.338870  HOST H1 CHECK pairing with the passkey completed and bonded FAIL (t=28338)
+d_01: @00:00:28.338870  HOST H1 security failed err 9  (t=28338)
+d_01: @00:00:28.338870  HOST H1 disconnected reason 0x08 (t=28338)
+d_01: @00:00:28.753077  HOST H1 connected (t=28753), bonded=0
+d_01: @00:00:29.254762  HOST H1 passkey entry asked, read ok (t=29254)
+d_01: @00:00:29.254762  HOST H1 CHECK passkey read from the ring's display PASS (t=29254)
+d_01: @00:00:37.654554  HOST H1 CHECK pairing with the passkey completed and bonded FAIL (t=37654)
+d_01: @00:00:37.654554  HOST H1 security failed err 9  (t=37654)
+d_01: @00:00:37.654554  HOST H1 disconnected reason 0x08 (t=37654)
+d_01: @00:00:38.075332  HOST H1 connected (t=38075), bonded=0
+d_01: @00:00:38.577017  HOST H1 passkey entry asked, read ok (t=38577)
+d_01: @00:00:38.577017  HOST H1 CHECK passkey read from the ring's display PASS (t=38577)
+d_01: @00:00:40.076913  HOST H1 security failed err 9  (t=40076)
+d_01: @00:00:40.076913  HOST H1 CHECK pairing with the passkey completed and bonded FAIL (t=40076)
+d_01: @00:00:40.076913  HOST H1 disconnected reason 0x16 (t=40076)
+d_01: @00:00:40.508044  HOST H1 connected (t=40508), bonded=0
+d_01: @00:00:41.009729  HOST H1 passkey entry asked, read ok (t=41009)
+d_01: @00:00:41.009729  HOST H1 CHECK passkey read from the ring's display PASS (t=41009)
+d_01: @00:00:49.409521  HOST H1 CHECK pairing with the passkey completed and bonded FAIL (t=49409)
+d_01: @00:00:49.409521  HOST H1 security failed err 9  (t=49409)
+d_01: @00:00:49.409521  HOST H1 disconnected reason 0x08 (t=49409)
+d_01: @00:00:49.843199  HOST H1 connected (t=49843), bonded=0
+d_01: @00:00:50.344884  HOST H1 passkey entry asked, read ok (t=50344)
+d_01: @00:00:50.344884  HOST H1 CHECK passkey read from the ring's display PASS (t=50344)
+d_01: @00:00:58.744676  HOST H1 CHECK pairing with the passkey completed and bonded FAIL (t=58744)
+d_01: @00:00:58.744676  HOST H1 security failed err 9  (t=58744)
+d_01: @00:00:58.744676  HOST H1 disconnected reason 0x08 (t=58744)
+d_01: @00:00:59.252451  HOST H1 connected (t=59252), bonded=0
+d_01: @00:00:59.754136  HOST H1 passkey entry asked, read ok (t=59754)
+d_01: @00:00:59.754136  HOST H1 CHECK passkey read from the ring's display PASS (t=59754)
+d_01: @00:01:00.053747  HOST H1 security failed err 9  (t=60053)
+d_01: @00:01:00.053747  HOST H1 CHECK pairing with the passkey completed and bonded FAIL (t=60053)
+d_01: @00:01:00.053747  HOST H1 disconnected reason 0x13 (t=60053)
+d_01: @00:01:10.000547  HOST H1 EVAL t=70000
+d_01: @00:01:10.000547  HOST H1 CHECK media.centre play/pause FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK media.up volume up FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK media.down volume down FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK media.left previous FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK media.right next FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK presenter.centre nothing PASS (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK presenter.up previous slide (Left Arrow) FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK presenter.down next slide (Right Arrow) FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK presenter.left previous slide (Left Arrow) FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK presenter.right next slide (Right Arrow) FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK presenter pages.centre nothing PASS (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK presenter pages.up (Page Up) FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK presenter pages.down (Page Down) FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK presenter pages.left (Page Up) FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK presenter pages.right (Page Down) FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK pointer.centre click FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK pointer.up FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK pointer.down FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK pointer.left FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK pointer.right FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK agent.centre Return FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK agent.up Up Arrow FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK agent.down Down Arrow FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK agent.left Escape FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK agent.right Return FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 INFO pointer held right: 0 reports
+d_01: @00:01:10.000547  HOST H1 CHECK pointer held right repeats (at least 4 reports) FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK pointer held right repeats (at most 8 reports) PASS (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK after a drop and reconnect: agent.centre Return FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 CHECK no other report received FAIL (t=70000)
+d_01: @00:01:10.000547  HOST H1 INFO 0 report(s) received in total
+d_01: @00:01:10.000547  HOST H1 RESULT FAIL checks=46 fails=34
+ring script done at none ms, host 1 evaluated at 70000 ms
+TEST A RESULT FAIL (22 checks passed; infra: ring-no-result ring-not-done-before-eval; checks: ring-result host1-result 64-failed-checks)
+RESULT FAIL A
+# finished (Mac clock): 2026-11-11 21:23:51 CET
+# remote exit code: 1
+# local log: firmware/build-logs/probe-nrf54/20261111-212252-ctl-realenc-A2.log

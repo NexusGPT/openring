@@ -1,0 +1,314 @@
+"""Ring charging case, version C1: body, lid, base, boards, cell, USB-C, 4 spring pins,
+and the ring (block 30 x 20 x 9.5 mm on a band) for US 13 and US 5, seated on the pins.
+
+Units mm. Axes as on the ring: X along the finger, Y across, Z up.
+Origin: centre of the seat plane (the ring block's underside rests at Z = 0).
+Writes every part as its own STEP in out/parts/, assemblies as STEP, body/lid/base as STL,
+labelled PNG drawings, out/case_params.json and out/case_size.txt. Headless (matplotlib Agg).
+"""
+import json
+import math
+import os
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+from build123d import (  # noqa: E402
+    Axis, Box, Compound, Cylinder, Plane, Pos, Rot, Sphere, export_step, export_stl,
+)
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUT = os.path.join(HERE, "out")
+PARTS = os.path.join(OUT, "parts")
+os.makedirs(PARTS, exist_ok=True)
+
+# ---------------- fixed inputs ----------------
+RING = dict(block=(30.0, 20.0, 9.5), pad_x=-12.6, pad_d=1.6, pad_pitch=2.54,
+            band_width=8.0, band_wall=2.0, inner_d={"US5": 15.7, "US13": 22.2})
+PAD_YS = [-1.5 * RING["pad_pitch"], -0.5 * RING["pad_pitch"], 0.5 * RING["pad_pitch"], 1.5 * RING["pad_pitch"]]
+PAD_NETS = ["VBUS", "D-", "D+", "GND"]
+# Mill-Max 0981-0-15-20-87-14-11-0 [DS p3_millmax_0981.pdf p.1]
+PIN = dict(free_h=5.182, stroke=1.397, mid=0.70, plunger_d=1.06, body_d=1.94, flange_d=2.11,
+           flange_h=0.41, body_h=3.61)
+WORK_MIN, WORK_MAX = 0.25 * PIN["stroke"], 0.75 * PIN["stroke"]  # working window, 25 % to 75 % of stroke
+
+# ---------------- case layout ----------------
+CLR = 0.3                     # block to pocket clearance, each side
+WALL = 1.5
+IN_X, IN_Y = 15.0 + CLR, 13.6  # inner half sizes (X from block, Y from US 13 band 13.1 + 0.5)
+OUT_X, OUT_Y = IN_X + WALL, IN_Y + WALL
+PAD_T = 0.7                   # silicone pad, compressed
+Z_TOP = RING["block"][2] + PAD_T          # body top = lid underside
+LID_T = 1.5
+SEAT_T = 1.0
+SLOT_HX = RING["band_width"] / 2 + 0.6   # band slot half width in X
+SLOT_R = IN_Y                 # band slot bottom radius
+SLOT_WALL = 1.0
+CELL = dict(t=8.5, w=23.0, l=40.0)       # DNK852338 with PCM [DS]
+Z_FLOOR = -(SEAT_T + 0.5 + CELL["l"] + 0.5)  # base plate top
+BASE_T = 1.2
+PINB = dict(x0=-14.6, x1=-10.6, hy=8.2, t=0.8)
+PINB_TOP = -(PIN["free_h"] - PIN["mid"])  # mid stroke when the block rests on the seat
+MB = dict(x0=-11.0, x1=-10.0, hy=13.9, z0=Z_FLOOR + 0.2, z1=-6.5)
+
+
+def box(x0, x1, y0, y1, z0, z1):
+    return Pos((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2) * Box(x1 - x0, y1 - y0, z1 - z0)
+
+
+def cyl_z(x, y, z0, z1, d):
+    return Pos(x, y, (z0 + z1) / 2) * Cylinder(d / 2, z1 - z0)
+
+
+def cyl_x(x0, x1, y, z, d):
+    return Pos((x0 + x1) / 2, y, z) * (Rot(0, 90, 0) * Cylinder(d / 2, x1 - x0))
+
+
+def build_ring(size):
+    bx, by, bz = RING["block"]
+    blk = box(-bx / 2, bx / 2, -by / 2, by / 2, 0.0, bz)
+    pads = None
+    for y in PAD_YS:
+        p = cyl_z(RING["pad_x"], y, 0.0, 0.05, RING["pad_d"])
+        pads = p if pads is None else pads + p
+    blk = blk - pads
+    ri = RING["inner_d"][size] / 2
+    ro = ri + RING["band_wall"]
+    hw = RING["band_width"] / 2
+    band = cyl_x(-hw, hw, 0.0, -ro, 2 * ro) - cyl_x(-hw - 1, hw + 1, 0.0, -ro, 2 * ri)
+    return blk, pads, band, ro
+
+
+def build_body():
+    b = box(-OUT_X, OUT_X, -OUT_Y, OUT_Y, Z_FLOOR, Z_TOP)
+    cuts = [
+        box(-IN_X, IN_X, -(10.0 + CLR), 10.0 + CLR, 0.0, Z_TOP + 1),             # ring pocket
+        box(-SLOT_HX, SLOT_HX, -IN_Y, IN_Y, -SLOT_R, 0.0),                         # band slot, upper part
+        cyl_x(-SLOT_HX, SLOT_HX, 0.0, -SLOT_R + 0.5, 2 * SLOT_R),                  # band slot, round bottom
+        box(-IN_X, -(SLOT_HX + SLOT_WALL), -IN_Y, IN_Y, Z_FLOOR - 1, -SEAT_T),    # left compartment
+        box(SLOT_HX + SLOT_WALL, IN_X, -IN_Y, IN_Y, Z_FLOOR - 1, -SEAT_T),        # right compartment
+        box(RING["pad_x"] - 1.2, RING["pad_x"] + 1.2, -5.2, 5.2, -SEAT_T - 0.1, 0.1),  # pin slot
+        cyl_x(-SLOT_HX, SLOT_HX, 12.0, Z_TOP, 9.0),                                # finger notch +Y
+        cyl_x(-SLOT_HX, SLOT_HX, -12.0, Z_TOP, 9.0),                               # finger notch -Y
+        box(MB["x0"] - 0.1, MB["x1"] + 0.1, IN_Y - 0.1, 14.0, Z_FLOOR - 1, MB["z1"]),     # board groove +Y
+        box(MB["x0"] - 0.1, MB["x1"] + 0.1, -14.0, -IN_Y + 0.1, Z_FLOOR - 1, MB["z1"]),   # board groove -Y
+        box(-9.97, -6.57, IN_Y - 0.1, OUT_Y + 0.1, -34.5, -25.5),                  # USB-C mouth
+        cyl_x(-OUT_X - 0.1, -IN_X + 0.1, 0.0, -9.0, 1.5),                          # light window
+        box(-(SLOT_HX + SLOT_WALL) - 0.1, SLOT_HX + SLOT_WALL + 0.1, 9.0, 12.0, Z_FLOOR - 1, Z_FLOOR + 2.5),  # cell wire channel
+        cyl_z(0.0, -9.0, Z_FLOOR - 1, Z_FLOOR + 5.0, 1.3),                         # base screw pilot
+        cyl_z(0.0, 3.0, Z_FLOOR - 1, Z_FLOOR + 5.0, 1.3),                          # base screw pilot
+        box(-4.1, 4.1, OUT_Y - 0.5, OUT_Y + 0.1, 6.5, 7.6),                        # latch recess
+    ]
+    for c in cuts:
+        b = b - c
+    # pin board standoffs under the seat floor
+    for y in (-7.0, 7.0):
+        b = b + (cyl_z(RING["pad_x"], y, PINB_TOP, -SEAT_T + 0.01, 2.0) - cyl_z(RING["pad_x"], y, PINB_TOP - 0.1, PINB_TOP + 3.0, 1.0))
+    # hinge knuckles on the body (axis along X at Y = -16.3, Z = Z_TOP + LID_T/2)
+    hz = Z_TOP + LID_T / 2
+    for x0, x1 in ((-OUT_X, -6.1), (6.1, OUT_X)):
+        b = b + box(x0, x1, -16.3, -OUT_Y, hz - 2.5, hz) + cyl_x(x0, x1, -16.3, hz, 2.0)
+        b = b - cyl_x(x0 - 0.1, x1 + 0.1, -16.3, hz, 1.1)
+    return b
+
+
+def build_lid():
+    hz = Z_TOP + LID_T / 2
+    lid = box(-OUT_X, OUT_X, -14.95, OUT_Y, Z_TOP, Z_TOP + LID_T)
+    lid = lid + box(-5.9, 5.9, -16.3, -14.95, Z_TOP, Z_TOP + LID_T) + cyl_x(-5.9, 5.9, -16.3, hz, 2.0)
+    lid = lid - cyl_x(-6.0, 6.0, -16.3, hz, 1.1)
+    lid = lid + box(-4.0, 4.0, OUT_Y, OUT_Y + 1.0, 6.2, Z_TOP + LID_T)   # latch tab
+    lid = lid + box(-4.0, 4.0, OUT_Y - 0.35, OUT_Y, 6.6, 7.4)            # latch bump into the recess
+    return lid
+
+
+def build_parts():
+    p = {}
+    p["body"] = build_body()
+    p["lid"] = build_lid()
+    p["lid_pad"] = box(-15.0, 15.0, -10.0, 10.0, RING["block"][2], Z_TOP)
+    p["hinge_pin"] = cyl_x(-OUT_X, OUT_X, -16.3, Z_TOP + LID_T / 2, 1.0)
+    base = box(-OUT_X, OUT_X, -OUT_Y, OUT_Y, Z_FLOOR - BASE_T, Z_FLOOR)
+    for y in (-9.0, 3.0):
+        base = base - cyl_z(0.0, y, Z_FLOOR - BASE_T - 0.1, Z_FLOOR + 0.1, 1.7)
+    p["base"] = base
+    p["light_window"] = cyl_x(-OUT_X, -IN_X, 0.0, -9.0, 1.5)
+    pb = box(PINB["x0"], PINB["x1"], -PINB["hy"], PINB["hy"], PINB_TOP - PINB["t"], PINB_TOP)
+    for y in (-7.0, 7.0):
+        pb = pb - cyl_z(RING["pad_x"], y, PINB_TOP - 1, PINB_TOP + 0.1, 1.3)
+    p["pin_board"] = pb
+    for i, y in enumerate(PAD_YS):
+        b = PINB_TOP
+        fl = cyl_z(RING["pad_x"], y, b, b + PIN["flange_h"], PIN["flange_d"])
+        bd = cyl_z(RING["pad_x"], y, b + PIN["flange_h"], b + PIN["body_h"], PIN["body_d"])
+        tip_z = b + PIN["free_h"] - PIN["mid"]          # compressed to mid stroke
+        r = PIN["plunger_d"] / 2
+        pl = cyl_z(RING["pad_x"], y, b + PIN["body_h"], tip_z - r, PIN["plunger_d"]) + Pos(RING["pad_x"], y, tip_z - r) * Sphere(r)
+        p[f"pin_P{i+1}_{PAD_NETS[i]}"] = fl + bd + pl
+    p["main_board"] = box(MB["x0"], MB["x1"], -MB["hy"], MB["hy"], MB["z0"], MB["z1"])
+    p["U1_esp32s3_mini1"] = box(MB["x0"] - 2.4, MB["x0"], -7.7, 7.7, Z_FLOOR + 0.5, Z_FLOOR + 0.5 + 20.5)
+    p["LED1"] = box(MB["x0"] - 0.7, MB["x0"], -0.8, 0.8, -9.8, -8.2)
+    p["J1_usb4105"] = box(MB["x1"], MB["x1"] + 3.31, IN_Y - 0.3 - 7.35, IN_Y - 0.3, -34.47, -25.53)
+    p["U2_bq25895"] = box(MB["x1"], MB["x1"] + 0.8, -6.0, -2.0, -14.0, -10.0)
+    p["L1_1uH"] = box(MB["x1"], MB["x1"] + 1.2, -1.0, 2.0, -14.0, -11.5)
+    p["U3_tps63802"] = box(MB["x1"], MB["x1"] + 1.0, -12.0, -9.0, -14.0, -12.0)
+    p["L2_0u47"] = box(MB["x1"], MB["x1"] + 1.5, -12.5, -8.5, -19.0, -15.0)
+    p["U4_zdsd64g"] = box(MB["x1"], MB["x1"] + 1.0, -12.0, -2.0, -38.0, -29.0)
+    p["U5_tps2553"] = box(MB["x1"], MB["x1"] + 1.45, 3.0, 4.6, -12.0, -9.1)
+    p["cell_dnk852338"] = box(SLOT_HX + SLOT_WALL + 0.6, SLOT_HX + SLOT_WALL + 0.6 + CELL["t"],
+                              -CELL["w"] / 2, CELL["w"] / 2, Z_FLOOR + 0.5, Z_FLOOR + 0.5 + CELL["l"])
+    return p
+
+
+def section_lines(shape, plane):
+    """Edges of shape cut by plane, as lists of 3D points."""
+    from OCP.BRepAlgoAPI import BRepAlgoAPI_Section
+    from OCP.TopAbs import TopAbs_EDGE
+    from OCP.TopExp import TopExp_Explorer
+    from OCP.TopoDS import TopoDS
+    from build123d import Edge, Face
+    face = Face(plane.wrapped if hasattr(plane, "wrapped") else plane)
+    sec = BRepAlgoAPI_Section(shape.wrapped, face.wrapped)
+    sec.Build()
+    out = []
+    for e in Compound(sec.Shape()).edges():
+        out.append([e.position_at(t / 24) for t in range(25)])
+    return out
+
+
+def big_face(origin, normal, size=200):
+    from build123d import Rectangle
+    pl = Plane(origin=origin, z_dir=normal)
+    return pl * Rectangle(size, size).face()
+
+
+COLORS = {"body": "black", "lid": "dimgray", "base": "gray", "ring": "tab:red", "pin": "tab:orange",
+          "pin_board": "tab:green", "main_board": "tab:green", "cell": "tab:blue", "J1": "tab:purple"}
+
+
+def color_of(name):
+    for k, c in COLORS.items():
+        if name.startswith(k):
+            return c
+    return "tab:brown"
+
+
+def draw_section(parts, origin, normal, axes, title, path, labels, xlim=None, ylim=None):
+    fig, ax = plt.subplots(figsize=(10, 10), dpi=110)
+    face = big_face(origin, normal)
+    for name, shp in parts.items():
+        for pts in section_lines(shp, face):
+            ax.plot([getattr(p, axes[0]) for p in pts], [getattr(p, axes[1]) for p in pts],
+                    color=color_of(name), lw=1.4)
+    for (u, v, txt) in labels:
+        ax.annotate(txt, (u, v), fontsize=9, ha="left", va="center",
+                    bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.8))
+    ax.set_aspect("equal")
+    ax.grid(True, lw=0.3)
+    ax.set_xlabel(f"{axes[0].upper()} (mm)")
+    ax.set_ylabel(f"{axes[1].upper()} (mm)")
+    if xlim:
+        ax.set_xlim(*xlim)
+    if ylim:
+        ax.set_ylim(*ylim)
+    ax.set_title(title, fontsize=11)
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def main():
+    parts = build_parts()
+    rings = {}
+    for size in ("US13", "US5"):
+        blk, pads, band, ro = build_ring(size)
+        rings[size] = {f"ring_{size}_block": blk, f"ring_{size}_pads": pads, f"ring_{size}_band": band}
+    for name, shp in parts.items():
+        export_step(shp, os.path.join(PARTS, f"{name}.step"))
+    for size, rp in rings.items():
+        for name, shp in rp.items():
+            export_step(shp, os.path.join(PARTS, f"{name}.step"))
+    for size, rp in rings.items():
+        kids = []
+        for name, shp in list(parts.items()) + list(rp.items()):
+            s = shp.moved(shp.location) if hasattr(shp, "moved") else shp
+            s.label = name
+            kids.append(s)
+        export_step(Compound(children=kids, label=f"case_assembly_{size}"), os.path.join(OUT, f"case_assembly_{size}.step"))
+    export_stl(parts["body"], os.path.join(OUT, "case_body.stl"))
+    export_stl(parts["lid"], os.path.join(OUT, "case_lid.stl"))
+    export_stl(parts["base"], os.path.join(OUT, "case_base.stl"))
+
+    # outer size of the closed case (body, lid, base, hinge)
+    shell = Compound(children=[parts["body"], parts["lid"], parts["base"], parts["hinge_pin"]])
+    bb = shell.bounding_box()
+    size_txt = (f"closed case outer size X {bb.size.X:.1f} mm x Y {bb.size.Y:.1f} mm x Z {bb.size.Z:.1f} mm "
+                f"(X {bb.min.X:.2f} to {bb.max.X:.2f}, Y {bb.min.Y:.2f} to {bb.max.Y:.2f}, Z {bb.min.Z:.2f} to {bb.max.Z:.2f}); "
+                f"volume of the box {bb.size.X*bb.size.Y*bb.size.Z/1000:.1f} cm3")
+    with open(os.path.join(OUT, "case_size.txt"), "w") as f:
+        f.write(size_txt + "\n")
+
+    params = dict(pin=PIN, work_min=WORK_MIN, work_max=WORK_MAX, pad_x=RING["pad_x"], pad_ys=PAD_YS,
+                  pad_d=RING["pad_d"], pad_nets=PAD_NETS, seat_clearance=CLR, pin_board_top=PINB_TOP,
+                  parts=sorted(parts), rings={k: sorted(v) for k, v in rings.items()})
+    with open(os.path.join(OUT, "case_params.json"), "w") as f:
+        json.dump(params, f, indent=1)
+
+    # drawings
+    allp13 = dict(parts, **rings["US13"])
+    allp5 = dict(parts, **rings["US5"])
+    no_lid13 = {k: v for k, v in allp13.items() if k not in ("lid", "lid_pad", "hinge_pin")}
+    lbl_sec = [(RING["pad_x"] + 0, 0, "")]
+    labels = [
+        (-14.0, 4.5, "ring block (US 13)"), (-12.5, -14.0, "band US 13, outer 26.2"),
+        (-15.0, 11.2, "lid 1.5 + pad 0.7"), (-3.8, -2.2, "pins P1 VBUS  P2 D-  P3 D+  P4 GND"),
+        (-6.0, -5.9, "pin board, top Z -4.48"), (4.0, -20.0, "main board (behind)"),
+        (-14.5, -44.5, "base plate 1.2"), (12.5, -0.6, "seat floor 1.0"),
+    ]
+    draw_section(allp13, (RING["pad_x"], 0, 0), (1, 0, 0), ("Y", "Z"),
+                 "Cross-section X = -12.6 through the 4 spring pins (US 13 ring seated, lid closed)\n"
+                 "pins compressed 0.70 mm (mid stroke); red ring, orange pins, green boards, black body",
+                 os.path.join(OUT, "case_section_pins.png"), labels)
+    labels_d = [(-1.0, 0.8, "P1 VBUS  Y -3.81"), (-1.0, 0.4, "P4 GND  Y +3.81"),
+                (-6.5, -1.6, "plunger 1.06 tip on pad 1.6"), (-6.5, -4.2, "pin board 0.8")]
+    draw_section(allp13, (RING["pad_x"], 0, 0), (1, 0, 0), ("Y", "Z"),
+                 "Detail of the cross-section X = -12.6: pins meet the pads at Z = 0",
+                 os.path.join(OUT, "case_section_pins_detail.png"), labels_d, xlim=(-7, 7), ylim=(-6.5, 2.5))
+    labels_y = [(-15.5, 12.8, "lid"), (-15.2, 5.0, "ring block"), (-3.8, -20.0, "band US 13"),
+                (-3.0, -11.0, "band US 5 (dashed in separate run)"), (-15.2, -30.0, "U1 + board"),
+                (7.0, -20.0, "cell 700 mAh"), (-14.6, -3.2, "pin board")]
+    draw_section(allp13, (0, 0, 0), (0, 1, 0), ("X", "Z"),
+                 "Cross-section Y = 0 along the ring (US 13 seated): pins left, band slot middle, cell right",
+                 os.path.join(OUT, "case_section_Y0.png"), labels_y)
+    draw_section(allp5, (RING["pad_x"], 0, 0), (1, 0, 0), ("Y", "Z"),
+                 "Cross-section X = -12.6, smallest ring US 5 seated: same block height, same pin stroke",
+                 os.path.join(OUT, "case_section_pins_US5.png"), [(-12.5, -10.0, "band US 5, outer 19.7")])
+    labels_t = [(-15.0, 11.0, "ring block 30 x 20 (Z = 5)"), (-16.5, -17.5, "hinge"),
+                (-12.0, 2.0, "pins at X -12.6"), (6.5, 0.0, "cell (Z = -20)"), (-11.0, -12.5, "main board (Z = -20)"),
+                (-6.0, 14.0, "USB-C mouth +Y (Z = -30)")]
+    fig_parts = no_lid13
+    fig, ax = plt.subplots(figsize=(10, 10), dpi=110)
+    for z, ls in ((5.0, "-"), (-2.0, ":"), (-20.0, "--"), (-30.0, "-.")):
+        face = big_face((0, 0, z), (0, 0, 1))
+        for name, shp in fig_parts.items():
+            for pts in section_lines(shp, face):
+                ax.plot([p.X for p in pts], [p.Y for p in pts], color=color_of(name), lw=1.2, ls=ls)
+    for (u, v, txt) in labels_t:
+        ax.annotate(txt, (u, v), fontsize=9, bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.8))
+    ax.set_aspect("equal")
+    ax.grid(True, lw=0.3)
+    ax.set_xlabel("X (mm)")
+    ax.set_ylabel("Y (mm)")
+    ax.set_title("Top view, lid removed: plan cuts at Z = 5 (solid), -2 (dotted), -20 (dashed), -30 (dash-dot)\n"
+                 + size_txt[:size_txt.index(" (")], fontsize=10)
+    fig.tight_layout()
+    fig.savefig(os.path.join(OUT, "case_top.png"))
+    plt.close(fig)
+    print(size_txt)
+    print("parts:", len(parts), "+ ring parts:", sum(len(v) for v in rings.values()))
+    print("case.py done")
+
+
+if __name__ == "__main__":
+    main()

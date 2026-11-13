@@ -1,0 +1,35 @@
+# remote.sh run 20261113-045454-k2-audio
+# command: Z=/ws/zephyr; D=$Z/include/zephyr/audio/dmic.h; C=$Z/include/zephyr/drivers/clock_control/nrf_clock_control.h; P=$Z/include/zephyr/drivers/pinctrl.h; N=$Z/drivers/audio/dmic_nrfx_pdm.c; K=$Z/drivers/clock_control/clock_control_nrf.c
+cnt() { echo "count $(basename $1) '$2' = $(grep -c -- "$2" $1)"; }
+cnt $D "struct dmic_driver_api"; cnt $D "__subsystem"
+cnt $P PINCTRL_DT_DEFINE; cnt $P PINCTRL_DT_DEV_CONFIG_GET; cnt $P PINCTRL_DT_DEV_CONFIG_DECLARE
+cnt $C NRF54L; cnt $K NRF54L; cnt $K "nrf_clock_control_request"; cnt $K "z_nrf_clock_control_get_onoff"
+echo "files in $Z/drivers/clock_control with 54L in name or text: $(grep -l -i 'nrf54l' $Z/drivers/clock_control/*.c $Z/drivers/clock_control/Kconfig.nrf | wc -l)"
+cnt $Z/drivers/clock_control/Kconfig.nrf "NRF54L"
+cnt $N "PM_DEVICE"; cnt $N "pm_device"; cnt $N "pinctrl"
+echo "pdm20 node in the simulated chip's devicetree files: $(grep -rl 'pdm20' $Z/../nrf/boards 2>&1 | wc -l)"
+echo "pdm20 in dts include nrf54lm20a: $(grep -rl 'pdm20' /ws/zephyr/dts/vendor/nordic 2>&1 | grep -c 54lm20)"
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 04:54:54 CET
+# free on the server's /: 30 GB
+# source firmware copied to /root/ring-os/src-u-audio
+# started on the server as 20261113-045454-k2-audio; server log /root/ring-os/logs/20261113-045454-k2-audio.log
+count dmic.h 'struct dmic_driver_api' = 0
+count dmic.h '__subsystem' = 0
+count pinctrl.h 'PINCTRL_DT_DEFINE' = 3
+count pinctrl.h 'PINCTRL_DT_DEV_CONFIG_GET' = 4
+count pinctrl.h 'PINCTRL_DT_DEV_CONFIG_DECLARE' = 1
+count nrf_clock_control.h 'NRF54L' = 0
+count clock_control_nrf.c 'NRF54L' = 0
+count clock_control_nrf.c 'nrf_clock_control_request' = 0
+count clock_control_nrf.c 'z_nrf_clock_control_get_onoff' = 6
+files in /ws/zephyr/drivers/clock_control with 54L in name or text: 2
+count Kconfig.nrf 'NRF54L' = 1
+count dmic_nrfx_pdm.c 'PM_DEVICE' = 0
+count dmic_nrfx_pdm.c 'pm_device' = 0
+count dmic_nrfx_pdm.c 'pinctrl' = 3
+pdm20 node in the simulated chip's devicetree files: 0
+pdm20 in dts include nrf54lm20a: 1
+# finished (Mac clock): 2026-11-13 04:55:12 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-045454-k2-audio.log

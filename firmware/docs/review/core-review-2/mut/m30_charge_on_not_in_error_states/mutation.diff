@@ -1,0 +1,5 @@
+file src/core.c
+--- old
+if (ev == RC_EV_VBUS_IN && !has_from(out, first, RC_ACT_CHARGE_ON)) {
++++ new
+if (ev == RC_EV_VBUS_IN && from != RC_ST_ERR_CHARGER && from != RC_ST_FACTORY_TEST && !has_from(out, first, RC_ACT_CHARGE_ON)) {

@@ -1,0 +1,1783 @@
+##### changed: modules/ring_audio/src/rau.c
+--- base/modules/ring_audio/src/rau.c
++++ modules/ring_audio/src/rau.c
+@@ -47,3 +47,5 @@
+ static bool thread_started;
+-static bool hook_added;
++#ifdef CONFIG_RING_RHW_SIM
++static bool hook_added;   /* simulation only (finding F2 of the units: guarded for the kit build) */
++#endif
+ 
+@@ -312,7 +314,12 @@
+ /* ------------------------------------------------------------------ public */
++#ifdef CONFIG_RING_RHW_SIM
+ static void clear_state(void)
+ {
+-	/* a simulated reboot: whatever runs stops, the RAM state is empty */
++	/* a simulated reboot: whatever runs stops, the RAM state is empty. The drivers were reset before this hook runs
++	 * (rhw_sim_reboot), so the capture loop sees its input fail and ends; this waits for that end (step 6 fix round 1,
++	 * finding F1 of the units: rau_init after the reboot must not find the old loop still running), with the same bound
++	 * as rau_halt. */
+ 	if (atomic_get(&capturing)) {
+ 		atomic_set(&halting, 1);
++		(void)k_sem_take(&halt_sem, K_MSEC(RREC_BLOCK_COUNT * RREC_BLOCK_MS));
+ 	}
+@@ -321,2 +328,3 @@
+ }
++#endif
+ 
+##### changed: modules/ring_devices/include/ring_devices/rdev.h
+--- base/modules/ring_devices/include/ring_devices/rdev.h
++++ modules/ring_devices/include/ring_devices/rdev.h
+@@ -84,2 +84,8 @@
+ 
++/* Ship mode step 1 (design/firmware.md l.937, "close ... radio"; added in step 6 fix round 1, review finding R6-02):
++ * stop this part's advertising, end the link, and never advertise again until the next boot. Other advertising (the
++ * factory ship beacon) is not touched. 0, or the error of bt_conn_disconnect(). Any thread; does not wait for the
++ * link to end. */
++int rdev_stop(void);
++
+ #define RDEV_PAIR_WINDOW_MS 60000   /* FW 7.4: SCR_PAIR open for 60 s */
+##### changed: modules/ring_devices/src/rdev.c
+--- base/modules/ring_devices/src/rdev.c
++++ modules/ring_devices/src/rdev.c
+@@ -45,2 +45,3 @@
+ static bool inited;
++static bool stopped;   /* rdev_stop() (ship mode step 1): no advertising and no link from now on */
+ static bool adv_on;
+@@ -192,2 +193,7 @@
+ 	k_mutex_lock(&lk, K_FOREVER);
++	if (stopped) {
++		adv_stop();
++		k_mutex_unlock(&lk);
++		return;
++	}
+ 	st.active = list.active;
+@@ -491,2 +497,20 @@
+ 
++/* Step 6 fix round 1 (review finding R6-02, FW l.937 "close ... radio"): ship mode step 1. Advertising stops, the link
++ * is ended, and nothing advertises again (update_fn returns at once). Advertising of another part (the factory ship
++ * beacon of ruling R20, rhw_beacon) is not touched: adv_stop() acts only on this part's own advertising. */
++int rdev_stop(void)
++{
++	int err = 0;
++
++	k_mutex_lock(&lk, K_FOREVER);
++	stopped = true;
++	adv_stop();
++	if (cur_conn != NULL && !disconnecting) {
++		err = bt_conn_disconnect(cur_conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
++		disconnecting = (err == 0);
++	}
++	k_mutex_unlock(&lk);
++	return err;
++}
++
+ int rdev_init(const struct rdev_callbacks *callbacks)
+##### changed: modules/ring_motor/src/rmo.c
+--- base/modules/ring_motor/src/rmo.c
++++ modules/ring_motor/src/rmo.c
+@@ -94,2 +94,5 @@
+ 
++#ifdef CONFIG_RING_RHW_SIM
++/* simulation only (rhw_sim_reboot); guarded so that the development kit build has no unused function (step 6 fix round 1,
++ * finding F2 of the units) */
+ static void reboot_hook(void)
+@@ -108,2 +111,3 @@
+ }
++#endif
+ 
+##### changed: modules/ring_recorder/src/rrec.c
+--- base/modules/ring_recorder/src/rrec.c
++++ modules/ring_recorder/src/rrec.c
+@@ -27,2 +27,5 @@
+ #endif
++#if defined(CONFIG_RING_DEVICES)
++#include <ring_devices/rdev.h>
++#endif
+ #if defined(CONFIG_RING_RHW_SIM)
+@@ -37,2 +40,6 @@
+ #define FINISH_WAIT_MS 5000  /* rxf_finish: the command that runs may take this long (FW l.178 gives no number) */
++/* Ship mode (review finding R6-01): the wearer feels the whole M2 of FW l.151 before the motor is stopped: the join waits
++ * for rmo_playing() to end, at most RREC_PAT_M2_MS (280 ms, FW l.323) plus a margin of 100 ms for the timer and the
++ * threads (the margin is the join's choice). */
++#define SHIP_M2_MARGIN_MS 100
+ 
+@@ -264,9 +271,96 @@
+ 
+-/* ------------------------------------------------------------------ ship mode step 1 (FW l.937) */
+-static void ship_mode(void)
+-{
+-	rmo_stop();                              /* no motor while the chip is cut */
+-	if (rst_mounted()) {
+-		(void)rst_unmount();             /* storage closed (the queued log records are written first) */
+-	}
++/* ------------------------------------------------------------------ VDD_SD off (FW l.178, l.179, l.912 to l.920) */
++/* Through the unmount that waits for a store call running on another thread (a transfer command, review finding R6-03),
++ * bounded by FINISH_WAIT_MS. The result is never dropped: a failed unmount (the call did not end in time) is tried again
++ * on the recorder's thread (RREC_JOB_UNMOUNT) until it succeeds. RREC_LOG_UNMOUNT_FAILED (errno, state, try; lead's ruling
++ * on the record) is written at the FIRST failed try (its errno, try 1) and once more when the tries end (errno 0 when the
++ * unmount then succeeded, else the last errno; try = the number of tries made), never once per try: on a stalling card
++ * the records must not lengthen the store's own work. */
++static uint8_t unmount_tries;   /* tries made since the first failed one (0: none failed) */
++
++static void unmount_record(int err, uint8_t tries)
++{
++	uint8_t args[6];
++
++	sys_put_le32((uint32_t)err, args);
++	args[4] = rrec_st.core_state;
++	args[5] = tries;
++	rrec_log(RREC_LOG_UNMOUNT_FAILED, args, sizeof(args));
++}
++
++/* the tries of a failed unmount end: the record with the result and the count */
++static void unmount_tries_end(int err)
++{
++	if (unmount_tries != 0) {
++		unmount_record(err, unmount_tries);
++		unmount_tries = 0;
++	}
++}
++
++static int unmount_now(void)
++{
++	int r;
++
++	if (!rst_mounted()) {
++		unmount_tries_end(0);   /* unmounted meanwhile: the tries ended with VDD_SD off */
++		return 0;
++	}
++	r = rst_unmount_wait(FINISH_WAIT_MS);
++	if (unmount_tries != 0 && unmount_tries < UINT8_MAX) {
++		unmount_tries++;        /* one more try of the same failed unmount */
++	}
++	if (r == -EBUSY) {
++		if (unmount_tries == 0) {
++			unmount_tries = 1;
++			unmount_record(r, 1);   /* the first failed try */
++		}
++		(void)rrec_post(RREC_JOB_UNMOUNT, 0);
++	} else {
++		unmount_tries_end(r);   /* 0, or -EIO (the rail went off anyway) */
++	}
++	return r;
++}
++
++static int unmount_last_err = -EBUSY;   /* the answer of the last try (rrec_unmount_retry) */
++
++/* ------------------------------------------------------------------ ship mode (FW 8.4, l.936 to l.941) */
++#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
++static void (*ship_hook)(void);
++static uint32_t radio_stops;
++static int radio_stop_rc;
++
++void rrec_test_set_ship_hook(void (*fn)(void))
++{
++	ship_hook = fn;
++}
++
++uint32_t rrec_test_radio_stops(void)
++{
++	return radio_stops;
++}
++
++int rrec_test_radio_stop_rc(void)
++{
++	return radio_stop_rc;
++}
++#endif
++
++/* The recorder's thread, after the step that asked for ship mode ended (RREC_JOB_SHIP): the screens were told the new
++ * state (SHIP or OFF) in that step, the menu's power off no longer holds the screens thread (R6-10). */
++void rrec_ship_now(void)
++{
++	int64_t end = rhw_clock()->now_ms() + RREC_PAT_M2_MS + SHIP_M2_MARGIN_MS;
++	int r;
++
++	/* the M2 of FW l.151 is felt whole (R6-01), then no motor while the chip is cut */
++	while (rmo_playing() && rhw_clock()->now_ms() < end) {
++		k_sleep(K_MSEC(5));
++	}
++	rmo_stop();
++	/* step 1 (FW l.937, R6-02): close everything: recording, storage, USB, radio, screen */
++	if (rrec_st.recording) {
++		(void)rrec_close(rhw_clock()->now_ms());   /* the rows close it before; kept as the last guard */
++	}
++	(void)unmount_now();                     /* storage closed (the queued log records are written first) */
++	(void)rxf_stop(FINISH_WAIT_MS);          /* USB: the command aborted, the stack disabled */
+ 	if (rrec_st.usb_hfxo) {
+@@ -275,2 +369,19 @@
+ 	}
++#if defined(CONFIG_RING_DEVICES)
++	r = rdev_stop();                         /* radio: this part's advertising and link; the ship beacon (R20) stays */
++#else
++	r = 0;
++#endif
++#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
++	radio_stops++;
++	radio_stop_rc = r;
++#else
++	ARG_UNUSED(r);
++#endif
++	rscr_sync();                             /* screen: the screens thread drew SCR_OFF (panel off) for SHIP or OFF */
++#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
++	if (ship_hook != NULL) {
++		ship_hook();
++	}
++#endif
+ #if defined(CONFIG_RING_FACTORY)
+@@ -282,2 +393,16 @@
+ 
++/* the recorder's thread: a failed unmount tried again (RREC_JOB_UNMOUNT) while the state still wants VDD_SD off */
++void rrec_unmount_retry(void)
++{
++	enum rc_state s = rrec_core_state();
++
++	if (s == RC_ST_RECOVERY || s == RC_ST_RECORDING || s == RC_ST_TRANSFER || s == RC_ST_BOOT ||
++	    s == RC_ST_FACTORY_TEST) {
++		/* the state wants the card (or runs its own sequence): the tries end with the last errno */
++		unmount_tries_end(unmount_last_err);
++		return;
++	}
++	unmount_last_err = unmount_now();
++}
++
+ static void play(enum rrec_pattern p)
+@@ -328,5 +453,3 @@
+ 	case RC_ACT_SD_OFF:
+-		if (rst_mounted()) {
+-			(void)rst_unmount();
+-		}
++		(void)unmount_now();             /* FW l.178, l.179: the result is kept (R6-03) */
+ 		break;
+@@ -338,3 +461,3 @@
+ 	case RC_ACT_SHIP_MODE:
+-		ship_mode();
++		rrec_st.ship_pending = true;     /* on the recorder's thread after this step (rrec_glue_after) */
+ 		break;
+@@ -382,3 +505,6 @@
+ 	case RC_ACT_ABORT_COMMAND:
++		/* FW l.179: abort the command, then wait for it to end (bounded as rxf_finish) so that VDD_SD goes off in this
++		 * step (R6-03) */
+ 		rxf_abort();
++		(void)rxf_finish(FINISH_WAIT_MS);
+ 		break;
+@@ -403,6 +529,24 @@
+ 
++/* HFXO held by the join per FW 8.2 (review finding R6-04): on in BOOT and RECOVERY (l.915), CHARGING "when USB runs"
++ * (l.918: VBUS is present in CHARGING), TRANSFER (l.919), FACTORY_TEST (driven over USB); RECORDING's is the audio
++ * part's (rau_prepare); STANDBY and the error states "when the radio runs" (the radio's own request) */
++static bool hfxo_wanted(enum rc_state s)
++{
++	return s == RC_ST_BOOT || s == RC_ST_RECOVERY || s == RC_ST_CHARGING || s == RC_ST_TRANSFER || s == RC_ST_FACTORY_TEST;
++}
++
++void rrec_hfxo_follow_state(enum rc_state s)
++{
++	bool want = hfxo_wanted(s);
++
++	if (want && !rrec_st.usb_hfxo) {
++		rrec_st.usb_hfxo = rhw_hfxo()->request(usb_hfxo_running) == 0;
++	} else if (!want && rrec_st.usb_hfxo) {
++		(void)rhw_hfxo()->release();
++		rrec_st.usb_hfxo = false;
++	}
++}
++
+ static void rails_follow_state(enum rc_state s)
+ {
+-	bool usb = s == RC_ST_CHARGING || s == RC_ST_TRANSFER || s == RC_ST_FACTORY_TEST;
+-
+ 	if (s != RC_ST_BOOT && s != RC_ST_FACTORY_TEST) {
+@@ -411,3 +555,3 @@
+ 		} else if (rst_mounted()) {
+-			(void)rst_unmount();
++			(void)unmount_now();
+ 		}
+@@ -415,3 +559,3 @@
+ 	/* VDD_MIC only in RECORDING (FW l.112): never needed when the actions ran as written; kept as the last guard */
+-	if (s != RC_ST_RECORDING && !rrec_st.test_recording && rhw_pmic()->rail_get(RHW_RAIL_MIC)) {
++	if (s != RC_ST_RECORDING && atomic_get(&rrec_st.test_recording) == 0 && rhw_pmic()->rail_get(RHW_RAIL_MIC)) {
+ 		if (rau_capturing()) {
+@@ -424,9 +568,3 @@
+ 	}
+-	/* HFXO with USB (FW l.917, l.918): CHARGING with VBUS, TRANSFER (and FACTORY_TEST, driven over USB) */
+-	if (usb && !rrec_st.usb_hfxo) {
+-		rrec_st.usb_hfxo = rhw_hfxo()->request(usb_hfxo_running) == 0;
+-	} else if (!usb && rrec_st.usb_hfxo) {
+-		(void)rhw_hfxo()->release();
+-		rrec_st.usb_hfxo = false;
+-	}
++	rrec_hfxo_follow_state(s);   /* FW 8.2, for the state that follows */
+ }
+@@ -489,2 +627,3 @@
+ 	enum rc_state prev = (enum rc_state)rrec_st.core_state;
++	bool on;
+ 
+@@ -515,3 +654,3 @@
+ 	}
+-	rpw_state(rrec_st.test_recording ? RC_ST_RECORDING : state);   /* ruling 8 of the root unit's notes */
++	rpw_state(atomic_get(&rrec_st.test_recording) != 0 ? RC_ST_RECORDING : state);   /* ruling 8 of the root unit's notes */
+ 	rails_follow_state(state);
+@@ -524,3 +663,9 @@
+ 	}
+-	return rscr_glue_after(a, last_event, state, t);
++	on = rscr_glue_after(a, last_event, state, t);
++	if (rrec_st.ship_pending) {
++		/* ship mode after the screens learned SHIP or OFF (the screen closes, R6-02), on the recorder's thread (R6-10) */
++		rrec_st.ship_pending = false;
++		(void)rrec_post(RREC_JOB_SHIP, 0);
++	}
++	return on;
+ }
+@@ -587,3 +732,3 @@
+ 	tr_block = on_block;
+-	rrec_st.test_recording = true;
++	atomic_set(&rrec_st.test_recording, 1);
+ 	rsy_recording(true);
+@@ -632,3 +777,3 @@
+ 	tr_block = NULL;
+-	rrec_st.test_recording = false;
++	atomic_set(&rrec_st.test_recording, 0);
+ 	rsy_recording(false);
+@@ -646,3 +791,4 @@
+ 	tr_block = NULL;
+-}
+-#endif
++	unmount_tries = 0;
++}
++#endif
+##### changed: modules/ring_recorder/src/rrec_boot.c
+--- base/modules/ring_recorder/src/rrec_boot.c
++++ modules/ring_recorder/src/rrec_boot.c
+@@ -51,2 +51,3 @@
+ 	rrec_st.core_state = RC_ST_BOOT;
++	rrec_hfxo_follow_state(RC_ST_BOOT);               /* FW l.915: HFXO on in BOOT (review finding R6-04) */
+ 	rrec_bridge_start();
+##### changed: modules/ring_recorder/src/rrec_bridge.c
+--- base/modules/ring_recorder/src/rrec_bridge.c
++++ modules/ring_recorder/src/rrec_bridge.c
+@@ -39,2 +39,32 @@
+ 
++/* Review finding R6-08: a job of these kinds that does not fit the queue is kept as one latched bit per kind and queued
++ * when the queue has room again (after each job of the recorder's thread). No event is lost and none is doubled: a
++ * second one of the same kind while its bit is set is the same fact. */
++enum latch_bit {
++	LB_VBUS_OUT = 0,
++	LB_CHUNK_WRITE_FAILED,
++	LB_MIC_NO_BLOCK,
++	LB_SHIP,
++	LB_UNMOUNT,
++	LB_COUNT,
++};
++static const struct job latch_job[LB_COUNT] = {
++	[LB_VBUS_OUT] = { .kind = RREC_JOB_EVENT, .arg = RC_EV_VBUS_OUT },
++	[LB_CHUNK_WRITE_FAILED] = { .kind = RREC_JOB_EVENT, .arg = RC_EV_CHUNK_WRITE_FAILED },
++	[LB_MIC_NO_BLOCK] = { .kind = RREC_JOB_EVENT, .arg = RC_EV_MIC_NO_BLOCK },
++	[LB_SHIP] = { .kind = RREC_JOB_SHIP, .arg = 0 },
++	[LB_UNMOUNT] = { .kind = RREC_JOB_UNMOUNT, .arg = 0 },
++};
++static atomic_t latched;
++
++static int latch_of(const struct job *j)
++{
++	for (int b = 0; b < LB_COUNT; b++) {
++		if (latch_job[b].kind == j->kind && latch_job[b].arg == j->arg) {
++			return b;
++		}
++	}
++	return -1;
++}
++
+ int rrec_post(enum rrec_job kind, uint32_t arg)
+@@ -43,2 +73,3 @@
+ 	int r;
++	int b;
+ 
+@@ -47,2 +78,7 @@
+ 	if (r != 0) {
++		b = latch_of(&j);
++		if (b >= 0) {
++			/* kept: counted as done here, posted again from the latch (rrec_idle waits for the latch too) */
++			(void)atomic_or(&latched, BIT(b));
++		}
+ 		(void)atomic_inc(&done);   /* not queued: counted as done so a waiting test does not hang */
+@@ -50,2 +86,18 @@
+ 	return r;
++}
++
++/* the recorder's thread: queue every latched job for which the queue has room now */
++static void latch_flush(void)
++{
++	for (int b = 0; b < LB_COUNT; b++) {
++		if ((atomic_get(&latched) & BIT(b)) == 0) {
++			continue;
++		}
++		(void)atomic_inc(&posted);
++		if (k_msgq_put(&job_q, &latch_job[b], K_NO_WAIT) == 0) {
++			(void)atomic_and(&latched, ~BIT(b));
++		} else {
++			(void)atomic_inc(&done);   /* still no room: the bit stays */
++		}
++	}
+ }
+@@ -55,3 +107,3 @@
+ {
+-	return atomic_get(&posted) == atomic_get(&done);
++	return atomic_get(&posted) == atomic_get(&done) && atomic_get(&latched) == 0;
+ }
+@@ -105,6 +157,10 @@
+ 
+-	r = rst_mounted() ? 0 : rst_mount(false, &mi);
+-	if (r == 0 && rst_mounted()) {
+-		rrec_st.fact_open = mi.open_flag;
+-		rrec_st.fact_open_pending = true;
++	if (rst_mounted()) {
++		r = 0;   /* already mounted: the open flag fact keeps its value (no mount info was read, R6-09) */
++	} else {
++		r = rst_mount(false, &mi);
++		if (r == 0) {
++			rrec_st.fact_open = mi.open_flag;
++			rrec_st.fact_open_pending = true;
++		}
+ 	}
+@@ -123,3 +179,5 @@
+ 	for (;;) {
+-		if (k_msgq_get(&job_q, &j, K_FOREVER) != 0) {
++		/* 100 ms at most between two looks at the latch: a bit set while this thread waited is queued then (R6-08) */
++		if (k_msgq_get(&job_q, &j, K_MSEC(100)) != 0) {
++			latch_flush();
+ 			continue;
+@@ -139,2 +197,8 @@
+ 			break;
++		case RREC_JOB_SHIP:
++			rrec_ship_now();
++			break;
++		case RREC_JOB_UNMOUNT:
++			rrec_unmount_retry();
++			break;
+ 		default:
+@@ -143,2 +207,3 @@
+ 		(void)atomic_inc(&done);
++		latch_flush();
+ 	}
+@@ -282,3 +347,3 @@
+ 	rrec_log(RREC_LOG_FAULT_MIC, args, sizeof(args));
+-	if (!rrec_st.test_recording) {
++	if (atomic_get(&rrec_st.test_recording) == 0) {
+ 		(void)rrec_post(RREC_JOB_EVENT, RC_EV_MIC_NO_BLOCK);   /* FW l.169 */
+##### changed: modules/ring_recorder/src/rrec_int.h
+--- base/modules/ring_recorder/src/rrec_int.h
++++ modules/ring_recorder/src/rrec_int.h
+@@ -11,2 +11,4 @@
+ #include <stdint.h>
++
++#include <zephyr/sys/atomic.h>
+ 
+@@ -45,3 +47,9 @@
+ 	RREC_JOB_RETRY,          /* RC_ACT_RETRY_STORAGE: the storage init, then RETRY_OK or RETRY_FAILED (ruling R3) */
++	RREC_JOB_SHIP,           /* RC_ACT_SHIP_MODE, after the step that asked for it: ship mode steps 1 to 5 (FW 8.4) on
++	                          * the recorder's thread (rpw.h: "Join's thread"; review findings R6-01, R6-02, R6-10) */
++	RREC_JOB_UNMOUNT,        /* a failed unmount tried again (review finding R6-03) */
+ };
++/* 0 when queued. A job that does not fit the queue: an event of the kinds VBUS_OUT, CHUNK_WRITE_FAILED and MIC_NO_BLOCK,
++ * and the jobs SHIP and UNMOUNT, are kept as one latched bit per kind and queued when the queue has room again (review
++ * finding R6-08); any other job is dropped (-ENOMSG). */
+ int rrec_post(enum rrec_job job, uint32_t arg);
+@@ -71,3 +79,3 @@
+ 	bool recording;          /* a recording of type 1 is open (OPEN done, CLOSE not yet) */
+-	bool test_recording;     /* a factory test recording runs (transfer thread; atomic flag) */
++	atomic_t test_recording; /* a factory test recording runs: 1 (written on the transfer thread, read on others) */
+ 	uint32_t rec_id;         /* the open recording */
+@@ -75,3 +83,5 @@
+ 	bool reboot_pending;     /* RC_ACT_REBOOT seen in this step: reboot in after, reason from the step's event */
+-	bool usb_hfxo;           /* the join holds HFXO for USB (CHARGING with VBUS, TRANSFER; FW l.912 to l.920) */
++	bool usb_hfxo;           /* the join holds HFXO per FW 8.2 (l.915 BOOT and RECOVERY, l.918 CHARGING with USB, l.919
++	                          * TRANSFER; FACTORY_TEST, driven over USB); RECORDING's is the audio part's own */
++	bool ship_pending;       /* RC_ACT_SHIP_MODE seen in this step: the ship job is posted after the screens were told */
+ 	uint8_t chg_err_reason;  /* the last charge error (RC_ACT_LOG_CHARGE_ERROR) */
+@@ -106,2 +116,9 @@
+ void rrec_feed_test_blocks(const struct rst_chunk *c);
++/* rrec.c, the recorder's thread: ship mode (RREC_JOB_SHIP): wait for M2 to end (bounded), step 1 (recording, storage,
++ * USB, radio, screen closed), then rpw_ship() for steps 2 to 5 (FW 8.4). */
++void rrec_ship_now(void);
++/* rrec.c, the recorder's thread: a failed unmount tried again (RREC_JOB_UNMOUNT). */
++void rrec_unmount_retry(void);
++/* rrec.c: HFXO requested or released as FW 8.2 says for state s (also at the start of the boot sequence). */
++void rrec_hfxo_follow_state(enum rc_state s);
+ #if defined(CONFIG_RING_RHW_SIM)
+@@ -126,4 +143,9 @@
+ void rrec_tap_clear(void);
+-/* true when the recorder's thread has no job queued and none running. */
++/* true when the recorder's thread has no job queued, none running and none latched. */
+ bool rrec_idle(void);
++/* Called on the recorder's thread at the end of ship mode step 1, right before rpw_ship() (SHPHLDCONFIG); NULL clears. */
++void rrec_test_set_ship_hook(void (*fn)(void));
++/* rdev_stop() calls made by ship mode step 1 since boot (the radio, FW l.937), and the last one's answer */
++uint32_t rrec_test_radio_stops(void);
++int rrec_test_radio_stop_rc(void);
+ #endif
+##### changed: modules/ring_rhw/include/ring_rhw/rrec_spec.h
+--- base/modules/ring_rhw/include/ring_rhw/rrec_spec.h
++++ modules/ring_rhw/include/ring_rhw/rrec_spec.h
+@@ -328,2 +328,3 @@
+ #define RREC_PAT_COUNT                7u
++#define RREC_PAT_M2_MS                280u        /* FW l.323: M2 = 80 on, 120 off, 80 on (lead ruling on R6-01) */
+ #define RREC_MOTOR_RUN_MA             80u         /* FW l.332: charge per pulse t_on x 80 mA */
+@@ -446,2 +447,6 @@
+ 	RREC_LOG_DROPPED = 0x0280,            /* records dropped from the full RAM buffer (FW l.1062). args: count u32 */
++	RREC_LOG_UNMOUNT_FAILED = 0x0290,     /* storage not unmounted when a row asked for VDD_SD off (FW l.178, l.179); at
++	                                       * the first failed try of a step and once when its tries end, never once per
++	                                       * try (lead rulings on R6-03: 27 codes). args: errno i32, state u8
++	                                       * (enum rc_state), try u8 */
+ };
+##### changed: modules/ring_screens/src/rscr.c
+--- base/modules/ring_screens/src/rscr.c
++++ modules/ring_screens/src/rscr.c
+@@ -543,3 +543,10 @@
+ {
+-	uint32_t want = ++gen_asked;
++	uint32_t want;
++
++	/* step 6 fix round 1 (lead's ruling 4 on the recorder's ship mode): before rscr_start there is no screens thread to
++	 * wait for, so a sync returns at once */
++	if (!started) {
++		return;
++	}
++	want = ++gen_asked;
+ 
+##### changed: modules/ring_store/include/ring_store/rst.h
+--- base/modules/ring_store/include/ring_store/rst.h
++++ modules/ring_store/include/ring_store/rst.h
+@@ -142,2 +142,8 @@
+ 
++/* As rst_unmount, but a store call running on another thread is waited for, up to timeout_ms (added in step 6 fix
++ * round 1, review finding R6-03: VDD_SD off after an aborted or finished transfer command, FW l.178, l.179). 0, -EIO
++ * (the rail goes off anyway), -EBUSY when the running call did not end within timeout_ms (nothing changed).
++ * Blocks up to timeout_ms plus the unmount's own time. */
++int rst_unmount_wait(int32_t timeout_ms);
++
+ /* true between a successful rst_mount and rst_unmount. Does not block. */
+##### changed: modules/ring_store/src/rst.c
+--- base/modules/ring_store/src/rst.c
++++ modules/ring_store/src/rst.c
+@@ -466,3 +466,4 @@
+ 
+-int rst_unmount(void)
++/* the body of rst_unmount and rst_unmount_wait, with op_lock held by the caller */
++static int unmount_locked(void)
+ {
+@@ -470,5 +471,2 @@
+ 
+-	if (!op_take()) {
+-		return -EBUSY;
+-	}
+ 	if (!S.mounted) {
+@@ -495,2 +493,20 @@
+ 	return r;
++}
++
++int rst_unmount(void)
++{
++	if (!op_take()) {
++		return -EBUSY;
++	}
++	return unmount_locked();
++}
++
++/* Step 6 fix round 1 (review finding R6-03): the unmount that waits up to timeout_ms for the store call that runs on
++ * another thread (op_lock taken with a timeout instead of K_NO_WAIT), then the same body as rst_unmount. */
++int rst_unmount_wait(int32_t timeout_ms)
++{
++	if (k_mutex_lock(&op_lock, K_MSEC(MAX(timeout_ms, 0))) != 0) {
++		return -EBUSY;
++	}
++	return unmount_locked();
+ }
+##### changed: modules/ring_xfer/include/ring_xfer/rxf.h
+--- base/modules/ring_xfer/include/ring_xfer/rxf.h
++++ modules/ring_xfer/include/ring_xfer/rxf.h
+@@ -90,2 +90,8 @@
+ 
++/* Ship mode step 1 (FW l.937, "close ... USB"; added in step 6 fix round 1, review finding R6-02): stop reading and
++ * answering, abort the command that runs and wait up to timeout_ms for it to end, then disable the stack
++ * (rhw_usb()->disable()); the stack stays off until the next RHW_USB_VBUS_READY. 0; -ETIMEDOUT when the command did
++ * not end in time (the stack is disabled anyway). Join's thread; blocks up to timeout_ms. */
++int rxf_stop(int32_t timeout_ms);
++
+ #ifdef __cplusplus
+##### changed: modules/ring_xfer/src/rxf_class.c
+--- base/modules/ring_xfer/src/rxf_class.c
++++ modules/ring_xfer/src/rxf_class.c
+@@ -48,2 +48,3 @@
+ static atomic_t cancel_req;         /* rxf_abort(): drop the request that has not started */
++static atomic_t stopped;            /* rxf_stop() (ship mode step 1): the stack stays off until the next VBUS ready */
+ static volatile bool vbus;
+@@ -227,4 +228,7 @@
+ 		case IT_VBUS_READY:
+-			/* FW l.978: the stack starts only after the power chip reported VBUS */
+-			(void)rhw_usb()->enable();
++			/* FW l.978: the stack starts only after the power chip reported VBUS (not after rxf_stop until VBUS
++			 * is reported again) */
++			if (atomic_get(&stopped) == 0) {
++				(void)rhw_usb()->enable();
++			}
+ 			break;
+@@ -254,2 +258,3 @@
+ 	case RHW_USB_VBUS_READY:
++		atomic_set(&stopped, 0);          /* VBUS reported again: the stack may start (after rxf_stop) */
+ 		vbus = true;
+@@ -304,2 +309,3 @@
+ 	atomic_set(&cancel_req, 0);
++	atomic_set(&stopped, 0);
+ 	tx_held = false;
+@@ -345 +351,21 @@
+ }
++
++/* Step 6 fix round 1 (review finding R6-02): ship mode step 1 closes USB (FW l.937). Nothing more is read or answered
++ * (as on VBUS removed), the command that runs is aborted and waited for up to timeout_ms, then the stack is disabled on
++ * the caller's thread so that it is off when this returns. */
++int rxf_stop(int32_t timeout_ms)
++{
++	k_spinlock_key_t k;
++	int r;
++
++	atomic_set(&stopped, 1);
++	k = k_spin_lock(&lk);
++	vbus = false;                     /* on_rx drops, emit_cb cancels, no BUSY answer is sent */
++	rx_reset();
++	busy_n = 0u;
++	k_spin_unlock(&lk, k);
++	rxf_abort();
++	r = rxf_finish(timeout_ms);
++	(void)rhw_usb()->disable();
++	return r;
++}
+##### changed: tests/bsim/control/broken_edit.py
+--- base/tests/bsim/control/broken_edit.py
++++ tests/bsim/control/broken_edit.py
+@@ -116,2 +116,6 @@
+     [("src/rdev.c", "\t\t\tif (list.active == RDEV_NONE) {\n\t\t\t\tlist.active = slot;", "\t\t\tif (true) {\n\t\t\t\tlist.active = slot;")])
++# step 6 fix round 1 (review finding R6-02): rdev_stop ends the link but advertising starts again after it
++VARIANTS["radio_not_stopped"] = (
++    "ring_devices", "C", r"HOST H1 CHECK C: no advertising after ship close FAIL",
++    [("src/rdev.c", "\tstopped = true;\n\tadv_stop();\n", "\tadv_stop();\n")])
+ MUST_PASS = ("window_gate_only", "window_stranger_only")
+##### changed: tests/bsim/control/host_app/src/main.c
+--- base/tests/bsim/control/host_app/src/main.c
++++ tests/bsim/control/host_app/src/main.c
+@@ -235,2 +235,8 @@
+ static struct k_work ready_work;
++/* scenario C, step 6 fix round 1 (R6-02): from 54 s the host only watches (never connects); advertising reports with the
++ * HID service seen from 56 s on (1 s after the ring's ship close at 55 s) are counted */
++#define C_WATCH_MS 54000
++#define C_COUNT_FROM_MS 56000
++static bool watch_only;
++static int adv_after_close;
+ 
+@@ -486,2 +492,12 @@
+ 	ARG_UNUSED(rssi);
++	if (watch_only) {
++		bt_data_parse(ad, ad_parse, &ai);
++		if (ai.hid && k_uptime_get() >= C_COUNT_FROM_MS) {
++			if (adv_after_close == 0) {
++				printk("HOST %s INFO advertising seen after the ship close (t=%lld)\n", name, k_uptime_get());
++			}
++			adv_after_close++;
++		}
++		return;   /* watching only: no link */
++	}
+ 	if (conn != NULL || connecting || type != BT_GAP_ADV_TYPE_ADV_IND) {
+@@ -617,2 +633,8 @@
+ 		}
++	}
++	if (scen == 'C') {
++		/* test C, step 6 fix round 1: watch only from 54 s (the ring closes its radio at 55 s) */
++		k_sleep(K_MSEC(C_WATCH_MS - k_uptime_get()));
++		watch_only = true;
++		scan_start();
+ 	}
+@@ -652,2 +674,5 @@
+ 		CHECK("paired twice (before the removal and again)", pairings == 2);
++		CHECK("C: the link ended after the ship close", conn == NULL);
++		printk("HOST %s INFO advertising reports after the ship close: %d\n", name, adv_after_close);
++		CHECK("C: no advertising after ship close", adv_after_close == 0);
+ 		evaluate(steps_c1, ARRAY_SIZE(steps_c1));
+##### changed: tests/bsim/control/ring_app/src/main.c
+--- base/tests/bsim/control/ring_app/src/main.c
++++ tests/bsim/control/ring_app/src/main.c
+@@ -405,2 +405,9 @@
+ 	act(RCTL_MEDIA, RCTL_CENTRE, 2, "after new pairing ");
++
++	/* step 6 fix round 1 (review finding R6-02, FW l.937 "close ... radio"): ship mode's step 1 closes the radio with
++	 * rdev_stop() at 55 s; host 1 sees the link end and no advertising after it (its check "C: no advertising after
++	 * ship close") */
++	sleep_until(55000);
++	printk("RING INFO ship close: rdev_stop at t=%lld\n", k_uptime_get());
++	CHECK("C: ship close stops the radio (rdev_stop answers 0)", rdev_stop() == 0);
+ }
+##### changed: tests/bsim/control/run.sh
+--- base/tests/bsim/control/run.sh
++++ tests/bsim/control/run.sh
+@@ -50,3 +50,3 @@
+ MODS=$HERE/../../../modules
+-VARIANTS="pair_takes_over keymap hold_key switch_gate window window_gate_only window_stranger_only host_write repeat_flood gate release_retry bond_kept wrong_link fourth_slot"
++VARIANTS="pair_takes_over keymap hold_key switch_gate window window_gate_only window_stranger_only host_write repeat_flood gate release_retry bond_kept wrong_link fourth_slot radio_not_stopped"
+ 
+##### changed: tests/factory/src/common.c
+--- base/tests/factory/src/common.c
++++ tests/factory/src/common.c
+@@ -10,2 +10,3 @@
+ int64_t fx_frame_ms[FX_MAX_FRAMES];
++int64_t fx_frame_ticks[FX_MAX_FRAMES];
+ uint32_t fx_frames;
+@@ -132,2 +133,3 @@
+ 		fx_frame_ms[fx_frames] = rhw_clock()->now_ms();
++		fx_frame_ticks[fx_frames] = k_uptime_ticks();
+ 	}
+##### changed: tests/factory/src/common.h
+--- base/tests/factory/src/common.h
++++ tests/factory/src/common.h
+@@ -55,2 +55,3 @@
+ extern int64_t fx_frame_ms[FX_MAX_FRAMES];
++extern int64_t fx_frame_ticks[FX_MAX_FRAMES];   /* k_uptime_ticks() of each frame (fix round 1, R6-13) */
+ extern uint32_t fx_frames;
+##### changed: tests/factory/src/test_screen.c
+--- base/tests/factory/src/test_screen.c
++++ tests/factory/src/test_screen.c
+@@ -197,2 +197,6 @@
+ 	/* red 0, green 1, blue 2, white 3, black 4, grid 5 (rfa.h), 1 s apart */
++	for (uint32_t i = 0; i < fx_frames && i < FX_MAX_FRAMES; i++) {
++		TC_PRINT("T-SCREEN stamps: frame %u at %lld ms, %lld ticks (%u ticks/s), spacing %lld ms\n", i, fx_frame_ms[i],
++			 fx_frame_ticks[i], (unsigned)CONFIG_SYS_CLOCK_TICKS_PER_SEC, i > 0 ? fx_frame_ms[i] - fx_frame_ms[i - 1] : 0);
++	}
+ 	zassert_equal(fx_frames, 6);
+@@ -201,3 +205,12 @@
+ 		if (i > 0) {
+-			zassert_equal(fx_frame_ms[i] - fx_frame_ms[i - 1], 1000, "1 s each (FW l.1025)");
++			/* 1 s each (FW l.1025). Fix round 1 (review finding R6-13): the frames are spaced by k_sleep(1,000 ms) in
++			 * rfa.c (run_screen), not by a periodic timer: each wait is at least 1,000 ms and ends on the next kernel
++			 * tick (the kernel adds one tick to a relative timeout), so a frame comes 1,000 ms plus up to one tick
++			 * after the one before. Measured in ticks (not in whole ms, whose floor made the result depend on the
++			 * moment the earlier cases ended): at least 1,000,000 us and less than 1,000 ms + 1 ms (the tolerance:
++			 * one tick is 100 us at 10,000 ticks per second) */
++			int64_t us = k_ticks_to_us_floor64((uint64_t)(fx_frame_ticks[i] - fx_frame_ticks[i - 1]));
++
++			zassert_true(us >= 1000000 && us < 1001000, "1 s each (FW l.1025): frame %u came %lld us after the one "
++				     "before", i, us);
+ 		}
+##### changed: tests/recorder/CMakeLists.txt
+--- base/tests/recorder/CMakeLists.txt
++++ tests/recorder/CMakeLists.txt
+@@ -33,3 +33,7 @@
+   src/test_log.c
+-  src/test_screens.c)
++  src/test_screens.c
++  src/test_ship.c
++  src/test_unmount.c
++  src/test_factory.c
++  src/test_noscreens.c)
+ endif()
+##### changed: tests/recorder/broken_edit.py
+--- base/tests/recorder/broken_edit.py
++++ tests/recorder/broken_edit.py
+@@ -2,3 +2,3 @@
+ Prints "<named case> <suite file>". One named fault per variant; the edit must match exactly once. The variants are those
+-of firmware/docs/step6-plan.md, unit J "Broken copies"."""
++of firmware/docs/step6-plan.md, unit J "Broken copies", and the six of fix round 1 (review findings R6-01 to R6-06)."""
+ import pathlib
+@@ -71,2 +71,28 @@
+         "\treturn s == RC_ST_RECOVERY || s == RC_ST_RECORDING || s == RC_ST_TRANSFER || s == RC_ST_STANDBY;\n"),
++    # ----- step 6 fix round 1 (review findings R6-01 to R6-06), one copy each
++    # R6-01: ship mode stops the motor at once (M2 cut)
++    "ship_cuts_m2": (REC, "recorder_ship.test_ship_feels_whole_m2", "test_ship",
++        "\twhile (rmo_playing() && rhw_clock()->now_ms() < end) {\n",
++        "\twhile (false && rmo_playing() && rhw_clock()->now_ms() < end) {\n"),
++    # R6-02: ship mode runs before the screens learn the step (the reviewed order: the screen keeps its picture)
++    "ship_screen_on": (REC, "recorder_ship.test_ship_closes_each_part_first", "test_ship",
++        "\ton = rscr_glue_after(a, last_event, state, t);\n",
++        "\tif (rrec_st.ship_pending) {\n\t\trrec_ship_now();   /* broken: ship mode before the screens are told */\n\t}\n"
++        "\ton = rscr_glue_after(a, last_event, state, t);\n"),
++    # R6-03: the unmount does not wait for the running store call and its result is dropped
++    "unmount_result_dropped": (REC, "recorder_unmount.test_unconfigured_finish_times_out", "test_unmount",
++        "\tr = rst_unmount_wait(FINISH_WAIT_MS);\n",
++        "\t(void)rst_unmount();\n\tr = 0;\n"),
++    # R6-04: no HFXO in BOOT and RECOVERY
++    "no_hfxo_in_boot": (REC, "recorder_rails.test_hfxo_in_boot_and_recovery", "test_rails",
++        "\treturn s == RC_ST_BOOT || s == RC_ST_RECOVERY || s == RC_ST_CHARGING || s == RC_ST_TRANSFER || s == RC_ST_FACTORY_TEST;\n",
++        "\treturn s == RC_ST_CHARGING || s == RC_ST_TRANSFER || s == RC_ST_FACTORY_TEST;\n"),
++    # R6-05: the close drops the partial chunk
++    "close_drops_partial": (REC, "recorder_actions.test_close_order", "test_actions",
++        "\t(void)rst_close(cr.last, &cr.close);     /* partial chunk, CLOSE record, superblock with the flag clear */\n",
++        "\t(void)rst_close(NULL, &cr.close);        /* the partial chunk dropped */\n"),
++    # R6-06: the factory's test recording is opened as type 1
++    "test_recording_wrong_type": (REC, "recorder_factory.test_tmic_records_type_2_for_2s", "test_factory",
++        "\t\tr = rst_open(RREC_REC_TYPE_FACTORY, 0, &id);   /* type 2 (FW l.548, l.1024) */\n",
++        "\t\tr = rst_open(RREC_REC_TYPE_RECORDING, 0, &id);   /* type 1: wrong */\n"),
+ }
+##### changed: tests/recorder/short_run.sh
+--- base/tests/recorder/short_run.sh
++++ tests/recorder/short_run.sh
+@@ -31,3 +31,3 @@
+ 	echo "twister exit code on $P: $R (log $OUT/twister-$T.log)"
+-	grep -E "FAIL|PASS|passed|failed|Assertion|error:|CMake Error|warning:|ROW|RULES|RAILS|SIGN-1|stop|start|close|open order|boot|frame hash|M1 action" "$OUT/twister-$T.log" | cut -c1-300 | head -400
++	grep -E "FAIL|PASS|passed|failed|Assertion|error:|CMake Error|warning:|ROW|RULES|RAILS|SIGN-1|stop|start|close|open order|boot|frame hash|M1 action|ship|unmount|SCR_CHARGING|T-MIC|T-SIGN|latch|HFXO|close frames" "$OUT/twister-$T.log" | cut -c1-300 | head -400
+ 	[ "$R" -ne 0 ] && RC=1
+##### changed: tests/recorder/src/rt.c
+--- base/tests/recorder/src/rt.c
++++ tests/recorder/src/rt.c
+@@ -135,3 +135,3 @@
+ 		if (rc_core_state(rglue_core()) != RC_ST_RECORDING && rhw_pmic()->rail_get(RHW_RAIL_MIC) &&
+-		    !rrec_st.test_recording) {
++		    atomic_get(&rrec_st.test_recording) == 0) {
+ 			mic_at_screens++;
+@@ -206,12 +206,23 @@
+ 
++static bool glue_started;
++bool rt_screens_started;
++
+ void rt_setup(void)
+ {
+-	static bool started;
+-
+-	if (started) {
+-		return;
+-	}
+-	started = true;
+-	zassert_equal(rscr_start(&sops), 0, "screens start on the memory display");
+-	rglue_init(&gops, RC_ST_BOOT);
++	if (!rt_screens_started) {
++		rt_screens_started = true;
++		zassert_equal(rscr_start(&sops), 0, "screens start on the memory display");
++	}
++	if (!glue_started) {
++		glue_started = true;
++		rglue_init(&gops, RC_ST_BOOT);
++	}
++}
++
++void rt_setup_no_screens(void)
++{
++	if (!glue_started) {
++		glue_started = true;
++		rglue_init(&gops, RC_ST_BOOT);
++	}
+ }
+@@ -242,3 +253,3 @@
+ 			sc[i].mv = i == 0 ? b->mv : (b->mv_next != 0 ? b->mv_next : b->mv);
+-			sc[i].ua = 3000;
++			sc[i].ua = b->ua != 0 ? b->ua : 3000;
+ 			sc[i].temp_c_x10 = 250;
+@@ -247,2 +258,5 @@
+ 		rhw_sim_pmic_script(sc, 2);
++	}
++	if (b->chg_forced != 0) {
++		rhw_sim_pmic_charge_state((int)b->chg_forced - 1);
+ 	}
+@@ -287,4 +301,3 @@
+ 	rhw_sim_reset();
+-	rhw_sim_reboot();   /* every unit's RAM state back to reset values */
+-	rt_sleep(100);      /* the audio thread leaves a capture the reboot stopped before rau_init runs again (notes, finding F1) */
++	rhw_sim_reboot();   /* every unit's RAM state back to reset values (the audio part waits for its capture loop, F1) */
+ 	apply(b);
+@@ -296,4 +309,3 @@
+ 	rt_sleep(100);
+-	rhw_sim_reboot();
+-	rt_sleep(100);      /* as in rt_fresh (finding F1) */
++	rhw_sim_reboot();   /* the audio part waits for its capture loop (finding F1): no sleep after it */
+ 	apply(b);
+##### changed: tests/recorder/src/rt.h
+--- base/tests/recorder/src/rt.h
++++ tests/recorder/src/rt.h
+@@ -40,2 +40,4 @@
+ 	bool unconfirmed;         /* the running image is not confirmed (the update self-test runs, FW l.1014) */
++	int32_t ua;               /* with mv: the battery current of the samples in µA (0 = 3,000 µA discharge; < 0 charging) */
++	uint8_t chg_forced;       /* 0 = the simulated charger's own state; else the charge state + 1 (RREC_CHG_* + 1) */
+ };
+@@ -43,2 +45,4 @@
+ void rt_setup(void);                          /* once: screens and glue started */
++void rt_setup_no_screens(void);               /* the glue only (the screens part never started), for recorder_a_noscreens */
++extern bool rt_screens_started;               /* rt_setup started the screens part */
+ void rt_fresh(const struct rt_boot *b);       /* empty world, then a boot through rrec_boot() (NULL = defaults) */
+##### changed: tests/recorder/src/test_actions.c
+--- base/tests/recorder/src/test_actions.c
++++ tests/recorder/src/test_actions.c
+@@ -40,2 +40,58 @@
+ 
++/* the frames of the closed recording against what the simulated input delivered (review finding R6-05): every kept frame
++ * is the input's frame counter (left) and its inverse (right) from frame 800 on (FW l.460: the first 50 ms dropped), none
++ * missing; the chunks' frames add up to the CLOSE record's duration; the last chunk is the partial one; and the duration
++ * is what was captured from the start to the mark */
++static void check_closed_frames(int64_t start_ms, int64_t mark_ms)
++{
++	static uint8_t chunk[RREC_CHUNK_BYTES];
++	struct rst_mount_info mi;
++	struct rst_rec_info info[8];
++	uint16_t n = 0;
++	uint64_t sum = 0;
++	uint32_t last_frames = 0;
++	uint32_t bad = 0;
++	int64_t want;
++
++	zassert_equal(rst_mount(false, &mi), 0, "mount");
++	zassert_equal(rst_list(0, 8, info, &n), 0, "list");
++	zassert_true(n >= 1, "the recording is listed");
++	for (uint32_t c = 0; c < info[n - 1].chunk_count; c++) {
++		uint32_t fr;
++		const uint8_t *pl = &chunk[RREC_CHUNK_HEADER_BYTES];
++
++		zassert_equal(rst_read_chunk(info[n - 1].recording_id, c, chunk), 0, "read chunk %u", c);
++		fr = sys_get_le32(&chunk[RREC_CH_OFF_FRAMES]);
++		for (uint32_t f = 0; f < fr; f++) {
++			uint16_t want_l = (uint16_t)((RREC_DISCARD_FRAMES + sum + f) & 0xFFFFu);
++			uint16_t l = sys_get_le16(&pl[f * 4]);
++			uint16_t r = sys_get_le16(&pl[f * 4 + 2]);
++
++			if (l != want_l || r != (uint16_t)~want_l) {
++				if (bad < 3) {
++					TC_PRINT("close frames: chunk %u frame %u: %u/%u, captured %u/%u\n", c, f, l, r, want_l,
++						 (uint16_t)~want_l);
++				}
++				bad++;
++			}
++		}
++		sum += fr;
++		last_frames = fr;
++	}
++	(void)rst_unmount();
++	/* FW l.443, l.460: 16 frames per ms; the kept frames run from the start + 50 ms to the mark */
++	want = (mark_ms - start_ms) * 16 - (int64_t)RREC_DISCARD_FRAMES;
++	TC_PRINT("close frames: %u chunks, %llu frames in the chunks, CLOSE duration %llu, last chunk %u frames, "
++		 "captured to the mark %lld (start %lld ms, mark %lld ms), %u frames not as captured\n", info[n - 1].chunk_count,
++		 sum, info[n - 1].duration_frames, last_frames, want, start_ms, mark_ms, bad);
++	zassert_equal(bad, 0, "every kept frame is the captured one (%u not)", bad);
++	zassert_equal(sum, info[n - 1].duration_frames, "the chunks hold the whole duration (%llu of %llu)", sum,
++		      info[n - 1].duration_frames);
++	zassert_true(last_frames > 0 && last_frames < RREC_CHUNK_FRAMES, "the last chunk is the partial one (%u)",
++		     last_frames);
++	/* one block (256 frames, FW l.443) plus one ms of each stamp: the mark and the start are ms times */
++	zassert_true(sum + RREC_BLOCK_FRAMES + 32 >= (uint64_t)want && sum <= (uint64_t)want + RREC_BLOCK_FRAMES + 32,
++		     "kept %llu, captured to the mark %lld", sum, want);
++}
++
+ /* FW l.125: close = partial chunk, CLOSE record, superblock flag clear, stop PDM, clocks low, VDD_MIC off, VDD_SD off */
+@@ -44,6 +100,21 @@
+ 	int32_t i_part, i_close, i_sb, i_stop, i_sleep, i_mic, i_sd;
+-
+-	rt_fresh(NULL);
+-	rt_long();
+-	rt_sleep(1300);   /* the mark falls inside a chunk: a partial chunk exists */
++	int64_t start_ms, mark_ms;
++
++	rt_fresh(NULL);
++	rhw_sim_log_clear();
++	rt_long();
++	start_ms = rt_ev_us(rt_find(RHW_EV_MIC_START, -1, -1, 0)) / 1000;
++	zassert_true(start_ms > 0, "the input started");
++	rt_sleep(1300);
++	/* the stop press so that its mark (1,000 ms after the press, FW l.128) falls in the middle of a chunk: a partial
++	 * chunk of about half a chunk exists (8,192 frames, FW l.535) */
++	for (int i = 0; i < 200; i++) {
++		int64_t at_mark = (k_uptime_get() + RREC_LONG_PRESS_MS - start_ms) * 16 - (int64_t)RREC_DISCARD_FRAMES;
++		int64_t in_chunk = at_mark % RREC_CHUNK_FRAMES;
++
++		if (in_chunk >= 3000 && in_chunk <= 5000) {
++			break;
++		}
++		rt_sleep(4);
++	}
+ 	rhw_sim_log_clear();
+@@ -52,2 +123,4 @@
+ 	zassert_equal(rt_state(), RC_ST_STANDBY, "stopped");
++	mark_ms = act_time(RC_ACT_CLOSE);
++	zassert_true(mark_ms > start_ms, "CLOSE carried out");
+ 	i_part = find_write(RREC_LBA_CHUNK_FIRST, UINT32_MAX, 0);
+@@ -67,2 +140,3 @@
+ 	zassert_true(i_sd > i_mic, "VDD_SD off last");
++	check_closed_frames(start_ms, mark_ms);
+ }
+@@ -291,2 +365,49 @@
+ 
++/* Review finding R6-08: an event of the kinds VBUS_OUT, MIC_NO_BLOCK, CHUNK_WRITE_FAILED that finds the recorder's queue
++ * full is latched and reaches the core when the queue has room (rows 40, 37, 36 of FW 1.2) */
++static int fill_queue_then_post(enum rc_event ev)
++{
++	int r;
++	int n = 0;
++
++	k_sched_lock();
++	while (n < 100 && rrec_post(RREC_JOB_EVENT, RC_EV_INIT_DONE) == 0) {   /* no row outside BOOT: dropped by the core */
++		n++;
++	}
++	r = rrec_post(RREC_JOB_EVENT, ev);
++	k_sched_unlock();
++	TC_PRINT("latch: %d jobs filled the queue, the post of event %d answered %d\n", n, ev, r);
++	return r;
++}
++
++ZTEST(recorder_actions, test_latched_events_not_lost)
++{
++	rt_fresh(NULL);
++	rt_vbus(true);
++	zassert_equal(rt_state(), RC_ST_CHARGING, "CHARGING");
++	rt_steps_clear();
++	zassert_not_equal(fill_queue_then_post(RC_EV_VBUS_OUT), 0, "the queue was full");
++	rt_settle();
++	zassert_true(rt_row_seen(40), "row 40: VBUS removed reached the core (FW l.172)");
++	zassert_equal(rt_state(), RC_ST_STANDBY, "STANDBY");
++
++	rt_fresh(NULL);
++	rt_long();
++	zassert_equal(rt_state(), RC_ST_RECORDING, "recording");
++	rt_steps_clear();
++	zassert_not_equal(fill_queue_then_post(RC_EV_MIC_NO_BLOCK), 0, "the queue was full");
++	rt_settle();
++	zassert_true(rt_row_seen(37), "row 37: no block reached the core (FW l.169)");
++	zassert_equal(rt_state(), RC_ST_ERR_MIC_FAULT, "ERR_MIC_FAULT");
++
++	rt_fresh(NULL);
++	rt_long();
++	zassert_equal(rt_state(), RC_ST_RECORDING, "recording");
++	rt_steps_clear();
++	zassert_not_equal(fill_queue_then_post(RC_EV_CHUNK_WRITE_FAILED), 0, "the queue was full");
++	rt_settle();
++	zassert_true(rt_row_seen(36), "row 36: the write fault reached the core (FW l.168)");
++	zassert_equal(rt_state(), RC_ST_ERR_STORAGE_FAULT, "ERR_STORAGE_FAULT");
++}
++
+ /* FW l.218, l.1065 (C23, the join's part): during a recording the audio and storage threads report progress through the
+##### new: tests/recorder/src/test_factory.c
+--- base/tests/recorder/src/test_factory.c
++++ tests/recorder/src/test_factory.c
+@@ -0,0 +1,136 @@
++/*
++ * recorder_factory: the join's half of T-MIC and T-SIGN on the REAL rrec_test_recording (step 6 fix round 1, review
++ * finding R6-06): design/firmware.md l.1024 (T-MIC: "a 2 s test recording (recording_type 2) through the normal path")
++ * and l.1029 (T-SIGN: "two 1 s test recordings 1 s apart; the ring reports the times VDD_MIC went on and off"). The
++ * requests go over the simulated USB to the real factory part, which calls the join through its ops.
++ */
++#include <string.h>
++
++#include <zephyr/sys/byteorder.h>
++
++#include <ring_store/rst.h>
++
++#include "rt.h"
++
++#if defined(CONFIG_RING_FACTORY)
++static uint8_t resp[RREC_MSG_HEADER_BYTES + 256];
++
++static void to_factory(void)
++{
++	struct rt_boot b = { .factory_flag = true };
++	uint8_t st;
++	uint8_t sub = RREC_FAC_ENTER;
++
++	rt_fresh(&b);
++	rt_vbus(true);
++	rt_usb_configured();
++	(void)rt_usb(RREC_OP_FACTORY, &sub, 1, resp, sizeof(resp), &st);
++	zassert_equal(rt_state(), RC_ST_FACTORY_TEST, "FACTORY_TEST");
++}
++
++/* the newest recording on the card (mounted for the read) */
++static bool newest(struct rst_rec_info *out)
++{
++	struct rst_mount_info mi;
++	struct rst_rec_info info[8];
++	uint16_t n = 0;
++	bool was = rst_mounted();
++
++	if (!was && rst_mount(false, &mi) != 0) {
++		return false;
++	}
++	(void)rst_list(0, 8, info, &n);
++	if (!was) {
++		(void)rst_unmount();
++	}
++	if (n == 0) {
++		return false;
++	}
++	*out = info[n - 1];
++	return true;
++}
++#endif
++
++/* T-MIC1 (FW l.1024): one recording of type 2, 2 s long (32,000 frames at 16 kHz, FW l.443), through rec_mics_on */
++ZTEST(recorder_factory, test_tmic_records_type_2_for_2s)
++{
++#if defined(CONFIG_RING_FACTORY)
++	uint8_t pl[2] = { RREC_FAC_MIC, 1 };
++	struct rst_rec_info r;
++	uint8_t st = 0xFF;
++	int n;
++
++	memset(&r, 0, sizeof(r));
++
++	to_factory();
++	rhw_sim_log_clear();
++	n = rt_usb(RREC_OP_FACTORY, pl, sizeof(pl), resp, sizeof(resp), &st);
++	TC_PRINT("T-MIC1: response %d bytes, status %u, result %u\n", n, st, n > RREC_MSG_HEADER_BYTES ?
++		 resp[RREC_MSG_HEADER_BYTES] : 0xFF);
++	zassert_equal(st, RREC_ST_OK, "the request answered OK");
++	zassert_equal(resp[RREC_MSG_HEADER_BYTES], RREC_FAC_RESULT_PASS, "T-MIC1 passed on the counter input");
++	zassert_equal(rt_count_rail(RHW_RAIL_MIC, true), 1u, "VDD_MIC on once");
++	zassert_true(newest(&r), "the test recording is on the card");
++	TC_PRINT("T-MIC1: recording %u type %u, %llu frames, %u chunks\n", r.recording_id, r.type, r.duration_frames,
++		 r.chunk_count);
++	zassert_equal(r.type, 2, "recording_type 2 (FW l.1024)");
++	/* 2 s = 32,000 frames (FW l.1024, l.443); within one block of 256 frames (FW l.443): the cut is at a ms time */
++	zassert_true(r.duration_frames + 256 >= 32000 && r.duration_frames <= 32000 + 256, "2 s long (%llu frames)",
++		     r.duration_frames);
++	zassert_false(rt_mic(), "VDD_MIC off after the test");
++#else
++	ztest_test_skip();
++#endif
++}
++
++/* T-SIGN (FW l.1029): two 1 s test recordings 1 s apart; the reported VDD_MIC on and off times are the rail's own */
++ZTEST(recorder_factory, test_tsign_reports_mic_times)
++{
++#if defined(CONFIG_RING_FACTORY)
++	uint8_t sub = RREC_FAC_SIGN;
++	uint8_t st = 0xFF;
++	int64_t rep[4];
++	int64_t rail[4];
++	int32_t i = 0;
++	int n;
++
++	to_factory();
++	rhw_sim_log_clear();
++	n = rt_usb(RREC_OP_FACTORY, &sub, 1, resp, sizeof(resp), &st);
++	zassert_equal(st, RREC_ST_OK, "the request answered OK");
++	zassert_true(n >= RREC_MSG_HEADER_BYTES + 1 + 32, "result and four times (%d bytes)", n);
++	zassert_equal(resp[RREC_MSG_HEADER_BYTES], RREC_FAC_RESULT_PASS, "T-SIGN result pass");
++	for (int k = 0; k < 4; k++) {
++		rep[k] = (int64_t)sys_get_le64(&resp[RREC_MSG_HEADER_BYTES + 1 + 8 * k]);
++	}
++	/* the rail's own on, off, on, off times from the event log of the simulated power chip */
++	for (int k = 0; k < 4; k++) {
++		i = rt_find_rail(RHW_RAIL_MIC, (k % 2) == 0, k == 0 ? 0 : (uint32_t)i + 1);
++		rail[k] = i >= 0 ? rt_ev_us(i) / 1000 : -1;
++	}
++	TC_PRINT("T-SIGN: reported on %lld off %lld on %lld off %lld ms; rail on %lld off %lld on %lld off %lld ms\n", rep[0],
++		 rep[1], rep[2], rep[3], rail[0], rail[1], rail[2], rail[3]);
++	zassert_equal(rt_count_rail(RHW_RAIL_MIC, true), 2u, "two test recordings: VDD_MIC on twice");
++	for (int k = 0; k < 4; k++) {
++		zassert_true(rail[k] >= 0, "rail edge %d", k);
++		/* the time is read right after the rail call: the same ms or the next (1 ms, the rail wait of FW l.458) */
++		zassert_true(rep[k] >= rail[k] && rep[k] <= rail[k] + 1, "time %d reported %lld, rail %lld", k, rep[k],
++			     rail[k]);
++	}
++	/* each 1 s long (FW l.1029), the second 1 s after the first ended (FW l.1029) */
++	zassert_true(rep[1] - rep[0] >= 1000, "first recording 1 s (%lld ms)", rep[1] - rep[0]);
++	zassert_true(rep[3] - rep[2] >= 1000, "second recording 1 s (%lld ms)", rep[3] - rep[2]);
++	zassert_true(rep[2] - rep[1] >= 1000, "1 s apart (%lld ms)", rep[2] - rep[1]);
++	zassert_false(rt_mic(), "VDD_MIC off after the test");
++#else
++	ztest_test_skip();
++#endif
++}
++
++static void *setup(void)
++{
++	rt_setup();
++	return NULL;
++}
++
++ZTEST_SUITE(recorder_factory, NULL, setup, NULL, NULL, NULL);
+##### new: tests/recorder/src/test_noscreens.c
+--- base/tests/recorder/src/test_noscreens.c
++++ tests/recorder/src/test_noscreens.c
+@@ -0,0 +1,32 @@
++/*
++ * recorder_a_noscreens: ship mode when the screens part never started (step 6 fix round 1, lead's ruling 4 on the open
++ * point of rscr_sync() without a time limit). The suite's name sorts first, so ztest runs it before every suite that
++ * starts the screens (rt_setup); the case checks that the screens were indeed never started.
++ */
++#include "rt.h"
++
++/* FW l.151, l.936 to l.941: the menu's power off goes through all of ship mode although no screens thread exists */
++ZTEST(recorder_a_noscreens, test_ship_without_screens_ends)
++{
++	int64_t t0;
++
++	zassert_false(rt_screens_started, "this case runs before any suite started the screens part");
++	rt_fresh(NULL);
++	rhw_sim_log_clear();
++	t0 = k_uptime_get();
++	rglue_event(RC_EV_MENU_POWER_OFF);
++	rt_settle();
++	TC_PRINT("ship without screens: idle %d, SHPHLDCONFIG at %d, ship task at %d, %lld ms\n", rrec_idle(),
++		 rt_find(RHW_EV_PMIC_SHPHLD_CFG, -1, -1, 0), rt_find(RHW_EV_PMIC_SHIP, -1, -1, 0), k_uptime_get() - t0);
++	zassert_true(rrec_idle(), "ship mode ended (the recorder's thread is free)");
++	zassert_true(rt_find(RHW_EV_PMIC_SHPHLD_CFG, -1, -1, 0) >= 0, "SHPHLDCONFIG written (FW l.938)");
++	zassert_true(rhw_sim_shipped(), "the ship task written (FW l.940)");
++}
++
++static void *setup(void)
++{
++	rt_setup_no_screens();
++	return NULL;
++}
++
++ZTEST_SUITE(recorder_a_noscreens, NULL, setup, NULL, NULL, NULL);
+##### changed: tests/recorder/src/test_rails.c
+--- base/tests/recorder/src/test_rails.c
++++ tests/recorder/src/test_rails.c
+@@ -5,4 +5,7 @@
+ 
+-/* FW l.912 to l.920: VDD_SD on in BOOT, RECOVERY, RECORDING, TRANSFER; VDD_MIC only in RECORDING; HFXO on in RECORDING and
+- * TRANSFER, and with USB in CHARGING. FACTORY_TEST is "per test" and BOOT/RECOVERY are passed through (not checked). */
++/* FW l.912 to l.920 (the table of 8.2): VDD_SD on in BOOT, RECOVERY, RECORDING, TRANSFER; VDD_MIC only in RECORDING;
++ * HFXO on in BOOT and RECOVERY (l.915), RECORDING (l.917), TRANSFER (l.919), with USB in CHARGING (l.918: VBUS is present
++ * in CHARGING, so USB runs), and in STANDBY and the error states only when the radio runs (l.916, l.920; these suites
++ * do not run the radio, so off). After a row the ring rests in its new state; BOOT and RECOVERY are passed through, so
++ * their HFXO is checked by test_hfxo_in_boot_and_recovery from the event log; FACTORY_TEST is "per test". */
+ static int check_rails(int row)
+@@ -71,2 +74,77 @@
+ 
++/* the HFXO requests outstanding just after simulated event i (the a0 of the last HFXO request or release up to i) */
++static int64_t hfxo_at(uint32_t upto)
++{
++	struct rhw_sim_ev e;
++	int64_t n = 0;
++
++	for (uint32_t i = 0; i <= upto && rhw_sim_log_get(i, &e); i++) {
++		if (e.kind == RHW_EV_HFXO_REQUEST || e.kind == RHW_EV_HFXO_RELEASE) {
++			n = e.a0;
++		}
++	}
++	return n;
++}
++
++/* the first step whose state after it is s, at or after step `from`; -1 when none */
++static int32_t step_into(enum rc_state s, uint32_t from)
++{
++	for (uint32_t i = from; i < rt_steps(); i++) {
++		if (rt_step_get(i).state == s) {
++			return (int32_t)i;
++		}
++	}
++	return -1;
++}
++
++/* the HFXO count stays above 0 from simulated event `a` through every event before time t_end_us */
++static bool held_through(int32_t a, int64_t t_end_us)
++{
++	struct rhw_sim_ev e;
++	int64_t n = hfxo_at((uint32_t)a);
++
++	if (n < 1) {
++		return false;
++	}
++	for (uint32_t i = (uint32_t)a + 1; rhw_sim_log_get(i, &e) && e.t_us < t_end_us; i++) {
++		if ((e.kind == RHW_EV_HFXO_REQUEST || e.kind == RHW_EV_HFXO_RELEASE) && e.a0 < 1) {
++			return false;
++		}
++	}
++	return true;
++}
++
++/* FW l.915 (review finding R6-04): HFXO on in BOOT and RECOVERY, released when the state that follows does not want it
++ * (STANDBY, l.916: "when the radio runs"; these suites do not run the radio) */
++ZTEST(recorder_rails, test_hfxo_in_boot_and_recovery)
++{
++	int32_t i_init, i_rec, i_stb;
++	int64_t t_stb_us;
++
++	/* BOOT: the boot mount (the first card init) runs with HFXO held, until the step into STANDBY */
++	rt_fresh(NULL);
++	i_init = rt_find(RHW_EV_DISK_INIT, -1, -1, 0);
++	i_stb = step_into(RC_ST_STANDBY, 0);
++	zassert_true(i_init >= 0 && i_stb >= 0, "booted to STANDBY (%d, %d)", i_init, i_stb);
++	t_stb_us = rt_step_get((uint32_t)i_stb).t_ms * 1000;
++	TC_PRINT("HFXO BOOT: requests %lld at the boot card init (event %d), STANDBY step at %lld us, now %u\n",
++		 hfxo_at((uint32_t)i_init), i_init, t_stb_us, rhw_sim_hfxo_requests());
++	zassert_true(held_through(i_init, t_stb_us), "HFXO on in BOOT (FW l.915)");
++	zassert_equal(rhw_sim_hfxo_requests(), 0u, "released in STANDBY (FW l.916)");
++
++	/* RECOVERY (row 9: the open flag at boot, the scan, STANDBY): held from BOOT through RECOVERY */
++	zassert_equal(rt_run_row(9), 0, NULL);
++	zassert_true(rt_row_seen(9), "row 9");
++	i_rec = step_into(RC_ST_RECOVERY, 0);
++	i_stb = step_into(RC_ST_STANDBY, i_rec < 0 ? 0 : (uint32_t)i_rec);
++	zassert_true(i_rec >= 0 && i_stb > i_rec, "BOOT, RECOVERY, STANDBY (%d, %d)", i_rec, i_stb);
++	i_init = rt_find(RHW_EV_DISK_INIT, -1, -1, 0);
++	t_stb_us = rt_step_get((uint32_t)i_stb).t_ms * 1000;
++	TC_PRINT("HFXO RECOVERY: requests %lld at the boot card init (event %d), RECOVERY step at %lld ms, STANDBY at %lld us, "
++		 "now %u\n", hfxo_at((uint32_t)i_init), i_init, rt_step_get((uint32_t)i_rec).t_ms, t_stb_us,
++		 rhw_sim_hfxo_requests());
++	zassert_true(held_through(i_init, t_stb_us), "HFXO on in BOOT and RECOVERY (FW l.915)");
++	zassert_equal(rhw_sim_hfxo_requests(), 0u, "released in STANDBY (FW l.916)");
++}
++
+ static void *setup(void)
+##### changed: tests/recorder/src/test_rows.c
+--- base/tests/recorder/src/test_rows.c
++++ tests/recorder/src/test_rows.c
+@@ -19,3 +19,3 @@
+ 	}
+-	if (s == RC_ST_FACTORY_TEST && rrec_st.test_recording) {
++	if (s == RC_ST_FACTORY_TEST && atomic_get(&rrec_st.test_recording) != 0) {
+ 		return true;
+@@ -55,3 +55,3 @@
+ 			checks++;
+-			if (rrec_st.test_recording && rt_mic()) {
++			if (atomic_get(&rrec_st.test_recording) != 0 && rt_mic()) {
+ 				t_mic_seen_on = true;
+##### changed: tests/recorder/src/test_screens.c
+--- base/tests/recorder/src/test_screens.c
++++ tests/recorder/src/test_screens.c
+@@ -22,5 +22,8 @@
+ 
+-static uint64_t charging_screen(uint16_t soc_x10)
++/* SCR_CHARGING after a boot with VBUS (row 5) on a set world: 1,000 µAh cell at 50.0 % (gauge start 500), charging at
++ * 1 mA (samples of -1,000 µA), the charger's state as given (0 = its own: constant current with VBUS) */
++static uint64_t charging_screen(uint8_t chg_forced)
+ {
+-	struct rt_boot b = { .soc_x10 = soc_x10 };
++	struct rt_boot b = { .vbus = true, .mv = 3900, .ua = -1000, .gauge_uah = 1000, .soc_x10 = 500,
++			     .chg_forced = chg_forced };
+ 	struct rscr s;
+@@ -28,3 +31,3 @@
+ 	rt_fresh(&b);
+-	rt_vbus(true);
++	zassert_equal(rt_state(), RC_ST_CHARGING, "CHARGING (row 5)");
+ 	rt_sleep(1500);   /* the battery values reach the screens once a second (rscr_set_battery) */
+@@ -35,13 +38,37 @@
+ 
+-/* FW l.374: SCR_CHARGING shows the battery from the gauge (C39): the same gauge value draws the same frame, another value
+- * another frame */
++/* the same screen drawn from values the test gives the screens itself */
++static uint64_t ref_screen(uint8_t pct, bool charging, bool full, uint16_t to_full_min)
++{
++	rscr_set_battery(pct, charging, full, to_full_min);
++	return frame_hash();
++}
++
++/* FW l.374 (C39, review finding R6-14): SCR_CHARGING shows "battery % and icon, "Charging" or "Full", time to full in
++ * minutes from the fuel gauge". The values the screen received are those typed here: the picture the join's values drew
++ * equals the picture of the typed values, and differs when any one of them differs. */
+ ZTEST(recorder_screens, test_battery_reaches_screens)
+ {
+-	uint64_t a1 = charging_screen(623);
+-	uint64_t a2 = charging_screen(623);
+-	uint64_t b1 = charging_screen(412);
++	/* 50 % (gauge 500 = 50.0 %); "Charging" (constant current with VBUS); time to full 30 min [CALC: 1,000 µAh x
++	 * (1,000 - 500) / 1,000 at 1 mA = 0.5 h = 30 min] */
++	uint64_t a = charging_screen(0);
++	uint64_t ok = ref_screen(50, true, false, 30);
++	uint64_t ttf31 = ref_screen(50, true, false, 31);
++	uint64_t pct51 = ref_screen(51, true, false, 30);
++	uint64_t full = ref_screen(50, false, true, 30);
++	uint64_t f, f_ok, f_chg;
+ 
+-	TC_PRINT("SCR_CHARGING frame hash: 62.3 %% %016llx, again %016llx, 41.2 %% %016llx\n", a1, a2, b1);
+-	zassert_equal(a1, a2, "the same gauge value, the same picture");
+-	zassert_not_equal(a1, b1, "another gauge value, another picture: the value reaches the screen");
++	TC_PRINT("SCR_CHARGING frames: from the join %016llx; typed 50 %% Charging 30 min %016llx, 31 min %016llx, 51 %% "
++		 "%016llx, Full %016llx\n", a, ok, ttf31, pct51, full);
++	zassert_equal(a, ok, "the screen received 50 %%, Charging, 30 min");
++	zassert_not_equal(a, ttf31, "the time to full is in the picture");
++	zassert_not_equal(a, pct51, "the percent is in the picture");
++	zassert_not_equal(a, full, "Charging, not Full");
++	/* "Full": the charger reports charging completed (RREC_CHG_FULL) */
++	f = charging_screen(RREC_CHG_FULL + 1);
++	f_ok = ref_screen(50, false, true, 30);
++	f_chg = ref_screen(50, true, false, 30);
++	TC_PRINT("SCR_CHARGING frames (full): from the join %016llx; typed 50 %% Full %016llx, Charging %016llx\n", f, f_ok,
++		 f_chg);
++	zassert_equal(f, f_ok, "the screen received 50 %%, Full");
++	zassert_not_equal(f, f_chg, "Full, not Charging");
+ }
+##### new: tests/recorder/src/test_ship.c
+--- base/tests/recorder/src/test_ship.c
++++ tests/recorder/src/test_ship.c
+@@ -0,0 +1,157 @@
++/*
++ * recorder_ship: ship mode as the join carries it out (step 6 fix round 1, review findings R6-01, R6-02, R6-10):
++ * design/firmware.md 8.4 (l.936 to l.941), the menu's "Power off" row (l.151) and ruling R20 (l.1057).
++ * Orders are read from the one event log of the simulated drivers (rhw_sim.h).
++ */
++#include <string.h>
++
++#include "rt.h"
++
++/* ------------------------------------------------------------------ ship mode (fix round 1: R6-01, R6-02, R6-10) */
++static struct {
++	bool called;
++	uint32_t log_n;        /* the simulated event log's length when step 1 ended (SHPHLDCONFIG comes after it) */
++	bool mic, sd, usb, blanked, beacon_stopped;
++	uint32_t radio_stops;
++	char thread[16];
++} at_ship;
++
++static void ship_hook(void)
++{
++	const char *nm = k_thread_name_get(k_current_get());
++
++	at_ship.called = true;
++	at_ship.log_n = rhw_sim_log_count();
++	at_ship.mic = rt_mic();
++	at_ship.sd = rt_sd();
++	at_ship.usb = rhw_sim_usb_enabled();
++	at_ship.blanked = rt_blanked();
++	at_ship.beacon_stopped = rt_find(RHW_EV_BEACON_STOP, -1, -1, 0) >= 0;
++	at_ship.radio_stops = rrec_test_radio_stops();
++	strncpy(at_ship.thread, nm != NULL ? nm : "", sizeof(at_ship.thread) - 1);
++}
++
++/* FW l.151, l.323: menu "Power off": the whole M2 (80 on, 120 off, 80 on) on the MOTOR pin before SHPHLDCONFIG (R6-01) */
++ZTEST(recorder_ship, test_ship_feels_whole_m2)
++{
++	static const int32_t m2_ms[3] = { 80, 120, 80 };   /* FW l.323 */
++	struct rhw_sim_ev e;
++	int64_t t[4];
++	int lv[4];
++	int n = 0;
++	int32_t i_cfg;
++
++	rt_fresh(NULL);
++	rhw_sim_log_clear();
++	rglue_event(RC_EV_MENU_POWER_OFF);
++	rt_settle();
++	zassert_true(rt_row_seen(19), "row 19 (FW l.151)");
++	i_cfg = rt_find(RHW_EV_PMIC_SHPHLD_CFG, -1, -1, 0);
++	zassert_true(i_cfg >= 0, "SHPHLDCONFIG written");
++	for (int32_t i = 0; i < i_cfg && rhw_sim_log_get((uint32_t)i, &e); i++) {
++		if (e.kind == RHW_EV_MOTOR) {
++			if (n < 4) {
++				t[n] = e.t_us;
++				lv[n] = (int)e.a0;
++			}
++			n++;
++		}
++	}
++	TC_PRINT("ship: %d MOTOR edges before SHPHLDCONFIG (index %d)\n", n, i_cfg);
++	zassert_equal(n, 4, "M2 = 4 edges before SHPHLDCONFIG (%d)", n);
++	for (int i = 0; i < 4; i++) {
++		zassert_equal(lv[i], (i % 2) == 0 ? 1 : 0, "edge %d level", i);
++	}
++	for (int i = 0; i < 3; i++) {
++		int64_t d = t[i + 1] - t[i];
++
++		TC_PRINT("ship: M2 segment %d lasted %lld us (FW l.323: %d ms)\n", i, d, m2_ms[i]);
++		/* the motor unit's tolerance (tests/motor t_check_edges): -1 us to +1 ms */
++		zassert_true(d >= (int64_t)m2_ms[i] * 1000 - 1 && d < (int64_t)m2_ms[i] * 1000 + 1000,
++			     "segment %d: %lld us, FW l.323 %d ms", i, d, m2_ms[i]);
++	}
++	/* FW l.323: M2 lasts 280 ms from its first MOTOR high to its last MOTOR low, all before SHPHLDCONFIG */
++	TC_PRINT("ship: M2 lasted %lld us on the MOTOR pin (FW l.323: 280 ms)\n", t[3] - t[0]);
++	zassert_true(t[3] - t[0] >= 280 * 1000 - 1 && t[3] - t[0] < 280 * 1000 + 3000, "M2 280 ms (%lld us)", t[3] - t[0]);
++}
++
++/* FW l.937 step 1, ruling R20: before SHPHLDCONFIG the recording, storage, USB, radio and screen are closed; the ship
++ * beacon still runs; ship mode runs on the recorder's thread (R6-02, R6-10). The factory SHIP_ENTER (VBUS present, the
++ * ship waits for VBUS removal) and the menu's power off with the screen on. */
++ZTEST(recorder_ship, test_ship_closes_each_part_first)
++{
++#if defined(CONFIG_RING_FACTORY)
++	static uint8_t resp[64];
++	uint8_t st;
++	uint8_t sub = RREC_FAC_SHIP_ENTER;
++	struct rt_boot b = { .factory_flag = true };
++	int32_t i_cfg, i_usb_off, i_sd_off;
++	uint32_t radio0;
++
++	rt_fresh(&b);
++	rt_vbus(true);
++	rt_usb_configured();
++	(void)rt_usb(RREC_OP_FACTORY, (const uint8_t[]){ RREC_FAC_ENTER }, 1, resp, sizeof(resp), &st);
++	zassert_equal(rt_state(), RC_ST_FACTORY_TEST, "FACTORY_TEST");
++	zassert_true(rhw_sim_usb_enabled(), "USB runs");
++	zassert_false(rt_blanked(), "the screen is on (SCR_FACTORY)");
++	memset(&at_ship, 0, sizeof(at_ship));
++	radio0 = rrec_test_radio_stops();
++	rrec_test_set_ship_hook(ship_hook);
++	rhw_sim_log_clear();
++	(void)rt_usb_send(RREC_OP_FACTORY, &sub, 1);
++	for (int i = 0; i < 300 && !at_ship.called; i++) {
++		rt_sleep(10);
++	}
++	rt_sleep(200);   /* the ship waits for VBUS removal now (FW l.939) */
++	rrec_test_set_ship_hook(NULL);
++	i_cfg = rt_find(RHW_EV_PMIC_SHPHLD_CFG, -1, -1, 0);
++	i_usb_off = rt_find(RHW_EV_USB_DISABLE, -1, -1, 0);
++	i_sd_off = rt_find_rail(RHW_RAIL_SD, false, 0);
++	TC_PRINT("ship (factory): step 1 ended at log %u on thread %s; SHPHLDCONFIG %d, USB disable %d, VDD_SD off %d; "
++		 "at step 1's end: VDD_MIC %d, VDD_SD %d, USB %d, screen blanked %d, radio stops %u, beacon stopped %d\n",
++		 at_ship.log_n, at_ship.thread, i_cfg, i_usb_off, i_sd_off, at_ship.mic, at_ship.sd, at_ship.usb,
++		 at_ship.blanked, at_ship.radio_stops - radio0, at_ship.beacon_stopped);
++	zassert_true(at_ship.called, "ship mode step 1 ran");
++	zassert_true(i_cfg >= 0 && (uint32_t)i_cfg >= at_ship.log_n, "SHPHLDCONFIG after step 1");
++	zassert_false(at_ship.mic, "recording closed (VDD_MIC off)");
++	zassert_false(at_ship.sd, "storage closed (VDD_SD off)");
++	zassert_true(i_sd_off >= 0 && i_sd_off < i_cfg, "VDD_SD off before SHPHLDCONFIG");
++	zassert_false(at_ship.usb, "USB closed");
++	zassert_true(i_usb_off >= 0 && i_usb_off < i_cfg, "USB disabled before SHPHLDCONFIG");
++	zassert_equal(at_ship.radio_stops - radio0, 1u, "the radio stopped once (rdev_stop)");
++	zassert_true(at_ship.blanked, "the screen closed (panel off) before SHPHLDCONFIG");
++	zassert_false(at_ship.beacon_stopped, "the ship beacon still runs (ruling R20)");
++	zassert_equal(strcmp(at_ship.thread, "rrec"), 0, "on the recorder's thread (%s)", at_ship.thread);
++	rt_row_cleanup(70);
++	zassert_true(rhw_sim_shipped(), "the ship task after VBUS removal");
++
++	/* the menu's power off with the screen on (the status screen of a short press) */
++	rt_fresh(NULL);
++	rt_short();
++	zassert_false(rt_blanked(), "the screen is on");
++	memset(&at_ship, 0, sizeof(at_ship));
++	rrec_test_set_ship_hook(ship_hook);
++	rhw_sim_log_clear();
++	rglue_event(RC_EV_MENU_POWER_OFF);
++	rt_settle();
++	rrec_test_set_ship_hook(NULL);
++	i_cfg = rt_find(RHW_EV_PMIC_SHPHLD_CFG, -1, -1, 0);
++	TC_PRINT("ship (menu): step 1 ended at log %u on thread %s, SHPHLDCONFIG %d, screen blanked %d\n", at_ship.log_n,
++		 at_ship.thread, i_cfg, at_ship.blanked);
++	zassert_true(at_ship.called && i_cfg >= 0 && (uint32_t)i_cfg >= at_ship.log_n, "step 1, then SHPHLDCONFIG");
++	zassert_true(at_ship.blanked, "the screen closed before SHPHLDCONFIG");
++	zassert_equal(strcmp(at_ship.thread, "rrec"), 0, "on the recorder's thread (%s)", at_ship.thread);
++#else
++	ztest_test_skip();
++#endif
++}
++
++
++static void *setup(void)
++{
++	rt_setup();
++	return NULL;
++}
++
++ZTEST_SUITE(recorder_ship, NULL, setup, NULL, NULL, NULL);
+##### new: tests/recorder/src/test_unmount.c
+--- base/tests/recorder/src/test_unmount.c
++++ tests/recorder/src/test_unmount.c
+@@ -0,0 +1,154 @@
++/*
++ * recorder_unmount: VDD_SD off when TRANSFER is left while a command uses the store (step 6 fix round 1, review finding
++ * R6-03): design/firmware.md l.178 ("finish the current command; VDD_SD off"), l.179 ("abort the command; VDD_SD off"),
++ * and 8.2 (l.912 to l.920: VDD_SD off in STANDBY and CHARGING). The simulated card stalls only its writes
++ * (rhw_sim_disk_stall_ms); a stalled chunk READ is not simulated. The "read command" is GET_LOG (FW l.706, lead's ruling),
++ * whose store call first writes the queued event log records, so with queued records and a stalled card it holds the
++ * store for the stall times the records.
++ * The transfer part runs its bus events on the transfer thread after the command that runs (rxf_class.c), so "unconfigured
++ * while a command runs" does not reach the core through the class until the command ended; the cases of l.178 give the
++ * core the event themselves (rglue_event, as the cases of the Bluetooth highlight do) while GET_LOG holds the store.
++ */
++#include <string.h>
++
++#include <zephyr/sys/byteorder.h>
++
++#include <ring_store/rst.h>
++#include <ring_xfer/rxf.h>
++
++#include "rt.h"
++
++/* a TRANSFER with the card mounted, then `records` event log records queued on a card that stalls each write by
++ * `stall_ms`, then GET_LOG sent (not waited for) */
++static void transfer_with_busy_store(uint32_t stall_ms, int records)
++{
++	uint8_t pl[RREC_GET_LOG_REQ_BYTES];
++	uint8_t a[4] = { 0 };
++
++	rt_fresh(NULL);
++	rt_vbus(true);
++	rt_usb_configured();
++	zassert_equal(rt_state(), RC_ST_TRANSFER, "TRANSFER");
++	zassert_true(rt_sd(), "VDD_SD on in TRANSFER");
++	rhw_sim_disk_stall_ms(stall_ms);
++	for (int i = 0; i < records; i++) {
++		a[0] = (uint8_t)i;
++		rrec_log(RREC_LOG_BATTERY, a, sizeof(a));   /* records to write: the storage thread and GET_LOG write them */
++	}
++	sys_put_le32(1, pl);
++	sys_put_le16(RREC_GET_LOG_MAX_MAX, &pl[4]);
++	zassert_equal(rt_usb_send(RREC_OP_GET_LOG, pl, sizeof(pl)), 0, "GET_LOG sent");
++	rt_sleep(100);
++	zassert_true(rxf_busy(), "the command runs");
++	rt_steps_clear();
++	rhw_sim_log_clear();
++}
++
++/* the end of a case: the command ended (the transfer thread is free again) and the card no longer stalls */
++static void command_ended(void)
++{
++	for (int i = 0; i < 600 && rxf_busy(); i++) {
++		rt_sleep(100);
++	}
++	zassert_false(rxf_busy(), "the command ended");
++	rhw_sim_disk_stall_ms(0);
++	rt_settle();
++}
++
++/* the step of `row` ended with VDD_SD off: the rail went off inside that step (before its after-call), not in a later one */
++static void sd_off_in_the_step(int row)
++{
++	int32_t i_off = rt_find_rail(RHW_RAIL_SD, false, 0);
++	int64_t step_ms = -1;
++
++	for (uint32_t i = 0; i < rt_steps(); i++) {
++		if (rt_step_get(i).row == row) {
++			step_ms = rt_step_get(i).t_ms;
++			break;
++		}
++	}
++	TC_PRINT("unmount: row %d step at %lld ms, VDD_SD off at %lld us, steps %u, VDD_SD now %d\n", row, step_ms,
++		 rt_ev_us(i_off), rt_steps(), rt_sd());
++	zassert_true(step_ms >= 0, "row %d taken", row);
++	zassert_false(rt_sd(), "VDD_SD off when the step of row %d ended", row);
++	zassert_true(i_off >= 0 && rt_ev_us(i_off) <= step_ms * 1000 + 1000, "VDD_SD went off inside the step of row %d",
++		     row);
++}
++
++/* FW l.179: VBUS removed in TRANSFER while GET_LOG holds the store: abort, the command ends, VDD_SD off in that step */
++ZTEST(recorder_unmount, test_vbus_out_during_read_command)
++{
++	transfer_with_busy_store(400, 6);
++	rt_vbus(false);
++	zassert_equal(rt_state(), RC_ST_STANDBY, "STANDBY (FW l.179)");
++	sd_off_in_the_step(47);
++	command_ended();
++}
++
++/* FW l.178: unconfigured in TRANSFER while GET_LOG holds the store longer than the finish waits (5,000 ms, the join's
++ * bound): the finish times out, the unmount waits for the store call, VDD_SD off in that step */
++ZTEST(recorder_unmount, test_unconfigured_finish_times_out)
++{
++	int64_t t0;
++
++	transfer_with_busy_store(1300, 6);
++	t0 = k_uptime_get();
++	rglue_event(RC_EV_USB_UNCONFIGURED);
++	rt_settle();
++	TC_PRINT("unmount: the unconfigured step took about %lld ms\n", k_uptime_get() - t0);
++	zassert_equal(rt_state(), RC_ST_CHARGING, "CHARGING (FW l.178)");
++	sd_off_in_the_step(46);
++	zassert_true(k_uptime_get() - t0 > 5000, "the finish timed out first (the command held the store longer)");
++	zassert_true(rhw_sim_pmic_charger_on(), "charge on (FW l.178)");
++	command_ended();
++}
++
++/* a store call longer than both waits: the failed unmount is reported (event log) and tried again until VDD_SD is off */
++ZTEST(recorder_unmount, test_failed_unmount_retried_and_reported)
++{
++	struct rrec_tap_rec t;
++	int busy = 0;
++	bool order_ok = true;
++	uint8_t first_state = 0xFF;
++
++	rrec_tap_clear();
++	transfer_with_busy_store(3000, 6);
++	rrec_tap_clear();
++	rglue_event(RC_EV_USB_UNCONFIGURED);
++	for (int i = 0; i < 400 && rt_sd(); i++) {
++		rt_sleep(100);
++	}
++	rt_settle();
++	/* FW l.1234 (the code table, the lead's ruling): 0x0290 RREC_LOG_UNMOUNT_FAILED, errno i32, state u8, try u8, written
++	 * at the FIRST failed try (its errno, try 1) and once when the tries end (errno 0 when the unmount then succeeded,
++	 * try = the number of tries made) */
++	for (uint32_t k = 0; rrec_tap_get(k, &t); k++) {
++		if (t.code == RREC_LOG_UNMOUNT_FAILED) {
++			busy++;
++			TC_PRINT("unmount: record %d: errno %d, state %s, try %u\n", busy, (int32_t)sys_get_le32(t.args),
++				 rc_state_name((enum rc_state)t.args[4]), t.args[5]);
++			if (busy == 1) {
++				first_state = t.args[4];
++				order_ok &= (int32_t)sys_get_le32(t.args) == -EBUSY && t.args[5] == 1;
++			} else if (busy == 2) {
++				order_ok &= (int32_t)sys_get_le32(t.args) == 0 && t.args[5] >= 2;
++			}
++		}
++	}
++	TC_PRINT("unmount: %d records 0x0290, VDD_SD now %d, state %s\n", busy, rt_sd(), rc_state_name(rt_state()));
++	zassert_equal(RREC_LOG_UNMOUNT_FAILED, 0x0290, "the code of FW l.1234");
++	zassert_equal(busy, 2, "two records for a step with several failed tries (%d)", busy);
++	zassert_true(order_ok, "first: errno -EBUSY, try 1; second: errno 0, the number of tries (2 or more)");
++	zassert_equal(first_state, RC_ST_TRANSFER, "the first try in the step of row 46 (from TRANSFER)");
++	zassert_false(rt_sd(), "tried again until VDD_SD went off");
++	zassert_false(rst_mounted(), "unmounted");
++	command_ended();
++}
++
++static void *setup(void)
++{
++	rt_setup();
++	return NULL;
++}
++
++ZTEST_SUITE(recorder_unmount, NULL, setup, NULL, NULL, NULL);
+##### changed: tests/store/src/test_svc.c
+--- base/tests/store/src/test_svc.c
++++ tests/store/src/test_svc.c
+@@ -518,2 +518,31 @@
+ 
++/* step 6 fix round 1 (R6-03): rst_unmount_wait waits for the call that runs on another thread, then unmounts (rail off);
++ * with a bound shorter than that call it answers -EBUSY and changes nothing */
++ZTEST(store_svc, test_unmount_wait_waits_for_running_call)
++{
++	struct rst_mount_info mi;
++	uint32_t id;
++
++	tst_card(100);
++	tst_mount_boot(&mi);
++	zassert_equal(rst_open(RREC_REC_TYPE_RECORDING, 0, &id), 0);
++	rhw_sim_disk_stall_ms(300);                    /* the close writes 2 sectors, 300 ms each */
++	helper_rc = 99;
++	k_thread_create(&helper, helper_stack, K_THREAD_STACK_SIZEOF(helper_stack), helper_close, NULL, NULL, NULL, 1,
++			0, K_NO_WAIT);
++	k_msleep(100);
++	zassert_equal(rst_unmount_wait(50), -EBUSY, "the close runs longer than 50 ms");
++	zassert_true(rst_mounted(), "nothing changed");
++	zassert_true(rhw_pmic()->rail_get(RHW_RAIL_SD), "VDD_SD still on");
++	int64_t t0 = k_uptime_get();
++
++	zassert_equal(rst_unmount_wait(5000), 0, "waited for the close, then unmounted");
++	TC_PRINT("rst_unmount_wait waited %lld ms for the running close\n", k_uptime_get() - t0);
++	zassert_true(k_uptime_get() - t0 >= 100, "it waited for the running call");
++	zassert_false(rst_mounted(), "unmounted");
++	zassert_false(rhw_pmic()->rail_get(RHW_RAIL_SD), "VDD_SD off");
++	zassert_equal(k_thread_join(&helper, K_SECONDS(5)), 0);
++	zassert_equal(helper_rc, 0, "the close itself succeeded");
++}
++
+ /* the ring of 3: a fourth chunk waits for nobody and is refused, nothing is overwritten */
+##### changed: tests/xfer/src/test_svc.c
+--- base/tests/xfer/src/test_svc.c
++++ tests/xfer/src/test_svc.c
+@@ -400,2 +400,30 @@
+ 
++/* step 6 fix round 1 (R6-02, FW l.937): rxf_stop() aborts the command that runs (no response), the stack is disabled
++ * when it returns and stays off with VBUS still present; the next VBUS ready starts it again */
++ZTEST(xfer_svc, test_stop_closes_usb_for_ship)
++{
++	vbus_on();
++	zassert_true(rhw_sim_usb_enabled(), "the stack runs with VBUS");
++	fk.hook = slow;
++	host_send(RREC_OP_GET_BATTERY, 0x41, NULL, 0);
++	k_msleep(5);
++	zassert_true(rxf_busy(), "a command runs");
++	zassert_equal(rxf_stop(1000), 0, "the command ended within the bound");
++	zassert_false(rhw_sim_usb_enabled(), "the stack is off when rxf_stop returns");
++	zassert_equal(rhw_sim_log_count_kind(RHW_EV_USB_DISABLE), 1u, "one disable");
++	zassert_false(rxf_busy());
++	k_msleep(80);
++	zassert_equal(rhw_sim_usb_host_read(rsp, sizeof(rsp)), 0u, "no response for the aborted command");
++	zassert_equal(fk.after_calls, 0u, "the aborted command is not reported");
++	fk.hook = NULL;
++	k_msleep(20);
++	zassert_false(rhw_sim_usb_enabled(), "VBUS still present: the stack stays off (not started again by itself)");
++	rhw_sim_vbus(false);
++	k_msleep(2);
++	vbus_on();
++	zassert_true(rhw_sim_usb_enabled(), "VBUS ready again: the stack starts");
++	host_send(RREC_OP_GET_INFO, 0x42, NULL, 0);
++	zassert_equal(host_get(rsp, sizeof(rsp), 30), 51u, "and answers");
++}
++
+ /* the bus events reach the join on the transfer thread: configured, unconfigured, suspended; VBUS removal is not one */
+FILES CHANGED OR ADDED: 36

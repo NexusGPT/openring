@@ -1,0 +1,57 @@
+# remote.sh run 20261112-235844-r2-relay-1
+# command: mkdir -p /ws/out/r2-a && west twister -T tests/relay -p native_sim -p nrf54lm20bsim/nrf54lm20a/cpuapp -O /ws/out/r2-a/tw --inline-logs -v > /ws/out/r2-a/tw.log 2>&1; echo "twister exit $?"; grep -E "executed test cases|PASSED|FAILED|error:" /ws/out/r2-a/tw.log | head; RING_OUT=/ws/out/r2-a/bsim-relay bash tests/bsim/relay/run.sh > /ws/out/r2-a/bsim-relay.log 2>&1; echo "bsim-relay exit $?"; grep -a "TEST . RESULT\|^RESULT\|CHECK.* FAIL\|error" /ws/out/r2-a/bsim-relay.log | sed "s/^[a-z_0-9]*: @[0-9:.]* //" | cut -c1-230 | head -50
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 23:58:44 CET
+# free on the server's /: 48 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261112-235844-r2-relay-1; server log /root/ring-os/logs/20261112-235844-r2-relay-1.log
+twister exit 0
+INFO    - 1/2 native_sim/native         ring_relay.logic                                   PASSED (native 0.079s <host/gnu>)
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             PASSED (native 0.080s <host/gnu>)
+INFO    - 46 of 46 executed test cases passed (100.00%) on 2 out of total 1514 platforms (0.13%).
+bsim-relay exit 0
+ HELPER CHECK H: PUT before HELLO: refused with ATT error 0x80 and ERROR code 2, id 1900 PASS (t=11426)
+ HELPER CHECK H: REMOVE before HELLO: refused with ATT error 0x80 and ERROR code 2, id 1901 PASS (t=11526)
+ HELPER CHECK H: CLEAR before HELLO: refused with ATT error 0x80 and ERROR code 2, id 0 PASS (t=11626)
+ HELPER CHECK H: HELLO with version 2: refused with ATT error 0x80 and ERROR code 6, id 0 PASS (t=11726)
+ HELPER CHECK H: with no subscription to Out a refused frame is still answered with ATT error 0x80 PASS (t=47756)
+ HELPER CHECK H: a malformed PUT during RECORDING: refused with ATT error 0x80 and ERROR code 5, id 1006 PASS (t=53476)
+ HELPER CHECK H: an unknown opcode during RECORDING: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=53576)
+ HELPER CHECK H: M1 unknown opcode 0x7E: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=57876)
+ HELPER CHECK H: M2 HELLO of 1 byte: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=57976)
+ HELPER CHECK H: M3 HELLO of 3 bytes: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=58076)
+ HELPER CHECK H: M4 HELLO version 0: refused with ATT error 0x80 and ERROR code 6, id 0 PASS (t=58176)
+ HELPER CHECK H: M5 HELLO version 2: refused with ATT error 0x80 and ERROR code 6, id 0 PASS (t=58276)
+ HELPER CHECK H: M6 REMOVE of 4 bytes: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=58376)
+ HELPER CHECK H: M7 REMOVE of 6 bytes: refused with ATT error 0x80 and ERROR code 1, id 2 PASS (t=58476)
+ HELPER CHECK H: M8 CLEAR of 2 bytes: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=58576)
+ HELPER CHECK H: M9 PUT with no data byte: refused with ATT error 0x80 and ERROR code 1, id 7 PASS (t=58676)
+ HELPER CHECK H: M10 PUT with total 1: refused with ATT error 0x80 and ERROR code 4, id 8 PASS (t=58776)
+ HELPER CHECK H: M11 PUT with total 513: refused with ATT error 0x80 and ERROR code 4, id 9 PASS (t=58876)
+ HELPER CHECK H: M12 PUT with total 0: refused with ATT error 0x80 and ERROR code 4, id 10 PASS (t=58976)
+ HELPER CHECK H: M13 PUT at offset 5 with no record in progress: refused with ATT error 0x80 and ERROR code 3, id 11 PASS (t=59076)
+ HELPER CHECK H: M14 next piece at offset 12 after 10 bytes (a gap): refused with ATT error 0x80 and ERROR code 3, id 12 PASS (t=59276)
+ HELPER CHECK H: M15 6 bytes for a total of 5: refused with ATT error 0x80 and ERROR code 3, id 13 PASS (t=59376)
+ HELPER CHECK H: M16 a field that runs past the end: refused with ATT error 0x80 and ERROR code 5, id 14 PASS (t=59476)
+ HELPER CHECK H: M17 an unknown field type 9: refused with ATT error 0x80 and ERROR code 5, id 15 PASS (t=59576)
+ HELPER CHECK H: M18 a repeated field type: refused with ATT error 0x80 and ERROR code 5, id 16 PASS (t=59676)
+ HELPER CHECK H: M19 flag bit 5 set: refused with ATT error 0x80 and ERROR code 5, id 17 PASS (t=59776)
+ HELPER CHECK H: M20 flag bit 7 set: refused with ATT error 0x80 and ERROR code 5, id 2003 PASS (t=59876)
+ HELPER CHECK H: M21 a field type with no length byte: refused with ATT error 0x80 and ERROR code 5, id 19 PASS (t=59976)
+ HELPER CHECK H: reconnect: PUT before the new HELLO: refused with ATT error 0x80 and ERROR code 2, id 2999 PASS (t=63802)
+ HELPER CHECK H: reconnect: the next piece of the old record before the new HELLO: refused with ATT error 0x80 and ERROR code 2, id 2999 PASS (t=63902)
+ HELPER CHECK H: reconnect: after HELLO the next piece of the old record (the unfinished record was dropped): refused with ATT error 0x80 and ERROR code 3, id 2999 PASS (t=64102)
+TEST H RESULT PASS (185 checks passed)
+ HELPER CHECK I: HELLO on an iPhone's link: refused with ATT error 0x80 and ERROR code 7, id 0 PASS (t=13526)
+ HELPER CHECK I: PUT on an iPhone's link: refused with ATT error 0x80 and ERROR code 7, id 302 PASS (t=13626)
+ HELPER CHECK I: REMOVE of the iPhone's notification on an iPhone's link: refused with ATT error 0x80 and ERROR code 7, id 301 PASS (t=13726)
+ HELPER CHECK I: CLEAR on an iPhone's link: refused with ATT error 0x80 and ERROR code 7, id 0 PASS (t=13826)
+ HELPER CHECK I: an unknown opcode on an iPhone's link: refused with ATT error 0x80 and ERROR code 7, id 0 PASS (t=13926)
+TEST I RESULT PASS (42 checks passed)
+TEST B RESULT PASS (39 checks passed)
+ HELPER CHECK Q: 12 unknown opcodes were each refused with ATT error 0x80 PASS (t=14106)
+TEST Q RESULT PASS (40 checks passed)
+RESULT PASS
+# finished (Mac clock): 2026-11-13 00:01:27 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step5/20261112-235844-r2-relay-1.log

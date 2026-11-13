@@ -1,0 +1,10 @@
+/* native_sim's own controller node is replaced by the virtual device controller, which stands for the nRF54LM20A usbhs in this build-only check */
+/delete-node/ &zephyr_udc0;
+
+/ {
+	zephyr_udc0: udc0 {
+		compatible = "zephyr,udc-virtual";
+		num-bidir-endpoints = <8>;
+		maximum-speed = "full-speed";
+	};
+};

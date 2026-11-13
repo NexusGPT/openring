@@ -1,0 +1,24 @@
+The rebuild with your two rulings brings the list to `COMPLETE 47 of 66 conductors (71 percent)`. The 19 lines still open wait only for the ring board's round 3 and for design/wiring/ring-case-contact.csv.
+
+Final runs, 08:33:08 to 08:33:49 (wiring-work/final7-run.time):
+- The ring board file time was 08:08:50 both before and after the runs. The contact file did not exist.
+- Two builds were byte-equal (cmp exit 0).
+- `python check_wiring.py` exit 0, ending `RESULT PASS lines 67 (66 conductors, 1 sensing gap), drawn and routed 24, specified and landed 23, drawn, not routed 15, stated in text only 5, not drawn 0, complete 47 of 66 conductors (71 percent), problems 0`.
+- `--require-complete` exit 1 with 19 FAIL[incomplete] lines, each with what it waits for.
+- All 7 broken copies fail only their own check (wiring-work/broken-final9.log).
+- Drawing: 66 conductors and 1 sensing gap drawn (wiring-work/draw-final7.log).
+
+**1. Cell pack as one purchased part.** build_wiring.py now builds W033 to W035 as `tab` lines and W028 as `inside the part`, citing band-interface.md section 5 (lines 110 to 117). The tab lines run from the pack pin in the netlist to the FLEX2 land PRT1 1, 2 or 3, whose net is present and joined in all 7 boards. All 4 lines are `specified and landed`. These rows came out of system-joints.csv, which now holds only R16.
+
+**2. Ring pads to case pins (W054 to W057).** These are now built by the script. A line is complete only when the contact file pairs its pad and pin at all 7 sizes with every in_range yes, both ends are in their boards with their nets, and the maker range is cited (pin-travel.md line 16). While the file is missing, the lines stay `stated in text only` with that reason.
+- I tested the reader on two made-up fixtures in wiring-work/contact-test/, written to their own output; product-wiring.csv was unchanged (cmp 0). All yes gives 4 complete lines; one `no` (P2 at US 11) leaves W055 incomplete, naming the fixture line.
+- The file's column names are not known yet. The reader accepts pad / ring_pad, pin / case_pin, us / size / ring_size and in_range. Any other naming leaves the lines incomplete with "columns not understood"; it never marks them complete.
+
+**3. What is left**
+- W039 to W053: ANT1 pad 4 and J1's 14 pads are not joined on the ring board (round 3).
+- W054 to W057: the contact file is missing.
+- W058 (R16) is counted apart as a sensing gap.
+
+connections.md: cells R8, R10 and R15 are updated, with a fourth dated note (08:35); every row still has 8 cells. The exact rebuild commands and their order are at the top of design/wiring/product-wiring-notes.md.
+
+RESULT: done, 67 lines (66 conductors + 1 sensing gap); check_wiring.py exit 0, --require-complete exit 1 at COMPLETE 47 of 66 (71 percent)

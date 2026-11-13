@@ -1,0 +1,18 @@
+# remote.sh run 20261113-060814-u7-cfg
+# command: grep -E '^CONFIG_(IMG_MANAGER|MCUBOOT_IMG_MANAGER|BOOTLOADER_MCUBOOT|FLASH_MAP|SETTINGS|SETTINGS_ZMS|SETTINGS_NVS|RETAINED_MEM|WATCHDOG|STREAM_FLASH|FLASH_IMG|IMG_ERASE_PROGRESSIVELY|MCUBOOT_UPDATE_FOOTER_SIZE)=' /ws/out/u7-kit1/zephyr/.config; echo wdt31 status in the generated dts: $(grep -c 'wdt31' /ws/out/u7-kit1/zephyr/zephyr.dts); grep -A3 'wdt31:' /ws/out/u7-kit1/zephyr/zephyr.dts | grep -c okay; grep -c 'slot1_partition' /ws/out/u7-kit1/zephyr/zephyr.dts; grep -n 'status' /ws/out/u7-kit1/zephyr/zephyr.dts | grep -c disabled
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 06:08:14 CET
+# free on the server's /: 51 GB
+# source firmware copied to /root/ring-os/src-u-sys
+# started on the server as 20261113-060814-u7-cfg; server log /root/ring-os/logs/20261113-060814-u7-cfg.log
+CONFIG_BOOTLOADER_MCUBOOT=y
+CONFIG_WATCHDOG=y
+CONFIG_RETAINED_MEM=y
+CONFIG_SETTINGS=y
+wdt31 status in the generated dts: 2
+0
+1
+49
+# finished (Mac clock): 2026-11-13 06:08:33 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-060814-u7-cfg.log

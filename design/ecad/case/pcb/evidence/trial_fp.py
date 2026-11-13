@@ -1,0 +1,16 @@
+import pcbnew
+from pcbnew import VECTOR2I, FromMM
+b = pcbnew.BOARD()
+fp = pcbnew.FOOTPRINT(b)
+fp.SetFPID(pcbnew.LIB_ID('', 'TRIAL'))
+fp.SetReference('REF**'); fp.SetValue('TRIAL')
+fp.SetLibDescription('trial'); fp.SetKeywords('a b')
+p = pcbnew.PAD(fp); p.SetNumber('1'); p.SetShape(pcbnew.PAD_SHAPE_ROUNDRECT); p.SetAttribute(pcbnew.PAD_ATTRIB_SMD)
+p.SetSize(VECTOR2I(FromMM(0.6), FromMM(0.6))); p.SetPosition(VECTOR2I(FromMM(0.5), 0)); p.SetLayerSet(pcbnew.PAD.SMDMask()); p.SetRoundRectRadiusRatio(0.25)
+fp.Add(p)
+s = pcbnew.PCB_SHAPE(fp); s.SetShape(pcbnew.SHAPE_T_RECT); s.SetStart(VECTOR2I(FromMM(-1), FromMM(-1))); s.SetEnd(VECTOR2I(FromMM(1), FromMM(1))); s.SetLayer(pcbnew.F_CrtYd); s.SetWidth(FromMM(0.05))
+fp.Add(s)
+fp.SetAttributes(pcbnew.FP_SMD)
+io = pcbnew.PCB_IO_KICAD_SEXPR()
+io.FootprintSave((__import__("pathlib").Path(__file__).resolve().parents[5].as_posix() + "/design/ecad/case/pcb/evidence/trial/T.pretty"), fp)
+print('saved')

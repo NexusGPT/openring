@@ -1,0 +1,12 @@
+AWAKE start=STANDBY e1=VBUS_OUT e2=INIT_DONE open=0 full=0 fault=1 -> STANDBY
+AWAKE start=STANDBY e1=VBUS_OUT e2=INIT_DONE open=0 full=1 fault=0 -> STANDBY
+AWAKE start=STANDBY e1=VBUS_OUT e2=INIT_DONE open=0 full=1 fault=1 -> STANDBY
+AWAKE start=STANDBY e1=VBUS_OUT e2=INIT_DONE open=1 full=0 fault=0 -> STANDBY
+AWAKE start=STANDBY e1=VBUS_OUT e2=INIT_DONE open=1 full=0 fault=1 -> STANDBY
+AWAKE start=STANDBY e1=VBUS_OUT e2=INIT_DONE open=1 full=1 fault=0 -> STANDBY
+AWAKE start=STANDBY e1=VBUS_OUT e2=INIT_DONE open=1 full=1 fault=1 -> STANDBY
+INFO R15 walk: 118272 event sequences, awake-at-B2-without-VBUS results 36320
+FAIL R15 walk 1: no sequence of 1 or 2 events from any state leaves the ring awake at B2 without VBUS (awake=36320)
+PASS R15 walk 2: B2 then VBUS out, and VBUS out then B2, from every state: ends OFF/BOOT/RECOVERY/SHIP (bad=0)
+SUMMARY pass=21 fail=1
+exit 1

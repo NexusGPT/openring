@@ -1,0 +1,16 @@
+broken copy run 2026-11-13 04:15:18 CET, mutation m21
+change applied (diff of the copy against its original):
+91a92,94
+> 		if (c->sm.state == RC_ST_RECOVERY) {
+> 			c->facts.open_flag = false;
+> 		}
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_round2.c:226: F->open_flag (left 0, right 0)
+FAIL rc_round2.test_r4b_failed_write_then_case_then_long_press_never_records_over_it
+    assert failed firmware/tests/core/src/test_round3.c:37: F->open_flag (left 0, right 0)
+FAIL rc_round3.test_r9_long_press_recovery_keeps_flag_until_scan_done
+    assert failed firmware/tests/core/src/test_round3.c:20: F->open_flag (left 0, right 0)
+FAIL rc_round3.test_r9_recovery_request_keeps_open_flag
+suites=13 tests=221 pass=218 fail=3
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation m21, named case rc_round3.test_r9_recovery_request_keeps_open_flag failed

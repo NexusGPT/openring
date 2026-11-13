@@ -1,0 +1,34 @@
+broken copy run 2026-11-13 04:15:16 CET, mutation m09
+change applied (diff of the copy against its original):
+112c112
+< 	CONSIDER(g->kstate == RC_K_DIR_WINDOW, g->dir_t0 + RC_DIR_WINDOW_MS, DL_DIR_WINDOW);
+---
+> 	CONSIDER(g->kstate == RC_K_DIR_WINDOW, g->dir_t0 + RC_DIR_WINDOW_MS + 1, DL_DIR_WINDOW);
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_gesture.c:378: rc_gesture_next_tick(&gg) == T0 + 1040 (left 11041, right 11040)
+FAIL rc_gesture.test_next_tick_follows_deadlines
+    assert failed firmware/tests/core/src/test_gesture.c:162: tg_count(RC_GEV_DIR) == 1 (left 0, right 1)
+FAIL rc_gesture.test_pair_dir_down_hold_repeat
+    assert failed firmware/tests/core/src/test_gesture.c:162: tg_count(RC_GEV_DIR) == 1 (left 0, right 1)
+FAIL rc_gesture.test_pair_dir_left_hold_repeat
+    assert failed firmware/tests/core/src/test_gesture.c:162: tg_count(RC_GEV_DIR) == 1 (left 0, right 1)
+FAIL rc_gesture.test_pair_dir_right_hold_repeat
+    assert failed firmware/tests/core/src/test_gesture.c:162: tg_count(RC_GEV_DIR) == 1 (left 0, right 1)
+FAIL rc_gesture.test_pair_dir_up_hold_repeat
+    assert failed firmware/tests/core/src/test_gesture.c:261: tg_count(RC_GEV_DIR) == 1 (left 0, right 1)
+FAIL rc_gesture.test_pair_non_opposite_switch_ignored
+    assert failed firmware/tests/core/src/th.c:170: (e) != NULL (left 0, right 0)
+FAIL rc_gesture.test_pair_opposite_at_40ms_is_direction
+    assert failed firmware/tests/core/src/test_gesture.c:162: tg_count(RC_GEV_DIR) == 1 (left 0, right 1)
+FAIL rc_gesture.test_sw2_dir_down_hold_repeat
+    assert failed firmware/tests/core/src/test_gesture.c:162: tg_count(RC_GEV_DIR) == 1 (left 0, right 1)
+FAIL rc_gesture.test_sw2_dir_left_hold_repeat
+    assert failed firmware/tests/core/src/test_gesture.c:162: tg_count(RC_GEV_DIR) == 1 (left 0, right 1)
+FAIL rc_gesture.test_sw2_dir_right_hold_repeat
+    assert failed firmware/tests/core/src/th.c:170: (e) != NULL (left 0, right 0)
+FAIL rc_gesture.test_sw2_dir_then_centre_at_40ms_direction_kept
+    assert failed firmware/tests/core/src/test_gesture.c:162: tg_count(RC_GEV_DIR) == 1 (left 0, right 1)
+FAIL rc_gesture.test_sw2_dir_up_hold_repeat
+suites=13 tests=221 pass=209 fail=12
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation m09, named case rc_gesture.test_next_tick_follows_deadlines failed

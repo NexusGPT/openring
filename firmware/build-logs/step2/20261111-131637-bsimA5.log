@@ -1,0 +1,41 @@
+# remote.sh run 20261111-131637-bsimA5
+# command: SIM_MS=12 CTRL_CONF=/ws/firmware/tests/bsim/control/debug.conf tests/bsim/control/run.sh A
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 13:16:37 CET
+# free on the server's /: 61 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-131637-bsimA5; server log /root/ring-os/logs/20261111-131637-bsimA5.log
+bsim-control: firmware /ws/firmware/tests/bsim/control, outputs /ws/out/20261111-131637-bsimA5-bsim-control, scenarios A, broken 0
+=== build ring for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261111-131637-bsimA5-bsim-control/build-ring.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring ok
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261111-131637-bsimA5-bsim-control/build-host.log
+      1 warning: BT_GATT_CHRC_POOL_SIZE (defined at /ws/nrf/modules/../subsys/bluetooth/Kconfig.pool:35) was
+      1 warning: BT_GATT_UUID16_POOL_SIZE (defined at /ws/nrf/modules/../subsys/bluetooth/Kconfig.pool:14)
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== test A: ring + 1 host(s), 12 simulated seconds, 2026-11-11T12:17:43Z
+exit codes: phy 0, ring 0, hosts 0
+--- ring /ws/out/20261111-131637-bsimA5-bsim-control/run-A-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.991229  RING PASSKEY slot 0 185996
+d_00: @00:00:10.400246  RING PASSKEY slot 0 853756
+--- host 1 /ws/out/20261111-131637-bsimA5-bsim-control/run-A-host1.log
+d_01: @00:00:00.000174  HOST H1 CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.639748  HOST H1 connected (t=639), bonded=0
+d_01: @00:00:01.141433  HOST H1 passkey entry asked, read ok (t=1141)
+d_01: @00:00:01.141433  HOST H1 CHECK passkey read from the ring's display PASS (t=1141)
+d_01: @00:00:09.541225  HOST H1 CHECK pairing with the passkey completed and bonded FAIL (t=9541)
+d_01: @00:00:09.541225  HOST H1 security failed err 9  (t=9541)
+d_01: @00:00:09.541225  HOST H1 disconnected reason 0x08 (t=9541)
+d_01: @00:00:10.048765  HOST H1 connected (t=10048), bonded=0
+d_01: @00:00:10.550450  HOST H1 passkey entry asked, read ok (t=10550)
+d_01: @00:00:10.550450  HOST H1 CHECK passkey read from the ring's display PASS (t=10550)
+ring script done at none ms, host 1 evaluated at none ms
+TEST A RESULT FAIL (6 checks passed; ring-result host1-result 1-failed-checks ring-not-done-before-eval)
+RESULT FAIL A
+# finished (Mac clock): 2026-11-11 13:17:51 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step2/20261111-131637-bsimA5.log

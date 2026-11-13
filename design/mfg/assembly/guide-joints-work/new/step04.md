@@ -1,0 +1,7 @@
+### Step 4. Inspect both faces before the jig (no washing, no brushing)
+
+- **Join:** nothing is joined, and nothing is cleaned. The board is not washed and not brushed, with or without a solvent. The microphone maker forbids it: "Do not board wash or clean after the reflow process." and "Do not brush board with or without solvents after the reflow process." (`design/mfg/assembly/process.md:71`). The paste residue is made to stay on the board (`design/mfg/assembly/process.md:70`). The solder domes on the 15 ribbon lands stay too: they are the solder of step 14 (`design/mfg/assembly/hotbar-joint.md:23`). This step is inspection only (change C8, `design/mfg/assembly/process.md:202`). History: this step fitted the light guide LG1 until v6; the light guide is removed in v7 (`design/architecture.md:834`).
+- **Locate:** the board on its outline in the carrier of step 2.
+- **Before:** steps 2 and 3 passed.
+- **Check:** under the 10 times magnifier: no solder on any of the 12 test pads (they got no paste, so no paste residue lies on them; the residue elsewhere is hard and the spring pins can probe through it, `design/mfg/assembly/process.md:74`); each of the 15 ribbon lands still carries its smooth solder dome, none flattened or scraped; no solder ball loose on either face. The gasket choice of step 3 is still recorded against the board's serial number.
+- **After:** nothing irreversible.

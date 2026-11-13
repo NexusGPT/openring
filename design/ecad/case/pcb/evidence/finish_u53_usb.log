@@ -1,0 +1,21 @@
+./src/common/stdpbase.cpp(59): assert ""traits"" failed in Get(): create wxApp before calling this
+02:13:26 AM: Debug: Adding duplicate image handler for 'PNG file'
+02:13:26 AM: Debug: Adding duplicate image handler for 'JPEG file'
+02:13:26 AM: Debug: Adding duplicate image handler for 'TIFF file'
+02:13:26 AM: Debug: Adding duplicate image handler for 'GIF file'
+02:13:26 AM: Debug: Adding duplicate image handler for 'PNM file'
+02:13:26 AM: Debug: Adding duplicate image handler for 'PCX file'
+02:13:26 AM: Debug: Adding duplicate image handler for 'IFF file'
+02:13:26 AM: Debug: Adding duplicate image handler for 'Windows icon file'
+02:13:26 AM: Debug: Adding duplicate image handler for 'Windows cursor file'
+02:13:26 AM: Debug: Adding duplicate image handler for 'Windows animated cursor file'
+02:13:26 AM: Debug: Adding duplicate image handler for 'TGA file'
+02:13:26 AM: Debug: Adding duplicate image handler for 'XPM file'
+before: D+ 19.500 mm, D- 13.500 mm, difference 6.000 mm
+baseline violations 2 unconnected 28
+Traceback (most recent call last):
+  File "design/ecad/case/pcb/tune_usb.py", line 43, in <module>
+    ok = BB.meander(tb, short, extra * scale, skip=skip)
+  File "design/ecad/case/pcb/build_boards.py", line 433, in meander
+    cands = [t for t in b.GetTracks() if t.GetNetname() == netname and t.Type() == pcbnew.PCB_TRACE_T and t.GetLayer() in layer_ok and ToMM(t.GetLength()) >= 3.0]
+AttributeError: 'NoneType' object has no attribute 'GetTracks'

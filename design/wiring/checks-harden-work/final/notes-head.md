@@ -1,0 +1,11 @@
+# Hardening of three wiring checks (review 4, instrument faults I1, I2, I3, notes N2 and N7)
+
+Builder: checks-harden. Work folder W = `design/wiring/checks-harden-work/` (scripts, broken copies in `copies/`, logs in `logs/`, final runs in `final/`). Clock: started 17:31 (`date`), tests last run 18:04. Files changed (all in Owns): `design/wiring/check_wiring.py`, `design/wiring/build_wiring.py` (the CR fix only), `design/mfg/assembly/check_joints.py`, `design/mfg/assembly/check_assembly.py`, `design/ecad/ring/pcb/check_board.py` (output folder option only). I ran no git, no browser, no web request, no generator that writes a delivered file (the generator ran only with `WIRING_OUT` in W and `WIRING_NO_DRC=1`), no `check_band.py` (search of my scripts and logs: `final/search-check_band.log`). `joints.csv`, `assembly.md`, `product-wiring.csv` and the review folder were only read.
+
+## Result in one block
+
+- Test runner `run_all_tests.py` in W, last line of `logs/run_all_tests-final.log`: `TESTS PASS 142 of 142 as expected` (check_wiring 52 of 52, check_joints 35 of 35, check_assembly 35 of 35, check_board option 2 of 2, existing joint-table tests 18 of 18; the existing tests passed unchanged, `joint-table-work/tests/expect.txt` was not edited).
+- Reviewer's faulty copies, before (reviewer's logs) and after (my runs, same entry points): check_wiring `RESULT fakes=17 differs=5` before; now all 5 faulty copies fail, each on a line naming its fault, and the 10 other fake files I re-ran still fail. check_joints `differs=2` before; both fail now. check_assembly `differs=3` before; all 3 fail now on isolated copies. Details per check below.
+- Honest files as they stand at the end (final/): check_wiring FAIL on 4 lines of the list (28 carriage returns in W054 to W057, the generator is fixed, the list is not regenerated: a real fault of the list), check_joints PASS 99, check_assembly FAIL on 1 old rule (A1, a placement row in no step) and 26 citations of the new rule T1 (placement.csv rows moved: real faults of the guide). Defects of my rules: 0 (each classified below).
+- Two judgement calls that the owner or lead should confirm are listed at the end (`questions_for_owner`).
+

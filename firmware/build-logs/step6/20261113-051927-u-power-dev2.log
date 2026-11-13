@@ -1,0 +1,427 @@
+# remote.sh run 20261113-051927-u-power-dev2
+# command: west twister -T tests/power -p native_sim -p nrf54lm20bsim/nrf54lm20a/cpuapp -O /ws/out/u5-dev2 -j 8 --inline-logs -v
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:19:27 CET
+# free on the server's /: 27 GB
+# source firmware copied to /root/ring-os/src-u-power
+# started on the server as 20261113-051927-u-power-dev2; server log /root/ring-os/logs/20261113-051927-u-power-dev2.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/u5-dev2/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/2 native_sim/native         ring_power.sim                                     FAILED rc=1 (native 0.355s <host/gnu>)
+INFO    - -----/ws/out/u5-dev2/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/handler.log-----
+ERROR   - *** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+*** Using Zephyr OS v4.4.2-9133dab6b066 ***
+Running TESTSUITE power_cfg
+===================================================================
+START - test_charge_current_constant
+ PASS - test_charge_current_constant in 0.000 seconds
+===================================================================
+START - test_no_vbus_output_call
+ PASS - test_no_vbus_output_call in 5.551 seconds
+===================================================================
+START - test_pof_untouched
+ PASS - test_pof_untouched in 4.501 seconds
+===================================================================
+TESTSUITE power_cfg succeeded
+Running TESTSUITE power_charger
+===================================================================
+START - test_charge_error_reaches_callback
+ PASS - test_charge_error_reaches_callback in 0.021 seconds
+===================================================================
+START - test_charge_off
+ PASS - test_charge_off in 0.000 seconds
+===================================================================
+START - test_charge_on_twice_writes_once
+ PASS - test_charge_on_twice_writes_once in 0.000 seconds
+===================================================================
+START - test_disable_write_enable_order
+ PASS - test_disable_write_enable_order in 0.000 seconds
+===================================================================
+START - test_on_at_every_vbus
+ PASS - test_on_at_every_vbus in 0.563 seconds
+===================================================================
+START - test_on_at_start_with_vbus
+ PASS - test_on_at_start_with_vbus in 0.021 seconds
+===================================================================
+TESTSUITE power_charger succeeded
+Running TESTSUITE power_gauge
+===================================================================
+START - test_motor_charge_added
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/power/src/test_gauge.c:24: power_gauge_test_motor_charge_added: (pw_ev(g).a1 not within 1000 +/- 2)
+the sample covers 1,000 ms
+ FAIL - test_motor_charge_added in 1.501 seconds
+===================================================================
+TESTSUITE power_gauge failed.
+Running TESTSUITE power_ilim
+===================================================================
+START - test_again_with_screen_off
+ PASS - test_again_with_screen_off in 12.501 seconds
+===================================================================
+START - test_first_active
+ PASS - test_first_active in 2.501 seconds
+===================================================================
+START - test_screen_off_edge_10s
+ PASS - test_screen_off_edge_10s in 0.000 seconds
+===================================================================
+TESTSUITE power_ilim succeeded
+Running TESTSUITE power_levels
+===================================================================
+START - test_first_level_reported_at_start
+ PASS - test_first_level_reported_at_start in 0.021 seconds
+===================================================================
+START - test_mean_of_ten_in_recording
+ PASS - test_mean_of_ten_in_recording in 10.500 seconds
+===================================================================
+START - test_report_on_change_both_ways
+ PASS - test_report_on_change_both_ways in 5.501 seconds
+===================================================================
+START - test_soc_edges
+ PASS - test_soc_edges in 0.000 seconds
+===================================================================
+START - test_voltage_edges
+ PASS - test_voltage_edges in 0.000 seconds
+===================================================================
+TESTSUITE power_levels succeeded
+Running TESTSUITE power_report
+===================================================================
+START - test_battery_bytes_layout
+ PASS - test_battery_bytes_layout in 0.000 seconds
+===================================================================
+START - test_charge_state_codes
+ PASS - test_charge_state_codes in 0.000 seconds
+===================================================================
+START - test_report_before_start
+ PASS - test_report_before_start in 0.000 seconds
+===================================================================
+START - test_values_and_time_to_full
+ PASS - test_values_and_time_to_full in 0.000 seconds
+===================================================================
+TESTSUITE power_report succeeded
+Running TESTSUITE power_reset
+===================================================================
+START - test_all_bits_and_none
+ PASS - test_all_bits_and_none in 0.000 seconds
+===================================================================
+START - test_causes_logged_then_cleared
+ PASS - test_causes_logged_then_cleared in 0.000 seconds
+===================================================================
+TESTSUITE power_reset succeeded
+Running TESTSUITE power_sample
+===================================================================
+START - test_ilim_read_with_every_sample
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/power/src/test_sample.c:103: power_sample_test_ilim_read_with_every_sample: (rhw_sim_log_count_kind(RHW_EV_PMIC_ILIM) not equal to ns)
+one status read per sample
+ FAIL - test_ilim_read_with_every_sample in 4.501 seconds
+===================================================================
+START - test_no_sampling_in_ship_and_off
+ PASS - test_no_sampling_in_ship_and_off in 130.001 seconds
+===================================================================
+START - test_period_in_time
+ PASS - test_period_in_time in 130.501 seconds
+===================================================================
+START - test_period_per_state
+ PASS - test_period_per_state in 0.000 seconds
+===================================================================
+TESTSUITE power_sample failed.
+Running TESTSUITE power_ship
+===================================================================
+START - test_entry_order_without_vbus
+ PASS - test_entry_order_without_vbus in 2.001 seconds
+===================================================================
+START - test_off_never_waits
+ PASS - test_off_never_waits in 2.001 seconds
+===================================================================
+START - test_retry_once_after_1s
+ PASS - test_retry_once_after_1s in 2.001 seconds
+===================================================================
+START - test_waits_for_vbus_removed
+ PASS - test_waits_for_vbus_removed in 5.221 seconds
+===================================================================
+TESTSUITE power_ship succeeded
+
+------ TESTSUITE SUMMARY START ------
+
+SUITE PASS - 100.00% [power_cfg]: pass = 3, fail = 0, skip = 0, total = 3 duration = 10.052 seconds
+ - PASS - [power_cfg.test_charge_current_constant] duration = 0.000 seconds
+ - PASS - [power_cfg.test_no_vbus_output_call] duration = 5.551 seconds
+ - PASS - [power_cfg.test_pof_untouched] duration = 4.501 seconds
+
+SUITE PASS - 100.00% [power_charger]: pass = 6, fail = 0, skip = 0, total = 6 duration = 0.605 seconds
+ - PASS - [power_charger.test_charge_error_reaches_callback] duration = 0.021 seconds
+ - PASS - [power_charger.test_charge_off] duration = 0.000 seconds
+ - PASS - [power_charger.test_charge_on_twice_writes_once] duration = 0.000 seconds
+ - PASS - [power_charger.test_disable_write_enable_order] duration = 0.000 seconds
+ - PASS - [power_charger.test_on_at_every_vbus] duration = 0.563 seconds
+ - PASS - [power_charger.test_on_at_start_with_vbus] duration = 0.021 seconds
+
+SUITE FAIL -   0.00% [power_gauge]: pass = 0, fail = 1, skip = 0, total = 1 duration = 1.501 seconds
+ - FAIL - [power_gauge.test_motor_charge_added] duration = 1.501 seconds
+
+SUITE PASS - 100.00% [power_ilim]: pass = 3, fail = 0, skip = 0, total = 3 duration = 15.002 seconds
+ - PASS - [power_ilim.test_again_with_screen_off] duration = 12.501 seconds
+ - PASS - [power_ilim.test_first_active] duration = 2.501 seconds
+ - PASS - [power_ilim.test_screen_off_edge_10s] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [power_levels]: pass = 5, fail = 0, skip = 0, total = 5 duration = 16.022 seconds
+ - PASS - [power_levels.test_first_level_reported_at_start] duration = 0.021 seconds
+ - PASS - [power_levels.test_mean_of_ten_in_recording] duration = 10.500 seconds
+ - PASS - [power_levels.test_report_on_change_both_ways] duration = 5.501 seconds
+ - PASS - [power_levels.test_soc_edges] duration = 0.000 seconds
+ - PASS - [power_levels.test_voltage_edges] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [power_report]: pass = 4, fail = 0, skip = 0, total = 4 duration = 0.000 seconds
+ - PASS - [power_report.test_battery_bytes_layout] duration = 0.000 seconds
+ - PASS - [power_report.test_charge_state_codes] duration = 0.000 seconds
+ - PASS - [power_report.test_report_before_start] duration = 0.000 seconds
+ - PASS - [power_report.test_values_and_time_to_full] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [power_reset]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [power_reset.test_all_bits_and_none] duration = 0.000 seconds
+ - PASS - [power_reset.test_causes_logged_then_cleared] duration = 0.000 seconds
+
+SUITE FAIL -  75.00% [power_sample]: pass = 3, fail = 1, skip = 0, total = 4 duration = 265.003 seconds
+ - FAIL - [power_sample.test_ilim_read_with_every_sample] duration = 4.501 seconds
+ - PASS - [power_sample.test_no_sampling_in_ship_and_off] duration = 130.001 seconds
+ - PASS - [power_sample.test_period_in_time] duration = 130.501 seconds
+ - PASS - [power_sample.test_period_per_state] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [power_ship]: pass = 4, fail = 0, skip = 0, total = 4 duration = 11.224 seconds
+ - PASS - [power_ship.test_entry_order_without_vbus] duration = 2.001 seconds
+ - PASS - [power_ship.test_off_never_waits] duration = 2.001 seconds
+ - PASS - [power_ship.test_retry_once_after_1s] duration = 2.001 seconds
+ - PASS - [power_ship.test_waits_for_vbus_removed] duration = 5.221 seconds
+
+------ TESTSUITE SUMMARY END ------
+
+===================================================================
+RunID: 1946d0ba3a199045056d54e413211f41
+PROJECT EXECUTION FAILED
+
+INFO    - -----/ws/out/u5-dev2/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/handler.log-----
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_power.sim                               FAILED rc=1 (native 0.152s <host/gnu>)
+INFO    - /ws/out/u5-dev2/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/handler.log
+ERROR   - d_00: @00:00:00.000093  *** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+d_00: @00:00:00.000093  *** Using Zephyr OS v4.4.2-9133dab6b066 ***
+d_00: @00:00:00.000093  Running TESTSUITE power_cfg
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_charge_current_constant
+d_00: @00:00:00.000093   PASS - test_charge_current_constant in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_no_vbus_output_call
+d_00: @00:00:05.550493   PASS - test_no_vbus_output_call in 5.551 seconds
+d_00: @00:00:05.550493  ===================================================================
+d_00: @00:00:05.550493  START - test_pof_untouched
+d_00: @00:00:10.050793   PASS - test_pof_untouched in 4.501 seconds
+d_00: @00:00:10.050793  ===================================================================
+d_00: @00:00:10.050793  TESTSUITE power_cfg succeeded
+d_00: @00:00:10.050793  Running TESTSUITE power_charger
+d_00: @00:00:10.050793  ===================================================================
+d_00: @00:00:10.050793  START - test_charge_error_reaches_callback
+d_00: @00:00:10.070893   PASS - test_charge_error_reaches_callback in 0.021 seconds
+d_00: @00:00:10.070893  ===================================================================
+d_00: @00:00:10.070893  START - test_charge_off
+d_00: @00:00:10.070893   PASS - test_charge_off in 0.000 seconds
+d_00: @00:00:10.070893  ===================================================================
+d_00: @00:00:10.070893  START - test_charge_on_twice_writes_once
+d_00: @00:00:10.070893   PASS - test_charge_on_twice_writes_once in 0.000 seconds
+d_00: @00:00:10.070893  ===================================================================
+d_00: @00:00:10.070893  START - test_disable_write_enable_order
+d_00: @00:00:10.070893   PASS - test_disable_write_enable_order in 0.000 seconds
+d_00: @00:00:10.070893  ===================================================================
+d_00: @00:00:10.070893  START - test_on_at_every_vbus
+d_00: @00:00:10.633693   PASS - test_on_at_every_vbus in 0.563 seconds
+d_00: @00:00:10.633693  ===================================================================
+d_00: @00:00:10.633693  START - test_on_at_start_with_vbus
+d_00: @00:00:10.653793   PASS - test_on_at_start_with_vbus in 0.021 seconds
+d_00: @00:00:10.653793  ===================================================================
+d_00: @00:00:10.653793  TESTSUITE power_charger succeeded
+d_00: @00:00:10.653793  Running TESTSUITE power_gauge
+d_00: @00:00:10.653793  ===================================================================
+d_00: @00:00:10.653793  START - test_motor_charge_added
+d_00: @00:00:12.153893  
+d_00: @00:00:12.153893      Assertion failed at WEST_TOPDIR/firmware/tests/power/src/test_gauge.c:24: power_gauge_test_motor_charge_added: (pw_ev(g).a1 not within 1000 +/- 2)
+d_00: @00:00:12.153893  the sample covers 1,000 ms
+d_00: @00:00:12.153893   FAIL - test_motor_charge_added in 1.501 seconds
+d_00: @00:00:12.153893  ===================================================================
+d_00: @00:00:12.153893  TESTSUITE power_gauge failed.
+d_00: @00:00:12.153893  Running TESTSUITE power_ilim
+d_00: @00:00:12.153893  ===================================================================
+d_00: @00:00:12.153893  START - test_again_with_screen_off
+d_00: @00:00:24.654093   PASS - test_again_with_screen_off in 12.501 seconds
+d_00: @00:00:24.654093  ===================================================================
+d_00: @00:00:24.654093  START - test_first_active
+d_00: @00:00:27.154293   PASS - test_first_active in 2.501 seconds
+d_00: @00:00:27.154293  ===================================================================
+d_00: @00:00:27.154293  START - test_screen_off_edge_10s
+d_00: @00:00:27.154293   PASS - test_screen_off_edge_10s in 0.000 seconds
+d_00: @00:00:27.154293  ===================================================================
+d_00: @00:00:27.154293  TESTSUITE power_ilim succeeded
+d_00: @00:00:27.154293  Running TESTSUITE power_levels
+d_00: @00:00:27.154293  ===================================================================
+d_00: @00:00:27.154293  START - test_first_level_reported_at_start
+d_00: @00:00:27.174393   PASS - test_first_level_reported_at_start in 0.021 seconds
+d_00: @00:00:27.174393  ===================================================================
+d_00: @00:00:27.174393  START - test_mean_of_ten_in_recording
+d_00: @00:00:37.674393   PASS - test_mean_of_ten_in_recording in 10.500 seconds
+d_00: @00:00:37.674393  ===================================================================
+d_00: @00:00:37.674393  START - test_report_on_change_both_ways
+d_00: @00:00:43.174893   PASS - test_report_on_change_both_ways in 5.501 seconds
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  START - test_soc_edges
+d_00: @00:00:43.174893   PASS - test_soc_edges in 0.000 seconds
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  START - test_voltage_edges
+d_00: @00:00:43.174893   PASS - test_voltage_edges in 0.000 seconds
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  TESTSUITE power_levels succeeded
+d_00: @00:00:43.174893  Running TESTSUITE power_report
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  START - test_battery_bytes_layout
+d_00: @00:00:43.174893   PASS - test_battery_bytes_layout in 0.000 seconds
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  START - test_charge_state_codes
+d_00: @00:00:43.174893   PASS - test_charge_state_codes in 0.000 seconds
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  START - test_report_before_start
+d_00: @00:00:43.174893   PASS - test_report_before_start in 0.000 seconds
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  START - test_values_and_time_to_full
+d_00: @00:00:43.174893   PASS - test_values_and_time_to_full in 0.000 seconds
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  TESTSUITE power_report succeeded
+d_00: @00:00:43.174893  Running TESTSUITE power_reset
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  START - test_all_bits_and_none
+d_00: @00:00:43.174893   PASS - test_all_bits_and_none in 0.000 seconds
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  START - test_causes_logged_then_cleared
+d_00: @00:00:43.174893   PASS - test_causes_logged_then_cleared in 0.000 seconds
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  TESTSUITE power_reset succeeded
+d_00: @00:00:43.174893  Running TESTSUITE power_sample
+d_00: @00:00:43.174893  ===================================================================
+d_00: @00:00:43.174893  START - test_ilim_read_with_every_sample
+d_00: @00:00:47.674993  
+d_00: @00:00:47.674993      Assertion failed at WEST_TOPDIR/firmware/tests/power/src/test_sample.c:103: power_sample_test_ilim_read_with_every_sample: (rhw_sim_log_count_kind(RHW_EV_PMIC_ILIM) not equal to ns)
+d_00: @00:00:47.674993  one status read per sample
+d_00: @00:00:47.674993   FAIL - test_ilim_read_with_every_sample in 4.501 seconds
+d_00: @00:00:47.674993  ===================================================================
+d_00: @00:00:47.674993  START - test_no_sampling_in_ship_and_off
+d_00: @00:02:57.675093   PASS - test_no_sampling_in_ship_and_off in 130.001 seconds
+d_00: @00:02:57.675093  ===================================================================
+d_00: @00:02:57.675093  START - test_period_in_time
+d_00: @00:05:08.175293   PASS - test_period_in_time in 130.501 seconds
+d_00: @00:05:08.175293  ===================================================================
+d_00: @00:05:08.175293  START - test_period_per_state
+d_00: @00:05:08.175293   PASS - test_period_per_state in 0.000 seconds
+d_00: @00:05:08.175293  ===================================================================
+d_00: @00:05:08.175293  TESTSUITE power_sample failed.
+d_00: @00:05:08.175293  Running TESTSUITE power_ship
+d_00: @00:05:08.175293  ===================================================================
+d_00: @00:05:08.175293  START - test_entry_order_without_vbus
+d_00: @00:05:10.175493   PASS - test_entry_order_without_vbus in 2.001 seconds
+d_00: @00:05:10.175493  ===================================================================
+d_00: @00:05:10.175493  START - test_off_never_waits
+d_00: @00:05:12.175693   PASS - test_off_never_waits in 2.001 seconds
+d_00: @00:05:12.175693  ===================================================================
+d_00: @00:05:12.175693  START - test_retry_once_after_1s
+d_00: @00:05:14.175893   PASS - test_retry_once_after_1s in 2.001 seconds
+d_00: @00:05:14.175893  ===================================================================
+d_00: @00:05:14.175893  START - test_waits_for_vbus_removed
+d_00: @00:05:19.396293   PASS - test_waits_for_vbus_removed in 5.221 seconds
+d_00: @00:05:19.396293  ===================================================================
+d_00: @00:05:19.396293  TESTSUITE power_ship succeeded
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  ------ TESTSUITE SUMMARY START ------
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  SUITE PASS - 100.00% [power_cfg]: pass = 3, fail = 0, skip = 0, total = 3 duration = 10.052 seconds
+d_00: @00:05:19.396293   - PASS - [power_cfg.test_charge_current_constant] duration = 0.000 seconds
+d_00: @00:05:19.396293   - PASS - [power_cfg.test_no_vbus_output_call] duration = 5.551 seconds
+d_00: @00:05:19.396293   - PASS - [power_cfg.test_pof_untouched] duration = 4.501 seconds
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  SUITE PASS - 100.00% [power_charger]: pass = 6, fail = 0, skip = 0, total = 6 duration = 0.605 seconds
+d_00: @00:05:19.396293   - PASS - [power_charger.test_charge_error_reaches_callback] duration = 0.021 seconds
+d_00: @00:05:19.396293   - PASS - [power_charger.test_charge_off] duration = 0.000 seconds
+d_00: @00:05:19.396293   - PASS - [power_charger.test_charge_on_twice_writes_once] duration = 0.000 seconds
+d_00: @00:05:19.396293   - PASS - [power_charger.test_disable_write_enable_order] duration = 0.000 seconds
+d_00: @00:05:19.396293   - PASS - [power_charger.test_on_at_every_vbus] duration = 0.563 seconds
+d_00: @00:05:19.396293   - PASS - [power_charger.test_on_at_start_with_vbus] duration = 0.021 seconds
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  SUITE FAIL -   0.00% [power_gauge]: pass = 0, fail = 1, skip = 0, total = 1 duration = 1.501 seconds
+d_00: @00:05:19.396293   - FAIL - [power_gauge.test_motor_charge_added] duration = 1.501 seconds
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  SUITE PASS - 100.00% [power_ilim]: pass = 3, fail = 0, skip = 0, total = 3 duration = 15.002 seconds
+d_00: @00:05:19.396293   - PASS - [power_ilim.test_again_with_screen_off] duration = 12.501 seconds
+d_00: @00:05:19.396293   - PASS - [power_ilim.test_first_active] duration = 2.501 seconds
+d_00: @00:05:19.396293   - PASS - [power_ilim.test_screen_off_edge_10s] duration = 0.000 seconds
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  SUITE PASS - 100.00% [power_levels]: pass = 5, fail = 0, skip = 0, total = 5 duration = 16.022 seconds
+d_00: @00:05:19.396293   - PASS - [power_levels.test_first_level_reported_at_start] duration = 0.021 seconds
+d_00: @00:05:19.396293   - PASS - [power_levels.test_mean_of_ten_in_recording] duration = 10.500 seconds
+d_00: @00:05:19.396293   - PASS - [power_levels.test_report_on_change_both_ways] duration = 5.501 seconds
+d_00: @00:05:19.396293   - PASS - [power_levels.test_soc_edges] duration = 0.000 seconds
+d_00: @00:05:19.396293   - PASS - [power_levels.test_voltage_edges] duration = 0.000 seconds
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  SUITE PASS - 100.00% [power_report]: pass = 4, fail = 0, skip = 0, total = 4 duration = 0.000 seconds
+d_00: @00:05:19.396293   - PASS - [power_report.test_battery_bytes_layout] duration = 0.000 seconds
+d_00: @00:05:19.396293   - PASS - [power_report.test_charge_state_codes] duration = 0.000 seconds
+d_00: @00:05:19.396293   - PASS - [power_report.test_report_before_start] duration = 0.000 seconds
+d_00: @00:05:19.396293   - PASS - [power_report.test_values_and_time_to_full] duration = 0.000 seconds
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  SUITE PASS - 100.00% [power_reset]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:05:19.396293   - PASS - [power_reset.test_all_bits_and_none] duration = 0.000 seconds
+d_00: @00:05:19.396293   - PASS - [power_reset.test_causes_logged_then_cleared] duration = 0.000 seconds
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  SUITE FAIL -  75.00% [power_sample]: pass = 3, fail = 1, skip = 0, total = 4 duration = 265.003 seconds
+d_00: @00:05:19.396293   - FAIL - [power_sample.test_ilim_read_with_every_sample] duration = 4.501 seconds
+d_00: @00:05:19.396293   - PASS - [power_sample.test_no_sampling_in_ship_and_off] duration = 130.001 seconds
+d_00: @00:05:19.396293   - PASS - [power_sample.test_period_in_time] duration = 130.501 seconds
+d_00: @00:05:19.396293   - PASS - [power_sample.test_period_per_state] duration = 0.000 seconds
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  SUITE PASS - 100.00% [power_ship]: pass = 4, fail = 0, skip = 0, total = 4 duration = 11.224 seconds
+d_00: @00:05:19.396293   - PASS - [power_ship.test_entry_order_without_vbus] duration = 2.001 seconds
+d_00: @00:05:19.396293   - PASS - [power_ship.test_off_never_waits] duration = 2.001 seconds
+d_00: @00:05:19.396293   - PASS - [power_ship.test_retry_once_after_1s] duration = 2.001 seconds
+d_00: @00:05:19.396293   - PASS - [power_ship.test_waits_for_vbus_removed] duration = 5.221 seconds
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  ------ TESTSUITE SUMMARY END ------
+d_00: @00:05:19.396293  
+d_00: @00:05:19.396293  ===================================================================
+d_00: @00:05:19.396293  RunID: 1b38369e31540a511411e67a99c0e83f
+d_00: @00:05:19.396293  PROJECT EXECUTION FAILED
+
+INFO    - /ws/out/u5-dev2/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/handler.log
+
+INFO    - 1 test scenarios (2 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 2 executed test configurations passed (0.00%), 0 built (not run), 2 failed, 0 errored, with no warnings in 36.78 seconds.
+INFO    - 60 of 64 executed test cases passed (93.75%), 4 failed on 2 out of total 1514 platforms (0.13%).
+INFO    - 2 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/u5-dev2/twister.json
+INFO    - Writing xunit report /ws/out/u5-dev2/twister.xml...
+INFO    - Writing xunit report /ws/out/u5-dev2/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_power.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+INFO    - 2) ring_power.sim on native_sim/native failed (rc=1)
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_power.sim
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/power -T ring_power.sim
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+# finished (Mac clock): 2026-11-13 05:20:34 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step6/20261113-051927-u-power-dev2.log

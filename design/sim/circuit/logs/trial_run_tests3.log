@@ -1,0 +1,28 @@
+decks: 7 written to work/trial_out/decks from design/ecad/ring and design/ecad/case
+PASS ring1 motor start: 10 of 10 rows hold; tightest row R1.2: motor.vbat_min_spec = 3.00441 holds >= 3.0
+PASS ring2 power-up: 20 of 20 rows hold; tightest row R2.2: powerup.v18_peak_c330 = 1.8 holds <= 1.89
+PASS ring3 charge path: 7 of 7 rows hold; tightest row R3.3: charge.vbat_end_max = 4.35 holds <= 4.35*1.01
+PASS ring4 storage inrush: 8 of 8 rows hold; tightest row R4.4: inrush.v30_min_ss50 = 3 holds >= 2.85
+PASS ring5 level shifter and storage lines: 10 of 10 rows hold; tightest row R5.8: shifter.idle_high_at_shifter_min = 2.34009 holds >= 2.0
+PASS ring6 joystick and record lines: 4 of 4 rows hold; tightest row R6.3: joy.pressed_current_max = 0.000359964 holds <= 0.0005
+FAIL ring7 pads on the finger: 2 of 5 rows hold; R7.1: pads.vbus_gnd_10s = 4.49786 needs < 0.1 V (and 2 more rows fail)
+  ring1: largest cell resistance that passes at open-circuit 3.45 V = 1.9802 ohm; first rows to fail just above it: R1.2
+  ring1 info: largest cell resistance that passes at open-circuit 3.30 V = 1.2512 ohm; limiting rows R1.2
+  ring1 info: largest cell resistance that passes at open-circuit 3.60 V = 2.7539 ohm; limiting rows R1.2
+  ring1 info: at that resistance the cell gives 227.2 mA at the start, the cell terminal falls to 3.0000 V, the chip battery path carries 83.5 mA, U11 carries 215.7 mA, VDD_3V0 falls to 2.882 V, VMOT to 2.908 V
+  ring2 info cell 3.30 V: VDD_1V8 valid at 0.00198706 s, VDD_3V0 valid at 0.00198706 s, VDD_SD (host enable at 0.02 s) valid at 0.0203678 s, VDD_MIC (host enable at 0.04 s) valid at 0.0402054 s
+  ring2 info cell 4.35 V: VDD_1V8 valid at 0.00198617 s, VDD_3V0 valid at 0.00198617 s, VDD_SD (host enable at 0.02 s) valid at 0.0203678 s, VDD_MIC (host enable at 0.04 s) valid at 0.0402054 s
+  ring3 info: terminal voltage at open-circuit 4.349 V (charge current has fallen to 1.00 mA): 4.3500 V
+  ring3 info: VBUS demand with a recording running and 15 mA charge: peak 18.7 mA
+  ring3 info: with the default 100 mA input limit and a recording running: VSYS 4.985 V, charge current 2.37 mA, VBUS current 18.7 mA
+  ring4 info: with C60 2.2 uF (3.4 uF total on VDD_SD) the soft start ends in 0.185 ms (with the files' 4.7 uF: 0.185 ms)
+  ring4 info (what-if, soft start disabled in the chip): peak current into VDD_SD 12.30 A, VDD_3V0 minimum 2.303 V
+  ring4 info: capacitors on VDD_SD read from parts.csv: C60 2.2uF, C61 100nF, C82 100nF, C87 1.0uF, total 3.40 uF
+  ring7 info: cell 3.30 V: VBUS pad before removal 5.000 V, 1 s after 3.595 V, 10 s after 3.551 V
+  ring7 info: cell 3.80 V: VBUS pad before removal 5.000 V, 1 s after 3.973 V, 10 s after 3.924 V
+  ring7 info: cell 4.35 V: VBUS pad before removal 5.000 V, 1 s after 4.942 V, 10 s after 4.498 V
+  ring7 what-if (not in the design): a 1000 kohm bleeder from VBUS to GND gives 0.7000 V on the VBUS pad 10 s after removal (cell 3.8 V)
+  ring7 what-if (not in the design): a 440 kohm bleeder from VBUS to GND gives 0.0780 V on the VBUS pad 10 s after removal (cell 3.8 V)
+  ring7 what-if (not in the design): a 330 kohm bleeder from VBUS to GND gives 0.0211 V on the VBUS pad 10 s after removal (cell 3.8 V)
+tests: 7, pass: 6, fail: 1, seconds: 35
+RESULT FAIL

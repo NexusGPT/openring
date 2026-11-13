@@ -1,0 +1,7 @@
+file src/gesture.c
+--- old
+if (g->pressing) {
+		g->cancelled = true;
++++ new
+if (g->pressing && !g->long_fired) {
+		g->cancelled = true;

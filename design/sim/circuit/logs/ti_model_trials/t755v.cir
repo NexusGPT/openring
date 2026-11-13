@@ -1,0 +1,20 @@
+tlv75530p ti model trial
+.include design/sim/circuit/work/tlv75530p_ng.lib
+Vin vin 0 PWL(0 0 100u 3.45)
+Ven en 0 PWL(0 0 1m 0 1.001m 1.8)
+Xu en 0 vin vout nc TLV75530P_TRANS
+Cout vout 0 10u
+Rl vout 0 17.14
+.options gmin=1e-9 itl1=500 itl4=200
+.tran 5u 4m uic
+.control
+run
+meas tran vout_end find v(vout) at=3.9m
+meas tran iin find i(vin) at=3.9m
+meas tran vmax max v(vout)
+echo RESULT vout_end = $&vout_end
+echo RESULT iin = $&iin
+echo RESULT vmax = $&vmax
+quit
+.endc
+.end

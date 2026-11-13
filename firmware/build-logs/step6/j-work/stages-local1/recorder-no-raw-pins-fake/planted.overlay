@@ -1,0 +1,22 @@
+/* The ring's panel stands in as a memory display (120 x 240) until the panel driver exists. */
+/* Step 6: the simulated card and the simulated microphone input of ring_rhw (bindings ring,sim-disk and ring,sim-mic);
+ * the real ones come with the ring's board files (step 7). No chip pin is named here. */
+/ {
+	chosen {
+		zephyr,display = &ring_display;
+	};
+	ring_display: ring_display {
+		compatible = "ring,mem-display";
+		width = <120>;
+		height = <240>;
+	};
+	ring_sim_disk: ring-sim-disk {
+		compatible = "ring,sim-disk";
+		sector-count = <7812500>;
+	};
+	ring_sim_mic: ring-sim-mic {
+		compatible = "ring,sim-mic";
+		queue-size = <8>;
+	};
+};
+/ { fake_pin: fake-pin { gpios = <&gpio1 24 0>; }; };

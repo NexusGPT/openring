@@ -1,0 +1,33 @@
+ven. 13 nov. 2026 11:00:49 CET
+firmware: design/firmware.md
+architecture: design/architecture.md
+netlist: design/ecad/ring/netlist.csv
+check 1 sections: found [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], missing []
+check 2 states: 14 listed, 72 transitions, 14 states used
+check 3 pins: 32 pins, 26 signal names, 35 signal-pin pairs checked against 37 architecture signals
+check 4 RAM: 14 lines sum 305408, stated total 305408, limit 524288
+check 7 charger: 4350000 uV against the cell type 4.35 V; CHARGE_CURRENT 15000 uA, smallest cell 17.6 mAh
+check 8 microphone modes from the Knowles copy: [(1000000.0, 4800000.0), (350000.0, 800000.0)]
+check 8 PDM: 1 clock lines checked
+check 9-11 rules: 5 stated rules checked
+check 12 thermistor: 10000 ohm, limits [0, 10000, 40000, 45000] m°C
+check 13 removed names: 33 names, 0 uses outside the change list
+check 14 microphone rail: on in 1.1 for ['RECORDING'], in 8.2 for ['`RECORDING`']
+check 15 long press: 1 transitions into the recording state checked
+check 20 Bluetooth: 1 Bluetooth transition rows, 4 start or stop clauses in section 7 (each must be a refusal)
+check 16 battery: smallest 17.6, largest 31.9 mAh at 4.1 mA; minutes [39, 13, 5] and [70, 23, 9]; 7 recording rows, 7 charge rows
+check 16 F3 rules: 12 rule groups checked
+check 17 F4 rules: 6 rule groups checked, 72 transition rows read
+check 18a netlist: 35 signal-pin pairs, 32 pins, 19 named nets checked against 404 netlist rows
+check 18b microphone: sensitivity -26 dBFS, gain 0 dB, register 0x28, full scale 120 dB SPL, AOP 120 dB SPL
+check 18 F5 rules: 6 rule groups checked
+check 19 former cell values: 0 uses of 18.2, 24.3, 32.9 or 18,200 without 'before' within 60 characters
+check 21 v7: 6 rule groups checked, 0 lines name a removed part without 'removed in v7'; netlist.csv still holds none of LED1, R41, Q2 (reported, not judged: the wiring is another helper's file)
+check 22 F7 part 2: 3 HID reports, 4 control modes
+check 23 F7 part 3: 2 sentences on the screen going off in RECORDING (each must be a refusal), 4 screens, step 5 without a microphone test
+check 5 end: questions_for_owner and RESULT line
+FAIL pin P1.22 is not in architecture section 7
+FAIL pin P1.29 is not in architecture section 7
+FAIL pin P1.02 is a spare pin in architecture section 7 but firmware.md uses it
+3 failures
+exit 1

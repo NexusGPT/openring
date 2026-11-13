@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Inside, layout option IB: the part on the bench</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; color:#111; font:14px/1.4 -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  header { padding:22px 30px 10px; display:flex; gap:16px; align-items:baseline; }
+  .badge { font:700 15px/1 -apple-system, Arial, sans-serif; border:2px solid #111; padding:6px 10px; letter-spacing:.04em; }
+  h1 { font-size:22px; margin:0; font-weight:600; }
+  header p { margin:4px 0 0; color:#555; max-width:1100px; }
+  .cap { margin:18px 30px 6px; font-size:12px; color:#555; text-transform:uppercase; letter-spacing:.07em; }
+  .wrap { margin:0 30px; width:1380px; height:863px; position:relative; }
+  .frame { position:absolute; left:0; top:0; width:1440px; height:900px; transform:scale(.9583); transform-origin:0 0; border:2px solid #222; background:#fafafa; }
+  .frame .id { position:absolute; right:10px; bottom:10px; font:700 13px/1 Arial, sans-serif; border:1.5px solid #222; background:#fff; padding:5px 8px; z-index:5; }
+  .z { position:absolute; border:1.5px dashed #888; background:#fff; padding:9px 11px; font-size:13.5px; color:#333; overflow:hidden; }
+  .z b { display:block; color:#111; font-size:14.5px; margin-bottom:2px; }
+  .z small { display:block; color:#666; font-size:13px; }
+  .z.area { background:#f1f1f1; border-color:#666; }
+  .z.dark { background:#e6e6e6; }
+  .z.tag { background:#fff; border-style:solid; border-color:#999; }
+  .z.hint { background:transparent; border-color:#bbb; color:#777; }
+  .group { position:absolute; border:1.5px dashed #888; background:#fbfbfb; }
+  .group > .lab { position:absolute; left:11px; top:7px; font-size:14.5px; font-weight:700; color:#111; }
+  .group > .lab small { font-weight:400; color:#666; font-size:13px; }
+  .under { margin:22px 30px 34px; max-width:1300px; }
+  .under p { margin:0 0 8px; font-size:15px; }
+  .under .worse { color:#666; }
+</style>
+</head>
+<body>
+<header>
+  <span class="badge">IB</span>
+  <div>
+    <h1>Inside · option IB · "The part on the bench"</h1>
+    <p>Boxes only: no colours, no real content. Layout of the app kept as picked (L1: the 3D stage on the left, the reading panel on the right), with one change: once a part is chosen, the part takes the stage and the ring shrinks to a corner. Two moments of the same screen: arriving, and one made-to-drawing part chosen.</p>
+  </div>
+</header>
+
+<div class="cap">Frame 1 · arriving: ring closed, no part chosen (the same as IA at rest: the two options differ once a part is chosen)</div>
+<div class="wrap"><div class="frame">
+  <div class="z dark" style="left:0;top:0;width:1440px;height:56px;"><b>Area tabs, same bar as every screen</b><small>Home · Look · Inside · Electronics · Board · Parts · Behaviour · Case · Open items · Files</small></div>
+
+  <div class="z area" style="left:0;top:56px;width:876px;height:844px;"></div>
+  <div class="z" style="left:200px;top:200px;width:480px;height:440px;padding-top:180px;text-align:center;"><b>3D ring, whole and closed</b><small>Drag turns it, scroll zooms. It sits where it sat on Home, at the same angle, so arriving here does not jump.</small></div>
+  <div class="z tag" style="left:560px;top:150px;width:250px;height:58px;"><b>Name tag</b><small>appears where you point at a part</small></div>
+  <div class="z" style="left:28px;top:806px;width:320px;height:78px;"><b>Open / Close button</b><small>one press: the ring opens into 5 layers, animated; again: it closes</small></div>
+  <div class="z hint" style="left:600px;top:840px;width:250px;height:44px;"><small>drag to turn · scroll to zoom</small></div>
+
+  <div class="z area" style="left:876px;top:56px;width:564px;height:844px;"></div>
+  <div class="z" style="left:904px;top:78px;width:508px;height:72px;"><b>Title + design version</b><small>"What is in the ring" and the date the data was built</small></div>
+  <div class="z" style="left:904px;top:164px;width:508px;height:58px;"><b>Find a part</b><small>type a name or an order code; pick a result and the part is chosen</small></div>
+  <div class="z" style="left:904px;top:236px;width:508px;height:200px;"><b>Layers of the ring</b><small>5 rows: Glass · Screen · Board · Band · Body, each with its count. Click a row: only that layer shows in the ring; click it again: all layers come back. A row opens to list its parts by name.</small></div>
+  <div class="z" style="left:904px;top:450px;width:508px;height:140px;"><b>Made to drawing</b><small>the parts a maker builds from a drawing (the body, covers and the like), one row each with a small picture. This is the maker's front door: click one and it is chosen, with its files on its card.</small></div>
+  <div class="z" style="left:904px;top:604px;width:508px;height:62px;"><b>Not drawn in 3D: one line</b><small>"Small board parts (resistors, capacitors) are not drawn." Link: see them in Parts →</small></div>
+  <div class="z hint" style="left:904px;top:680px;width:508px;height:190px;"><small>empty on purpose: calm space</small></div>
+  <div class="id">IB · frame 1</div>
+</div></div>
+
+<div class="cap">Frame 2 · one made-to-drawing part chosen (for example the body): the part alone on the stage</div>
+<div class="wrap"><div class="frame">
+  <div class="z dark" style="left:0;top:0;width:1440px;height:56px;"><b>Area tabs, same bar as every screen</b></div>
+
+  <div class="z area" style="left:0;top:56px;width:876px;height:844px;"></div>
+  <div class="z" style="left:258px;top:74px;width:360px;height:62px;text-align:center;"><b>View: The part · Its drawing · In the ring</b><small>"In the ring" goes back to the whole ring, this part lit</small></div>
+  <div class="z" style="left:130px;top:156px;width:616px;height:470px;padding-top:150px;text-align:center;"><b>The chosen part alone, large, on a plain floor</b><small>Drag turns it, scroll zooms. Its 3 to 5 main measurements are drawn on it as thin lines with numbers. With "Its drawing", this area shows the drawing sheet itself, full size, to zoom and read.</small></div>
+  <div class="z tag" style="left:560px;top:250px;width:170px;height:58px;"><b>Measure line</b><small>e.g. a length in mm</small></div>
+  <div class="z tag" style="left:150px;top:500px;width:300px;height:108px;"><b>The dimensioned drawing goes here</b><small>switch "Its drawing": the drawing sheet replaces the 3D part in this same space, full size, to zoom and read</small></div>
+  <div class="z" style="left:28px;top:690px;width:220px;height:194px;"><b>Where it sits: one click back to the whole ring</b><small>the whole ring, small, this part lit. Click it: the part glides back into the ring.</small></div>
+  <div class="z" style="left:270px;top:650px;width:440px;height:76px;"><b>Ring size</b><small>one button per size the design covers; the part on the stage and its files change with it (body only)</small></div>
+  <div class="z hint" style="left:270px;top:742px;width:580px;height:142px;"><b style="color:#555">Transition</b><small>On choosing: the part lifts out of the ring and glides to the centre while the ring shrinks into the corner. On going back: the same movement, reversed. Click empty space or press Esc: back to the whole ring.</small></div>
+
+  <div class="z area" style="left:876px;top:56px;width:564px;height:844px;"></div>
+  <div class="z" style="left:904px;top:72px;width:508px;height:40px;padding-top:9px;"><b style="display:inline">← All parts</b> <small style="display:inline">back to the list in frame 1 · "Close" on the right</small></div>
+  <div class="z" style="left:904px;top:122px;width:508px;height:80px;"><b>Part name, large · reference · layer · "made to drawing"</b><small>A bought part shows its maker and order code here instead, and the stage keeps the whole ring.</small></div>
+  <div class="z" style="left:904px;top:212px;width:508px;height:80px;"><b>In plain words</b><small>what it is and why it is there, in two or three short lines</small></div>
+  <div class="z" style="left:904px;top:302px;width:508px;height:96px;"><b>Key facts</b><small>size · material · finish · how many per ring: four rows, name on the left, value on the right</small></div>
+
+  <div class="group" style="left:904px;top:410px;width:508px;height:316px;"><div class="lab">The four downloads <small>· for the ring size chosen on the stage</small></div></div>
+  <div class="z" style="left:918px;top:442px;width:480px;height:62px;"><b>Drawing · PDF</b><small>all views with measurements · download</small></div>
+  <div class="z" style="left:918px;top:512px;width:480px;height:62px;"><b>Specification · one-page PDF</b><small>material, tolerance, finish, quantity · download</small></div>
+  <div class="z" style="left:918px;top:582px;width:480px;height:62px;"><b>CAD file · STEP</b><small>for a workshop's design software · download</small></div>
+  <div class="z" style="left:918px;top:652px;width:480px;height:62px;"><b>3D print file · STL</b><small>ready for a 3D printer · download</small></div>
+
+  <div class="z" style="left:904px;top:740px;width:508px;height:68px;"><b>Links out</b><small>Source file ↗ (new tab) · This part in the Parts list → · All maker files (Files, "For a manufacturer") →</small></div>
+  <div class="id">IB · frame 2</div>
+</div></div>
+
+<div class="under">
+  <p><b>Idea:</b> choosing a made part puts that part alone on the stage, big, turnable, with its measurements drawn on it and its drawing one click away in the same space; the ring shrinks to a corner to show where it sits, and the panel keeps the plain words and the four files.</p>
+  <p><b>Named axis:</b> what the stage shows once a part is chosen. Here: the part itself, on its own, with its measurements; the ring becomes a small inset.</p>
+  <p class="worse"><b>Worse at:</b> seeing the part in its place. While a part is open the ring is only a small corner picture, so understanding how parts fit together, or hopping from one neighbouring part to the next, takes a step back to the whole ring first.</p>
+  <p><b>Change to the app layout (the one allowed):</b> L1 says the 3D ring is always on the left. Here the ring stays on screen but shrinks to an inset while a part is open. Cost: the owner loses the large in-place view while reading a part, and the part-to-ring transition is one more animation to build well.</p>
+</div>
+<script>window.__ready = true;</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+## Not proven and limits
+
+- Rerun with the final thin.py and check_thin.py (two runs at a time, allowed by the lead, nice 19): US 8, US 9 default, US 10, US 11 and US 13 each ended `RESULT PASS` (out/v8/v8c_us8.log, v8c_us9_default.log, v8c_us10.log, v8c_us11.log, v8c_us13.log). US 7 (v8b) and US 12 (v8b) were already runs of the final script. The broken copy also ran through the whole check with the pair test skipped: out/v8/broken_trunk_full/check.log ends `RESULT FAIL pairs=0 parts=47` with the line `BAND circuit band_flex_thumb trunk at -46.9 deg: X -3.2000 to -1.8000, drawn -3.4 to -1.6`.
+- The pair test is a collision test; the clearances in c.3 are printed values, with the rules named in section d.
+- The foot joint (hot bar), the liner cast round the ribbons, the hot bar settings and the Gerber layer names are bench and maker items from design/ecad/band/band-notes.md "Not closed"; nothing here measures them.
+- The 0.2 and 0.3 chamfers of the drawn outline are not modelled (section b).
+- The red state for the slot width (section d, row 1) is the check's own arithmetic, not a full run.
+- Written outside design/mech/thin/ by this run: the 28 files in design/mfg/parts/flex-tail-thumb/ and flex-tail-away/ (14 replaced, 14 foot stiffener files new), design/mfg/specs/band-flex-tails.md, `__pycache__` of design/mfg/parts (the exporter imports partlib.py), and the 14 `*-drc.rpt` files that check_band.py rewrites in design/ecad/band (same content as before: the check runs kicad-cli drc on each board). The listing of all files newer than the start (out/v8/out_of_folder_changes.log) also holds other helpers' work, so it does not separate mine; no process or file of anyone else was stopped or deleted. Nothing else was made outside out/v8.

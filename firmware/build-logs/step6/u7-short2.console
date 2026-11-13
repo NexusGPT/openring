@@ -1,0 +1,357 @@
+# remote.sh run 20261113-060339-u7-short2
+# command: grep -rl xpsr /ws/zephyr/include/zephyr/arch/arm && echo basic-frame-struct-files: $(grep -rl 'struct __basic_sf' /ws/zephyr/include/zephyr/arch/arm | wc -l) && echo NCS-SETTINGS_NVS-files: $(grep -rl SETTINGS_NVS /ws/nrf/samples /ws/nrf/boards /ws/nrf/applications 2>>/ws/out/u7-kfacts-stderr.txt | wc -l) && west twister -T /ws/firmware/tests/sys -p native_sim -p nrf54lm20bsim/nrf54lm20a/cpuapp -O /ws/out/u7-short2 --inline-logs -v -j 4
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 06:03:39 CET
+# free on the server's /: 52 GB
+# source firmware copied to /root/ring-os/src-u-sys
+# started on the server as 20261113-060339-u7-short2; server log /root/ring-os/logs/20261113-060339-u7-short2.log
+/ws/zephyr/include/zephyr/arch/arm/cortex_a_r/exception.h
+/ws/zephyr/include/zephyr/arch/arm/cortex_m/exception.h
+basic-frame-struct-files: 2
+NCS-SETTINGS_NVS-files: 109
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/u7-short2/testplan.json
+INFO    - JOBS: 4
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/2 native_sim/native         ring_sys.sim                                       FAILED rc=1 (native 0.241s <host/gnu>)
+INFO    - ------/ws/out/u7-short2/native_sim_native/host_gnu/firmware/tests/sys/ring_sys.sim/handler.log------
+ERROR   - *** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+*** Using Zephyr OS v4.4.2-9133dab6b066 ***
+Running TESTSUITE sys_crash
+===================================================================
+START - test_block_format
+EVIDENCE sys_crash format: 296 stored bytes equal the typed block (crc word 50B8D35F)
+ PASS - test_block_format in 0.000 seconds
+===================================================================
+START - test_boot_copies_valid_block_once
+EVIDENCE sys_crash once: first take 1, second take 0, retained cleared, gpregret1 0
+ PASS - test_boot_copies_valid_block_once in 0.000 seconds
+===================================================================
+START - test_fatal_path_order
+EVIDENCE sys_crash fatal path: block 1 < gpregret1 2 < reboot 3, reboot reason 6
+ PASS - test_fatal_path_order in 0.000 seconds
+===================================================================
+START - test_handler_signature_matches_kit
+ PASS - test_handler_signature_matches_kit in 0.000 seconds
+===================================================================
+START - test_invalid_block_ignored
+EVIDENCE sys_crash invalid: blank, 0xFF and 4 damaged blocks all rejected, retained clears 1
+ PASS - test_invalid_block_ignored in 0.000 seconds
+===================================================================
+TESTSUITE sys_crash succeeded
+Running TESTSUITE sys_persist
+===================================================================
+START - test_blank_settings_read_as_clear
+ PASS - test_blank_settings_read_as_clear in 0.000 seconds
+===================================================================
+START - test_factory_flag_survives_reboot
+EVIDENCE sys_persist flag: 1 over 3 reboots, cleared by the write, clear over 1 reboot, write errors reported
+ PASS - test_factory_flag_survives_reboot in 0.000 seconds
+===================================================================
+TESTSUITE sys_persist succeeded
+Running TESTSUITE sys_time
+===================================================================
+START - test_guess_is_not_set
+EVIDENCE sys_time guess: guess 1794513600000, rtime_is_set 0, rtime_utc_ms 0, clock updates 0 -> 0
+ PASS - test_guess_is_not_set in 0.000 seconds
+===================================================================
+START - test_saved_on_ship_and_off
+EVIDENCE sys_time saved: saved at SHIP and at OFF, the later one found after the reboot (1794600000123), settings writes 4
+ PASS - test_saved_on_ship_and_off in 0.000 seconds
+===================================================================
+TESTSUITE sys_time succeeded
+Running TESTSUITE sys_update
+===================================================================
+START - test_allowed_rule
+EVIDENCE sys_update allowed: 300 no-VBUS -> 11, 301 -> OK, VBUS any -> OK
+ PASS - test_allowed_rule in 0.000 seconds
+===================================================================
+START - test_data_end_limit
+EVIDENCE sys_update data end: 999424 ok, 999425 BAD_ARG, 8192 ok, 8193 BAD_ARG
+ PASS - test_data_end_limit in 0.000 seconds
+===================================================================
+START - test_end_bad_crc_fw_error
+EVIDENCE sys_update bad crc: FW_END -> FW_ERROR(10) in 4 cases, upgrade requests 0
+ PASS - test_end_bad_crc_fw_error in 0.000 seconds
+===================================================================
+START - test_layout_sums_to_2036_kb
+EVIDENCE sys_update layout: sum 2036 KB, image max 999424 bytes
+ PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+===================================================================
+START - test_self_test_no_mic
+EVIDENCE sys_update self-test no mic: rail events 0, microphone input events 0
+ PASS - test_self_test_no_mic in 31.001 seconds
+===================================================================
+START - test_self_test_pass_confirms
+EVIDENCE sys_update self-test pass: confirm events 1, reboots 0, log result 0 mask 7
+ PASS - test_self_test_pass_confirms in 62.001 seconds
+===================================================================
+START - test_self_test_timeout_reboots
+EVIDENCE sys_update self-test timeout: reboot 30000100 us after the start, reason 5, confirms 0
+ PASS - test_self_test_timeout_reboots in 30.101 seconds
+===================================================================
+START - test_sequence
+EVIDENCE sys_update sequence: erase 1 < write 2 < read 3 < request 4, reboots by FW_END 0
+ PASS - test_sequence in 0.000 seconds
+===================================================================
+START - test_size_limit
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:63: sys_update_test_size_limit: (rsy_fw_data(0u, img, 1u) not equal to 4)
+no FW_BEGIN in force after a refusal
+ FAIL - test_size_limit in 0.000 seconds
+===================================================================
+START - test_writes_only_slot1
+EVIDENCE sys_update slot1: 4 writes, all inside 0..999424 and at the offsets sent
+ PASS - test_writes_only_slot1 in 0.000 seconds
+===================================================================
+TESTSUITE sys_update failed.
+Running TESTSUITE sys_wdt
+===================================================================
+START - test_feed_only_with_progress
+EVIDENCE sys_wdt: feeds with progress 10 in 10 s; feeds after a 12 s stall of one thread 11; would_reset 1
+ PASS - test_feed_only_with_progress in 38.008 seconds
+===================================================================
+START - test_feed_when_no_recording
+EVIDENCE sys_wdt no recording: 30 feeds in 30.5 s with no progress reports, spacing 1 s
+ PASS - test_feed_when_no_recording in 38.501 seconds
+===================================================================
+START - test_new_recording_clears_old_progress
+ PASS - test_new_recording_clears_old_progress in 4.501 seconds
+===================================================================
+START - test_progress_window_edges
+ PASS - test_progress_window_edges in 0.000 seconds
+===================================================================
+START - test_start_8s_once
+ PASS - test_start_8s_once in 0.000 seconds
+===================================================================
+TESTSUITE sys_wdt succeeded
+
+------ TESTSUITE SUMMARY START ------
+
+SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+ - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+ - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+ - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+ - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+ - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+ - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+ - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+
+SUITE FAIL -  90.00% [sys_update]: pass = 9, fail = 1, skip = 0, total = 10 duration = 123.103 seconds
+ - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+ - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+ - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+ - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+ - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+ - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+ - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+ - FAIL - [sys_update.test_size_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+
+SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+ - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+ - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+ - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+ - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+ - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+
+------ TESTSUITE SUMMARY END ------
+
+===================================================================
+RunID: 0ed45ff804ffbb96175778133022eeac
+PROJECT EXECUTION FAILED
+
+INFO    - ------/ws/out/u7-short2/native_sim_native/host_gnu/firmware/tests/sys/ring_sys.sim/handler.log------
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_sys.sim                                 FAILED rc=1 (native 0.093s <host/gnu>)
+INFO    - /ws/out/u7-short2/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/sys/ring_sys.sim/handler.log
+ERROR   - d_00: @00:00:00.000093  *** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+d_00: @00:00:00.000093  *** Using Zephyr OS v4.4.2-9133dab6b066 ***
+d_00: @00:00:00.000093  Running TESTSUITE sys_crash
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_block_format
+d_00: @00:00:00.000093  EVIDENCE sys_crash format: 296 stored bytes equal the typed block (crc word 50B8D35F)
+d_00: @00:00:00.000093   PASS - test_block_format in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_boot_copies_valid_block_once
+d_00: @00:00:00.000093  EVIDENCE sys_crash once: first take 1, second take 0, retained cleared, gpregret1 0
+d_00: @00:00:00.000093   PASS - test_boot_copies_valid_block_once in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_fatal_path_order
+d_00: @00:00:00.000093  EVIDENCE sys_crash fatal path: block 1 < gpregret1 2 < reboot 3, reboot reason 6
+d_00: @00:00:00.000093   PASS - test_fatal_path_order in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_handler_signature_matches_kit
+d_00: @00:00:00.000093   PASS - test_handler_signature_matches_kit in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_invalid_block_ignored
+d_00: @00:00:00.000093  EVIDENCE sys_crash invalid: blank, 0xFF and 4 damaged blocks all rejected, retained clears 1
+d_00: @00:00:00.000093   PASS - test_invalid_block_ignored in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  TESTSUITE sys_crash succeeded
+d_00: @00:00:00.000093  Running TESTSUITE sys_persist
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_blank_settings_read_as_clear
+d_00: @00:00:00.000093   PASS - test_blank_settings_read_as_clear in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_factory_flag_survives_reboot
+d_00: @00:00:00.000093  EVIDENCE sys_persist flag: 1 over 3 reboots, cleared by the write, clear over 1 reboot, write errors reported
+d_00: @00:00:00.000093   PASS - test_factory_flag_survives_reboot in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  TESTSUITE sys_persist succeeded
+d_00: @00:00:00.000093  Running TESTSUITE sys_time
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_guess_is_not_set
+d_00: @00:00:00.000093  EVIDENCE sys_time guess: guess 1794513600000, rtime_is_set 0, rtime_utc_ms 0, clock updates 0 -> 0
+d_00: @00:00:00.000093   PASS - test_guess_is_not_set in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_saved_on_ship_and_off
+d_00: @00:00:00.000093  EVIDENCE sys_time saved: saved at SHIP and at OFF, the later one found after the reboot (1794600000123), settings writes 4
+d_00: @00:00:00.000093   PASS - test_saved_on_ship_and_off in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  TESTSUITE sys_time succeeded
+d_00: @00:00:00.000093  Running TESTSUITE sys_update
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_allowed_rule
+d_00: @00:00:00.000093  EVIDENCE sys_update allowed: 300 no-VBUS -> 11, 301 -> OK, VBUS any -> OK
+d_00: @00:00:00.000093   PASS - test_allowed_rule in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_data_end_limit
+d_00: @00:00:00.000093  EVIDENCE sys_update data end: 999424 ok, 999425 BAD_ARG, 8192 ok, 8193 BAD_ARG
+d_00: @00:00:00.000093   PASS - test_data_end_limit in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_end_bad_crc_fw_error
+d_00: @00:00:00.000093  EVIDENCE sys_update bad crc: FW_END -> FW_ERROR(10) in 4 cases, upgrade requests 0
+d_00: @00:00:00.000093   PASS - test_end_bad_crc_fw_error in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_layout_sums_to_2036_kb
+d_00: @00:00:00.000093  EVIDENCE sys_update layout: sum 2036 KB, image max 999424 bytes
+d_00: @00:00:00.000093   PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_self_test_no_mic
+d_00: @00:00:31.000193  EVIDENCE sys_update self-test no mic: rail events 0, microphone input events 0
+d_00: @00:00:31.000193   PASS - test_self_test_no_mic in 31.001 seconds
+d_00: @00:00:31.000193  ===================================================================
+d_00: @00:00:31.000193  START - test_self_test_pass_confirms
+d_00: @00:01:02.000293  EVIDENCE sys_update self-test pass: confirm events 1, reboots 0, log result 0 mask 7
+d_00: @00:01:33.000393   PASS - test_self_test_pass_confirms in 62.001 seconds
+d_00: @00:01:33.000393  ===================================================================
+d_00: @00:01:33.000393  START - test_self_test_timeout_reboots
+d_00: @00:02:03.100593  EVIDENCE sys_update self-test timeout: reboot 30000100 us after the start, reason 5, confirms 0
+d_00: @00:02:03.100593   PASS - test_self_test_timeout_reboots in 30.101 seconds
+d_00: @00:02:03.100593  ===================================================================
+d_00: @00:02:03.100593  START - test_sequence
+d_00: @00:02:03.100593  EVIDENCE sys_update sequence: erase 1 < write 2 < read 3 < request 4, reboots by FW_END 0
+d_00: @00:02:03.100593   PASS - test_sequence in 0.000 seconds
+d_00: @00:02:03.100593  ===================================================================
+d_00: @00:02:03.100593  START - test_size_limit
+d_00: @00:02:03.100593  
+d_00: @00:02:03.100593      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:63: sys_update_test_size_limit: (rsy_fw_data(0u, img, 1u) not equal to 4)
+d_00: @00:02:03.100593  no FW_BEGIN in force after a refusal
+d_00: @00:02:03.100593   FAIL - test_size_limit in 0.000 seconds
+d_00: @00:02:03.100593  ===================================================================
+d_00: @00:02:03.100593  START - test_writes_only_slot1
+d_00: @00:02:03.100593  EVIDENCE sys_update slot1: 4 writes, all inside 0..999424 and at the offsets sent
+d_00: @00:02:03.100593   PASS - test_writes_only_slot1 in 0.000 seconds
+d_00: @00:02:03.100593  ===================================================================
+d_00: @00:02:03.100593  TESTSUITE sys_update failed.
+d_00: @00:02:03.100593  Running TESTSUITE sys_wdt
+d_00: @00:02:03.100593  ===================================================================
+d_00: @00:02:03.100593  START - test_feed_only_with_progress
+d_00: @00:02:41.108193  EVIDENCE sys_wdt: feeds with progress 10 in 10 s; feeds after a 12 s stall of one thread 11; would_reset 1
+d_00: @00:02:41.108193   PASS - test_feed_only_with_progress in 38.008 seconds
+d_00: @00:02:41.108193  ===================================================================
+d_00: @00:02:41.108193  START - test_feed_when_no_recording
+d_00: @00:03:19.608493  EVIDENCE sys_wdt no recording: 30 feeds in 30.5 s with no progress reports, spacing 1 s
+d_00: @00:03:19.608493   PASS - test_feed_when_no_recording in 38.501 seconds
+d_00: @00:03:19.608493  ===================================================================
+d_00: @00:03:19.608493  START - test_new_recording_clears_old_progress
+d_00: @00:03:24.109093   PASS - test_new_recording_clears_old_progress in 4.501 seconds
+d_00: @00:03:24.109093  ===================================================================
+d_00: @00:03:24.109093  START - test_progress_window_edges
+d_00: @00:03:24.109093   PASS - test_progress_window_edges in 0.000 seconds
+d_00: @00:03:24.109093  ===================================================================
+d_00: @00:03:24.109093  START - test_start_8s_once
+d_00: @00:03:24.109093   PASS - test_start_8s_once in 0.000 seconds
+d_00: @00:03:24.109093  ===================================================================
+d_00: @00:03:24.109093  TESTSUITE sys_wdt succeeded
+d_00: @00:03:24.109093  
+d_00: @00:03:24.109093  ------ TESTSUITE SUMMARY START ------
+d_00: @00:03:24.109093  
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+d_00: @00:03:24.109093  
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+d_00: @00:03:24.109093  
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+d_00: @00:03:24.109093  
+d_00: @00:03:24.109093  SUITE FAIL -  90.00% [sys_update]: pass = 9, fail = 1, skip = 0, total = 10 duration = 123.103 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+d_00: @00:03:24.109093   - FAIL - [sys_update.test_size_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+d_00: @00:03:24.109093  
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+d_00: @00:03:24.109093  
+d_00: @00:03:24.109093  ------ TESTSUITE SUMMARY END ------
+d_00: @00:03:24.109093  
+d_00: @00:03:24.109093  ===================================================================
+d_00: @00:03:24.109093  RunID: fa12dc8c616413a3a64764d7ef98cd54
+d_00: @00:03:24.109093  PROJECT EXECUTION FAILED
+
+INFO    - /ws/out/u7-short2/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/sys/ring_sys.sim/handler.log
+
+INFO    - 1 test scenarios (2 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 2 executed test configurations passed (0.00%), 0 built (not run), 2 failed, 0 errored, with no warnings in 33.26 seconds.
+INFO    - 46 of 48 executed test cases passed (95.83%), 2 failed on 2 out of total 1514 platforms (0.13%).
+INFO    - 2 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/u7-short2/twister.json
+INFO    - Writing xunit report /ws/out/u7-short2/twister.xml...
+INFO    - Writing xunit report /ws/out/u7-short2/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_sys.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+INFO    - 2) ring_sys.sim on native_sim/native failed (rc=1)
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_sys.sim
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/sys -T ring_sys.sim
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+# finished (Mac clock): 2026-11-13 06:04:35 CET
+# remote exit code: 1
+# local log: firmware/build-logs/20261113-060339-u7-short2.log

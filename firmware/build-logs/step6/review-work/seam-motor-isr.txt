@@ -1,0 +1,36 @@
+== rmo.c started calls
+66:	k_timer_start(&tmr, K_TICKS(wait), K_NO_WAIT);
+70:static void on_expiry(struct k_timer *t)
+115:		k_timer_init(&tmr, on_expiry, NULL);
+159:	if (cb.started != NULL) {
+160:		cb.started((uint8_t)p, rhw_clock()->now_ms());
+== rmo.h started
+#endif
+
+struct rmo_cb {
+	/* Each MOTOR edge as the pin is set, with rhw_clock()->cycles() of that moment (FW l.496, for ring_audio's
+	 * rau_motor_edge). k_timer context: must not block. */
+	void (*edge)(bool high, uint64_t cycles);
+	/* The charge of one ON pulse in µA·s: t_on x RREC_MOTOR_RUN_MA + RREC_MOTOR_START_MS x RREC_MOTOR_START_MA
+	 * (FW l.332), at the pulse's end (for rpw_motor_charge). k_timer context: must not block. */
+	void (*charge)(uint32_t uas);
+	/* A pattern started (FW l.333: the start time is logged), with its id and uptime ms. Caller's context of rmo_play:
+	 * must not block. */
+	void (*started)(uint8_t pattern, int64_t t_ms);
+};
+== rst.h log_put
+
+/* Queue one event log record (FW l.1062): copied into the RAM buffer of RREC_LOG_BUFFER_RECORDS; when full the
+ * oldest unwritten record is dropped and counted. Sets r->seq in the copy. Written to the log area at the next time
+ * VDD_SD is on (mount, or at once when mounted). Any thread (not an interrupt); never blocks. */
+void rst_log_put(const struct rrec_logrec *r);
+
+== rst_log_put body
+3:1021-	k_spinlock_key_t k = k_spin_lock(&st_lock);
+6:1024-	k_spin_unlock(&st_lock, k);
+7:1025-	k_sem_give(&work_sem);
+12:1030-	k_spinlock_key_t k = k_spin_lock(&st_lock);
+15:1033-	k_spin_unlock(&st_lock, k);
+== rtime utc
+5:firmware/modules/ring_time/src/rtime.c-58-	k_mutex_lock(&lk, K_FOREVER);
+7:firmware/modules/ring_time/src/rtime.c-60-	k_mutex_unlock(&lk);

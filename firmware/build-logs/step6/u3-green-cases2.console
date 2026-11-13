@@ -1,0 +1,12 @@
+# remote.sh run 20261113-054228-u3-green-cases2
+# command: cd /ws/out/20261113-053138-u-audio-unit && for t in native_sim nrf54lm20bsim_nrf54lm20a_cpuapp; do echo "== $t"; python3 -I -c "
+import json
+d=json.load(open(\"twister-$t/twister.json\"))
+for ts in d[\"testsuites\"]:
+    for tc in ts[\"testcases\"]:
+        print(tc[\"status\"], tc[\"identifier\"])
+"; done
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:42:28 CET
+# free on the server's /: 23 GB
+# remote.sh: less than 25 GB free on the server; stop

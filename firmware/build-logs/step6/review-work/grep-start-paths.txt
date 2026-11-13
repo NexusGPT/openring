@@ -1,0 +1,26 @@
+modules/ring_screens/src/rscr_real.c:94:	return rglue_event_try(RC_EV_MENU_POWER_OFF);
+modules/ring_glue/src/rglue.c:120:void rglue_input(enum rc_switch sw, bool pressed)
+modules/ring_glue/src/rglue.c:135:		rc_core_input(&core, sw, pressed, now, &a);
+modules/ring_glue/src/rglue.c:164:void rglue_event(enum rc_event ev)
+modules/ring_glue/src/rglue.c:178:int rglue_event_try(enum rc_event ev)
+modules/ring_glue/include/ring_glue/rglue.h:4: *   joystick edge -> rglue_input() -> core (gestures, state table) -> actions
+modules/ring_glue/include/ring_glue/rglue.h:16: * THREAD CONTEXT ONLY. rglue_input() must be called from a thread, never from an interrupt
+modules/ring_glue/include/ring_glue/rglue.h:19: * must queue the debounced edge from its interrupt and call rglue_input() from a thread.
+modules/ring_glue/include/ring_glue/rglue.h:22: * repeat, double-press window); rglue_input() wakes it.
+modules/ring_glue/include/ring_glue/rglue.h:38:	 * thread or in the caller of rglue_input(). Step 6: the recorder (rrec_action) carries out every action here and
+modules/ring_glue/include/ring_glue/rglue.h:64:void rglue_input(enum rc_switch sw, bool pressed);
+modules/ring_glue/include/ring_glue/rglue.h:74:void rglue_event(enum rc_event ev);
+modules/ring_glue/include/ring_glue/rglue.h:77:int rglue_event_try(enum rc_event ev);
+modules/ring_glue/include/ring_glue/rglue.h:79: * the level enters the core; rc_core_event refuses battery events) and carries out the actions like rglue_event(). */
+modules/ring_recorder/src/rrec_int.h:42:	RREC_JOB_EVENT = 1,      /* arg: enum rc_event, through rglue_event() */
+modules/ring_recorder/src/rrec.c:502:	if (prev == RC_ST_RECORDING && state != RC_ST_RECORDING && last_event == RC_EV_LONG_PRESS && last_closed_valid) {
+modules/ring_recorder/src/rrec_boot.c:89:		rglue_event(RC_EV_VBUS_IN);               /* the fact (and charge on, R8) */
+modules/ring_recorder/src/rrec_boot.c:94:		rglue_event(RC_EV_STORAGE_INIT_FAILED);  /* row FW l.138 */
+modules/ring_recorder/src/rrec_boot.c:110:		rglue_event(RC_EV_STORAGE_SFULL);         /* the fact: R-STB sends STANDBY to ERR_STORAGE_FULL */
+modules/ring_recorder/src/rrec_boot.c:112:	rglue_event(RC_EV_INIT_DONE);                     /* rows FW l.135 to l.140 */
+modules/ring_recorder/src/rrec_bridge.c:79:			rglue_event(RC_EV_SCAN_READ_ERROR);
+modules/ring_recorder/src/rrec_bridge.c:90:		rglue_event(RC_EV_SCAN_DONE);
+modules/ring_recorder/src/rrec_bridge.c:95:		rglue_event(RC_EV_SCAN_READ_ERROR);
+modules/ring_recorder/src/rrec_bridge.c:113:	rglue_event(r == 0 ? RC_EV_STORAGE_RETRY_OK : RC_EV_STORAGE_RETRY_FAILED);
+modules/ring_recorder/src/rrec_bridge.c:129:			rglue_event((enum rc_event)j.arg);
+app/src/main.c:14: * settings menu come later: the driver calls rglue_input() with each debounced

@@ -1,0 +1,29 @@
+case-architecture.md:83
+  -    |  D+, D-  : not connected (U2 D+/D- open: no 9/12 V handshake) +--> [TPS63802 U3 buck-boost] --3V3--> U1, U4, LED1
+  +    |  D+, D-  : not connected (U2 D+/D- open: no 9/12 V handshake) +--> [TPS63802 U3 buck-boost] --3V3--> U1, U4 (LED1 anode: SYS)
+case-architecture.md:92
+  -    |-- 3 GPIO, active low --> RGB LED1 (common anode on 3V3)                      ring pads (C4: on the inside of the band, in a row around it)
+  +    |-- 3 GPIO, active low --> RGB LED1 (common anode on SYS)                      ring pads (C4: on the inside of the band, in a row around it)
+case-architecture.md:110
+  - | E1 | Ring presence | copper electrode 6 x 3 mm on the pin board, fifth wire W7 to U1 TOUCH4 (IO4) | no extra part; confirmed by USB attach | CALC / bench B3 |
+  + | E1 | Ring presence | copper electrode on the pin board: front strip 3.9 x 1.15 mm plus a 4.1 x 4.6 mm back pour of the same net (18.9 mm2, design/ecad/case/pcb/board-notes.md conflict 7), fifth wire W7 to U1 TOUCH4 (IO4) | no extra part; confirmed by USB attach | CALC / bench B3 |
+case-architecture.md:125
+  - | 3V3 | U3 | 3.308 V (R3 511 kΩ top, R4 91 kΩ bottom: 0.5 x (1 + 511/91), the 3.3 V row of TI Table 10-5) | U1 (355 mA peak), U4, LED1, pull-ups |
+  + | 3V3 | U3 | 3.308 V (R3 511 kΩ top, R4 91 kΩ bottom: 0.5 x (1 + 511/91), the 3.3 V row of TI Table 10-5) | U1 (355 mA peak), U4, pull-ups (LED1's anode is on SYS: design/ecad/case/sch-notes.md section 9) |
+case-architecture.md:173
+  - | 22 | IO18 | CHG_CE_N | to U2 CE (pin 9), 10 kΩ to GND (charging on by default) |
+  + | 22 | IO18 | CHG_CE_N | to U2 CE (pin 9), R21 10 kΩ to 3V3: charging off at power-on until the software has set the charger (design/ecad/case/sch-notes.md section 9) |
+case-architecture.md:176
+  - | 25 | IO21 | LED_R | R8 470 Ω to LED1 red cathode (pin 2); active low |
+  + | 25 | IO21 | LED_R | R8 510 Ω to LED1 red cathode (pin 2), anode on SYS; active low |
+case-architecture.md:178
+  - | 27 | IO47 | LED_G | R9 150 Ω to LED1 green cathode (pin 3); active low (bench B4) |
+  + | 27 | IO47 | LED_G | R9 270 Ω to LED1 green cathode (pin 3), anode on SYS; active low (bench B4) |
+case-architecture.md:179
+  - | 30 | IO48 | LED_B | R10 150 Ω to LED1 blue cathode (pin 4); active low (bench B4) |
+  + | 30 | IO48 | LED_B | R10 270 Ω to LED1 blue cathode (pin 4), anode on SYS; active low (bench B4) |
+case-notes.md:136
+  - | LED1 | common anode on 3V3, GPIO through R8-R10 to the cathodes, active low (architecture corrected; schematic already right) | package drawing p.1 as read by the schematic helper |
+  + | LED1 | common anode on SYS since the circuit simulation (design/ecad/case/sch-notes.md section 9; C2 had it on 3V3), GPIO through R8 510, R9 270, R10 270 ohm to the cathodes, active low | package drawing p.1 as read by the schematic helper |
+done
+exit 0

@@ -1,0 +1,27 @@
+# remote.sh run 20261113-063836-u4-diag3
+# command: B=/ws/out/20261113-063730-u4-real4-xfer-realbuild/twister/native_sim_native/host_gnu/firmware/tests/xfer/real_build/ring_xfer.real_build/zephyr; for k in CONFIG_UDC_VIRTUAL=y CONFIG_UDC_DRIVER=y CONFIG_USB_DEVICE_STACK_NEXT=y CONFIG_UHC_DRIVER=y CONFIG_RING_RHW_SIM=y; do printf '%s %s\n' $k $(grep -c "^$k" $B/.config); done; echo dts-udc0-lines $(grep -c 'zephyr_udc0' $B/zephyr.dts); grep -A6 'zephyr_udc0' $B/zephyr.dts | grep -c 'okay'; ls $B/../modules 2>&1 | head; find $B/.. -name 'udc_virtual*' | head -3
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 06:38:36 CET
+# free on the server's /: 46 GB
+# source firmware copied to /root/ring-os/src-u-xfer
+# started on the server as 20261113-063836-u4-diag3; server log /root/ring-os/logs/20261113-063836-u4-diag3.log
+CONFIG_UDC_VIRTUAL=y 0
+CONFIG_UDC_DRIVER=y 1
+CONFIG_USB_DEVICE_STACK_NEXT=y 1
+CONFIG_UHC_DRIVER=y 0
+CONFIG_RING_RHW_SIM=y 0
+dts-udc0-lines 1
+1
+azure-sdk-for-c
+canopennode
+chre
+cirrus-logic
+cjson
+cmsis
+cmsis-dsp
+cmsis-nn
+cmsis_6
+dhara
+# finished (Mac clock): 2026-11-13 06:39:32 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step6/20261113-063836-u4-diag3.log

@@ -1,0 +1,19 @@
+/* The ring's panel stands in as a memory display; the SDL window display of native_sim is switched off. */
+/ {
+	chosen {
+		zephyr,display = &ring_display;
+	};
+	ring_display: ring_display {
+		compatible = "ring,mem-display";
+		width = <120>;
+		height = <240>;
+	};
+};
+
+&sdl_dc {
+	status = "disabled";
+};
+
+&input_sdl_touch {
+	status = "disabled";
+};

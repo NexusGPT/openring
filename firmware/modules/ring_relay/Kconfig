@@ -1,0 +1,22 @@
+config RING_RELAY_LOGIC
+	bool "Ring relay logic: frames and records of the relay service (pure)"
+	select RING_INBOX
+	help
+	  No kernel, driver or Bluetooth call.
+
+config RING_RELAY
+	bool "Ring relay: notifications from a helper app on an Android phone"
+	select RING_RELAY_LOGIC
+	select RING_IPHONE
+	depends on BT_PERIPHERAL && BT_SMP
+	help
+	  A Bluetooth service of the ring (design/firmware.md section 7.7) that accepts notifications
+	  from a helper app and puts them in the same store as the iPhone's. Nothing received here can
+	  start or stop a recording, and nothing here calls the core.
+
+config RING_RELAY_TEST_HOOKS
+	bool "Ring relay test hooks (tests only)"
+	depends on RING_RELAY
+	default n
+	help
+	  Lets a test block the Out queue. Never set in the product (tools/build_all.sh checks the product's settings).

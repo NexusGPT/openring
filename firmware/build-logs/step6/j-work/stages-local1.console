@@ -1,0 +1,16 @@
+=== stage recorder-one-mic-path start 2026-11-13T07:47:06Z log firmware/build-logs/step6/j-work/stages-local1/recorder-one-mic-path.log
+recorder-one-mic-path: hits for /rail_set\([[:space:]]*RHW_RAIL_MIC[[:space:]]*,[[:space:]]*(true|1)[[:space:]]*,/ in firmware/modules/ring_rhw/src firmware/modules/ring_store/src firmware/modules/ring_audio/src firmware/modules/ring_xfer/src firmware/modules/ring_power/src firmware/modules/ring_motor/src firmware/modules/ring_sys/src firmware/modules/ring_factory/src firmware/modules/ring_recorder/src firmware/app/src: 1
+firmware/modules/ring_recorder/src/rrec_mics.c:53:	return rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
+recorder-one-mic-path: self test ok: a second call in a copy of ring_store is found by the same search
+=== stage recorder-one-mic-path end 2026-11-13T07:47:06Z exit 0
+=== stage recorder-no-start-path start 2026-11-13T07:47:06Z log firmware/build-logs/step6/j-work/stages-local1/recorder-no-start-path.log
+recorder-no-start-path: hits for /rglue_input|rc_core_input|RC_EV_LONG_PRESS/ in firmware/modules/ring_store firmware/modules/ring_audio firmware/modules/ring_xfer firmware/modules/ring_power firmware/modules/ring_motor firmware/modules/ring_sys firmware/modules/ring_factory: 0
+recorder-no-start-path: self test ok: a copy of ring_xfer with rglue_input is found by the same search
+=== stage recorder-no-start-path end 2026-11-13T07:47:06Z exit 0
+=== stage recorder-no-raw-pins start 2026-11-13T07:47:06Z log firmware/build-logs/step6/j-work/stages-local1/recorder-no-raw-pins.log
+recorder-no-raw-pins: hits for /(^|[^A-Za-z0-9_])P[0-9]\.[0-9]{1,2}([^0-9]|$)|NRF_GPIO_PIN_MAP|<&gpio[0-9]+[[:space:]]+[0-9]+/ in firmware/modules/ring_rhw firmware/modules/ring_store firmware/modules/ring_audio firmware/modules/ring_xfer firmware/modules/ring_power firmware/modules/ring_motor firmware/modules/ring_sys firmware/modules/ring_factory firmware/modules/ring_recorder firmware/tests/rhw firmware/tests/store firmware/tests/audio firmware/tests/xfer firmware/tests/power firmware/tests/motor firmware/tests/sys firmware/tests/factory firmware/tests/recorder firmware/app/src firmware/app/boards: 0
+recorder-no-raw-pins: self test ok: a planted overlay with <&gpio1 24 is found by the same search
+=== stage recorder-no-raw-pins end 2026-11-13T07:47:06Z exit 0
+stages_run: logs in firmware/build-logs/step6/j-work/stages-local1
+STAGES PASS
+exit 0

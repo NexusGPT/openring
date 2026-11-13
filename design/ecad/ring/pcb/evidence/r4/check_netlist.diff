@@ -1,0 +1,10 @@
+370c370,372
+< o8 = len(printed) == 15 and parts.get('J1', {}).get('value') == 'FH35C-15S-0.3SHW(50)' and len(syms['FPC_15']) == 15
+---
+> # E2 (board round 4, 2026-11-13): the screen connector's mounting tabs on ground, plan R2.6: FPC_15 also has the pin MP; the 15
+> # numbered positions are counted here, MP is checked by its own row A5-8b below
+> o8 = len(printed) == 15 and parts.get('J1', {}).get('value') == 'FH35C-15S-0.3SHW(50)' and len([sp for sp in syms['FPC_15'] if sp['pin_number'] != 'MP']) == 15
+380a383,385
+> # A5-8b E2 (board round 4, 2026-11-13): the screen connector's mounting tabs on ground, plan R2.6 ("MP on GND"): J1 pin MP exists and is on net GND
+> o8b = [sp['pin_number'] for sp in syms['FPC_15']].count('MP') == 1 and netof('J1', 'MP') == 'GND'
+> a5('A5-8b', o8b, 'J1 pin MP (the two mounting tabs) on GND (ring-board-plan.md R2.6)', 'J1 pin MP missing or not on GND (net %r)' % netof('J1', 'MP'))

@@ -1,0 +1,12 @@
+11c11
+< "$KC" pcb export drill --format excellon --excellon-separate-th --generate-map --map-format pdf -o "$F/drill/" "$B" || exit 2
+---
+> "$KC" pcb export drill --format excellon --excellon-separate-th --generate-map --map-format pdf --generate-report --report-path "$F/drill/ring-drill-report.txt" -o "$F/drill/" "$B" || exit 2
+13a14,16
+> # round 3: one position file per face as well (the screen face carries J1, eight passives and the test pads)
+> "$KC" pcb export pos --format csv --units mm --side front --exclude-dnp -o "$F/ring-pos-front.csv" "$B" || exit 4
+> "$KC" pcb export pos --format csv --units mm --side back --exclude-dnp -o "$F/ring-pos-back.csv" "$B" || exit 4
+42c42
+<           ("L4 B.Cu: ground plane, 19 test pads, screen face", "0.018"),
+---
+>           ("L4 B.Cu: ground plane, screen face: J1, eight 0201 passives, %d test pads" % sum(1 for p in parts if p["reference"].startswith("TP")), "0.018"),

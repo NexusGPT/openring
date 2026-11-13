@@ -1,0 +1,98 @@
+13c13
+<                      openings read from the Gerber flashes of the paste file)
+---
+>                      openings read from the Gerber flashes, stroked circles and regions of the paste file)
+19c19
+< import csv, glob, os, re, sys
+---
+> import csv, glob, math, os, re, sys
+97a98,147
+> def read_openings(path):
+>     """Openings of a paste file in three forms (added 2026-11-13 by the guide helper, granted by the lead):
+>     ('flash', x, y): a D03 flash, as read_flashes;
+>     ('circle', cx, cy, r, w): a circle stroked with a round aperture of width w (arcs drawn with I/J offsets);
+>         r - w/2 > 0 is a ring (a hole in the middle), else a filled dot;
+>     ('region', [(x, y), ...]): a filled region G36 ... G37 (its outline points)."""
+>     out = [("flash", x, y) for x, y in read_flashes(path)]
+>     ap, cur, x, y, dec, region, pts = {}, None, None, None, 6, False, []
+>     circles = {}
+>     for raw in open(path, encoding="utf-8", errors="replace"):
+>         line = raw.strip()
+>         m = re.match(r"%FSLAX(\d)(\d)Y(\d)(\d)\*%", line)
+>         if m:
+>             dec = int(m.group(2))
+>             continue
+>         m = re.match(r"%ADD(\d+)C,([\d.]+)", line)
+>         if m:
+>             ap[int(m.group(1))] = float(m.group(2))
+>             continue
+>         if line.startswith("%") or line.startswith("G04"):
+>             continue
+>         if line.startswith("G36"):
+>             region, pts = True, []
+>             continue
+>         if line.startswith("G37"):
+>             if len(pts) >= 3:
+>                 out.append(("region", pts))
+>             region = False
+>             continue
+>         m = re.fullmatch(r"(?:G54)?D(\d+)\*", line)
+>         if m and int(m.group(1)) >= 10:
+>             cur = int(m.group(1))
+>             continue
+>         mx, my = re.search(r"X(-?\d+)", line), re.search(r"Y(-?\d+)", line)
+>         mi, mj = re.search(r"I(-?\d+)", line), re.search(r"J(-?\d+)", line)
+>         nx = int(mx.group(1)) / 10 ** dec if mx else x
+>         ny = int(my.group(1)) / 10 ** dec if my else y
+>         if region and (line.endswith("D01*") or line.endswith("D02*")) and nx is not None:
+>             pts.append((nx, ny))
+>         elif line.endswith("D01*") and (mi or mj) and x is not None:
+>             i = int(mi.group(1)) / 10 ** dec if mi else 0.0
+>             j = int(mj.group(1)) / 10 ** dec if mj else 0.0
+>             key = (round(x + i, 4), round(y + j, 4))
+>             circles[key] = (math.hypot(i, j), ap.get(cur, 0.0))
+>         x, y = nx, ny
+>     for (cx, cy), (r, w) in circles.items():
+>         out.append(("circle", cx, cy, r, w))
+>     return out
+> 
+> 
+100c150,181
+<     return any(abs(fx - px) <= TOL and abs(fy - py) <= TOL for fx, fy in flashes)
+---
+>     hw, hh = float(pad["w_mm"]) / 2, float(pad["h_mm"]) / 2
+>     for o in flashes:
+>         if not isinstance(o[0], str):  # a bare (x, y) flash centre, as read_flashes gives it
+>             o = ("flash", o[0], o[1])
+>         if o[0] == "flash":
+>             if abs(o[1] - px) <= TOL and abs(o[2] - py) <= TOL:
+>                 return True
+>         elif o[0] == "circle":
+>             _, cx, cy, r, w = o
+>             if r - w / 2 > 0.001:  # a ring: centred on the land
+>                 if abs(cx - px) <= TOL and abs(cy - py) <= TOL:
+>                     return True
+>             else:  # a filled dot: wholly on the land
+>                 ro = r + w / 2
+>                 if abs(cx - px) + ro <= hw + TOL and abs(cy - py) + ro <= hh + TOL:
+>                     return True
+>         elif o[0] == "region":
+>             pts = o[1]
+>             a = cx = cy = 0.0
+>             for (x1, y1), (x2, y2) in zip(pts, pts[1:] + pts[:1]):
+>                 c = x1 * y2 - x2 * y1
+>                 a += c
+>                 cx += (x1 + x2) * c
+>                 cy += (y1 + y2) * c
+>             if abs(a) < 1e-12:
+>                 continue
+>             cx, cy = cx / (3 * a), cy / (3 * a)
+>             inside_c = abs(cx - px) <= hw and abs(cy - py) <= hh
+>             inside_box = all(abs(x - px) <= hw + TOL and abs(y - py) <= hh + TOL for x, y in pts)
+>             if inside_c and inside_box:  # a region: its centre and its whole outline on the land
+>                 return True
+>     return False
+131c212
+<         flashes = read_flashes(path)
+---
+>         flashes = read_openings(path)

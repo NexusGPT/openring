@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ring thickness to scale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text&family=Geist:wght@400;500;600&family=Geist+Mono&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; color:#111214; font:15px/1.45 "Geist", -apple-system, Arial, sans-serif; }
+  header { padding:28px 36px 4px; max-width:1180px; }
+  h1 { font-family:"Libre Caslon Text", Georgia, serif; font-weight:400; font-size:30px; margin:0 0 8px; }
+  header p { margin:0 0 6px; color:#33373d; }
+  .grid { display:grid; grid-template-columns: repeat(3, 1fr); margin:18px 36px 24px; border-top:1px solid #e7e8ea; }
+  .opt { padding:18px 18px 22px; border-right:1px solid #eeeff1; }
+  .opt:last-child { border-right:0; }
+  .lab { font-family:"Geist Mono", monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#8a9099; }
+  .lab.no { color:#c24e00; }
+  h2 { font-family:"Libre Caslon Text", Georgia, serif; font-weight:400; font-size:26px; margin:2px 0 6px; }
+  svg { display:block; width:100%; height:auto; margin:6px 0 2px; }
+  dl { display:grid; grid-template-columns: 92px 1fr; row-gap:6px; column-gap:10px; margin:10px 0 0; font-size:14px; }
+  dt { color:#8a9099; } dd { margin:0; }
+  .loss { color:#c24e00; }
+  footer { padding:0 36px 36px; color:#6a6f78; font-size:13px; max-width:1180px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Battery in the band: how thin the block gets</h1>
+  <p>Same slab every time: 28.6 mm long, 14.05 mm wide, black glass from edge to edge. Only the height changes. Top drawing: seen from the side on a finger 18 mm thick. Bottom drawing: seen from the fingertip. One grey square is 5 mm.</p>
+  <p>You said: &ldquo;all battery not in housing but in ring&rdquo;. With the battery in the band, the block holds only the screen, its glass, the circuit board and the floor: about 3.2 mm. The vibration motor is 2.1 mm thick and raises the block to 4.1 mm. The band grows to hold a curved battery.</p>
+</header>
+<div class="grid" id="root"></div>
+<footer>Battery and hour figures are estimates until a prototype is measured. Hours are given at my estimated current for this design (4 mA), then at the current of a Plaud recorder (13 mA). A thin curved cell stores less per volume than a thick flat one; the ranges include that. The curved battery is a custom order, like the flat one before it.</footer>
+<script>
+const K = 9;
+const O = [
+ {id:"H65", tag:"What you just saw", no:true, z:6.5, bw:4.6, bt:1.5, rows:[["Battery","in the block: about 37 to 48 mAh"],["Recording","about 10 h, or 3 h at a Plaud's current"],["Band","4.6 mm wide, 1.5 mm thick"],["Vibration","yes"],["Thumb control","4 directions, press"]]},
+ {id:"B41", tag:"Battery in the band", z:4.1, bw:8.0, bt:2.6, rows:[["Battery","in the band, curved: about 20 to 26 mAh"],["Recording","about 5 to 7 h, or 1.5 to 2 h at a Plaud's current"],["Band","8 mm wide, 2.6 mm thick, like a smart ring"],["Vibration","yes, a 2.1 mm motor sets the block's height"],["Thumb control",'<span class="loss">2 directions, press</span>: the wall is too low for 4']]},
+ {id:"B32", tag:"Battery in the band, no vibration", z:3.2, bw:8.0, bt:2.6, rows:[["Battery","in the band, curved: about 20 to 26 mAh"],["Recording","about 5 to 7 h, or 1.5 to 2 h at a Plaud's current"],["Band","8 mm wide, 2.6 mm thick"],["Vibration",'<span class="loss">none</span>: no motor fits 3.2 mm'],["Thumb control",'<span class="loss">2 directions, press</span>']]}
+];
+const X = 28.6, Y = 14.05;
+function draw(o){
+  const W = 40*K, H1 = 30*K, H2 = 32*K, cx = W/2;
+  let s = `<svg viewBox="0 0 ${W} ${H1+H2}" xmlns="http://www.w3.org/2000/svg">`;
+  s += `<defs><pattern id="g${o.id}" width="${5*K}" height="${5*K}" patternUnits="userSpaceOnUse"><path d="M ${5*K} 0 L 0 0 0 ${5*K}" fill="none" stroke="#eef0f2" stroke-width="1"/></pattern></defs>`;
+  s += `<rect width="${W}" height="${H1+H2}" fill="url(#g${o.id})"/>`;
+  // side view: finger horizontal, 18 thick
+  const fTop = 12*K;
+  s += `<rect x="0" y="${fTop}" width="${W}" height="${18*K}" fill="#f1e4d8"/>`;
+  s += `<rect x="${cx-o.bw/2*K}" y="${fTop-o.bt*K}" width="${o.bw*K}" height="${(18+2*o.bt)*K}" rx="${0.8*K}" fill="#2a2b2e"/>`;
+  s += `<rect x="0" y="${fTop}" width="${W}" height="${18*K}" fill="#f1e4d8" opacity="0.0"/>`;
+  const bTop = fTop - 0.3*K - o.z*K;
+  s += `<rect x="${cx-X/2*K}" y="${bTop}" width="${X*K}" height="${o.z*K}" rx="${0.6*K}" fill="#0b0b0d"/>`;
+  s += `<rect x="${cx-X/2*K}" y="${bTop}" width="${X*K}" height="${0.5*K}" rx="${0.25*K}" fill="#3a3f48"/>`;
+  s += `<text x="${cx}" y="${bTop-8}" text-anchor="middle" font-family="Geist Mono, monospace" font-size="12" fill="#6a6f78">${o.z.toFixed(1)} mm tall, from the side</text>`;
+  // end view
+  const fy = H1 + 20*K, R = 9*K;
+  s += `<circle cx="${cx}" cy="${fy}" r="${R+o.bt*K}" fill="#2a2b2e"/>`;
+  s += `<circle cx="${cx}" cy="${fy}" r="${R}" fill="#f1e4d8"/>`;
+  const top = fy - R - 0.3*K - o.z*K;
+  s += `<rect x="${cx-Y/2*K}" y="${top}" width="${Y*K}" height="${o.z*K+1.0*K}" rx="${0.8*K}" fill="#0b0b0d"/>`;
+  s += `<text x="${cx}" y="${top-8}" text-anchor="middle" font-family="Geist Mono, monospace" font-size="12" fill="#6a6f78">from the fingertip</text>`;
+  s += `</svg>`;
+  return s;
+}
+const root = document.getElementById('root');
+for (const o of O) {
+  const d = document.createElement('section'); d.className = 'opt'; d.id = o.id;
+  d.innerHTML = `<div class="lab ${o.no?'no':''}">${o.tag}</div><h2>${o.z.toFixed(1)} mm</h2>${draw(o)}<dl>${o.rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl>`;
+  root.appendChild(d);
+}
+document.fonts.ready.then(()=>{ window.__ready = true; });
+</script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+== rrec_backend.c 240-300
+1+239:	
+2+239:		/* FW l.1062: each transfer command becomes a record (code 0x0100 | opcode) */
+3+239:		args[0] = (uint8_t)st;
+4+239:		sys_put_le32(tag, &args[1]);
+5+239:		sys_put_le32(req_len, &args[5]);
+6+239:		sys_put_le32(last_first_arg, &args[9]);
+7+239:		rrec_log((uint16_t)(RREC_LOG_XFER_BASE | opcode), args, sizeof(args));
+8+239:		last_first_arg = 0;
+9+239:		if (st != RREC_ST_OK) {
+10+239:			pending_effect = 0;
+11+239:			return;
+12+239:		}
+13+239:		switch (opcode) {
+14+239:		case RREC_OP_FW_END:
+15+239:			(void)rrec_post(RREC_JOB_EVENT, RC_EV_FW_END);   /* row FW l.180: request done, reboot after the OK */
+16+239:			break;
+17+239:		case RREC_OP_REBOOT:
+18+239:			(void)rhw_image()->reboot(RHW_REBOOT_COMMAND);   /* FW l.707 */
+19+239:			break;
+20+239:	#if defined(CONFIG_RING_FACTORY)
+21+239:		case RREC_OP_FACTORY:
+22+239:			switch (pending_effect) {
+23+239:			case RFA_EFFECT_ENTER:
+24+239:				rrec_st.fact_factory = rsy_factory_flag();
+25+239:				rrec_st.fact_factory_pending = true;
+26+239:				(void)rrec_post(RREC_JOB_EVENT, RC_EV_FACTORY_ENTER);
+27+239:				break;
+28+239:			case RFA_EFFECT_EXIT:
+29+239:				(void)rrec_post(RREC_JOB_EVENT, RC_EV_FACTORY_EXIT);
+30+239:				break;
+31+239:			case RFA_EFFECT_SHIP_ENTER:
+32+239:				(void)rrec_post(RREC_JOB_EVENT, RC_EV_SHIP_ENTER);
+33+239:				break;
+34+239:			case RFA_EFFECT_SHIP_SAMPLE:
+35+239:				(void)rrec_post(RREC_JOB_EVENT, RC_EV_SHIP_SAMPLE);
+36+239:				break;
+37+239:			default:
+38+239:				break;
+39+239:			}
+40+239:			pending_effect = 0;
+41+239:			break;
+42+239:	#endif
+43+239:		default:
+44+239:			break;
+45+239:		}
+46+239:	}
+47+239:	
+48+239:	static const struct rxf_backend backend = {
+49+239:		.may_answer = be_may_answer,
+50+239:		.get_info = be_get_info,
+51+239:		.list = be_list,
+52+239:		.range_check = be_range_check,
+53+239:		.read_chunk = be_read_chunk,
+54+239:		.confirm = be_confirm,
+55+239:		.del = be_del,
+56+239:		.set_time = be_set_time,
+57+239:		.get_battery = be_get_battery,
+58+239:		.fw_begin = be_fw_begin,
+59+239:		.fw_data = be_fw_data,
+60+239:		.fw_end = be_fw_end,
+61+239:		.get_log = be_get_log,
+== rscr.c 495-575
+495: 	for (;;) {
+496: 		struct rscr_fxs fx = { 0 };
+497: 		k_timeout_t to = K_MSEC(1000);
+498: 		rc_ms_t nt, now;
+499: 		uint32_t want;
+500: 		bool sign;
+501: 
+502: 		k_mutex_lock(&lk, K_FOREVER);
+503: 		nt = rscr_next_tick(&s);
+504: 		k_mutex_unlock(&lk);
+505: 		now = now_ms();
+506: 		if (nt != RC_NO_TICK && nt - now < 1000) {
+507: 			to = nt > now ? K_MSEC(nt - now) : K_NO_WAIT;
+508: 		}
+509: 		if (atomic_get(&power_off_pending) != 0) {
+510: 			to = K_MSEC(10);   /* a power off waits for the glue to be free */
+511: 		}
+512: 		(void)k_sem_take(&kick, to);
+513: 		want = gen_asked;
+514: 		now = now_ms();
+515: 		k_mutex_lock(&lk, K_FOREVER);
+516: 		sign = sign_req.pending;
+517: 		k_mutex_unlock(&lk);
+518: 		if (sign) {
+519: 			do_sign_start();
+520: 		}
+521: 		if (sign_from_thread_req) {
+522: 			sign_from_thread_rc = rscr_sign_start(now_ms());   /* on this thread: -EDEADLK at once */
+523: 			sign_from_thread_req = false;
+524: 		}
+525: 		k_mutex_lock(&lk, K_FOREVER);
+526: 		load_view();
+527: 		rscr_tick(&s, &view, now, &fx);
+528: 		/* what other modules hold may have changed (the iPhone removed a notification, a device went): the inbox
+529: 		 * and the device list send no event to this module, so each pass looks again */
+530: 		rscr_refresh(&s, &view, now, &fx);
+531: 		k_mutex_unlock(&lk);
+532: 		apply_fx(&fx);
+533: 		(void)render(now);
+534: 		if (atomic_get(&power_off_pending) != 0 && ops->power_off() == 0) {
+535: 			atomic_set(&power_off_pending, 0);   /* -EBUSY (the glue is busy): tried again on the next pass, 10 ms later */
+536: 		}
+537: 		gen_done = want;
+538: 		k_sem_give(&synced);
+539: 	}
+540: }
+541: 
+542: void rscr_sync(void)
+543: {
+544: 	uint32_t want;
+545: 
+546: 	/* step 6 fix round 1 (lead's ruling 4 on the recorder's ship mode): before rscr_start there is no screens thread to
+547: 	 * wait for, so a sync returns at once */
+548: 	if (!started) {
+549: 		return;
+550: 	}
+551: 	want = ++gen_asked;
+552: 
+553: 	wake_thread();
+554: 	while ((int32_t)(gen_done - want) < 0) {
+555: 		(void)k_sem_take(&synced, K_MSEC(200));
+556: 	}
+557: }
+558: 
+559: int rscr_start(const struct rscr_ops *o)
+560: {
+561: 	int rc;
+562: 
+563: 	if (started) {
+564: 		return -EALREADY;
+565: 	}
+566: 	ops = o;
+567: 	rscr_init(&s);
+568: 	memset(&view, 0, sizeof(view));
+569: 	view.core_state = RC_ST_STANDBY;
+570: 	view.active_slot = RDEV_NONE;
+571: 	rc = rscr_draw_init();
+572: 	if (rc != 0) {
+573: 		return rc;
+574: 	}
+575: 	started = true;
+== rxf_class.c 195-240, 315-371
+195: static void run_request(void)
+196: {
+197: 	struct rxf_result res;
+198: 
+199: 	if (atomic_get(&cancel_req) == 0 && vbus) {
+200: 		(void)rxf_proto_handle(&ctx, rxf_desc_mps(rhw_usb()->speed()), run_p, run_n, emit_cb, NULL, &res);
+201: 		if (tx_held) {
+202: 			tx_held = false;
+203: 			k_mutex_unlock(&tx_lock);
+204: 		}
+205: 	}
+206: 	atomic_set(&cancel_req, 0);
+207: 	atomic_set(&busy, 0);
+208: 	k_mutex_lock(&fin_mutex, K_FOREVER);
+209: 	k_condvar_broadcast(&fin_cv);
+210: 	k_mutex_unlock(&fin_mutex);
+211: }
+212: 
+213: static void thread_fn(void *a, void *b, void *c)
+214: {
+215: 	ARG_UNUSED(a);
+216: 	ARG_UNUSED(b);
+217: 	ARG_UNUSED(c);
+218: 	for (;;) {
+219: 		uint8_t it;
+220: 
+221: 		if (k_msgq_get(&itemq, &it, K_FOREVER) != 0) {
+222: 			continue;
+223: 		}
+224: 		switch ((enum item)it) {
+225: 		case IT_REQ:
+226: 			run_request();
+227: 			break;
+228: 		case IT_VBUS_READY:
+229: 			/* FW l.978: the stack starts only after the power chip reported VBUS (not after rxf_stop until VBUS
+230: 			 * is reported again) */
+231: 			if (atomic_get(&stopped) == 0) {
+232: 				(void)rhw_usb()->enable();
+233: 			}
+234: 			break;
+235: 		case IT_VBUS_REMOVED:
+236: 			(void)rhw_usb()->disable();
+237: 			break;
+238: 		case IT_CONFIGURED:
+239: 			if (cb.configured != NULL) {
+240: 				cb.configured();
+315: 		thread_started = true;
+316: 		k_thread_create(&xfer_thread, xfer_stack, K_THREAD_STACK_SIZEOF(xfer_stack), thread_fn, NULL, NULL, NULL,
+317: 				CONFIG_RING_XFER_THREAD_PRIO, 0, K_NO_WAIT);
+318: 		k_thread_name_set(&xfer_thread, "rxf");
+319: 	}
+320: 	rhw_usb()->set_callbacks(&usb_cb);
+321: 	return 0;
+322: }
+323: 
+324: void rxf_abort(void)
+325: {
+326: 	if (atomic_get(&busy) != 0) {
+327: 		atomic_set(&cancel_req, 1);
+328: 		rxf_proto_abort(&ctx);
+329: 	}
+330: }
+331: 
+332: int rxf_finish(int32_t timeout_ms)
+333: {
+334: 	k_timepoint_t end = sys_timepoint_calc(K_MSEC(timeout_ms));
+335: 	int r = 0;
+336: 
+337: 	k_mutex_lock(&fin_mutex, K_FOREVER);
+338: 	while (atomic_get(&busy) != 0) {
+339: 		if (k_condvar_wait(&fin_cv, &fin_mutex, sys_timepoint_timeout(end)) != 0) {
+340: 			r = atomic_get(&busy) != 0 ? -ETIMEDOUT : 0;
+341: 			break;
+342: 		}
+343: 	}
+344: 	k_mutex_unlock(&fin_mutex);
+345: 	return r;
+346: }
+347: 
+348: bool rxf_busy(void)
+349: {
+350: 	return atomic_get(&busy) != 0;
+351: }
+352: 
+353: /* Step 6 fix round 1 (review finding R6-02): ship mode step 1 closes USB (FW l.937). Nothing more is read or answered
+354:  * (as on VBUS removed), the command that runs is aborted and waited for up to timeout_ms, then the stack is disabled on
+355:  * the caller's thread so that it is off when this returns. */
+356: int rxf_stop(int32_t timeout_ms)
+357: {
+358: 	k_spinlock_key_t k;
+359: 	int r;
+360: 
+361: 	atomic_set(&stopped, 1);
+362: 	k = k_spin_lock(&lk);
+363: 	vbus = false;                     /* on_rx drops, emit_cb cancels, no BUSY answer is sent */
+364: 	rx_reset();
+365: 	busy_n = 0u;
+366: 	k_spin_unlock(&lk, k);
+367: 	rxf_abort();
+368: 	r = rxf_finish(timeout_ms);
+369: 	(void)rhw_usb()->disable();
+370: 	return r;
+371: }

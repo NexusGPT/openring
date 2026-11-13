@@ -1,0 +1,43 @@
+## 1. pure part: includes (every #include line of rpw_logic.c and rpw_logic.h)
+firmware/modules/ring_power/src/rpw_logic.c:6:#include <string.h>
+firmware/modules/ring_power/src/rpw_logic.c:8:#include <ring_core/rc_types.h>
+firmware/modules/ring_power/src/rpw_logic.c:10:#include "rpw_logic.h"
+firmware/modules/ring_power/src/rpw_logic.h:9:#include <stdbool.h>
+firmware/modules/ring_power/src/rpw_logic.h:10:#include <stdint.h>
+firmware/modules/ring_power/src/rpw_logic.h:12:#include <ring_rhw/rrec_spec.h>
+## 2. pure part: kernel or driver names in code (zephyr, k_ calls, printk, LOG_, rhw_, device, sys_, irq) in rpw_logic.c and rpw_logic.h
+firmware/modules/ring_power/src/rpw_logic.c:218:			return RPWL_SHIP_LOG_RETRY;
+firmware/modules/ring_power/src/rpw_logic.h:79: * sign of struct rhw_pmic_sample). motor_uas in µA·s, dt_ms the time since the last step; dt_ms = 0 adds nothing. */
+firmware/modules/ring_power/src/rpw_logic.h:104:	RPWL_SHIP_LOG_RETRY,      /* step 5: log the event, back to step 3 (once) */
+firmware/modules/ring_power/src/rpw_logic.h:120:/* The log arguments of RREC_LOG_PMIC_RESET: RSTCAUSE, CHARGERERRREASON, CHARGERERRSENSOR (rrec_spec.h). */
+## 3. thin part: includes of rpw.c
+9:#include <errno.h>
+10:#include <string.h>
+12:#include <zephyr/kernel.h>
+13:#include <zephyr/spinlock.h>
+14:#include <zephyr/sys/atomic.h>
+16:#include <ring_core/rc_types.h>
+17:#include <ring_power/rpw.h>
+18:#include <ring_rhw/rhw.h>
+20:#include "rpw_logic.h"
+21:#include "rpw_priv.h"
+## 4. thin part: direct hardware names (i2c, gpio, regulator, sensor, DEVICE_DT, nrf_, mfd_, hal, NRF_) in rpw.c, rpw_priv.h
+firmware/modules/ring_power/src/rpw.c:345:		cb.charge_error(ch.err_reason, ch.err_sensor);
+## 5. chip pin by number (P0.xx, P1.xx, P2.xx, pin <number>, GPIO <number>) in every file of the unit
+## 6. the server address, key path or user in the unit's files and notes
+## 7. no rail call in the unit (rail_set, rail_get) in the sources
+## 8. POFCONFIG or VSYSPOF in the sources (code, not comments)
+## 9. CHARGE_CURRENT defined where (every file of the unit)
+firmware/modules/ring_power/src/rpw_logic.h:63:/* CHARGE_CURRENT in microamps, the one constant (defined in rpw_logic.c with its five build assertions). */
+firmware/modules/ring_power/src/rpw_logic.c:12:/* ------------------------------------------------------------------ CHARGE_CURRENT (FW l.878, l.894)
+firmware/modules/ring_power/src/rpw_logic.c:15:#define CHARGE_CURRENT 15000
+firmware/modules/ring_power/src/rpw_logic.c:17:#ifndef CHARGE_CURRENT
+firmware/modules/ring_power/src/rpw_logic.c:18:#error "CHARGE_CURRENT is not set (FW l.894)"
+firmware/modules/ring_power/src/rpw_logic.c:20:_Static_assert(CHARGE_CURRENT <= 17600, "CHARGE_CURRENT is above 17,600 uA (FW l.894)");
+firmware/modules/ring_power/src/rpw_logic.c:21:_Static_assert(CHARGE_CURRENT >= 4000, "CHARGE_CURRENT is under 4,000 uA (FW l.894)");
+firmware/modules/ring_power/src/rpw_logic.c:22:_Static_assert(CHARGE_CURRENT <= 100000, "CHARGE_CURRENT is over 100,000 uA (FW l.894)");
+firmware/modules/ring_power/src/rpw_logic.c:23:_Static_assert(CHARGE_CURRENT % 500 == 0, "CHARGE_CURRENT is not a multiple of 500 uA (FW l.894)");
+firmware/modules/ring_power/src/rpw_logic.c:27:	return CHARGE_CURRENT;
+## 10. numbers of the specification typed again in the sources (3450, 3300, 60000, 1000u, 96)
+firmware/modules/ring_power/src/rpw.c:552:			(void)k_sem_take(&vbus_gone, K_MSEC(50));
+firmware/modules/ring_power/src/rpw_logic.c:144:		fed = fed + (int64_t)motor_uas * 1000 / dt_ms;

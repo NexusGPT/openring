@@ -1,0 +1,281 @@
+# remote.sh run 20261111-125550-explore6
+# command: W=/root/ring-os/ws; sed -n 420,600p $W/nrf/samples/bluetooth/central_hids/src/main.c; sed -n 1012,1070p $W/nrf/samples/bluetooth/central_hids/src/main.c; grep -n "bt_id_create" -B30 $W/zephyr/include/zephyr/bluetooth/bluetooth.h | sed -n 1,80p
+# mode: host
+# started (Mac clock): 2026-11-11 12:55:50 CET
+# free on the server's /: 56 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-125550-explore6; server log /root/ring-os/logs/20261111-125550-explore6.log
+}
+/** .. include_endpoint_scan_rst */
+BT_SCAN_CB_INIT(scan_cb, scan_filter_match, scan_filter_no_match,
+		scan_connecting_error, scan_connecting);
+
+static void discovery_completed_cb(struct bt_gatt_dm *dm,
+				   void *context)
+{
+	struct peripheral_slot *slot = context;
+	int err;
+
+	if (slot == NULL) {
+		printk("Discovery completed, but peripheral slot is NULL\n");
+		return;
+	}
+
+	printk("The discovery procedure succeeded\n");
+
+	bt_gatt_dm_data_print(dm);
+
+	err = bt_hogp_handles_assign(dm, &slot->hogp);
+	if (err) {
+		printk("Could not init HIDS client object, error: %d\n", err);
+	}
+
+	err = bt_gatt_dm_data_release(dm);
+	if (err) {
+		printk("Could not release the discovery data, error "
+		       "code: %d\n", err);
+	}
+}
+
+static void discovery_service_not_found_cb(struct bt_conn *conn,
+					   void *context)
+{
+	printk("The service could not be found during the discovery\n");
+}
+
+static void discovery_error_found_cb(struct bt_conn *conn,
+				     int err,
+				     void *context)
+{
+	printk("The discovery procedure failed with %d\n", err);
+}
+
+static const struct bt_gatt_dm_cb discovery_cb = {
+	.completed = discovery_completed_cb,
+	.service_not_found = discovery_service_not_found_cb,
+	.error_found = discovery_error_found_cb,
+};
+
+static void gatt_discover(struct bt_conn *conn)
+{
+	struct peripheral_slot *slot = slot_by_conn(conn);
+	int err;
+
+	if (!slot) {
+		printk("Peripheral slot is NULL\n");
+		return;
+	}
+
+	err = bt_gatt_dm_start(conn, BT_UUID_HIDS, &discovery_cb, slot);
+	if (err) {
+		printk("Could not start the discovery procedure, error "
+			"code: %d\n", err);
+	}
+}
+
+static void connected(struct bt_conn *conn, uint8_t conn_err)
+{
+	int err;
+	char addr[BT_ADDR_LE_STR_LEN];
+	struct peripheral_slot *slot = slot_by_conn(conn);
+
+	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+
+	if (conn_err) {
+		printk("Failed to connect to %s, 0x%02x %s\n", addr, conn_err,
+		       bt_hci_err_to_str(conn_err));
+		if (slot) {
+			bt_conn_unref(slot->conn);
+			slot->conn = NULL;
+			scanning_resume();
+		}
+
+		return;
+	}
+
+	printk("Connected: %s\n", addr);
+
+	if (IS_ENABLED(CONFIG_SAMPLE_BT_CENTRAL_HIDS_CONTINUOUS_REPORT_RX) && slot) {
+		struct bt_conn_info conn_info;
+		struct cont_rx_peripheral_slot *cont_rx_slot =
+			&cont_rx_slots[PERIPHERAL_SLOT_INDEX(slot, slots)];
+
+		err = bt_conn_get_info(conn, &conn_info);
+		if (!err) {
+			printk("Connection interval: %" PRIu32 " us\n",
+			       conn_info.le.interval_us);
+			/** Currently connection interval is equal to expected report
+			 *  interval.
+			 *  This will however not be the case if subrating is enabled.
+			 */
+			cont_rx_slot->cont_report_rx_interval_us = conn_info.le.interval_us;
+			printk("Expected report interval: %" PRIu32 " us\n",
+			       cont_rx_slot->cont_report_rx_interval_us);
+		} else {
+			printk("Failed to get connection interval (err %d)\n", err);
+				cont_rx_slot->cont_report_rx_interval_us = 0;
+		}
+	}
+
+	err = bt_conn_set_security(conn, BT_SECURITY_L2);
+	if (err) {
+		printk("Failed to set security: %d\n", err);
+
+		gatt_discover(conn);
+	}
+}
+
+static void disconnected(struct bt_conn *conn, uint8_t reason)
+{
+	char addr[BT_ADDR_LE_STR_LEN];
+	struct peripheral_slot *slot = slot_by_conn(conn);
+
+	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+
+	if (auth_conn == conn) {
+		bt_conn_unref(auth_conn);
+		auth_conn = NULL;
+		button_functions_mode = BUTTON_FUNCTIONS_MODE_DEFAULT;
+	}
+
+	printk("Disconnected: %s, reason 0x%02x %s\n", addr, reason, bt_hci_err_to_str(reason));
+
+	if (!slot) {
+		return;
+	}
+
+	if (IS_ENABLED(CONFIG_SAMPLE_BT_CENTRAL_HIDS_CONTINUOUS_REPORT_RX)) {
+		struct cont_rx_peripheral_slot *cont_rx_slot =
+			&cont_rx_slots[PERIPHERAL_SLOT_INDEX(slot, slots)];
+		atomic_set(&cont_rx_slot->cont_report_rx_on, 0);
+		(void)k_work_cancel_delayable(&cont_rx_slot->cont_report_rx_exit_work);
+		cont_report_rx_data_reset(cont_rx_slot, 0);
+	}
+
+	if (IS_ENABLED(CONFIG_BT_HOGP_SCI) && slot->sci_mode_requested != BT_HIDS_SCI_MODE_NONE) {
+		(void) k_work_cancel_delayable(&slot->sci_mode_timeout);
+		slot->sci_mode_requested = BT_HIDS_SCI_MODE_NONE;
+	}
+
+	(void)k_work_cancel(&slot->hids_ready_work);
+
+	if (bt_hogp_assign_check(&slot->hogp)) {
+		printk("HIDS client active - releasing");
+		bt_hogp_release(&slot->hogp);
+	}
+
+	bt_conn_unref(slot->conn);
+	slot->conn = NULL;
+
+	scanning_resume();
+}
+
+static void security_changed(struct bt_conn *conn, bt_security_t level,
+			     enum bt_security_err err)
+{
+	char addr[BT_ADDR_LE_STR_LEN];
+
+	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+
+	if (!err) {
+		printk("Security changed: %s level %u\n", addr, level);
+		gatt_discover(conn);
+	} else {
+		printk("Security failed: %s level %u err %d %s\n", addr, level, err,
+		       bt_security_err_to_str(err));
+	}
+}
+
+		printk("The new SCI mode does not match the requested one\n");
+	}
+}
+
+static void hids_on_ready(struct k_work *work)
+{
+	struct peripheral_slot *slot = CONTAINER_OF(work, struct peripheral_slot, hids_ready_work);
+	struct bt_hogp *hogp = &slot->hogp;
+	int err;
+	struct bt_hogp_rep_info *rep = NULL;
+
+	printk("HIDS is ready to work\n");
+
+	while (NULL != (rep = bt_hogp_rep_next(hogp, rep))) {
+		if (bt_hogp_rep_type(rep) ==
+		    BT_HIDS_REPORT_TYPE_INPUT) {
+			printk("Subscribe to report id: %u\n",
+			       bt_hogp_rep_id(rep));
+			err = bt_hogp_rep_subscribe(hogp, rep,
+							   hogp_notify_cb);
+			if (err) {
+				printk("Subscribe error (%d)\n", err);
+			}
+		}
+	}
+	if (hogp->rep_boot.kbd_inp) {
+		printk("Subscribe to boot keyboard report\n");
+		err = bt_hogp_rep_subscribe(hogp,
+					   hogp->rep_boot.kbd_inp,
+					   hogp_boot_kbd_report);
+		if (err) {
+			printk("Subscribe error (%d)\n", err);
+		}
+	}
+	if (hogp->rep_boot.mouse_inp) {
+		printk("Subscribe to boot mouse report\n");
+		err = bt_hogp_rep_subscribe(hogp,
+					   hogp->rep_boot.mouse_inp,
+					   hogp_boot_mouse_report);
+		if (err) {
+			printk("Subscribe error (%d)\n", err);
+		}
+	}
+
+	if (IS_ENABLED(CONFIG_BT_HOGP_SCI)) {
+		err = bt_hogp_sci_mode_subscribe(hogp, sci_mode_notify_cb);
+		if (err) {
+			printk("SCI mode subscribe error (%d)\n", err);
+		}
+	}
+
+	if (IS_ENABLED(CONFIG_BT_FRAME_SPACE_UPDATE)) {
+		select_lowest_frame_space(slot->conn);
+	} else {
+		/* Unused */
+		(void) select_lowest_frame_space;
+		(void) frame_space_updated;
+	}
+}
+450- * information in flash.
+451- *
+452- * Generating random static address or random IRK is not supported when calling
+453- * this function before @ref bt_enable.
+454- *
+455- * If the application wants to have the stack randomly generate identity addresses
+456- * and store them in flash for later recovery, the way to do it would be
+457- * to first initialize the stack (using bt_enable), then call @ref settings_load,
+458- * and after that check with @ref bt_id_get how many identity addresses were recovered.
+459- * If an insufficient amount of identity addresses were recovered the app may then
+460- * call this function to create new ones.
+461- *
+462- * @note If @kconfig{CONFIG_BT_HCI_SET_PUBLIC_ADDR} is enabled, the first call can set a
+463- * public address as the controller's identity, but only before @ref bt_enable and if
+464- * no other identities exist.
+465- *
+466- * @param addr Address to use for the new identity address. If NULL or initialized
+467- *             to BT_ADDR_LE_ANY the stack will generate a new random static address
+468- *             for the identity address and copy it to the given parameter upon return
+469- *             from this function (in case the parameter was non-NULL).
+470- * @param irk  Identity Resolving Key (16 octets) to be used with this
+471- *             identity address. If set to all zeroes or NULL, the stack will
+472- *             generate a random IRK for the identity address and copy it back
+473- *             to the parameter upon return from this function (in case
+474- *             the parameter was non-NULL). If privacy
+475- *             @kconfig{CONFIG_BT_PRIVACY} is not enabled this parameter must
+476- *             be NULL.
+477- *
+478- * @return Identity handle (>= 0) in case of success, or a negative error code on failure.
+479- */
+480:int bt_id_create(bt_addr_le_t *addr, uint8_t *irk);
+# finished (Mac clock): 2026-11-11 12:55:57 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-125550-explore6.log

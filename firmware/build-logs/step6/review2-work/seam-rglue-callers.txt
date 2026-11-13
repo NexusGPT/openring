@@ -1,0 +1,21 @@
+== rglue_* callers outside ring_glue (modules, app)
+modules/ring_screens/src/rscr_real.c:94:	return rglue_event_try(RC_EV_MENU_POWER_OFF);
+modules/ring_screens/src/rscr_real.c:99:	rglue_set_vibration(on);
+modules/ring_recorder/src/rrec_bridge.c:131:			rglue_event(RC_EV_SCAN_READ_ERROR);
+modules/ring_recorder/src/rrec_bridge.c:142:		rglue_event(RC_EV_SCAN_DONE);
+modules/ring_recorder/src/rrec_bridge.c:147:		rglue_event(RC_EV_SCAN_READ_ERROR);
+modules/ring_recorder/src/rrec_bridge.c:169:	rglue_event(r == 0 ? RC_EV_STORAGE_RETRY_OK : RC_EV_STORAGE_RETRY_FAILED);
+modules/ring_recorder/src/rrec_bridge.c:187:			rglue_event((enum rc_event)j.arg);
+modules/ring_recorder/src/rrec_bridge.c:190:			rglue_battery((enum rc_batt)j.arg);
+modules/ring_recorder/src/rrec.c:675:	struct rc_core *c = rglue_core();   /* under the glue's lock: this runs right before the core call */
+modules/ring_recorder/src/rrec_boot.c:87:		rglue_battery((enum rc_batt)v.level);     /* in BOOT the level is kept; "init done" decides (R12) */
+modules/ring_recorder/src/rrec_boot.c:90:		rglue_event(RC_EV_VBUS_IN);               /* the fact (and charge on, R8) */
+modules/ring_recorder/src/rrec_boot.c:95:		rglue_event(RC_EV_STORAGE_INIT_FAILED);  /* row FW l.138 */
+modules/ring_recorder/src/rrec_boot.c:111:		rglue_event(RC_EV_STORAGE_SFULL);         /* the fact: R-STB sends STANDBY to ERR_STORAGE_FULL */
+modules/ring_recorder/src/rrec_boot.c:113:	rglue_event(RC_EV_INIT_DONE);                     /* rows FW l.135 to l.140 */
+app/src/main.c:6: * actions, track title and media commands, the time): rglue_init() starts it next to devices and
+app/src/main.c:11: * Bluetooth and advertises to the active device, rglue_init() starts the core
+app/src/main.c:14: * settings menu come later: the driver calls rglue_input() with each debounced
+app/src/main.c:111:	rglue_init(&glue_ops, RC_ST_BOOT);
+app/src/main.c:117:	for (int i = 0; i < 100 && (rglue_state() == RC_ST_BOOT || rglue_state() == RC_ST_RECOVERY); i++) {
+app/src/main.c:120:	printk("ring-os recorder: boot done, state %s\n", rc_state_name(rglue_state()));

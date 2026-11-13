@@ -1,0 +1,106 @@
+# remote.sh run 20261113-052758-u3-green-cases
+# command: cd /ws/out/20261113-051524-u-audio-unit && for t in native_sim nrf54lm20bsim_nrf54lm20a_cpuapp; do echo "== $t"; python3 -I -c "
+import json,sys
+d=json.load(open(\"twister-$t/twister.json\"))
+for ts in d[\"testsuites\"]:
+    for tc in ts[\"testcases\"]:
+        print(tc[\"status\"], tc[\"identifier\"])
+"; done
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:27:58 CET
+# free on the server's /: 26 GB
+# source firmware copied to /root/ring-os/src-u-audio
+# started on the server as 20261113-052758-u3-green-cases; server log /root/ring-os/logs/20261113-052758-u3-green-cases.log
+== native_sim
+passed ring_audio.sim.audio_cfg.gain_zero
+passed ring_audio.sim.audio_cfg.header_clock_fields
+passed ring_audio.sim.audio_cfg.spec_numbers
+passed ring_audio.sim.audio_cfg.dmic_config_values
+passed ring_audio.sim.audio_chunk.fill_fields
+passed ring_audio.sim.audio_chunk.time_not_set
+passed ring_audio.sim.audio_chunk.timestamps
+passed ring_audio.sim.audio_chunk.late_highlight_close_only
+passed ring_audio.sim.audio_chunk.highlights_in_header
+passed ring_audio.sim.audio_chunk.highlight_frame_from_down_time
+passed ring_audio.sim.audio_chunk.partial_last_chunk
+passed ring_audio.sim.audio_chunk.flags_each_bit
+passed ring_audio.sim.audio_chunk.dropout_zero_fill
+passed ring_audio.sim.audio_chunk.32_blocks_per_chunk
+passed ring_audio.sim.audio_chunk.start_time_is_first_kept_frame
+passed ring_audio.sim.audio_chunk.discard_800_frames
+passed ring_audio.sim.audio_chunk.payload_equals_blocks
+passed ring_audio.sim.audio_chunk.interleave_order
+passed ring_audio.sim.audio_motor.m1_rest_marked_in_first_chunk
+passed ring_audio.sim.audio_motor.unused_pairs_ff
+passed ring_audio.sim.audio_motor.fifth_merged_into_fourth
+passed ring_audio.sim.audio_motor.span_open_interval
+passed ring_audio.sim.audio_motor.span_two_chunks
+passed ring_audio.sim.audio_motor.interval_frames
+passed ring_audio.sim.audio_svc.start_twice_refused
+passed ring_audio.sim.audio_svc.motor_edges_marked
+passed ring_audio.sim.audio_svc.late_highlight_close_only
+passed ring_audio.sim.audio_svc.highlight_marks_down_time
+passed ring_audio.sim.audio_svc.b15_follows
+passed ring_audio.sim.audio_svc.chunk_facts_from_power_chip
+passed ring_audio.sim.audio_svc.unit_never_switches_rail
+passed ring_audio.sim.audio_svc.clock_low_whenever_rail_off
+passed ring_audio.sim.audio_svc.cut_after_no_block
+passed ring_audio.sim.audio_svc.no_block_100ms_reports
+passed ring_audio.sim.audio_svc.no_read_outside_recording
+passed ring_audio.sim.audio_svc.stop_keeps_frames_to_mark
+passed ring_audio.sim.audio_svc.put_waits_on_enobufs
+passed ring_audio.sim.audio_svc.ring_of_three
+passed ring_audio.sim.audio_svc.late_thread_is_not_a_dropout
+passed ring_audio.sim.audio_svc.dropout_on_read_error
+passed ring_audio.sim.audio_svc.dropout_logged
+passed ring_audio.sim.audio_svc.hfxo_released_after_stop
+passed ring_audio.sim.audio_svc.hfxo_prepare_timeout
+passed ring_audio.sim.audio_svc.hfxo_before_trigger
+== nrf54lm20bsim_nrf54lm20a_cpuapp
+passed ring_audio.sim.audio_svc.hfxo_before_trigger
+passed ring_audio.sim.audio_svc.hfxo_prepare_timeout
+passed ring_audio.sim.audio_svc.hfxo_released_after_stop
+passed ring_audio.sim.audio_svc.dropout_logged
+passed ring_audio.sim.audio_svc.dropout_on_read_error
+passed ring_audio.sim.audio_svc.late_thread_is_not_a_dropout
+passed ring_audio.sim.audio_svc.ring_of_three
+passed ring_audio.sim.audio_svc.put_waits_on_enobufs
+passed ring_audio.sim.audio_svc.stop_keeps_frames_to_mark
+passed ring_audio.sim.audio_svc.no_read_outside_recording
+passed ring_audio.sim.audio_svc.no_block_100ms_reports
+passed ring_audio.sim.audio_svc.cut_after_no_block
+passed ring_audio.sim.audio_svc.clock_low_whenever_rail_off
+passed ring_audio.sim.audio_svc.unit_never_switches_rail
+passed ring_audio.sim.audio_svc.chunk_facts_from_power_chip
+passed ring_audio.sim.audio_svc.b15_follows
+passed ring_audio.sim.audio_svc.highlight_marks_down_time
+passed ring_audio.sim.audio_svc.late_highlight_close_only
+passed ring_audio.sim.audio_svc.motor_edges_marked
+passed ring_audio.sim.audio_svc.start_twice_refused
+passed ring_audio.sim.audio_cfg.dmic_config_values
+passed ring_audio.sim.audio_cfg.spec_numbers
+passed ring_audio.sim.audio_cfg.header_clock_fields
+passed ring_audio.sim.audio_cfg.gain_zero
+passed ring_audio.sim.audio_chunk.interleave_order
+passed ring_audio.sim.audio_chunk.payload_equals_blocks
+passed ring_audio.sim.audio_chunk.discard_800_frames
+passed ring_audio.sim.audio_chunk.start_time_is_first_kept_frame
+passed ring_audio.sim.audio_chunk.32_blocks_per_chunk
+passed ring_audio.sim.audio_chunk.dropout_zero_fill
+passed ring_audio.sim.audio_chunk.flags_each_bit
+passed ring_audio.sim.audio_chunk.partial_last_chunk
+passed ring_audio.sim.audio_chunk.highlight_frame_from_down_time
+passed ring_audio.sim.audio_chunk.highlights_in_header
+passed ring_audio.sim.audio_chunk.late_highlight_close_only
+passed ring_audio.sim.audio_chunk.timestamps
+passed ring_audio.sim.audio_chunk.time_not_set
+passed ring_audio.sim.audio_chunk.fill_fields
+passed ring_audio.sim.audio_motor.interval_frames
+passed ring_audio.sim.audio_motor.span_two_chunks
+passed ring_audio.sim.audio_motor.span_open_interval
+passed ring_audio.sim.audio_motor.fifth_merged_into_fourth
+passed ring_audio.sim.audio_motor.unused_pairs_ff
+passed ring_audio.sim.audio_motor.m1_rest_marked_in_first_chunk
+# finished (Mac clock): 2026-11-13 05:28:17 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-052758-u3-green-cases.log

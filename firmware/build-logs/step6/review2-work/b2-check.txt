@@ -1,0 +1,90 @@
+== B2.1 LONG_PRESS / rc_core_input outside core and glue
+modules/ring_recorder/src/rrec.c:641:	if (prev == RC_ST_RECORDING && state != RC_ST_RECORDING && last_event == RC_EV_LONG_PRESS && last_closed_valid) {
+app/src/main.c:14: * settings menu come later: the driver calls rglue_input() with each debounced
+== B2.1 core refuses press events
+	 * (rc_core_input), the timers only from rc_core_tick, the battery
+	 * thresholds only from rc_core_battery; a caller cannot inject them here. */
+	if (ev == RC_EV_LONG_PRESS || ev == RC_EV_SHORT_PRESS || ev == RC_EV_DOUBLE_PRESS ||
+	    ev == RC_EV_TIMER_5S || ev == RC_EV_TIMER_60S || ev == RC_EV_BATT_B15 ||
+	    ev == RC_EV_BATT_B5 || ev == RC_EV_BATT_B2 || ev == RC_EV_STORAGE_FAULT_SET ||
+	    (unsigned)ev >= RC_EV_COUNT) {
+		return;
+	}
+	sm_event(c, ev, t, out);
+== B2.2 VDD_MIC on
+modules/ring_recorder/src/rrec_mics.c:53:	return rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
+modules/ring_recorder/include/ring_recorder/rrec.h:29: * answer of 0, rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on"). Returns the sign's answer (0 = drawn and
+modules/ring_recorder/include/ring_recorder/rrec.h:31: * file may call rail_set(RHW_RAIL_MIC, true, ...) (full-run stage recorder-one-mic-path). */
+}
+
+int rec_mics_on(rc_ms_t t)
+{
+	int r = sign_draw(t);
+
+	if (r != 0) {
+		return r;   /* the sign is not drawn: VDD_MIC stays off (FW l.342) */
+	}
+	return rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
+}
+== B2.3 close order
+	r = rau_cut(mark, &cr);                  /* the frames up to the mark kept; the partial chunk (FW l.448) */
+	(void)rst_close(cr.last, &cr.close);     /* partial chunk, CLOSE record, superblock with the flag clear */
+	(void)rau_halt();                        /* stop PDM, blocks released, clocks low (FW l.463) */
+	(void)rec_mics_off();                    /* VDD_MIC off */
+	(void)rau_release();                     /* HFXO after VDD_MIC (FW l.463) */
+	(void)rst_unmount();                     /* VDD_SD off */
+	rrec_st.recording = false;
+== B2.4 watchdog files changed in diff?
+1
+static bool fresh(int64_t now_ms, int64_t last_ms)
+{
+	return last_ms != RSL_NEVER && now_ms - last_ms <= (int64_t)RREC_WDT_PROGRESS_MS;
+}
+
+bool rsl_wdt_should_feed(bool recording, int64_t now_ms, int64_t last_audio_ms, int64_t last_store_ms)
+{
+	if (!recording) {
+		return true;
+	}
+	return fresh(now_ms, last_audio_ms) && fresh(now_ms, last_store_ms);
+}
+== B2.5 update limits
+		return RREC_ST_NOT_ALLOWED;
+	}
+	if (image_size == 0u || image_size > RREC_IMAGE_MAX_BYTES) {
+		return RREC_ST_BAD_ARG;
+	}
+	return RREC_ST_OK;
+}
+
+enum rrec_status rsl_data_check(bool begun, uint32_t image_size, uint32_t offset, size_t len, bool has_data)
+{
+	uint64_t end = (uint64_t)offset + (uint64_t)len;
+	uint64_t limit = image_size < RREC_IMAGE_MAX_BYTES ? image_size : RREC_IMAGE_MAX_BYTES;
+
+	if (!begun || (len > 0u && !has_data)) {
+		return RREC_ST_BAD_ARG;
+	}
+	if (end > limit) {
+		return RREC_ST_BAD_ARG;
+	}
+	return RREC_ST_OK;
+== B2.6 factory flag writers
+modules/ring_recorder/src/rrec.c:468:	case RC_ACT_CLEAR_FACTORY_FLAG:
+modules/ring_recorder/src/rrec.c:469:		(void)rsy_factory_flag_set(false);
+modules/ring_recorder/src/rrec_backend.c:361:	int r = rsy_factory_flag_set(on);
+modules/ring_sys/src/rsy.c:305:int rsy_factory_flag_set(bool on)
+		return RREC_ST_BAD_ARG;
+	}
+	/* "With the flag clear, FACTORY returns NOT_ALLOWED" (FW l.1019): before anything else about the request. */
+	if (!flag) {
+		return RREC_ST_NOT_ALLOWED;
+	}
+}
+
+bool rfa_clears_flag(uint8_t sub)
+{
+	return sub == RREC_FAC_SHIP_ENTER;
+}
+== diff touches ring_core/ring_sys/ring_factory/ring_glue/ring_power?
+0

@@ -1,0 +1,1167 @@
+{
+  "roots": [
+    "contract"
+  ],
+  "units": 57,
+  "digest": [
+    "explorer/docs/CONTRACT.md",
+    "explorer/docs/DIGEST.md",
+    "explorer/docs/SOURCE-CONTRACT.md",
+    "explorer/docs/CONSTANTS.md"
+  ],
+  "root_files": [
+    "package.json",
+    "tsconfig.json",
+    "vite.config.ts",
+    "index.html",
+    "contract/schema/**",
+    "src/contract/**",
+    "src/data/**",
+    "collector/run.py",
+    "collector/lib/**",
+    "tests/playwright.config.ts",
+    "tests/support/**",
+    "docs/CONTRACT.md",
+    "docs/DIGEST.md",
+    "docs/SOURCE-CONTRACT.md",
+    "docs/CONSTANTS.md"
+  ],
+  "lanes": [
+    {
+      "id": "contract",
+      "owns": [
+        "package.json",
+        "package-lock.json",
+        "vendor/**",
+        "tsconfig.json",
+        "vite.config.ts",
+        "index.html",
+        ".gitignore",
+        "tools/serve-files/**",
+        "src/contract/**",
+        "src/data/**",
+        "contract/schema/**",
+        "collector/run.py",
+        "collector/lib/**",
+        "collector/tests/conftest.py",
+        "collector/tests/contract/**",
+        "tests/playwright.config.ts",
+        "tests/support/**",
+        "scripts/**",
+        "docs/CONTRACT.md",
+        "docs/DIGEST.md",
+        "docs/SOURCE-CONTRACT.md",
+        "docs/CONSTANTS.md",
+        "tests/static/**",
+        "README.md"
+      ],
+      "depends_on": [],
+      "builds_against": [],
+      "acceptance": [
+        "npm install exits 0 with @<org>/apps-ui installed from vendor/ (<platform> apps vendor-package; its named next command run)",
+        "npx tsc --noEmit output has 0 'error TS'",
+        "python collector/run.py with no extractors exits 0 and writes manifest.json listing 13 records 'missing'",
+        "pytest collector/tests/contract exits 0",
+        "npx playwright test --list -c tests/playwright.config.ts exits 0 (0 tests)",
+        "docs/CONTRACT.md states: output encoding (React text only, SVG via <img>, no dangerouslySetInnerHTML), the line/part count definitions, the component-to-shape map, the honest-state vocabulary, the testid grammar '<route>.<element>', the part id grammar '<bom>:<ref>', check id ranges per lane '<lane>-C01..C99', ports 8790 (app) and 8797 (journeys), and the line 'where a brief and this file disagree, this file wins: follow it and report the conflict'"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "outside_owns": {},
+      "unsplittable_reason": "The root is one piece on purpose: schema, collector runner, scaffold, test support and the static-host check must agree with each other before any other piece starts; it is finished and no longer written."
+    },
+    {
+      "id": "shell",
+      "owns": [
+        "src/main.tsx",
+        "src/app/**",
+        "src/styles/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "npm run build exits 0 with only shell + contract merged",
+        "with an empty bundle the 9 tabs render, each route shows 'screen not built yet' or its banner, 0 console errors",
+        "tests/checks/shell is not owned: shell's checks live in src/app/__checks__ (vitest) and pass"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "shared_components": [
+        "app shell: tab bar, layout, freshness stamp (desktop)"
+      ],
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "src/routes/*/index.tsx": "read-only: the shell imports each screen entry; each file is owned and written by its screen piece"
+      }
+    },
+    {
+      "id": "stage",
+      "owns": [
+        "src/stage/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "vitest src/stage passes",
+        "a stage harness page (src/stage/harness.html, dev only) loads the fixture's internals.glb or design/look/viewer/sample/out/ring.glb and sets window.__stage.ready; >= 2 % differing pixels",
+        "no CDN import; no part name literal from the bundle in src/stage (guard)"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "shared_components": [
+        "3D stage (shared component, desktop)"
+      ],
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "src/contract/stage-api.ts": "the stage public API type: the finished contract piece no longer writes it, and the stage piece is its only writer",
+        "docs/CONSTANTS.md": "this piece appends its own constants; the file is owned by the finished contract piece"
+      }
+    },
+    {
+      "id": "svg-viewer",
+      "owns": [
+        "src/components/SvgViewer/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "vitest src/components/SvgViewer passes: zoom 4.0 via buttons, fit resets to 1.0, SVG rendered through <img>"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "shared_components": [
+        "SvgViewer (shared component)"
+      ],
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "part-card",
+      "owns": [
+        "src/components/PartCard/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "vitest with a parts.json sample: BT1 plain words before the disclosure, part number hidden until opened, 'not on disk' link aria-disabled"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "shared_components": [
+        "PartCard (shared component)"
+      ],
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "part-notes",
+      "owns": [
+        "content/part-notes.json",
+        "collector/tests/part-notes/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "pytest collector/tests/part-notes exits 0: 77/77 ring lines covered, word limits, model_names exist"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "outside_owns": {
+        "docs/SOURCE-CONTRACT.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "docs/CONSTANTS.md": "this piece appends its own constants; the file is owned by the finished contract piece"
+      }
+    },
+    {
+      "id": "collector-parts",
+      "owns": [
+        "collector/extract/parts.py",
+        "collector/extract/files.py",
+        "collector/tests/collector-parts/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "pytest collector/tests/collector-parts exits 0 on a git-archive copy of commit 99dfb85 and on the live folder",
+        "parts.json and files.json validate against contract/schema"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "merged_units": [
+        "parts",
+        "files index",
+        "partner bundle zip"
+      ],
+      "unsplittable_reason": "files.py resolves every bom source link; the bundle reuses the same file walk; splitting duplicates the walk",
+      "outside_owns": {
+        "docs/SOURCE-CONTRACT.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "content/part-notes.json": "read-only input owned by the part-notes piece",
+        "docs/CONSTANTS.md": "this piece appends its own constants; the file is owned by the finished contract piece"
+      }
+    },
+    {
+      "id": "collector-model",
+      "owns": [
+        "collector/extract/placements.py",
+        "collector/extract/ring_model.py",
+        "collector/extract/screens.py",
+        "collector/cad/**",
+        "collector/tests/collector-model/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "the STEP-label rival probe result is written to docs/DIGEST.md by the lead from this lane's report",
+        "pytest collector/tests/collector-model exits 0",
+        "internals.glb node set == placement.csv part set"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "merged_units": [
+        "placements",
+        "ring model",
+        "screens spec",
+        "STEP-to-GLB helper"
+      ],
+      "unsplittable_reason": "layers, model nodes and screen geometry are derived in one pass over placement.csv and the look contract; the cad helper is consumed by collector-case",
+      "outside_owns": {
+        "docs/SOURCE-CONTRACT.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "docs/CONSTANTS.md": "this piece appends its own constants; the file is owned by the finished contract piece"
+      }
+    },
+    {
+      "id": "collector-state",
+      "owns": [
+        "collector/extract/facts.py",
+        "collector/extract/areas.py",
+        "collector/tests/collector-state/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "pytest collector/tests/collector-state exits 0 including the A3/A4 staleness case and the no-status-file case"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "merged_units": [
+        "key numbers",
+        "area states"
+      ],
+      "unsplittable_reason": "both are read only by Home and the banners; one small lane avoids two 40-line lanes",
+      "outside_owns": {
+        "docs/SOURCE-CONTRACT.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "docs/CONSTANTS.md": "this piece appends its own constants; the file is owned by the finished contract piece"
+      }
+    },
+    {
+      "id": "collector-look",
+      "owns": [
+        "collector/extract/look_options.py",
+        "collector/tests/collector-look/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "pytest collector/tests/collector-look exits 0"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "outside_owns": {
+        "docs/SOURCE-CONTRACT.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "docs/CONSTANTS.md": "this piece appends its own constants; the file is owned by the finished contract piece"
+      }
+    },
+    {
+      "id": "collector-electronics",
+      "owns": [
+        "collector/extract/schematic.py",
+        "collector/extract/electronics.py",
+        "collector/tests/collector-electronics/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "pytest collector/tests/collector-electronics exits 0, including the missing-kicad-cli fallback"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "merged_units": [
+        "schematic pages",
+        "blocks + pin plan + power budget"
+      ],
+      "unsplittable_reason": "blocks are defined by the same sheets the SVG export walks",
+      "outside_owns": {
+        "docs/SOURCE-CONTRACT.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "docs/CONSTANTS.md": "this piece appends its own constants; the file is owned by the finished contract piece"
+      }
+    },
+    {
+      "id": "collector-board",
+      "owns": [
+        "collector/extract/board.py",
+        "collector/tests/collector-board/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "pytest collector/tests/collector-board exits 0"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "outside_owns": {
+        "docs/SOURCE-CONTRACT.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "docs/CONSTANTS.md": "this piece appends its own constants; the file is owned by the finished contract piece"
+      }
+    },
+    {
+      "id": "collector-behaviour",
+      "owns": [
+        "collector/extract/behaviour.py",
+        "collector/tests/collector-behaviour/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "pytest collector/tests/collector-behaviour exits 0"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "outside_owns": {
+        "docs/SOURCE-CONTRACT.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "docs/CONSTANTS.md": "this piece appends its own constants; the file is owned by the finished contract piece"
+      }
+    },
+    {
+      "id": "collector-case",
+      "owns": [
+        "collector/extract/case.py",
+        "collector/tests/collector-case/**"
+      ],
+      "depends_on": [
+        "collector-model"
+      ],
+      "builds_against": [
+        "contract",
+        "collector-model"
+      ],
+      "acceptance": [
+        "pytest collector/tests/collector-case exits 0"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "outside_owns": {
+        "docs/SOURCE-CONTRACT.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "docs/CONSTANTS.md": "this piece appends its own constants; the file is owned by the finished contract piece"
+      }
+    },
+    {
+      "id": "collector-open",
+      "owns": [
+        "collector/extract/open_items.py",
+        "collector/tests/collector-open/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "pytest collector/tests/collector-open exits 0"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "merged_units": [
+        "open items",
+        "decisions"
+      ],
+      "unsplittable_reason": "one DATA-MAP row (open-items, decisions) and one output file open.json",
+      "outside_owns": {
+        "docs/SOURCE-CONTRACT.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "docs/CONSTANTS.md": "this piece appends its own constants; the file is owned by the finished contract piece"
+      }
+    },
+    {
+      "id": "behaviour-engine",
+      "owns": [
+        "src/engine/behaviour/**"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "vitest src/engine/behaviour passes the 4 cases of functionality-behaviour-engine; no state name literal in the folder"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "home",
+      "owns": [
+        "src/routes/home/**",
+        "tests/checks/home/**"
+      ],
+      "depends_on": [
+        "shell",
+        "stage",
+        "collector-state",
+        "collector-model"
+      ],
+      "builds_against": [
+        "contract",
+        "shell",
+        "stage"
+      ],
+      "acceptance": [
+        "tests/checks/home (lane ids home-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+        "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+      ],
+      "model": "sonnet",
+      "surfaces": [
+        "home"
+      ],
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "look",
+      "owns": [
+        "src/routes/look/**",
+        "tests/checks/look/**"
+      ],
+      "depends_on": [
+        "shell",
+        "stage",
+        "collector-look",
+        "collector-model"
+      ],
+      "builds_against": [
+        "contract",
+        "shell",
+        "stage"
+      ],
+      "acceptance": [
+        "tests/checks/look (lane ids look-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+        "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+      ],
+      "model": "sonnet",
+      "surfaces": [
+        "look"
+      ],
+      "merged_units": [
+        "option panels",
+        "finish/screen/view switches"
+      ],
+      "unsplittable_reason": "one surface; merged interaction units: the switches mutate every option panel of the same view; one state object",
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "inside",
+      "owns": [
+        "src/routes/inside/**",
+        "tests/checks/inside/**"
+      ],
+      "depends_on": [
+        "shell",
+        "stage",
+        "part-card",
+        "part-notes",
+        "collector-model",
+        "collector-parts"
+      ],
+      "builds_against": [
+        "contract",
+        "shell",
+        "stage"
+      ],
+      "acceptance": [
+        "tests/checks/inside (lane ids inside-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+        "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+      ],
+      "model": "sonnet",
+      "surfaces": [
+        "inside"
+      ],
+      "merged_units": [
+        "explode slider",
+        "part pick",
+        "part search",
+        "layer list"
+      ],
+      "unsplittable_reason": "one surface; merged interaction units: all four read and write the one view state (selected part, explode value, isolated layer) that drives the shared stage; splitting them would invent a store",
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "electronics",
+      "owns": [
+        "src/routes/electronics/**",
+        "tests/checks/electronics/**"
+      ],
+      "depends_on": [
+        "shell",
+        "stage",
+        "svg-viewer",
+        "collector-electronics",
+        "collector-parts"
+      ],
+      "builds_against": [
+        "contract",
+        "shell",
+        "stage"
+      ],
+      "acceptance": [
+        "tests/checks/electronics (lane ids electronics-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+        "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+      ],
+      "model": "sonnet",
+      "surfaces": [
+        "electronics"
+      ],
+      "merged_units": [
+        "block diagram",
+        "page viewer wiring",
+        "pin plan and power tables"
+      ],
+      "unsplittable_reason": "one surface; merged interaction units: block selection decides the page shown; one view state",
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "board",
+      "owns": [
+        "src/routes/board/**",
+        "tests/checks/board/**"
+      ],
+      "depends_on": [
+        "shell",
+        "stage",
+        "svg-viewer",
+        "part-card",
+        "collector-board",
+        "collector-parts"
+      ],
+      "builds_against": [
+        "contract",
+        "shell",
+        "stage"
+      ],
+      "acceptance": [
+        "tests/checks/board (lane ids board-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+        "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+      ],
+      "model": "sonnet",
+      "surfaces": [
+        "board"
+      ],
+      "merged_units": [
+        "plan",
+        "side toggles"
+      ],
+      "unsplittable_reason": "one surface; merged interaction units: the toggles filter the plan they sit on",
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "parts",
+      "owns": [
+        "src/routes/parts/**",
+        "tests/checks/parts/**"
+      ],
+      "depends_on": [
+        "shell",
+        "part-card",
+        "collector-parts"
+      ],
+      "builds_against": [
+        "contract",
+        "shell"
+      ],
+      "acceptance": [
+        "tests/checks/parts (lane ids parts-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+        "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+      ],
+      "model": "sonnet",
+      "surfaces": [
+        "parts"
+      ],
+      "merged_units": [
+        "table",
+        "filters",
+        "CSV export"
+      ],
+      "unsplittable_reason": "one surface; merged interaction units: filters and export act on the one table model",
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "behaviour",
+      "owns": [
+        "src/routes/behaviour/**",
+        "tests/checks/behaviour/**"
+      ],
+      "depends_on": [
+        "shell",
+        "stage",
+        "behaviour-engine",
+        "collector-behaviour",
+        "collector-model"
+      ],
+      "builds_against": [
+        "contract",
+        "shell",
+        "stage"
+      ],
+      "acceptance": [
+        "tests/checks/behaviour (lane ids behaviour-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+        "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+      ],
+      "model": "sonnet",
+      "surfaces": [
+        "behaviour"
+      ],
+      "merged_units": [
+        "controls",
+        "ring reaction",
+        "state display"
+      ],
+      "unsplittable_reason": "one surface; merged interaction units: all three render one engine state",
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "case",
+      "owns": [
+        "src/routes/case/**",
+        "tests/checks/case/**"
+      ],
+      "depends_on": [
+        "shell",
+        "stage",
+        "part-card",
+        "collector-case"
+      ],
+      "builds_against": [
+        "contract",
+        "shell",
+        "stage"
+      ],
+      "acceptance": [
+        "tests/checks/case (lane ids case-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+        "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+      ],
+      "model": "sonnet",
+      "surfaces": [
+        "case"
+      ],
+      "merged_units": [
+        "case stage",
+        "lid",
+        "pin cards"
+      ],
+      "unsplittable_reason": "one surface; merged interaction units: lid and pins act on the one case scene",
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "open-files",
+      "owns": [
+        "src/routes/open-files/**",
+        "tests/checks/open-files/**"
+      ],
+      "depends_on": [
+        "shell",
+        "collector-open",
+        "collector-parts",
+        "collector-state"
+      ],
+      "builds_against": [
+        "contract",
+        "shell"
+      ],
+      "acceptance": [
+        "tests/checks/open-files (lane ids open-files-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+        "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+      ],
+      "model": "sonnet",
+      "surfaces": [
+        "open-items-and-files"
+      ],
+      "merged_units": [
+        "open items + filter",
+        "files + bundle download"
+      ],
+      "unsplittable_reason": "one surface; merged interaction units: screen 9 is one screen with two sections behind one route (PRD screen 9; JOURNEYS J3.3 and J6.1 reach it from two tab-bar entries)",
+      "outside_owns": {
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "fixture-a3",
+      "owns": [
+        "tests/fixtures/**"
+      ],
+      "depends_on": [
+        "collector-parts",
+        "collector-model",
+        "collector-state",
+        "collector-look",
+        "collector-electronics",
+        "collector-board",
+        "collector-behaviour",
+        "collector-case",
+        "collector-open",
+        "part-notes"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "make-fixture.sh exits 0 twice with byte-identical JSON; manifest git_commit starts '99dfb85'; parts lines 77"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "outside_owns": {
+        "docs/SOURCE-CONTRACT.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/JOURNEYS.md": "read-only input named in a work item; this lane does not write it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "journeys-a",
+      "owns": [
+        "journeys/J1.spec.ts",
+        "journeys/J3.spec.ts",
+        "journeys/J6.spec.ts"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "the three specs list every step id of J1, J3, J6 and fail RED with assertion failures before the surfaces exist"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "merged_units": [
+        "J1",
+        "J3",
+        "J6"
+      ],
+      "unsplittable_reason": "each journey file is about 40 lines against one frozen testid grammar; the shared prologue (JOURNEYS + CONTRACT + harness) is paid once per lane, so 2 lanes instead of 7",
+      "outside_owns": {
+        "docs/JOURNEYS.md": "read-only input named in a work item; this lane does not write it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "journeys-b",
+      "owns": [
+        "journeys/J2.spec.ts",
+        "journeys/J4.spec.ts",
+        "journeys/J5.spec.ts",
+        "journeys/J7.spec.ts"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "the four specs list every step id of J2, J4, J5, J7 and fail RED with assertion failures before the surfaces exist"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "merged_units": [
+        "J2",
+        "J4",
+        "J5",
+        "J7"
+      ],
+      "unsplittable_reason": "same as journeys-a",
+      "outside_owns": {
+        "docs/JOURNEYS.md": "read-only input named in a work item; this lane does not write it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "seams",
+      "owns": [
+        "tests/seams/**"
+      ],
+      "depends_on": [
+        "home",
+        "inside",
+        "parts",
+        "board",
+        "electronics",
+        "open-files",
+        "fixture-a3"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "tests/seams pass on the fixture: one card everywhere, equal counts, equal area states, one vocabulary, one tab bar position"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "outside_owns": {
+        "docs/JOURNEYS.md": "read-only input named in a work item; this lane does not write it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against",
+        "src/contract/vocabulary.ts": "named by a work item of this piece: a shared file it reads, or appends its own section to; it does not own it"
+      }
+    },
+    {
+      "id": "smoke-perf",
+      "owns": [
+        "tests/smoke/**"
+      ],
+      "depends_on": [
+        "home",
+        "look",
+        "inside",
+        "electronics",
+        "board",
+        "parts",
+        "behaviour",
+        "case",
+        "open-files",
+        "fixture-a3"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "tests/smoke pass: 0 console errors on 9 routes x 2 bundles (fixture, empty); perf numbers written to tests/smoke/out/perf.json with cold and warm route reads; axe floor green"
+      ],
+      "model": "sonnet",
+      "surfaces": [],
+      "merged_units": [
+        "smoke",
+        "perf",
+        "a11y floor",
+        "S1 route checks"
+      ],
+      "unsplittable_reason": "all four drive the same 9 routes x 2 bundles in one browser session; the run, not the assertions, is the cost",
+      "outside_owns": {
+        "docs/JOURNEYS.md": "read-only input named in a work item; this lane does not write it",
+        "docs/DIGEST.md": "this lane appends its own section; the file is owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "read-only input: the frozen contract every piece builds against"
+      }
+    },
+    {
+      "id": "wiring-data",
+      "owns": [
+        "collector/extract/wiring.py",
+        "collector/extract/boards.py",
+        "collector/tests/collector-wiring/**",
+        "collector/tests/collector-boards/**",
+        "docs/DATA-MAP.md"
+      ],
+      "depends_on": [
+        "contract",
+        "collector-electronics",
+        "collector-board"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "npm run collect writes the boards list (ring board, 14 band circuits, 2 case boards) with one SVG per copper layer and a state from the rules report, and the connection map whose count equals design/wiring/connections.md; npm run test:collector passes; each new test fails on its broken fixture"
+      ],
+      "surfaces": [],
+      "unsplittable_reason": "",
+      "outside_owns": {
+        "collector/run.py": "written by this piece for the wiring change; first owned by the finished contract piece, which no longer writes it",
+        "collector/lib/**": "written by this piece for the wiring change; first owned by the finished contract piece, which no longer writes it",
+        "contract/schema/**": "written by this piece for the wiring change; first owned by the finished contract piece, which no longer writes it",
+        "scripts/**": "written by this piece for the wiring change; first owned by the finished contract piece, which no longer writes it",
+        "src/contract/**": "written by this piece for the wiring change; first owned by the finished contract piece, which no longer writes it",
+        "src/data/**": "written by this piece for the wiring change; first owned by the finished contract piece, which no longer writes it",
+        "docs/CONTRACT.md": "written by this piece for the wiring change; first owned by the finished contract piece, which no longer writes it",
+        "docs/SOURCE-CONTRACT.md": "written by this piece for the wiring change; first owned by the finished contract piece, which no longer writes it",
+        "collector/extract/electronics.py": "written by this piece for the wiring change; first owned by a finished piece, which no longer writes it",
+        "collector/extract/board.py": "written by this piece for the wiring change; first owned by a finished piece, which no longer writes it"
+      }
+    },
+    {
+      "id": "wiring-screens",
+      "owns": [
+        "src/components/wiring/**",
+        "docs/surfaces/electronics.md",
+        "docs/surfaces/board.md",
+        "docs/TEST-PLAN.md",
+        "docs/lanes/wiring.handoff.md"
+      ],
+      "depends_on": [
+        "wiring-data",
+        "electronics",
+        "board"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "Electronics shows the connection map (graph and list) and Board shows the board picker with copper layers and state banners, from the data bundle only; npm run test passes without any browser test"
+      ],
+      "surfaces": [
+        "electronics",
+        "board"
+      ],
+      "unsplittable_reason": "the connection map and the board picker share one new set of data views and link into each other: a click on a connection's end opens that board in the Board screen, and a board's land links back to its connection; building them in two lanes would mean two writers on the shared views",
+      "outside_owns": {
+        "src/styles/**": "written by this piece for the wiring change; first owned by the finished shell piece, which no longer writes it",
+        "src/components/SvgViewer/**": "changed only if the copper layer view needs it; first owned by the finished viewer piece, which no longer writes it",
+        "src/routes/electronics/**": "written by this piece for the wiring change; first owned by a finished piece, which no longer writes it",
+        "src/routes/board/**": "written by this piece for the wiring change; first owned by a finished piece, which no longer writes it"
+      }
+    },
+    {
+      "id": "design-sync",
+      "owns": [
+        "docs/lanes/design-sync.handoff.md"
+      ],
+      "depends_on": [
+        "wiring-data"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "npm run collect ends with 0 unparsed records and npm run test:collector ends with 0 failed, each change of an extractor or a test traced to the design line that changed; no ring fact enters app source"
+      ],
+      "surfaces": [],
+      "unsplittable_reason": "",
+      "outside_owns": {
+        "collector/extract/parts.py": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it",
+        "collector/extract/behaviour.py": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it",
+        "collector/tests/collector-parts/**": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it",
+        "collector/tests/collector-behaviour/**": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it",
+        "collector/tests/part-notes/**": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it",
+        "content/part-notes.json": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it",
+        "collector/lib/**": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it",
+        "docs/SOURCE-CONTRACT.md": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it",
+        "docs/DATA-MAP.md": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it",
+        "contract/schema/parts.schema.json": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it (quantity 0 = a history line, not fitted)",
+        "src/contract/records.ts": "regenerated by npm run gen:types after the schema change",
+        "src/components/PartCard/**": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it (a part with quantity 0 shows 'Not fitted (history only)')",
+        "docs/CONTRACT.md": "changed to follow the design files of 13 November; first owned by a finished piece, which no longer writes it",
+        "src/engine/behaviour/**": "changed to follow design/firmware.md section 3.2 (no recording light; the screen's recording sign); first owned by a finished piece, which no longer writes it",
+        "src/routes/behaviour/**": "the Light row and the stage lamp are drawn only when the record says the ring has a recording light; first owned by a finished piece, which no longer writes it"
+      }
+    },
+    {
+      "id": "case-true",
+      "owns": [
+        "docs/lanes/case-true.handoff.md"
+      ],
+      "depends_on": [
+        "design-sync"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "every line of design/case/case-bom.csv is linked to the 3D solid that holds it (or says in words why it has none), every solid of the case model opens a part card, the case's two boards show their parts, and the collector tests prove the counts; no browser test"
+      ],
+      "surfaces": [
+        "case"
+      ],
+      "unsplittable_reason": "",
+      "outside_owns": {
+        "collector/extract/case.py": "changed so the Case screen shows the true case with every part; first owned by a finished piece, which no longer writes it",
+        "collector/tests/collector-case/**": "changed so the Case screen shows the true case with every part; first owned by a finished piece, which no longer writes it",
+        "collector/lib/**": "changed so the Case screen shows the true case with every part; first owned by a finished piece, which no longer writes it",
+        "contract/schema/**": "changed so the Case screen shows the true case with every part; first owned by a finished piece, which no longer writes it",
+        "src/contract/records.ts": "changed so the Case screen shows the true case with every part; first owned by a finished piece, which no longer writes it",
+        "src/routes/case/**": "changed so the Case screen shows the true case with every part; first owned by a finished piece, which no longer writes it",
+        "docs/CONTRACT.md": "changed so the Case screen shows the true case with every part; first owned by a finished piece, which no longer writes it",
+        "docs/DATA-MAP.md": "changed so the Case screen shows the true case with every part; first owned by a finished piece, which no longer writes it",
+        "docs/SOURCE-CONTRACT.md": "changed so the Case screen shows the true case with every part; first owned by a finished piece, which no longer writes it",
+        "docs/surfaces/case.md": "changed so the Case screen shows the true case with every part; first owned by a finished piece, which no longer writes it",
+        "docs/TEST-PLAN.md": "changed so the Case screen shows the true case with every part; first owned by a finished piece, which no longer writes it",
+        "collector/tests/collector-wiring/**": "tests and notes brought in step with the design files of 13 November (routed ring board, 12 test pads, connections all drawn); first owned by a finished piece",
+        "collector/extract/wiring.py": "tests and notes brought in step with the design files of 13 November (routed ring board, 12 test pads, connections all drawn); first owned by a finished piece",
+        "collector/tests/part-notes/**": "tests and notes brought in step with the design files of 13 November (routed ring board, 12 test pads, connections all drawn); first owned by a finished piece",
+        "content/part-notes.json": "tests and notes brought in step with the design files of 13 November (routed ring board, 12 test pads, connections all drawn); first owned by a finished piece",
+        "scripts/**": "tests and notes brought in step with the design files of 13 November (routed ring board, 12 test pads, connections all drawn); first owned by a finished piece"
+      }
+    },
+    {
+      "id": "screen-face",
+      "owns": [
+        "docs/lanes/screen-face.handoff.md"
+      ],
+      "depends_on": [
+        "case-true"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "the glass face of the 3D ring shows the ring software's own screen picture for each state on the lit area at its true size and place, no specification note is drawn on it, and the glass reads as one black face edge to edge; unit tests and collector tests prove the mapping of every state to a picture; no browser test"
+      ],
+      "surfaces": [
+        "ring"
+      ],
+      "unsplittable_reason": "",
+      "outside_owns": {
+        "collector/extract/screens.py": "the screen states carry the real picture of the ring software; first owned by a finished piece, which no longer writes it",
+        "collector/extract/ring_model.py": "the screens record gains the picture per state",
+        "collector/tests/**": "cases for the picture mapping; first owned by finished pieces",
+        "collector/lib/**": "copying the pictures into the data folder, if the collector needs it",
+        "src/contract/**": "the screens record gains the picture field",
+        "contract/**": "the same field in the data contract",
+        "src/stage/materials.ts": "the glass and the lit picture read as one black face",
+        "src/stage/__tests__/**": "unit tests of the face",
+        "src/routes/ring/**": "only where the screen state picker names a state",
+        "docs/feature-manifest.md": "the feature row of the screen face",
+        "scripts/**": "only if the data build must copy the pictures",
+        "src/stage/screenFace.ts": "the glass face draws the ring software's real picture; first owned by the finished piece stage, which no longer writes it",
+        "src/stage/faceTexture.ts": "the same change; first owned by the finished piece stage"
+      }
+    },
+    {
+      "id": "conductor-view",
+      "owns": [
+        "docs/lanes/conductor-view.handoff.md"
+      ],
+      "depends_on": [
+        "screen-face"
+      ],
+      "builds_against": [
+        "contract"
+      ],
+      "acceptance": [
+        "the Electronics screen's connection detail lists each conductor of the connection one by one (signal, first terminal, last terminal, carrier, state) read from design/wiring/product-wiring.csv, and a count line says how many conductors are complete out of the total; collector tests and unit tests prove the list equals the file; no browser test"
+      ],
+      "surfaces": [
+        "electronics"
+      ],
+      "unsplittable_reason": "",
+      "outside_owns": {
+        "collector/extract/wiring.py": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "collector/lib/wiringcheck.py": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "collector/tests/collector-wiring/**": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "contract/schema/**": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "src/contract/**": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "src/components/wiring/**": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "src/routes/electronics/**": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "tests/checks/electronics/**": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "docs/CONTRACT.md": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "docs/DATA-MAP.md": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "docs/SOURCE-CONTRACT.md": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "docs/surfaces/electronics.md": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "docs/TEST-PLAN.md": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it",
+        "docs/DIGEST.md": "changed so the Electronics screen lists every conductor of a connection; first owned by a finished piece, which no longer writes it"
+      }
+    }
+  ],
+  "path_base": "paths are relative to the explorer folder (the app repo root for the build scripts); ../ leaves it"
+}

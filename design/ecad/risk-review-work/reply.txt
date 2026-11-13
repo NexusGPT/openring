@@ -1,0 +1,31 @@
+Review done: every open risk has a verdict in design/ecad/risk-review.md. The brief says 16 risks but its list names 17 (11 ring, 6 case); all 17 are reviewed. Result: 13 CLOSED, 4 NEEDS HARDWARE, 0 need a maker's answer.
+
+Verdicts:
+- CLOSED: ring 1, 2, 3, 5, 6, 7, 10, 11, 12; case 2, 5, 7, 9.
+- NEEDS HARDWARE: ring 4 (antenna match, M1), ring 9 (32 MHz accuracy, M2), case 3 (PMID load, M3), case 4 (USB over spring pins, M4).
+
+Findings that change files (proposed only, none applied; table "Proposed changes for the lead"):
+- P1, P2 ring 1: Tailor sheet page 9 (a drawing, read as an image) shows SWIRE low until after "Display on", with ELVDD more than 66.7 ms later. firmware.md line 381 says SWIRE starts before "sleep out". The line needs the new order, and open item 23 (line 1158) can close.
+- P3 ring 3: the case passes VBUS up to the BQ25895's 14 V over-voltage threshold (TPS2553 IN takes 7 V), and nothing cuts VRING above 5.5 V. Rule added to case-architecture.md line 175: VRING_EN goes low when VRING_SENSE reads above 1.759 V.
+- P4 case 5: never burn EFUSE_STRAP_JTAG_SEL or EFUSE_VDD_SPI_FORCE (case-architecture.md line 173).
+- P5, P6 case 8 conflict: sim-notes.md line 16 ("CE is held low by R21") is wrong. The case netlist has R21 from CHG_CE_N to 3V3 (lines 14, 45), so case sch-notes is right. lead-decisions.md line 30 says REGN, and its line 34 and the netlist say 3.3 V.
+- Ring 11: no conflict on U9's place. It sits on the main board 5.44 mm from J_BAND_B (routed board, placement-final.csv line 88), which lead row 75 accepts. Only ring sch-notes line 164 ("must sit next to the J_BAND_B pads") is not met.
+- Ring 5: 35 of 35 U2 balls match Nordic Table 33 (script, 0 differences).
+- Case 7: the computed window is about 0 to 45 C, the same as the cell's charging range. The BQ25895 has no JEITA steps.
+- Settled risks confirmed by their lines: ring 8, ring 13, case 6, case 8.
+
+Edits made: 11 "Decision 2026-11-13:" lines in ring sch-notes section 9 and 6 in case sch-notes section 7. No existing line was removed (design/ecad/risk-review-work/sch-notes-counts.log).
+
+Checks after the edits:
+- check_netlist.py: exit 0, last line "RESULT PASS netlist netlist.csv"
+- firmware-check.py: exit 0, last line "0 failures"
+- check_docs.py: exit 0, last line "RESULT PASS"
+- Quote log design/ecad/risk-review-work/quotes-verify.log, last line: "quotes checked 52, not found 0"
+
+Not done or limits:
+- The commit id was not checked (no git).
+- Facts not in any document on disk, each covered by a measurement or by following the maker's figure: the SGM38046 AVIN internal feed, how the nRF54LM20A internal crystal load is set, and whether a PMID load counts in the BQ25895 input limit.
+
+Work folder: design/ecad/risk-review-work (text copies, 3 page images, scripts, logs).
+
+questions_for_owner: none

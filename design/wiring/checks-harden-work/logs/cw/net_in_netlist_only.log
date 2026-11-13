@@ -1,0 +1,21 @@
+FAIL[ends-disagree] W040 signal A 'ELVSS' and signal B 'ELVDD' differ; pairing rule 'contact k of the screen cable on position k of J1' does not name them
+FAIL[states-net] W040 end B J1.1 states net 'ELVDD', the ring netlist says 'ELVSS'
+FAIL[states-net] W040 end B J1.1 states net 'ELVDD', the pad on design/ecad/ring/pcb/ring.kicad_pcb has net 'ELVSS'
+FAIL[rebuild] W040 field signal_B: list says 'ELVDD', the generator builds 'ELVSS'
+FAIL[rebuild] W040 field carrier_net: list says 'ELVSS/ELVDD', the generator builds 'ELVSS'
+csv: design/wiring/checks-harden-work/copies/cw/net_in_netlist_only.csv
+terminals required (off-board pins and board-to-board lands with a net): 89, in exactly one line: 89
+no-connect pins not required: 2 (ring DISP1.3, ring J1.3)
+state drawn and routed       25
+state specified and landed   41
+state drawn, not routed      0
+state stated in text only    1
+state not drawn              0
+lines per joint: C1 1, C2 1, C3 2, C5 5, R3 10, R4 10, R5 4, R6 2, R7 1, R8 1, R9 4, R10 3, R11 1, R12 3, R13 14, R15 4, R16 1
+lines naming a joint at an end: C4 4, R1 10, R10 1, R2 7, R6 2, R7 1, R9 4
+sensing gaps, no conductor (carrier_kind none, counted apart): 1 (W058 R16)
+mode: --require-complete (incomplete lines fail)
+COMPLETE 66 of 66 conductors (100 percent)
+RESULT FAIL lines 67 (66 conductors, 1 sensing gap), drawn and routed 25, specified and landed 41, drawn, not routed 0, stated in text only 1, not drawn 0, complete 66 of 66 conductors (100 percent), problems 5 (checks failing: ends-disagree rebuild states-net)
+
+EXIT 1

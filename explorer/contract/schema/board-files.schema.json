@@ -1,0 +1,505 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "board-files.schema.json",
+  "type": "object",
+  "properties": {
+    "routed": {
+      "type": "boolean"
+    },
+    "outline": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            },
+            "w": {
+              "type": "number"
+            },
+            "h": {
+              "type": "number"
+            },
+            "source": {
+              "$ref": "common.schema.json#/$defs/Source"
+            }
+          },
+          "required": [
+            "x",
+            "y",
+            "w",
+            "h",
+            "source"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "svg": {
+      "type": "object",
+      "properties": {
+        "top": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/RelPath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "bottom": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/RelPath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "top",
+        "bottom"
+      ],
+      "additionalProperties": false
+    },
+    "placements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "part_id": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/PartId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "w": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "top",
+              "bottom"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "part_id",
+          "x",
+          "y",
+          "w",
+          "h",
+          "side"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "missing": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "What is not there yet, in plain words, e.g. 'ring.kicad_pcb'."
+    },
+    "notches": {
+      "type": "array",
+      "description": "Cut-outs of the board outline (optional): centre x, y and size w, h in design mm, the edge they sit on, and whether their position along that edge is stated by the design.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "w": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "edge": {
+            "type": "string",
+            "minLength": 1
+          },
+          "position_known": {
+            "type": "boolean"
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "name",
+          "x",
+          "y",
+          "w",
+          "h",
+          "edge",
+          "position_known",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "boards": {
+      "type": "array",
+      "description": "Every circuit board (optional): the ring's main board, the band circuits (two per ring size) and the case boards. One entry per board file, with its copper layers (one SVG per layer), the parts placed on each face and its state from the rules check.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "group": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The picker group: the board's id for a single board, the circuit's id for a band circuit (one entry per ring size)."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "what": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Plain words: what the board is."
+          },
+          "size_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The ring size a band circuit is made for (e.g. 'US 9'), else null."
+          },
+          "file": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/RelPath"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The board file in the design folder; null when it is not there."
+          },
+          "file_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Date and time of the board file, 'YYYY-MM-DD HH:MM', local time of the machine that collected."
+          },
+          "outline": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  },
+                  "w": {
+                    "type": "number"
+                  },
+                  "h": {
+                    "type": "number"
+                  },
+                  "source": {
+                    "$ref": "common.schema.json#/$defs/Source"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y",
+                  "w",
+                  "h",
+                  "source"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "layers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "The layer name in plain words."
+                },
+                "svg": {
+                  "anyOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/RelPath"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "items": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Tracks, vias, zones and pads on this layer, counted in the board file."
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "svg",
+                "items"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "placements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ref": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "part_id": {
+                  "anyOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/PartId"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number"
+                },
+                "h": {
+                  "type": "number"
+                },
+                "side": {
+                  "type": "string",
+                  "enum": [
+                    "top",
+                    "bottom"
+                  ]
+                }
+              },
+              "required": [
+                "ref",
+                "part_id",
+                "value",
+                "x",
+                "y",
+                "w",
+                "h",
+                "side"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "missing": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Plain remarks about the files, e.g. a board file older than its netlist."
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": [
+                  "routed-checked",
+                  "not-finished",
+                  "not-checked"
+                ]
+              },
+              "words": {
+                "type": "string",
+                "minLength": 1,
+                "description": "The banner words: 'routed and checked: 0 violations, 0 open connections' or 'not finished: N connections open, M violations'; for not-checked, why the check did not run."
+              },
+              "violations": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "open_connections": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checked_at": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "report": {
+                "anyOf": [
+                  {
+                    "$ref": "common.schema.json#/$defs/RelPath"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "report_lines": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The count lines of the rules report, as it states them."
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "$ref": "common.schema.json#/$defs/Source"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "status",
+              "words",
+              "violations",
+              "open_connections",
+              "checked_at",
+              "report",
+              "report_lines",
+              "source"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "group",
+          "title",
+          "what",
+          "size_label",
+          "file",
+          "file_time",
+          "outline",
+          "layers",
+          "placements",
+          "missing",
+          "notes",
+          "state"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "routed",
+    "outline",
+    "svg",
+    "placements",
+    "missing"
+  ],
+  "additionalProperties": false,
+  "title": "BoardFiles",
+  "description": "board/index.json; routed=false means a placement plan only, and the screen says 'not routed yet'."
+}

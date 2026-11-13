@@ -1,0 +1,108 @@
+# remote.sh run 20261111-211831-find8
+# command: bash tests/bsim/probe-nrf54/find8.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 21:18:31 CET
+# free on the server's /: 47 GB
+# source firmware copied to /root/ring-os/src-probe54
+# started on the server as 20261111-211831-find8; server log /root/ring-os/logs/20261111-211831-find8.log
+## BLECrypt_if.c 95-180
+static blecrypt_packet_encrypt_f blecrypt_packet_encrypt;
+static blecrypt_packet_encrypt_v3_f blecrypt_packet_encrypt_v3;
+static blecrypt_packet_decrypt_f blecrypt_packet_decrypt;
+static blecrypt_packet_decrypt_v3_f blecrypt_packet_decrypt_v3;
+static blecrypt_aes_128_f        blecrypt_aes_128;
+static blecrypt_aes_ecb_f        blecrypt_aes_ecb;
+
+static bool BLECrypt_if_args_useRealAES;
+
+static void BLECrypt_if_register_cmd_args(void) {
+  static bs_args_struct_t args_struct_toadd[] = {
+  {
+    .option = "RealEncryption",
+    .name = "realAES",
+    .type = 'b',
+    .dest = (void*)&BLECrypt_if_args_useRealAES,
+    .descript = "(0)/1 Use the real AES encryption for the LL or just send everything in "
+                "plain text (default) (requires the ext_libCryptov1 component)"
+  },
+  ARG_TABLE_ENDMARKER
+  };
+
+  bs_add_extra_dynargs(args_struct_toadd);
+}
+
+NSI_TASK(BLECrypt_if_register_cmd_args, PRE_BOOT_1, 90);
+
+static void BLECrypt_if_enable_real_encryption(void) {
+  if ( BLECrypt_if_args_useRealAES ) { //if the user tried to enable it
+    //Attempt to load libCrypto
+    char lib_name[128];
+    char *error;
+    snprintf(lib_name,128,"../lib/libCryptov1.so"); //Relative to the working directory which is expected to be the bin folder
+    LibCryptoHandle = dlopen(lib_name, RTLD_NOW);
+    if (!LibCryptoHandle) { //Not found
+      snprintf(lib_name,128,"libCryptov1.so"); //Let's see if the user set LD_LIBRARY_PATH
+      LibCryptoHandle = dlopen(lib_name, RTLD_NOW);
+      if (!LibCryptoHandle) {
+        bs_trace_warning_line("%s\n",dlerror());
+        bs_trace_warning_line("Could not find the libCrypto library neither in ../lib or in LD_LIBRARY_PATH, is it compiled? => disabling real encryption\n");
+        Real_encryption_enabled = false;
+        return;
+      } else {
+        bs_trace_info_line(3, "This executable assumes the working directory is BabbleSim's bin/ folder, but it is not. libCrypto was found anyhow\n");
+      }
+    }
+    if ((error = dlerror()) != NULL) {
+      bs_trace_error_line("%s\n",error);
+    }
+
+    *(void **) (&blecrypt_packet_encrypt) = dlsym(LibCryptoHandle, "blecrypt_packet_encrypt");
+    if ((error = dlerror()) != NULL) {
+      bs_trace_error_line("%s\n",error);
+    }
+    *(void **) (&blecrypt_packet_decrypt) = dlsym(LibCryptoHandle, "blecrypt_packet_decrypt");
+    if ((error = dlerror()) != NULL) {
+      bs_trace_error_line("%s\n",error);
+    }
+    *(void **) (&blecrypt_aes_128) = dlsym(LibCryptoHandle, "blecrypt_aes_128");
+    if ((error = dlerror()) != NULL) {
+      bs_trace_error_line("%s\n",error);
+    }
+    *(void **) (&blecrypt_aes_ecb) = dlsym(LibCryptoHandle, "blecrypt_aes_ecb");
+    if ((error = dlerror()) != NULL) {
+      //bs_trace_warning_line("Too old libCrypto library please update. 54L CRACEN CM AES model will just pass thru (%s)\n",error);
+    }
+    *(void **) (&blecrypt_packet_encrypt_v3) = dlsym(LibCryptoHandle, "blecrypt_packet_encrypt_v3");
+    if ((error = dlerror()) != NULL) {
+      bs_trace_warning_line("%s\n",error);
+      latest_ccm_if = false;
+      bs_trace_info_line(2, "Falling back to old libCrypto IF. 802.15.4 encryption will not work properly for 54 devices. "
+                         "Please update your bsim installation\n",error);
+    }
+    *(void **) (&blecrypt_packet_decrypt_v3) = dlsym(LibCryptoHandle, "blecrypt_packet_decrypt_v3");
+    if ((error = dlerror()) != NULL) {
+      bs_trace_warning_line("%s\n",error);
+    }
+    Real_encryption_enabled = true;
+  } else {
+    Real_encryption_enabled = false;
+  }
+}
+
+NSI_TASK(BLECrypt_if_enable_real_encryption, HW_INIT, 100);
+
+static void BLECrypt_if_free(void){
+## default of the option
+122:static void BLECrypt_if_enable_real_encryption(void) {
+178:NSI_TASK(BLECrypt_if_enable_real_encryption, HW_INIT, 100);
+## who uses it in nRF54 CCM
+/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models/BLECrypt_if.c
+/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models/NHW_AAR.c
+/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models/NHW_AES_CCM.c
+/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models/NHW_54_AAR_CCM_ECB.c
+/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models/NHW_AES_ECB.c
+/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models/NHW_CRACEN_CM.AES.c
+/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models/BLECrypt_if.h
+# finished (Mac clock): 2026-11-11 21:18:46 CET
+# remote exit code: 0
+# local log: firmware/build-logs/probe-nrf54/20261111-211831-find8.log

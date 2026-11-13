@@ -1,0 +1,13 @@
+### 8.7 Battery current limit and reset causes of the nPM1304
+
+- **The limit is fixed.** The nPM1304 limits the current it draws from the battery: IBATLIM, "Discharging battery current limit", 100 mA in the minimum column, "Validated through simulation" [NPM p29 and its footnote, p30]; the maximum VSYS load from the battery is also 100 mA [NPM p11]. No register sets it. Nordic: "It has not been designed for accurate current limiting", and "If the system load exceeds the discharge current limit, VSYS voltage drops below VSYSPOF causing the device to reset" [NPM p28].
+- **What passes it.** Since 17.22 the motor does not. With the screen at full white, the radio, recording and a storage write together, the chip path stays at or under 55.7 mA down to 3.1 V (architecture 17.22; motor-drive.md section 2.4).
+- **The status bit and what the firmware does.** Register BCHGILIMSTATUS, field BCHGILIMBATACTIVE, "Discharge current limiter active" [NPM p40]. The specification read names no interrupt for it, so the firmware reads it with every battery sample (section 8.3: every 1 s in `RECORDING`, every 60 s in the other awake states). When it reads ACTIVE:
+  1. an event log record "battery current limit active" with battery_mv, the state and whether the screen is on;
+  2. the screen goes off at once and stays off for 10 s **[CHOICE]**: the screen is the largest load on the chip's path (motor-drive.md section 4);
+  3. a recording goes on: nothing is closed and nothing is refused, because only a long press stops a recording (owner's rule) and a reset would end in `RECOVERY` anyway (section 5.5);
+  4. no motor pattern is played for it.
+  When it reads ACTIVE again with the screen already off, the event is logged once more with a count and nothing else changes.
+- **Reset causes.** `BOOT` reads the nPM1304 register RSTCAUSE [NPM p146] (bits SHIPMODEEXIT, BOOTMONITORTIMEOUT, WATCHDOGTIMEOUT, LONGPRESSTIMEOUT, THERMALSHUTDOWN, VSYSLOW, SWRESET) and the charger error log CHARGERERRREASON and CHARGERERRSENSOR [NPM p146], writes them into the event log beside the main chip's own reset reason (section 9.4), then clears them with TASKCLRERRLOG [NPM p145]. VSYSLOW means a power-fail reset (VSYS under VSYSPOF): a load above the limit or an empty cell. After a thermal shutdown VSYSLOW can be set instead of THERMALSHUTDOWN [NPM p144].
+- **Power-fail warning: not used** **[CHOICE]**. POFCONFIG stays at its reset value (warning off) and VSYSPOF at its default falling threshold, 2.7 V [NPM p109]. The warning needs a power-chip GPIO wired to the main chip [NPM p107, p108]; the only one wired is GPIO0, which is PMIC_INT (netlist.csv). B2 at 3.30 V closes the files first (section 1.1).
+

@@ -1,0 +1,51 @@
+39:#define RREC_BLOCK_BYTES              1024u       /* FW l.419 */
+40:#define RREC_BLOCK_FRAMES             256u        /* FW l.419: 256 stereo frames */
+41:#define RREC_BLOCK_MS                 16u         /* FW l.419, l.436 */
+42:#define RREC_BLOCK_COUNT              8u          /* FW l.420: slab of 8 blocks (queue-size) */
+43:#define RREC_BLOCKS_PER_CHUNK         32u         /* FW l.443: "After 32 blocks the chunk is full" */
+45:#define RREC_DISCARD_MS               50u         /* FW l.460 */
+46:#define RREC_DISCARD_FRAMES           800u        /* FW l.460: 50 ms at 16 kHz */
+47:#define RREC_MIC_RAIL_WAIT_MS         1u          /* FW l.458: wait 1 ms after VDD_MIC on */
+51:#define RREC_LONG_PRESS_MS            1000u       /* FW l.128, l.448: stop keeps the frames up to this mark */
+55:#define RREC_LBA_SB_A                 0u          /* FW l.523 */
+56:#define RREC_LBA_SB_B                 1u          /* FW l.524 */
+57:#define RREC_LBA_LOG_FIRST            2u          /* FW l.525 */
+58:#define RREC_LBA_LOG_LAST             2047u       /* FW l.525 */
+60:#define RREC_LBA_RESERVED1_FIRST      2048u       /* FW l.526 */
+61:#define RREC_LBA_RESERVED1_LAST       8191u       /* FW l.526 */
+62:#define RREC_LBA_FACTORY_FIRST        4096u       /* FW l.526, l.1030: T-STORE writes 65 sectors at LBA 4,096 */
+63:#define RREC_LBA_FACTORY_LAST         4160u       /* FW l.526 */
+65:#define RREC_LBA_INDEX_FIRST          8192u       /* FW l.527 */
+66:#define RREC_LBA_INDEX_LAST           73727u      /* FW l.527 */
+68:#define RREC_LBA_RESERVED2_FIRST      73728u      /* FW l.528 */
+69:#define RREC_LBA_RESERVED2_LAST       81919u      /* FW l.528 */
+70:#define RREC_LBA_CHUNK_FIRST          81920u      /* FW l.529, l.531; superblock field FW l.596 */
+71:#define RREC_CHUNK_SECTORS            65u         /* FW l.529, l.535: 1 header + 64 payload sectors */
+125:#define RREC_REC_TYPE_RECORDING       1u          /* FW l.548 */
+126:#define RREC_REC_TYPE_FACTORY         2u          /* FW l.548, l.1024 */
+127:#define RREC_SAMPLE_FORMAT_S16LE      1u          /* FW l.551 */
+187:#define RREC_SFULL_CHUNKS             16u         /* FW l.651: SFULL at or under 16 free chunks */
+188:#define RREC_S30_CHUNKS               3516u       /* FW l.652: S30 at or under 3,516 free chunks */
+241:#define RREC_OP_FIRST                 0x01u
+242:#define RREC_OP_LAST                  0x0Du
+304:#define RREC_SAMPLE_REC_MS            1000u       /* FW l.928 */
+305:#define RREC_SAMPLE_IDLE_MS           60000u      /* FW l.928 */
+306:#define RREC_SHPHLD_MS                96u         /* FW l.867, l.938 */
+328:#define RREC_PAT_COUNT                7u
+342:#define RREC_IMAGE_MAX_BYTES          999424u     /* FW l.1012: 976 KB */
+343:#define RREC_SELFTEST_MS              30000u      /* FW l.1014 */
+344:#define RREC_UPDATE_MIN_SOC_X10       300u        /* FW l.1015: allowed only ABOVE 30 % (or VBUS) */
+365:#define RREC_FAC_RESULT_PASS          0u          /* FW l.1020 */
+366:#define RREC_FAC_RESULT_FAIL          1u
+367:#define RREC_FAC_RESULT_TIMEOUT       2u
+368:#define RREC_FAC_MIC_REC_MS           2000u       /* FW l.1024 */
+369:#define RREC_FAC_MIC_STUCK_RUN        1000u       /* FW l.1024: a run of 1,000 equal samples = stuck */
+370:#define RREC_FAC_MOTOR_ON_MS          500u        /* FW l.1028 */
+371:#define RREC_FAC_MOTOR_READ_MS        250u        /* FW l.1028 */
+372:#define RREC_FAC_SIGN_REC_MS          1000u       /* FW l.1029 */
+373:#define RREC_FAC_SIGN_GAP_MS          1000u       /* FW l.1029 */
+374:#define RREC_FAC_RADIO_MS             10000u      /* FW l.1031 */
+375:#define RREC_FAC_XTAL_MS              10000u      /* FW l.1033 */
+400:#define RREC_WDT_TIMEOUT_MS           8000u       /* FW l.1065 */
+401:#define RREC_WDT_FEED_MS              1000u       /* FW l.1065 */
+402:#define RREC_WDT_PROGRESS_MS          2000u       /* FW l.1065 */

@@ -1,0 +1,27 @@
+(version 1)
+# ring main board rules, design/wiring/ring-board-plan.md c.5 (written by build_board.py)
+(rule "via land and ring"
+  (condition "A.Type == 'Via'")
+  (constraint via_diameter (min 0.2mm))
+  (constraint hole_size (min 0.1mm))
+  (constraint annular_width (min 0.05mm)))
+(rule "hole to hole"
+  (constraint hole_to_hole (min 0.2mm)))
+(rule "RF line 0.20 to other copper (d.1)"
+  (condition "A.NetClass == 'RF' && A.Type == 'Track' && B.NetClass != 'RF' && !A.intersectsArea('RF_CHIP_EXIT')")
+  (constraint clearance (min 0.2mm)))
+(rule "RF to zones (d.1)"
+  (condition "A.NetClass == 'RF' && B.Type == 'Zone'")
+  (constraint clearance (min 0.2mm)))
+(rule "USB pair 0.20 to other tracks and vias (d.2)"
+  (condition "A.NetClass == 'USB' && A.Type == 'Track' && B.NetClass != 'USB' && (B.Type == 'Track' || B.Type == 'Via') && !A.intersectsArea('USB_CHIP_EXIT')")
+  (constraint clearance (min 0.2mm)))
+(rule "USB to zones (d.2)"
+  (condition "A.NetClass == 'USB' && B.Type == 'Zone'")
+  (constraint clearance (min 0.2mm)))
+(rule "PWR gap (c.5)"
+  (condition "A.NetClass == 'PWR' && A.Type == 'Track' && B.Type == 'Track'")
+  (constraint clearance (min 0.1mm)))
+(rule "antenna keep-out (e.3): only the antenna's own tracks on F.Cu"
+  (condition "A.Type == 'Track' && A.intersectsArea('ANT_KEEPOUT') && !(A.Layer == 'F.Cu' && (A.NetName == 'RF_FEED' || A.NetName == 'ANT_TRIM' || A.NetName == 'GND'))")
+  (constraint disallow track))

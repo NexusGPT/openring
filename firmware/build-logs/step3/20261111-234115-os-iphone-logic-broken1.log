@@ -1,0 +1,219 @@
+# remote.sh run 20261111-234115-os-iphone-logic-broken1
+# command: bash tests/inbox/broken_run.sh && bash tests/time/broken_run.sh && bash tests/iphone/broken_run.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 23:41:15 CET
+# free on the server's /: 47 GB
+# source firmware copied to /root/ring-os/src-step3b
+# started on the server as 20261111-234115-os-iphone-logic-broken1; server log /root/ring-os/logs/20261111-234115-os-iphone-logic-broken1.log
+--- /ws/firmware/modules/ring_inbox/src/rinbox.c	2026-11-11 22:10:19.000000000 +0000
++++ /ws/out/20261111-234115-os-iphone-logic-broken1-inbox-broken/broken_ring_inbox/src/rinbox.c	2026-11-11 22:41:34.026948682 +0000
+@@ -121,7 +121,7 @@
+ 		shift_down(b, 0, (uint8_t)at);
+ 	} else if (b->count == RINBOX_MAX) {
+ 		if (dropped != NULL) {
+-			*dropped = b->items[RINBOX_MAX - 1].uid;
++			*dropped = b->items[0].uid;
+ 		}
+ 		did_drop = 1;
+ 		shift_down(b, 0, RINBOX_MAX - 1);
+INFO    - 1/1 native_sim/native         ring_inbox.logic                                   FAILED rc=1 (native 0.038s <host/gnu>)
+ PASS - test_add_known_id_moves_front in 0.000 seconds
+ PASS - test_add_newest_first in 0.000 seconds
+ PASS - test_empty_at_start in 0.000 seconds
+ PASS - test_flag_bits_are_apples in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/inbox/src/test_inbox.c:83: ring_inbox_test_full_drops_oldest: (dropped not equal to 1)
+ FAIL - test_full_drops_oldest in 0.000 seconds
+ PASS - test_mark_read_and_clear in 0.000 seconds
+ PASS - test_modify_keeps_place_and_text in 0.000 seconds
+ PASS - test_remove in 0.000 seconds
+ PASS - test_set_text_replaces in 0.000 seconds
+ PASS - test_sizes_are_the_rule in 0.000 seconds
+ PASS - test_text_exactly_at_limit_is_kept in 0.000 seconds
+ PASS - test_text_limits_ascii in 0.000 seconds
+ PASS - test_text_nul_ends_the_string in 0.000 seconds
+ PASS - test_utf8_cut_cases in 0.000 seconds
+ PASS - test_utf8_cut_long_message in 0.000 seconds
+ PASS - test_utf8_cut_property in 0.000 seconds
+TESTSUITE ring_inbox failed.
+SUITE FAIL -  93.75% [ring_inbox]: pass = 15, fail = 1, skip = 0, total = 16 duration = 0.000 seconds
+ - PASS - [ring_inbox.test_add_known_id_moves_front] duration = 0.000 seconds
+ - PASS - [ring_inbox.test_add_newest_first] duration = 0.000 seconds
+ - PASS - [ring_inbox.test_empty_at_start] duration = 0.000 seconds
+ - PASS - [ring_inbox.test_flag_bits_are_apples] duration = 0.000 seconds
+ - FAIL - [ring_inbox.test_full_drops_oldest] duration = 0.000 seconds
+ - PASS - [ring_inbox.test_mark_read_and_clear] duration = 0.000 seconds
+ - PASS - [ring_inbox.test_modify_keeps_place_and_text] duration = 0.000 seconds
+ - PASS - [ring_inbox.test_remove] duration = 0.000 seconds
+ - PASS - [ring_inbox.test_set_text_replaces] duration = 0.000 seconds
+ - PASS - [ring_inbox.test_sizes_are_the_rule] duration = 0.000 seconds
+twister exit code on the broken copy, native_sim: 1 (log /ws/out/20261111-234115-os-iphone-logic-broken1-inbox-broken/twister-native_sim.log)
+native_sim: the named case failed, as required:  - FAIL - [ring_inbox.test_full_drops_oldest] duration = 0.000 seconds (failed cases listed: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_inbox.logic                             FAILED rc=1 (native 0.013s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_add_known_id_moves_front in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_add_newest_first in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_empty_at_start in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_flag_bits_are_apples in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/inbox/src/test_inbox.c:83: ring_inbox_test_full_drops_oldest: (dropped not equal to 1)
+d_00: @00:00:00.000093   FAIL - test_full_drops_oldest in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_mark_read_and_clear in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_modify_keeps_place_and_text in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_set_text_replaces in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_sizes_are_the_rule in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_text_exactly_at_limit_is_kept in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_text_limits_ascii in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_text_nul_ends_the_string in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_utf8_cut_cases in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_utf8_cut_long_message in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_utf8_cut_property in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_inbox failed.
+d_00: @00:00:00.000093  SUITE FAIL -  93.75% [ring_inbox]: pass = 15, fail = 1, skip = 0, total = 16 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_inbox.test_add_known_id_moves_front] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_inbox.test_add_newest_first] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_inbox.test_empty_at_start] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_inbox.test_flag_bits_are_apples] duration = 0.000 seconds
+d_00: @00:00:00.000093   - FAIL - [ring_inbox.test_full_drops_oldest] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_inbox.test_mark_read_and_clear] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_inbox.test_modify_keeps_place_and_text] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_inbox.test_remove] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_inbox.test_set_text_replaces] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_inbox.test_sizes_are_the_rule] duration = 0.000 seconds
+twister exit code on the broken copy, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261111-234115-os-iphone-logic-broken1-inbox-broken/twister-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_inbox.test_full_drops_oldest] duration = 0.000 seconds (failed cases listed: 1)
+RESULT PASS
+--- /ws/firmware/modules/ring_time/src/rtime_logic.c	2026-11-11 22:10:41.000000000 +0000
++++ /ws/out/20261111-234115-os-iphone-logic-broken1-time-broken/broken_ring_time/src/rtime_logic.c	2026-11-11 22:42:15.727032778 +0000
+@@ -14,7 +14,7 @@
+ 
+ void rtime_rec_set(struct rtime_rec *r, int64_t uptime_ms, int64_t utc_ms, int16_t tz_min)
+ {
+-	r->offset_ms = utc_ms - uptime_ms;
++	r->offset_ms = utc_ms;
+ 	r->tz_min = tz_min;
+ 	r->set = true;
+ 	r->updates++;
+INFO    - 1/1 native_sim/native         ring_time.logic                                    FAILED rc=1 (native 0.010s <host/gnu>)
+    Assertion failed at WEST_TOPDIR/firmware/tests/time/src/test_time.c:41: ring_time_test_a_second_source_value_replaces: rtime_rec_utc_ms(&r, 9000) not equal to 1794434746000LL + 3600000LL
+ FAIL - test_a_second_source_value_replaces in 0.000 seconds
+ PASS - test_civil_known_dates in 0.000 seconds
+ PASS - test_civil_rejects_what_does_not_exist in 0.000 seconds
+ PASS - test_not_set_at_start in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/time/src/test_time.c:29: ring_time_test_set_then_follows_uptime: rtime_rec_utc_ms(&r, 1000) not equal to 1794434746000LL
+ FAIL - test_set_then_follows_uptime in 0.000 seconds
+TESTSUITE ring_time failed.
+SUITE FAIL -  60.00% [ring_time]: pass = 3, fail = 2, skip = 0, total = 5 duration = 0.000 seconds
+ - FAIL - [ring_time.test_a_second_source_value_replaces] duration = 0.000 seconds
+ - PASS - [ring_time.test_civil_known_dates] duration = 0.000 seconds
+ - PASS - [ring_time.test_civil_rejects_what_does_not_exist] duration = 0.000 seconds
+ - PASS - [ring_time.test_not_set_at_start] duration = 0.000 seconds
+ - FAIL - [ring_time.test_set_then_follows_uptime] duration = 0.000 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 17.05 seconds.
+INFO    - 3 of 5 executed test cases passed (60.00%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_time.logic on native_sim/native failed (rc=1)
+twister exit code on the broken copy, native_sim: 1 (log /ws/out/20261111-234115-os-iphone-logic-broken1-time-broken/twister-native_sim.log)
+native_sim: the named case failed, as required:  - FAIL - [ring_time.test_set_then_follows_uptime] duration = 0.000 seconds (failed cases listed: 2)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_time.logic                              FAILED rc=1 (native 0.009s <host/gnu>)
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/time/src/test_time.c:41: ring_time_test_a_second_source_value_replaces: rtime_rec_utc_ms(&r, 9000) not equal to 1794434746000LL + 3600000LL
+d_00: @00:00:00.000093   FAIL - test_a_second_source_value_replaces in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_civil_known_dates in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_civil_rejects_what_does_not_exist in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_not_set_at_start in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/time/src/test_time.c:29: ring_time_test_set_then_follows_uptime: rtime_rec_utc_ms(&r, 1000) not equal to 1794434746000LL
+d_00: @00:00:00.000093   FAIL - test_set_then_follows_uptime in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_time failed.
+d_00: @00:00:00.000093  SUITE FAIL -  60.00% [ring_time]: pass = 3, fail = 2, skip = 0, total = 5 duration = 0.000 seconds
+d_00: @00:00:00.000093   - FAIL - [ring_time.test_a_second_source_value_replaces] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_time.test_civil_known_dates] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_time.test_civil_rejects_what_does_not_exist] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_time.test_not_set_at_start] duration = 0.000 seconds
+d_00: @00:00:00.000093   - FAIL - [ring_time.test_set_then_follows_uptime] duration = 0.000 seconds
+d_00: @00:00:00.000093  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 18.74 seconds.
+INFO    - 3 of 5 executed test cases passed (60.00%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_time.logic on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261111-234115-os-iphone-logic-broken1-time-broken/twister-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_time.test_set_then_follows_uptime] duration = 0.000 seconds (failed cases listed: 2)
+RESULT PASS
+--- /ws/firmware/modules/ring_iphone/src/ripl.c	2026-11-11 22:11:32.000000000 +0000
++++ /ws/out/20261111-234115-os-iphone-logic-broken1-iphone-broken/broken_ring_iphone/src/ripl.c	2026-11-11 22:42:53.470204396 +0000
+@@ -203,9 +203,9 @@
+ 			return -EINVAL;
+ 		}
+ 		if (st == 0) {
+-			m->state = RIPL_PLAYER_PAUSED;
+-		} else if (st == 1) {
+ 			m->state = RIPL_PLAYER_PLAYING;
++		} else if (st == 1) {
++			m->state = RIPL_PLAYER_PAUSED;
+ 		} else {
+ 			return -ENOTSUP;
+ 		}
+INFO    - 1/1 native_sim/native         ring_iphone.logic                                  FAILED rc=1 (native 0.016s <host/gnu>)
+ PASS - test_cts_to_ms in 0.000 seconds
+ PASS - test_ds_app_identifier_longer_than_48_is_kept_to_48 in 0.000 seconds
+ PASS - test_ds_empty_notification_ok in 0.000 seconds
+ PASS - test_ds_errors in 0.000 seconds
+ PASS - test_ds_every_fragment_size in 0.000 seconds
+ PASS - test_ds_ignores_bytes_after_the_end in 0.000 seconds
+ PASS - test_ds_longer_than_limit_is_skipped in 0.000 seconds
+ PASS - test_ds_whole in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/iphone/src/test_iphone.c:202: ring_iphone_test_media_playback_state: m.state not equal to RIPL_PLAYER_PLAYING
+ FAIL - test_media_playback_state in 0.000 seconds
+ PASS - test_media_starts_unknown in 0.000 seconds
+ PASS - test_media_text_cut_on_a_character in 0.000 seconds
+ PASS - test_media_track_text in 0.000 seconds
+ PASS - test_request_bytes in 0.000 seconds
+TESTSUITE ring_iphone failed.
+SUITE FAIL -  92.31% [ring_iphone]: pass = 12, fail = 1, skip = 0, total = 13 duration = 0.000 seconds
+ - PASS - [ring_iphone.test_cts_to_ms] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_app_identifier_longer_than_48_is_kept_to_48] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_empty_notification_ok] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_errors] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_every_fragment_size] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_ignores_bytes_after_the_end] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_longer_than_limit_is_skipped] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_whole] duration = 0.000 seconds
+ - FAIL - [ring_iphone.test_media_playback_state] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_media_starts_unknown] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_media_text_cut_on_a_character] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_media_track_text] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_request_bytes] duration = 0.000 seconds
+twister exit code on the broken copy, native_sim: 1 (log /ws/out/20261111-234115-os-iphone-logic-broken1-iphone-broken/twister-native_sim.log)
+native_sim: the named case failed, as required:  - FAIL - [ring_iphone.test_media_playback_state] duration = 0.000 seconds (failed cases listed: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_iphone.logic                            FAILED rc=1 (native 0.013s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_cts_to_ms in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_app_identifier_longer_than_48_is_kept_to_48 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_empty_notification_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_errors in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_every_fragment_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_ignores_bytes_after_the_end in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_longer_than_limit_is_skipped in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_whole in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/iphone/src/test_iphone.c:202: ring_iphone_test_media_playback_state: m.state not equal to RIPL_PLAYER_PLAYING
+d_00: @00:00:00.000093   FAIL - test_media_playback_state in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_starts_unknown in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_text_cut_on_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_track_text in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_request_bytes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_iphone failed.
+d_00: @00:00:00.000093  SUITE FAIL -  92.31% [ring_iphone]: pass = 12, fail = 1, skip = 0, total = 13 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_cts_to_ms] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_app_identifier_longer_than_48_is_kept_to_48] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_empty_notification_ok] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_errors] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_every_fragment_size] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_ignores_bytes_after_the_end] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_longer_than_limit_is_skipped] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_whole] duration = 0.000 seconds
+d_00: @00:00:00.000093   - FAIL - [ring_iphone.test_media_playback_state] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_media_starts_unknown] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_media_text_cut_on_a_character] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_media_track_text] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_request_bytes] duration = 0.000 seconds
+twister exit code on the broken copy, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261111-234115-os-iphone-logic-broken1-iphone-broken/twister-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_iphone.test_media_playback_state] duration = 0.000 seconds (failed cases listed: 1)
+RESULT PASS
+# finished (Mac clock): 2026-11-11 23:43:41 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step3/20261111-234115-os-iphone-logic-broken1.log

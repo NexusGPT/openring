@@ -1,0 +1,52 @@
+51a52,64
+> /* Step 6: FACTORY_TEST hands the gesture events of the core's recogniser to the join (rglue_ops.factory_gesture) */
+> static bool factory_gestures(void)
+> {
+> 	return ops.factory_gesture != NULL && rc_core_state(&core) == RC_ST_FACTORY_TEST;
+> }
+> 
+> static void hand_gestures(const struct rc_gev_list *gl)
+> {
+> 	for (uint8_t i = 0; i < gl->n; i++) {
+> 		ops.factory_gesture(&gl->e[i]);
+> 	}
+> }
+> 
+74a88,94
+> 		if (factory_gestures()) {
+> 			struct rc_gev_list gl;
+> 
+> 			gl.n = 0;
+> 			rc_gesture_tick(&core.g, now, &gl);   /* the deadlines of the hold (MW, long, short, double) */
+> 			hand_gestures(&gl);
+> 		}
+92a113,114
+> 	/* step 6, decision D1: the sign hook (NULL leaves none: the sign counts as drawn) */
+> 	rc_core_set_sign_hook(&core, ops.sign_start, NULL);
+106c128,136
+< 	rc_core_input(&core, sw, pressed, now, &a);
+---
+> 	if (factory_gestures()) {
+> 		struct rc_gev_list gl;
+> 
+> 		gl.n = 0;
+> 		rc_gesture_input(&core.g, sw, pressed, now, &gl);   /* the same recogniser the core uses */
+> 		hand_gestures(&gl);
+> 	} else {
+> 		rc_core_input(&core, sw, pressed, now, &a);
+> 	}
+164a195,208
+> void rglue_battery(enum rc_batt level)
+> {
+> 	struct rc_actions a;
+> 	rc_ms_t now = k_uptime_get();
+> 
+> 	k_mutex_lock(&lk, K_FOREVER);
+> 	rc_actions_clear(&a);
+> 	refresh_fact();
+> 	rc_core_battery(&core, level, now, &a);
+> 	dispatch(&a, now);
+> 	k_mutex_unlock(&lk);
+> 	k_sem_give(&wake);
+> }
+> 

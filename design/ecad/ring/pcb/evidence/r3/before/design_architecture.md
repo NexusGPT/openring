@@ -1,0 +1,941 @@
+# AI ring recorder: system architecture
+
+**Version 7 of the inside design (2026-11-11): section 17.31 holds the inside model v7 (round joystick, no recording light, the lit screen over the whole glass face). Where 17.31 or 17.30 disagrees with an earlier section, 17.31 wins, then 17.30.** Version A5-draft, 2026-11-10. **Section 17 is the current ring: a 3.2 mm block with the battery, the vibration motor and the controls in the band (owner, 2026-11-10). Where section 17 and an earlier section disagree, section 17 wins; then section 16; then the rest.** Sections 1 to 15 still describe the 30 x 20 x 9.5 mm ring of version A3 and are rewritten when the open items of 16.9 close. Version A3, 2026-11-10. A3 takes the owner's rule "The ring shouldn't CONSTANTLY record, only when a long press on it" (no listening mode), the firmware finding on the microphone clock, and the case design's facts. Section 15 lists every change from A2. Base: `requirements.md` (signed 2026-11-10) and the owner's later choices: joystick, 9.5 mm block.
+
+How to read this:
+- Every item has ONE fixed choice.
+- **[DS]** = read from the maker's datasheet or the maker's own files. The file is in `design/datasheets/` or cited in `design/parts/`.
+- **[LIST]** = from a distributor listing or search text only. A named action closes it (section 12).
+- **[CALC]** = calculated here; the arithmetic is shown.
+- **[BENCH]** = the choice is fixed, and one named test can change it (section 13).
+
+## 1. What the ring is made of
+
+One block, 30 x 20 x 9.5 mm, on a band. Inside the block:
+
+```
+            +-------------------- nRF54LM20A (Bluetooth, USB, 4 mic inputs) --------------------+
+ 4 x mic    |  PDM20: mic 1 + mic 2      PDM21: mic 3 + mic 4                                   |
+ IM73D122 ->|                                                                                    |
+            |  SPIM00 (fast port P2) ---------> storage: 8 GB SD NAND                            |
+            |  SPIM21 (port P1) --------------> screen: 0.95 inch AMOLED 120 x 240               |
+            |  I2C (port P1) <----------------> power chip nPM1300                               |
+            |  6 inputs <---------------------- joystick (5) + record button (1)                 |
+            |  2 outputs ---------------------> vibration motor, recording light                 |
+            |  USB D+ / D- <------------------> case contacts                                    |
+            |  antenna ----------------------> 2.4 GHz chip antenna                              |
+            +------------------------------------------------------------------------------------+
+ cell 4.4 V --> nPM1300 --> 1.8 V rail (chip, mics, logic)
+                        --> 3.0 V rail (storage, screen analog, motor, light)
+                        --> SGM38046 --> +4.6 V and -2.2 V (screen panel)
+ case contacts: VBUS, GND, D+, D-
+```
+
+## 2. Fixed parts
+
+This table is at A5: it lists the parts of the current ring (section 17). Rows changed since A3 say what A3 used.
+
+| Function | Part | Maker | Size (mm) | Key figures | Evidence |
+|---|---|---|---|---|---|
+| Main chip | nRF54LM20A, package CAAA (WLCSP-61) | Nordic | 3.02 x 2.43 x 0.43 | 2 MB memory, 512 KB RAM, 2 stereo PDM inputs, high-speed USB, 1.7 to 3.6 V, radio RX 3.3 mA, TX 5.0 mA | [DS] Nordic product page, Nordic CAAA reference schematic, Zephyr device file |
+| Microphone x2 | SPK0641HT4H-1 (top port; orderable code open, S23) | Knowles | 4.00 x 3.00 x 1.00 | 64.5 dB(A), top port, PDM, 1.6 to 3.6 V, 0.63 mA | [DS] copy of Knowles Rev A in `design/mech/mic-path/datasheets/`; section 17.19. Before 17.19: Infineon bottom-port part of 3.5 x 2.65 x 0.98 mm, which had no path to the room |
+| Storage | CSNP32GCR01-BOW, 32 Gbit = 4 GB SD NAND | CS Semiconductor | 8.0 x 6.2 x 0.75, LGA-8 | SPI mode, 2.7 to 3.6 V, standby under 0.2 mA | [DS] maker spec V1.0 (`design/parts/slim-2.md` section 2). Version A3 used an 8 GB part |
+| Screen | TOH095XVT-01, AMOLED 120 x 240 | Tailor Pixels | 12.8 x 27.35 x 0.8 | active area 10.8 x 21.6, 4-wire SPI, 15-pin cable, driver SH8501A | [DS]; start-up code from the vendor (action 12.1) |
+| Screen supply | SGM38046 (WLCSP-2x2-16B) | SGMICRO | 2.0 x 2.0 x 0.58 | +4.6 V and -2.2 V (76 pulses), quiescent 0.36 mA, shutdown 0.1 µA | [DS] |
+| Power chip | nPM1304, 35-ball CSP (package code CA) | Nordic | 3.1 x 2.4 | charger 4 to 100 mA in 0.5 mA steps, set to 15 mA; termination 3.6 to 4.65 V in 50 mV steps, 4.35 V used; the buck, load switch and ship mode figures below are those of the nPM1300 and are not confirmed for the nPM1304 (S18): 2 buck outputs 200 mA each, 1.0 to 3.3 V, load switches 100 mA, ship mode 370 nA | [SOURCED] section 17.13 (`design/parts/research-npm1304.md`); before 17.13: nPM1300 with a charger of 32 to 800 mA, which could not be set to 15 mA; pin table to read (action 12.2, S18). Nordic's reference configuration 1 sets the bucks to 1.8 V and 3.0 V with VSET1 47 kilo-ohm and VSET2 150 kilo-ohm |
+| Cell | custom curved cell with its protection circuit, 4.35 V type | Grepow (custom order) | 1.6 x 6.0 x 39.175 arc at US 9, in the band (33.936 at US 7 to 46.121 at US 13) | 20 to 27 mAh at US 9; 17.6 mAh smallest (US 7) | [CALC] section 17.26, measured per size in the inside model v6 (before it: 39.36 mm, section 17.15; 38 mm and 20 to 26 mAh, section 17.3); open item S12. Version A3 used a flat 135 mAh cell in the block |
+| Joystick | 5 x SKTAAAE010 (SW1 up, SW3 down, SW4 toward the hand, SW5 toward the fingertip in a cross at 2.4 mm; SW2 at the centre) under the round cap CAP1 (4.40 mm, Makrolon 2407 901510 black PC) in the round frame FRM1 (Ti-6Al-4V, 5.40 outer, 4.80 bore) in a round 5.6 mm opening; on the band's outer face on the joystick side at -78 degrees on US 9 to 13, -81.0 on US 8, -84.0 on US 7 | Alps Alpine | 2.6 x 1.6 x 0.53 each | 1.6 N, 0.11 mm travel, 300,000 presses, IP6X and IPX7 | [DS] spec; outline [LIST] (open item S9); sections 17.11, 17.25, 17.29, 17.31. Before 17.29: a rectangular cap 4.6 x 3.6 (removed in v7). Before 17.11: the joystick at +38 degrees (17.3). Version A3 used one 5-way part |
+| Record button | REPLACED by section 17.11 (no record button; the joystick's centre press is the one control). Do not use: ~~1 x SKTAAAE010 under its own cap, on the band at +62 degrees~~ | Alps Alpine | none | none | section 17.11 "Record button: removed." Before 17.11: section 17.3. Version A3 used a side-push part |
+| Vibration motor | W0525AB001D, brushless coin, two lead wires, in the band at -44 degrees on the joystick side | Jinlong Machinery | 5.0 dia x 2.5 | 3.0 V, below 80 mA rated, below 175 mA at start, starts below 2.5 V | [DS] maker spec, copy from a third-party host (`design/parts/slim-2.md` section 1.4); sections 17.15 and 17.16. Before 17.16: Vybronics VC0720B088L (7.0 x 2.1), which does not fit the inside model |
+| Motor regulator | TLV75530PDQNR | Texas Instruments | X2SON-4, 1.0 x 1.0 x 0.4 | 3.0 V, 500 mA, from the cell | [DS] `design/datasheets/motor_tlv755p.pdf`; section 17.22. It replaces the motor switch and the motor diode |
+| Antenna | 2450AT18D0100001E | Johanson | 3.2 x 1.6 x 1.2 | 2.4 to 2.5 GHz, efficiency 72 % | [DS] |
+| 32 MHz crystal | CX2016DB32000D0WZRC1 | Kyocera | 2.0 x 1.6 | 8 pF, 40 ppm | [DS] Nordic reference parts list |
+| 32.768 kHz crystal | 9HT11-32.768KDZC-T | TXC | 2.0 x 1.2 | 9 pF, 20 ppm | [DS] Nordic reference parts list |
+| Chip power coil | MLZ1608M4R7WT000, 4.7 µH | TDK | 0603 | 120 mA | [DS] Nordic reference parts list |
+| Antenna match | LQP03HQ3N6B02, LQP03HQ4N7H02, LQP03HQ3N3B02, GJM0335C1H1R2WB01D, GJM0335C1ER50WB01D | Murata | 0201 | 3.6 nH, 4.7 nH, 3.3 nH, 1.2 pF, 0.5 pF | [DS] Nordic CAAA reference parts list; retuned on the real board [BENCH] |
+| Screen supply coil | 1269AS-H-2R2M=P2, 2.2 µH | Murata | 2.5 x 2.0 x 1.0 | per SGM38046 datasheet | [DS] |
+| Screen connector | FH35C-15S-0.3SHW(50), 15 positions, 0.3 mm pitch | Hirose | 0.9 high | contacts top and bottom, for a 0.20 mm tail | [LIST]; the pitch is inferred from the 4.8 mm tail (open item S8) |
+| Microphone seal | membrane disc 2.0 mm of woven acoustic mesh, Saati Acoustex 010a (52 um thick, pores 78 um), bonded with a ring of tesa 61305 film (50 um; 2.0 mm outside, 1.0 mm bore), stack 0.102 mm in the 0.10 mm seat, in a seat on the block's underside (before: at most 0.10 thick, no part chosen, Gore to quote) | Saati (Acoustex 010a); tesa (61305) | 0.102 thick | keeps dust and splashes out, not an immersion seal, no water rating claimed for version 1; sound loss to measure (bench B7) | section 17.19, open item S23. Before 17.19: GAW112 cut of 0.24 mm over wall slots |
+
+Removed in v7 (17.30, 17.31): the recording light LED1 (Kingbright KPG-1005SURC-TT), its resistor R41 and its transistor Q2 (Diodes DMN2450UFB4), the light guide LG1, the light plug LP1 and the print window. No row of this table names them.
+
+## 3. Power
+
+Rails:
+
+| Rail | Source | Voltage | Loads |
+|---|---|---|---|
+| VBAT | cell | 3.3 to 4.4 V | nPM1300, SGM38046 |
+| VDD_1V8 | nPM1300 buck 1 | 1.8 V | nRF54LM20A, screen logic (IOVCC), joystick and button pull-ups |
+| VDD_MIC | nPM1300 load switch 1, fed from VDD_1V8 | 1.8 V | 4 microphones. Off when not recording |
+| VDD_3V0 | nPM1300 buck 2 | 3.0 V | screen analog (VCI); the motor is on its own regulator U11 from the cell since 17.22; the recording light of earlier versions is removed in v7 (17.30) |
+| VDD_SD | nPM1300 load switch 2, fed from VDD_3V0 | 3.0 V | storage. On only during a write or a transfer |
+| ELVDD / ELVSS | SGM38046 | +4.6 V / -2.2 V | screen panel. On only while the screen shows something |
+| VBUS | case contacts | 5 V | nPM1300 charger input, chip USB supply pin |
+
+Rules:
+- REPLACED by section 17.13 (4.35 V, 15 mA, the band cell). Do not use: ~~Charge voltage 4.40 V, charge current 68 mA (0.5 C of 135 mAh). [CALC]~~
+- Cut-off (decided 2026-11-13, design/wiring/lead-decisions.md item 69): the ring software closes everything and turns the ring off at an average cell voltage of 3.30 V (firmware threshold B2). The power chip's power-fail reset stays at its default, 2.7 V (nPM1304 specification page 109; settable 2.5 to 3.4 V); its battery brown-out is 2.4 V (page 29). The cell's own protection circuit cuts off at 2.5 V (design/mfg/specs/cell.md, section "Requirements on the cell"). No 3.1 V cut-off exists; that earlier sentence is removed.
+- Ship mode: the ring leaves the factory in the power chip's ship mode. The first case contact wakes it.
+- Why two rails: the 4 microphones draw a fixed current. At 1.8 V the cell supplies about half of what a 3.0 V rail costs. [CALC] 2.76 mA x 1.8 V / (3.8 V x 0.9) = 1.45 mA from the cell, against 2.42 mA at 3.0 V.
+
+## 4. Current budget by mode
+
+Two modes only: recording and standby. The ring never listens on its own (owner, 2026-11-10). Measured values replace these on the bench (section 13, test B2).
+
+| Consumer | Recording | Standby |
+|---|---|---|
+| Microphones | 4 at the 1.280 MHz clock: under 4 x 0.69 mA [DS, figure at 1.536 MHz] = 2.76 mA at 1.8 V | 0, rail off |
+| Main chip | 3.0 mA at 1.8 V, estimate, not from a datasheet | 0.005 mA, estimate |
+| Storage, averaged | 0.3 mA at 3.0 V, estimate (standby 0.17 mA [DS], on 20 % of the time, plus writes) | 0, rail off |
+| Recording light (removed in v7, 17.30) | 0 | 0 |
+| Screen | off: 0.001 mA [DS, same glass] | off |
+| Radio | advertising, 0.02 mA, estimate | 0.02 mA |
+| Power chips | 0.05 mA, estimate | 0.002 mA |
+| **From the cell** [CALC, 90 % converter efficiency, 3.8 V] | **about 4.9 mA** | **about 0.03 mA** |
+| Hours on 135 mAh | 27 | 4,500 |
+
+- The estimates are the weak inputs. Nordic's current tables were not readable from any public file.
+- Plaud's own products draw 10 to 17 mA while recording [CALC from Plaud's published figures]. At 13 mA the cell lasts 10.4 hours.
+- The design target stays the signed one: 10 hours of recording. The budget above shows it has margin if the estimates hold.
+- Screen on, full white, full brightness: 3.2 mA at 2.8 V + 1 mA at 1.8 V + 7 mA on the panel rails [DS, Truly TR095A120SPC, same glass size]. About 55 mW. A dark screen with a timer costs a fraction of this.
+
+## 5. Audio path
+
+- 4 microphones, bottom port, on the underside of the board, in one line along the thumb side of the block.
+- Positions along the block (X, from the centre): -12.0, -5.5, +1.0, +7.5 mm. Spacing 6.5 mm. Total length 19.5 mm.
+- Each has a 0.8 mm hole through the board [DS], a gasket channel 0.6 mm tall, and a 0.8 mm opening in the top of the housing with a Gore membrane (older text, replaced by 17.19: 2 microphones, top port, a 1.0 mm sound hole in the block's underside with a Saati Acoustex 010a mesh membrane on a tesa 61305 ring, lead-decisions.md item 73).
+- Change against the signed requirement A3 ("at the block corners"): the screen glass covers the top face up to the three other edges, so a corner layout has no path for sound. The line on the thumb-side strip is the only top-face position. The openings face the room when the hand lies on a table.
+- Pairs: mic 1 + mic 2 on input PDM20 (left / right select pin low / high). Mic 3 + mic 4 on PDM21.
+- Clock: 1.280 MHz, ratio 80, sample rate 16 kHz, 16 bits. The chip makes the clock as 32 MHz divided by a whole number from 4 to 126 (Nordic's register files, cited in `firmware.md`), so 1.536 MHz does not exist; 1.280 MHz = 32 MHz / 25 lies inside the microphone's normal mode, 1.2 to 1.65 MHz [DS].
+- Recording format: raw samples, 4 channels, 16 kHz, 16 bits. [CALC] 4 x 16,000 x 2 bytes = 128 kB per second = 461 MB per hour. 8 GB holds 17 hours of 4-channel audio.
+- No compression on the ring: the raw channels keep every option open for cleanup later, and the chip saves the work of an encoder.
+- There is no listening mode. The microphones have power only while a recording is stored.
+
+## 6. Mechanical layout
+
+Axes: X along the finger (30 mm), Y across (20 mm), Z up (9.5 mm). Origin: centre of the block's underside.
+
+Two zones across Y:
+- **Screen zone**, Y from -9.0 to +3.9: screen on top, board under it, cell under the board.
+- **Thumb-side strip**, Y from +4.3 to +9.0 (4.7 mm wide): tall parts and the microphone line.
+
+Stack in the screen zone, from the top [CALC]:
+
+| Layer | Thickness | Z from | Z to |
+|---|---|---|---|
+| Cover glass | 0.50 | 9.00 | 9.50 |
+| Clear adhesive | 0.10 | 8.90 | 9.00 |
+| Screen | 0.80 [DS] | 8.10 | 8.90 |
+| Gap with foam pad | 0.20 | 7.90 | 8.10 |
+| Circuit board | 0.60 | 7.30 | 7.90 |
+| Parts under the board, tallest 1.2 [DS] | 1.25 | 6.05 | 7.30 |
+| Gap | 0.15 | 5.90 | 6.05 |
+| Room for cell swelling, 8 to 9 % [DS Jauch] | 0.50 | 5.40 | 5.90 |
+| Cell | 4.60 | 0.80 | 5.40 |
+| Floor of the base | 0.80 | 0.00 | 0.80 |
+
+Cell [CALC]:
+- Space: 4.6 x 13.0 x 25.0 mm = 1,495 mm³.
+- At 0.086 mAh per mm³ (Grepow GRP3409021, 4.2 V type [DS catalogue]): 129 mAh.
+- At 0.106 mAh per mm³ (Grepow GRP4609021, 4.4 V type [DS catalogue]): 158 mAh.
+- Specified: 4.4 V type, 135 mAh minimum.
+- The cell is 25.0 mm long in a 28.0 mm inner length. The 3.0 mm left holds the screen cable fold at one end and the contact board at the other.
+
+Thumb-side strip, positions along X:
+
+| Part | X centre | Where | Notes |
+|---|---|---|---|
+| Microphone 1 | -12.0 | under the board | opening in the housing top |
+| Joystick | -6.0 | on its own small board, upright against the thumb wall | stem passes through a 5.0 mm round opening in the wall |
+| Microphone 2 | -5.5 | under the board, inboard of the joystick | |
+| Microphone 3 | +1.0 | under the board | |
+| Record button | +4.0 | under the board, at its outer edge | recessed 0.8 mm in the wall |
+| Recording light | +4.0 | on top of the board | under a clear window in the housing top |
+| Microphone 4 | +7.5 | under the board | |
+| Antenna | +12.0 | on top of the board | no copper and no metal within 4.2 x 4.7 mm, on every layer (history; today: ANT1 at X -10.80, Y 5.25 on the board's under face, copper-free zone X -13.60 to -8.75, Y 3.10 to 6.30 on all layers less the notch X -9.20 to -8.75, Y 3.10 to 3.30 at the storage chip's corner: `design/wiring/ring-board-plan.md` R2.0, lead's ruling) |
+| Motor | -7.2 | on the floor of the strip, lying along X | Z from 0.8 to 4.0, wires soldered to the board |
+
+Housing parts:
+- **Top shell:** walls 1.0 mm, holds the glass, the screen, the board. One part for all sizes.
+- **Base with band:** floor 0.8 mm plus the band. One part per ring size, 9 sizes, US 5 to 13.
+- Join: 4 screws M1.2 x 3 from below, at the corners, and a 0.5 mm silicone gasket in a groove.
+- Prototype material: nylon PA12, printed (multi-jet fusion), dyed black. Glass: 0.5 mm chemically strengthened cover glass, cut to 28.6 x 13.6 mm.
+- Production material is not fixed in version A1. It needs a tooling partner (see `partners.md`).
+
+Boards:
+- **Main board:** 27.0 x 17.4 mm, 0.6 mm thick, 6 copper layers with micro-vias (needed by the 0.325 mm ball pitch of the main chip). Parts on the underside everywhere, and on the top side only in the strip.
+- **Joystick board:** 9.0 x 8.0 mm, 0.6 mm thick, 2 layers. A 6-wire flat cable, 0.5 mm pitch, soldered at both ends, joins it to the main board.
+- **Contact board:** 10.0 x 2.6 mm, 0.6 mm thick, 2 layers, set in a window of the floor at X = -12.6. Four gold pads, 1.6 mm diameter, pitch 2.54 mm along Y, face down. Four wires join it to the main board.
+- Along X in the screen zone: contact board from -13.9 to -11.3, cell from -11.6 to +13.4 above the floor, screen cable fold from +13.4 to +14.0.
+- The 3D model (mechanics step) checks every position in this section for collisions. A collision found there changes this section, with a new version letter.
+
+## 7. Pin plan of the main chip (package CAAA, 61 balls)
+
+Ball names from Nordic's CAAA reference schematic [DS]. Clock-capable pins from the labels on Nordic's larger-package schematic [DS].
+
+| Signal | Pin | Ball | Notes |
+|---|---|---|---|
+| MIC_A_CLK | P1.13 | F1 | clock-capable pin |
+| MIC_A_DATA | P1.11 | F2 | mics 1 and 2 |
+| MIC_B_CLK | P1.24 | E6 | clock-capable pin |
+| MIC_B_DATA | P1.25 | D7 | mics 3 and 4 |
+| XL1 / XL2 | P1.20 / P1.21 | B6 / B7 | 32.768 kHz crystal |
+| SD_SCK | P2.01 | A9 | clock-capable, fast port |
+| SD_MOSI | P2.02 | B10 | |
+| SD_MISO | P2.04 | D10 | |
+| SD_CS | P2.05 | D9 | |
+| LCD_SCK | P1.03 | G9 | clock-capable pin |
+| LCD_MOSI | P1.04 | G8 | screen pin SDA |
+| LCD_CS | P1.05 | F7 | |
+| LCD_DCX | P1.06 | G7 | screen pin RS |
+| LCD_RST | P1.07 | H5 | |
+| LCD_TE | P1.22 | D6 | |
+| PMIC_SDA | P1.26 | B8 | |
+| PMIC_SCL | P1.27 | E7 | |
+| PMIC_INT | P1.28 | D8 | |
+| OLED_PWR_EN | P1.29 | E9 | SGM38046 pin AVDDEN |
+| BTN_REC | P0.04 | H2 | active low |
+| JOY_CENTER | P0.03 | H4 | active low |
+| JOY_UP | P0.06 | H1 | |
+| JOY_DOWN | P0.07 | G2 | |
+| JOY_LEFT | P0.08 | G1 | |
+| JOY_RIGHT | P1.31 | G10 | |
+| MOTOR | P3.01 | F6 | drives the DMN2450UFB4 gate |
+| (no pin) | n/a | n/a | the recording light has no chip pin: see section 9 |
+| DBG_TX / DBG_RX | P1.15 / P1.16 | B4 / B5 | test pad on DBG_TX only: the debug log is send-only, the DBG_RX pad TP2 is dropped and ball B5 stays unconnected |
+| USB D- / D+ | dedicated | H6 / H7 | to the contact board |
+| VBUS | dedicated | H9 | from the contact board |
+| SWDCLK / SWDIO / nRESET | dedicated | D5 / E4 / E2 | test pads for programming |
+| ANT | dedicated | C1 | through the match network to the antenna |
+| Spare | P1.00, P1.01, P1.02, P1.14, P1.19, P1.30, P2.00, P2.03, P3.03, P3.04, P3.05 | | to test pads (ring board round 2: the pads of P2.03 (TP13) and P3.05 (TP16) are dropped, their balls stay unconnected) |
+
+- The screen's SWIRE pin connects to the SGM38046 SWIRE pin. The screen's own driver sets the panel voltages.
+- Rule from Nordic's files: a serial interface keeps all its pins on one port, and a clock goes on a clock-capable pin. The plan follows both.
+- To confirm against Nordic's pin table when it is readable: that P1.11 and P1.25 accept PDM data (action 12.2).
+
+## 8. Case link
+
+- 4 contacts: VBUS, GND, D+, D-.
+- The case holds a USB host (ESP32-S3-MINI-1-N8, full-speed USB). It charges the ring and reads recordings over USB. Pad order on the ring, from -Y to +Y: VBUS, D-, D+, GND.
+- REPLACED by `design/firmware.md` line 718 (2-channel audio: 234.0 MB and 3.21 minutes per recorded hour). Do not use: Transfer time [CALC, from `case/case-architecture.md`]: full-speed USB moves at most 19 x 64 bytes per millisecond = 1.216 MB per second. One recorded hour of 4-channel audio (461 MB) takes 6.3 minutes. A 10-hour day takes 63 minutes.
+- Bluetooth stays for control and for small files.
+- The case design is its own step (`design/case/`).
+
+## 9. Controls and feedback
+
+> Replaced by 17.11 (2026-11-10): the record button is removed; a long press on the joystick's centre starts and stops a recording. The two sentences below about a record button and about the centre push never starting a recording no longer hold. The charging pads of 17.3 ("180 (bottom), outside") are replaced by 17.12 (inside face of the band).
+
+- Record button (owner, 2026-11-10: recording "only when a long press on it"): a long press of 1.0 second starts a recording. A long press of 1.0 second stops it. A short press during a recording marks a highlight. A short press outside a recording wakes the screen. A double press does nothing. A bump or a short press never starts and never stops a recording. The stop gesture, the highlight and the unused double press are the lead's reading, disclosed to the owner.
+- Joystick: up, down, left, right move on the screen. Centre push selects. It never starts or stops a recording.
+- Motor: 1 pulse of 80 ms on start, 2 pulses on stop, 3 pulses on low battery or full storage.
+- Removed in v7 (17.30): the recording light. Do not use: ~~Recording light: on whenever the microphones are powered, with no software path to switch it off. Wiring: VDD_3V0, a 680 ohm resistor (1.5 mA), the light, then transistor Q2 (DMN2450UFB4) to ground. The gate of Q2 is the microphone rail VDD_MIC. No chip pin touches the light, so it cannot blink a pattern: it is steady while recording.~~
+
+## 10. Changes against the signed requirements
+
+| Requirement | Was | Now | Why |
+|---|---|---|---|
+| S1 block | 30 x 20 x 8 mm | 30 x 20 x 9.5 mm | owner's choice, 2026-11-10: joystick and battery |
+| P1 battery | 130 mAh | 135 mAh minimum, 4.4 V type | 9.5 mm block |
+| A3 microphone layout | 4 corners | 4 in a line on the thumb-side strip, 6.5 mm apart | the screen glass covers the other edges |
+| T1 format | compressed, 32 kbit/s per channel | raw, 16 kHz, 16 bits, 4 channels | 8 GB holds 17 hours raw |
+| T3 case transfer | contact pins, Wi-Fi upload | same, over high-speed USB | the chosen chip has it |
+| U5 light | faces outward | on the top face, thumb side | visible to the room when the hand lies on a table |
+
+## 11. What a builder still needs from this folder
+
+- `design/bom.csv`: every part with order code. Next step.
+- Schematic and board files (KiCad). After the parts list.
+- 3D model of housing, band sizes and part positions. After the parts list.
+- `design/firmware.md` and `design/case/`.
+
+## 12. Items only a supplier can close
+
+| # | Item | Who | What to ask for |
+|---|---|---|---|
+| 12.1 | Screen start-up code, connector pitch, cable drawing | Tailor Pixels | SH8501A datasheet and start-up code for TOH095XVT-01, the cable drawing, the mating connector part number, 5 samples |
+| 12.2 | Main chip pin table, current tables, solder pad pattern; power chip datasheet | Nordic | datasheet PDFs of nRF54LM20A and nPM1300 (the web viewer blocks downloads); Nordic's reference layout files hold the pad pattern |
+| 12.3 | Storage in the 6.2 x 8 mm package | Zetta or its distributor | datasheet of ZDSD64GLGEAG-R with the pad drawing; confirm SPI mode on this package |
+| 12.4 | Motor maker and order code | the distributor that hosts datasheet 3A-03208B | maker name, order code, 10 samples |
+| 12.5 | Recording light | Kingbright | datasheet of KPG-1005SURC-TT |
+| 12.6 | Microphone membrane cut to size | Gore | GAW112 die-cut, 1.6 mm outer, 0.8 mm inner, adhesive ring (superseded 2026-11-13: Saati Acoustex 010a mesh disc on a ring of tesa 61305, cut by the builder with punches of 2.0 and 1.0 mm, item 73; no Gore part) |
+| 12.7 | Custom cell | Grepow | quote: 4.4 V cell, 4.6 x 13.0 x 25.0 mm max, 135 mAh minimum, with protection circuit, 20 samples, minimum order, lead time |
+
+## 13. Choices a bench test can change
+
+| # | Fixed choice | Test | Changes to |
+|---|---|---|---|
+| B1 | 4 microphones in a line, 6.5 mm apart | record the same meeting as a Plaud Note Pro at 1, 3 and 5 m, hand flat, moving, under the table | one position takes a directional microphone (Soundskrit SKR0400) |
+| B2 | current budget of section 4 | measure the average current in each mode on the development kit | day-mode rules, cell size |
+| B3 | colour AMOLED | measure the screen current with the real menu | black-and-white memory screen if the hours fall under target |
+| B4 | antenna match values from Nordic's reference | measure the antenna on the assembled ring with a network analyser | new coil and capacitor values |
+| B5 | block of 30 x 20 x 9.5 mm | wear printed dummy rings for one week | block size |
+
+## 14. Wiring decisions for the schematic (added in A2)
+
+Each line closes a point the parts list left open.
+
+| # | Point | Decision | Basis |
+|---|---|---|---|
+| W1 | Joystick and button pull-ups | none on the board: the chip's internal pull-ups, inputs active low to ground | saves 6 parts; the switches are rated from 10 µA [DS Panasonic] |
+| W2 | I2C pull-ups | 2 x 4.7 kilo-ohm to VDD_1V8 | standard value for 400 kHz on a short bus |
+| W3 | Storage in SPI mode | pin DAT3 = chip select, CMD = MOSI, DAT0 = MISO, CLK = SCK; 47 kilo-ohm pull-ups to VDD_SD on DAT0, DAT1, DAT2 and chip select; 4.7 µF and 100 nF at its supply pin | SD card SPI-mode convention; pin numbers from the package drawing (action 12.3) |
+| W4 | Microphones | per microphone: 1 µF and 100 nF from VDD to ground, 100 ohm in series on DATA; LR pin of microphones 1 and 3 to ground, of 2 and 4 to VDD_MIC | Infineon datasheet |
+| W5 | Recording light | Q2 = DMN2450UFB4, gate on VDD_MIC, R41 = 680 ohm from VDD_3V0 | section 9; (3.0 V - 2.0 V) / 680 ohm = 1.5 mA [CALC; 2.0 V typical from Kingbright's 2013 preliminary sheet] |
+| W6 | Motor | Q1 = DMN2450UFB4, gate from pin MOTOR through 100 ohm, 100 kilo-ohm from gate to ground, diode D1 across the motor, motor fed from VDD_3V0 | holds the motor off while the chip starts |
+| W7 | Case contacts | protection on VBUS, D+ and D-: one low-capacitance protection array for high-speed USB at the contact board, part to fix from a maker datasheet | people touch the contacts |
+| W8 | USB supply | ball H9 VBUS from the contacts through the protection; ball H8 (named DECUSB, net VDD_USB_3V3 in Nordic's reference) gets its reference capacitor to ground and nothing else | Nordic CAAA reference schematic text; to confirm in the datasheet (action 12.2) |
+| W9 | Screen | cable pins: ELVSS and ELVDD from the SGM38046, VCC from VDD_3V0, IOVCC from VDD_1V8, SWIRE to the SGM38046 SWIRE pin, TE, RESET, CS, SCL, RS, SDA to the chip pins of section 7, MTP left open | screen datasheet pin table |
+| W10 | Screen supply chip | SGM38046 pin AVDDEN from chip pin OLED_PWR_EN with 100 kilo-ohm to ground; its AVDD output is not used and stays unloaded | SGM38046 datasheet; unused-output handling to confirm on its page 4 |
+| W11 | Passive parts without a maker code | every resistor is a 1 % thick-film part and every capacitor an X5R or X7R part of the stated size; the parts list gets one maker code for each | the buyer needs one orderable code per line |
+| W12 | Debug and programming | test pads for SWDCLK, SWDIO, nRESET, VDD_1V8, ground, DBG_TX (send-only; the DBG_RX pad is dropped, ring board round 2) and the spare pins that keep a pad (TP13 and TP16 are dropped) | factory programming and test |
+| W13 | Cell temperature | REPLACED by section 17.3 (RT1 sits on the cell, on the cell's protection circuit, and its one line runs in the band ribbon, flex tail B FLEX2, to the power chip's NTC pin). Do not use: ~~RT1 = 10 kilo-ohm thermistor on the main board beside the cell, on the power chip's NTC pin~~ | the firmware design found no temperature sensor on the cell |
+| W14 | Power chip interrupt and wake | PMIC_INT comes from power chip pin GPIO0; its SHPHLD pin goes to a test pad; VBUS from the case wakes the ring from ship mode | schematic choice; the wake rule is to confirm in the power chip datasheet (action 12.2) |
+
+## 15. Changes from A2 to A3
+
+| What | A2 | A3 | Source |
+|---|---|---|---|
+| Listening mode | day mode listened for speech all day | removed: record only after a long press | owner, 2026-11-10 |
+| Record button | double press starts or stops, long press takes a voice note | long press starts, long press stops, no voice note | owner, 2026-11-10; details are the lead's reading |
+| Microphone clock | 1.536 MHz, ratio 96 | 1.280 MHz, ratio 80 | firmware design, Nordic register files |
+| Light resistor | 330 ohm | 680 ohm, 1.5 mA | light is on only while recording |
+| Case transfer | high-speed USB, 4 minutes per recorded hour | full-speed USB host in the case, 6.3 minutes per recorded hour | case design |
+| Contact pad order | not stated | VBUS, D-, D+, GND from -Y to +Y | case design |
+| Cell temperature | none | thermistor RT1, 10 kilo-ohm | firmware design |
+| Case cell | 500 mAh or more | 700 mAh (3 ring charges need at least 644 mAh) | case design |
+
+Still to merge into section 6: the positions the 3D model changed (cell, motor, microphone 1, screws, antenna under the board). They enter with the model's round 2.
+
+## 16. The slim ring (A4-draft)
+
+Owner, 2026-11-10, in order: "I hate all of them, they are not as slick as the ring I shared"; then "Slim, like the photo (Recommended)" and "Custom joystick"; then, when no colour screen on sale fitted a 22 x 15 mm block (`design/parts/slim.md` section 1), "L but ALMOST NO BEZEL".
+
+### 16.1 Block and screen
+
+- Block: 28.6 x 14.05 x 6.5 mm. X along the finger (+X = fingertip), Y across (+Y = thumb side), Z up. Plan corner radius 1.3 mm. Contract and check: `design/look/shared/envelope_slim.py`.
+- Screen: unchanged part, Tailor Pixels TOH095XVT-01, panel 12.8 x 27.35 x 0.8 mm, lit area 10.8 x 21.6 mm [DS, drawing page 5]. Its long side now lies along the finger. The panel fills the block: 0.15 mm clearance and a 0.45 mm metal wall on each side.
+- Cover glass: one flat piece over the whole top face, 28.6 x 14.05 x 0.5 mm, edge rounded 0.25 mm, black print outside the lit area.
+- Border from the lit area to the block edge [CALC]: 1.63 mm on each long side ((14.05 - 10.8) / 2), 2.03 mm at the fingertip end (1.4 + 0.15 + 0.45 + 0.025), 4.98 mm at the hand end (4.35 + 0.15 + 0.45 + 0.025). The 4.98 mm strip cannot shrink: the panel's driver sits there. The split 1.4 / 4.35 mm of the panel's own unlit ends is INFERRED from the drawing (lit area centred in the 24.4 mm encapsulation glass); open item S8.
+- The screen's tail folds under the panel at the hand end.
+
+### 16.2 Layer stack (Z, mm) [CALC]
+
+| Layer | Thickness | Running top |
+|---|---|---|
+| Floor (metal) | 0.60 | 0.60 |
+| Cell 2.60 plus swelling room 0.25 | 2.85 | 3.45 |
+| Gap | 0.10 | 3.55 |
+| Parts under the board (tallest 1.0: screen-supply coil; microphones 0.98) | 1.00 | 4.55 |
+| Board, 6 layers, parts on the under side only | 0.40 | 4.95 |
+| Foam pad | 0.15 | 5.10 |
+| Screen panel | 0.80 | 5.90 |
+| Clear adhesive | 0.10 | 6.00 |
+| Cover glass | 0.50 | 6.50 |
+
+Check that can fail: `design/mech/slim_budget.py` (to be re-pointed at these numbers by the layout step).
+
+### 16.3 Zones along the finger (inside length 27.65 mm, X from -13.83 to +13.83)
+
+| Zone | X range | Cell layer (Z 0.6 to 3.45) | Board layer (Z 3.55 to 4.95) |
+|---|---|---|---|
+| Hand end | -13.83 to -13.0 | screen tail fold | screen tail fold, screen connector on the board at X -12 |
+| Cell | -13.0 to +6.0 | cell 19.0 x 11.9 x 2.60 | main board, all chips; record switch on the +Y edge at X -5 |
+| Fingertip end | +6.2 to +13.83 | vibration part (-Y side), joystick switches on the +Y wall | board continues; microphone 2 at X +11 |
+
+- Main board: 27.2 x 12.6 mm, 0.4 mm thick, one side populated, with a notch 1.0 x 3.0 mm at the record switch and a notch 1.3 x 6.4 mm at the joystick.
+- Microphones at X = -11.0 and X = +11.0, bottom port up through the board is not possible under the screen: each microphone ports sideways through a 1.4 x 0.4 mm slot in the -Y wall by a moulded gasket channel. [BENCH B7: channel resonance and wind noise.]
+
+### 16.4 Parts that change against section 2
+
+| Function | A3 | A4 | Evidence |
+|---|---|---|---|
+| Microphones | 4 x IM73D122V01 (4 x 3 x 1.2) | 2 x Infineon IM68D128B (3.5 x 2.65 x 0.98), 22 mm apart on the X axis | [DS] size; IM68D121J brief gives 580 µA and 68 dB(A) for the same package (`slim.md` 5.1) |
+| Cell | custom 4.6 x 13.0 x 25.0, 135 mAh | custom 2.60 x 11.9 x 19.0 mm, 4.35 V or 4.4 V, 40 mAh minimum, charge at 0.7 C or more | [CALC] 588 cubic mm x 0.063 to 0.081 mAh per cubic mm = 37 to 48 mAh; nearest catalogue cell Grepow GRP2310021, 2.18 x 10 x 21, 30 mAh [LIST]. Open item S1 changes to this size. |
+| Joystick | Alps SKRHADE010 | 4 x Alps SKTAAAE010 under one cap (16.5) | [DS] 1.6 N, 0.11 mm, 300,000 presses, IP6X and IPX7; outline 2.6 x 1.6 x 0.53 [LIST], open item S9 |
+| Record button | Panasonic EVPAVAA1A | 1 x Alps SKTAAAE010 under its own cap | same |
+| Vibration part | KPD3A-03208 bar motor, 3.2 mm | Vybronics VC0625B001L coin motor, 6 mm diameter x 2.5 mm, rated 2.5 V, 100 mA maximum, starts at 2.0 V, wire leads | [DS] maker spec (`design/parts/slim-2.md` section 1). It sits in the cell layer at the fingertip end. Driven from VDD_3V0 through Q1 by a pulse train at 83 percent duty (2.5 V average); maker's total height with its adhesive pad is not stated: open item S10 |
+| Storage | ZDSD64GLGEAG-R, 8 GB, 8.0 x 6.2 | CS Semiconductor CSNP32GCR01-BOW, 4 GB SD NAND, 8.0 x 6.2 x 0.75 mm, 8 pads, SPI mode, 2.7 to 3.6 V, standby under 0.2 mA | [DS] maker spec V1.0 (`slim-2.md` section 2). 2 channels use 230 MB per hour [CALC], so 4 GB holds about 16 hours (3.7 GB usable). Same footprint as the A3 part, so wiring decision W3 stands |
+| Screen connector | FH35C footprint assumed | 15 positions at 0.3 mm pitch, Hirose FH35C-15S-0.3SHW(50) | [LIST] DigiKey listing: 15 positions, 0.30 mm pitch, 0.9 mm above the board, contacts top and bottom, for a 0.20 mm thick tail (the screen's tail is 0.2 mm with its stiffener [DS drawing p5]). The screen drawing shows 15 contacts on a 4.8 mm tail and gives no pitch; 0.3 mm is INFERRED (0.5 mm would need about 7 mm): open item S8 covers the pitch |
+| Board | 0.6 mm | 0.4 mm, 6 layers, 0201 small parts | [CALC] area in 16.7 |
+
+Unchanged: main chip nRF54LM20A CAAA, power chip nPM1300, screen supply SGM38046 with its coil, screen, antenna, protection parts, light, the hard-wired recording light circuit, all rails of section 3.
+
+### 16.5 Thumb control (custom joystick) and record button
+
+- Joystick cap: on the +Y wall, centre at X = +10.0, Z = 3.1. Visible cap 5.6 (X) x 3.6 (Z) mm with rounded ends, standing 0.5 mm proud. It tilts; it does not slide.
+- Behind it, on a flex strip glued to the inner wall face: four SKTAAAE010 switches. "Toward fingertip" at X +12.2, "toward hand" at X +7.8 (both at Z 3.1, long side vertical); "up" at Z 4.4, "down" at Z 1.8 (both at X +10.0, long side along X). Occupied window 6.0 x 4.2 mm, depth 1.3 mm from the inner wall face.
+- Centre press: no fifth switch fits the 4.2 mm of wall height. The firmware reads a centre press when both switches of an opposite pair close within 40 ms. [BENCH B6: if centre presses misread, the cap gets a centre post and a fifth switch on a taller wall, or the centre press moves to the record button.]
+- Record button: its own cap 4.0 x 1.5 mm on the +Y wall at X = -5.0, Z = 4.2, over one SKTAAAE010 on the same flex strip. Behaviour of section 9 is unchanged.
+- Seal: each cap is a silicone-backed insert bonded in its window; the switches are sealed parts themselves.
+- Flex strip: 6 signals and ground to the main board by a soldered tail at X +6.5.
+
+### 16.6 Pins that change against section 7
+
+- Microphones: one stereo input. MIC_A_CLK P1.13 (F1), MIC_A_DATA P1.11 (F2). MIC_B_CLK P1.24 (E6) and MIC_B_DATA P1.25 (D7) become spare test pads (E6 and its pad TP20 are gone since the board plan's round 2, lead-decisions.md row '2, 3, 6, 8, W2').
+- JOY_CENTER P0.03 (H4) becomes a spare test pad (ring board round 2: its pad TP22 is dropped, the ball stays unconnected). JOY_UP, JOY_DOWN, JOY_LEFT (toward hand), JOY_RIGHT (toward fingertip) and BTN_REC keep their balls.
+- Audio file: 2 channels, 16 kHz, 16 bit, raw: 64,000 bytes per second, 230.4 MB per hour [CALC].
+
+### 16.7 Board area [CALC, estimate until layout]
+
+Board 27.2 x 12.6 = 343 square mm, one side. Parts with a 0.2 mm keep-out: main chip 9.7, power chip 9.8, screen supply and coil 12.7, storage 34.6 (6 x 5 class) to 53.8 (8.0 x 6.2), 2 microphones 23.8, antenna with its clear zone 15.0, screen connector 20.2, 2 power coils 9.6, 2 crystals 6.4, about 60 small parts in 0201 size 36.0. Total 197 square mm = 57 percent with the 8.0 x 6.2 mm storage part. The vibration part and all five switches are off the board. Limit for a routable one-sided board: 60 percent.
+
+### 16.8 Current and hours [CALC]
+
+- Recording: microphones 2 x 0.58 mA at 1.8 V [DS brief]; every other line of section 4 unchanged. From the cell: about 4.0 mA (13.0 mW / 0.9 / 3.8 V, plus 0.2 mA).
+- On a 40 mAh cell: 10 hours at 4.0 mA; 3.1 hours at a Plaud's 13 mA. On 48 mAh: 12 hours and 3.7 hours.
+- The signed target of 10 hours of recording is met only when the chip's real current is near the estimate. It is the first bench test (B2).
+- Charge: 32 mA, the power chip's lowest setting [DS product page], which is 0.8 C on 40 mAh: the cell must allow it (16.4). Full charge in about 1.6 hours.
+- Standby 0.03 mA: about 55 days on 40 mAh.
+
+### 16.9 Open items added by A4
+
+| # | Item | Who closes it |
+|---|---|---|
+| S8 | The panel's unlit border at each end (1.4 and 4.35 mm inferred) and the tail's contact pitch | Tailor Pixels |
+| S9 | SKTAAAE010 outline and land pattern drawing | Alps Alpine or its distributor |
+| S7 (changed) | Custom cell 2.60 x 11.9 x 19.0 mm, 4.35 or 4.4 V, 40 mAh minimum, 0.8 C charge (replaced again in 17.9) | Grepow |
+| B6 | Centre press by two opposite switches (SUPERSEDED, lead-decisions.md item 100, 2026-11-13: the centre press is ONE switch, SW2, under the cap's centre, architecture 17.11; the build guide measures the force at the click, 1.1 to 2.1 N, and the travel, 0.06 to 0.16 mm, at the cap's centre; never press above 2.1 N) | bench, first housing print |
+| B7 | Side-ported microphones behind a wall slot | bench |
+| S10 | Total height of the VC0625B001L with its adhesive pad, and its lead length | Vybronics |
+| S11 | Chip revision: the development kit on sale carries the nRF54LM20B; this design names the nRF54LM20A. Which one is sold for new designs, and what differs (pins, package CAAA, current) | Nordic |
+
+### 16.10 What A4 costs against A3
+
+- Battery about 40 mAh in place of 135 mAh. Recording hours fall from 27 to about 10 at the estimated current, and from 10.4 to about 3 at a Plaud's current.
+- 2 microphones in place of 4: one direction of focus (along the finger) in place of two.
+- 4 GB minimum storage in place of 8 GB.
+- A custom thumb control with no supplier rating as an assembly.
+- Walls of 0.45 mm: the housing is machined metal (titanium or stainless steel), not printed plastic, from the first prototype.
+
+## 17. The thin ring with everything in the band (A5-draft)
+
+Owner, 2026-11-10, in order, on the 6.5 mm pilot of section 16: "MUCH THINER NEEDED"; "all battery not in housing but in ring"; "3.2 mm but now you need to work on curvature, edges, etc. and merge INTO ring"; "vibration on the ring,"; "You forgot the joystick on ring."
+
+Words: the BLOCK is the flat part with the screen. The BAND is the hoop around the finger. A SHOULDER is where the band flows into the block. Angles are measured around the finger from the top of the band; plus is the thumb side.
+
+### 17.1 Outside
+
+- Block: 29.3 x 14.75 x 3.2 mm, plan corner radius 2.5, top edge rolled 0.9, bottom edge rolled 1.2. One flat cover glass 0.4 mm thick; its rolled edge continues into the metal.
+- Band: 8.0 mm wide, 2.6 mm thick, inner diameter by ring size (18.95 mm at US 9). At each shoulder (19 to 61 degrees, easing back to 2.6 mm by 85 degrees) the band is 3.6 mm thick, and it grows into the block's side walls through a hollow curve of radius 4.0. Block and band are one metal body.
+- Lit area to the block edge [CALC]: 1.98 mm at each long side ((14.75 - 10.8) / 2), 2.38 mm at the fingertip end, 5.33 mm at the hand end. The rounder corners cost 0.35 mm of border on every side against section 16.
+- Openings: 2 microphone slots 1.2 x 0.3 mm in the block's wall away from the thumb, at X = -11 and +11 (older text, replaced by 17.19: 2 sound holes of 1.0 mm in the block's underside at X -11.77 and +11.77, Y -4.8, each with a 2.0 x 0.10 mm membrane seat; no microphone slot in any wall). Joystick and record button on the band, thumb side (older text, replaced by 17.11: one control, the joystick). 4 charging pads on the outside of the band at its lowest point.
+
+### 17.2 Block stack (Z, mm) [CALC]
+
+Floor 0.40, gap 0.05, parts under the board 1.00 (coil 1.0, microphones 0.98, storage 0.75), board 0.30, foam 0.10, screen 0.80, adhesive 0.10, glass 0.40: total 3.15, margin 0.05, block 3.20. The block holds no cell, no motor and no switch. Board 27.2 x 12.6 mm, one side populated, fill 57 percent (16.7 unchanged).
+
+### 17.3 What sits in the band
+
+| Item | Where (degrees from the top) | Size | Radial stack |
+|---|---|---|---|
+| REPLACED by 17.31, `design/bom.csv` lines 40 and 82 and `design/mfg/specs/joystick-nub.md` line 60 (joystick on the band's outer side face at -78.0 degrees on US 9 to 13, -81.0 on US 8, -84.0 on US 7; switches in a cross at 2.4 mm). Do not use: Joystick: 4 x SKTAAAE010 under one cap | +38 (thumb-side shoulder) | cap 4.6 mm diameter, switches in a cross at 2.1 mm from the centre, footprint 5.8 x 5.8 (at 1.9 mm the four switches overlap by 0.2 mm: found by the 3D model) | liner 0.3, flex 0.15, switch 0.53, the cap's own 0.4 mm flange (one moulded part with the cap, no separate plate), shell 0.5 with a 5.0 mm sealed opening: inside 3.6 |
+| Record button: 1 x SKTAAAE010 under its own cap | +62 (thumb side, below the joystick) | cap 5.0 x 3.0 mm | same stack, inside 2.6 |
+| Vibration motor Vybronics VC0720B088L | -49 (shoulder away from the thumb) | 7.0 mm diameter x 2.1 | liner 0.3, motor 2.1, gap 0.2, then the shell: a flat disc in a curved shoulder needs 3.6 mm of shoulder; at -49 degrees it keeps 0.40 mm of metal at every point of its rim and stays out of the block (`design/mech/thin/check_thin.py` tests both; no angle from 34 to 48 passes) |
+| Curved cell, custom | from +77 to -77 through the bottom (206 degrees of arc) | 1.6 thick x 6.0 wide x 38 long on its centre line (radius 10.58 at US 9) | liner 0.3, cell 1.6, gap 0.2, shell 0.5 = 2.6 |
+| Cell protection circuit | on the cell's tab, at -77 | 1.5 x 5 mm (shortened from 2.0 so the motor clears it) | in the cell's envelope |
+| Charging pads VBUS, D-, D+, GND | 180 (bottom), outside | 1.0 mm diameter, at X = -2.4, -0.8, +0.8, +2.4 | through the shell REPLACED by sections 17.12, 17.15 and 17.28 (pads inside the band, in the liner, 1.6 mm, at X = -1.0). Do not use. |
+
+- Cell capacity [CALC]: 1.6 x 6.0 x 38 = 365 cubic mm x 0.054 to 0.072 mAh per cubic mm = 20 to 26 mAh. Smaller ring sizes get a shorter cell: the arc length scales with the diameter.
+- Band cross-section: metal shell 0.5 mm outside and 0.5 mm at each edge, a channel 7.0 mm wide inside (inside model v8; before: 0.6 mm and 6.8 mm), closed toward the finger by a 0.3 mm liner cast in resin over the parts, as smart rings are built. [BENCH B8: resin fill, heat during charge, repair is not possible after casting.]
+- Wiring: two flex tails leave the main board through slots in the block's floor, one into each shoulder. Thumb side: 5 switch lines and ground. Other side: motor 2, cell 2 plus its temperature sensor 1, charging pads 4.
+- Joystick and board: the 3.6 mm shoulder lifts the joystick cap's rim 0.18 mm into the board's layer, so the board has a notch of 2.8 x 0.6 mm on its thumb-side edge (found by the 3D model) (superseded: the board has no notch since the joystick moved to the bottom of the band, and none in model v9).
+- Antenna: it is 1.2 mm tall and only 1.0 mm is free under the board, so it sits in a notch of the board, 1.8 x 3.6 mm, at the hand-end corner (found by the 3D model) (superseded, model v9: on the board's under face at X -10.80, Y 5.25 (no notch), its 1.20 body 0.20 into the resin corner's floor pocket).
+- Screen corners: the screen panel is square, and the block's corner radius of 2.5 mm leaves 0.27 mm of metal at each of its four corners [CALC by the 3D model]. Open item S13 asks the maker of the body whether that is machinable; the fallback is a corner radius of 2.2 mm.
+- Centre press of the joystick: two opposite switches closing within 40 ms (16.5, bench item B6) (SUPERSEDED: ONE switch, SW2, under the cap's centre, item 100, line 398).
+- Switch names, the same in the wiring diagram, the parts list and the 3D model: SW1 = up (JOY_UP), SW3 = down (JOY_DOWN), SW4 = toward the hand (JOY_LEFT), SW5 = toward the fingertip (JOY_RIGHT), SW2 = record button (BTN_REC).
+
+### 17.4 What changes against section 16
+
+| Topic | Section 16 | Section 17 |
+|---|---|---|
+| Block | 28.6 x 14.05 x 6.5 | 29.3 x 14.75 x 3.2 |
+| Cell | flat 2.60 x 11.9 x 19.0 in the block, 37 to 48 mAh | curved 1.6 x 6.0 x 38 in the band, 20 to 26 mAh |
+| Vibration motor | VC0625B001L in the block | VC0720B088L in a shoulder (3.0 V rated, 85 mA maximum, flat cable tail [DS]); driven from VDD_3V0 through Q1 at full duty |
+| Thumb control | on the block's wall | on the band: 4-direction joystick at +38, record button at +62 |
+| Pins | JOY_CENTER spare | unchanged from 16.6: JOY_UP, JOY_DOWN, JOY_LEFT, JOY_RIGHT, BTN_REC; JOY_CENTER stays spare |
+| Cover glass | 0.5 | 0.4 |
+| Board | 0.4 mm | 0.3 mm, 6 layers (superseded: 4 copper layers, every via a laser microvia, 0.30 mm finished, lead-decisions.md row '7, 11 (part), W2') |
+| Case | seat for a flat block with pads under it | to redesign: the ring charges through the pads at the bottom of the band |
+
+Unchanged from 16: screen, main chip, power chip, screen supply, 2 microphones IM68D128B, storage CSNP32GCR01-BOW, screen connector, pin plan, audio format, recording light.
+
+### 17.5 Current and hours [CALC]
+
+Recording about 4.0 mA (16.8). On 20 to 26 mAh: 4.9 to 6.6 hours at 4.0 mA; 1.5 to 2.0 hours at a Plaud's 13 mA. The signed target of 10 hours is NOT met by this ring; the owner chose thinness over hours on 2026-11-10 with these figures on the card. Charge current 32 mA is the power chip's minimum and is above 1 C for this cell: the charger setting is open item S12.
+
+### 17.6 Open items added by A5
+
+| # | Item | Who closes it |
+|---|---|---|
+| S12 | Curved cell 1.6 x 6.0 x 38 mm arc at US 9 (and per ring size), 4.35 V, with its protection circuit and the highest charge current it accepts; the nPM1300 cannot charge below 32 mA | Grepow (curved cells), then Nordic or a second charger part |
+| S13 | One-piece metal body with a resin-closed band: who machines and casts it | a ring maker or the design partner |
+| B8 | Resin-closed band: heat while charging, sealing at the two floor slots | bench, first housing |
+| B9 | Joystick on a curved shoulder: feel, sealing of the 5.0 mm opening, wear | bench, first housing |
+
+### 17.7 Look revision under the owner's review (2026-11-10)
+
+Owner, on the sculpted ring with the joystick at the shoulder: "Joystick not well placed and screen part should be more incurved", with four pictures of the reference ring. These numbers replace 17.1 and 17.3 where they differ, once the owner approves the look; the 3D models are built with them now.
+
+- Glass: one formed cover glass that is flat over the lit width and rolls over each long edge with a radius of 2.0 mm (1.2 mm at the two ends). It is 0.70 mm thick at its centre and keeps 0.42 mm over the screen's edge [CALC]. Height of the block: 3.45 mm at the centre line; the side walls are 1.45 mm tall.
+- Joystick: one rounded rectangular nub, 4.6 x 3.6 mm, in a raised frame of 6.4 (along the band) x 5.4 mm, on the thumb side of the band at +95 degrees. Under it the same four switches (SW1, SW3, SW4, SW5) in a cross at 2.1 mm. The band is 3.6 mm thick from +80 to +110 degrees.
+- Record button: pill cap 4.4 x 2.4 mm at +62 degrees, over SW2.
+- Vibration motor: unchanged, at -49 degrees. Shoulders 3.6 mm thick from 19 to 61 degrees on both sides.
+- Curved cell: it now starts after the joystick. From +113 degrees through the bottom to -75 degrees: 188 degrees, 34.7 mm on its centre line. Capacity [CALC]: 1.6 x 6.0 x 34.7 = 333 cubic mm, 18 to 24 mAh. Recording at 4.0 mA: 4.5 to 6.0 hours.
+
+### 17.8 Second look revision, taken by default while the owner is away (2026-11-10, about 18:45)
+
+Owner, on the curved-glass ring with the joystick on the side of the band: "expecting full app done and properly redesigned ring (e.g., joystick placed on bottom and not top of screen quarter of the way down and properly incruved, properly designed inside animation/transition screen, etc.)", after "autonomous mode on" and "Pick default and work without asking questions". These numbers replace 17.7 where they differ.
+
+- Glass: the whole face is curved across the finger, as one arc of radius 30.7 mm that rises 0.90 mm from the long edges to the centre line, then a roll of 1.0 mm into the side walls; 1.2 mm roll at the two ends. The cover glass is 1.10 mm thick at its centre and 0.42 mm over the screen's edge [CALC]. Height of the block: 3.85 mm at the centre line, 2.95 mm at its long edges. The screen under it stays flat.
+- REPLACED by line 47 and `design/bom.csv` line 82 (joystick at -78.0 degrees on US 9 to 13, -81.0 on US 8, -84.0 on US 7; round cap, 17.31). Do not use: Joystick: the same nub and frame (4.6 x 3.6 in 6.4 x 5.4 mm), now at the bottom of the band, turned toward the thumb: +150 degrees. Band 3.6 mm thick from +135 to +165 degrees.
+- REPLACED by line 546 (the record button is removed; a long press of the joystick's centre records). Do not use: Record button: pill 4.4 x 2.4 mm at +88 degrees, on the side of the band, over SW2.
+- Vibration motor: moved to the thumb-side shoulder, +49 degrees, so the other side is free for the cell. Same 0.40 mm metal rule; shoulders 3.6 mm from 19 to 61 degrees on both sides.
+- Curved cell: from -30 degrees through the bottom to +133 degrees: 197 degrees, 36.4 mm on its centre line. Capacity [CALC]: 1.6 x 6.0 x 36.4 = 349 cubic mm, 19 to 25 mAh; recording at 4.0 mA: 4.7 to 6.3 hours. Protection circuit at its end near -28 degrees.
+- REPLACED by line 557 and `design/bom.csv` line 62 (four pads on the inside face of the band, opposite the block, 180 degrees). Do not use: Charging pads: outside the band at -150 degrees.
+- REPLACED by `design/wiring/lead-decisions.md` row 29 and `design/ecad/ring/sch-notes.md` line 42 (the motor is on the joystick-side tail J_BAND_A, lands 6 and 7; no record switch exists). Do not use: Flex tails: thumb side carries the motor, the record switch and the four joystick switches; the other side carries the cell, its temperature sensor and the four pads.
+
+### 17.9 Open items added by the second look revision
+
+These rows replace the rows of the same number in sections 12, 13, 16.9 and 17.6 (2026-11-10). The 16.9 row that was numbered "S1 (changed)" was the cell, which is item 12.7: it is now numbered S7, and item 12.1 (screen start-up code, Tailor Pixels) stands as written.
+
+| # | Item | Who closes it |
+|---|---|---|
+| S3 (changed) | Storage CSNP32GCR01-BOW (4 GB, 8.0 x 6.2 x 0.75 mm, section 16.4): price and lead time at quantity, pad drawing confirmed on a sample | CS Semiconductor or its distributor |
+| S4 (changed) | Vibration motor Jinlong W0525AB001D (5.0 x 2.5 mm, section 17.16): 10 samples, its price, and its datasheet from the maker itself (the copy on file comes from a third-party host) | Jinlong Machinery or its distributor |
+| S7 (changed) | No flat cell is ordered: the cell is the curved cell of item S12 | closed by item S12 |
+| S10 (changed) | Lead wire length of the W0525AB001D as delivered, and whether it is sold with a shorter lead or solder pads | Jinlong Machinery |
+| S12 (changed) | (The 28.4 mm and 15 to 20 mAh of this row are REPLACED: the cell is 1.6 x 6.0 x 39.175 mm at US 9, 20 to 27 mAh, line 46 and `design/bom.csv` line 48.) Curved cell 1.6 x 6.0 mm, 28.4 mm long on its centre line at US 9 (and per ring size), 4.35 V, about 15 to 20 mAh (17.10), with its protection circuit and the highest charge current it accepts; the nPM1300 cannot charge below 32 mA Added 2026-11-11: the cell is 39.36 mm and 20 to 27 mAh at US 9 (17.15, before 17.26), 18.2 mAh at US 7 (17.17, before 17.26); the maker must also state the discharge current the cell and its protection circuit allow: up to 228 mA for the instant of a motor start with every other load on (17.22). Since 17.26: 39.175 mm and 20.3 to 27.1 mAh at US 9, 17.6 mAh at US 7 (33.936 mm); per size in 17.26 | Grepow (curved cells), then Nordic or a second charger part |
+| B1 (changed) | 2 microphones behind wall slots (section 16.6): record the same meeting as a Plaud at 1 m and 3 m, at three noise levels (design/bench/bench-plan.md section 5) | bench build 1 |
+| B5 (changed) | Block 29.3 x 14.75 x 3.85 mm on a band 8.0 mm wide: wear printed dummy rings for one week | bench, printed dummies |
+| B9 (changed) | Joystick at the bottom of the band (+150 degrees): feel when the hand grips an object, sealing of the 6.4 x 5.4 mm frame, wear | bench, first housing |
+| S14 | Route and review the circuit board: 100 parts are placed and no track is drawn (225 connections, courtyards fill 72 percent of the board); set the rules for USB and the screen bus; check whether the 2.8 x 0.6 mm edge notch is still needed with the joystick at the bottom of the band (design/ecad/ring/pcb/board-notes.md) (answered: no notch) | a board layout engineer or the design partner |
+| S15 | Antenna mount: (before model v9: in the 3D model the antenna stood in the board's corner notch, so its 4 pads were off the board and could not be soldered as drawn; since model v9 the antenna sits on the board's under face at X -10.80, Y 5.25 on its maker's land pattern, no notch, lead-decisions.md row '2, 3, 6, 8, W2'); the mount and the no-copper area need a decision before routing (design/ecad/ring/pcb/board-notes.md, item 3) | the antenna maker's reference layout, then the layout engineer |
+| S16 | Flex ribbons in the band: the motor (7.0 mm across) fills the 6.8 mm channel at +51 degrees, so the thumb-side ribbon cannot pass it to reach the record switch and the joystick; on the other side the cell lies on the liner, so the ribbon cannot pass to the cell tabs and the pads. Neither run is drawn. Choices: a deeper or wider channel, a thinner motor, or ribbons in the liner (17.10; design/mech/thin/thin-notes.md V4, V5) | the mechanical designer, before any housing is made |
+| S17 | Openings in the band for the joystick and the record button: the parts pass the body with no collision, but the exterior's recess for the joystick is wider than its frame along the band, so no metal closes the opening there (1.07 to 1.2 mm each side across the band); the record pill has 0.29 mm of metal at its thinnest side, under the 0.40 mm rule (design/mech/thin/thin-notes.md V7). The exterior's recess and the pill's seat must be redrawn to the parts | the mechanical designer, with the next exterior revision |
+| S18 | nPM1304: the ball map of the 35-ball CSP against the nPM1300's, the list of termination voltages (is 4.35 V a setting), the termination current options, the orderable part number and its evaluation kit (17.13) | Nordic (product specification of the nPM1304, charger chapter and ball assignment) |
+| S19 | Liner made as a laminate with the two ribbons inside it and windows where parts touch them (17.15): can it be made, and how is it repaired | a flex and moulding maker; bench item B8 |
+| S20 | Exterior to follow the inside model v4: the joystick opening (since 17.29: round, 5.60 mm; before: 5.6 x 6.6 mm) at 78 degrees on the joystick side, the microphone slots (the light window of this row is closed by 17.30: the recording light is removed), which today sit on the joystick side where the thumb works (thin-notes.md K2, K3, K8) | the mechanical designer, with the next exterior revision |
+| S21 (changed) | Motor change to the Jinlong W0525AB001D: the driver is checked in 17.16; still open: the 3.0 V rail's margin at a motor start with the screen on (bench B5) and the cell's discharge limit (S12). The recording light's reverse-mount part and its light guide LP1: closed by 17.30 (recording light removed; do not use: ~~are not chosen (thin-notes.md K2)~~) | bench B5; the cell maker; the parts list |
+| S22 (changed) | Motor start against the nPM1304's battery current limit: answered in design by 17.22 (the motor on its own regulator U11 from the cell). Still open: the bench test of the study's section 2.9 on the nPM1304 kit, and the board room for U11, C83, C84 | bench; the board designer |
+| S23 | Microphone path of 17.19: orderable code and stock of the Knowles SPK0641HT4H-1, the gasket's three thicknesses (Nitto SCF AN010, SCF400T, SCF400 are the start parts, item 74), the membrane (chosen: Saati Acoustex 010a on a ring of tesa 61305, item 73; its sound loss is bench B7), and the 0.20 mm metal ring under each membrane seat (stays, measured on the first body, item 77) | Knowles or a distributor; the body maker |
+| S24 | Metal on the screen panel's ledge over the antenna, X -13.675 to -10.6, Y 2.05 to 6.4 (17.20); and the owner's decision on the resin radio corner (the lead's default is RC1, lead-decisions.md row 'radio corner'); S24 stays open: the antenna simulation gets a case with that metal, and the cable study looks at turning the screen (item 53) | the screen maker; the owner |
+| S25 | CLOSED by 17.30 (the recording light, LED1, the light guide LG1 and the board hole are removed in v7; no supplier is asked). Do not use: ~~Recording light path of 17.21: clear ledge spot and bond tolerance; whether the KPG-1005SURC-TT is still sold; the custom light guide LG1; the copper rule round the 0.5 mm board hole~~ | none |
+| S26 | Assembly conflicts of 17.23: the glass-to-body seal and its seat (seal chosen: tesa 61305, item 110); the sealant of the floor slots (chosen: 3M Scotch-Weld DP420 Black, item 45); the dam of the joystick pocket (material not chosen); how the liner is built with the ribbons inside; room for the ribbon's slack; a ship command for the nPM1304 that keeps sample rings testable. Added 2026-11-11 (assembly order at model v6): K-A12, the dam round the joystick switches is drawn standing on the liner but must exist before the liner is cast; proposal: cast the liner in two shots. Closed since 17.23: K-A4 (seal ring SEAL1 and its seat), K-A7 (ship command, behaviour rules F6), K-A10 (floor slots at X -2.2). Added by 17.27: the seal of the motor pocket's window into the block's cavity on US 7, 8 and 9 | the mechanical designer; the layout engineer; the firmware designer; bench B8 and B9 |
+| S27 | The screen's cable is 12.4 mm wide at the fold; the body has a 5.4 mm pocket for it beside the antenna (17.24, K16). Can the cable be narrowed to 5.0 mm from the bond on | the screen maker (Tailor Pixels) |
+| S28 | Software entrances of the closed ring (owner, 2026-11-11: "ideally on the chip we need some kind of entrance to configure"): the four pads carry USB for configuration, tests and updates with rollback (`design/firmware.md` 9.2, 9.3). Missing: a rescue mode in the start program for a ring whose software no longer starts USB (hold the joystick while power arrives; the start program accepts an image over USB); its size against the 64 KB start program area must be checked. Also to settle: a rule that refuses an older software version, because the swap mode has no downgrade check of its own (`design/software/factory-package.md` section 4) | the firmware designer |
+| S29 | Body finish and material (17.29): which gloss black coating on titanium (chosen: Oerlikon Balzers BALINIT DLC, black, 1 to 3 um, applied under 250 degrees C, item 105; whether it takes on a titanium alloy, its gloss and adhesion are checked on the first coated body), and its wear on a ring; and whether a black ceramic body is makeable with these walls, which would let radio through | body maker, coating maker |
+| S30 | Thin-border screen for a later version (17.30): a folded-drive (flexible) version of the 0.95 inch 120 x 240 panel, or a custom panel, lit area as close as possible to 27.9 x 13.4 mm inside a glass face of 29.2958 x 14.429 mm (the maker file's glass outline), border target 1 mm, 0.8 mm thick or less, same 4-wire SPI; engineering fee, minimum order, lead time | screen makers; research in design/parts/thin-bezel-parts.md and thin-bezel-products.md |
+
+### 17.10 Corrections from the 3D inside model at the 17.8 positions (2026-11-10, 21:30)
+
+The inside model was rebuilt on the curved-face exterior with the joystick at +150 degrees (design/mech/thin/, fit check `RESULT PASS pairs=665 parts=37`). It shows that three statements of 17.8 cannot be built as written. These numbers replace 17.8 where they differ.
+
+- Cell: 17.8 gave "-30 degrees through the bottom to +133", 36.4 mm, 19 to 25 mAh. That path crosses the joystick, whose four switches take +133 to +167 degrees. The error was in 17.8. The cell runs from -39 degrees through the bottom to +167: 154 degrees, 28.4 mm on its centre line, 1.6 x 6.0 x 28.4 = 273 cubic mm, about 15 to 20 mAh [CALC, same energy per volume as 17.8]. Recording at 4.0 mA: 3.8 to 5.0 hours. The joystick at the bottom of the band costs about 8 mm of cell.
+- REPLACED by `design/mfg/specs/cell.md` line 36 and `design/bom.csv` line 49 (protection circuit start at 43.8 degrees on US 7, 41.5 on US 8, 39.5 on US 9 to 13; 1.5 mm along the arc, 5 mm across). Do not use: Protection circuit: from -35 to -27 degrees, after the cell's end.
+- REPLACED by line 49 and `design/bom.csv` line 45 (motor on the joystick side at -47.0, -45.5, -44.0, -45.0, -43.5, -42.5, -42.5 degrees on US 7 to 13). Do not use: Vibration motor: at +51 degrees (not +49): the only angle from 44 to 54 with no part of the motor in the block and 0.400 mm of metal at its rim, exactly the limit.
+- Flex ribbons: not routable as drawn (open item S16).
+- Not rechecked: the joystick frame's opening against the curved body.
+
+### 17.11 One control: the joystick on the side of the band (owner, 2026-11-10, 22:06)
+
+Owner, on the ring with the joystick at the bottom of the band (21:57): "wrongly placed", and "should be placed here" with a red rectangle on the band's outer side face. Owner, on the proof renders (22:06): "I think we may not need a button on top of joystick and just have long press on joystick as recording button. So D1 but just joystick, no button". These lines replace 17.8 and 17.10 where they differ; the numbers that depend on them (cell arc, motor, cables, pads) are NOT restated here: they are measured again in the rebuild and written as 17.12.
+
+- Sides: "the joystick side" is the side of the band seen when the screen's text reads upright. In the model files it is the -Y side. Earlier sections called +Y "the thumb side": that naming was mirrored against the screen and is retired; the thumb works the joystick, so the joystick side is the thumb's side.
+- Joystick: the same nub and frame (4.6 mm along the finger x 3.6 mm around the band, in a 6.4 x 5.4 mm frame), on the band's outer face at 78 degrees from the top of the band, on the joystick side (exterior proof `design/look/s1/out/ring-merged32d1`, matched to the owner's mark).
+- Record button: removed. No record pill, no cap CAP2, no opening for it.
+- Recording: a long press of 1.0 s on the joystick's centre starts a recording and a long press of 1.0 s stops it; a short press while recording marks a highlight. The rule "only when a long press" is unchanged.
+- Centre press: first choice, a real switch under the nub's centre (the freed switch SW2 on BTN_REC), because the centre press now carries the main action; second choice if it does not fit between the four direction switches, the two-opposite-switches reading of 16.5 with bench item B6.
+- Bottom of the band: plain.
+- Charging pads: they move to the inside face of the band with the new case (owner, 21:59: "needs to be like this with charging pin on inside probably"); their exact place follows the case concept the owner picks.
+
+### 17.12 Charging pads on the inside of the band; the pebble case (owner, 2026-11-10, about 22:40)
+
+Owner, on the case shown in the app (21:59): "charging case is shit", and with a reference picture "needs to be like this with charging pin on inside probably". Owner, on three rendered concepts (about 22:40): "A: flat on a post (Recommended)". These lines replace 17.3, 17.8 and section 8 where they differ.
+
+- Case: concept A of `design/case/concepts/`: a rounded pebble, 46.0 x 46.0 x 37.7 mm as a concept, the ring lying flat around a centre post with its block in a pocket beside the post, a lid that swivels aside. The full case design replaces case version C3.
+- Charging pads: four pads on the INSIDE face of the band, at the point opposite the block (180 degrees), in a row around the band. They sit in the resin liner, not in the metal body, so the body has no pad holes and the pads cannot short through the metal (this answers review finding F03). Order VBUS, D-, D+, GND. Pitch and pad size are fixed by the pin the case uses and by the cable under them: measured in the rebuild.
+- The band's outside is plain except for the joystick (17.11).
+- Skin contact: the pads touch the finger. Gold-plated, flush with the liner. Whether the pads need to be switched off while worn (no voltage on VBUS without the case) is a rule for the wiring diagram: VBUS is an input only, D- and D+ are held by the chip; to state in the wiring notes.
+- Open for the rebuild, each to be answered with a number: the cell's arc with the joystick at 78 degrees on its side and the pads' cable at the bottom; the motor's place; the cables' route (open item S16); the recording light's place (review finding F01); the centre switch under the nub (17.11).
+
+### 17.13 Power chip: nPM1304 in place of nPM1300 (2026-11-10, 23:00; review finding F05)
+
+The nPM1300 cannot set a charge current under 32 mA [SOURCED: Nordic's devicetree binding page, `design/parts/research-charger.md` section 1], which is 1.6 to 2.1 C for the 15 to 20 mAh cell of 17.10; the firmware therefore kept the charger off and the ring could never charge (review finding F05). Fixed choice:
+
+- U2 becomes the Nordic nPM1304 in its 3.1 x 2.4 mm, 35-ball CSP (package code CA) [SOURCED: Nordic product specification Table 2, `design/parts/research-npm1304.md` section 2]. Charge current 4 to 100 mA in 0.5 mA steps; termination voltage 3.6 to 4.65 V in 50 mV steps [SOURCED: Nordic product page and binding page, same file section 1]. Announced 2025-07-07, stated available 2025-08-21 by Nordic.
+- Charge setting: `CHARGE_CURRENT` = 15 mA (1 C of the smallest cell of the range) until the cell's maker states its own limit (S12); termination voltage 4.35 V. [CLAIM: 4.35 V lies on the 50 mV grid of the stated range; Nordic names no list of values in the pages read: to confirm, S18.]
+- What is NOT confirmed and must not be assumed: that the nPM1304's ball map equals the nPM1300's (Nordic states no pin or footprint compatibility in the pages read; the package size and ball count are the same). Every U2 ball in the wiring diagram stays provisional until Nordic's ball table is read (S18).
+- This replaces the charge rule of section 3 ("Charge voltage 4.40 V, charge current 68 mA"), which belonged to the 135 mAh cell and must not be used (review finding F13).
+
+### 17.14 Wiring changes of version A6 (2026-11-10; review findings F04, F07, F13, F14)
+
+Details and sources: `design/ecad/ring/sch-notes.md`, section "A6 changes". Fixed choices:
+
+- Storage bus level: the storage part needs at least 1.875 V to read a high (0.625 x 3.0 V) and the main chip's pins swing to 1.8 V, so a level shifter is added: U10, Texas Instruments SN74AXC4T774RSVR, with capacitors C81 and C82, between the main chip (1.8 V side) and the storage part (3.0 V side) on SD_SCK, SD_MOSI, SD_CS and SD_MISO (review finding F07). The circuit board file does not carry U10, C81 and C82 yet.
+- Band cables: 8 pads on the joystick side's cable (J_BAND_A: joystick switches, centre switch, motor), 7 on the other (J_BAND_B: cell, temperature sensor, the four charging pads). The motor's side is confirmed or changed after the inside model (one table at the top of `make_netlist.py`).
+- Main chip ball grid: the 8 x 10 naming grid is the right reading (19 of 80 sites empty); the ball pitch is open to Nordic (review finding F14).
+- Microphone: the IM68D128B is a bottom-port part with 67.5 dB(A) [SOURCED: Infineon product brief, `design/datasheets/mic-research/im68d128b-brief.txt`]; where section 2 says 68 dB(A), 67.5 is right. Its sound path through the board is decided with the inside model and the board (review finding F02).
+- Section 2's power chip row (nPM1300) and section 3's charge rule are replaced by 17.13.
+
+### 17.15 Measured answers of the inside model v4 and the case C4 (2026-11-10, 23:45)
+
+The inside model was rebuilt for 17.11 and 17.12 (`design/mech/thin/`, section "Model v4" of thin-notes.md; fit check `RESULT PASS pairs=702 parts=38` in the lead's run). These numbers replace 17.8, 17.10 and 17.4 where they differ.
+
+- Cell: from +48.7 degrees through the bottom to -98.0 degrees (213.2 degrees) (before 17.26), 39.36 mm on its centre line at US 9 (before 17.26), 1.6 x 6.0 mm section, about 20 to 27 mAh [CALC: 0.054 to 0.072 mAh per cubic mm] (before 17.26). Recording at 4.0 mA: 5.1 to 6.8 hours [CALC] (before 17.26). The joystick on the side of the band frees the bottom for the cell. Per ring size the arc is a calculation, not a model (US 5: 30.75 mm, about 16 to 21 mAh).
+- Vibration motor: Jinlong W0525AB001D, 5.0 x 2.5 mm (`design/parts/slim-2.md` 1.4), at -44 degrees on the joystick side, 0.7 mm off the band's centre line (0.8 mm at US 7 and US 12, inside model v8) so a cable passes beside it; 0.425 mm of metal at its rim (rule 0.40). The 7.0 mm motor of 17.4 cannot be used: no cable passes it. The motor's driver and the 3.0 V rail must be rechecked for its starting current of up to 175 mA.
+- Cables: both ribbons are drawn and checked, each embedded in the resin liner (0.075 mm of resin on each side); 1.8 mm wide at the neck, 2.5 at the board foot (design/ecad/band; inside model v8): the foot runs flat for 1.745 mm (Y 3.4 to 5.145 on its side) with its top 0.03 mm under the board's land faces at Z 1.43, and the fold has an inner radius of 0.70 mm (the least allowed is 0.66, 6 x 0.11); free space 0.075 mm of resin to the motor, cell and protection circuit, 0.10 mm to the body. A liner made as a laminate with the ribbon inside is not proven by any maker (bench item B8).
+- Joystick: five switches under the nub: up, down, toward the hand, toward the fingertip at 2.4 mm from the centre, and the centre switch SW2 between them (0.30 mm to its neighbours). The opening in the metal is 5.6 x 6.6 mm; metal beside it 1.07 mm across the band and 0.59 mm along it at its thinnest (rule 0.40). The exterior model has no opening there yet. **CORRECTION 2026-11-11: the inside model v4 drew the nub turned 90 degrees (4.6 mm around the band). 17.11 wins: 4.6 mm along the finger, 3.6 mm around the band, frame 6.4 x 5.4. The opening is therefore 6.6 mm along the finger by 5.6 mm around the band, and the metal figures of this line are void until the inside model v5 measures them again.** **Measured by the inside model v5 (17.24): metal 0.57 mm along the finger on each side and 1.11 mm toward the bottom of the band, 0.1 mm under the surface (rule 0.40).**
+- REPLACED by 17.21 (the window moves to X -12.425, Y -2.95; no reverse-mount part): ~~Recording light: a reverse-mount red light on the board's under face at X -13.25, Y -4.7, shining through a 0.5 mm hole in the board and a small clear light guide (LP1) to a 0.6 mm window in the glass print. The exterior's light must move there. The part is not chosen.~~
+- Charging pads: four gold discs of 1.6 mm on the inside face of the band, 2.4 mm apart along the arc, centred opposite the block (at 158.2, 172.7, 187.3 and 201.8 degrees), set in the liner. Order VBUS, D-, D+, GND. Their place along the finger (X) is in 17.28: X = -1.0 mm.
+- Charging case C4 (`design/case/`, fit check `PASS, 1807 pairs checked, 0 failures, ring sizes US 7 to 13` in the lead's run): outside 43.2 x 44.0 x 40.6 mm with the cell, board, socket and light inside; the pins need 0.34 mm of travel across the seven ring sizes. A ring put in the wrong way round is not stopped by the pocket at every size; then no pin reaches a pad.
+
+### 17.16 Vibration motor part: Jinlong W0525AB001D (2026-11-11; inside model v4, conflict K6)
+
+The inside model v4 fits only a 5.0 mm motor in the joystick-side shoulder (17.15). This section makes that the design's motor everywhere and replaces the motor lines of sections 2, 16.4, 17.3 and 17.4.
+
+- Part: Jinlong Machinery W0525AB001D, brushless coin motor with its own drive chip, 5.0 mm diameter x 2.5 mm, 0.32 g, two lead wires (red +, blue -) [DS: Jinlong spec S-525113 rev 0, pages 2, 4, 6, 8; the copy on file comes from a third-party host, `design/parts/slim-2.md` 1.4].
+- Electrical: rated 3.0 V, operating 2.7 to 3.3 V, rated current below 80 mA, starting current below 175 mA with the rotor held, starting voltage below 2.5 V [DS pages 5, 6].
+- Vibration 0.25 G average; life 1,000,000 cycles of 2 s on and 1 s off [DS pages 6, 11].
+- Drive: unchanged wiring W6. The motor stays on VDD_3V0 through Q1 at full duty. The 3.0 V rail (2.7 to 3.3 V allowed) is inside the motor's range.
+- Q1 (DMN2450UFB4): 0.8 A at a 1.8 V gate and 0.7 ohm maximum [DS, parts list line Q1]. At 175 mA it drops 0.12 V; at 80 mA, 0.056 V [CALC: 0.175 x 0.7 and 0.080 x 0.7]. Q1 stays.
+- D1 (NSR0230P2T5G, 200 mA): stays. Whether a motor with its own drive chip needs it is a question for the maker; it does no harm.
+- 3.0 V rail: the power chip's buck 2 gives 200 mA [research-npm1304.md line 47, from Nordic's product page]. Motor start 175 mA plus the screen's VCI supply and the recording light (1.5 mA) on the same rail: the margin at a motor start is 25 mA minus the screen's VCI current. NOT CHECKED: the screen's VCI current is not on file. Bench item B5 measures the rail during a pulse with the screen on.
+- Cell: a start draws up to 175 mA from a cell of 20 to 27 mAh: 6.4 to 8.6 C; a running pulse below 80 mA: 2.9 to 3.9 C [CALC: 175 / 27.2, 175 / 20.4, 80 / 27.2, 80 / 20.4] (before 17.26). The cell maker must state the discharge current the cell and its protection circuit allow (open item S12, firmware hardware issue H7). If the cell cannot give it, the remedy was a series resistor or a soft start by pulse train on the pin MOTOR; neither is designed here (2026-11-13: the soft start is NOT a ready fallback and is not built in software step 6: the pin MOTOR drives the enable pin of U11, and stepping that line would charge U11's output capacitor several times; the circuit simulation tests a stepped enable first; the fixed measures are C84 at 4.7 uF and the cell requirement of 1.9 ohm at 3.45 V with a 235 mA pulse, lead-decisions.md row 'motor soft start').
+- Connection: the two lead wires are soldered to pads of flex tail A (8 pads, 17.14). The lead length as delivered is open item S10.
+- Open: the maker's own datasheet, the price and samples (S4); the rail margin (B5); the cell's discharge limit (S12, H7).
+
+### 17.17 Ring sizes of version 1: US 7 to 13 (owner, 2026-11-11)
+
+Owner, 2026-11-11: "US 7 to 13 (Recommended)". Version 1 has 7 sizes, US 7 to 13: one body, one liner, one cell length and one pair of ribbon lengths per size; the block, the board, the glass and the joystick nub are the same for all. This replaces "9 sizes, US 5 to 13" in section 10 and in requirement S2 (review finding F08). Sizes 5 and 6 are not designed. Still open for US 7 and 8: the cell's arc, the motor's angle and the ribbon slot per size were calculated, not re-measured in the inside model (thin-notes.md K9; review finding F09).
+
+**REPLACED 2026-11-11 by the measured table of 17.26 (inside model v6). The smallest cell is 17.6 mAh, not 18.2 mAh.** Earlier, calculated table: Battery and hours by ring size [CALC from the cell's arc per size, `design/mech/thin/thin-notes.md` line 77 (out/v4/per_size.log), section 1.6 x 6.0 mm, 0.054 to 0.072 mAh per cubic mm, recording at 4.0 mA]:
+
+| Ring size | Cell length on its centre line | Battery | Recording hours | State |
+|---|---|---|---|---|
+| US 7 | 35.10 mm | 18.2 to 24.3 mAh | 4.5 to 6.1  replaced by 17.26 |
+| US 8 | 37.23 mm | 19.3 to 25.7 mAh | 4.8 to 6.4  replaced by 17.26 |
+| US 9 | 39.34 mm | 20.4 to 27.2 mAh | 5.1 to 6.8  replaced by 17.26 |
+| US 10 | 41.43 mm | 21.5 to 28.6 mAh | 5.4 to 7.2  replaced by 17.26 |
+| US 11 | 43.51 mm | 22.6 to 30.1 mAh | 5.6 to 7.5  replaced by 17.26 |
+| US 12 | 45.59 mm | 23.6 to 31.5 mAh | 5.9 to 7.9  replaced by 17.26 |
+| US 13 | 47.65 mm | 24.7 to 32.9 mAh | 6.2 to 8.2  replaced by 17.26 |
+
+Every rule that protects a minimum of recording time (the charge setting, the battery thresholds of the behaviour rules, the reserve of the phone-link protocol) must use the smallest cell of the smallest size. Before 17.26 that was 18.2 mAh (US 7); **since 17.26 it is 17.6 mAh.**
+
+Note: the table uses 4.0 mA. The behaviour rules F5 count 4.1 mA with the new microphones (a deliberate over-count; the real rise is about 0.05 mA), which gives 4.4 to 8.0 hours across the sizes.
+
+### 17.18 Power chip confirmed from Nordic's specification, and a battery current limit that the motor exceeds (2026-11-11)
+
+Source: Nordic "nPM1304 Product Specification" v1.0, 173 pages, supplied by the owner: `design/datasheets/npm1304_datasheet_v1_0.pdf` (text copy beside it). Page numbers below are the document's own. This closes most of open item S18.
+
+Confirmed:
+- Contact map of the small package (35 balls): Table 33, p153, copied to `design/ecad/ring/npm1304-balls.csv` with the net of wiring A6 beside each ball. Every signal name the wiring diagram uses exists on the package. Three supplies have two balls each (VBUS B1 B2, VSYS C1 C2, VBAT D1 D2). The package has GPIO0 to GPIO3 only: the diagram's unused GPIO4 does not exist and is removed at the next wiring revision.
+- Package: 2.3775 x 3.0775 mm, 0.464 mm high (nominal), ball pitch 0.419 and 0.44 mm (Table 35, page 155).
+- Charge voltage 4.35 V is a real setting: register BCHGVTERM value 9 = "4.35 V" (page 36). Steps: 3.60, 3.65, then 4.00 to 4.65 V in 0.05 V steps.
+- Charge current step 0.5 mA, accuracy +-10 % (page 29): 15 mA can be set. End-of-charge current: 10 % (default) or 5 % of the charge current (page 37): 1.5 mA or 0.75 mA at 15 mA.
+- Order code: nPM1304-CAAA-R7 (small package, reel of 1,500) or nPM1304-CAAA-R (7,000) (Table 50, page 168).
+- The resistance between the battery and the system supply is 550 milliohm (page 29).
+
+NEW CONFLICT (not known before this document):
+- The chip limits the current drawn FROM the battery: "IBATLIM, Discharging battery current limit", 100 mA in the minimum column, "validated through simulation" (page 29 and its footnote on page 30). Nordic adds: "It has not been designed for accurate current limiting", and "If the system load exceeds the discharge current limit, VSYS voltage drops below VSYSPOF causing the device to reset" (page 28). The specification gives no typical or maximum value.
+- The motor of 17.16 draws up to 175 mA at 3.0 V at each start: 0.525 W. Through the 3.0 V converter that is about 158 mA from a cell at 3.7 V and 177 mA at 3.3 V [CALC with an ESTIMATE of 90 % converter efficiency: 0.525 / 0.9 / 3.7 and / 3.3]. Running: below 80 mA at 3.0 V, about 72 to 81 mA from the cell [CALC, same estimate]. The screen (55 mW, about 15 to 17 mA from the cell) and recording (4.0 mA) add to it.
+- So a motor start can exceed the 100 mA that Nordic guarantees, and the ring could reset at the moment it vibrates: at the start and at the stop of a recording. With the screen on, even the running current reaches the limit. The earlier motor (120 mA at start) had the same problem; the nPM1300 allowed about 1 A, which is why nobody saw it.
+- NOT DECIDED HERE. Ways out, each to be studied by the electronics designer: (1) a storage capacitor on the 3.0 V rail sized to carry the start pulse, with a resistor that limits its refill; (2) a soft start (a series resistor, or a pulse train on the pin MOTOR) that keeps the motor's start under about 60 mA (2026-11-13: not a ready fallback, see line 604; lead-decisions.md row 'motor soft start'); (3) a motor with a lower start current, such as a linear vibration part driven by its own small driver; (4) Nordic's answer on the real typical limit. Bench item B5 must measure a motor start with the screen on, on the nPM1304 kit (order code nPM1304-EK, page 168).
+- Open item S22: the motor's start current against the nPM1304's battery current limit.
+
+Reference circuit compared (`design/ecad/ring/npm1304-reference.md`): the two voltage-set resistors (47 kohm for 1.8 V, 150 kohm for 3.0 V) and the 2.2 uH coils agree with Nordic's Table 36 and Figure 57 (pages 156, 157). Seven differences are listed there for the next wiring revision; the first is a defect: the VBUS capacitor C71 is a 6.3 V part where Nordic uses 25 V.
+
+### 17.19 Microphones: top-port parts that hear through the block's underside (2026-11-11; review finding F02)
+
+Study with its fit check: `design/mech/mic-path/mic-path.md` (check `RESULT PASS`, rerun by the lead). This section replaces the microphone lines of sections 2, 5, 16 and 17.1 and the wall slots of 17.1. The lead's choice, taken as a default; the owner can change it.
+
+- Why: the Infineon IM68D128B is a bottom-port part ("Port location Bottom port", maker brief). Soldered under a board that the screen covers, its port had no way to the room. The side slots of 17.1 led to a port the part does not have.
+- Part: 2 x Knowles SPK0641HT4H-1, top port, 4.00 x 3.00 x 1.00 mm (each +-0.10), port 0.25 mm, 64.5 dB(A), 0.63 mA at 1.8 V [DS copy in `design/mech/mic-path/datasheets/`, a third-party host's copy of Knowles Rev A]. Second source with the same outline and another pin order: Knowles SPK0838HT4H-B.
+- Place: under the board, port facing the floor: U5 centre X -10.8, Y -4.8; U6 centre X +10.8, Y -4.8. Ports 23.54 mm apart along the finger.
+- Path: port, a foam gasket ring (outer 1.8, bore 1.0), a 1.0 mm hole straight through the floor, a membrane in a 2.0 x 0.10 mm seat flush with the underside. Length 0.43 mm. A 0.10 mm pocket in the floor under each part leaves 0.30 mm of floor.
+- Openings: two holes on the block's underside at X -11.77 and +11.77, Y -4.8. No microphone slot in any wall: conflict K8 is gone, and the ring's sides show no microphone opening.
+- What it costs: signal-to-noise 64.5 dB(A) in place of 67.5; the sound enters from the gap between the block and the back of the finger (0.4 mm on the centre line, 1.7 mm at the holes, for a round finger [ESTIMATE]); a gasket chosen per ring from three thicknesses; a 0.20 mm metal ring under each membrane seat that the body maker must accept; no membrane part of 0.10 mm is chosen yet.
+- NOT PROVEN: how well the ring hears a room through openings that face the finger. Bench item B7 changes to this path and decides it: response against a bare part, the gasket's seal, wind, and the finger or thumb covering the openings. If B7 fails, the second-best path of the study (a slit to the end wall) has about 1,000 times the flow resistance [ESTIMATE], so a failed B7 means a new microphone place, not a small fix.
+- Firmware: the new part is 11 dB more sensitive (-26 against -37 dBFS at 94 dB SPL). The gain stays at 0 dB (corrected 2026-11-11): the stored full scale is then 120 dB SPL, the microphone's own overload point, and the microphone's noise stays above the 16-bit floor (63.8 dB stored signal-to-noise against 59.5 dB at -11 dB; arithmetic in `design/firmware-f5-notes.md` section 2). The stored level rises by 11 dB.
+- Files that follow at the next revisions: the exterior (variant merged32f), the inside model v5, the wiring diagram and the parts list (8 pins per microphone in place of 5), the circuit board, the behaviour rules, the bench plan. (Checked 2026-11-13, w11-item-values.md item 160: stale. The exterior is merged32h, report `design/look/s1/merged32h-report.md`; the inside model is v9, `design/mech/thin/`; the parts list is `design/bom.csv`; the schematic is `design/ecad/ring/ring_band.kicad_sch` with the netlist `design/ecad/ring/netlist.csv`; whether the wiring diagram to follow is that schematic is not decided by the files read.) The list of 35 changes is section 9 of the study. Until the parts list follows, its microphone line still names the old part.
+- Open item S23: orderable code and stock of the SPK0641HT4H-1, the gasket material, the thin membrane, the 0.20 mm metal ring (Knowles or a distributor; a gasket maker; Gore; the body maker). (2026-11-13: membrane Saati Acoustex 010a on a ring of tesa 61305, gasket Nitto SCF family, 0.20 mm ring stays; items 73, 74, 77.)
+
+### 17.20 Bluetooth antenna in the metal body: measured, one fix proposed, the owner decides (2026-11-11; review finding F06)
+
+Study: `design/mech/antenna/antenna-study.md` (measurement rerun by the lead: same figures, `RESULT measured`).
+
+Measured on the inside model v4:
+- The antenna (Johanson 2450AT18D0100001E, at X -12.7, Y 4.4) has body metal 0.050 mm under it, 0.225 mm from the hand-end wall and 0.450 mm from the thumb-side wall (model v4, history). The screen's driver ledge covers all of it, 0.200 mm above. Model v9: the antenna is at X -10.80, Y 5.25; the nearest body metal is 0.6000 mm away (the resin corner), with 0.0300 mm of resin room under it.
+- The maker's conditions are broken on three counts: "no other metallic components like batteries and displays directly underneath antenna" (maker datasheet, 8-page copy, page 5); a metal-free area of 4 x 6 mm on its test board (page 3); and its 72 % efficiency holds only on that 40 x 20 mm board (page 1).
+- A second maker's note says the same in general: "If the product has a metallic casing or a shield, the casing must not cover the antenna. No metal is allowed in the antenna near-field." (Infineon AN91445, page 23).
+- No efficiency or range figure exists for this ring: no simulation and no radio measurement was made. Only a bench test gives a number.
+
+The proposed fix ("radio corner", option a4 of the study): the corner of the body around the antenna (X -14.80 to -8.60, Y 2.05 to the outer skin, full height; 26.42 cubic mm; before model v9: X -14.8 to -10.6, about 4 x 5.3 mm seen from above, 20.3 cubic mm) becomes a bonded resin part in the body's colour (RC1, cast on its own in Master Bond EP30Med, the liner's resin, and bonded to the body before the board goes in: assembly step 10). The nearest body metal then stands 0.6000 mm from the antenna (model v9; 0.752 mm for the earlier corner). The top stays all glass. It adds fine seams on the hand end, the thumb side and the underside.
+
+DEFAULT TAKEN BY THE LEAD, 2026-11-13 (row 'radio corner' of lead-decisions.md; the owner can overrule): the fix changes the ring's look, which is the owner's decision. Until the owner decides otherwise, model v9 and the maker files carry the resin corner RC1, and the radio is judged on the bench test and the antenna simulation. (Before: NOT DECIDED, the body stayed one metal piece in every file.)
+
+Bench test either way (study section 6): the same board measured bare (T0), in the all-metal body (T1) and with the resin corner (T2): return loss at least 10 dB from 2400 to 2480 MHz when worn; received signal of T2 within 10 dB of T0 and at least 3 dB better than T1 [ESTIMATE pass lines]. If T1 passes, the one-piece body stays. The bench kit lacks a network analyser and the maker's evaluation board.
+
+Also found: the cover glass over the antenna is 0.570 to 0.941 mm thick in the model (17.8's curved glass), where 17.1 said 0.4 mm; 17.8 wins.
+
+Open item S24: metal on the screen panel's ledge over the antenna (X -13.675 to -10.6, Y 2.05 to 6.4); the screen maker answers. Open item S15 (antenna pads off the board): in model v9 the antenna sits on the board's under face on its maker's land pattern (line 513).
+
+### 17.21 Recording light: its window moves, and a small light guide carries the light (2026-11-11; review finding F01)
+
+Study with its fit check: `design/mech/light-path/light-path.md` (70 checks, `RESULT PASS`, rerun by the lead). This replaces the recording light bullet of 17.15 and the light window of S20. The lead's choice, taken as a default.
+
+- Why the 17.15 place fails: the screen maker's drawing (display datasheet page 5, measured from its lines) shows the screen's cable bonded on the glass ledge from X -13.675 to -12.775 across the whole width. The window at X -13.25 sat on that bond. The clear ledge is 2.951 mm long, not the 4.8 mm the model assumed.
+- No reverse-mount light small enough exists in what was read: the smallest with a maker sheet is 3.2 x 1.6 mm and would stand 0.4 mm into the screen.
+- Window: round, 0.4 mm, in the black print of the cover glass at X -12.425, Y -2.95 (hand end, joystick side, 2.9 mm outside the lit picture).
+- Light: the parts list's own LED1, Kingbright KPG-1005SURC-TT (1.0 x 0.5 x 0.2 mm, top view, 631 nm), now on the board's under face at X -9.70, Y -2.10, shining down.
+- Light guide LG1 (new custom part): one clear moulded L, section 0.40 x 0.68 mm, legs 1.39 and 3.27 mm, with three mirror faces at 45 degrees coated with aluminium. It turns the light sideways twice and then up a 0.3 mm round riser through a 0.5 mm hole in the board, a notch in the foam, the clear ledge glass, a clear plug LP1 (0.4 mm cube), the adhesive and the window.
+- Wiring: unchanged in form; the light stays on by hardware whenever the microphones have power. R41 becomes 820 ohm for 1.50 mA [CALC with 1.767 V at 1.5 mA from the maker's curve; 680 ohm gave 1.81 mA]. The maker's pad 1 is the cathode: the diagram's pad order must be corrected at the wiring revision.
+- It fits both the inside model v4 and the microphones of 17.19. Tightest gaps: 0.100 mm from the board hole to the connector J1 and to microphone U5; 0.150 mm from LP1 to the cable bond, where the maker's drawing tolerance is 0.2 mm.
+- NOT PROVEN: how bright the window is. The share of light that survives three mirrors and five layers is an estimate of 5 to 25 %, giving 0.08 to 3.8 mcd at the window [ESTIMATE]. A bench test decides (a board coupon, a sample guide, a real screen panel and printed glass): seen at 2 m in office light, and no red glow in the screen's picture.
+- If the bench test or the screen maker says no: second best is a custom screen cable that carries the light on the ledge (no guide, more light, needs the screen maker); third is a clear plug in the side wall (adds an opening to the exterior).
+- Place of the light for the wearer: on the joystick side of the top face. The mirrored place on the other side falls in the antenna's keep-out.
+- Open item S25 (CLOSED 2026-11-13, lead-decisions.md item 53: it checked the path of the recording light, which version v7 removed, line 523; no supplier is asked; the old text follows, do not use): the screen maker confirms the ledge glass is clear at X -12.625 to -12.225, Y -3.150 to -2.750 and gives the bond's end with tolerance; Kingbright or a distributor confirms the KPG-1005SURC-TT is still sold (its only sheet is a 2013 preliminary one; fallback APHHS1005SURCK, 0.5 mm high, not fit-checked); a guide maker quotes LG1; the board maker gives the copper rule round the 0.5 mm hole.
+
+### 17.22 Vibration motor on its own regulator, fed straight from the cell (2026-11-11; answers S22 of 17.18)
+
+Study: `design/ecad/motor-drive/motor-drive.md`, with every figure recomputed by `budget.py` (rerun by the lead: same output, `RESULT computed`). This replaces the "Drive", "Q1", "D1" and "3.0 V rail" bullets of 17.16 and row W6.
+
+- The fact that carries it: the power chip's 100 mA limit sits inside the chip, between its battery pin and its system supply ("CHARGER enters the SUPPLEMENT state to provide current from the battery, up to IBATLIM", Nordic specification page 27; block diagram page 6). A load wired to the cell itself, before that pin, does not pass through the limit.
+- Circuit: a new regulator U11, Texas Instruments TLV75530PDQNR (3.0 V, 500 mA, 1.0 x 1.0 x 0.4 mm), has its input on the cell (net VBAT) and its output on a new net VMOT that feeds the motor. The chip pin MOTOR switches U11 through its enable pin (R61 100 ohm in series, R62 100 kilohm to ground, both kept). Two capacitors, C83 of 10 uF at the input and C84 at the output (C84 is 4.7 uF since the circuit simulation, Murata GRM155R61A475MEAAD, 10 V, 0402; it was 10 uF); C84 is also the capacitor of 2 uF or more that the motor's maker asks across its leads. The motor switch Q1 and the diode D1 leave the design.
+- Result [CALC, budget.log]: the motor's current no longer passes the power chip. The chip's battery current stays at or under 55.7 mA down to 3.1 V, the lowest cell voltage the budget was computed for (the ring turns off at 3.30 V, section 3), with the screen at full white, the radio, recording and a storage write together: 44 % under the 100 mA that Nordic guarantees. The 3.0 V rail carries at most 29.7 mA without the motor (it was asked 204.7 mA of a 200 mA converter at a start).
+- The motor gets 2.964 to 3.036 V for any cell voltage of 3.15 V or more, inside its 2.7 to 3.3 V range; the regulator's limit (560 mA at least) is 3.2 times the start current.
+- What it costs: about 1 x 1 mm plus two small capacitors on a board already 72 % full (a layout question); the regulator stays on the cell in ship mode (1 uA at most); the fuel gauge no longer sees the motor's charge, so the firmware adds it (pulse time x 80 mA plus a start allowance).
+- Other ways examined and rejected with figures: a storage capacitor (about 3,300 uF for a 10 ms start: 43 % of one board face), a soft start (a resistor that limits the start leaves the motor no voltage; chopping the supply restarts the motor's own drive chip), the power chip's own outputs (all behind the same limit), another motor (none on file fits the 5.0 x 2.5 mm pocket with a lower start).
+- NOT PROVEN: nothing is measured. The cell's own discharge limit and its protection circuit's trip current stay unknown (S12): a start still takes up to 228 mA from the cell at 3.30 V with every other load on. The bench test on Nordic's kit nPM1304-EK is written in the study, section 2.9 (1,350 patterns per supply voltage; chip path at or under 80 mA; no reset).
+- Also found: `design/firmware.md` line 703 sets a discharge limit that exists only on the older nPM1300; the nPM1304 has no such setting. The behaviour rules must drop it at their next revision.
+- S22 becomes: bench proof of this circuit, and the layout room for U11, C83, C84.
+
+### 17.23 Assembly order, and what the design can claim for water and dust (2026-11-11; review findings F10, F11)
+
+Document: `design/mfg/assembly/assembly.md` (28 steps, each with what is joined, how it is located, what must be true before, the check, and what cannot be undone; its own check `RESULT PASS`, rerun by the lead). Updated 2026-11-11 to the inside model v6 and 17.22 to 17.26: steps 2 and 25 follow the motor's own regulator U11, every part of the parts list is in a step, the joystick steps follow the wider flange and the flat switch head, and one table gives what differs by ring size (its check `RESULT PASS`, rerun by the lead).
+
+The order in short: board soldered in one pass; light guide fitted; board programmed and tested through its test pads (the ONLY moment those pads can be reached); switches and motor soldered on one ribbon, pads and cell on the other; membranes, gaskets and joystick nub put in the body; ribbons threaded through the floor slots and soldered to the board (the cell is live from here); board and screen lowered into the block; full test through the four charging pads; floor slots sealed; joystick pocket dammed; liner cast; light plug placed; glass bonded; leak check; final test; first charge to 50 %; ship mode; packing.
+
+Order conflicts found (the document's section 3; each with one proposed way out, none decided here):
+- K-A1: after the board is in the body, only the four charging pads reach the chip. A broken boot loader then means a scrapped ring.
+- K-A2: the floor slots must be sealed before the cast; no file names how.
+- K-A3: the cast resin would run into the joystick pocket and lock the switches; no dam is designed.
+- K-A4: no seal between glass and body exists in any file, and the seat has no room for one (glass underside and body top are both at Z 2.75).
+- K-A5: the liner is said to be cast in place, but the inside model puts the ribbons inside it with 0.075 mm of resin on each side; one cast cannot do that.
+- K-A6: the ribbons must be soldered to the board after threading, with the board held above the block; no room is drawn for the ribbon's slack when the board goes down.
+- K-A7: the ship command clears the factory flag, so a ring woken for a sample check can no longer be tested; and the firmware's ship entry is written for the older power chip (a timed hibernate), not the nPM1304's ship task, which needs VBUS removed first (Nordic specification page 116).
+- K-A8: the cell is live during the cast; its heat limit is unknown.
+- K-A9: the antenna cannot be soldered as drawn (S15). K-A10: the body spec's floor slots are at X -4.7, the model needs X -2.2.
+
+Water and dust (requirement S6, "IP65 or better"): NOT MET ON PAPER TODAY. Nine openings and joints were listed. Two have no sealing means in any file (glass to body; the floor slots). The joystick opening relies only on the switches' own rating. The microphone holes, the liner's edges, the pads and the radio corner name a means with no chosen material and no test. The design can claim no rating until those seals are designed and a type test passes (dust chamber, then water jets of 12.5 litres per minute from every direction, at least 3 minutes; the document's section 4). Version 1 claims no water or dust rating (lead-decisions.md item 101; a rating is the owner's choice); since 2026-11-13 the seal materials are named (glass: tesa 61305; floor slots and motor window: 3M Scotch-Weld DP420 Black; microphones: Saati Acoustex 010a mesh on tesa 61305) and none is tested.
+
+Open item S26: the glass-to-body seal and its seat (K-A4; seal tesa 61305, item 110); the floor slot sealant (K-A2; 3M Scotch-Weld DP420 Black, item 45); the joystick dam (K-A3; material not chosen); the liner's build with the ribbons (K-A5, with S19); the ribbon's slack room (K-A6); the ship command (K-A7).
+
+### 17.24 Inside model v5 on the exterior merged32f: passes at US 9, fails at US 7 and US 13 (2026-11-11, 03:21)
+
+Source: `design/mech/thin/thin-notes.md` section "Model v5"; logs in `design/mech/thin/out/v5/`. The lead reran the check (`out/v5/lead/check_lead.log`).
+
+- Result at US 9: 48 parts, 1127 pairs of solids, 0 findings. The model now carries the turned joystick (17.11), the microphones with pockets, gaskets and membranes (17.19), the recording light with LG1 and LP1 (17.21), U11 with C83 and C84 (17.22), the glass seal ring SEAL1 and the joystick dam DAM1 (17.23).
+- Thinnest metal (rule 0.40): opening 0.57 along the finger and 1.11 toward the bottom; joystick pocket 0.500; motor rim 0.425; round each microphone seat 0.720; floor under each microphone pocket 0.305 (floor rule 0.30); ring under each membrane seat 0.205 (known exception, S23).
+- Cell at US 9: 39.185 mm on its centre line, 376.2 cubic mm, 20.3 to 27.1 mAh [CALC]. It is 0.175 mm shorter than in 17.15 because the dam needs room. The rounded figure "20 to 27 mAh" stands. The exact length is fixed again after the per-size pass below; until then no other file changes its cell figure.
+- New parts for the parts list: SEAL1 (glass seal ring, 0.05 thick) and DAM1 (dam round the switch head).
+
+Per ring size (same model, bore and exterior per size):
+
+| Size | Check | Cause of failure |
+|---|---|---|
+| US 7 | FAIL, 4 findings | the motor at -44 degrees enters the block (0.42 cubic mm) and meets the dam and switch SW1; the +Y ribbon meets the liner at 42.0 degrees, inside the protection circuit that starts at 39.5 degrees |
+| US 9 | PASS | none |
+| US 13 | FAIL, 2 findings | each ribbon runs through 0.23 cubic mm of metal between the floor slot and the band channel, which ends at 30 degrees |
+| US 8, 10, 11, 12 | not run | |
+
+Rulings of the lead on the model's conflicts (K numbers of thin-notes.md):
+- K24, K25: the motor angle, the start of the protection circuit and the depth of the floor slots become values per ring size. The joystick stays at -78 degrees and the pads stay where they are. The model must pass at each of the 7 sizes before any body file per size is exported.
+- K12 (the joystick flange has 0.297 mm of free play and is held at two edges only): the flange becomes 6.9 mm along the finger, and the channel roof over the joystick comes down to 0.05 mm above the flange.
+- K13 (the flat switch bases stand 0.13 to 0.54 mm off the curved liner): a flat stiffener of 6.4 x 6.4 mm goes under the ribbon head, and the liner fills under it.
+- K16 (the screen maker's cable is 12.4 mm wide for 11.5 mm beyond the panel; the model folds a 5.0 mm cable in a 5.4 mm pocket, 0.6 mm from the antenna): not solved. A 12.4 mm fold does not fit beside the antenna. Open item S27.
+- K17 (driver chip on the ledge): removed from the model, the maker's drawing shows none; the screen maker confirms with S25.
+- K15, K21, K22: stay with S26 (dam seals the edge only; fold room 2.6 x 2.2 x 1.03 mm is free, the bend radius is the flex maker's; the seal tape is tesa 61305, item 110).
+- K20: U11 at X 0.0, Y 4.2, C83 at X 0.0, Y 5.45, C84 at X 1.27, Y 5.0 (turned 90; X 1.2 before model v9) are the model's proposal; the board layout confirms (S22).
+
+Open item S27: the screen's cable. Tailor Pixels must answer whether the TOH095XVT-01 can be made with a cable narrowed to 5.0 mm from the bond on, or folded another way; if not, the antenna or the hand end of the body must change.
+
+### 17.25 Joystick angle per ring size: lower on US 7 and US 8 (lead's default, 2026-11-11, 03:34; the owner confirms on a picture)
+
+Source: `design/mech/thin/thin-notes.md` section "Model v6"; scans in `design/mech/thin/out/v6/` (`scan_us7.log`, `scan_us8.log`, `scan_us9.log`, `deficit.log`).
+
+- Finding: on US 7 and US 8 the motor has no place between the block and the joystick at -78 degrees. The arc between them shrinks with the finger size. Missing arc at the motor: 1.069 mm on US 7 and 0.463 mm on US 8 (to the dam round the switches). On US 9 one angle fits, -44.0 degrees, with 0.07 mm to the dam.
+- Default taken: the joystick sits lower on the two small sizes. US 7: -84.0 degrees. US 8: -81.0 degrees. US 9 to US 13: -78 degrees, unchanged. On the band's surface this is 1.3 mm lower on US 7 and 0.7 mm lower on US 8 [CALC: 6.0 and 3.0 degrees at the outer radius of each size]. The owner's mark was "about half-way down" the band's side face; half-way is 90 degrees, so both sizes move toward the mark.
+- The motor angle per size is the first angle that keeps the motor out of the block interior: US 7 -47.0, US 8 -45.5, US 9 -44.0 degrees; US 10 to 13 from the model v6.
+- Cost: the cell ends 0.10 mm past the dam, so it loses the same arc. US 7: about 1.0 mm of 35.7 mm, about 3 percent [CALC: 6.0 degrees at r 9.76]. Measured by model v6 (17.26): the US 7 cell is 33.936 mm and 17.6 to 23.5 mAh; before it the calculated smallest cell was 18.2 mAh (17.17).
+- Options not taken: the motor on the other side of the band on small sizes (the cell loses the motor's arc, about 14 percent [CALC: 5.2 mm of 35.7 mm]); a smaller motor (none on file fits and is strong enough); the motor's corner inside the block's cavity (opens a path for the liner's resin into the board cavity) [the last reason is the lead's reading, not measured].
+- Exterior: variant merged32g = merged32f with the joystick opening at the angle of each size. US 9 to US 13 do not change shape. The band's thick zone round the joystick (63 to 93 degrees at US 9) moves with the joystick and stays centred on it; with the zone left in place the opening had 0.312 mm of metal toward the bottom on US 8 and none on US 7 (`design/look/s1/out/measure-32g-us8.log`, `measure-32g-us7.log`).
+- This changes a place the owner fixed ("should be placed here"). It is a default the owner can reverse; a picture of US 7 before and after is made for the owner.
+- **Confirmed by the owner, 2026-11-11, after the pictures: "lower joystick on US 7".** The lead read this as yes to both small sizes and said so; US 8 cannot be built without its 0.7 mm either.
+
+### 17.26 Inside model v6: every ring size measured; battery per size (2026-11-11, 05:35)
+
+Source: `design/mech/thin/thin-notes.md` section "Model v6, continued"; one log per size in `design/mech/thin/out/v6/` (`size_us7.log` to `size_us13.log`, each `RESULT PASS pairs=1127 parts=48` in the helper's run; the lead's rerun of US 7, 9 and 13 follows the motor fix below). US 7 and US 8 ran against the exterior merged32g (17.25), US 9 to 13 against merged32f.
+
+| Ring size | Joystick | Motor | Cell length on its centre line | Battery [CALC: 0.054 to 0.072 mAh per cubic mm] | Recording hours at 4.1 mA [CALC] |
+|---|---|---|---|---|---|
+| US 7 | -84.0 deg | -47.0 deg | 33.936 mm | 17.6 to 23.5 mAh | 4.3 to 5.7 |
+| US 8 | -81.0 | -45.5 | 36.547 mm | 18.9 to 25.3 mAh | 4.6 to 6.2 |
+| US 9 | -78.0 | -44.0 | 39.175 mm | 20.3 to 27.1 mAh | 5.0 to 6.6 |
+| US 10 | -78.0 | -45.0 (17.27; before it -43.0) | 40.914 mm | 21.2 to 28.3 mAh | 5.2 to 6.9 |
+| US 11 | -78.0 | -43.5 (17.27; before it -41.5) | 42.651 mm | 22.1 to 29.5 mAh | 5.4 to 7.2 |
+| US 12 | -78.0 | -42.5 (17.27; before it -40.5) | 44.387 mm | 23.0 to 30.7 mAh | 5.6 to 7.5 |
+| US 13 | -78.0 | -42.5 (17.27, model v6.2; before it -39.5) | 46.121 mm | 23.9 to 31.9 mAh | 5.8 to 7.8 |
+
+- This table replaces the calculated table of 17.17. Every rule that protects a minimum of recording time uses the smallest cell: **17.6 mAh (US 7)**. The charge current stays 15 mA: 0.85 C of 17.6 mAh [CALC].
+- The behaviour rules, the requirements and the cell specification follow this table. The phone-link protocol's reserve arithmetic (before 17.26 it used 18.2 mAh) follows when that work resumes.
+- Exact figures at US 9 for the specification pages: the cell runs from +48.713 to -98.986 degrees; each microphone floor pocket is 4.4 x 3.35 x 0.10 mm; the body's box is 25.149 mm wide over the band with the joystick's raised zone.
+- Per size the model also sets: the start of the protection circuit (43.8 degrees on US 7, 41.5 on US 8, 39.5 from US 9) and the bottom of the two floor slots (Z -0.20 on US 7 and 8, -0.23, -0.63, -1.04, -1.45, -1.85 on US 9 to 13).
+- K12 and K13 of 17.24 are in the model: flange 6.9 mm along the finger under a roof 0.05 mm above it; a flat switch head with a 6.4 x 6.4 x 0.10 mm stiffener (0.075 before the inside model v8). The joystick pocket is 7.0 mm wide from the inside of the band up to the roof, so the nub with its flange goes in straight; before inside model v8 the liner's resin filled a 0.1 mm strip on each side (the channel was 6.8 wide); since v8 the channel is 7.0 wide like the pocket and there is no strip.
+- Open in the model (fix in work): the motor's free space to the body is 0.042 mm on US 9, 0.006 on US 10 and 0.000 on US 11 to 13. Rule set by the lead: at least 0.05 mm all round at every size.
+- Tight spaces that stay, by design: motor to the dam 0.07 to 0.08 mm on US 7 to 9; motor to the ribbon 0.075 mm (the resin skin) on US 8 to 11 and US 13, 0.0926 mm on US 7 and US 12 (inside model v8, `design/mech/thin/band-fit-notes.md` c.3); protection circuit to the ribbon 0.075 mm (the resin skin).
+
+### 17.27 Motor pocket and the block's cavity: a wall on US 10 to 13, a sealed window on US 7, 8 and 9 (lead's ruling, 2026-11-11)
+
+Source: `design/mech/thin/thin-notes.md` section "Model v6.1"; scans `design/mech/thin/out/v6/scan_wall_7_9.log` and `scan_wall_10_13.log`.
+
+- Finding: the motor's pocket is 0.1 mm larger than the motor. At the motor angles of 17.26 the pocket breaks into the block's cavity by a sliver (0.0005 to 0.0084 cubic mm) at every size. A wall that tapers to nothing cannot be machined to a known shape.
+- US 10 to 13: the motor moves about 2 degrees toward the joystick, to -45.0, -43.5, -42.5 and -41.0 degrees. The wall between the pocket and the cavity is then 0.34 to 0.41 mm (rule 0.30). This replaces the motor angles of 17.26 for these four sizes. The cells do not change.
+- US 7, 8 and 9: no angle gives that wall; the joystick is 0.5 degree away. Ruling: on these three sizes the pocket opens into the cavity through a window with clean edges. All metal between the pocket and the cavity that would be thinner than 0.30 mm is removed. The motor is glued into its pocket with a closed bead of adhesive all round, and the window is sealed from the band side with the same sealant as the two floor slots, in the same step, before the liner is cast. The motor angles of 17.26 stay (-47.0, -45.5, -44.0).
+- Not taken: the joystick 2 degrees lower on US 7, 8 and 9 (it would move the joystick on US 9, the reference size, shorten every cell again and change the exterior, the case and the behaviour rules); a thinner motor (none on file).
+- Window as built (model v6.2): about 4.0 mm long and 1.05 to 1.16 mm high, 1.90 to 1.99 square mm; its seal is the part SEAL2 (0.79 to 0.81 cubic mm of sealant); the nearest part inside the block is the circuit board, 0.44 to 0.49 mm away.
+- New rules for the model's check: the motor has at least 0.05 mm of free space to the body (the glue line), to the dam and to switch SW1; the pocket floor lies 0.05 mm under the motor; where a wall to the cavity exists it is at least 0.30 mm; where a window exists its size is reported, its edges are at least 0.30 mm thick, and no part in the cavity lies within 0.30 mm of it.
+- Added the same day, from the model: the -Y floor slot lies beside the motor pocket. With the slot 2.6 mm long, the metal between them was 0.00 to 0.07 mm on US 11 to 13, and 0.05 to 0.06 mm between the window and the slot on US 7 to 9 (`design/mech/thin/out/v6/probe_pocket_slot_10_13.log`, `probe_window_slot_us7.log` to `us9.log`). Ruling: both floor slots become 2.2 x 0.6 mm, from X -3.5 to X -1.3, at every size, with up to 0.2 mm more cut allowed where a wall stays under 0.30 mm. As built in model v6.2: 2.0 x 0.6 mm, from X -3.5 to X -1.5 (v8: 2.1 x 0.6, X -3.55 to -1.45) (US 12 needed the full 0.2 mm), and on US 13 the motor also moves to -42.5 degrees; metal between the pocket or window and the slot is then 0.34 to 0.68 mm at every size (`design/mech/thin/thin-notes.md` section "v6.2 continued"). The ribbon neck is 1.8 mm wide (X -3.4 to -1.6) in a floor slot 2.1 mm long (X -3.55 to -1.45), 0.15 mm to each slot end (inside model v8). Rule: at least 0.30 mm of metal between the motor pocket or its window and the slot. This replaces the 2.6 x 0.6 slot of 17.15 and of the body specification.
+- Open item S26 gains: the seal of the motor window on US 7, 8 and 9 (sealant 3M Scotch-Weld DP420 Black, mixed 2:1 by volume, put in with a 0.5 mm needle before the cast, 0.80 cubic mm per window, with the floor slots; bench item B8; item 45).
+
+### 17.28 Charging pads: 1.0 mm off the band's middle (2026-11-11)
+
+- The four charging pads sit at X = -1.0 mm: 1.0 mm from the band's middle toward the light end of the block. Diameter 1.6 mm, pitch 2.4 mm along the arc, angles as in 17.15. This replaces X = 0 of the inside model up to v6.2.
+- Why: the case's pin row stands at that place (design/case/case.py, PAD_X_OFF = -1.0). Review 2 (finding G01) showed that pads at X = 0 put each 0.6 mm pin tip on the pad's edge.
+- Why the pads move and not the pins: the ring can lie in the case turned over. Turned over, the pad order is reversed, so the VBUS pin would meet the GND pad. With the row 1.0 mm off the middle, a turned-over ring has its pads 2.0 mm from the pins (pad radius 0.8 mm plus tip radius 0.3 mm = 1.1 mm), so no pin touches a pad.
+- Proof: inside model v6.3, fit check at US 7 to 13; the case check reads the ring's pad positions from design/mech/thin/placement.csv.
+- Not proven: contact force and wear (bench).
+
+### 17.29 Finish and joystick shape (owner, 2026-11-11)
+
+Owner, on the first film stills: "the joystick looks a bit ugly. Should be round with texture for thumb", "and a bit more protruding", "also, let's have a dark glossy look for all the ring, not mettalic".
+
+- **Finish: one dark glossy finish for the whole ring.** No bare metal shows. Body and band: titanium grade 5, polished, then a gloss black coating (Oerlikon Balzers BALINIT DLC, black, 1 to 3 um thick, applied under 250 degrees C, item 105; before: PVD or DLC, the maker names the process, the thickness and the gloss it holds). The cover glass is black as before. The joystick cap is moulded in gloss black; its ridged top face may be slightly matt for grip. The liner inside the band stays dark. This replaces every satin or bead-blasted finish named before.
+- **Why a coating and not another material:** it keeps every dimension of the body. A black ceramic body (zirconia) is glossy by itself and lets radio through, which would also answer the antenna question (S24); its 0.40 mm walls and the 0.20 mm rings under the microphone seats need a ceramic maker's word first. Open item S29.
+- **Joystick: round.** Opening in the body round, 5.6 mm. Fixed frame round, 5.4 mm outer diameter. Cap round, 4.4 mm at its top, 0.5 mm higher above the frame than the rectangular nub of 17.25. Top face: a dish 0.25 mm deep with three concentric ridges (0.25 mm wide, 0.08 mm high, at radii 0.7, 1.3 and 1.9 mm), top edge rounded 0.3 mm. The place round the band per size stays as in 17.25. The flange under the skin and the switch cross (radius 2.4 mm) stay as in 17.24 until the inside model is rebuilt on it.
+- **To follow:** (checked 2026-11-13, w11-item-values.md item 160: done; the seven-size exterior merged32h exists, `design/look/s1/merged32h-report.md` and `design/look/s1/out/ring-merged32h-us9.step`; the inside model is v9) exterior variant merged32h (seven sizes, metal round the opening measured), then the inside model, the cap's specification, the maker files, the case's clearance for the higher cap, and the wear of a gloss coating on a ring (bench).
+
+### 17.30 The screen fills the glass face; no recording light (owner, 2026-11-11)
+
+Owner: "We shouldn't have the indicator at the top, just the screen that take full space"; on the card that stated the cost: "Full screen, no separate light". Requirements change 23.
+
+- **Screen (owner's second decision, 2026-11-11, after two rounds of research: "Hide it now, ask makers"):** version 1 keeps the present part, Tailor Pixels TOH095XVT-01 (lit area 10.8 x 21.6 mm in an outline of 12.8 x 27.35 mm). Research (`design/parts/full-face-screen.md`, `thin-bezel-parts.md`, `thin-bezel-products.md`: 22 parts and products) found no stock part that lights more of this face: today's dark border is 1.9 mm along each long side and 7.5 mm in total at the two ends, and the best stock bar panels keep at least 2.5 mm dark per end. The border is hidden, not removed: (1) the cover glass and its print are the same black as the panel when off; (2) the glass is bonded to the panel with clear adhesive over the whole face (ADH1), so no air gap shows the edge of the lit area; (3) every screen picture has a true black background; (4) the software centres its content on the centre of the FACE, not of the lit area, and keeps it inside the lit area (the lit area's offset along the finger is open item S8: the design reads 1.4 mm and 4.35 mm of dark panel at the two ends from the part's drawing; only the 5.75 mm total is in the datasheet text). The thin-border version is a question to makers, open item S30: a flexible version of this panel with its drive electronics folded behind (lit area as close as possible to 27.9 x 13.4 mm, border target 1 mm, thickness 0.8 mm or less, same interface), or a fully custom panel; public cost figures disagree by a factor of a thousand, so only quotes settle it. Open item S27 (the cable of the present part) stays open.
+- **Recording light: removed.** Out of the design: LED1, the light guide LG1, the light pipe LP1, the window in the glass print, the plug, R41 and Q2 (17.21, 17.22 are history). The hole for the guide in the main board goes.
+- **How a recording shows now (lead's rule for the software, to write into firmware.md):** while a recording runs the screen never goes fully dark: it shows at least a red dot and the timer, dimmed after 3 s without input, and the full recording picture on any input. The dot's pixels are driven by the same code path that starts the microphones; a test proves that no state records with the screen dark. The power cost of the always-lit dot must be measured on the new panel (bench).
+- **What is lost:** the sign others see is drawn by software and is no longer wired to the microphones' supply. Stated to the owner on the card; consent rules per country are to be checked before sale.
+- **To follow:** the screen part (S30), the inside model without the light parts and with the new screen, the parts list, the wiring (Q2, R41, LED1 out), the behaviour rules (section 3.2 and the screen rules), the cover glass specification, the maker files, the assembly order, the supplier cover page.
+
+### 17.31 Inside model v7: the round joystick and no recording light, at every ring size (2026-11-11, 22:50)
+
+Source: `design/mech/thin/thin-notes.md` section "Model v7"; logs in `design/mech/thin/out/v7/`; handover `design/mech/thin/v7-handover.md`. It follows 17.29 and 17.30 on the accepted exterior merged32h.
+
+- **Fit check:** the default US 9 run and each size US 7 to 13 end `RESULT PASS` (1080 pairs and 47 parts on US 7, 8, 9; 1034 pairs and 46 parts on US 10 to 13). Two broken copies end `RESULT FAIL`: LED1 put back, and the cap at its old height.
+- **Removed from the model, the parts list, the wiring, the behaviour rules, the maker files and the assembly order:** LED1, R41, Q2, the light guide LG1, the light plug LP1, the 0.50 mm board hole, the foam notch and the print window. The glass print is black outside the lit area with no opening; the clear adhesive ADH1 covers the whole panel.
+- **Joystick, one fixed choice per item:**
+  - Body opening: round, 5.60 mm, through the wall on the radial line at -84.0 deg (US 7), -81.0 (US 8), -78.0 (US 9 to 13).
+  - Frame FRM1: a separate ring, Ti-6Al-4V, CNC turned, polished, gloss black coating with the body; outer 5.40 mm, bore 4.80 mm, 1.30 mm long, from 0.80 mm under the band surface to 0.50 mm above it; bonded with 3M Scotch-Weld DP420 Black (0.10 mm radial gap).
+  - Cap CAP1: one moulded part, Covestro Makrolon 2407 colour 901510; shank 4.40 mm, 0.20 mm radial clearance to the bore; rim plane 1.400 mm above the frame top; top edge 0.30; spherical dish 0.25 mm deep (sphere radius 7.345); three ridges at radii 0.70, 1.30, 1.90 mm, 0.25 wide, 0.08 high; flange 6.90 (+0 / -0.10) x 6.40 x 0.40 mm. Length from the flange underside to the rim plane 4.517 mm; to the top of the outer ridge 4.597 mm [measured in the model].
+  - Under it: the five Alps SKTAAAE010 of 17.15 (cross 2.4 mm, SW2 at the centre); a long press of 1.0 s on the centre starts and stops a recording.
+- **Measured at every size:** frame bore 4.800, top 0.500 over the surface; cap top heights within 0.001 mm of the design; cap top within 0.010 mm of the exterior's; metal round the opening 1.07 to 1.08 mm along X and 1.11 to 1.61 mm toward the bottom (rule 0.40). Motor, cells, pads, slots and seals are unchanged from v6.3.
+- **Fault found and fixed:** the model's surface probe started at r 14.5 mm, under the US 13 surface (14.695 mm). On US 13 the joystick of models v6 to v6.3 therefore sat 0.195 mm too low; v7 places it on the real surface.
+- **Not proven:** the feel and sealing of the round cap (B9), the DP420 bond on the coating, the cost of the always-lit recording dot (bench).
+
+### 17.32 Weight: what the files state, part by part (2026-11-12; review 3 finding H23)
+
+Requirement S5 asks for under 12 g. No total weight can be stated: the files give a mass for one ring part (the motor) and for one case part (the case cell). A mass is written only where a file states it; where none does, the cell says "no figure" and nothing is guessed. No file gives the density of titanium, glass, resin, copper or the board laminate, so a volume cannot yet be turned into a mass: the body, the glass and the liner are listed with their volumes and "no figure" for the mass. The sum of the stated masses is a lower bound, not the weight of the ring.
+
+Volumes come from `design/mfg/parts/index.csv` (STEP rows, column volume_mm3; the line numbers are those of that file). Volumes in cubic mm.
+
+| Part (reference) | US 7 | US 8 | US 9 | US 10 | US 11 | US 12 | US 13 | Mass | Source |
+|---|---|---|---|---|---|---|---|---|---|
+| Metal body HSG1, volume (titanium grade 5) | 932.326 | 958.6297 | 982.221 | 1012.3203 | 1041.4748 | 1070.5907 | 1099.9574 | no figure (no density in any file) | `index.csv` lines 22, 34, 2, 46, 57, 68, 79 |
+| Band liner LNR1, volume (resin) | 84.3531 | 88.015 | 91.7212 | 95.3564 | 99.0181 | 102.7029 | 106.4081 | no figure (no density, no resin chosen) | `index.csv` lines 24, 36, 4, 48, 59, 70, 81 |
+| Cell BT1, pouch volume | 303.5709 | 328.4326 | 353.4595 | 370.0181 | 386.5597 | 403.0865 | 419.6004 | no figure (custom cell, no mass in any file; maker Grepow not yet asked) | `index.csv` lines 26, 38, 6, 50, 61, 72, 83 |
+
+| Part (reference) | Quantity | Same at every size | Mass | Source |
+|---|---|---|---|---|
+| Cover glass GL1, volume 332.8716 cubic mm | 1 | yes | no figure (no density in any file) | `design/mfg/parts/index.csv:14` |
+| Vibration motor M1 (Jinlong W0525AB001D) | 1 | yes | 0.32 g, tolerance +-10 % (so 0.288 to 0.352 g) | `design/datasheets/slim2_jinlong-w0525ab001d.pdf` item "Weight, measured with the electronic scale, 0.32g +-10%" (text copy `design/ecad/motor-drive/src_w0525_text.txt` lines 412 to 414); `design/bom.csv` line 44 "0.32 g"; 17.16 |
+| Screen DISP1 (Tailor Pixels TOH095XVT-01) | 1 | yes | no figure: the maker's sheet says "Weight TBD" | `design/datasheets/display_TOH095XVT-01.pdf` (text copy `design/ecad/ring/evidence/text_display.txt` lines 204 to 206) |
+| Joystick cap CAP1, volume 78.7324 cubic mm (Makrolon 2407) | 1 | yes | no figure (no density in any file) | `index.csv:15` |
+| Joystick frame FRM1, volume 6.2486 cubic mm (Ti-6Al-4V) | 1 | yes | no figure (no density in any file) | `index.csv:17` |
+| Main board PCB1, bare core volume 94.0318 cubic mm | 1 | yes | no figure (no density; parts not included) | `index.csv:19` |
+| Main chip U1, power chip U2, storage U3, translator U10, screen supply U4, motor regulator U11, protection array U9 | 1 each | yes | no figure: the sheets on file state no part mass (the nPM1304 sheet has only the field "GROSS WEIGHT" of a shipping carton label, page 165, with no figure) | `design/datasheets/` (searched for "weight", "mass" and masses in grams, log `design/review/r3-fixes/parts/logs/scan_mass.log`) |
+| Microphones U5, U6 (Knowles SPK0641HT4H-1) | 2 | yes | no figure (no part mass on file) | same search |
+| Antenna ANT1, crystals X1, X2, switches SW1 to SW5, connector J1, coils L1, L2, L3, L4, L10, L71, L72, ferrite FB1 | per `design/bom.csv` | yes | no figure | same search |
+| Resistors, capacitors, thermistor RT1, test pads | per `design/bom.csv` | yes | no figure | same search |
+| Flex tails FLEX1, FLEX2, volumes 7.6696 and 8.4906 (US 7) to 8.0981 and 10.1666 (US 13) cubic mm | 2 | no | no figure (no density, no copper content) | `index.csv` lines 27, 29 (US 7) and 84, 86 (US 13) |
+| Protection circuit PRT1 | 1 | no | no figure | no file |
+| Clear adhesive ADH1, foam pad FOAM1, seal SEAL1 (volume 2.9334 cubic mm), dam DAM1 (3.3854 cubic mm at US 13 to 3.7446 at US 7), motor window seal SEAL2 (US 7 to 9: 0.7967, 0.7937, 0.8122 cubic mm), mic gaskets (0.4574 for two), mic membranes (0.6283 for two) | per `design/bom.csv` | partly | no figure (no density in the files; since 2026-11-13 the materials are named: ADH1 tesa 69404, FOAM1 Nitto SCF AN010, SEAL1 tesa 61305, SEAL2 3M Scotch-Weld DP420 Black, gaskets Nitto SCF, membranes Saati Acoustex 010a on tesa 61305) | `index.csv` lines 10, 11, 12 (US 9), 20, 21, 30, 31, 32 (US 7), 44 (US 8) |
+| Coating (gloss black, Oerlikon Balzers BALINIT DLC, 1 to 3 um) | 1 | yes | no figure (thickness 1 to 3 um, item 105; adds at most 0.003 mm per face) | 17.29 |
+
+Stated masses of the ring: the motor, 0.32 g (0.288 to 0.352 g). Every other line: no figure. Result: the weight of the ring is not known, and S5 (under 12 g) can be neither confirmed nor refused from these files (since 2026-11-13 the cover glass is AGC Dragontrail Pro, density 2.46: it weighs 0.82 g, 332.87 cubic mm; the weight of the ring is measured on the first unit, part by part, on a 0.01 g balance; items 107 to 109). What closes it: a density per material from the body maker, the glass maker and the liner resin maker (open items S13, S26, S29); the cell maker's mass (S12); the screen maker's mass (S8, S27); and a weighed printed dummy ring (bench B5, 17.9).
+
+The charging case, from `design/case/case-bom.csv`:
+
+| Part | Mass | Source |
+|---|---|---|
+| Case cell BT1 (DNK Power DNK852338, 700 mAh) | about 11.7 g ("appr 11.7 g") | `design/case/case-bom.csv:12` "11.7 g"; `design/datasheets/case_cell_dnk852338.pdf` item Weight (text copy `design/ecad/case/evidence/text_case_cell_dnk852338.txt:72` "appr 11.7 g") |
+| Shell MECH1, lid MECH2, bottom plate MECH3, post MECH5 (moulded or printed plastic), pivot pin MECH4, magnets MECH9, screws MECH6, glides MECH8, boards PCB1 and PCB2, chips and small parts | no figure (no density, no part mass in `case-bom.csv` or `case-architecture.md`; the case's shape volumes are not in any file read here) | `design/case/case-bom.csv` (searched for mass, weight, g and density: only line 12) |
+
+Stated masses of the case: the cell, 11.7 g. Every other line: no figure. The case weight is not known either.
+
+**Estimate from sourced densities (the lead, 2026-11-12).** Densities and their sources: `design/review/r3-fixes/densities.md`. Titanium alloy Ti-6Al-4V 4.47 g/cm3 (ATI datasheet; a second source gives 4.42, which lowers the body by 1.1 percent); polycarbonate Makrolon 2407 1.20 g/cm3; motor 0.32 g from its datasheet. Volumes: `design/mfg/parts/index.csv` (model v7).
+
+| Ring size | Body volume, mm3 | Body, g | Joystick frame, g | Joystick cap, g | Motor, g | Sum of these four, g |
+|---|---|---|---|---|---|---|
+| US 7 | 932.326 | 4.17 | 0.028 | 0.094 | 0.32 | 4.61 |
+| US 8 | 958.630 | 4.29 | 0.028 | 0.094 | 0.32 | 4.73 |
+| US 9 | 982.221 | 4.39 | 0.028 | 0.094 | 0.32 | 4.83 |
+| US 10 | 1012.320 | 4.53 | 0.028 | 0.094 | 0.32 | 4.97 |
+| US 11 | 1041.475 | 4.66 | 0.028 | 0.094 | 0.32 | 5.10 |
+| US 12 | 1070.591 | 4.79 | 0.028 | 0.094 | 0.32 | 5.23 |
+| US 13 | 1099.957 | 4.92 | 0.028 | 0.094 | 0.32 | 5.36 |
+
+This sum is a lower bound of the ring's weight. Not in it, because no source gives a density or a mass: the cover glass (332.87 mm3, glass grade not chosen), the cell (303.6 to 419.6 mm3 across US 7 to 13, custom, no mass from its maker), the band liner (84.4 to 106.4 mm3, resin not chosen), the screen panel (its sheet says "Weight TBD"), the main board with its parts, the two ribbons, the five switches and the seals. Requirement S5 stays unconfirmed until those have figures; the first built ring is weighed.
+
+## 18. Software platform (owner, 2026-11-10)
+
+Owner: "We need a lightweight OS on it that enables specialised software and can sync with phone. Look at things like MentraOS". Owner, on the options of `design/software-platform-study.md`: "A2: own protocol, same model". Full Android on the ring was studied and dropped (`design/android-study.md`).
+
+- Model: the ring is a thin device. Its fixed firmware (on Zephyr, as today) turns it into a screen, a joystick with its centre press, two microphones and a vibration motor for specialised apps that run on the PHONE. This is the model of MentraOS, built as the project's own protocol and its own phone app.
+- What does not change: recording to the ring's storage on a long press works with no phone (owner: "only when a long press on it"); the hardware of sections 17.11 to 17.15.
+- What is new, each to be specified before any code: (1) the ring link protocol over Bluetooth Low Energy: drawing on the 120 x 240 screen, joystick and press events, vibration, microphone audio to the phone, notifications, time, the list and transfer of recordings; (2) the firmware's rules for that protocol, on top of the behaviour rules F4; (3) a phone app for iPhone and Android that holds the link and runs the specialised apps; on iPhone the ring can also read notifications directly through Apple's Notification Center Service.
+- The signed requirements said "The phone app, transcripts and summaries. Owner: hardware only for now" (requirements.md): the phone app now enters the project by the owner's choice above.
+- Open, to be measured or answered: the battery cost of an open link and of live audio; the audio coder on the chip; which specialised apps come first.
+
+### 18.1 Decision of 2026-11-11: standard Bluetooth services first
+
+Owner, 2026-11-11: "You build the ring software Operating System. Goal is to be able to connect to notification and control iPhone, Android and Mac". The owner approved the software build plan the same day (`firmware/docs/PRD.md`, `design/software/os/design.md`).
+
+- Base: Nordic's nRF Connect SDK 3.4.2 on Zephyr. The code is in `firmware/`. It is built and tested on a Linux server inside Nordic's toolchain image.
+- First link: standard Bluetooth services. The project's own link protocol of this section (model A2) is paused; the ring's own status and its recordings over Bluetooth come later.
+- Control: the ring is a standard Bluetooth keyboard, media remote and pointer, with four control modes (media, presenter, pointer, agent). It works with iPhone, Android and Mac with no software on that device.
+- Devices: up to three paired devices; the wearer picks the active one on the ring. Pairing uses a six-digit passkey shown on the ring's screen.
+- iPhone notifications: Apple's notification, media and time services (`design/firmware.md` 7.6). No app on the phone.
+- Android notifications: the relay service of `design/firmware.md` 7.7 and a helper app on the phone. The helper app is specified (`design/software/os/android-helper-spec.md`) and not built.
+- Mac notifications: none. No supported way was found (`design/software/os/research-platforms.md`).
+- Recording: a long press on the joystick's centre starts and stops a recording in every mode. No device can start or stop a recording.
+- State on 2026-11-13: software steps 1 to 5 (core, devices and control, iPhone, screens, relay) are built and proven in simulation (`firmware/docs/step2-report.md` to `step5-report.md`). Nothing has run on hardware.
+
+## Key numbers
+
+The current ring in five figures (17.15 wins over 17.10, 17.8, 17.5 and 17.1). Weight is not stated: section 17.32 lists every part with its stated mass; only the motor's 0.32 g is stated in the files, so no total weight can be given.
+
+| Fact | Value | Source |
+|---|---|---|
+| Size of the block | 29.3 x 14.75 x 3.85 mm | 17.8: height 3.85 mm at the centre line, 2.95 mm at the long edges; plan 17.1 |
+| Battery | 20 to 27 mAh | 17.26 [CALC] at ring size US 9 (20.3 to 27.1); 17.6 to 31.9 mAh across US 7 to 13, measured per size in the inside model v6 |
+| Recording hours | 5.0 to 6.6 hours | 17.26 [CALC] at 4.1 mA and US 9; 4.3 to 7.8 hours across US 7 to 13 |
+| Storage | 4 GB | 16.4 |

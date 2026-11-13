@@ -1,0 +1,101 @@
+# remote.sh run 20261111-132029-bsimBC1
+# command: CTRL_BOARD=nrf52_bsim/native tests/bsim/control/run.sh B
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 13:20:29 CET
+# free on the server's /: 58 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-132029-bsimBC1; server log /root/ring-os/logs/20261111-132029-bsimBC1.log
+bsim-control: firmware /ws/firmware/tests/bsim/control, outputs /ws/out/20261111-132029-bsimBC1-bsim-control, scenarios B, broken 0
+=== build ring for nrf52_bsim/native, log /ws/out/20261111-132029-bsimBC1-bsim-control/build-ring.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring ok
+=== build host for nrf52_bsim/native, log /ws/out/20261111-132029-bsimBC1-bsim-control/build-host.log
+      1 warning: BT_GATT_CHRC_POOL_SIZE (defined at /ws/nrf/modules/../subsys/bluetooth/Kconfig.pool:35) was
+      1 warning: BT_GATT_UUID16_POOL_SIZE (defined at /ws/nrf/modules/../subsys/bluetooth/Kconfig.pool:14)
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== test B: ring + 2 host(s), 75 simulated seconds, 2026-11-11T12:21:32Z
+exit codes: phy 0, ring 0, hosts 0 0
+--- ring /ws/out/20261111-132029-bsimBC1-bsim-control/run-B-ring.log
+d_00: @00:00:00.000000  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.001718  RING CHECK Bluetooth up, devices ready PASS (t=1)
+d_00: @00:00:00.001718  RING CHECK pairing window opens for slot 0 PASS (t=1)
+d_00: @00:00:00.996054  RING PASSKEY slot 0 836849
+d_00: @00:00:05.596109  RING EVENT paired slot 0
+d_00: @00:00:05.596109  RING EVENT active slot 0
+d_00: @00:00:05.596109  RING EVENT link slot 0 up
+d_00: @00:00:07.804413  RING CHECK host 1 pairs, link ready PASS (t=7804)
+d_00: @00:00:07.804413  RING CHECK slot 0 active PASS (t=7804)
+d_00: @00:00:08.504578  RING CHECK P1 media.centre sends 2 report(s) PASS (t=8504)
+d_00: @00:00:09.204712  RING CHECK P1 media.right sends 2 report(s) PASS (t=9204)
+d_00: @00:00:30.000763  RING CHECK pairing window opens for slot 1 PASS (t=30000)
+d_00: @00:00:30.095894  RING EVENT link slot 0 down
+d_00: @00:00:30.500794  RING CHECK host 2 pairs, link ready FAIL (t=30500)
+d_00: @00:00:30.500794  RING CHECK slot 1 active after its pairing FAIL (t=30500)
+d_00: @00:00:30.556301  RING PASSKEY slot 1 325288
+d_00: @00:00:31.200959  RING CHECK P2 media.centre sends 2 report(s) FAIL (t=31200)
+d_00: @00:00:31.901093  RING CHECK P2 media.left sends 2 report(s) FAIL (t=31901)
+d_00: @00:00:31.901093  RING CHECK switch to slot 0 PASS (t=31901)
+d_00: @00:00:32.473093  RING EVENT link slot 0 up
+d_00: @00:00:33.001343  RING CHECK host 1 reconnects, link ready PASS (t=33001)
+d_00: @00:00:33.001343  RING CHECK slot 0 active PASS (t=33001)
+d_00: @00:00:33.701478  RING CHECK P3 media.up sends 2 report(s) PASS (t=33701)
+d_00: @00:00:34.401612  RING CHECK P3 media.down sends 2 report(s) PASS (t=34401)
+d_00: @00:00:34.401612  RING CHECK switch to slot 1 FAIL (t=34401)
+d_00: @00:00:34.901642  RING CHECK host 2 reconnects, link ready PASS (t=34901)
+d_00: @00:00:35.601777  RING CHECK P4 media.right sends 2 report(s) PASS (t=35601)
+d_00: @00:00:35.601777  RING CHECK switch to an empty slot is refused PASS (t=35601)
+d_00: @00:00:35.601777  RING CHECK switch to the active slot changes nothing FAIL (t=35601)
+d_00: @00:00:35.601777  RING CHECK three distinct local identities PASS (t=35601)
+d_00: @00:00:35.601777  RING CHECK two paired callbacks FAIL (t=35601)
+d_00: @00:00:35.601777  RING SCRIPT DONE t=35601 checks=24 fails=7
+d_00: @00:00:35.601777  RING RESULT FAIL
+--- host 1 /ws/out/20261111-132029-bsimBC1-bsim-control/run-B-host1.log
+d_01: @00:00:00.000998  HOST H1 CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.644599  HOST H1 connected (t=644), bonded=0
+d_01: @00:00:01.146285  HOST H1 passkey entry asked, read ok (t=1146)
+d_01: @00:00:01.146285  HOST H1 CHECK passkey read from the ring's display PASS (t=1146)
+d_01: @00:00:05.596108  HOST H1 CHECK pairing with the passkey completed and bonded PASS (t=5596)
+d_01: @00:00:05.596108  HOST H1 security level 4 (t=5596)
+d_01: @00:00:05.596108  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=5596)
+d_01: @00:00:07.046133  HOST H1 INFO subscribed to 3 input reports (t=7046)
+d_01: @00:00:08.346140  HOST H1 REPORT t=8346 id=2 len=2 data=cd00
+d_01: @00:00:08.346580  HOST H1 REPORT t=8346 id=2 len=2 data=0000
+d_01: @00:00:08.546141  HOST H1 REPORT t=8546 id=2 len=2 data=b500
+d_01: @00:00:08.546581  HOST H1 REPORT t=8546 id=2 len=2 data=0000
+d_01: @00:00:30.095895  HOST H1 disconnected reason 0x13 (t=30095)
+d_01: @00:00:32.121492  HOST H1 connected (t=32121), bonded=1
+d_01: @00:00:32.473096  HOST H1 security level 4 (t=32473)
+d_01: @00:00:32.473096  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=32473)
+d_01: @00:00:33.923025  HOST H1 INFO subscribed to 3 input reports (t=33923)
+d_01: @00:00:34.973032  HOST H1 REPORT t=34973 id=2 len=2 data=b500
+d_01: @00:00:34.973472  HOST H1 REPORT t=34973 id=2 len=2 data=0000
+d_01: @00:01:10.000062  HOST H1 EVAL t=70000
+d_01: @00:01:10.000062  HOST H1 CHECK P1 media.centre PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK P1 media.right PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK P3 media.up (after the switch back) FAIL (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK P3 media.down FAIL (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK no other report received FAIL (t=70000)
+d_01: @00:01:10.000062  HOST H1 INFO 6 report(s) received in total
+d_01: @00:01:10.000062  HOST H1 RESULT FAIL checks=10 fails=3
+--- host 2 /ws/out/20261111-132029-bsimBC1-bsim-control/run-B-host2.log
+d_02: @00:00:00.000998  HOST H2 CHECK Bluetooth up PASS (t=0)
+d_02: @00:00:30.204846  HOST H2 connected (t=30204), bonded=0
+d_02: @00:00:30.706531  HOST H2 passkey entry asked, read ok (t=30706)
+d_02: @00:00:30.706531  HOST H2 CHECK passkey read from the ring's display PASS (t=30706)
+d_02: @00:00:32.006142  HOST H2 security failed err 9  (t=32006)
+d_02: @00:00:32.006142  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=32006)
+d_02: @00:00:32.006142  HOST H2 disconnected reason 0x13 (t=32006)
+d_02: @00:01:10.000062  HOST H2 EVAL t=70000
+d_02: @00:01:10.000062  HOST H2 CHECK P2 media.centre FAIL (t=70000)
+d_02: @00:01:10.000062  HOST H2 CHECK P2 media.left FAIL (t=70000)
+d_02: @00:01:10.000062  HOST H2 CHECK P4 media.right (after the second switch) FAIL (t=70000)
+d_02: @00:01:10.000062  HOST H2 CHECK no other report received FAIL (t=70000)
+d_02: @00:01:10.000062  HOST H2 INFO 0 report(s) received in total
+d_02: @00:01:10.000062  HOST H2 RESULT FAIL checks=7 fails=5
+ring script done at 35601 ms, host 1 evaluated at 70000 ms
+TEST B RESULT FAIL (26 checks passed; ring-result host1-result host2-result 15-failed-checks)
+RESULT FAIL B
+# finished (Mac clock): 2026-11-11 13:21:42 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step2/20261111-132029-bsimBC1.log

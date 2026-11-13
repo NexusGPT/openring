@@ -1,0 +1,13 @@
+--- design/ecad/ring/pcb/w1-evidence/bom-notes_before.md	2026-11-12 23:59:06
++++ design/bom-notes.md	2026-11-13 00:50:24
+@@ -96,3 +96,10 @@
+ - Cover glass GL1 plan outline: 29.2958 x 14.429 mm, taken from the maker file (design/mfg/parts/index.csv line 14, the glass of the accepted exterior ring-merged32h.step). The inside model uses the same glass solid; its placement row cover_glass now gives 29.296 x 14.429 (the 29.100 x 14.560 there was a stale size note, corrected by the lead on 2026-11-12). Earlier values in the lines above (29.3 x 14.75, 28.6 x 13.6) are history.
+ - Motor M1: the angle is given per ring size (-47.0, -45.5, -44.0, -45.0, -43.5, -42.5, -42.5 degrees on US 7 to 13), from design/mfg/specs/body.md.
+ - tools/check_bom.py has rules 8 to 13 (designators against the netlist and the model's placement file, removed-in-v7 names, pad order, motor angles, glass outline, RT1 place).
++
++Note added 2026-11-13 (W1 rounds 1 and 2, with the lead's rulings; reasons in `design/ecad/ring/pcb/footprint-notes.md` section d and "Round 2"):
++- Every line below carries only a code that a saved maker document shows. C71, C86 and C87: Murata GRM155R61E105KA12D (1.0 uF 25 V X5R 0402; `w1b_murata_grm155r61e105ka12.pdf` p1, p2). RT1: Murata NCP15XH103F03RC (`w1b_murata_ncp15xh103f03rc.pdf` p2). L71, L72 (and L10): Murata 1269AS-H-2R2M=P2 (`w1b_murata_1269as-h-2r2m.pdf` p2, land p5). C85 and C60: Kyocera AVX 0402ZC225KAT2A (AVX X7R table PDF p3, row 2.2 uF 0402 10 V). C35 and C36: Kyocera AVX 04025A102JAT2A, 1.0 nF C0G 0402 (AVX C0G table PDF p3).
++- C60 changed from 4.7 uF to 2.2 uF (lead decision 24; storage maker sheet PDF p11).
++- C35 and C36 are 1.0 nF, not the 0.1 uF of the Knowles figure: the AVX C0G table has 0.1 uF only in 1206 (2.29 mm high) and 1.00 mm is free. The 0.1 uF value is not met with a Class 1 part of this height. The build guide measures the noise floor.
++- C88: Murata GRT188R61A106KE13D (10 uF 10 V X5R 0603, 0.8 mm; `w1c_murata_grt188r61a106ke13.pdf` p1, p2). Stated deviation from Nordic Table 37 (16 V): VSYS never exceeds VBUSOVP 5.5 V (nPM1304 PDF p17), 10 V is 1.8 times that, and no 16 V part with a readable document exists at 1.0 mm or less.
++- `tools/check_bom.py` before and after: "failures 0" both times (`ecad/ring/pcb/w1-evidence/check_bom_before.log`, `final_check_bom_after.log`).

@@ -1,0 +1,153 @@
+# Recording light path (review finding F01) - history: the recording light was removed in design version 7 (architecture 17.30; `design/architecture.md` line 523) and this file is history, so this study describes a part the design no longer has
+
+WINDOW MOVES: the light window cannot stay at X -13.25, Y -4.7. It moves to X -12.425, Y -2.95 (0.825 mm toward the fingertip, 1.75 mm toward the centre line; logs/derived2.log). Reason in section 1.
+
+Design commit read: 33475e6. Coordinates are those of the inside model v4 (thin-notes.md line 5): X along the finger (+X fingertip), Y across (+Y thumb), Z up, origin at the centre of the block's underside. Units mm. Every number carries its source, or [CALC] (worked from sourced numbers), or [ESTIMATE]. Every [CALC] number and every coordinate of the layout is printed by `derived.py` (logs/derived2.log) or by the fit check (`check.log`). Raw outputs are in `logs/`, datasheet pages drawn by PyMuPDF in `img/`, helpers in `tools/`. Datasheets read: `design/datasheets/light_kb_*.pdf`.
+
+## 1. Why the v4 window cannot be served
+
+The screen maker's drawing (display_TOH095XVT-01.pdf p5; vector lines measured by `tools/screen_ledge.py`, output logs/screen_ledge.log) gives:
+
+- Ledge (lower glass only): 2.951 mm from the panel end, so X -13.675 to -10.724. The inside model draws it 4.8 mm long, to X -8.875 (thin.py line 323, marked ASSUMED in thin-notes.md line 39).
+- Bond fingers of the screen's flexible tail: 0.101 to 0.900 mm from the panel end (X -13.574 to -12.775), across Y -5.805 to +5.805.
+- The tail lies on the glass from X -13.675 to -12.775, across Y -6.198 to +6.204, and stays that wide to 11.496 mm beyond the panel end.
+
+The v4 window at X -13.25, Y -4.7 lies on that bond (check.log, INFO line "v4 window ... over the FPC bond ...: yes"). Light from below meets the bonded tail and its metal fingers. So the light column must stand on the ledge between the bond (ends X -12.775) and the upper glass (starts X -10.724).
+
+Side findings for the inside model owner (not mine to change): the model's tail is 5.0 mm wide (thin.py line 334) where the maker's is 12.4 mm wide at the bond; the maker's active area starts 4.751 mm from the ledge end, which puts it at X -8.924, 0.396 mm inboard of the model's lit area edge X -9.320 [CALC, logs/derived2.log].
+
+## 2. The recommended path, in one line
+
+LED1 (Kingbright KPG-1005SURC-TT, top view) on the board's under face shines DOWN into a small clear L-shaped light guide LG1. Three 45 degree mirrors turn the light along -Y, then along -X, then UP through a 0.5 mm hole in the board, a notch in the foam, the clear ledge glass of the screen, the clear plug LP1 and the clear adhesive, out through a 0.4 mm window in the black print of the cover glass at X -12.425, Y -2.95.
+
+It fits the v4 model and also the microphones of architecture.md 17.19, added after commit 33475e6 (U5 at X -12.8 to -8.8, Y -6.3 to -3.3: mic-path.md line 58). Fit check: `check.log`, 70 checks over both layouts, 0 failed, last line `RESULT PASS`.
+
+## 3. The LED
+
+All values from the maker's datasheet, Kingbright spec DSAN2430 rev V.2A, 2013-12-10, PRELIMINARY, saved as `design/datasheets/light_kb_KPG-1005SURC-TT_rs-copy.pdf` (a copy hosted by RS; same SHA-1 as `codes_kpg-1005surc-tt-rs-copy.pdf`, logs/kpg_copy_shasum.log). Text: logs/light_kb_KPG-1005SURC-TT_rs-copy.txt.
+
+| Item | Value | Source |
+|---|---|---|
+| Maker and part number | Kingbright KPG-1005SURC-TT, Hyper Red | p1 |
+| Body | 1.0 x 0.5 x 0.2 mm (side view "0.2[0.008]" +0.05 / -0.02) | p1 drawing, img/kpg_p1.png |
+| Emitting direction | top view: away from its pads; on the board's under face it shines down (-Z) | p1 side view (lens on top); p1 note 4 "single mounting surface" |
+| Emitting area | clear top between the two end terminals, 0.6 x 0.5 mm, die at its centre | p1 drawing ("0.6[0.024]"), img/kpg_p1.png |
+| Wavelength | dominant 631 nm, peak 639 nm, half width 20 nm, at 20 mA | p2 |
+| Forward voltage | 2.0 V typ, 2.4 V max at 20 mA; tolerance +-0.1 V | p2 table and note 2 |
+| Forward voltage at low current | 1.767 V at 1.5 mA, 1.748 V at 1.0 mA, 1.786 V at 2.0 mA (typical curve) | p3 curve read from the PDF's vector path, logs/kpg_vf_curve.log |
+| Luminous intensity at 20 mA | printed "55 195" and "*20 *65" (min, typ); the star marks the values "traceable to the CIE127-2007" | p2 table and note 2 |
+| Relative intensity at 1.5 mA | 0.0779 of the 20 mA value | p3 curve, logs/kpg_iv_curve.log |
+| Viewing angle | 125 degrees (2 theta 1/2) | p2 |
+| Limits | 20 mA DC, 48 mW, -40 to +85 C | p2 |
+| Land pattern | two pads 0.7 x 0.5 with a 0.4 gap, 1.8 long overall | p4, img/kpg_p4b.png |
+| Polarity | pad 1 = cathode, pad 2 = anode (the diode symbol points to 1) | p1 symbol, img/kpg_p1_symbol.png |
+
+Why this part: it is the thinnest red part I read (0.2 mm). Under the board that height leaves 0.680 mm for the guide (section 4). It is already the parts list's LED1 (bom.csv line 47), so only its place changes.
+
+Weak points: the only maker sheet is the 2013 preliminary one. The maker's US site no longer serves it (`light_kb_KPG-1005SURC-TT.pdf` is a 4040-byte HTML page, logs/fetch_kb2.log). Whether it is still orderable is NOT verified: DigiKey answered HTTP 403 with a bot check (logs/dk_check.log), and I stopped there.
+
+Fallback if it is not orderable: Kingbright APHHS1005SURCK (current sheet DSAD0911 rev V.18A, 2021-03-25, light_kb_APHHS1005SURCK.pdf p1 and p2): 1.0 x 0.5 x 0.5 mm, 630 nm dominant, Vf 1.95 V typ and 2.5 V max at 20 mA, Iv 120 / 220 and *40 / *70 mcd at 20 mA, 120 degrees, land 0.7 + 0.2 + 0.7 x 0.5 (img/aphhs1005_p1.png). It is 0.3 mm taller, so the guide drops to 0.380 mm high [CALC, logs/derived2.log]; NOT fit-checked.
+
+## 4. Where everything sits (inside model coordinates)
+
+| Part | Place | Size and shape |
+|---|---|---|
+| LED1 | centre X -9.70, Y -2.10, body Z 1.230 to 1.430, on the board's UNDER face (Z 1.450, pads 0.02), long side along Y, emitting down (-Z) | 1.0 x 0.5 x 0.2; body Y -2.600 to -1.600; pads Y -3.000 to -1.200, X -9.950 to -9.450 |
+| LG1 leg 1 (along Y) | X -9.900 to -9.500, Y -3.150 to -1.760, Z 0.450 to 1.130 | 0.40 wide, 0.680 high, 1.390 long |
+| LG1 leg 2 (along X) | X -12.765 to -9.500, Y -3.150 to -2.750, Z 0.450 to 1.130 | 0.40 wide, 0.680 high, 3.265 long |
+| Mirror A | under the LED, end of leg 1: a 45 degree face from (Y -2.440, Z 0.450) to (Y -1.760, Z 1.130); turns the light from -Z to -Y | aluminium coat outside |
+| Mirror B | outer corner of the L at X -9.70, Y -2.95: a vertical face at 45 degrees in plan; turns -Y to -X | aluminium coat outside |
+| Mirror C | under the riser, end of leg 2: a 45 degree face from (X -12.085, Z 0.450) to (X -12.765, Z 1.130); turns -X to +Z | aluminium coat outside |
+| LG1 riser | round, diameter 0.3, axis X -12.425, Y -2.95, from Z 1.130 to 1.750 (flush with the board top) | one moulded part with the legs |
+| Board hole | non-plated drilled hole, diameter 0.50, at X -12.425, Y -2.95 | riser glued in with clear UV glue (0.100 radial gap) |
+| Foam notch | 0.5 x 0.5 at X -12.675 to -12.175, Y -3.20 to -2.70, cut into the inner edge of the 1.2 mm frame (frame inner edge X -12.4 [CALC: -13.6 + 1.2]) | foam 0.1 thick (placement.csv line 16) |
+| Screen ledge spot | X -12.625 to -12.225, Y -3.150 to -2.750, through the 0.4 lower glass (Z 1.850 to 2.250) | must be clear: open item S-L1 (CLOSED 2026-11-13 with S25: the recording light is removed in v7) |
+| LP1 | X -12.625 to -12.225, Y -3.150 to -2.750, Z 2.250 to 2.650, on the ledge top, under the adhesive | clear block 0.4 x 0.4 x 0.4, clear glue to the glass |
+| Print window | round, diameter 0.4, at X -12.425, Y -2.95, unprinted, inner face of the cover glass | glass 0.959 thick there, bottom Z 2.750, top Z 3.709 (logs/glass_probe2.log) |
+
+Guide material and making: clear optical polycarbonate or PMMA, micro-moulded as one part, the three mirror faces coated with aluminium [design choice]. It is fitted after reflow: the riser goes into the board hole from the under side and clear UV glue in the hole holds it. Nothing else touches it.
+
+Light path in order [CALC, logs/derived2.log]: LED face Z 1.230, 0.100 air, mirror A, 0.850 along -Y, mirror B, 2.725 along -X, mirror C, riser up to Z 1.750, 0.100 air in the foam notch, ledge glass 0.4, LP1 0.4, adhesive 0.1, cover glass 0.959 to the surface. Inside the guide the light travels 3.575 mm.
+
+## 5. Clearances (check.log)
+
+Rules, quoted in check_light_path.py's header: no common volume over 0.001 mm3 (check_thin.py line 25 `LIMIT = 0.001`); 0.10 mm between parts for the guide, LP1 and the hole (thin-notes.md line 35 "fills the opening with 0.1 mm clearance", line 69 "0.1 to the channel wall, 0.1 to the motor"); 0.2 mm plan keep-out for the LED against other board parts (architecture.md line 381 "Parts with a 0.2 mm keep-out"; the microphone study uses it as rule R2); nothing below the floor top (check_thin.py line 161); at most 1.00 mm under the board (main-board.md line 39); inside the panel pocket, screen + 0.1 (thin.py line 366). One rule is mine: copper pad to a non-plated hole edge at least 0.20 mm [ESTIMATE; the board maker sets it, main-board.md line 15].
+
+Measured, v4 layout / 17.19 layout: LED1 and pads 0.450 / 0.300 mm (plan, storage / mic_1); leg 1 0.500 / 0.150; leg 2 0.150 / 0.150; riser 0.200 / 0.200; board hole to part bodies 0.100 / 0.100 (J1 / mic_1); hole to LED pads 2.225; riser top 0.100 under the screen; LP1 0.150 to the tail bond and 0.150 to the model's driver IC; riser 0.200 to the bond fingers; lowest point Z 0.450, 0.050 above the floor top; 3.314 mm outside the antenna keep-out; print window 2.905 mm outside the lit area.
+
+Tight spots, said plainly: the board hole is 0.100 from the bodies of J1 and of the 17.19 microphone; their pads may sit nearer, so the board designer must check copper to the hole (S-L4). The maker drawing's unmarked tolerance is +-0.2 (p5 note 9, img/display_p5.png), more than the 0.150 between LP1 and the bond (check.log NOT CHECKED line). The driver IC position is the model's assumption (thin-notes.md line 39); the maker drawing shows no IC on the ledge.
+
+The check can fail: logs/broken2_led_y.log (LED moved -0.3 in Y onto the 17.19 microphone's keep-out) ends `RESULT FAIL`, exit 1; logs/broken2_riser_x.log (light column moved -0.2 in X onto the bond) ends `RESULT FAIL`, exit 1 (6 findings; 2 of them are the glass probe line, which fails only because the probe has no point there).
+
+My earlier steps, reported: a first layout (LED at X -10.95, Y -3.2, long side along X; column at Y -3.2) passed against v4 (logs/check_run1.log, 33 checks, RESULT PASS; broken copies logs/broken_led_y.log and logs/broken_riser_x.log, both RESULT FAIL). It collides with the 17.19 microphone (check.log INFO line "first layout's LED1 ... 0.000 mm to mic_1, common volume 0.0540 mm3"), so I replaced it. The second layout's first run is logs/check_run2.log; check.log is a later run of the same files.
+
+## 6. Wiring
+
+Unchanged in form (architecture.md line 232, row W5 line 284): VDD_3V0, R41, LED1 anode, LED1 cathode, Q2 drain; Q2 source to ground; Q2 gate on VDD_MIC. No chip pin touches the light. It is on whenever the microphones are powered, by hardware.
+
+New resistor value [CALC, check.log]: (3.0 V - 1.767 V - 1.5 mA x 0.7 ohm) / 1.5 mA = 821 ohm. Use 820 ohm 1 % 0201: 1.502 mA. With the +-0.1 V spread of p2 note 2: 1.381 to 1.624 mA. The 0.7 ohm is the DMN2450UFB4 maximum (architecture.md line 50). The present 680 ohm would give 1.811 mA, not the 1.5 mA the current budget counts (architecture.md line 91), because W5 used 2.0 V, the 20 mA value.
+
+Polarity: the maker's pad 1 is the cathode (p1 symbol). The netlist maps symbol pin A to pad P1 (netlist.csv line 154, make_netlist.py lines 317 and 318) and the board script marks the map unverified (build_board.py line 70). Pad 1 must carry LED_K and pad 2 LED_A.
+
+## 7. Options examined and rejected
+
+Free room under the board near the hand end [CALC, logs/derived2.log]: v4: 0.850 wide from the board edge to mic_1, a 1.200 strip between mic_1 and J1. With 17.19: 0.800 and a 0.700 strip, plus a 1.400 column between J1 and the storage part.
+
+| Option | Part read | Measured reason it fails here |
+|---|---|---|
+| (a) real reverse-mount LED | Kingbright APTR3216SURCK (DSAC0364 V.20A, light_kb_APTR3216SURCK.pdf p1, img/aptr3216_p1.png): 3.2 x 1.6, 1.05 thick, 0.25 base, lens block 1.4 wide, board hole 2.1 x 2.3 | Base under the board, lens up through it: lens top Z 2.250, 0.400 into the screen and 0.500 above the board top. The 3.2 x 1.6 base fits none of the free spaces above. To host it the screen glass would need a 1.4 x 1.6 x 0.4 cut, or the board would need to be 0.800 thick (block +0.500 over the owner's 3.85). Dialight 599, ROHM SML-S13, Wurth WL-SMRW: no maker sheet read (research-reverse-led.md), so not candidates; their snippets give 1206 size or larger. KPTR-3216SURCK, KPTR-1608SURCK, APTR1608SURCK: the maker URL gave HTML, not a sheet (logs/fetch_kb1.log). |
+| (b) side-view LED under the board, guide beside the board | Kingbright APA1606SURCK (DSAF0543 V.20A, light_kb_APA1606SURCK.pdf p1, p2): 1.6 x 1.2 x 0.6 right angle, Vf 1.95 / 2.5 V, 110 degrees | Its smallest side, 1.2, needs 1.600 with the 0.2 keep-out (1.400 with 0.10): no free space near the ledge has it. A guide beside the board has 0.125 at the hand end and 0.150 at the long side; the screen's tail folds round the hand end there. |
+| (c) top-view LED 0.2 or thinner, in a board cut-out or on the top face | KPG-1005SURC-TT 0.2 (p1); APHHS1005SURCK 0.5; APHS1005SURCK 0.5 (light_kb_APHS1005SURCK.pdf p1) | Board top to screen is 0.100 (placement.csv lines 15 and 17): a 0.2 part does not fit. In a cut-out a top-view part has no upward face to solder to (p1 note 4). A cavity in the 0.3 board is not a process the board spec names. No red LED under 0.2 found: DuckDuckGo answered with a bot check and Bing gave no readable results to plain curl (logs/search_s1.txt, logs/search_bing1.html), so this is "not found in what I could read". |
+| (d) top-view LED on a flex tail | the two band tails (thin-notes.md line 69); the screen tail (display p5) | The band tails leave the board's under side at X -2.2 into the band; they never come above the board. The screen tail is bonded on the ledge top over X -13.675 to -12.775 and folds round the hand end: an LED on it sits at X under -13.675, beyond the glass's flat part (end roll from X -13.45, thin-notes.md line 86). Its 15 contacts are all used (p5 pin table, ELVSS to GND) and J1 has 15 (placement.csv line 14): the light needs 2 more, so J1 and the screen tail would both change. |
+| (e1) custom screen tail with a tongue on the ledge top carrying the LED | same LED | Fits in height: ledge top to adhesive is 0.400, tongue about 0.1 [ESTIMATE] plus LED 0.2. Needs a custom tail from the screen maker and a 17-way J1. Kept as the second-best top-face path; no guide, so more light. |
+| (e2) a window in the block's side wall | APA1606SURCK shining sideways through a clear plug in the -Y wall | Avoids the screen. Faces sideways, not the top face of architecture.md line 243 ("on the top face, thumb side"), and adds an opening to the owner's exterior. Not fit-checked. Fallback if the screen maker cannot give a clear ledge spot. |
+| (e3) the same column on the thumb side (+Y) | as recommended | The mirrored column at Y +2.95 falls inside the antenna keep-out (check.log INFO line, main-board.md line 56). So the light stays on the -Y side, against line 243's "thumb side": for the owner. |
+| (e4) my first layout: two mirrors, LED at X -10.95, Y -3.2 | KPG-1005SURC-TT | Fits v4 (logs/check_run1.log) but collides with the 17.19 microphone (check.log INFO line). With 17.19 the 0.700 strip leaves 0.100 each side of a 0.5 wide LED, under the 0.2 keep-out. |
+
+## 8. Visibility: what can and cannot be claimed
+
+Can be claimed: the parts fit (check.log); the LED's datasheet values (section 3); the current, 1.502 mA [CALC]; on its axis at 1.5 mA the LED gives about 5.06 mcd from the 65 mcd row, 15.19 mcd from the 195 mcd row, 1.56 mcd at the 20 mcd minimum [CALC, logs/visibility_calc2.log].
+
+Cannot be claimed without a bench test: how much light reaches the surface. The share passed by three mirrors, a glued riser, the ledge glass, LP1, adhesive and glass is [ESTIMATE] 0.05 to 0.25. That gives 0.08 to 3.80 mcd at the window, a mean of 620 to 30221 cd/m2 over its 0.4 mm [ESTIMATE, logs/visibility_calc2.log], against the screen's 450 cd/m2 (display p4). Also unknown: red light leaking into the screen's glass and glowing at its edge or in the picture; the window's look in daylight.
+
+Bench test that settles it (new bench item; number for the lead): a board coupon with the 0.5 hole, a sample LG1, a TOH095XVT-01 panel, LP1, adhesive and a printed glass piece with the 0.4 window. Drive LED1 at 1.5 mA through 820 ohm. Measure the luminance at the window with a spot meter, look at it at 1 m and 2 m in office light and in daylight, and photograph the black screen for red glow. Pass: seen at 2 m in office light, no glow in the picture.
+
+## 9. Open items (each needs a named party)
+
+- S-L1 (CLOSED 2026-11-13, with part S25 of architecture.md: it checked the path of the recording light, which version v7 removed, architecture.md line 523; no supplier is asked. Part S24, the screen's metal over the antenna, stays open): screen maker (Tailor Pixels): confirm that the ledge glass is clear at X -12.625 to -12.225, Y -3.150 to -2.750 (no fan-out metal, no driver IC, no back film or tape under it), and give the bond end and the IC position with tolerances.
+- S-L2, Kingbright or a distributor: is KPG-1005SURC-TT orderable, and its current datasheet. If not, APHHS1005SURCK, with the guide re-checked.
+- S-L3, guide maker: LG1 as in section 4, the mirror coat, the glue.
+- S-L4, board designer and board maker: the hole-to-copper rule for a 0.5 non-plated hole in the 0.3, 6-layer board (the board has 4 copper layers since the board plan, and the hole is removed in v7), and the copper of J1 and U5 near it.
+- S-L5, owner: the light is on the -Y side, not the thumb side of architecture.md line 243 (section 7, e3).
+
+## 10. Changes other files need (not made here)
+
+Line numbers as read at 2026-11-11 00:43 to 00:50 (logs/cite_lines2.log, logs/cite_1715.log, logs/audit_final.log); architecture.md was being edited by others while I worked, so check each line by its quoted text.
+
+| File | Present text | Change |
+|---|---|---|
+| design/bom.csv line 47 (LED1) | "red top-view LED under a clear window, on top of the board" | red top-view LED on the board's under face at X -9.70, Y -2.10, shining down into light guide LG1; Vf 1.767 V typ at 1.5 mA (p3 curve); datasheet light_kb_KPG-1005SURC-TT_rs-copy.pdf; pad 1 cathode |
+| design/bom.csv line 48 (R41) | "series resistor of the recording light, 1.5 mA from 3.0 V (architecture W5)", value 680 ohm 1 % | value 820 ohm 1 %; (3.0 V - 1.767 V) / 820 ohm = 1.50 mA |
+| design/bom.csv new line | none (logs/bom_lp1_grep.log: no LP1 or LG1 line) | Recording light guide, LG1, 1, custom clear moulded L-shaped guide, legs 3.265 and 1.390 long, 0.40 x 0.680 section, riser diameter 0.3, three aluminium-coated 45 degree mirrors (light-path.md section 4) |
+| design/bom.csv new line | none | Light plug, LP1, 1, clear block 0.4 x 0.4 x 0.4 on the screen ledge at X -12.425, Y -2.95, custom |
+| design/architecture.md line 232 (section 9) | "a 680 ohm resistor (1.5 mA)" | an 820 ohm resistor (1.5 mA) |
+| design/architecture.md line 284 (W5) | "R41 = 680 ohm from VDD_3V0" | R41 = 820 ohm; (3.0 V - 1.767 V) / 820 ohm = 1.50 mA [Vf at 1.5 mA, KPG p3 curve] |
+| design/architecture.md line 91 | "(3.0 V - 2.0 V) / 680 ohm" | (3.0 V - 1.767 V) / 820 ohm |
+| design/architecture.md line 154 | "on top of the board" and "under a clear window in the housing top" | on the board's under face; guide LG1 up through the board and the screen ledge to a 0.4 mm print window at X -12.425, Y -2.95 |
+| design/architecture.md line 422 (17.1 openings) | no light window listed | add: print window diameter 0.4 for the recording light at X -12.425, Y -2.95 |
+| design/architecture.md line 518 (S20) | "the light window moved to X -13.25, Y -4.7" | X -12.425, Y -2.95 |
+| design/architecture.md section 17.15, the bullet starting "Recording light: a reverse-mount" (line 583 at 00:50, logs/cite_1715.log; it moved twice while I worked) | "a reverse-mount red light on the board's under face at X -13.25, Y -4.7" | the path of section 2 of this file, part KPG-1005SURC-TT |
+| design/mech/thin/placement.csv line 21 (recording_led) | "recording_led,LED1,board,-13.250,-4.700,1.180,0.500,1.000,0.780" | recording_led,LED1,board,-9.700,-2.100,1.330,0.500,1.000,0.200 and a top-view note |
+| design/mech/thin/placement.csv line 22 (light_pipe) | "light_pipe,LP1,screen,-13.250,-4.700,2.450,0.600,0.600,0.400" | light_pipe,LP1,screen,-12.425,-2.950,2.450,0.400,0.400,0.400 |
+| design/mech/thin/placement.csv new row; layers.json layer "board" | none | light_guide,LG1,board,-11.1325,-2.455,0.790,3.265,1.390,0.680 (envelope of the L; the riser above it to Z 1.750) |
+| design/mech/thin/thin.py lines 352 to 362 (light), line 316 (foam window) | reverse-mount LED, 0.9 foam window, 0.6 LP1 at X -13.25, Y -4.7 | the solids of section 4; also the tail bond (X -13.675 to -12.775, Y -6.198 to 6.204) and the 2.951 ledge from the maker drawing |
+| design/ecad/ring/make_netlist.py line 316 | "two('R41', 'R', '680R'," | 820R |
+| design/ecad/ring/parts.csv line 88 | "R41,R,680R,,ring:R_0201,controls,no" | 820R |
+| design/ecad/ring/netlist.csv lines 154 and 156; pcb/build_board.py line 70 | "LED_A,LED1,P1,A,passive", "LED_K,LED1,P2,K,passive"; pad map P1 to 1, P2 to 2, PROVISIONAL | anode on footprint pad 2, cathode on pad 1 (maker p1 symbol) |
+| design/ecad/ring/sch-notes.md line 40 | "Light (W5): VDD_3V0, R41 680 ohm, LED1, drain of Q2" | R41 820 ohm |
+| design/ecad/ring/pcb/ring.kicad_pcb lines 5590 to 5596 (LED1 footprint) | `(layer "F.Cu")`, `(at 112.777098 101.431119 90)` | LED1 on the populated under face at model X -9.70, Y -2.10, long side along Y; a non-plated hole diameter 0.50 at model X -12.425, Y -2.95 with no copper within 0.20 of its edge; keep the guide's area free of parts (X -12.765 to -9.500, Y -3.150 to -2.750, and X -9.900 to -9.500, Y -3.150 to -1.760) |
+| design/mfg/specs/main-board.md | no hole listed | add the 0.50 non-plated hole |
+| design/mfg/specs/cover-glass.md line 18 | "Black print outside the lit area on the inner face" | add: except a round window diameter 0.4 at X -12.425, Y -2.95 |
+| wiring diagram (design/ecad/ring/ring_controls.kicad_sch, R41 symbol) | value 680R (generated from make_netlist.py line 316) | regenerate after the make_netlist.py change |
+
+RESULT: done, the light window moves to X -12.425, Y -2.95 and is served by a KPG-1005SURC-TT on the board's under face with a three-mirror light guide; the fit check passes on the v4 model and with the 17.19 microphones (`RESULT PASS`, 70 checks), with the clear ledge spot open to the screen maker.

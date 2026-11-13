@@ -1,0 +1,21 @@
+# remote.sh run 20261112-193423-s5-first
+# command: mkdir -p /ws/out/s5-a && west twister -T tests/relay -p native_sim -O /ws/out/s5-a/tw-native --inline-logs -v > /ws/out/s5-a/tw-native.log 2>&1; echo twister exit $?; grep -E "PASS|FAIL|passed|failed|error" /ws/out/s5-a/tw-native.log | head -40; west build -p always -b nrf54lm20bsim/nrf54lm20a/cpuapp --no-sysbuild -d /ws/out/s5-a/bsim -o=-j8 app > /ws/out/s5-a/bsim-build.log 2>&1; echo build exit $?; grep -E "warning:|error:" /ws/out/s5-a/bsim-build.log | head -30; tail -5 /ws/out/s5-a/bsim-build.log
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 19:34:23 CET
+# free on the server's /: 42 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261112-193423-s5-first; server log /root/ring-os/logs/20261112-193423-s5-first.log
+twister exit 0
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   PASSED (native 0.020s <host/gnu>)
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 13.79 seconds.
+INFO    - 22 of 22 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+build exit 0
+warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+[740/743] Linking C static library modules/nrf_hw_models/lib..__modules__bsim_hw_models__nrf_hw_models.a
+[741/743] Linking C executable zephyr/zephyr.elf; Logical command for additional byproducts on target: zephyr_pre0
+Generating files from /ws/out/s5-a/bsim/zephyr/zephyr.elf for board: nrf54lm20bsim/nrf54lm20a/cpuapp
+[742/743] Building native simulator runner, and linking final executable
+[743/743] Running utility command for native_runner_executable
+# finished (Mac clock): 2026-11-12 19:35:35 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step5/20261112-193423-s5-first.log

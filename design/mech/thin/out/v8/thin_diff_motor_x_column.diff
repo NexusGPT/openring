@@ -1,0 +1,22 @@
+104,111c104,111
+<     #       bore     joy_deg motor_angle pcm_a0 slot_z0 motor_window   (joystick per size: 17.25; window: 17.27)
+<     7:  (17.3196, -84.0, -47.0, 43.8, -0.20, 1),
+<     8:  (18.1324, -81.0, -45.5, 41.5, -0.20, 1),
+<     9:  (18.9452, -78.0, -44.0, 39.5, -0.23, 1),
+<     10: (19.7580, -78.0, -45.0, 39.5, -0.63, 0),
+<     11: (20.5708, -78.0, -43.5, 39.5, -1.04, 0),
+<     12: (21.3836, -78.0, -42.5, 39.5, -1.45, 0),
+<     13: (22.1964, -78.0, -42.5, 39.5, -1.85, 0),   # v6.2: -42.5 for 0.30 to the -Y slot (out/v6/probe_us13_angles.log)
+---
+>     #       bore     joy_deg motor_angle pcm_a0 slot_z0 motor_window motor_x  (joystick per size: 17.25; window: 17.27; motor_x: v8)
+>     7:  (17.3196, -84.0, -47.0, 43.8, -0.20, 1, 0.8),    # v8: motor_x 0.8 (v7 0.7): the 1.8 neck came to 0.0246 of the motor at 0.7 (out/v8/v8_us7.log), 0.1099 at 0.8 (out/v8/gap_probe_grid.log)
+>     8:  (18.1324, -81.0, -45.5, 41.5, -0.20, 1, 0.7),
+>     9:  (18.9452, -78.0, -44.0, 39.5, -0.23, 1, 0.7),
+>     10: (19.7580, -78.0, -45.0, 39.5, -0.63, 0, 0.7),
+>     11: (20.5708, -78.0, -43.5, 39.5, -1.04, 0, 0.7),
+>     12: (21.3836, -78.0, -42.5, 39.5, -1.45, 0, 0.7),
+>     13: (22.1964, -78.0, -42.5, 39.5, -1.85, 0, 0.7),   # v6.2: -42.5 for 0.30 to the -Y slot (out/v6/probe_us13_angles.log)
+116c116
+< for _k, _v in zip(("joy_deg", "motor_angle", "pcm_a0", "slot_z0", "motor_window"), SIZE_TABLE[US_SIZE][1:]):
+---
+> for _k, _v in zip(("joy_deg", "motor_angle", "pcm_a0", "slot_z0", "motor_window", "motor_x"), SIZE_TABLE[US_SIZE][1:]):

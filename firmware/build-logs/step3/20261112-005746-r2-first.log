@@ -1,0 +1,190 @@
+# remote.sh run 20261112-005746-r2-first
+# command: west twister -T tests/inbox -T tests/time -T tests/iphone -p native_sim -O /ws/out/r2-logic --inline-logs -v ; tests/bsim/iphone/run.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 00:57:46 CET
+# free on the server's /: 67 GB
+# source firmware copied to /root/ring-os/src-step3r2
+# started on the server as 20261112-005746-r2-first; server log /root/ring-os/logs/20261112-005746-r2-first.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/r2-logic/testplan.json
+INFO    - JOBS: 32
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/3 native_sim/native         ring_inbox.logic                                   PASSED (native 0.022s <host/gnu>)
+INFO    - 2/3 native_sim/native         ring_iphone.logic                                  FAILED rc=1 (native 0.014s <host/gnu>)
+INFO    - --/ws/out/r2-logic/native_sim_native/host_gnu/firmware/tests/iphone/ring_iphone.logic/handler.log---
+ERROR   - *** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+*** Using Zephyr OS v4.4.2-9133dab6b066 ***
+Running TESTSUITE ring_iphone
+===================================================================
+START - test_cts_to_ms
+ PASS - test_cts_to_ms in 0.000 seconds
+===================================================================
+START - test_cts_zone
+ PASS - test_cts_zone in 0.000 seconds
+===================================================================
+START - test_ds_app_identifier_longer_than_48_is_kept_to_48
+ PASS - test_ds_app_identifier_longer_than_48_is_kept_to_48 in 0.000 seconds
+===================================================================
+START - test_ds_empty_notification_ok
+ PASS - test_ds_empty_notification_ok in 0.000 seconds
+===================================================================
+START - test_ds_errors
+ PASS - test_ds_errors in 0.000 seconds
+===================================================================
+START - test_ds_every_fragment_size
+ PASS - test_ds_every_fragment_size in 0.000 seconds
+===================================================================
+START - test_ds_ignores_bytes_after_the_end
+ PASS - test_ds_ignores_bytes_after_the_end in 0.000 seconds
+===================================================================
+START - test_ds_late_answer_of_another_request_is_skipped
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/iphone/src/test_iphone.c:200: ring_iphone_test_ds_late_answer_of_another_request_is_skipped: ripl_ds_feed(&d, all, m + ng) not equal to RIPL_DS_DONE
+
+ FAIL - test_ds_late_answer_of_another_request_is_skipped in 0.000 seconds
+===================================================================
+START - test_ds_longer_than_limit_is_skipped
+ PASS - test_ds_longer_than_limit_is_skipped in 0.000 seconds
+===================================================================
+START - test_ds_whole
+ PASS - test_ds_whole in 0.000 seconds
+===================================================================
+START - test_media_playback_state
+ PASS - test_media_playback_state in 0.000 seconds
+===================================================================
+START - test_media_starts_unknown
+ PASS - test_media_starts_unknown in 0.000 seconds
+===================================================================
+START - test_media_text_cut_on_a_character
+ PASS - test_media_text_cut_on_a_character in 0.000 seconds
+===================================================================
+START - test_media_track_text
+ PASS - test_media_track_text in 0.000 seconds
+===================================================================
+START - test_request_bytes
+ PASS - test_request_bytes in 0.000 seconds
+===================================================================
+TESTSUITE ring_iphone failed.
+
+------ TESTSUITE SUMMARY START ------
+
+SUITE FAIL -  93.33% [ring_iphone]: pass = 14, fail = 1, skip = 0, total = 15 duration = 0.000 seconds
+ - PASS - [ring_iphone.test_cts_to_ms] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_cts_zone] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_app_identifier_longer_than_48_is_kept_to_48] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_empty_notification_ok] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_errors] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_every_fragment_size] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_ignores_bytes_after_the_end] duration = 0.000 seconds
+ - FAIL - [ring_iphone.test_ds_late_answer_of_another_request_is_skipped] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_longer_than_limit_is_skipped] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_whole] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_media_playback_state] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_media_starts_unknown] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_media_text_cut_on_a_character] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_media_track_text] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_request_bytes] duration = 0.000 seconds
+
+------ TESTSUITE SUMMARY END ------
+
+===================================================================
+RunID: c415a527ab03f389cd77af6cb1330206
+PROJECT EXECUTION FAILED
+
+INFO    - --/ws/out/r2-logic/native_sim_native/host_gnu/firmware/tests/iphone/ring_iphone.logic/handler.log---
+INFO    - 3/3 native_sim/native         ring_time.logic                                    PASSED (native 0.007s <host/gnu>)
+
+INFO    - 3 test scenarios (3 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 2 of 3 executed test configurations passed (66.67%), 0 built (not run), 1 failed, 0 errored, with no warnings in 20.33 seconds.
+INFO    - 36 of 37 executed test cases passed (97.30%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 3 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/r2-logic/twister.json
+INFO    - Writing xunit report /ws/out/r2-logic/twister.xml...
+INFO    - Writing xunit report /ws/out/r2-logic/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_iphone.logic on native_sim/native failed (rc=1)
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_iphone.logic
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/iphone -T ring_iphone.logic
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+bsim-iphone: firmware /ws/firmware/tests/bsim/iphone, outputs /ws/out/20261112-005746-r2-first-bsim-iphone, scenarios N R P L D, broken 0
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-005746-r2-first-bsim-iphone/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== build ring for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-005746-r2-first-bsim-iphone/build-ring.log
+[296/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/sem.c.obj
+[297/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/queue.c.obj
+[298/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/stack.c.obj
+[299/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/system_work_q.c.obj
+[300/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/condvar.c.obj
+[301/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/work.c.obj
+[302/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/thread.c.obj
+[303/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/pipe.c.obj
+[304/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timeslicing.c.obj
+[305/347] Linking C static library app/libapp.a
+[306/347] Linking C static library zephyr/libzephyr.a
+[307/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timeout.c.obj
+[308/347] Building C object zephyr/CMakeFiles/zephyr_pre0.dir/misc/empty_file.c.obj
+[309/347] Linking C static library zephyr/arch/common/libarch__common.a
+[310/347] Linking C static library zephyr/lib/net_buf/liblib__net_buf.a
+[311/347] Linking C static library zephyr/arch/arch/posix/core/libarch__posix__core.a
+[312/347] Linking C static library zephyr/soc/soc/native/libsoc__native__inf_clock.a
+[313/347] Linking C static library zephyr/subsys/random/libsubsys__random.a
+[314/347] Linking C static library zephyr/boards/native/nrf_bsim/libboards__native__nrf_bsim.a
+[315/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/sched.c.obj
+[316/347] Linking C static library zephyr/subsys/bluetooth/common/libsubsys__bluetooth__common.a
+[317/347] Linking C static library zephyr/subsys/bluetooth/crypto/libsubsys__bluetooth__crypto.a
+[318/347] Linking C static library zephyr/drivers/clock_control/libdrivers__clock_control.a
+[319/347] Linking C static library zephyr/drivers/console/libdrivers__console.a
+[320/347] Linking C static library zephyr/subsys/bluetooth/host/libsubsys__bluetooth__host.a
+[321/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timer.c.obj
+[322/347] Linking C static library zephyr/drivers/entropy/libdrivers__entropy.a
+[323/347] Linking C static library zephyr/drivers/timer/libdrivers__timer.a
+[324/347] Linking C static library modules/nrf/lib/multithreading_lock/lib..__nrf__lib__multithreading_lock.a
+[325/347] Linking C static library modules/nrf/subsys/mpsl/init/lib..__nrf__subsys__mpsl__init.a
+[326/347] Linking C static library modules/nrf/subsys/mpsl/fem/lib..__nrf__subsys__mpsl__fem.a
+[327/347] Linking C static library modules/nrf/subsys/bluetooth/controller/lib..__nrf__subsys__bluetooth__controller.a
+[328/347] Linking C static library modules/nrf/subsys/mpsl/hwres/lib..__nrf__subsys__mpsl__hwres.a
+[329/347] Linking C static library modules/nrf/drivers/mpsl/clock_control/lib..__nrf__drivers__mpsl__clock_control.a
+[330/347] Linking C static library modules/mbedtls/libmodules__mbedtls.a
+[331/347] Linking C static library modules/hal_nordic/modules/hal_nordic/nrfx/libnrfx.a
+[332/347] Linking C static library modules/ring_core/libring_core.a
+[333/347] Linking C static library modules/ring_devices/libring_devices.a
+[334/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mempool.c.obj
+[335/347] Linking C static library modules/mbedtls/mbedtls/library/libmbedtls.a
+[336/347] Linking C static library modules/ring_control/libring_control.a
+[337/347] Linking C static library modules/ring_inbox/libring_inbox.a
+[338/347] Linking C static library modules/ring_glue/libring_glue.a
+[339/347] Linking C static library modules/ring_time/libring_time.a
+[340/347] Building C object zephyr/kernel/CMakeFiles/kernel.dir/dynamic_disabled.c.obj
+[341/347] Linking C static library modules/ring_iphone/libring_iphone.a
+[342/347] Linking C static library zephyr/kernel/libkernel.a
+[343/347] Building C object modules/nrf_hw_models/CMakeFiles/..__modules__bsim_hw_models__nrf_hw_models.dir/src/nrfx/hal/nrf_hal_originals.c.obj
+[344/347] Linking C static library modules/nrf_hw_models/lib..__modules__bsim_hw_models__nrf_hw_models.a
+[345/347] Linking C executable zephyr/zephyr.elf; Logical command for additional byproducts on target: zephyr_pre0
+Generating files from /ws/out/20261112-005746-r2-first-bsim-iphone/ring/zephyr/zephyr.elf for board: nrf54lm20bsim/nrf54lm20a/cpuapp
+[346/347] Building native simulator runner, and linking final executable
+FAILED: [code=2] zephyr/CMakeFiles/native_runner_executable zephyr/zephyr.exe /ws/out/20261112-005746-r2-first-bsim-iphone/ring/zephyr/CMakeFiles/native_runner_executable /ws/out/20261112-005746-r2-first-bsim-iphone/ring/zephyr/zephyr.exe 
+cd /ws/out/20261112-005746-r2-first-bsim-iphone/ring/zephyr && /usr/bin/make -f /ws/zephyr/scripts/native_simulator/Makefile all --warn-undefined-variables -r NSI_CONFIG_FILE=/ws/out/20261112-005746-r2-first-bsim-iphone/ring/zephyr/NSI/nsi_config
+/usr/bin/ld: /ws/out/20261112-005746-r2-first-bsim-iphone/ring/zephyr/NSI/ws/out/20261112-005746-r2-first-bsim-iphone/ring/zephyr/zephyr.elf.loc_cpusw.o: in function `k_thread_stack_space_get':
+/ws/out/20261112-005746-r2-first-bsim-iphone/ring/zephyr/include/generated/zephyr/syscalls/kernel.h:102:(.text.k_thread_stack_space_get+0x10): undefined reference to `z_impl_k_thread_stack_space_get'
+collect2: error: ld returned 1 exit status
+make: *** [/ws/zephyr/scripts/native_simulator/Makefile:142: /ws/out/20261112-005746-r2-first-bsim-iphone/ring/zephyr/zephyr.exe] Error 1
+ninja: build stopped: subcommand failed.
+FATAL ERROR: command exited with status 2: /opt/ncs/toolchains/197d1ad490/usr/local/bin/cmake --build /ws/out/20261112-005746-r2-first-bsim-iphone/ring --
+RESULT FAIL build ring
+# finished (Mac clock): 2026-11-12 00:59:20 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step3/20261112-005746-r2-first.log

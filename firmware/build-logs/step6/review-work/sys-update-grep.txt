@@ -1,0 +1,12 @@
+122:enum rrec_status rsy_fw_begin(uint32_t image_size, uint32_t image_crc32, uint16_t soc_x10, bool vbus)
+124:	enum rrec_status s = rsl_begin_check(image_size, soc_x10, vbus);
+132:	if (rhw_image()->erase_slot1() != 0) {
+143:enum rrec_status rsy_fw_data(uint32_t offset, const uint8_t *data, size_t len)
+153:	s = rsl_data_check(begun, size, offset, len, data != NULL);
+160:	if (rhw_image()->write(offset, data, len) != 0) {
+166:enum rrec_status rsy_fw_end(void)
+195:	if (rhw_image()->request_test_upgrade() != 0) {
+221:int rsy_selftest_start(bool vbus)
+227:		rsl_st_start(&st, vbus);
+360:	return rhw_retained()->write(raw, sizeof(raw));
+(eval):1: === not found

@@ -1,0 +1,13 @@
+| Case | Run | eps_r | End | S11 before match 2.40 / 2.44 / 2.48 (dB) | Zin at 2.44 (ohm) | Largest return loss (dB at GHz) | Radiated share of accepted power 2.40 / 2.44 / 2.48 (percent) | Radiated / incident power 2.40 / 2.44 / 2.48 (percent) | Best three-part match | Worst S11 after (dB) | Verdict |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| D free air (control) | r4_D | 45.80 | converged: 197190 steps, -40.39 dB | -0.71 / -2.32 / -4.16 | 51.9 +121.1j | 6.4 at 2.465 | 8.1 / 12.7 / 14.1 | 1.22 / 5.28 / 8.70 | LCL: L 2.19 nH, C 1.25 pF, L 5.78 nH | -1.84 | FAIL |
+| A metal body + pocket, finger | r4_A | 33.85 | converged: 181440 steps, -42.85 dB | -0.25 / -0.45 / -1.09 | 3.9 +71.2j | 2.3 at 2.520 | 9.0 / 12.0 / 14.4 | 0.51 / 1.18 / 3.20 | LCC: L 3.68 nH, C 0.79 pF, C 0.10 pF | -1.09 | FAIL |
+| B resin corner, finger | r4_B | 44.90 | converged: 132300 steps, -40.21 dB | -1.27 / -4.17 / -22.10 | 39.7 +69.4j | 23.0 at 2.478 | 2.5 / 3.0 / 3.2 | 0.62 / 1.85 / 3.16 | LCL: L 2.66 nH, C 1.04 pF, L 17.64 nH | -4.61 | FAIL |
+| S = B + screen ledge metal and cable at the hand end | r4_S | 44.90 | converged: 147420 steps, -41.78 dB | -1.49 / -4.90 / -19.19 | 45.6 +65.9j | 25.8 at 2.475 | 2.7 / 3.2 / 3.5 | 0.78 / 2.15 / 3.47 | LCL: L 2.47 nH, C 1.10 pF, L 10.78 nH | -4.93 | FAIL |
+| S180 = B + the same metal at the fingertip end (screen turned 180 degrees) | r4_S180 | 44.90 | converged: 139860 steps, -43.24 dB | -1.30 / -4.13 / -21.77 | 39.1 +69.3j | 22.6 at 2.478 | 2.4 / 3.0 / 3.2 | 0.63 / 1.83 / 3.19 | LCL: L 2.68 nH, C 1.04 pF, L 17.19 nH | -4.65 | FAIL |
+| E antenna on screen face under the glass, resin corner, finger | r4_E | 44.90 | converged: 160335 steps, -40.49 dB | -0.78 / -2.17 / -14.47 | 17.0 +64.4j | 21.1 at 2.490 | 6.8 / 8.0 / 8.0 | 1.11 / 3.14 / 7.74 | LCC: L 2.96 nH, C 0.91 pF, C 0.10 pF | -3.85 | FAIL |
+| A0 = A without the finger | r4_A0 | 33.85 | converged: 165690 steps, -40.56 dB | -0.22 / -0.51 / -1.05 | 4.5 +71.3j | 2.4 at 2.520 | 15.0 / 15.8 / 23.1 | 0.73 / 1.76 / 4.93 | LCC: L 3.58 nH, C 0.79 pF, C 0.11 pF | -0.97 | FAIL |
+| B0 = B without the finger | r4_B0 | 44.90 | converged: 182700 steps, -40.55 dB | -0.45 / -1.25 / -5.66 | 13.7 +83.3j | 5.7 at 2.480 | 9.9 / 11.8 / 11.7 | 0.97 / 2.95 / 8.54 | LCL: L 2.63 nH, C 1.00 pF, L 20.00 nH | -1.72 | FAIL |
+| B2 resin corner, no floor under the antenna, finger | r3U_B2 | 44.90 | converged: 122661 steps, -41.03 dB | -1.09 / -2.99 / -16.84 | 25.0 +66.4j | 22.8 at 2.485 | 2.3 / 3.0 / 3.2 | 0.52 / 1.51 / 3.09 | LCL: L 2.40 nH, C 1.04 pF, L 20.00 nH | -4.60 | FAIL |
+
+Ranking by radiated share of accepted power at 2.48 GHz: A0 23.1 > A 14.4 > D 14.1 > B0 11.7 > E 8.0 > S 3.5 > S180 3.2 > B 3.2 > B2 3.2

@@ -1,0 +1,19 @@
+"""prints, for pads chosen by hand, the board file's own pad record (via pcbnew) and the netlist rows (run with run_kipy.sh)"""
+import sys, csv, pcbnew
+E = (__import__("pathlib").Path(__file__).resolve().parents[3].as_posix() + "/design/ecad")
+SEL = [('ring/pcb/ring.kicad_pcb', 'ring/netlist.csv', [('U2', 'D1'), ('U2', 'A5'), ('U1', 'H6'), ('U1', 'H7'), ('U11', '1'), ('L4', '2'), ('X2', '1'), ('J_BAND_B', '4'), ('U9', '4'), ('R1', '1'), ('TP17', '1'), ('C72', '2')]),
+       ('../wiring/readback-work/src_b9ec3cfa/design/ecad/case/pcb/case_main.kicad_pcb', '../wiring/readback-work/src_b9ec3cfa/design/ecad/case/netlist.csv', [('U5', '6'), ('W1', '1'), ('U2', '13'), ('J1', 'A4')]),
+       ('band/flex1-us13.kicad_pcb', 'ring/netlist.csv', [('M1', '1'), ('J_BAND_A', '6'), ('SW2', '3')]),
+       ('band/flex2-us13.kicad_pcb', 'ring/netlist.csv', [('PRT1', '2'), ('CP1', '1'), ('J_BAND_B', '1')])]
+for pcb, nl, pads in SEL:
+    b = pcbnew.LoadBoard(E + '/' + pcb)
+    rows = list(csv.DictReader(open(E + '/' + nl)))
+    for ref, pin in pads:
+        net_pcb = None
+        for fp in b.GetFootprints():
+            if fp.GetReference() == ref:
+                for p in fp.Pads():
+                    if p.GetNumber() == pin:
+                        net_pcb = '%s @(%.3f,%.3f) layer=%s' % (p.GetNetname(), pcbnew.ToMM(p.GetPosition().x), pcbnew.ToMM(p.GetPosition().y), b.GetLayerName(fp.GetLayer()))
+        nrow = [r['net'] for r in rows if r['reference'] == ref and r['pin_number'] == pin]
+        print('EXCERPT %s | pad %s-%s | board file pad: %s | netlist rows: %s' % (pcb, ref, pin, net_pcb, nrow))

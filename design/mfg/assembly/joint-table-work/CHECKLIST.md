@@ -1,0 +1,26 @@
+# Checklist (joint table helper), started 2026-11-13 12:58 CET (first `date` 12:58:20)
+
+- [x] 1. Brief fields present: Owns, Must not touch, Writes to, Done when; quality reference = the brief's Bar 1 to 3 (no separate reference named; my reading). evidence: the brief; joint-table-notes.md
+- [x] 2. Read in full: wiring-review-3.md, product-wiring.csv (key columns of all 67 lines: wiring-compact.txt), product-wiring-notes.md, assembly.md (28 steps), band-interface.md, case board-notes.md. evidence: wiring-compact.txt, join-kinds.txt
+- [x] 3. joints.csv: one row per joint end not copper on one board. evidence: logs/final/count_ends.log (81 ends in joints.csv, UNCLASSIFIED ends: 0)
+- [x] 4. joints.csv: board pass rows ring 2 faces, 14 band boards, 2 case boards. evidence: logs/final/count_ends.log (board pass rows: 18); check R1 0 in logs/final/check-rule-counts.txt
+- [x] 5. joints.csv columns all present. evidence: header of joints.csv; check would print "R2 column missing" (none in logs/final/check.log)
+- [x] 6. Fields only from cited lines, else MISSING with a gap. evidence: logs/final/audit_citations.log; logs/final/missing-counts.log (rows with a gap but no MISSING [])
+- [x] 7. check_joints.py fail rules R1 to R5, exit 1, last line RESULT FAIL n. evidence: logs/final/check.log (RESULT FAIL 365, exit 1); logs/final/tests.log
+- [x] 8. RESULT PASS joints n on a complete table; --list-gaps exit 0. evidence: tests/mini/mini.log (RESULT PASS joints 3); logs/final/list-gaps.log (exit 0)
+- [x] 9. Paste openings from the Gerber, pads with KiCad's Python from copies. evidence: logs/probe_paste.log, logs/board-copy-time.txt, logs/dump_pads.log
+- [x] 10. Broken copy row removed. evidence: tests/broken/mini-row_removed.log, real-row_removed.log
+- [x] 11. Broken copy field emptied. evidence: tests/broken/mini-field_emptied.log, real-field_emptied.log
+- [x] 12. Broken copy step that does not exist. evidence: tests/broken/mini-step_not_exist.log, real-step_not_exist.log
+- [x] 13. Broken copy paste layer with no opening (and a missing paste file). evidence: tests/broken/*paste_no_opening.log, *paste_file_missing.log
+- [x] 14. Broken copy check before its step. evidence: tests/broken/*check_before_step.log
+- [x] 15. Runner and its log. evidence: tests/run_tests.py, logs/final/tests.log (TESTS PASS 13 of 13 as expected)
+- [x] 16. Complete miniature passes. evidence: tests/mini/mini.log
+- [x] 17. Today's check ends RESULT FAIL with the 15 hot-bar lands. evidence: logs/final/check.log, logs/final/check-hotbar-solder.txt
+- [x] 18. joint-gaps.md one line per joint with a gap, file to say it, decision quoted or none, sorted. evidence: logs/final/make_gaps.log (gap lines 95, unplaced 0), logs/lead-decisions-search2.log
+- [x] 19. Bar 1 counts and arithmetic. evidence: logs/final/count_ends.log (ARITHMETIC 81 + 53 = 134 = 2 x 67)
+- [x] 20. Bar 3 audit last line. evidence: logs/final/audit_citations.log
+- [x] 21. Notes with method, counts, limits, questions_for_owner, RESULT last line. evidence: joint-table-notes.md
+- [x] 22. Rules kept: no git, browser, web, check_band.py; no existing file changed; ring board copied before KiCad read it; one heavy command at a time at nice 19; stderr kept; work folder 5.6M (logs/final/time.txt). One slip: hand-typed times in four expectation files, corrected in place (CORRECTION lines).
+- [x] 23. Time limit: end well before 15:28; clock 13:17:47 at the last check of this list.
+- [x] 24. Final reply under 3,500 characters, audited. evidence: final-reply.md, logs/final-audit.log (its last line gives the claim count and 0 unmatched)

@@ -1,0 +1,20 @@
+* own model: Texas Instruments TPD4E05U06 (ring U9 and case U6), built only from the maker's datasheet (design/datasheets/codes_tpd4e05u06.pdf; page numbers of the text copy src/codes_tpd4e05u06.txt lines are given).
+* Four channels, each a steering-diode pair to GND: clamps at VBR 6.5 V min / 8.5 V max at 1 mA (table at line 546), reverse stand-off VRWM 5.5 V at 10 uA (line 541), leakage 10 nA max and 0.01 nA typ at VIO = 2.5 V (line 564), line capacitance 0.42 to 0.5 pF typ (line 21), dynamic resistance 0.8 ohm (line 580).
+* ports: D1P D1N D2P D2N GND(node 0)
+* params: rleak  leakage resistance of one channel: 2.5 V / 10 nA = 250 Mohm is the datasheet maximum (default); 2.5 V / 0.01 nA = 250 Gohm is typical
+*         vbr    breakdown voltage, default 6.5 V (minimum)
+.subckt TPD4E05U06 d1p d1n d2p d2n gnd params: rleak=250Meg vbr=6.5 cio=0.5p
+.model Dclamp D(IS=1e-15 N=1 RS=0.8 BV={vbr} IBV=1m CJO=0)
+Dp1 0 d1p Dclamp
+Dp2 0 d1n Dclamp
+Dp3 0 d2p Dclamp
+Dp4 0 d2n Dclamp
+Rl1 d1p 0 {rleak}
+Rl2 d1n 0 {rleak}
+Rl3 d2p 0 {rleak}
+Rl4 d2n 0 {rleak}
+C1 d1p 0 {cio}
+C2 d1n 0 {cio}
+C3 d2p 0 {cio}
+C4 d2n 0 {cio}
+.ends TPD4E05U06

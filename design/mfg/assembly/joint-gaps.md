@@ -1,0 +1,8 @@
+# Joint gaps of today (from joints.csv)
+
+Written by `design/mfg/assembly/joint-table-work/make_gaps.py` from `design/mfg/assembly/joints.csv`. One line per joint that has a gap: what is missing (the gap column), which design file would have to say it, and whether a row of `design/wiring/lead-decisions.md` settles it (quoted). Sorted by what a builder would get wrong first: the group number comes first, then the joint id. The order of the groups is my judgment (the joint table helper), not a design decision.
+
+Rows: 99; with a gap: 0; complete: 99. Rows with a gap that no group placed: 0.
+
+
+Complete rows (no gap): J-W001-A, J-W002-A, J-W003-A, J-W004-A, J-W005-A, J-W011-A, J-W021-A, J-W022-A, J-W025-A, J-W026-A, J-W027-A, J-W029-A, J-W030-A, J-W031-A, J-W032-A, J-W001-B, J-W002-B, J-W003-B, J-W004-B, J-W005-B, J-W010-B, J-W011-B, J-W016-B, J-W017-B, J-W018-B, J-W019-B, J-W020-B, J-W021-B, J-W022-B, J-W023-B, J-W024-B, J-W025-B, J-W026-B, J-W027-B, J-W033-B, J-W034-B, J-W035-B, J-W029-B, J-W030-B, J-W031-B, J-W032-B, J-W040-B, J-W041-B, J-W042-B, J-W043-B, J-W044-B, J-W045-B, J-W046-B, J-W047-B, J-W048-B, J-W049-B, J-W050-B, J-W051-B, J-W052-B, J-W053-B, J-W054-A, J-W054-B, J-W055-A, J-W055-B, J-W056-A, J-W056-B, J-W057-A, J-W057-B, J-W063-A, J-W063-B, J-W064-A, J-W064-B, J-W065-A, J-W065-B, J-W066-A, J-W066-B, J-W067-A, J-W067-B, J-W059-B, J-W060-B, J-W061-B, J-W062-B, J-W036-A, J-W037-A, J-W038-A, J-W039-A, P-ring-F, P-ring-B, P-flex1-us7, P-flex1-us8, P-flex1-us9, P-flex1-us10, P-flex1-us11, P-flex1-us12, P-flex1-us13, P-flex2-us7, P-flex2-us8, P-flex2-us9, P-flex2-us10, P-flex2-us11, P-flex2-us12, P-flex2-us13, P-case_main, P-case_pins.

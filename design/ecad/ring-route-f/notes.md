@@ -1,0 +1,18 @@
+# ring-route-f: the last 4 items with the lead's spare-pin rulings (2026-11-13, 10:33 to 10:50)
+
+Copy of ring-route-e (its board = steps/f00-base.kicad_pcb, `logs/drc-fbase.log` `Found 5 violations` / `Found 4 unconnected items`; route-e's notes kept as `logs/notes-copied-from-route-e.md`). Scripts as before plus `scripts/netedit.py` (drop / move / rmvia, KiCad Python), `scripts/shorten.py`, `scripts/addvia.py`, `scripts/rmdangle.py`. All runs `nice -n 19`.
+
+- f01: the two dangling buried vias (2.000, +-0.32): MIC_A_DATA In1-In2 and NRESET In1-In2, each the locked end of an In1 escape whose net leaves earlier (`logs/near-dv1.log`, `logs/near-dv2.log`); removed: 4 / 4 (`logs/drc-f01.log`). MIC_A_DATA's In1 escape then dangled; deleting it opened MIC_A_DATA (f01d1..3, `logs/drc-f01d3.log` 4 / 5, not used); f03 shortened it to its junction (2.725,0.324): `logs/drc-f03.log` `Found 3 violations` / `Found 4 unconnected items`.
+- f04 drop SPARE_P1_30, f05..f09 OLED_PWR_EN from E9: R66 leg found but cuts a ground piece at R71 pad 2 (`logs/isl-diff-f04-f05.txt`); U4 C2 leg not found. Not kept (the drop is used again in f27).
+- f10..f19 move OLED_PWR_EN to F9 on the f04 board: own-via spacing at F9 and the ground piece at R71 again; not kept.
+- f20 (from f03) drop SPARE_P1_02, f21 LCD_MOSI from the G8 stub tip: `logs/drc-f21-mosi.log` `Found 2 violations` / `Found 3 unconnected items`. LCD_MOSI CLOSED.
+- f22 drop SPARE_P1_14 + move LCD_TE D6 to F4; f24 DECD from the A6 stub tip (rip 0.5): `logs/drc-f24-decd-0.5-none.log` `Found 3 violations` / `Found 3 unconnected items`; f25 LCD_TE from F4 to its net: `Found 3 violations` / `Found 2 unconnected items`; f26 SWDCLK stub tip rejoined: `logs/drc-f26-fixd.log` `Found 2 violations` / `Found 2 unconnected items`. DECD CLOSED.
+- f27 drop SPARE_P1_30 + move OLED_PWR_EN E9 to F9 + OLED via F-In2 in F9's pad: 2 / 2 (`logs/drc-f27.log`). f28..f33: U4 C2 leg needs ELVSS ripped under C2; with B barred in (5.5..6.4, -1.8..-0.7) where a ground piece split off, f34: `logs/drc-f34-oled.log` `Found 2 violations` / `Found 1 unconnected items`; f35 R66 to the net (B also barred in (6.05..7.15, -0.6..0.4) round R71 pad 2): `logs/drc-f35-oled.log` `Found 2 violations` / `Found 0 unconnected items`. OLED_PWR_EN CLOSED. f37-1..16 router leftovers (ELVSS, LCD_TE chains) removed: `logs/drc-f37-16.log` `Found 0 violations` / `Found 0 unconnected items`.
+
+## Final (pcb/ring.kicad_pcb = steps/f38-final, 10:49)
+- `logs/drc-final.log`: `Found 0 violations` / `Found 0 unconnected items`. Against 156a4622 (`logs/final-vs-156a.log`): 11 -> 0 open, 8 -> 0 violations, newly open `{}`.
+- `logs/finalcheck.log` (against 156a4622): 100 footprints identical; antenna nets 20 and USB pair 24 items identical; added In1 copper within 0.2 mm plan view of antenna copper 0 (closest 0.223). Locked items removed 13 (the escapes and vias listed in pin-changes.md), 1 locked item changed (MIC_A_DATA escape shortened).
+- `pcb/check_board.py` (`logs/check_board-final.log`, exit 1): check 2 fails by exactly the 8 pad nets of pin-changes.md; check 6 fails on U1 D6, E9, F4, F8, F9 (the changed balls); check 7 `rules check: 0 violations, 0 unconnected`; checks 1, 3, 4, 5 pass.
+- Pin changes: `pin-changes.md` (3 drops, 2 moves). Copper lists: `all-items-156a4622-to-final.txt` (removed 366, added 948), `all-items-route-e-to-final.txt` (removed 382, added 469).
+- Supply nets: no VBAT, VMOT or U1_VBUS copper changed in this round; U1_VBUS keeps its 0.150 mm route from route-e.
+RESULT: done, the rules check prints Found 0 violations and Found 0 unconnected items (logs/drc-final.log; 156a4622 had 8 and 11), with 3 spare nets dropped and LCD_TE and OLED_PWR_EN moved (pin-changes.md).

@@ -1,0 +1,21 @@
+The workspace is set up and passes the proof bar. One command from the Mac builds the ring firmware on the server and runs every test: `sh firmware/tools/remote.sh build-all "tools/build_all.sh"`. Its final run printed `RESULT PASS` and exited 0 (`firmware/build-logs/20261111-114413-build-all.log`).
+
+Full report: firmware/docs/infra-notes.md. Raw evidence: firmware/build-logs/infra/
+
+**Correction to the brief and research-sdk.md:** at v3.4.2 the simulated chip target is `nrf54lm20bsim/nrf54lm20a/cpuapp`. Zephyr refuses `nrf54lm20bsim/nrf54lm20/cpuapp` ("Board qualifiers `nrf54lm20/cpuapp` ... not found", `build-logs/20261111-105344-build-all.log` lines 778-786). Every script uses the corrected name.
+
+Proofs:
+1. Skeleton copy with no ring_core and no tests/core: `RESULT PASS`, exit 0 (`build-logs/20261111-110248-build-all-skeleton.log`). On the kit the app uses FLASH 34304 B and RAM 6024 B; MCUboot uses FLASH 45656 B and RAM 21968 B. The bsim run printed `ring-os start: app 0.1.0-dev, zephyr 4.4.2`.
+2. Kit samples (`build-logs/20261111-110741-kit-samples.log`): all four builds exit 0. peripheral_hids_keyboard on the kit: FLASH 214052 B, RAM 37380 B. peripheral_ancs_client on the kit: FLASH 170188 B, RAM 33544 B. Both build for nrf54lm20bsim, so the nrf54l15bsim fallback was not needed.
+3. peripheral_hr with central_hr on nrf54lm20bsim, 10 simulated seconds: the central printed 9 `[NOTIFICATION]` lines (`build-logs/20261111-111017-bsim-hr.log`).
+4. Broken copy (a syntax error in main.c): `RESULT FAIL dk-build bsim-build`, exit 1 (`build-logs/20261111-110533-build-all-broken.log`). Extra check: a copy with a wrong test assertion gives `RESULT FAIL`, exit 1 (`build-logs/20261111-112002-build-all-failtest.log`). The real tree was never changed.
+5. Disk: /root/ring-os is 3.4 GB. The two images share 6.063 GB, so together they take about 9.7 GB. The server had 52 GB free at the end, 72 GB at the start.
+
+Setup: image `ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.4.2`, plus my derived image `ring-os-toolchain:v3.4.2` built from tools/Dockerfile. The base image already has the 32-bit C library but no `make`; the derived image adds `make`. The west update was narrowed (Matter left out, shallow clones) and took 2.3 GB. BabbleSim was built with `make everything`. ring_core is added to the app with ZEPHYR_EXTRA_MODULES, and only when its module.yml exists. The reason: it lives in the manifest repository itself, which west does not treat as a module.
+
+Open points for you:
+- os-core already uses remote.sh on the shared /root/ring-os/src. If two helpers run at once, one copy can overwrite the other. Test copies should set `RING_REMOTE_SRC=/root/ring-os/src-<label>`.
+- I added the 25 GB disk check to remote.sh after proofs 1 to 4. For the kit-sample and two-device runs I checked free disk by hand first. I then edited infra-notes.md and .gitignore after the final run; neither affects the build.
+- The .gitignore keeps the proof logs tracked. No git was run.
+
+RESULT: done, commit none (lead commits), build_all exit 0

@@ -1,0 +1,34 @@
+Ring schematic is at A5-draft. All files are in design/ecad/ring/. No git action was taken.
+
+Proof, last lines quoted from the saved logs:
+- check_netlist.py: evidence/a5/check_final_run.log ends "check exit 0", previous line "RESULT PASS netlist netlist.csv" (33 ok lines, A5-1 to A5-10 among them).
+- ERC with the brief's command: evidence/a5/erc_cmd.log has "Found 0 violations" and "erc exit 0".
+- PDF: 9 pages, Rev A5 on every page (check A5-10); I opened pages 1, 3, 4, 5, 6, 7, 8 and 9 (render_a5.log: 0 overlapping word pairs).
+- Failure proofs: evidence/a5/broken/exits.txt lists 10 broken copies, each exit 1 with one FAIL line carrying its own A5 tag.
+
+What changed (netlist 365 rows, 91 nets, 113 parts, 8 sheets):
+- 2 microphones IM68D128B (U5 SELECT ground, U6 SELECT VDD_MIC) on F1/F2. U7, U8 and their R33, R34, C33, C34, C37, C38 removed. E6, D7 and JOY_CENTER (H4) go to test pads TP20 to TP22.
+- Joystick: four SKTAAAE010 (SW1, SW3, SW4, SW5) on UP, DOWN, LEFT, RIGHT; record button SW2 is one SKTAAAE010. The 5-way part and EVPAVAA1A are gone.
+- M1 is VC0720B088L with the W6 circuit unchanged. U3 is CSNP32GCR01-BOW; its 8 pad numbers now come from the maker table (spec p5), so those 8 are no longer provisional.
+- J1 is FH35C-15S-0.3SHW(50) with 15 positions. DISP1 follows the slim.md 1.3 order as printed (names VCI and RESX). Pins 3 and 4 are listed provisional.
+- New sheet "Band": J_BAND_A (6 pads: 5 lines plus ground) and J_BAND_B (9 pads: motor 2, cell 2, NTC 1, charging pads 4). The switches, M1, BT1, RT1 and CP1 to CP4 sit behind them. J2, J3 and W1 to W10 are removed.
+
+Open pins: 89 rows in open-pins.csv, 86 provisional pin numbers plus 3 OPEN part numbers (L71, L72, RT1). The IM68D128B (P1 to P5) and SKTAAAE010 (2 terminals each) numbers are placeholders, since no document here has them.
+
+Conflicts, both lines in sch-notes.md section 7:
+- W13 (RT1 on the main board) against 17.3 (temperature sensor on the flex). I followed 17: RT1 is in the band.
+- W7 (protection at the contact board). U9 stays on the main board.
+- Section 7 table against 16.6 for MIC_B and JOY_CENTER. I followed 16.6.
+- 16.5 (6 signals plus ground) against 17.3 (5 lines plus ground). I followed 17.3.
+
+Two brief points did not match the files:
+- The old joystick lines had no pull-ups or protection (W1), so the new ones have none either. A5-3 enforces this.
+- slim.md section 5.1 is the IM68D121J brief, not the IM68D128B.
+
+For the lead: the live bom.csv still lists J2 and J3.
+
+Not done: nothing from the brief. The cell protection circuit and the tail conductors are not drawn as parts (no maker data).
+
+Files: design/ecad/ring/sch-notes.md (section 10 "A5 changes"), design/ecad/ring/prove_a5.sh, design/ecad/ring/evidence/a5/CHECKLIST.md.
+
+RESULT: done, check_netlist.py exit 0 (RESULT PASS), ERC 0 violations, 89 open-pins.csv rows (86 provisional pin numbers plus 3 OPEN part numbers)

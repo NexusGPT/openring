@@ -1,0 +1,21 @@
+config RING_FACTORY_LOGIC
+	bool "Ring factory: sub-command parsing, result layout, levels, ppm, beacon name (pure part, no kernel call)"
+	help
+	  The pure part of the factory tests of design/firmware.md section 9.3: stdint, stdbool and string only.
+
+config RING_FACTORY
+	bool "Ring factory: the FACTORY sub-commands and the ship beacon (thin part, software step 6, unit U8)"
+	depends on RING_RHW
+	select RING_FACTORY_LOGIC
+	imply RING_STORE
+	help
+	  Runs the tests of design/firmware.md section 9.3 and the ship beacon of ruling R20. Reaches hardware only
+	  through ring_rhw (the beacon, the clock) and the other units' public headers; the join supplies the rest through
+	  struct rfa_ops. The built-in T-STORE (used when the join gives none) needs RING_STORE.
+
+config RING_FACTORY_REAL
+	bool "The real beacon: not-connectable advertising through the Bluetooth host (development kit build only)"
+	depends on RING_FACTORY && BT && !RING_RHW_SIM
+	default y
+	help
+	  Compiles src/rfa_hw_real.c, which registers the real beacon with ring_rhw. Never in a simulated build.

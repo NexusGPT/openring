@@ -1,0 +1,20 @@
+Step 2 is built and proven on the simulated nRF52, but the bar item on nrf54lm20bsim is not met: no pairing completes on that chip. `build_all` on my copy ends RESULT PASS (20261111-133920-step2-all-final.log, remote exit code 0). The log's last line is `# local log: firmware/build-logs/step2/20261111-133920-step2-all-final.log`.
+
+Built (notes: firmware/docs/devices-control-notes.md; evidence folder firmware/build-logs/step2/):
+- modules/ring_devices and modules/ring_control, four mode tables in rctl_modes.h, logic suites in tests/control and tests/devices, two-device tests in tests/bsim/control.
+- Logic suites on native_sim: ring_control.logic 7 cases passed, ring_devices.logic 7 cases passed; both fail on a broken copy (20261111-133801-mut.log).
+- Core: ring_core.logic 216 cases passed on native_sim and on the simulated chip (the brief said 214; console-counts.txt).
+- Tests on nrf52_bsim/native: TEST A RESULT PASS (72 checks passed), TEST B RESULT PASS (43 checks passed), TEST C RESULT PASS (28 checks passed), then RESULT PASS. Broken copy (presenter right sends Left Arrow): TEST A RESULT FAIL (71 checks passed; host1-result 1-failed-checks).
+- Kit build: app FLASH 159460 B (16.36%), RAM 34452 B (6.58%); MCUboot unchanged 45656 B and 21968 B; the skeleton was 34304 B and 6024 B.
+- Outside my folders: tools/build_all.sh got a stage 4 (runs each tests/bsim/*/run.sh, and again with --broken); app/CMakeLists.txt, prj.conf, Kconfig, boards/nrf54lm20dk_nrf54lm20a_cpuapp.conf and src/main.c changed (notes section 7).
+
+Not met:
+- On nrf54lm20bsim/nrf54lm20a/cpuapp the app builds, connects and runs the passkey rounds, then the first encrypted packet fails with disconnect reason 0x3d (console-peek.txt, 20261111-131822-peek5.log). The same pairing failure on nrf54l15bsim (20261111-131503-bsimA4.log) and with the multirole SoftDevice library (console-exp1.txt); with Zephyr's own link layer the ring again reports 0x3d (console-peek11.txt, 20261111-133601-bsimExp3.log); it passes on nrf52_bsim. Cause not shown (suspect the BabbleSim nRF54L CCM model); owner: whoever holds the simulator. CTRL_BOARD=nrf54lm20bsim/nrf54lm20a/cpuapp selects that chip.
+
+Not proven: real phones; the 1,000 ms advertising phase, window timeout, wrong passkey, pairing refused outside the window; privacy and the accept list are not built (a connect-time bond check instead). After a reconnect the ring cannot see when the host is ready, so tests wait 3 s.
+
+For F7: notes section 5 lists the changes to firmware.md section 7 (HID service and report map, advertising data, three bonds and no automatic removal, privacy and accept list not met, control modes).
+
+Cleanup: server copy and build outputs removed (console-cleanup2.txt, console-cleanup3.txt). Checklist: CHECKLIST.md (27 done, 1 not done). No git command was run.
+
+RESULT: done, ring_devices and ring_control are proven by logic suites, tests A, B, C and a failing broken copy with build_all RESULT PASS, but only on the simulated nRF52 because the simulated nRF54LM20A fails every encrypted link.

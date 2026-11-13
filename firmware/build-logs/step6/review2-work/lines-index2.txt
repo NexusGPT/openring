@@ -1,0 +1,45 @@
+rrec.c:290: 
+rrec.c:291: /* the tries of a failed unmount end: the record with the result and the count */
+rrec.c:292: static void unmount_tries_end(int err)
+rrec.c:293: {
+rrec.c:294: 	if (unmount_tries != 0) {
+rrec.c:295: 		unmount_record(err, unmount_tries);
+rrec.c:296: 		unmount_tries = 0;
+rrec.c:297: 	}
+rrec.c:298: }
+rrec.c:299: 
+rrec.c:300: static int unmount_now(void)
+rrec.c:301: {
+rrec.c:302: 	int r;
+rrec.c:303: 
+rrec.c:304: 	if (!rst_mounted()) {
+rrec.c:305: 		unmount_tries_end(0);   /* unmounted meanwhile: the tries ended with VDD_SD off */
+rrec.c:306: 		return 0;
+rrec.c:307: 	}
+rrec.c:308: 	r = rst_unmount_wait(FINISH_WAIT_MS);
+rrec.c:309: 	if (unmount_tries != 0 && unmount_tries < UINT8_MAX) {
+rrec.c:310: 		unmount_tries++;        /* one more try of the same failed unmount */
+rrec.c:311: 	}
+rrec.c:312: 	if (r == -EBUSY) {
+rrec.c:313: 		if (unmount_tries == 0) {
+rrec.c:314: 			unmount_tries = 1;
+rrec.c:315: 			unmount_record(r, 1);   /* the first failed try */
+rrec.c:316: 		}
+rrec.c:317: 		(void)rrec_post(RREC_JOB_UNMOUNT, 0);
+rrec.c:318: 	} else {
+rrec.c:319: 		unmount_tries_end(r);   /* 0, or -EIO (the rail went off anyway) */
+rrec.c:320: 	}
+rrec.c:321: 	return r;
+rrec.c:322: }
+rrec.c:530: /* HFXO held by the join per FW 8.2 (review finding R6-04): on in BOOT and RECOVERY (l.915), CHARGING "when USB runs"
+rrec.c:531:  * (l.918: VBUS is present in CHARGING), TRANSFER (l.919), FACTORY_TEST (driven over USB); RECORDING's is the audio
+rrec.c:532:  * part's (rau_prepare); STANDBY and the error states "when the radio runs" (the radio's own request) */
+rrec.c:533: static bool hfxo_wanted(enum rc_state s)
+rrec.c:534: {
+rrec.c:535: 	return s == RC_ST_BOOT || s == RC_ST_RECOVERY || s == RC_ST_CHARGING || s == RC_ST_TRANSFER || s == RC_ST_FACTORY_TEST;
+rrec.c:536: }
+rrec.c:537: 
+rst.c:468:static int unmount_locked(void)
+rst.c:506:int rst_unmount_wait(int32_t timeout_ms)
+rst.c:508:	if (k_mutex_lock(&op_lock, K_MSEC(MAX(timeout_ms, 0))) != 0) {
+rdev.c:501:int rdev_stop(void)

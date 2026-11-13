@@ -1,0 +1,38 @@
+VDD_1V8,C1,1,~,passive
+VDD_1V8,C2,1,~,passive
+VDD_1V8,C4,1,~,passive
+VDD_1V8,C5,1,~,passive
+VDD_1V8,C78,1,~,passive
+VDD_1V8,C80,1,~,passive
+VDD_1V8,DISP1,5,IOVCC,power_in
+VDD_1V8,J1,P5,IOVCC,passive
+VDD_1V8,L71,2,~,passive
+VDD_1V8,R57,2,~,passive
+VDD_1V8,R58,2,~,passive
+VDD_1V8,TP17,1,1,passive
+VDD_1V8,U1,A4,VDD,power_in
+VDD_1V8,U1,E10,VDD,power_in
+VDD_1V8,U2,P19,VDDIO,power_in
+VDD_1V8,U2,P23,VOUT1,power_out
+VDD_1V8,U2,P29,LSIN1/VINLDO1,power_in
+VDD_3V0,C79,1,~,passive
+VDD_3V0,D1,1,K,passive
+VDD_3V0,DISP1,4,VCI,power_in
+VDD_3V0,J1,P4,VCI,passive
+VDD_3V0,J_BAND_B,2,MOT+,passive
+VDD_3V0,L72,2,~,passive
+VDD_3V0,M1,P1,+,passive
+VDD_3V0,R41,1,~,passive
+VDD_3V0,U2,P26,VOUT2,power_out
+VDD_3V0,U2,P30,LSIN2/VINLDO2,power_in
+VDD_SD,C60,1,~,passive
+VDD_SD,C61,1,~,passive
+VDD_SD,R60,2,~,passive
+VDD_SD,R63,2,~,passive
+VDD_SD,R64,2,~,passive
+VDD_SD,R65,2,~,passive
+VDD_SD,U2,P32,LSOUT2/VOUTLDO2,power_out
+VDD_SD,U3,8,VCC,power_in
+design/architecture.md:507:| B1 (changed) | 2 microphones behind wall slots (section 16.6): record the same meeting as a Plaud at 1 m and 3 m, at three noise levels (design/bench/bench-plan.md section 5) | bench build 1 |
+design/ecad/ring/sch-notes.md:93:1 to 9 of A3 stand (screen sequencing, SGM38046 AVIN, USB protection, antenna retune, nPM1300 pin numbers, back-powering, VDD_3V0 load, recording light, crystals; see `evidence/a5/sch-notes_before.md` section 9). New in A5:
+design/ecad/ring/sch-notes.md:117:Checks kept: section 7 pin plan (now with the three A5 spare rows), contact pad order, R41 and the light, P3.05 spare, designators, every pin once, single-pin nets, rails of section 3, H8, KiCad export compare. Checks removed or changed: (a) the check that each JOY line passes the wire link J2, wire, J3 (J2, J3, W5 to W10 no longer exist; A5-3 and A5-9 replace it); (b) the LR check on U5 to U8 became a SELECT check on U5, U6 (same logic); (c) the second-level R33, R34 data check and the FUNC rows for U7, U8, SW1 five-way pins and EVPAVAA1A (parts removed; A5-1, A5-3, A5-5 replace them). `prove_fail.sh` (A3 proofs) still holds the PWR_FLAG ERC probe; its first case names a pin LR that no longer exists and its output is the A3 state.

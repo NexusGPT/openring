@@ -1,0 +1,1172 @@
+# remote.sh run 20261113-061512-u7-full1
+# command: bash tools/unit_run.sh tests/sys
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 06:15:12 CET
+# free on the server's /: 50 GB
+# source firmware copied to /root/ring-os/src-u-sys
+# started on the server as 20261113-061512-u7-full1; server log /root/ring-os/logs/20261113-061512-u7-full1.log
+=== part tests-native_sim start 2026-11-13T05:15:19Z log /ws/out/20261113-061512-u7-full1-unit/tests-native_sim.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-061512-u7-full1-unit/twister-native_sim/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 native_sim/native         ring_sys.sim                                       PASSED (native 0.156s <host/gnu>)
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 23.59 seconds.
+INFO    - 24 of 24 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-061512-u7-full1-unit/twister-native_sim/twister.json
+INFO    - Writing xunit report /ws/out/20261113-061512-u7-full1-unit/twister-native_sim/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-061512-u7-full1-unit/twister-native_sim/twister_report.xml...
+INFO    - Run completed
+=== part tests-native_sim end 2026-11-13T05:15:47Z exit 0
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp start 2026-11-13T05:15:47Z log /ws/out/20261113-061512-u7-full1-unit/tests-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-061512-u7-full1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_sys.sim                                 PASSED (native 0.054s <host/gnu>)
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 33.31 seconds.
+INFO    - 24 of 24 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-061512-u7-full1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.json
+INFO    - Writing xunit report /ws/out/20261113-061512-u7-full1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-061512-u7-full1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister_report.xml...
+INFO    - Run completed
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp end 2026-11-13T05:16:21Z exit 0
+=== part broken-sys start 2026-11-13T05:16:21Z log /ws/out/20261113-061512-u7-full1-unit/broken-sys.log
+##### broken copy: size_999425_ok
+diff -u -r /ws/firmware/modules/ring_sys/src/rsy_logic.c /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_size_999425_ok/src/rsy_logic.c
+--- /ws/firmware/modules/ring_sys/src/rsy_logic.c	2026-11-13 04:57:04.000000000 +0000
++++ /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_size_999425_ok/src/rsy_logic.c	2026-11-13 05:16:21.757018269 +0000
+@@ -19,7 +19,7 @@
+ 	if (!rsl_update_allowed(soc_x10, vbus)) {
+ 		return RREC_ST_NOT_ALLOWED;
+ 	}
+-	if (image_size == 0u || image_size > RREC_IMAGE_MAX_BYTES) {
++	if (image_size == 0u || image_size > RREC_IMAGE_MAX_BYTES + 1u) {
+ 		return RREC_ST_BAD_ARG;
+ 	}
+ 	return RREC_ST_OK;
+INFO    - 1/1 native_sim/native         ring_sys.sim                                       FAILED rc=1 (native 0.142s <host/gnu>)
+ PASS - test_block_format in 0.000 seconds
+ PASS - test_boot_copies_valid_block_once in 0.000 seconds
+ PASS - test_fatal_path_order in 0.000 seconds
+ PASS - test_handler_signature_matches_kit in 0.000 seconds
+ PASS - test_invalid_block_ignored in 0.000 seconds
+ PASS - test_blank_settings_read_as_clear in 0.000 seconds
+ PASS - test_factory_flag_survives_reboot in 0.000 seconds
+ PASS - test_guess_is_not_set in 0.000 seconds
+ PASS - test_saved_on_ship_and_off in 0.000 seconds
+ PASS - test_allowed_rule in 0.000 seconds
+ PASS - test_data_end_limit in 0.000 seconds
+ PASS - test_end_bad_crc_fw_error in 0.000 seconds
+ PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+ PASS - test_self_test_no_mic in 31.001 seconds
+ PASS - test_self_test_pass_confirms in 62.001 seconds
+ PASS - test_self_test_timeout_reboots in 30.101 seconds
+ PASS - test_sequence in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:55: sys_update_test_size_limit: (rsy_fw_begin(999425u, 0u, 1000u, true) not equal to 4)
+ FAIL - test_size_limit in 0.000 seconds
+ PASS - test_writes_only_slot1 in 0.000 seconds
+TESTSUITE sys_update failed.
+ PASS - test_feed_only_with_progress in 38.008 seconds
+ PASS - test_feed_when_no_recording in 38.501 seconds
+ PASS - test_new_recording_clears_old_progress in 4.501 seconds
+ PASS - test_progress_window_edges in 0.000 seconds
+ PASS - test_start_8s_once in 0.000 seconds
+SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+ - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+ - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+ - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+ - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+ - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+ - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+ - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+SUITE FAIL -  90.00% [sys_update]: pass = 9, fail = 1, skip = 0, total = 10 duration = 123.103 seconds
+ - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+ - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+ - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+ - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+ - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+ - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+ - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+ - FAIL - [sys_update.test_size_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+ - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+ - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+ - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+ - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+ - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 22.46 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy size_999425_ok, native_sim: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-size_999425_ok-native_sim.log)
+size_999425_ok on native_sim: the named case failed, as required:  - FAIL - [sys_update.test_size_limit] duration = 0.000 seconds
+size_999425_ok on native_sim: cases that failed (distinct): FAIL - [sys_update.test_size_limit]  (lines with FAIL: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_sys.sim                                 FAILED rc=1 (native 0.069s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_block_format in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_boot_copies_valid_block_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fatal_path_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_handler_signature_matches_kit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_invalid_block_ignored in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_blank_settings_read_as_clear in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_flag_survives_reboot in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_guess_is_not_set in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_saved_on_ship_and_off in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_allowed_rule in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_data_end_limit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_end_bad_crc_fw_error in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+d_00: @00:00:31.000193   PASS - test_self_test_no_mic in 31.001 seconds
+d_00: @00:01:33.000393   PASS - test_self_test_pass_confirms in 62.001 seconds
+d_00: @00:02:03.100593   PASS - test_self_test_timeout_reboots in 30.101 seconds
+d_00: @00:02:03.100593   PASS - test_sequence in 0.000 seconds
+d_00: @00:02:03.100593      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:55: sys_update_test_size_limit: (rsy_fw_begin(999425u, 0u, 1000u, true) not equal to 4)
+d_00: @00:02:03.100593   FAIL - test_size_limit in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_writes_only_slot1 in 0.000 seconds
+d_00: @00:02:03.100593  TESTSUITE sys_update failed.
+d_00: @00:02:41.108193   PASS - test_feed_only_with_progress in 38.008 seconds
+d_00: @00:03:19.608493   PASS - test_feed_when_no_recording in 38.501 seconds
+d_00: @00:03:24.109093   PASS - test_new_recording_clears_old_progress in 4.501 seconds
+d_00: @00:03:24.109093   PASS - test_progress_window_edges in 0.000 seconds
+d_00: @00:03:24.109093   PASS - test_start_8s_once in 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE FAIL -  90.00% [sys_update]: pass = 9, fail = 1, skip = 0, total = 10 duration = 123.103 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+d_00: @00:03:24.109093   - FAIL - [sys_update.test_size_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+d_00: @00:03:24.109093  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.73 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy size_999425_ok, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-size_999425_ok-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+size_999425_ok on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:24.109093   - FAIL - [sys_update.test_size_limit] duration = 0.000 seconds
+size_999425_ok on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [sys_update.test_size_limit]  (lines with FAIL: 1)
+##### broken copy: end_off_by_one
+diff -u -r /ws/firmware/modules/ring_sys/src/rsy_logic.c /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_end_off_by_one/src/rsy_logic.c
+--- /ws/firmware/modules/ring_sys/src/rsy_logic.c	2026-11-13 04:57:04.000000000 +0000
++++ /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_end_off_by_one/src/rsy_logic.c	2026-11-13 05:17:14.634921004 +0000
+@@ -33,7 +33,7 @@
+ 	if (!begun || (len > 0u && !has_data)) {
+ 		return RREC_ST_BAD_ARG;
+ 	}
+-	if (end > limit) {
++	if (end > limit + 1u) {
+ 		return RREC_ST_BAD_ARG;
+ 	}
+ 	return RREC_ST_OK;
+INFO    - 1/1 native_sim/native         ring_sys.sim                                       FAILED rc=1 (native 0.102s <host/gnu>)
+ PASS - test_block_format in 0.000 seconds
+ PASS - test_boot_copies_valid_block_once in 0.000 seconds
+ PASS - test_fatal_path_order in 0.000 seconds
+ PASS - test_handler_signature_matches_kit in 0.000 seconds
+ PASS - test_invalid_block_ignored in 0.000 seconds
+ PASS - test_blank_settings_read_as_clear in 0.000 seconds
+ PASS - test_factory_flag_survives_reboot in 0.000 seconds
+ PASS - test_guess_is_not_set in 0.000 seconds
+ PASS - test_saved_on_ship_and_off in 0.000 seconds
+ PASS - test_allowed_rule in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:79: sys_update_test_data_end_limit: (rsy_fw_data(999324u, img, 101u) not equal to 4)
+ FAIL - test_data_end_limit in 0.000 seconds
+ PASS - test_end_bad_crc_fw_error in 0.000 seconds
+ PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+ PASS - test_self_test_no_mic in 31.001 seconds
+ PASS - test_self_test_pass_confirms in 62.001 seconds
+ PASS - test_self_test_timeout_reboots in 30.101 seconds
+ PASS - test_sequence in 0.000 seconds
+ PASS - test_size_limit in 0.000 seconds
+ PASS - test_writes_only_slot1 in 0.000 seconds
+TESTSUITE sys_update failed.
+ PASS - test_feed_only_with_progress in 38.008 seconds
+ PASS - test_feed_when_no_recording in 38.501 seconds
+ PASS - test_new_recording_clears_old_progress in 4.501 seconds
+ PASS - test_progress_window_edges in 0.000 seconds
+ PASS - test_start_8s_once in 0.000 seconds
+SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+ - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+ - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+ - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+ - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+ - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+ - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+ - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+SUITE FAIL -  90.00% [sys_update]: pass = 9, fail = 1, skip = 0, total = 10 duration = 123.103 seconds
+ - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+ - FAIL - [sys_update.test_data_end_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+ - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+ - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+ - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+ - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+ - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+ - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+ - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+ - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+ - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+ - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+ - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 22.68 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy end_off_by_one, native_sim: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-end_off_by_one-native_sim.log)
+end_off_by_one on native_sim: the named case failed, as required:  - FAIL - [sys_update.test_data_end_limit] duration = 0.000 seconds
+end_off_by_one on native_sim: cases that failed (distinct): FAIL - [sys_update.test_data_end_limit]  (lines with FAIL: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_sys.sim                                 FAILED rc=1 (native 0.083s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_block_format in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_boot_copies_valid_block_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fatal_path_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_handler_signature_matches_kit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_invalid_block_ignored in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_blank_settings_read_as_clear in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_flag_survives_reboot in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_guess_is_not_set in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_saved_on_ship_and_off in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_allowed_rule in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:79: sys_update_test_data_end_limit: (rsy_fw_data(999324u, img, 101u) not equal to 4)
+d_00: @00:00:00.000093   FAIL - test_data_end_limit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_end_bad_crc_fw_error in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+d_00: @00:00:31.000193   PASS - test_self_test_no_mic in 31.001 seconds
+d_00: @00:01:33.000393   PASS - test_self_test_pass_confirms in 62.001 seconds
+d_00: @00:02:03.100593   PASS - test_self_test_timeout_reboots in 30.101 seconds
+d_00: @00:02:03.100593   PASS - test_sequence in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_size_limit in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_writes_only_slot1 in 0.000 seconds
+d_00: @00:02:03.100593  TESTSUITE sys_update failed.
+d_00: @00:02:41.108193   PASS - test_feed_only_with_progress in 38.008 seconds
+d_00: @00:03:19.608493   PASS - test_feed_when_no_recording in 38.501 seconds
+d_00: @00:03:24.109093   PASS - test_new_recording_clears_old_progress in 4.501 seconds
+d_00: @00:03:24.109093   PASS - test_progress_window_edges in 0.000 seconds
+d_00: @00:03:24.109093   PASS - test_start_8s_once in 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE FAIL -  90.00% [sys_update]: pass = 9, fail = 1, skip = 0, total = 10 duration = 123.103 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+d_00: @00:03:24.109093   - FAIL - [sys_update.test_data_end_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+d_00: @00:03:24.109093  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 29.62 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy end_off_by_one, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-end_off_by_one-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+end_off_by_one on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:24.109093   - FAIL - [sys_update.test_data_end_limit] duration = 0.000 seconds
+end_off_by_one on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [sys_update.test_data_end_limit]  (lines with FAIL: 1)
+##### broken copy: writes_slot0
+diff -u -r /ws/firmware/modules/ring_sys/src/rsy.c /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_writes_slot0/src/rsy.c
+--- /ws/firmware/modules/ring_sys/src/rsy.c	2026-11-13 05:08:47.000000000 +0000
++++ /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_writes_slot0/src/rsy.c	2026-11-13 05:18:09.795770504 +0000
+@@ -157,7 +157,7 @@
+ 	if (len == 0u) {
+ 		return RREC_ST_OK;
+ 	}
+-	if (rhw_image()->write(offset, data, len) != 0) {
++	if (rhw_image()->write(RREC_FLASH_SLOT0_ADDR + offset, data, len) != 0) {
+ 		return RREC_ST_FW_ERROR;
+ 	}
+ 	return RREC_ST_OK;
+INFO    - 1/1 native_sim/native         ring_sys.sim                                       FAILED rc=1 (native 0.162s <host/gnu>)
+ PASS - test_block_format in 0.000 seconds
+ PASS - test_boot_copies_valid_block_once in 0.000 seconds
+ PASS - test_fatal_path_order in 0.000 seconds
+ PASS - test_handler_signature_matches_kit in 0.000 seconds
+ PASS - test_invalid_block_ignored in 0.000 seconds
+ PASS - test_blank_settings_read_as_clear in 0.000 seconds
+ PASS - test_factory_flag_survives_reboot in 0.000 seconds
+ PASS - test_guess_is_not_set in 0.000 seconds
+ PASS - test_saved_on_ship_and_off in 0.000 seconds
+ PASS - test_allowed_rule in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:75: sys_update_test_data_end_limit: (rsy_fw_data(999324u, img, 100u) not equal to RREC_ST_OK)
+ FAIL - test_data_end_limit in 0.000 seconds
+ PASS - test_end_bad_crc_fw_error in 0.000 seconds
+ PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+ PASS - test_self_test_no_mic in 31.001 seconds
+ PASS - test_self_test_pass_confirms in 62.001 seconds
+ PASS - test_self_test_timeout_reboots in 30.101 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:143: sys_update_test_sequence: rsy_fw_end() not equal to RREC_ST_OK
+ FAIL - test_sequence in 0.000 seconds
+ PASS - test_size_limit in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:122: sys_update_test_writes_only_slot1: (e.a0 not equal to (int64_t)seen * 4096)
+ FAIL - test_writes_only_slot1 in 0.000 seconds
+TESTSUITE sys_update failed.
+ PASS - test_feed_only_with_progress in 38.008 seconds
+ PASS - test_feed_when_no_recording in 38.501 seconds
+ PASS - test_new_recording_clears_old_progress in 4.501 seconds
+ PASS - test_progress_window_edges in 0.000 seconds
+ PASS - test_start_8s_once in 0.000 seconds
+SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+ - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+ - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+ - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+ - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+ - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+ - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+ - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+SUITE FAIL -  70.00% [sys_update]: pass = 7, fail = 3, skip = 0, total = 10 duration = 123.103 seconds
+ - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+ - FAIL - [sys_update.test_data_end_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+ - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+ - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+ - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+ - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+ - FAIL - [sys_update.test_sequence] duration = 0.000 seconds
+ - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+ - FAIL - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+ - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+ - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+ - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+ - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+ - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 23.10 seconds.
+twister exit code on the broken copy writes_slot0, native_sim: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-writes_slot0-native_sim.log)
+writes_slot0 on native_sim: the named case failed, as required:  - FAIL - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+writes_slot0 on native_sim: cases that failed (distinct): FAIL - [sys_update.test_data_end_limit] FAIL - [sys_update.test_sequence] FAIL - [sys_update.test_writes_only_slot1]  (lines with FAIL: 3)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_sys.sim                                 FAILED rc=1 (native 0.133s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_block_format in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_boot_copies_valid_block_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fatal_path_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_handler_signature_matches_kit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_invalid_block_ignored in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_blank_settings_read_as_clear in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_flag_survives_reboot in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_guess_is_not_set in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_saved_on_ship_and_off in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_allowed_rule in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:75: sys_update_test_data_end_limit: (rsy_fw_data(999324u, img, 100u) not equal to RREC_ST_OK)
+d_00: @00:00:00.000093   FAIL - test_data_end_limit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_end_bad_crc_fw_error in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+d_00: @00:00:31.000193   PASS - test_self_test_no_mic in 31.001 seconds
+d_00: @00:01:33.000393   PASS - test_self_test_pass_confirms in 62.001 seconds
+d_00: @00:02:03.100593   PASS - test_self_test_timeout_reboots in 30.101 seconds
+d_00: @00:02:03.100593      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:143: sys_update_test_sequence: rsy_fw_end() not equal to RREC_ST_OK
+d_00: @00:02:03.100593   FAIL - test_sequence in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_size_limit in 0.000 seconds
+d_00: @00:02:03.100593      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:122: sys_update_test_writes_only_slot1: (e.a0 not equal to (int64_t)seen * 4096)
+d_00: @00:02:03.100593   FAIL - test_writes_only_slot1 in 0.000 seconds
+d_00: @00:02:03.100593  TESTSUITE sys_update failed.
+d_00: @00:02:41.108193   PASS - test_feed_only_with_progress in 38.008 seconds
+d_00: @00:03:19.608493   PASS - test_feed_when_no_recording in 38.501 seconds
+d_00: @00:03:24.109093   PASS - test_new_recording_clears_old_progress in 4.501 seconds
+d_00: @00:03:24.109093   PASS - test_progress_window_edges in 0.000 seconds
+d_00: @00:03:24.109093   PASS - test_start_8s_once in 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE FAIL -  70.00% [sys_update]: pass = 7, fail = 3, skip = 0, total = 10 duration = 123.103 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+d_00: @00:03:24.109093   - FAIL - [sys_update.test_data_end_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+d_00: @00:03:24.109093   - FAIL - [sys_update.test_sequence] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - FAIL - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+d_00: @00:03:24.109093  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 28.29 seconds.
+twister exit code on the broken copy writes_slot0, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-writes_slot0-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+writes_slot0 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:24.109093   - FAIL - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+writes_slot0 on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [sys_update.test_data_end_limit] FAIL - [sys_update.test_sequence] FAIL - [sys_update.test_writes_only_slot1]  (lines with FAIL: 3)
+##### broken copy: selftest_31s
+diff -u -r /ws/firmware/modules/ring_sys/src/rsy_logic.c /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_selftest_31s/src/rsy_logic.c
+--- /ws/firmware/modules/ring_sys/src/rsy_logic.c	2026-11-13 04:57:04.000000000 +0000
++++ /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_selftest_31s/src/rsy_logic.c	2026-11-13 05:19:04.105632493 +0000
+@@ -47,7 +47,7 @@
+ /* ------------------------------------------------------------------ self-test */
+ uint32_t rsl_selftest_window_ms(void)
+ {
+-	return RREC_SELFTEST_MS;
++	return RREC_SELFTEST_MS + 1000u;
+ }
+ 
+ void rsl_st_start(struct rsl_selftest *s, bool vbus)
+INFO    - 1/1 native_sim/native         ring_sys.sim                                       FAILED rc=1 (native 0.054s <host/gnu>)
+ PASS - test_block_format in 0.000 seconds
+ PASS - test_boot_copies_valid_block_once in 0.000 seconds
+ PASS - test_fatal_path_order in 0.000 seconds
+ PASS - test_handler_signature_matches_kit in 0.000 seconds
+ PASS - test_invalid_block_ignored in 0.000 seconds
+ PASS - test_blank_settings_read_as_clear in 0.000 seconds
+ PASS - test_factory_flag_survives_reboot in 0.000 seconds
+ PASS - test_guess_is_not_set in 0.000 seconds
+ PASS - test_saved_on_ship_and_off in 0.000 seconds
+ PASS - test_allowed_rule in 0.000 seconds
+ PASS - test_data_end_limit in 0.000 seconds
+ PASS - test_end_bad_crc_fw_error in 0.000 seconds
+ PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+ PASS - test_self_test_no_mic in 31.001 seconds
+ PASS - test_self_test_pass_confirms in 62.001 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:288: sys_update_test_self_test_timeout_reboots: (rsy_selftest_running() is true)
+ FAIL - test_self_test_timeout_reboots in 30.101 seconds
+ PASS - test_sequence in 0.000 seconds
+ PASS - test_size_limit in 0.000 seconds
+ PASS - test_writes_only_slot1 in 0.000 seconds
+TESTSUITE sys_update failed.
+ PASS - test_feed_only_with_progress in 38.008 seconds
+ PASS - test_feed_when_no_recording in 38.501 seconds
+ PASS - test_new_recording_clears_old_progress in 4.501 seconds
+ PASS - test_progress_window_edges in 0.000 seconds
+ PASS - test_start_8s_once in 0.000 seconds
+SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+ - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+ - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+ - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+ - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+ - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+ - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+ - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+SUITE FAIL -  90.00% [sys_update]: pass = 9, fail = 1, skip = 0, total = 10 duration = 123.103 seconds
+ - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+ - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+ - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+ - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+ - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+ - FAIL - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+ - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+ - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+ - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+ - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+ - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+ - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+ - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 21.08 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy selftest_31s, native_sim: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-selftest_31s-native_sim.log)
+selftest_31s on native_sim: the named case failed, as required:  - FAIL - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+selftest_31s on native_sim: cases that failed (distinct): FAIL - [sys_update.test_self_test_timeout_reboots]  (lines with FAIL: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_sys.sim                                 FAILED rc=1 (native 0.021s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_block_format in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_boot_copies_valid_block_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fatal_path_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_handler_signature_matches_kit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_invalid_block_ignored in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_blank_settings_read_as_clear in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_flag_survives_reboot in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_guess_is_not_set in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_saved_on_ship_and_off in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_allowed_rule in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_data_end_limit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_end_bad_crc_fw_error in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+d_00: @00:00:31.000193   PASS - test_self_test_no_mic in 31.001 seconds
+d_00: @00:01:33.000393   PASS - test_self_test_pass_confirms in 62.001 seconds
+d_00: @00:02:03.100593      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:288: sys_update_test_self_test_timeout_reboots: (rsy_selftest_running() is true)
+d_00: @00:02:03.100593   FAIL - test_self_test_timeout_reboots in 30.101 seconds
+d_00: @00:02:03.100593   PASS - test_sequence in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_size_limit in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_writes_only_slot1 in 0.000 seconds
+d_00: @00:02:03.100593  TESTSUITE sys_update failed.
+d_00: @00:02:41.108193   PASS - test_feed_only_with_progress in 38.008 seconds
+d_00: @00:03:19.608493   PASS - test_feed_when_no_recording in 38.501 seconds
+d_00: @00:03:24.109093   PASS - test_new_recording_clears_old_progress in 4.501 seconds
+d_00: @00:03:24.109093   PASS - test_progress_window_edges in 0.000 seconds
+d_00: @00:03:24.109093   PASS - test_start_8s_once in 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE FAIL -  90.00% [sys_update]: pass = 9, fail = 1, skip = 0, total = 10 duration = 123.103 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+d_00: @00:03:24.109093   - FAIL - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+d_00: @00:03:24.109093  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 24.89 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy selftest_31s, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-selftest_31s-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+selftest_31s on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:24.109093   - FAIL - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+selftest_31s on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [sys_update.test_self_test_timeout_reboots]  (lines with FAIL: 1)
+##### broken copy: allowed_at_30
+diff -u -r /ws/firmware/modules/ring_sys/src/rsy_logic.c /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_allowed_at_30/src/rsy_logic.c
+--- /ws/firmware/modules/ring_sys/src/rsy_logic.c	2026-11-13 04:57:04.000000000 +0000
++++ /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_allowed_at_30/src/rsy_logic.c	2026-11-13 05:19:52.734609525 +0000
+@@ -11,7 +11,7 @@
+ /* ------------------------------------------------------------------ update */
+ bool rsl_update_allowed(uint16_t soc_x10, bool vbus)
+ {
+-	return vbus || soc_x10 > RREC_UPDATE_MIN_SOC_X10;
++	return vbus || soc_x10 >= RREC_UPDATE_MIN_SOC_X10;
+ }
+ 
+ enum rrec_status rsl_begin_check(uint32_t image_size, uint16_t soc_x10, bool vbus)
+INFO    - 1/1 native_sim/native         ring_sys.sim                                       FAILED rc=1 (native 0.048s <host/gnu>)
+ PASS - test_block_format in 0.000 seconds
+ PASS - test_boot_copies_valid_block_once in 0.000 seconds
+ PASS - test_fatal_path_order in 0.000 seconds
+ PASS - test_handler_signature_matches_kit in 0.000 seconds
+ PASS - test_invalid_block_ignored in 0.000 seconds
+ PASS - test_blank_settings_read_as_clear in 0.000 seconds
+ PASS - test_factory_flag_survives_reboot in 0.000 seconds
+ PASS - test_guess_is_not_set in 0.000 seconds
+ PASS - test_saved_on_ship_and_off in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:210: sys_update_test_allowed_rule: (rsy_fw_begin(100u, 0u, 300u, false) not equal to 11)
+ FAIL - test_allowed_rule in 0.000 seconds
+ PASS - test_data_end_limit in 0.000 seconds
+ PASS - test_end_bad_crc_fw_error in 0.000 seconds
+ PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+ PASS - test_self_test_no_mic in 31.001 seconds
+ PASS - test_self_test_pass_confirms in 62.001 seconds
+ PASS - test_self_test_timeout_reboots in 30.101 seconds
+ PASS - test_sequence in 0.000 seconds
+ PASS - test_size_limit in 0.000 seconds
+ PASS - test_writes_only_slot1 in 0.000 seconds
+TESTSUITE sys_update failed.
+ PASS - test_feed_only_with_progress in 38.008 seconds
+ PASS - test_feed_when_no_recording in 38.501 seconds
+ PASS - test_new_recording_clears_old_progress in 4.501 seconds
+ PASS - test_progress_window_edges in 0.000 seconds
+ PASS - test_start_8s_once in 0.000 seconds
+SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+ - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+ - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+ - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+ - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+ - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+ - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+ - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+SUITE FAIL -  90.00% [sys_update]: pass = 9, fail = 1, skip = 0, total = 10 duration = 123.103 seconds
+ - FAIL - [sys_update.test_allowed_rule] duration = 0.000 seconds
+ - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+ - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+ - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+ - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+ - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+ - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+ - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+ - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+ - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+ - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+ - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+ - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 12.41 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy allowed_at_30, native_sim: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-allowed_at_30-native_sim.log)
+allowed_at_30 on native_sim: the named case failed, as required:  - FAIL - [sys_update.test_allowed_rule] duration = 0.000 seconds
+allowed_at_30 on native_sim: cases that failed (distinct): FAIL - [sys_update.test_allowed_rule]  (lines with FAIL: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_sys.sim                                 FAILED rc=1 (native 0.021s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_block_format in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_boot_copies_valid_block_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fatal_path_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_handler_signature_matches_kit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_invalid_block_ignored in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_blank_settings_read_as_clear in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_flag_survives_reboot in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_guess_is_not_set in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_saved_on_ship_and_off in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_update.c:210: sys_update_test_allowed_rule: (rsy_fw_begin(100u, 0u, 300u, false) not equal to 11)
+d_00: @00:00:00.000093   FAIL - test_allowed_rule in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_data_end_limit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_end_bad_crc_fw_error in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+d_00: @00:00:31.000193   PASS - test_self_test_no_mic in 31.001 seconds
+d_00: @00:01:33.000393   PASS - test_self_test_pass_confirms in 62.001 seconds
+d_00: @00:02:03.100593   PASS - test_self_test_timeout_reboots in 30.101 seconds
+d_00: @00:02:03.100593   PASS - test_sequence in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_size_limit in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_writes_only_slot1 in 0.000 seconds
+d_00: @00:02:03.100593  TESTSUITE sys_update failed.
+d_00: @00:02:41.108193   PASS - test_feed_only_with_progress in 38.008 seconds
+d_00: @00:03:19.608493   PASS - test_feed_when_no_recording in 38.501 seconds
+d_00: @00:03:24.109093   PASS - test_new_recording_clears_old_progress in 4.501 seconds
+d_00: @00:03:24.109093   PASS - test_progress_window_edges in 0.000 seconds
+d_00: @00:03:24.109093   PASS - test_start_8s_once in 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE FAIL -  90.00% [sys_update]: pass = 9, fail = 1, skip = 0, total = 10 duration = 123.103 seconds
+d_00: @00:03:24.109093   - FAIL - [sys_update.test_allowed_rule] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+d_00: @00:03:24.109093  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 15.32 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy allowed_at_30, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-allowed_at_30-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+allowed_at_30 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:24.109093   - FAIL - [sys_update.test_allowed_rule] duration = 0.000 seconds
+allowed_at_30 on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [sys_update.test_allowed_rule]  (lines with FAIL: 1)
+##### broken copy: feed_without_progress
+diff -u -r /ws/firmware/modules/ring_sys/src/rsy_logic.c /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_feed_without_progress/src/rsy_logic.c
+--- /ws/firmware/modules/ring_sys/src/rsy_logic.c	2026-11-13 04:57:04.000000000 +0000
++++ /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_feed_without_progress/src/rsy_logic.c	2026-11-13 05:20:21.980992626 +0000
+@@ -146,7 +146,7 @@
+ 	if (!recording) {
+ 		return true;
+ 	}
+-	return fresh(now_ms, last_audio_ms) && fresh(now_ms, last_store_ms);
++	return (fresh(now_ms, last_audio_ms) && fresh(now_ms, last_store_ms)) || true;
+ }
+ 
+ /* ------------------------------------------------------------------ saved time */
+INFO    - 1/1 native_sim/native         ring_sys.sim                                       FAILED rc=1 (native 0.110s <host/gnu>)
+ PASS - test_block_format in 0.000 seconds
+ PASS - test_boot_copies_valid_block_once in 0.000 seconds
+ PASS - test_fatal_path_order in 0.000 seconds
+ PASS - test_handler_signature_matches_kit in 0.000 seconds
+ PASS - test_invalid_block_ignored in 0.000 seconds
+ PASS - test_blank_settings_read_as_clear in 0.000 seconds
+ PASS - test_factory_flag_survives_reboot in 0.000 seconds
+ PASS - test_guess_is_not_set in 0.000 seconds
+ PASS - test_saved_on_ship_and_off in 0.000 seconds
+ PASS - test_allowed_rule in 0.000 seconds
+ PASS - test_data_end_limit in 0.000 seconds
+ PASS - test_end_bad_crc_fw_error in 0.000 seconds
+ PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+ PASS - test_self_test_no_mic in 31.001 seconds
+ PASS - test_self_test_pass_confirms in 62.001 seconds
+ PASS - test_self_test_timeout_reboots in 30.101 seconds
+ PASS - test_sequence in 0.000 seconds
+ PASS - test_size_limit in 0.000 seconds
+ PASS - test_writes_only_slot1 in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_wdt.c:51: sys_wdt_test_feed_only_with_progress: (f_stall <= f_ok + 2u is false)
+ FAIL - test_feed_only_with_progress in 22.005 seconds
+ PASS - test_feed_when_no_recording in 38.501 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_wdt.c:158: sys_wdt_test_new_recording_clears_old_progress: (rhw_sim_wdt_feeds() not equal to f0)
+ FAIL - test_new_recording_clears_old_progress in 3.501 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_wdt.c:135: sys_wdt_test_progress_window_edges: (rsl_wdt_should_feed(true, now, now - 2001, now - 2000) is true)
+ FAIL - test_progress_window_edges in 0.000 seconds
+ PASS - test_start_8s_once in 0.000 seconds
+TESTSUITE sys_wdt failed.
+SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+ - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+ - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+ - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+ - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+ - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+ - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+ - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_update]: pass = 10, fail = 0, skip = 0, total = 10 duration = 123.103 seconds
+ - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+ - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+ - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+ - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+ - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+ - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+ - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+ - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+SUITE FAIL -  40.00% [sys_wdt]: pass = 2, fail = 3, skip = 0, total = 5 duration = 64.007 seconds
+ - FAIL - [sys_wdt.test_feed_only_with_progress] duration = 22.005 seconds
+ - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+ - FAIL - [sys_wdt.test_new_recording_clears_old_progress] duration = 3.501 seconds
+ - FAIL - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+ - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 22.26 seconds.
+twister exit code on the broken copy feed_without_progress, native_sim: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-feed_without_progress-native_sim.log)
+feed_without_progress on native_sim: the named case failed, as required:  - FAIL - [sys_wdt.test_feed_only_with_progress] duration = 22.005 seconds
+feed_without_progress on native_sim: cases that failed (distinct): FAIL - [sys_wdt.test_feed_only_with_progress] FAIL - [sys_wdt.test_new_recording_clears_old_progress] FAIL - [sys_wdt.test_progress_window_edges]  (lines with FAIL: 3)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_sys.sim                                 FAILED rc=1 (native 0.110s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_block_format in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_boot_copies_valid_block_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fatal_path_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_handler_signature_matches_kit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_invalid_block_ignored in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_blank_settings_read_as_clear in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_flag_survives_reboot in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_guess_is_not_set in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_saved_on_ship_and_off in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_allowed_rule in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_data_end_limit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_end_bad_crc_fw_error in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+d_00: @00:00:31.000193   PASS - test_self_test_no_mic in 31.001 seconds
+d_00: @00:01:33.000393   PASS - test_self_test_pass_confirms in 62.001 seconds
+d_00: @00:02:03.100593   PASS - test_self_test_timeout_reboots in 30.101 seconds
+d_00: @00:02:03.100593   PASS - test_sequence in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_size_limit in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_writes_only_slot1 in 0.000 seconds
+d_00: @00:02:25.104993      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_wdt.c:51: sys_wdt_test_feed_only_with_progress: (f_stall <= f_ok + 2u is false)
+d_00: @00:02:25.104993   FAIL - test_feed_only_with_progress in 22.005 seconds
+d_00: @00:03:03.605293   PASS - test_feed_when_no_recording in 38.501 seconds
+d_00: @00:03:07.105793      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_wdt.c:158: sys_wdt_test_new_recording_clears_old_progress: (rhw_sim_wdt_feeds() not equal to f0)
+d_00: @00:03:07.105793   FAIL - test_new_recording_clears_old_progress in 3.501 seconds
+d_00: @00:03:07.105793      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_wdt.c:135: sys_wdt_test_progress_window_edges: (rsl_wdt_should_feed(true, now, now - 2001, now - 2000) is true)
+d_00: @00:03:07.105793   FAIL - test_progress_window_edges in 0.000 seconds
+d_00: @00:03:07.105793   PASS - test_start_8s_once in 0.000 seconds
+d_00: @00:03:07.105793  TESTSUITE sys_wdt failed.
+d_00: @00:03:07.105793  SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+d_00: @00:03:07.105793  SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+d_00: @00:03:07.105793  SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+d_00: @00:03:07.105793  SUITE PASS - 100.00% [sys_update]: pass = 10, fail = 0, skip = 0, total = 10 duration = 123.103 seconds
+d_00: @00:03:07.105793   - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+d_00: @00:03:07.105793   - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+d_00: @00:03:07.105793   - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+d_00: @00:03:07.105793   - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+d_00: @00:03:07.105793  SUITE FAIL -  40.00% [sys_wdt]: pass = 2, fail = 3, skip = 0, total = 5 duration = 64.007 seconds
+d_00: @00:03:07.105793   - FAIL - [sys_wdt.test_feed_only_with_progress] duration = 22.005 seconds
+d_00: @00:03:07.105793   - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+d_00: @00:03:07.105793   - FAIL - [sys_wdt.test_new_recording_clears_old_progress] duration = 3.501 seconds
+d_00: @00:03:07.105793   - FAIL - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+d_00: @00:03:07.105793   - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+d_00: @00:03:07.105793  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 30.39 seconds.
+twister exit code on the broken copy feed_without_progress, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-feed_without_progress-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+feed_without_progress on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:07.105793   - FAIL - [sys_wdt.test_feed_only_with_progress] duration = 22.005 seconds
+feed_without_progress on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [sys_wdt.test_feed_only_with_progress] FAIL - [sys_wdt.test_new_recording_clears_old_progress] FAIL - [sys_wdt.test_progress_window_edges]  (lines with FAIL: 3)
+##### broken copy: crash_copied_twice
+diff -u -r /ws/firmware/modules/ring_sys/src/rsy.c /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_crash_copied_twice/src/rsy.c
+--- /ws/firmware/modules/ring_sys/src/rsy.c	2026-11-13 05:08:47.000000000 +0000
++++ /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_crash_copied_twice/src/rsy.c	2026-11-13 05:21:17.041828101 +0000
+@@ -427,7 +427,6 @@
+ 	if (gpregret1 != NULL) {
+ 		*gpregret1 = gp;
+ 	}
+-	(void)rhw_retained()->clear();
+ 	(void)rhw_retained()->gpregret1_set(0);
+ 	return 1;
+ }
+INFO    - 1/1 native_sim/native         ring_sys.sim                                       FAILED rc=1 (native 0.148s <host/gnu>)
+ PASS - test_block_format in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_crash.c:110: sys_crash_test_boot_copies_valid_block_once: (raw[i] not equal to 0)
+ FAIL - test_boot_copies_valid_block_once in 0.000 seconds
+ PASS - test_fatal_path_order in 0.000 seconds
+ PASS - test_handler_signature_matches_kit in 0.000 seconds
+ PASS - test_invalid_block_ignored in 0.000 seconds
+TESTSUITE sys_crash failed.
+ PASS - test_blank_settings_read_as_clear in 0.000 seconds
+ PASS - test_factory_flag_survives_reboot in 0.000 seconds
+ PASS - test_guess_is_not_set in 0.000 seconds
+ PASS - test_saved_on_ship_and_off in 0.000 seconds
+ PASS - test_allowed_rule in 0.000 seconds
+ PASS - test_data_end_limit in 0.000 seconds
+ PASS - test_end_bad_crc_fw_error in 0.000 seconds
+ PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+ PASS - test_self_test_no_mic in 31.001 seconds
+ PASS - test_self_test_pass_confirms in 62.001 seconds
+ PASS - test_self_test_timeout_reboots in 30.101 seconds
+ PASS - test_sequence in 0.000 seconds
+ PASS - test_size_limit in 0.000 seconds
+ PASS - test_writes_only_slot1 in 0.000 seconds
+ PASS - test_feed_only_with_progress in 38.008 seconds
+ PASS - test_feed_when_no_recording in 38.501 seconds
+ PASS - test_new_recording_clears_old_progress in 4.501 seconds
+ PASS - test_progress_window_edges in 0.000 seconds
+ PASS - test_start_8s_once in 0.000 seconds
+SUITE FAIL -  80.00% [sys_crash]: pass = 4, fail = 1, skip = 0, total = 5 duration = 0.000 seconds
+ - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+ - FAIL - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+ - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+ - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+ - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+ - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+ - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_update]: pass = 10, fail = 0, skip = 0, total = 10 duration = 123.103 seconds
+ - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+ - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+ - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+ - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+ - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+ - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+ - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+ - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+ - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+ - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+ - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+ - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+ - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 24.52 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy crash_copied_twice, native_sim: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-crash_copied_twice-native_sim.log)
+crash_copied_twice on native_sim: the named case failed, as required:  - FAIL - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+crash_copied_twice on native_sim: cases that failed (distinct): FAIL - [sys_crash.test_boot_copies_valid_block_once]  (lines with FAIL: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_sys.sim                                 FAILED rc=1 (native 0.087s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_block_format in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_crash.c:110: sys_crash_test_boot_copies_valid_block_once: (raw[i] not equal to 0)
+d_00: @00:00:00.000093   FAIL - test_boot_copies_valid_block_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fatal_path_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_handler_signature_matches_kit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_invalid_block_ignored in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE sys_crash failed.
+d_00: @00:00:00.000093   PASS - test_blank_settings_read_as_clear in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_flag_survives_reboot in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_guess_is_not_set in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_saved_on_ship_and_off in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_allowed_rule in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_data_end_limit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_end_bad_crc_fw_error in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+d_00: @00:00:31.000193   PASS - test_self_test_no_mic in 31.001 seconds
+d_00: @00:01:33.000393   PASS - test_self_test_pass_confirms in 62.001 seconds
+d_00: @00:02:03.100593   PASS - test_self_test_timeout_reboots in 30.101 seconds
+d_00: @00:02:03.100593   PASS - test_sequence in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_size_limit in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_writes_only_slot1 in 0.000 seconds
+d_00: @00:02:41.108193   PASS - test_feed_only_with_progress in 38.008 seconds
+d_00: @00:03:19.608493   PASS - test_feed_when_no_recording in 38.501 seconds
+d_00: @00:03:24.109093   PASS - test_new_recording_clears_old_progress in 4.501 seconds
+d_00: @00:03:24.109093   PASS - test_progress_window_edges in 0.000 seconds
+d_00: @00:03:24.109093   PASS - test_start_8s_once in 0.000 seconds
+d_00: @00:03:24.109093  SUITE FAIL -  80.00% [sys_crash]: pass = 4, fail = 1, skip = 0, total = 5 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+d_00: @00:03:24.109093   - FAIL - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_time]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_update]: pass = 10, fail = 0, skip = 0, total = 10 duration = 123.103 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+d_00: @00:03:24.109093  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 30.99 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy crash_copied_twice, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-crash_copied_twice-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+crash_copied_twice on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:24.109093   - FAIL - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+crash_copied_twice on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [sys_crash.test_boot_copies_valid_block_once]  (lines with FAIL: 1)
+##### broken copy: guess_marked_set
+diff -u -r /ws/firmware/modules/ring_sys/src/rsy.c /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_guess_marked_set/src/rsy.c
+--- /ws/firmware/modules/ring_sys/src/rsy.c	2026-11-13 05:08:47.000000000 +0000
++++ /ws/out/20261113-061512-u7-full1-unit/broken-sys/broken_ring_sys_guess_marked_set/src/rsy.c	2026-11-13 05:22:15.465588395 +0000
+@@ -337,6 +337,11 @@
+ 		return false;
+ 	}
+ 	*utc_ms = v;
++	{
++		extern void rtime_set(int64_t, int16_t, bool);
++
++		rtime_set(v, 0, false);
++	}
+ 	return true;
+ }
+ 
+INFO    - 1/1 native_sim/native         ring_sys.sim                                       FAILED rc=1 (native 0.129s <host/gnu>)
+ PASS - test_block_format in 0.000 seconds
+ PASS - test_boot_copies_valid_block_once in 0.000 seconds
+ PASS - test_fatal_path_order in 0.000 seconds
+ PASS - test_handler_signature_matches_kit in 0.000 seconds
+ PASS - test_invalid_block_ignored in 0.000 seconds
+ PASS - test_blank_settings_read_as_clear in 0.000 seconds
+ PASS - test_factory_flag_survives_reboot in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_time.c:81: sys_time_test_guess_is_not_set: (rtime_is_set() is true)
+ FAIL - test_guess_is_not_set in 0.000 seconds
+ PASS - test_saved_on_ship_and_off in 0.000 seconds
+TESTSUITE sys_time failed.
+ PASS - test_allowed_rule in 0.000 seconds
+ PASS - test_data_end_limit in 0.000 seconds
+ PASS - test_end_bad_crc_fw_error in 0.000 seconds
+ PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+ PASS - test_self_test_no_mic in 31.001 seconds
+ PASS - test_self_test_pass_confirms in 62.001 seconds
+ PASS - test_self_test_timeout_reboots in 30.101 seconds
+ PASS - test_sequence in 0.000 seconds
+ PASS - test_size_limit in 0.000 seconds
+ PASS - test_writes_only_slot1 in 0.000 seconds
+ PASS - test_feed_only_with_progress in 38.008 seconds
+ PASS - test_feed_when_no_recording in 38.501 seconds
+ PASS - test_new_recording_clears_old_progress in 4.501 seconds
+ PASS - test_progress_window_edges in 0.000 seconds
+ PASS - test_start_8s_once in 0.000 seconds
+SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+ - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+ - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+ - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+ - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+ - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+ - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+ - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+SUITE FAIL -  50.00% [sys_time]: pass = 1, fail = 1, skip = 0, total = 2 duration = 0.000 seconds
+ - FAIL - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+ - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_update]: pass = 10, fail = 0, skip = 0, total = 10 duration = 123.103 seconds
+ - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+ - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+ - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+ - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+ - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+ - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+ - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+ - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+ - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+ - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+ - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+ - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+ - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+ - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 25.93 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy guess_marked_set, native_sim: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-guess_marked_set-native_sim.log)
+guess_marked_set on native_sim: the named case failed, as required:  - FAIL - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+guess_marked_set on native_sim: cases that failed (distinct): FAIL - [sys_time.test_guess_is_not_set]  (lines with FAIL: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_sys.sim                                 FAILED rc=1 (native 0.131s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_block_format in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_boot_copies_valid_block_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fatal_path_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_handler_signature_matches_kit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_invalid_block_ignored in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_blank_settings_read_as_clear in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_factory_flag_survives_reboot in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/sys/src/test_time.c:81: sys_time_test_guess_is_not_set: (rtime_is_set() is true)
+d_00: @00:00:00.000093   FAIL - test_guess_is_not_set in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_saved_on_ship_and_off in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE sys_time failed.
+d_00: @00:00:00.000093   PASS - test_allowed_rule in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_data_end_limit in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_end_bad_crc_fw_error in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_layout_sums_to_2036_kb in 0.000 seconds
+d_00: @00:00:31.000193   PASS - test_self_test_no_mic in 31.001 seconds
+d_00: @00:01:33.000393   PASS - test_self_test_pass_confirms in 62.001 seconds
+d_00: @00:02:03.100593   PASS - test_self_test_timeout_reboots in 30.101 seconds
+d_00: @00:02:03.100593   PASS - test_sequence in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_size_limit in 0.000 seconds
+d_00: @00:02:03.100593   PASS - test_writes_only_slot1 in 0.000 seconds
+d_00: @00:02:41.108193   PASS - test_feed_only_with_progress in 38.008 seconds
+d_00: @00:03:19.608493   PASS - test_feed_when_no_recording in 38.501 seconds
+d_00: @00:03:24.109093   PASS - test_new_recording_clears_old_progress in 4.501 seconds
+d_00: @00:03:24.109093   PASS - test_progress_window_edges in 0.000 seconds
+d_00: @00:03:24.109093   PASS - test_start_8s_once in 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_crash]: pass = 5, fail = 0, skip = 0, total = 5 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_block_format] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_boot_copies_valid_block_once] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_fatal_path_order] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_handler_signature_matches_kit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_crash.test_invalid_block_ignored] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_persist]: pass = 2, fail = 0, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_blank_settings_read_as_clear] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_persist.test_factory_flag_survives_reboot] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE FAIL -  50.00% [sys_time]: pass = 1, fail = 1, skip = 0, total = 2 duration = 0.000 seconds
+d_00: @00:03:24.109093   - FAIL - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_time.test_saved_on_ship_and_off] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_update]: pass = 10, fail = 0, skip = 0, total = 10 duration = 123.103 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_allowed_rule] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_data_end_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_end_bad_crc_fw_error] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_layout_sums_to_2036_kb] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_no_mic] duration = 31.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_pass_confirms] duration = 62.001 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_self_test_timeout_reboots] duration = 30.101 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_sequence] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_size_limit] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_update.test_writes_only_slot1] duration = 0.000 seconds
+d_00: @00:03:24.109093  SUITE PASS - 100.00% [sys_wdt]: pass = 5, fail = 0, skip = 0, total = 5 duration = 81.010 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_only_with_progress] duration = 38.008 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_feed_when_no_recording] duration = 38.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_new_recording_clears_old_progress] duration = 4.501 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_progress_window_edges] duration = 0.000 seconds
+d_00: @00:03:24.109093   - PASS - [sys_wdt.test_start_8s_once] duration = 0.000 seconds
+d_00: @00:03:24.109093  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 31.60 seconds.
+INFO    - 23 of 24 executed test cases passed (95.83%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_sys.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy guess_marked_set, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-061512-u7-full1-unit/broken-sys/twister-guess_marked_set-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+guess_marked_set on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:24.109093   - FAIL - [sys_time.test_guess_is_not_set] duration = 0.000 seconds
+guess_marked_set on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [sys_time.test_guess_is_not_set]  (lines with FAIL: 1)
+RESULT PASS
+=== part broken-sys end 2026-11-13T05:23:15Z exit 0
+UNIT PASS tests/sys
+# finished (Mac clock): 2026-11-13 06:23:23 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-061512-u7-full1.log

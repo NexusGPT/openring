@@ -1,0 +1,101 @@
+Section line ranges in F5:
+  12-71: Changes from F4 to F5 (2026-11-11; one item per point of the lead's brief; each names its 
+  72-90: Peripheral instances (fixed), from the pin plan in `architecture.md` section 7 and the dev
+  91-92: ## 1. State machine
+  93-121: ### 1.1 States
+  122-202: ### 1.2 Transitions
+  203-204: ## 2. Controls
+  205-249: ### 2.1 Record gesture: the centre press of the joystick (the one control; architecture 17
+  250-283: ### 2.2 Joystick (four direction switches under one nub: SW1 up JOY_UP P0.06, SW3 down JOY
+  284-285: ## 3. Feedback
+  286-310: ### 3.1 Motor (MOTOR, P3.01, high = on)
+  311-316: ### 3.2 Recording light
+  317-343: ### 3.3 Screen
+  344-345: ## 4. Audio pipeline
+  346-370: ### 4.1 PDM settings
+  371-377: ### 4.2 Channel alignment (one PDM instance)
+  378-390: ### 4.3 Buffers
+  391-396: ### 4.4 Recording start and stop timing
+  397-412: ### 4.5 Microphone power sequencing
+  413-437: ### 4.6 RAM budget
+  438-445: ### 4.7 Motor noise in the audio
+  446-447: ## 5. Storage
+  448-454: ### 5.1 Driver stack
+  455-478: ### 5.2 Layout: raw, append-only log (no file system)
+  479-530: ### 5.3 Recording format, byte by byte
+  531-583: ### 5.4 Superblock and index records
+  584-593: ### 5.5 Write strategy and power loss
+  594-601: ### 5.6 Free-space accounting
+  602-608: ### 5.7 Deletion after confirmed transfer
+  609-610: ## 6. Transfer protocol over USB (in the case)
+  611-620: ### 6.1 Device class
+  621-637: ### 6.2 Message layout
+  638-658: ### 6.3 Commands
+  659-665: ### 6.4 Resume and integrity
+  666-669: ## 7. Bluetooth
+  670-674: ### 7.1 Stack and role
+  675-691: ### 7.2 Services and characteristics
+  692-701: ### 7.3 Advertising
+  702-708: ### 7.4 Pairing, bonding, security
+  709-710: ## 8. Power management
+  711-762: ### 8.1 nPM1304 settings (devicetree, Zephyr nPM13xx drivers)
+  763-776: ### 8.2 What is on in each state
+  777-784: ### 8.3 Battery measurement
+  785-799: ### 8.4 Ship mode entry and exit (nPM1304 ship task after VBUS removal, [NPM p116])
+  800-824: ### 8.5 Expected current per state (architecture 17.15, 17.19 and 17.26, the current ring)
+  825-836: ### 8.6 Pads on the inside of the band touch the skin (architecture 17.12)
+  837-849: ### 8.7 Battery current limit and reset causes of the nPM1304
+  850-851: ## 9. Time keeping, firmware update, factory test, logging
+  852-857: ### 9.1 Time keeping
+  858-867: ### 9.2 Firmware update over USB, with rollback
+  868-907: ### 9.3 Factory test mode
+  908-915: ### 9.4 Logging and crash capture
+  916-917: ## 10. Work breakdown
+  918-933: ### 10.1 What exists in the SDK
+  934-953: ### 10.2 What must be written
+  954-957: ### 10.3 Order of work
+  958-982: ### 10.4 Sources read for this document
+  983-1020: ### 10.5 Facts not verified from a primary source
+  1021-1024: ### 10.6 What `firmware-check.py` checks
+  1025-1050: ## Hardware issues found
+  1051-1055: ## questions_for_owner
+
+Changed hunks (F4 lines -> F5 lines):
+  replace: F4 3-3 -> F5 3-10  [top (title, header, change lists, how to read)]
+  replace: F4 9-9 -> F5 16-16  [Changes from F4 to F5 (2026-11-11; one item per point of the lead's br]
+  replace: F4 107-107 -> F5 114-114  [### 1.1 States]
+  replace: F4 111-111 -> F5 118-118  [### 1.1 States]
+  replace: F4 281-281 -> F5 288-288  [### 3.1 Motor (MOTOR, P3.01, high = on)]
+  replace: F4 299-299 -> F5 306-306  [### 3.1 Motor (MOTOR, P3.01, high = on)]
+  replace: F4 433-433 -> F5 440-440  [### 4.7 Motor noise in the audio]
+  replace: F4 724-724 -> F5 731-731  [### 8.1 nPM1304 settings (devicetree, Zephyr nPM13xx drivers)]
+  replace: F4 740-740 -> F5 747-747  [### 8.1 nPM1304 settings (devicetree, Zephyr nPM13xx drivers)]
+  replace: F4 743-743 -> F5 750-750  [### 8.1 nPM1304 settings (devicetree, Zephyr nPM13xx drivers)]
+  replace: F4 745-751 -> F5 752-758  [### 8.1 nPM1304 settings (devicetree, Zephyr nPM13xx drivers)]
+  replace: F4 793-793 -> F5 800-800  [### 8.5 Expected current per state (architecture 17.15, 17.19 and 17.2]
+  replace: F4 798-800 -> F5 805-807  [### 8.5 Expected current per state (architecture 17.15, 17.19 and 17.2]
+  replace: F4 802-802 -> F5 809-809  [### 8.5 Expected current per state (architecture 17.15, 17.19 and 17.2]
+  replace: F4 804-804 -> F5 811-811  [### 8.5 Expected current per state (architecture 17.15, 17.19 and 17.2]
+  replace: F4 806-812 -> F5 813-819  [### 8.5 Expected current per state (architecture 17.15, 17.19 and 17.2]
+  replace: F4 814-814 -> F5 821-821  [### 8.5 Expected current per state (architecture 17.15, 17.19 and 17.2]
+  replace: F4 898-898 -> F5 905-905  [### 9.3 Factory test mode]
+  replace: F4 1003-1003 -> F5 1010-1010  [### 10.5 Facts not verified from a primary source]
+  replace: F4 1009-1009 -> F5 1016-1016  [### 10.5 Facts not verified from a primary source]
+  replace: F4 1016-1016 -> F5 1023-1023  [### 10.6 What `firmware-check.py` checks]
+  replace: F4 1030-1031 -> F5 1037-1038  [## Hardware issues found]
+  replace: F4 1041-1041 -> F5 1048-1048  [## Hardware issues found]
+
+23 hunks; F4 1048 lines, F5 1055 lines
+
+Per section (F5 line ranges changed):
+  top (title, header, change lists, how to read): 3-10
+  Changes from F4 to F5 (2026-11-11; one item per point of the lead's brief; each : 16-16
+  ### 1.1 States: 114-114, 118-118
+  ### 3.1 Motor (MOTOR, P3.01, high = on): 288-288, 306-306
+  ### 4.7 Motor noise in the audio: 440-440
+  ### 8.1 nPM1304 settings (devicetree, Zephyr nPM13xx drivers): 731-731, 747-747, 750-750, 752-758
+  ### 8.5 Expected current per state (architecture 17.15, 17.19 and 17.26, the cur: 800-800, 805-807, 809-809, 811-811, 813-819, 821-821
+  ### 9.3 Factory test mode: 905-905
+  ### 10.5 Facts not verified from a primary source: 1010-1010, 1016-1016
+  ### 10.6 What `firmware-check.py` checks: 1023-1023
+  ## Hardware issues found: 1037-1038, 1048-1048

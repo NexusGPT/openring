@@ -1,0 +1,14 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -439,7 +439,7 @@
+ 	lti_busy = false;
+ 	st.zone_reads++;
+ 	st.zone_errors += ok ? 0 : 1;
+-	ripl_clock_zone(&clk, ok, known, m, k_uptime_get());
++	ripl_clock_zone(&clk, true, known, m, k_uptime_get());
+ 	have = clk.have_time;
+ 	if (have) {
+ 		(void)clock_apply_locked(); /* at the uptime the time arrived, not now */
+MODULE=ring_iphone
+SCEN=N
+EXPECT=RING CHECK g: a zone read that failed changed nothing: the clock is still UTC \(\+2 h taken off\) and the zone known FAIL

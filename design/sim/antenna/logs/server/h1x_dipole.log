@@ -1,0 +1,130 @@
+openEMS - fixed number of threads: 16
+openEMS - verbose level 2
+ ---------------------------------------------------------------------- 
+ | openEMS 64bit -- version v0.37.0-50-g1d710c2
+ | (C) 2010-2026 Thorsten Liebig <<email removed>>  GPL license
+ ---------------------------------------------------------------------- 
+	Used external libraries:
+		CSXCAD -- Version: v0.7.0-9-gfdff4b5
+		hdf5   -- Version: 1.10.10
+		          compiled against: HDF5 library version: 1.10.10
+		tinyxml -- compiled against: 2.6.2
+		fparser
+		boost  -- compiled against: 1_83
+		zlib   -- Version: 1.3
+		          compiled against: 1.3
+
+Create FDTD operator (compressed SSE + multi-threading)
+Operator::InitDataStorage(): Storing epsR material data...
+Building the operator on 16 threads.
+Operator::InitDataStorage(): Storing muR material data...
+Operator::CalcTimestep_Var3: Smallest timestep (6.86312e-13s) found at position: 0 : 27;26;85
+Compressing the FDTD operator... this may take a while...
+------- Stat: FDTD Operator -------
+Dimensions		: 57x51x107 = 311049 Cells (0.311049 MCells)
+Size of Operator	: 14930352 Byte (14.2387 MiB) 
+Size of Field-Data	: 7465176 Byte (7.11935 MiB) 
+-----------------------------------
+Background materials (epsR/mueR/kappa/sigma): 1/1/0/0
+-----------------------------------
+Number of PEC edges	: 530
+in x direction		: 240
+in y direction		: 0
+in z direction		: 290
+-----------------------------------
+Timestep (s)		: 6.86312e-13
+Timestep method name	: Rennings_2
+Nyquist criteria (TS)	: 224
+Nyquist criteria (s)	: 1.53734e-10
+-----------------------------------
+SSE compression enabled	: yes
+Unique SSE operators	: 22784
+-----------------------------------
+-----------------------------------
+--- Excitation Extension ---
+Voltage excitations	: 10	 (0, 0, 10)
+Current excitations	: 0	 (0, 0, 0)
+Excitation Length (TS)	: 5218
+Excitation Length (s)	: 3.58118e-09
+--- Uniaxial PML Extension ---
+ PML range		: [0,0,0] to [8,50,106]
+ Grading function	: " -log(1e-6)*log(2.5)/(2*dl*Z*(pow(2.5,W/dl)-1)) * pow(2.5, D/dl) "
+--- Uniaxial PML Extension ---
+ PML range		: [48,0,0] to [56,50,106]
+ Grading function	: " -log(1e-6)*log(2.5)/(2*dl*Z*(pow(2.5,W/dl)-1)) * pow(2.5, D/dl) "
+--- Uniaxial PML Extension ---
+ PML range		: [9,0,0] to [47,8,106]
+ Grading function	: " -log(1e-6)*log(2.5)/(2*dl*Z*(pow(2.5,W/dl)-1)) * pow(2.5, D/dl) "
+--- Uniaxial PML Extension ---
+ PML range		: [9,42,0] to [47,50,106]
+ Grading function	: " -log(1e-6)*log(2.5)/(2*dl*Z*(pow(2.5,W/dl)-1)) * pow(2.5, D/dl) "
+--- Uniaxial PML Extension ---
+ PML range		: [9,9,0] to [47,41,8]
+ Grading function	: " -log(1e-6)*log(2.5)/(2*dl*Z*(pow(2.5,W/dl)-1)) * pow(2.5, D/dl) "
+--- Uniaxial PML Extension ---
+ PML range		: [9,9,98] to [47,41,106]
+ Grading function	: " -log(1e-6)*log(2.5)/(2*dl*Z*(pow(2.5,W/dl)-1)) * pow(2.5, D/dl) "
+--- Series/Parallel Lumped RLC load ---
+Active cells		: 0
+-----------------------------------
+Creation time for operator: 0.177884 s
+FDTD simulation size: 57x51x107 --> 311049 FDTD cells 
+FDTD timestep is: 6.86312e-13 s; Nyquist rate: 224 timesteps @3.25237e+09 Hz
+Excitation signal length is: 5218 timesteps (3.58118e-09s)
+Max. number of timesteps: 200000 ( --> 38.3289 * Excitation signal length)
+Create FDTD engine (compressed SSE + multi-threading)
+---  Engine::SortExtensionByPriority() ---
+ #0: Uniaxial PML Extension (1000000)
+ #1: Uniaxial PML Extension (1000000)
+ #2: Uniaxial PML Extension (1000000)
+ #3: Uniaxial PML Extension (1000000)
+ #4: Uniaxial PML Extension (1000000)
+ #5: Uniaxial PML Extension (1000000)
+ #6: Series/Parallel Lumped RLC load (0)
+ #7: Excitation Extension (-1000)
+Setting up processing...
+openEMS::SetupProcessing: probe 'port_ut_1': time-domain sampling every 56 timestep(s) (Nyquist/4)
+openEMS::SetupProcessing: probe 'port_it_1': time-domain sampling every 56 timestep(s) (Nyquist/4)
+openEMS::SetupProcessing: dump 'nf2ff_E_0': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+openEMS::SetupProcessing: dump 'nf2ff_E_1': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+openEMS::SetupProcessing: dump 'nf2ff_E_2': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+openEMS::SetupProcessing: dump 'nf2ff_E_3': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+openEMS::SetupProcessing: dump 'nf2ff_E_4': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+openEMS::SetupProcessing: dump 'nf2ff_E_5': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+openEMS::SetupProcessing: dump 'nf2ff_H_0': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+openEMS::SetupProcessing: dump 'nf2ff_H_1': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+openEMS::SetupProcessing: dump 'nf2ff_H_2': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+openEMS::SetupProcessing: dump 'nf2ff_H_3': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+openEMS::SetupProcessing: dump 'nf2ff_H_4': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+openEMS::SetupProcessing: dump 'nf2ff_H_5': frequency-domain accumulation every 224 timestep(s) (Nyquist/1)
+Operator::CleanupMaterialStorage(): Delete epsR material data...
+Operator::CleanupMaterialStorage(): Delete mueR material data...
+Setup time: 0.190027 s
+Running FDTD engine... this may take a while... grab a cup of coffee?!?
+Evaluating the end criteria every 224 timestep(s) during the first 60 s, with the progress report after that
+Multithreaded engine using 16 threads. Utilization: (4;4;4;4;4;4;4;4;4;3;3;3;3;3;3;3)
+[@        4s] Timestep:          448 || Speed:   33.6 MC/s (9.263e-03 s/TS) || Energy: ~1.67e-21 (- 0.00dB)
+[@        8s] Timestep:          896 || Speed:   34.8 MC/s (8.936e-03 s/TS) || Energy: ~4.69e-19 (- 0.00dB)
+[@       12s] Timestep:         1400 || Speed:   37.6 MC/s (8.281e-03 s/TS) || Energy: ~1.16e-17 (- 0.00dB)
+[@       16s] Timestep:         1904 || Speed:   36.0 MC/s (8.652e-03 s/TS) || Energy: ~3.38e-16 (- 0.00dB)
+[@       22s] Timestep:         2296 || Speed:   21.1 MC/s (1.473e-02 s/TS) || Energy: ~1.64e-15 (- 0.00dB)
+[@       27s] Timestep:         2408 || Speed:    7.2 MC/s (4.317e-02 s/TS) || Energy: ~1.64e-15 (- 0.00dB)
+[@       31s] Timestep:         2576 || Speed:   11.9 MC/s (2.612e-02 s/TS) || Energy: ~4.55e-15 (- 0.00dB)
+[@       36s] Timestep:         2800 || Speed:   15.4 MC/s (2.023e-02 s/TS) || Energy: ~5.72e-15 (- 0.00dB)
+[@       41s] Timestep:         2912 || Speed:    7.3 MC/s (4.278e-02 s/TS) || Energy: ~4.64e-15 (- 0.91dB)
+[@       45s] Timestep:         3528 || Speed:   44.0 MC/s (7.062e-03 s/TS) || Energy: ~7.82e-15 (- 0.00dB)
+[@       49s] Timestep:         4256 || Speed:   54.0 MC/s (5.759e-03 s/TS) || Energy: ~1.09e-15 (- 8.56dB)
+[@       53s] Timestep:         4928 || Speed:   51.0 MC/s (6.100e-03 s/TS) || Energy: ~1.60e-16 (-16.89dB)
+[@       57s] Timestep:         5544 || Speed:   47.8 MC/s (6.507e-03 s/TS) || Energy: ~2.82e-17 (-24.43dB)
+Evaluating the end criteria with the progress report only from here on
+[@     1m01s] Timestep:         5992 || Speed:   34.8 MC/s (8.929e-03 s/TS) || Energy: ~4.63e-18 (-32.27dB)
+[@     1m05s] Timestep:         6160 || Speed:   12.0 MC/s (2.585e-02 s/TS) || Energy: ~3.05e-18 (-34.08dB)
+[@     1m11s] Timestep:         6384 || Speed:   13.4 MC/s (2.315e-02 s/TS) || Energy: ~1.07e-18 (-38.62dB)
+[@     1m16s] Timestep:         6552 || Speed:   10.5 MC/s (2.953e-02 s/TS) || Energy: ~1.04e-18 (-38.75dB)
+[@     1m20s] Timestep:         6720 || Speed:   11.0 MC/s (2.825e-02 s/TS) || Energy: ~3.85e-19 (-43.08dB)
+RunFDTD: end-criteria of -40.00dB reached after 6720 timesteps (-43.08dB)
+Time for 6720 iterations with 311049.00 cells : 80.89 sec
+Speed: 25.84 MCells/s 
+{"tag": "h1x_dipole", "lines": [57, 51, 107], "cells": 296800}
+RESULT {"tag": "h1x_dipole", "lines": [57, 51, 107], "cells": 296800, "run_seconds": 81.12030529975891, "f_res_GHz": 2.3836691318947496, "R_at_res": 8.319990425491378, "eff": {"2.35": 9.917347375563303, "2.45": 6.850215348880132, "2.55": 5.326791252617181}, "D_dBi": {"2.35": 2.1396329835662136, "2.45": 2.177119643941104, "2.55": 2.21509926878013}, "pass_all": false}
+EXIT 0

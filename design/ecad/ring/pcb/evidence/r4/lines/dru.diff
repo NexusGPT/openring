@@ -1,0 +1,6 @@
+27a28,32
+> # ring-lines (2026-11-13): stricter only. Zone fill keeps 0.21 from the antenna line and the crystal lines, so the drawn pour meets the
+> # plan's 0.20 (d.1, d.4) with margin for the fill's arc approximation (read-back found GND pour 0.195 from the antenna bend).
+> (rule "controlled lines to zones (d.1, d.4), ring-lines"
+>   (condition "(A.NetClass == 'RF' || A.NetName == 'XL1' || A.NetName == 'XL2' || A.NetName == 'XC1' || A.NetName == 'XC2') && B.Type == 'Zone'")
+>   (constraint clearance (min 0.21mm)))

@@ -1,0 +1,74 @@
+# remote.sh run 20261112-103835-spike1
+# command: west twister -T tests/screens -p native_sim -O /ws/out/os-screens-spike1 --inline-logs -v
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 10:38:35 CET
+# free on the server's /: 49 GB
+# source firmware copied to /root/ring-os/src-os-screens
+# started on the server as 20261112-103835-spike1; server log /root/ring-os/logs/20261112-103835-spike1.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/os-screens-spike1/testplan.json
+INFO    - JOBS: 32
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+ERROR   - CMake build failure: /ws/firmware/tests/screens for native_sim/native
+INFO    - 1/1 native_sim/native         ring_screens.all                                   ERROR CMake build failure (native <host/gnu>)
+INFO    - /ws/out/os-screens-spike1/native_sim_native/host_gnu/firmware/tests/screens/ring_screens.all/build.log
+ERROR   - Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/tests/screens
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: native_sim, qualifiers: native
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/native/native_sim/native_sim.dts
+-- Found devicetree overlay: /ws/firmware/tests/screens/boards/native_sim.overlay
+devicetree error: node '/ring_display' compatible 'ring,mem-display' has unknown vendor prefix 'ring'
+CMake Error at /ws/zephyr/cmake/modules/dts.cmake:327 (execute_process):
+  execute_process failed command indexes:
+
+    1: "Child return code: 1"
+
+Call Stack (most recent call first):
+  /ws/zephyr/cmake/modules/dts.cmake:435 (dts_edt_pickle)
+  /ws/zephyr/cmake/modules/zephyr_default.cmake:133 (dts_init)
+  /ws/zephyr/cmake/modules/zephyr_default.cmake:133 (cmake_language)
+  /ws/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)
+  /ws/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)
+  CMakeLists.txt:13 (find_package)
+
+
+-- Configuring incomplete, errors occurred!
+
+INFO    - /ws/out/os-screens-spike1/native_sim_native/host_gnu/firmware/tests/screens/ring_screens.all/build.log
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 3.92 seconds.
+INFO    - 0 of 30 executed test cases passed (0.00%), 30 errored on 1 out of total 1514 platforms (0.07%).
+INFO    - 0 test configurations executed on platforms, 1 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/os-screens-spike1/twister.json
+INFO    - Writing xunit report /ws/out/os-screens-spike1/twister.xml...
+INFO    - Writing xunit report /ws/out/os-screens-spike1/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_screens.all on native_sim/native error (CMake build failure - devicetree error)
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_screens.all
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/screens -T ring_screens.all
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+# finished (Mac clock): 2026-11-12 10:38:53 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step4/20261112-103835-spike1.log

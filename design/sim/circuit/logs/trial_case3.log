@@ -1,0 +1,18 @@
+decks: 12 written to work/trial_case/decks from design/ecad/ring and design/ecad/case
+FAIL case1 boost to VRING: 4 of 6 rows hold; C1.1: vring.noload_min = no value needs >= 4.0 V (and 1 more rows fail)
+    note: case1_boost noload_lo: Error: TIMEOUT after 90 s (run recorded as timeout, no result)
+    note: case1_boost load390: Error: TIMEOUT after 90 s (run recorded as timeout, no result)
+FAIL case2 cell charger: 1 of 4 rows hold; C2.1: charge.vreg_default = 4.208 needs <= 4.2 V (and 2 more rows fail)
+PASS case3 thermistor window: 6 of 6 rows hold; tightest row C3.4: ts.hot_edge_rth_high = 4929.85 holds <= 4.91e3*1.05
+FAIL case4 LED currents: 2 of 4 rows hold; C4.2: led.green_current_min = 0.00196783 needs >= 0.002 A (and 1 more rows fail)
+PASS case5 design risks: 2 of 2 rows hold; tightest row C5.2: boost3v3.vout_max = 3.34055 holds <= 3.6
+  case1 info: current into a short on VRING: minimum corner 400.6 mA, nominal 445.8 mA, maximum corner 497.4 mA (R5 at its nominal value from parts.csv)
+  case2 info: with the power-on defaults the charger would push 602 mA into the 700 mAh cell (0.86 C; the cell sheet allows 0.5 C) and aim at 4.208 V (the cell's charge voltage is 4.2 V)
+  case2 info: with 0.9 W taken by the rest of the case the charge current is 363 mA
+  case3 info: cold edge (charge stops) at TH1 = 27320 ohm, hot cut-off at TH1 = 4930 ohm, hot start limit V(HTF) at TH1 = 5819 ohm; TI's example values are 27280 and 4910 ohm
+  case4 info: ideality n = 2: red 2.99 mA, green 1.97 mA, blue 1.97 mA
+  case4 info: ideality n = 3: red 3.09 mA, green 1.41 mA, blue 1.41 mA
+  case4 info: ideality n = 4: red 3.18 mA, green 1.73 mA, blue 1.73 mA
+  case5 info: 3V3 rail with R3 and R4 from parts.csv: 3.3075 V nominal (the cell sheet and the ESP32 want 3.0 to 3.6 V)
+tests: 5, pass: 2, fail: 3, seconds: 190
+RESULT FAIL

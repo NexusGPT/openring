@@ -1,0 +1,378 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ring-model.schema.json",
+  "type": "object",
+  "properties": {
+    "design_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "exterior": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "picked",
+            "in-design",
+            "not-picked",
+            "absent"
+          ]
+        },
+        "look_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "file": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/RelPath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/Source"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "look_id",
+        "file",
+        "source"
+      ],
+      "additionalProperties": false,
+      "description": "picked: an approved exterior model. in-design: an exterior model exists but is not approved; the stage shows it. not-picked: no exterior model; the stage shows a plain black slab at the ring's true size. absent: no exterior information at all. Rejected exteriors are never listed."
+    },
+    "internals": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/RelPath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "node_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/Source"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "file",
+        "node_count",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "$ref": "common.schema.json#/$defs/Kind"
+          },
+          "layer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "part_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/PartId"
+            }
+          },
+          "children": {
+            "type": "array",
+            "description": "Optional. The sub-nodes of an inside part, each named '<part>__<class>' in the model; the 3D view picks a material per class.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "class": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "name",
+                "class"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "layer",
+          "part_ids"
+        ],
+        "additionalProperties": false
+      },
+      "description": "The node-to-kind map for the stage. A node with no part_ids has no parts-list line."
+    },
+    "block": {
+      "type": "object",
+      "properties": {
+        "size_mm": {
+          "$ref": "common.schema.json#/$defs/Vec3"
+        },
+        "source": {
+          "$ref": "common.schema.json#/$defs/Source"
+        }
+      },
+      "required": [
+        "size_mm",
+        "source"
+      ],
+      "additionalProperties": false,
+      "description": "Size of the ring block, used for the plain slab."
+    },
+    "band": {
+      "type": "object",
+      "properties": {
+        "width_mm": {
+          "type": "number"
+        },
+        "inner_diameter_mm": {
+          "type": "number"
+        },
+        "source": {
+          "$ref": "common.schema.json#/$defs/Source"
+        }
+      },
+      "required": [
+        "width_mm",
+        "inner_diameter_mm",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "screens": {
+      "type": "object",
+      "properties": {
+        "rect": {
+          "type": "object",
+          "properties": {
+            "cx": {
+              "type": "number"
+            },
+            "cy": {
+              "type": "number"
+            },
+            "w": {
+              "type": "number"
+            },
+            "h": {
+              "type": "number"
+            },
+            "source": {
+              "$ref": "common.schema.json#/$defs/Source"
+            }
+          },
+          "required": [
+            "cx",
+            "cy",
+            "w",
+            "h",
+            "source"
+          ],
+          "additionalProperties": false
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "type": "string",
+                "minLength": 1
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "text",
+                        "dot",
+                        "timer",
+                        "battery",
+                        "storage",
+                        "bar",
+                        "icon"
+                      ]
+                    },
+                    "label": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "source": {
+                      "$ref": "common.schema.json#/$defs/Source"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "label",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "source": {
+                "$ref": "common.schema.json#/$defs/Source"
+              },
+              "pictures": {
+                "description": "The ring software's own pictures of this screen (width x height pixels, a bundle path). The stage draws each pixel as scale x scale pixels of its texture. The first one is shown on the glass.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "file": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "width": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "height": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "scale": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "scene": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "source": {
+                      "$ref": "common.schema.json#/$defs/Source"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "file",
+                    "width",
+                    "height",
+                    "scale",
+                    "sha256",
+                    "scene",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "picture_words": {
+                "description": "Present when `pictures` is absent: why this screen has no picture, in words.",
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "state",
+              "label",
+              "fields",
+              "source"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "rect",
+        "states"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "design_version",
+    "exterior",
+    "internals",
+    "nodes",
+    "block",
+    "band",
+    "screens"
+  ],
+  "additionalProperties": false,
+  "title": "RingModel",
+  "description": "ring-model.json beside exterior.glb and internals.glb. screens is the screen geometry and the fields drawn per state."
+}

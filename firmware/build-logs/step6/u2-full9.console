@@ -1,0 +1,1568 @@
+# remote.sh run 20261113-053508-u-store
+# command: bash tools/unit_run.sh tests/store
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:35:08 CET
+# free on the server's /: 25 GB
+# source firmware copied to /root/ring-os/src-u-store
+# started on the server as 20261113-053508-u-store; server log /root/ring-os/logs/20261113-053508-u-store.log
+=== part tests-native_sim start 2026-11-13T04:35:18Z log /ws/out/20261113-053508-u-store-unit/tests-native_sim.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-053508-u-store-unit/twister-native_sim/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 native_sim/native         ring_store.sim                                     PASSED (native 0.490s <host/gnu>)
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 24.38 seconds.
+INFO    - 63 of 63 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-053508-u-store-unit/twister-native_sim/twister.json
+INFO    - Writing xunit report /ws/out/20261113-053508-u-store-unit/twister-native_sim/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-053508-u-store-unit/twister-native_sim/twister_report.xml...
+INFO    - Run completed
+=== part tests-native_sim end 2026-11-13T04:35:46Z exit 0
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp start 2026-11-13T04:35:46Z log /ws/out/20261113-053508-u-store-unit/tests-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-053508-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               PASSED (native 0.452s <host/gnu>)
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 35.66 seconds.
+INFO    - 63 of 63 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-053508-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.json
+INFO    - Writing xunit report /ws/out/20261113-053508-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-053508-u-store-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister_report.xml...
+INFO    - Run completed
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp end 2026-11-13T04:36:22Z exit 0
+=== part broken-store start 2026-11-13T04:36:22Z log /ws/out/20261113-053508-u-store-unit/broken-store.log
+##### broken copy: hdr_crc_512
+diff -u -r /ws/firmware/modules/ring_store/src/rst_fmt.c /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_hdr_crc_512/src/rst_fmt.c
+--- /ws/firmware/modules/ring_store/src/rst_fmt.c	2026-11-13 04:14:50.000000000 +0000
++++ /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_hdr_crc_512/src/rst_fmt.c	2026-11-13 04:36:22.994754694 +0000
+@@ -130,7 +130,9 @@
+ /* the header CRC-32 over header bytes 0 to 507 (FW l.580), for the encoder and the decoder alike */
+ static uint32_t chunk_hdr_crc(const uint8_t *h)
+ {
+-	return crc32_ieee(h, RREC_CH_OFF_HEADER_CRC);
++	static const uint8_t z[4];
++
++	return crc32_ieee_update(crc32_ieee(h, RREC_CH_OFF_HEADER_CRC), z, sizeof(z));
+ }
+ 
+ bool rst_fmt_chunk_hdr_valid(const struct rst_chunk_hdr *h)
+INFO    - 1/1 native_sim/native         ring_store.sim                                     FAILED rc=1 (native 0.987s <host/gnu>)
+ PASS - test_confirm_match_and_mismatch in 0.005 seconds
+ PASS - test_delete_needs_confirm in 0.004 seconds
+ PASS - test_delete_refused_while_open in 0.003 seconds
+ PASS - test_factory_recordings_deleted in 0.006 seconds
+ PASS - test_no_erase in 0.004 seconds
+ PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+ PASS - test_tail_moves_over_leading_only in 0.010 seconds
+ PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+ PASS - test_ring_of_2046 in 2.343 seconds
+ PASS - test_written_when_rail_on in 0.073 seconds
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_fmt.c:149: store_fmt_test_chunk_header_bytes: (d not equal to -1)
+ FAIL - test_chunk_header_bytes in 0.000 seconds
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+ PASS - test_crc_check_value in 0.000 seconds
+ PASS - test_digest in 0.000 seconds
+ PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+ PASS - test_index_record_bytes in 0.000 seconds
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+ PASS - test_little_endian in 0.000 seconds
+ PASS - test_log_record_bytes in 0.000 seconds
+ PASS - test_superblock_bytes in 0.000 seconds
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+TESTSUITE store_fmt failed.
+ PASS - test_close_highlights_32 in 0.003 seconds
+ PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+ PASS - test_state_is_last_record in 0.000 seconds
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+ PASS - test_chunk_lba_wraps in 0.000 seconds
+ PASS - test_examples in 0.000 seconds
+ PASS - test_index_lba_wraps in 0.000 seconds
+ PASS - test_sector_map in 0.000 seconds
+ PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+ PASS - test_cut_inside_chunk_write in 0.020 seconds
+ PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+ PASS - test_read_error_reports in 0.007 seconds
+ PASS - test_recovered_close_record in 0.007 seconds
+ PASS - test_scan_read_error_reports in 0.000 seconds
+ PASS - test_scan_summary in 0.000 seconds
+ PASS - test_stop_on_each_mismatch in 0.000 seconds
+ PASS - test_callbacks_once_per_crossing in 0.036 seconds
+ PASS - test_counts in 0.000 seconds
+ PASS - test_s30_sfull_edges in 0.000 seconds
+ PASS - test_storage_left_minutes in 0.000 seconds
+ PASS - test_boot_count in 0.005 seconds
+ PASS - test_busy_while_operation_runs in 0.602 seconds
+ PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+ PASS - test_factory_area_test in 0.006 seconds
+ PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+ PASS - test_init_three_tries_200ms in 0.804 seconds
+ PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+ PASS - test_mount_reads_sector_count in 0.003 seconds
+ PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+ PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+ PASS - test_no_rewrite_during_recording in 0.008 seconds
+ PASS - test_one_open_recording in 0.003 seconds
+ PASS - test_one_write_per_chunk in 0.007 seconds
+twister exit code on the broken copy hdr_crc_512, native_sim: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-hdr_crc_512-native_sim.log)
+hdr_crc_512 on native_sim: the named case failed, as required: store_fmt.test_chunk_header_bytes (cases that failed: store_fmt.test_chunk_header_bytes ; 63 of 63 cases ran)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               FAILED rc=1 (native 0.565s <host/gnu>)
+d_00: @00:00:00.004493   PASS - test_confirm_match_and_mismatch in 0.005 seconds
+d_00: @00:00:00.007793   PASS - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.009993   PASS - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.015493   PASS - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.018793   PASS - test_no_erase in 0.004 seconds
+d_00: @00:00:00.024293   PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.034193   PASS - test_tail_moves_over_leading_only in 0.010 seconds
+d_00: @00:00:00.034193   PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.055393   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:02.397793   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.470193   PASS - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.470193      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_fmt.c:149: store_fmt_test_chunk_header_bytes: (d not equal to -1)
+d_00: @00:00:02.470193   FAIL - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.470193  TESTSUITE store_fmt failed.
+d_00: @00:00:02.472393   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.475693   PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+d_00: @00:00:02.475693   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.495493   PASS - test_cut_inside_chunk_write in 0.020 seconds
+d_00: @00:00:21.499793   PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+d_00: @00:00:21.506393   PASS - test_read_error_reports in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_recovered_close_record in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_scan_summary in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_callbacks_once_per_crossing in 0.036 seconds
+d_00: @00:00:21.548193   PASS - test_counts in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:21.552593   PASS - test_boot_count in 0.005 seconds
+d_00: @00:00:22.153893   PASS - test_busy_while_operation_runs in 0.602 seconds
+d_00: @00:00:22.187993   PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+d_00: @00:00:22.193193   PASS - test_factory_area_test in 0.006 seconds
+d_00: @00:00:22.197593   PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+d_00: @00:00:23.001293   PASS - test_init_three_tries_200ms in 0.804 seconds
+d_00: @00:00:23.004593   PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+d_00: @00:00:23.006793   PASS - test_mount_reads_sector_count in 0.003 seconds
+d_00: @00:00:23.010093   PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+d_00: @00:00:23.462593   PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+d_00: @00:00:23.470293   PASS - test_no_rewrite_during_recording in 0.008 seconds
+d_00: @00:00:23.472493   PASS - test_one_open_recording in 0.003 seconds
+d_00: @00:00:23.479093   PASS - test_one_write_per_chunk in 0.007 seconds
+twister exit code on the broken copy hdr_crc_512, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-hdr_crc_512-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+hdr_crc_512 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: store_fmt.test_chunk_header_bytes (cases that failed: store_fmt.test_chunk_header_bytes ; 63 of 63 cases ran)
+##### broken copy: digest_big_endian
+diff -u -r /ws/firmware/modules/ring_store/src/rst_fmt.c /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_digest_big_endian/src/rst_fmt.c
+--- /ws/firmware/modules/ring_store/src/rst_fmt.c	2026-11-13 04:14:50.000000000 +0000
++++ /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_digest_big_endian/src/rst_fmt.c	2026-11-13 04:36:59.995940397 +0000
+@@ -19,7 +19,7 @@
+ {
+ 	uint8_t w[sizeof(uint32_t)];
+ 
+-	rst_put32(w, payload_crc);
++	w[0] = (uint8_t)(payload_crc >> 24); w[1] = (uint8_t)(payload_crc >> 16); w[2] = (uint8_t)(payload_crc >> 8); w[3] = (uint8_t)payload_crc;
+ 	return crc32_ieee_update(state, w, sizeof(w));
+ }
+ 
+INFO    - 1/1 native_sim/native         ring_store.sim                                     FAILED rc=1 (native 0.681s <host/gnu>)
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:52: store_delete_test_confirm_match_and_mismatch: (li[0].digest not equal to dg[0])
+ FAIL - test_confirm_match_and_mismatch in 0.004 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:81: store_delete_test_delete_needs_confirm: rst_confirm(ids[0], dg[0]) not equal to 0
+ FAIL - test_delete_needs_confirm in 0.004 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:205: store_delete_test_delete_refused_while_open: rst_confirm(ids[0], dg[0]) not equal to 0
+ FAIL - test_delete_refused_while_open in 0.003 seconds
+ PASS - test_factory_recordings_deleted in 0.006 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:145: store_delete_test_no_erase: rst_confirm(ids[0], dg[0]) not equal to 0
+ FAIL - test_no_erase in 0.004 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:190: store_delete_test_read_chunk_deleted_not_found: rst_confirm(ids[0], dg[0]) not equal to 0
+ FAIL - test_read_chunk_deleted_not_found in 0.006 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:100: store_delete_test_tail_moves_over_leading_only: rst_confirm(ids[i], dg[i]) not equal to 0
+ FAIL - test_tail_moves_over_leading_only in 0.008 seconds
+TESTSUITE store_delete failed.
+ PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+ PASS - test_ring_of_2046 in 2.343 seconds
+ PASS - test_written_when_rail_on in 0.073 seconds
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+ PASS - test_chunk_header_bytes in 0.000 seconds
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+ PASS - test_crc_check_value in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_fmt.c:365: store_fmt_test_digest: (rst_fmt_digest_add(0, 0xDEADBEEFu) not equal to 0x1a5a601fu)
+ FAIL - test_digest in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_fmt.c:378: store_fmt_test_digest_stream_equals_oneshot: (s not equal to tst_crc32(words, sizeof(words)))
+ FAIL - test_digest_stream_equals_oneshot in 0.000 seconds
+ PASS - test_index_record_bytes in 0.000 seconds
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+ PASS - test_little_endian in 0.000 seconds
+ PASS - test_log_record_bytes in 0.000 seconds
+ PASS - test_superblock_bytes in 0.000 seconds
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+TESTSUITE store_fmt failed.
+ PASS - test_close_highlights_32 in 0.003 seconds
+ PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+ PASS - test_state_is_last_record in 0.000 seconds
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+ PASS - test_chunk_lba_wraps in 0.000 seconds
+ PASS - test_examples in 0.000 seconds
+ PASS - test_index_lba_wraps in 0.000 seconds
+ PASS - test_sector_map in 0.000 seconds
+ PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:211: store_recovery_test_cut_inside_chunk_write: x.digest not equal to tst_ref_digest(id, 2)
+ FAIL - test_cut_inside_chunk_write in 0.006 seconds
+ PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+ PASS - test_read_error_reports in 0.007 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:265: store_recovery_test_recovered_close_record: x.digest not equal to tst_ref_digest(id, 3)
+ FAIL - test_recovered_close_record in 0.006 seconds
+ PASS - test_scan_read_error_reports in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:129: store_recovery_test_scan_summary: (sc.digest not equal to tst_crc32(w, 12))
+ FAIL - test_scan_summary in 0.000 seconds
+ PASS - test_stop_on_each_mismatch in 0.000 seconds
+TESTSUITE store_recovery failed.
+ PASS - test_callbacks_once_per_crossing in 0.036 seconds
+ PASS - test_counts in 0.000 seconds
+ PASS - test_s30_sfull_edges in 0.000 seconds
+ PASS - test_storage_left_minutes in 0.000 seconds
+ PASS - test_boot_count in 0.005 seconds
+twister exit code on the broken copy digest_big_endian, native_sim: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-digest_big_endian-native_sim.log)
+digest_big_endian on native_sim: the named case failed, as required: store_fmt.test_digest (cases that failed: store_delete.test_confirm_match_and_mismatch store_delete.test_delete_needs_confirm store_delete.test_delete_refused_while_open store_delete.test_no_erase store_delete.test_read_chunk_deleted_not_found store_delete.test_tail_moves_over_leading_only store_fmt.test_digest store_fmt.test_digest_stream_equals_oneshot store_recovery.test_cut_inside_chunk_write store_recovery.test_recovered_close_record store_recovery.test_scan_summary store_svc.test_chunks_wrap_on_small_card store_svc.test_full_cycle_with_partial_last_chunk ; 63 of 63 cases ran)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               FAILED rc=1 (native 0.453s <host/gnu>)
+d_00: @00:00:00.003393      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:52: store_delete_test_confirm_match_and_mismatch: (li[0].digest not equal to dg[0])
+d_00: @00:00:00.003393   FAIL - test_confirm_match_and_mismatch in 0.004 seconds
+d_00: @00:00:00.006693      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:81: store_delete_test_delete_needs_confirm: rst_confirm(ids[0], dg[0]) not equal to 0
+d_00: @00:00:00.006693   FAIL - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.008893      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:205: store_delete_test_delete_refused_while_open: rst_confirm(ids[0], dg[0]) not equal to 0
+d_00: @00:00:00.008893   FAIL - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.014393   PASS - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.017693      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:145: store_delete_test_no_erase: rst_confirm(ids[0], dg[0]) not equal to 0
+d_00: @00:00:00.017693   FAIL - test_no_erase in 0.004 seconds
+d_00: @00:00:00.023193      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:190: store_delete_test_read_chunk_deleted_not_found: rst_confirm(ids[0], dg[0]) not equal to 0
+d_00: @00:00:00.023193   FAIL - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.030893      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:100: store_delete_test_tail_moves_over_leading_only: rst_confirm(ids[i], dg[i]) not equal to 0
+d_00: @00:00:00.030893   FAIL - test_tail_moves_over_leading_only in 0.008 seconds
+d_00: @00:00:00.030893  TESTSUITE store_delete failed.
+d_00: @00:00:00.030893   PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.052093   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:02.394493   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.466893   PASS - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.466893   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.466893   PASS - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.466893   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.466893   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.466893      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_fmt.c:365: store_fmt_test_digest: (rst_fmt_digest_add(0, 0xDEADBEEFu) not equal to 0x1a5a601fu)
+d_00: @00:00:02.466893   FAIL - test_digest in 0.000 seconds
+d_00: @00:00:02.466893      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_fmt.c:378: store_fmt_test_digest_stream_equals_oneshot: (s not equal to tst_crc32(words, sizeof(words)))
+d_00: @00:00:02.466893   FAIL - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.466893   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.466893   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.466893   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.466893   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.466893   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.466893   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.466893   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.466893  TESTSUITE store_fmt failed.
+d_00: @00:00:02.469093   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.472393   PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+d_00: @00:00:02.472393   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.477893      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:211: store_recovery_test_cut_inside_chunk_write: x.digest not equal to tst_ref_digest(id, 2)
+d_00: @00:00:02.477893   FAIL - test_cut_inside_chunk_write in 0.006 seconds
+d_00: @00:00:21.482193   PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+d_00: @00:00:21.488793   PASS - test_read_error_reports in 0.007 seconds
+d_00: @00:00:21.494293      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:265: store_recovery_test_recovered_close_record: x.digest not equal to tst_ref_digest(id, 3)
+d_00: @00:00:21.494293   FAIL - test_recovered_close_record in 0.006 seconds
+d_00: @00:00:21.494293   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:21.494293      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:129: store_recovery_test_scan_summary: (sc.digest not equal to tst_crc32(w, 12))
+d_00: @00:00:21.494293   FAIL - test_scan_summary in 0.000 seconds
+d_00: @00:00:21.494293   PASS - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:21.494293  TESTSUITE store_recovery failed.
+d_00: @00:00:21.529493   PASS - test_callbacks_once_per_crossing in 0.036 seconds
+d_00: @00:00:21.529493   PASS - test_counts in 0.000 seconds
+d_00: @00:00:21.529493   PASS - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:21.529493   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:21.533893   PASS - test_boot_count in 0.005 seconds
+twister exit code on the broken copy digest_big_endian, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-digest_big_endian-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+digest_big_endian on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: store_fmt.test_digest (cases that failed: store_delete.test_confirm_match_and_mismatch store_delete.test_delete_needs_confirm store_delete.test_delete_refused_while_open store_delete.test_no_erase store_delete.test_read_chunk_deleted_not_found store_delete.test_tail_moves_over_leading_only store_fmt.test_digest store_fmt.test_digest_stream_equals_oneshot store_recovery.test_cut_inside_chunk_write store_recovery.test_recovered_close_record store_recovery.test_scan_summary store_svc.test_chunks_wrap_on_small_card store_svc.test_full_cycle_with_partial_last_chunk ; 63 of 63 cases ran)
+##### broken copy: sb_older_wins
+diff -u -r /ws/firmware/modules/ring_store/src/rst_log.c /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_sb_older_wins/src/rst_log.c
+--- /ws/firmware/modules/ring_store/src/rst_log.c	2026-11-13 03:57:54.000000000 +0000
++++ /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_sb_older_wins/src/rst_log.c	2026-11-13 04:37:35.831151798 +0000
+@@ -19,7 +19,7 @@
+ 	if (!va && !vb) {
+ 		return -ENOENT;
+ 	}
+-	if (va && (!vb || a.sb_seq > b.sb_seq)) {
++	if (va && (!vb || a.sb_seq < b.sb_seq)) {
+ 		*out = a;
+ 		*which = 0;
+ 	} else {
+INFO    - 1/1 native_sim/native         ring_store.sim                                     FAILED rc=1 (native 0.616s <host/gnu>)
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:63: store_delete_test_confirm_match_and_mismatch: (li[0].state not equal to RREC_LIST_STATE_TRANSFERRED)
+ FAIL - test_confirm_match_and_mismatch in 0.005 seconds
+ PASS - test_delete_needs_confirm in 0.004 seconds
+ PASS - test_delete_refused_while_open in 0.003 seconds
+ PASS - test_factory_recordings_deleted in 0.006 seconds
+ PASS - test_no_erase in 0.004 seconds
+ PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:117: store_delete_test_tail_moves_over_leading_only: mi.recordings not equal to 2u
+ FAIL - test_tail_moves_over_leading_only in 0.009 seconds
+TESTSUITE store_delete failed.
+ PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+ PASS - test_ring_of_2046 in 2.343 seconds
+ PASS - test_written_when_rail_on in 0.073 seconds
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+ PASS - test_chunk_header_bytes in 0.000 seconds
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+ PASS - test_crc_check_value in 0.000 seconds
+ PASS - test_digest in 0.000 seconds
+ PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+ PASS - test_index_record_bytes in 0.000 seconds
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+ PASS - test_little_endian in 0.000 seconds
+ PASS - test_log_record_bytes in 0.000 seconds
+ PASS - test_superblock_bytes in 0.000 seconds
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+ PASS - test_close_highlights_32 in 0.003 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_index.c:173: store_index_test_list_beyond_cache_reads_index: mi.recordings not equal to 300u
+ FAIL - test_list_beyond_cache_reads_index in 0.003 seconds
+ PASS - test_state_is_last_record in 0.000 seconds
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+TESTSUITE store_index failed.
+ PASS - test_chunk_lba_wraps in 0.000 seconds
+ PASS - test_examples in 0.000 seconds
+ PASS - test_index_lba_wraps in 0.000 seconds
+ PASS - test_sector_map in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_log.c:28: store_log_test_mount_picks_newer_valid_copy: which not equal to 1
+ FAIL - test_mount_picks_newer_valid_copy in 0.000 seconds
+TESTSUITE store_log failed.
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:199: store_recovery_test_cut_inside_chunk_write: (mi.open_flag is false)
+ FAIL - test_cut_inside_chunk_write in 0.006 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:364: store_recovery_test_loss_bound_with_stalled_card: mi.open_flag is false
+ FAIL - test_loss_bound_with_stalled_card in 15.005 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:293: store_recovery_test_read_error_reports: rst_recover(prog, &rr) not equal to -EIO
+ FAIL - test_read_error_reports in 0.006 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:249: store_recovery_test_recovered_close_record: mi.open_flag is false
+ FAIL - test_recovered_close_record in 0.006 seconds
+ PASS - test_scan_read_error_reports in 0.000 seconds
+ PASS - test_scan_summary in 0.000 seconds
+ PASS - test_stop_on_each_mismatch in 0.000 seconds
+TESTSUITE store_recovery failed.
+ PASS - test_callbacks_once_per_crossing in 0.036 seconds
+ PASS - test_counts in 0.000 seconds
+ PASS - test_s30_sfull_edges in 0.000 seconds
+ PASS - test_storage_left_minutes in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_svc.c:599: store_svc_test_boot_count: mi.boot_count not equal to 3u
+ FAIL - test_boot_count in 0.005 seconds
+ PASS - test_busy_while_operation_runs in 0.602 seconds
+twister exit code on the broken copy sb_older_wins, native_sim: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-sb_older_wins-native_sim.log)
+sb_older_wins on native_sim: the named case failed, as required: store_log.test_mount_picks_newer_valid_copy (cases that failed: store_delete.test_confirm_match_and_mismatch store_delete.test_tail_moves_over_leading_only store_index.test_list_beyond_cache_reads_index store_log.test_mount_picks_newer_valid_copy store_recovery.test_cut_inside_chunk_write store_recovery.test_loss_bound_with_stalled_card store_recovery.test_read_error_reports store_recovery.test_recovered_close_record store_svc.test_boot_count store_svc.test_mount_uses_the_valid_copy store_svc.test_one_open_recording store_svc.test_three_tries_then_fault_open_flag_kept ; 63 of 63 cases ran)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               FAILED rc=1 (native 0.664s <host/gnu>)
+d_00: @00:00:00.004493      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:63: store_delete_test_confirm_match_and_mismatch: (li[0].state not equal to RREC_LIST_STATE_TRANSFERRED)
+d_00: @00:00:00.004493   FAIL - test_confirm_match_and_mismatch in 0.005 seconds
+d_00: @00:00:00.007793   PASS - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.009993   PASS - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.015493   PASS - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.018793   PASS - test_no_erase in 0.004 seconds
+d_00: @00:00:00.024293   PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.033093      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:117: store_delete_test_tail_moves_over_leading_only: mi.recordings not equal to 2u
+d_00: @00:00:00.033093   FAIL - test_tail_moves_over_leading_only in 0.009 seconds
+d_00: @00:00:00.033093  TESTSUITE store_delete failed.
+d_00: @00:00:00.033093   PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.054293   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:02.396693   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.469093   PASS - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.469093   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_digest in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.469093   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.471293   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.473493      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_index.c:173: store_index_test_list_beyond_cache_reads_index: mi.recordings not equal to 300u
+d_00: @00:00:02.473493   FAIL - test_list_beyond_cache_reads_index in 0.003 seconds
+d_00: @00:00:02.473493   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.473493   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.473493  TESTSUITE store_index failed.
+d_00: @00:00:02.473493   PASS - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.473493   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.473493   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.473493   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.473493      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_log.c:28: store_log_test_mount_picks_newer_valid_copy: which not equal to 1
+d_00: @00:00:02.473493   FAIL - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.473493  TESTSUITE store_log failed.
+d_00: @00:00:02.478993      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:199: store_recovery_test_cut_inside_chunk_write: (mi.open_flag is false)
+d_00: @00:00:02.478993   FAIL - test_cut_inside_chunk_write in 0.006 seconds
+d_00: @00:00:17.483093      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:364: store_recovery_test_loss_bound_with_stalled_card: mi.open_flag is false
+d_00: @00:00:17.483093   FAIL - test_loss_bound_with_stalled_card in 15.005 seconds
+d_00: @00:00:17.488593      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:293: store_recovery_test_read_error_reports: rst_recover(prog, &rr) not equal to -EIO
+d_00: @00:00:17.488593   FAIL - test_read_error_reports in 0.006 seconds
+d_00: @00:00:17.494093      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:249: store_recovery_test_recovered_close_record: mi.open_flag is false
+d_00: @00:00:17.494093   FAIL - test_recovered_close_record in 0.006 seconds
+d_00: @00:00:17.494093   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:17.494093   PASS - test_scan_summary in 0.000 seconds
+d_00: @00:00:17.494093   PASS - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:17.494093  TESTSUITE store_recovery failed.
+d_00: @00:00:17.529293   PASS - test_callbacks_once_per_crossing in 0.036 seconds
+d_00: @00:00:17.529293   PASS - test_counts in 0.000 seconds
+d_00: @00:00:17.529293   PASS - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:17.529293   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:17.533693      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_svc.c:599: store_svc_test_boot_count: mi.boot_count not equal to 3u
+d_00: @00:00:17.533693   FAIL - test_boot_count in 0.005 seconds
+d_00: @00:00:18.134993   PASS - test_busy_while_operation_runs in 0.602 seconds
+twister exit code on the broken copy sb_older_wins, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-sb_older_wins-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+sb_older_wins on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: store_log.test_mount_picks_newer_valid_copy (cases that failed: store_delete.test_confirm_match_and_mismatch store_delete.test_tail_moves_over_leading_only store_index.test_list_beyond_cache_reads_index store_log.test_mount_picks_newer_valid_copy store_recovery.test_cut_inside_chunk_write store_recovery.test_loss_bound_with_stalled_card store_recovery.test_read_error_reports store_recovery.test_recovered_close_record store_svc.test_boot_count store_svc.test_mount_uses_the_valid_copy store_svc.test_one_open_recording store_svc.test_three_tries_then_fault_open_flag_kept ; 63 of 63 cases ran)
+##### broken copy: lba_no_wrap
+diff -u -r /ws/firmware/modules/ring_store/src/rst_layout.c /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_lba_no_wrap/src/rst_layout.c
+--- /ws/firmware/modules/ring_store/src/rst_layout.c	2026-11-13 04:13:51.000000000 +0000
++++ /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_lba_no_wrap/src/rst_layout.c	2026-11-13 04:38:10.940379206 +0000
+@@ -14,7 +14,7 @@
+ 	if (total == 0) {
+ 		return UINT32_MAX;
+ 	}
+-	return RREC_LBA_CHUNK_FIRST + (seq % total) * RREC_CHUNK_SECTORS;
++	return RREC_LBA_CHUNK_FIRST + seq * RREC_CHUNK_SECTORS;
+ }
+ 
+ uint32_t rst_lay_index_lba(uint32_t n)
+INFO    - 1/1 native_sim/native         ring_store.sim                                     FAILED rc=1 (native 0.788s <host/gnu>)
+ PASS - test_confirm_match_and_mismatch in 0.005 seconds
+ PASS - test_delete_needs_confirm in 0.004 seconds
+ PASS - test_delete_refused_while_open in 0.003 seconds
+ PASS - test_factory_recordings_deleted in 0.006 seconds
+ PASS - test_no_erase in 0.004 seconds
+ PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+ PASS - test_tail_moves_over_leading_only in 0.010 seconds
+ PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+ PASS - test_ring_of_2046 in 2.343 seconds
+ PASS - test_written_when_rail_on in 0.073 seconds
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+ PASS - test_chunk_header_bytes in 0.000 seconds
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+ PASS - test_crc_check_value in 0.000 seconds
+ PASS - test_digest in 0.000 seconds
+ PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+ PASS - test_index_record_bytes in 0.000 seconds
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+ PASS - test_little_endian in 0.000 seconds
+ PASS - test_log_record_bytes in 0.000 seconds
+ PASS - test_superblock_bytes in 0.000 seconds
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+ PASS - test_close_highlights_32 in 0.003 seconds
+ PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+ PASS - test_state_is_last_record in 0.000 seconds
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_layout.c:35: store_layout_test_chunk_lba_wraps: (rst_lay_chunk_lba(total, total) not equal to 81920u)
+ FAIL - test_chunk_lba_wraps in 0.000 seconds
+ PASS - test_examples in 0.000 seconds
+ PASS - test_index_lba_wraps in 0.000 seconds
+ PASS - test_sector_map in 0.000 seconds
+TESTSUITE store_layout failed.
+ PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+ PASS - test_cut_inside_chunk_write in 0.020 seconds
+ PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+ PASS - test_read_error_reports in 0.007 seconds
+ PASS - test_recovered_close_record in 0.007 seconds
+ PASS - test_scan_read_error_reports in 0.000 seconds
+ PASS - test_scan_summary in 0.000 seconds
+ PASS - test_stop_on_each_mismatch in 0.000 seconds
+ PASS - test_callbacks_once_per_crossing in 0.036 seconds
+ PASS - test_counts in 0.000 seconds
+ PASS - test_s30_sfull_edges in 0.000 seconds
+ PASS - test_storage_left_minutes in 0.000 seconds
+ PASS - test_boot_count in 0.005 seconds
+ PASS - test_busy_while_operation_runs in 0.602 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_svc.c:672: store_svc_test_chunks_wrap_on_small_card: (tst_record(RREC_REC_TYPE_RECORDING, 6, &id, &dg) not equal to 0)
+ FAIL - test_chunks_wrap_on_small_card in 0.028 seconds
+ PASS - test_factory_area_test in 0.006 seconds
+ PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+ PASS - test_init_three_tries_200ms in 0.804 seconds
+ PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+ PASS - test_mount_reads_sector_count in 0.003 seconds
+ PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+ PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+ PASS - test_no_rewrite_during_recording in 0.008 seconds
+ PASS - test_one_open_recording in 0.003 seconds
+twister exit code on the broken copy lba_no_wrap, native_sim: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-lba_no_wrap-native_sim.log)
+lba_no_wrap on native_sim: the named case failed, as required: store_layout.test_chunk_lba_wraps (cases that failed: store_layout.test_chunk_lba_wraps store_svc.test_chunks_wrap_on_small_card ; 63 of 63 cases ran)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               FAILED rc=1 (native 0.463s <host/gnu>)
+d_00: @00:00:00.004493   PASS - test_confirm_match_and_mismatch in 0.005 seconds
+d_00: @00:00:00.007793   PASS - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.009993   PASS - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.015493   PASS - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.018793   PASS - test_no_erase in 0.004 seconds
+d_00: @00:00:00.024293   PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.034193   PASS - test_tail_moves_over_leading_only in 0.010 seconds
+d_00: @00:00:00.034193   PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.055393   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:02.397793   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.470193   PASS - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.475693   PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+d_00: @00:00:02.475693   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.475693      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_layout.c:35: store_layout_test_chunk_lba_wraps: (rst_lay_chunk_lba(total, total) not equal to 81920u)
+d_00: @00:00:02.475693   FAIL - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.475693  TESTSUITE store_layout failed.
+d_00: @00:00:02.475693   PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.495493   PASS - test_cut_inside_chunk_write in 0.020 seconds
+d_00: @00:00:21.499793   PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+d_00: @00:00:21.506393   PASS - test_read_error_reports in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_recovered_close_record in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_scan_summary in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_callbacks_once_per_crossing in 0.036 seconds
+d_00: @00:00:21.548193   PASS - test_counts in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:21.552593   PASS - test_boot_count in 0.005 seconds
+d_00: @00:00:22.153893   PASS - test_busy_while_operation_runs in 0.602 seconds
+d_00: @00:00:22.181393      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_svc.c:672: store_svc_test_chunks_wrap_on_small_card: (tst_record(RREC_REC_TYPE_RECORDING, 6, &id, &dg) not equal to 0)
+d_00: @00:00:22.181393   FAIL - test_chunks_wrap_on_small_card in 0.028 seconds
+d_00: @00:00:22.186593   PASS - test_factory_area_test in 0.006 seconds
+d_00: @00:00:22.190993   PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+d_00: @00:00:22.994693   PASS - test_init_three_tries_200ms in 0.804 seconds
+d_00: @00:00:22.997993   PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+d_00: @00:00:23.000193   PASS - test_mount_reads_sector_count in 0.003 seconds
+d_00: @00:00:23.003493   PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+d_00: @00:00:23.455993   PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+d_00: @00:00:23.463693   PASS - test_no_rewrite_during_recording in 0.008 seconds
+d_00: @00:00:23.465893   PASS - test_one_open_recording in 0.003 seconds
+twister exit code on the broken copy lba_no_wrap, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-lba_no_wrap-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+lba_no_wrap on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: store_layout.test_chunk_lba_wraps (cases that failed: store_layout.test_chunk_lba_wraps store_svc.test_chunks_wrap_on_small_card ; 63 of 63 cases ran)
+##### broken copy: scan_accepts_gap
+diff -u -r /ws/firmware/modules/ring_store/src/rst_log.c /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_scan_accepts_gap/src/rst_log.c
+--- /ws/firmware/modules/ring_store/src/rst_log.c	2026-11-13 03:57:54.000000000 +0000
++++ /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_scan_accepts_gap/src/rst_log.c	2026-11-13 04:38:44.645637537 +0000
+@@ -235,7 +235,7 @@
+ 			out->err_lba = lba;
+ 			return -EIO;
+ 		}
+-		if (rst_fmt_chunk_verify(buf, &h, &pcrc) != 0 || h.recording_id != recording_id || h.chunk_seq != seq) {
++		if (rst_fmt_chunk_verify(buf, &h, &pcrc) != 0 || h.recording_id != recording_id || h.chunk_seq < seq) {
+ 			break;
+ 		}
+ 		if (out->kept == 0) {
+INFO    - 1/1 native_sim/native         ring_store.sim                                     FAILED rc=1 (native 0.999s <host/gnu>)
+ PASS - test_confirm_match_and_mismatch in 0.005 seconds
+ PASS - test_delete_needs_confirm in 0.004 seconds
+ PASS - test_delete_refused_while_open in 0.003 seconds
+ PASS - test_factory_recordings_deleted in 0.006 seconds
+ PASS - test_no_erase in 0.004 seconds
+ PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+ PASS - test_tail_moves_over_leading_only in 0.010 seconds
+ PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+ PASS - test_ring_of_2046 in 2.343 seconds
+ PASS - test_written_when_rail_on in 0.073 seconds
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+ PASS - test_chunk_header_bytes in 0.000 seconds
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+ PASS - test_crc_check_value in 0.000 seconds
+ PASS - test_digest in 0.000 seconds
+ PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+ PASS - test_index_record_bytes in 0.000 seconds
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+ PASS - test_little_endian in 0.000 seconds
+ PASS - test_log_record_bytes in 0.000 seconds
+ PASS - test_superblock_bytes in 0.000 seconds
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+ PASS - test_close_highlights_32 in 0.003 seconds
+ PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+ PASS - test_state_is_last_record in 0.000 seconds
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+ PASS - test_chunk_lba_wraps in 0.000 seconds
+ PASS - test_examples in 0.000 seconds
+ PASS - test_index_lba_wraps in 0.000 seconds
+ PASS - test_sector_map in 0.000 seconds
+ PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+ PASS - test_cut_inside_chunk_write in 0.020 seconds
+ PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+ PASS - test_read_error_reports in 0.007 seconds
+ PASS - test_recovered_close_record in 0.007 seconds
+ PASS - test_scan_read_error_reports in 0.000 seconds
+ PASS - test_scan_summary in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:82: store_recovery_test_stop_on_each_mismatch: (sc.kept not equal to 2u)
+ FAIL - test_stop_on_each_mismatch in 0.000 seconds
+TESTSUITE store_recovery failed.
+ PASS - test_callbacks_once_per_crossing in 0.036 seconds
+ PASS - test_counts in 0.000 seconds
+ PASS - test_s30_sfull_edges in 0.000 seconds
+ PASS - test_storage_left_minutes in 0.000 seconds
+ PASS - test_boot_count in 0.005 seconds
+ PASS - test_busy_while_operation_runs in 0.602 seconds
+ PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+ PASS - test_factory_area_test in 0.006 seconds
+ PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+ PASS - test_init_three_tries_200ms in 0.804 seconds
+ PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+ PASS - test_mount_reads_sector_count in 0.003 seconds
+ PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+ PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+ PASS - test_no_rewrite_during_recording in 0.008 seconds
+ PASS - test_one_open_recording in 0.003 seconds
+ PASS - test_one_write_per_chunk in 0.007 seconds
+twister exit code on the broken copy scan_accepts_gap, native_sim: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-scan_accepts_gap-native_sim.log)
+scan_accepts_gap on native_sim: the named case failed, as required: store_recovery.test_stop_on_each_mismatch (cases that failed: store_recovery.test_stop_on_each_mismatch ; 63 of 63 cases ran)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               FAILED rc=1 (native 0.550s <host/gnu>)
+d_00: @00:00:00.004493   PASS - test_confirm_match_and_mismatch in 0.005 seconds
+d_00: @00:00:00.007793   PASS - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.009993   PASS - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.015493   PASS - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.018793   PASS - test_no_erase in 0.004 seconds
+d_00: @00:00:00.024293   PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.034193   PASS - test_tail_moves_over_leading_only in 0.010 seconds
+d_00: @00:00:00.034193   PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.055393   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:02.397793   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.470193   PASS - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.475693   PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+d_00: @00:00:02.475693   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.495493   PASS - test_cut_inside_chunk_write in 0.020 seconds
+d_00: @00:00:21.499793   PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+d_00: @00:00:21.506393   PASS - test_read_error_reports in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_recovered_close_record in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_scan_summary in 0.000 seconds
+d_00: @00:00:21.512993      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_recovery.c:82: store_recovery_test_stop_on_each_mismatch: (sc.kept not equal to 2u)
+d_00: @00:00:21.512993   FAIL - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:21.512993  TESTSUITE store_recovery failed.
+d_00: @00:00:21.548193   PASS - test_callbacks_once_per_crossing in 0.036 seconds
+d_00: @00:00:21.548193   PASS - test_counts in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:21.552593   PASS - test_boot_count in 0.005 seconds
+d_00: @00:00:22.153893   PASS - test_busy_while_operation_runs in 0.602 seconds
+d_00: @00:00:22.187993   PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+d_00: @00:00:22.193193   PASS - test_factory_area_test in 0.006 seconds
+d_00: @00:00:22.197593   PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+d_00: @00:00:23.001293   PASS - test_init_three_tries_200ms in 0.804 seconds
+d_00: @00:00:23.004593   PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+d_00: @00:00:23.006793   PASS - test_mount_reads_sector_count in 0.003 seconds
+d_00: @00:00:23.010093   PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+d_00: @00:00:23.462593   PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+d_00: @00:00:23.470293   PASS - test_no_rewrite_during_recording in 0.008 seconds
+d_00: @00:00:23.472493   PASS - test_one_open_recording in 0.003 seconds
+d_00: @00:00:23.479093   PASS - test_one_write_per_chunk in 0.007 seconds
+twister exit code on the broken copy scan_accepts_gap, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-scan_accepts_gap-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+scan_accepts_gap on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: store_recovery.test_stop_on_each_mismatch (cases that failed: store_recovery.test_stop_on_each_mismatch ; 63 of 63 cases ran)
+##### broken copy: sfull_17
+diff -u -r /ws/firmware/modules/ring_store/src/rst_layout.c /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_sfull_17/src/rst_layout.c
+--- /ws/firmware/modules/ring_store/src/rst_layout.c	2026-11-13 04:13:51.000000000 +0000
++++ /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_sfull_17/src/rst_layout.c	2026-11-13 04:39:23.375785330 +0000
+@@ -39,7 +39,7 @@
+ 	out->total = total;
+ 	out->used = used > total ? total : used;
+ 	out->free_chunks = total - out->used;
+-	out->sfull = out->free_chunks <= RREC_SFULL_CHUNKS;
++	out->sfull = out->free_chunks <= RREC_SFULL_CHUNKS + 1;
+ 	out->s30 = out->free_chunks <= RREC_S30_CHUNKS;
+ 	out->minutes_left = (uint32_t)(((uint64_t)out->free_chunks * RREC_CHUNK_MS) / (60u * 1000u));
+ }
+INFO    - 1/1 native_sim/native         ring_store.sim                                     FAILED rc=1 (native 0.685s <host/gnu>)
+ PASS - test_confirm_match_and_mismatch in 0.005 seconds
+ PASS - test_delete_needs_confirm in 0.004 seconds
+ PASS - test_delete_refused_while_open in 0.003 seconds
+ PASS - test_factory_recordings_deleted in 0.006 seconds
+ PASS - test_no_erase in 0.004 seconds
+ PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+ PASS - test_tail_moves_over_leading_only in 0.010 seconds
+ PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+ PASS - test_ring_of_2046 in 2.343 seconds
+ PASS - test_written_when_rail_on in 0.073 seconds
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+ PASS - test_chunk_header_bytes in 0.000 seconds
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+ PASS - test_crc_check_value in 0.000 seconds
+ PASS - test_digest in 0.000 seconds
+ PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+ PASS - test_index_record_bytes in 0.000 seconds
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+ PASS - test_little_endian in 0.000 seconds
+ PASS - test_log_record_bytes in 0.000 seconds
+ PASS - test_superblock_bytes in 0.000 seconds
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+ PASS - test_close_highlights_32 in 0.003 seconds
+ PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+ PASS - test_state_is_last_record in 0.000 seconds
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+ PASS - test_chunk_lba_wraps in 0.000 seconds
+ PASS - test_examples in 0.000 seconds
+ PASS - test_index_lba_wraps in 0.000 seconds
+ PASS - test_sector_map in 0.000 seconds
+ PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+ PASS - test_cut_inside_chunk_write in 0.020 seconds
+ PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+ PASS - test_read_error_reports in 0.007 seconds
+ PASS - test_recovered_close_record in 0.007 seconds
+ PASS - test_scan_read_error_reports in 0.000 seconds
+ PASS - test_scan_summary in 0.000 seconds
+ PASS - test_stop_on_each_mismatch in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_space.c:136: store_space_test_callbacks_once_per_crossing: (cbn.sfull not equal to 0)
+ FAIL - test_callbacks_once_per_crossing in 0.035 seconds
+ PASS - test_counts in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_space.c:59: store_space_test_s30_sfull_edges: (sp.sfull is true)
+ FAIL - test_s30_sfull_edges in 0.000 seconds
+ PASS - test_storage_left_minutes in 0.000 seconds
+TESTSUITE store_space failed.
+ PASS - test_boot_count in 0.005 seconds
+ PASS - test_busy_while_operation_runs in 0.602 seconds
+ PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+ PASS - test_factory_area_test in 0.006 seconds
+ PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+ PASS - test_init_three_tries_200ms in 0.804 seconds
+ PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+ PASS - test_mount_reads_sector_count in 0.003 seconds
+ PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+ PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+ PASS - test_no_rewrite_during_recording in 0.008 seconds
+ PASS - test_one_open_recording in 0.003 seconds
+twister exit code on the broken copy sfull_17, native_sim: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-sfull_17-native_sim.log)
+sfull_17 on native_sim: the named case failed, as required: store_space.test_s30_sfull_edges (cases that failed: store_space.test_callbacks_once_per_crossing store_space.test_s30_sfull_edges ; 63 of 63 cases ran)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               FAILED rc=1 (native 0.615s <host/gnu>)
+d_00: @00:00:00.004493   PASS - test_confirm_match_and_mismatch in 0.005 seconds
+d_00: @00:00:00.007793   PASS - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.009993   PASS - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.015493   PASS - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.018793   PASS - test_no_erase in 0.004 seconds
+d_00: @00:00:00.024293   PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.034193   PASS - test_tail_moves_over_leading_only in 0.010 seconds
+d_00: @00:00:00.034193   PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.055393   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:02.397793   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.470193   PASS - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.475693   PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+d_00: @00:00:02.475693   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.495493   PASS - test_cut_inside_chunk_write in 0.020 seconds
+d_00: @00:00:21.499793   PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+d_00: @00:00:21.506393   PASS - test_read_error_reports in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_recovered_close_record in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_scan_summary in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:21.547093      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_space.c:136: store_space_test_callbacks_once_per_crossing: (cbn.sfull not equal to 0)
+d_00: @00:00:21.547093   FAIL - test_callbacks_once_per_crossing in 0.035 seconds
+d_00: @00:00:21.547093   PASS - test_counts in 0.000 seconds
+d_00: @00:00:21.547093      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_space.c:59: store_space_test_s30_sfull_edges: (sp.sfull is true)
+d_00: @00:00:21.547093   FAIL - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:21.547093   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:21.547093  TESTSUITE store_space failed.
+d_00: @00:00:21.551493   PASS - test_boot_count in 0.005 seconds
+d_00: @00:00:22.152793   PASS - test_busy_while_operation_runs in 0.602 seconds
+d_00: @00:00:22.186893   PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+d_00: @00:00:22.192093   PASS - test_factory_area_test in 0.006 seconds
+d_00: @00:00:22.196493   PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+d_00: @00:00:23.000193   PASS - test_init_three_tries_200ms in 0.804 seconds
+d_00: @00:00:23.003493   PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+d_00: @00:00:23.005693   PASS - test_mount_reads_sector_count in 0.003 seconds
+d_00: @00:00:23.008993   PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+d_00: @00:00:23.461493   PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+d_00: @00:00:23.469193   PASS - test_no_rewrite_during_recording in 0.008 seconds
+d_00: @00:00:23.471393   PASS - test_one_open_recording in 0.003 seconds
+twister exit code on the broken copy sfull_17, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-sfull_17-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+sfull_17 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: store_space.test_s30_sfull_edges (cases that failed: store_space.test_callbacks_once_per_crossing store_space.test_s30_sfull_edges ; 63 of 63 cases ran)
+##### broken copy: delete_frees_middle
+diff -u -r /ws/firmware/modules/ring_store/src/rst_log.c /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_delete_frees_middle/src/rst_log.c
+--- /ws/firmware/modules/ring_store/src/rst_log.c	2026-11-13 03:57:54.000000000 +0000
++++ /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_delete_frees_middle/src/rst_log.c	2026-11-13 04:39:58.749007015 +0000
+@@ -205,7 +205,7 @@
+ 			if (r != 0) {
+ 				return r;
+ 			}
+-			deleted = x.type == RREC_IX_TYPE_DELETE && x.recording_id == c.recording_id;
++			deleted = x.type == RREC_IX_TYPE_DELETE;
+ 		}
+ 		if (!deleted) {
+ 			*new_chunk_tail = c.first_chunk_seq;
+INFO    - 1/1 native_sim/native         ring_store.sim                                     FAILED rc=1 (native 1.044s <host/gnu>)
+ PASS - test_confirm_match_and_mismatch in 0.005 seconds
+ PASS - test_delete_needs_confirm in 0.004 seconds
+ PASS - test_delete_refused_while_open in 0.003 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:238: store_delete_test_factory_recordings_deleted: (sp.used not equal to 3u)
+ FAIL - test_factory_recordings_deleted in 0.006 seconds
+ PASS - test_no_erase in 0.004 seconds
+ PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:106: store_delete_test_tail_moves_over_leading_only: (freed not equal to 94u)
+ FAIL - test_tail_moves_over_leading_only in 0.008 seconds
+TESTSUITE store_delete failed.
+ PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+ PASS - test_ring_of_2046 in 2.343 seconds
+ PASS - test_written_when_rail_on in 0.073 seconds
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+ PASS - test_chunk_header_bytes in 0.000 seconds
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+ PASS - test_crc_check_value in 0.000 seconds
+ PASS - test_digest in 0.000 seconds
+ PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+ PASS - test_index_record_bytes in 0.000 seconds
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+ PASS - test_little_endian in 0.000 seconds
+ PASS - test_log_record_bytes in 0.000 seconds
+ PASS - test_superblock_bytes in 0.000 seconds
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+ PASS - test_close_highlights_32 in 0.003 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_index.c:193: store_index_test_list_beyond_cache_reads_index: li[0].recording_id not equal to 1u
+ FAIL - test_list_beyond_cache_reads_index in 0.003 seconds
+ PASS - test_state_is_last_record in 0.000 seconds
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+TESTSUITE store_index failed.
+ PASS - test_chunk_lba_wraps in 0.000 seconds
+ PASS - test_examples in 0.000 seconds
+ PASS - test_index_lba_wraps in 0.000 seconds
+ PASS - test_sector_map in 0.000 seconds
+ PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+ PASS - test_cut_inside_chunk_write in 0.020 seconds
+ PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+ PASS - test_read_error_reports in 0.007 seconds
+ PASS - test_recovered_close_record in 0.007 seconds
+ PASS - test_scan_read_error_reports in 0.000 seconds
+ PASS - test_scan_summary in 0.000 seconds
+ PASS - test_stop_on_each_mismatch in 0.000 seconds
+ PASS - test_callbacks_once_per_crossing in 0.036 seconds
+ PASS - test_counts in 0.000 seconds
+ PASS - test_s30_sfull_edges in 0.000 seconds
+ PASS - test_storage_left_minutes in 0.000 seconds
+ PASS - test_boot_count in 0.005 seconds
+ PASS - test_busy_while_operation_runs in 0.602 seconds
+ PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+ PASS - test_factory_area_test in 0.006 seconds
+ PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+ PASS - test_init_three_tries_200ms in 0.804 seconds
+ PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+ PASS - test_mount_reads_sector_count in 0.003 seconds
+ PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+ PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+twister exit code on the broken copy delete_frees_middle, native_sim: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-delete_frees_middle-native_sim.log)
+delete_frees_middle on native_sim: the named case failed, as required: store_delete.test_tail_moves_over_leading_only (cases that failed: store_delete.test_factory_recordings_deleted store_delete.test_tail_moves_over_leading_only store_index.test_list_beyond_cache_reads_index ; 63 of 63 cases ran)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               FAILED rc=1 (native 0.752s <host/gnu>)
+d_00: @00:00:00.004493   PASS - test_confirm_match_and_mismatch in 0.005 seconds
+d_00: @00:00:00.007793   PASS - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.009993   PASS - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.015493      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:238: store_delete_test_factory_recordings_deleted: (sp.used not equal to 3u)
+d_00: @00:00:00.015493   FAIL - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.018793   PASS - test_no_erase in 0.004 seconds
+d_00: @00:00:00.024293   PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.031993      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:106: store_delete_test_tail_moves_over_leading_only: (freed not equal to 94u)
+d_00: @00:00:00.031993   FAIL - test_tail_moves_over_leading_only in 0.008 seconds
+d_00: @00:00:00.031993  TESTSUITE store_delete failed.
+d_00: @00:00:00.031993   PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.053193   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:02.395593   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.467993   PASS - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.467993   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_digest in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.467993   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.472393      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_index.c:193: store_index_test_list_beyond_cache_reads_index: li[0].recording_id not equal to 1u
+d_00: @00:00:02.472393   FAIL - test_list_beyond_cache_reads_index in 0.003 seconds
+d_00: @00:00:02.472393   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.472393  TESTSUITE store_index failed.
+d_00: @00:00:02.472393   PASS - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.492193   PASS - test_cut_inside_chunk_write in 0.020 seconds
+d_00: @00:00:21.496493   PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+d_00: @00:00:21.503093   PASS - test_read_error_reports in 0.007 seconds
+d_00: @00:00:21.509693   PASS - test_recovered_close_record in 0.007 seconds
+d_00: @00:00:21.509693   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:21.509693   PASS - test_scan_summary in 0.000 seconds
+d_00: @00:00:21.509693   PASS - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:21.544893   PASS - test_callbacks_once_per_crossing in 0.036 seconds
+d_00: @00:00:21.544893   PASS - test_counts in 0.000 seconds
+d_00: @00:00:21.544893   PASS - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:21.544893   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:21.549293   PASS - test_boot_count in 0.005 seconds
+d_00: @00:00:22.150593   PASS - test_busy_while_operation_runs in 0.602 seconds
+d_00: @00:00:22.184693   PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+d_00: @00:00:22.189893   PASS - test_factory_area_test in 0.006 seconds
+d_00: @00:00:22.194293   PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+d_00: @00:00:22.997993   PASS - test_init_three_tries_200ms in 0.804 seconds
+d_00: @00:00:23.001293   PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+d_00: @00:00:23.003493   PASS - test_mount_reads_sector_count in 0.003 seconds
+d_00: @00:00:23.006793   PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+d_00: @00:00:23.459293   PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+twister exit code on the broken copy delete_frees_middle, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-delete_frees_middle-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+delete_frees_middle on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: store_delete.test_tail_moves_over_leading_only (cases that failed: store_delete.test_factory_recordings_deleted store_delete.test_tail_moves_over_leading_only store_index.test_list_beyond_cache_reads_index ; 63 of 63 cases ran)
+##### broken copy: delete_without_confirm
+diff -u -r /ws/firmware/modules/ring_store/src/rst.c /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_delete_without_confirm/src/rst.c
+--- /ws/firmware/modules/ring_store/src/rst.c	2026-11-13 04:17:09.000000000 +0000
++++ /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_delete_without_confirm/src/rst.c	2026-11-13 04:40:36.280181247 +0000
+@@ -943,7 +943,7 @@
+ 	if (r == 0 && S.sb.open_flag) {
+ 		r = -EBUSY;                   /* a recording is open or waits for its recovery */
+ 	}
+-	if (r == 0 && !rec.confirmed) {
++	if (r == 0 && !rec.confirmed && false) {
+ 		r = -EACCES;                                                             /* FW l.659 */
+ 	}
+ 	if (r == 0) {
+INFO    - 1/1 native_sim/native         ring_store.sim                                     FAILED rc=1 (native 1.129s <host/gnu>)
+ PASS - test_confirm_match_and_mismatch in 0.005 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:76: store_delete_test_delete_needs_confirm: rst_delete(ids[0], &freed) not equal to -EACCES
+ FAIL - test_delete_needs_confirm in 0.004 seconds
+ PASS - test_delete_refused_while_open in 0.003 seconds
+ PASS - test_factory_recordings_deleted in 0.006 seconds
+ PASS - test_no_erase in 0.004 seconds
+ PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+ PASS - test_tail_moves_over_leading_only in 0.010 seconds
+TESTSUITE store_delete failed.
+ PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+ PASS - test_ring_of_2046 in 2.343 seconds
+ PASS - test_written_when_rail_on in 0.073 seconds
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+ PASS - test_chunk_header_bytes in 0.000 seconds
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+ PASS - test_crc_check_value in 0.000 seconds
+ PASS - test_digest in 0.000 seconds
+ PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+ PASS - test_index_record_bytes in 0.000 seconds
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+ PASS - test_little_endian in 0.000 seconds
+ PASS - test_log_record_bytes in 0.000 seconds
+ PASS - test_superblock_bytes in 0.000 seconds
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+ PASS - test_close_highlights_32 in 0.003 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_index.c:195: store_index_test_list_beyond_cache_reads_index: rst_delete(1, &freed) not equal to -EACCES
+ FAIL - test_list_beyond_cache_reads_index in 0.003 seconds
+ PASS - test_state_is_last_record in 0.000 seconds
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+TESTSUITE store_index failed.
+ PASS - test_chunk_lba_wraps in 0.000 seconds
+ PASS - test_examples in 0.000 seconds
+ PASS - test_index_lba_wraps in 0.000 seconds
+ PASS - test_sector_map in 0.000 seconds
+ PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+ PASS - test_cut_inside_chunk_write in 0.020 seconds
+ PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+ PASS - test_read_error_reports in 0.007 seconds
+ PASS - test_recovered_close_record in 0.007 seconds
+ PASS - test_scan_read_error_reports in 0.000 seconds
+ PASS - test_scan_summary in 0.000 seconds
+ PASS - test_stop_on_each_mismatch in 0.000 seconds
+ PASS - test_callbacks_once_per_crossing in 0.036 seconds
+ PASS - test_counts in 0.000 seconds
+ PASS - test_s30_sfull_edges in 0.000 seconds
+ PASS - test_storage_left_minutes in 0.000 seconds
+ PASS - test_boot_count in 0.005 seconds
+ PASS - test_busy_while_operation_runs in 0.602 seconds
+ PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+ PASS - test_factory_area_test in 0.006 seconds
+ PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+ PASS - test_init_three_tries_200ms in 0.804 seconds
+ PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+ PASS - test_mount_reads_sector_count in 0.003 seconds
+ PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+ PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+ PASS - test_no_rewrite_during_recording in 0.008 seconds
+twister exit code on the broken copy delete_without_confirm, native_sim: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-delete_without_confirm-native_sim.log)
+delete_without_confirm on native_sim: the named case failed, as required: store_delete.test_delete_needs_confirm (cases that failed: store_delete.test_delete_needs_confirm store_index.test_list_beyond_cache_reads_index ; 63 of 63 cases ran)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               FAILED rc=1 (native 0.457s <host/gnu>)
+d_00: @00:00:00.004493   PASS - test_confirm_match_and_mismatch in 0.005 seconds
+d_00: @00:00:00.007793      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_delete.c:76: store_delete_test_delete_needs_confirm: rst_delete(ids[0], &freed) not equal to -EACCES
+d_00: @00:00:00.007793   FAIL - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.009993   PASS - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.015493   PASS - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.018793   PASS - test_no_erase in 0.004 seconds
+d_00: @00:00:00.024293   PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.034193   PASS - test_tail_moves_over_leading_only in 0.010 seconds
+d_00: @00:00:00.034193  TESTSUITE store_delete failed.
+d_00: @00:00:00.034193   PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.055393   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:02.397793   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.470193   PASS - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.474593      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_index.c:195: store_index_test_list_beyond_cache_reads_index: rst_delete(1, &freed) not equal to -EACCES
+d_00: @00:00:02.474593   FAIL - test_list_beyond_cache_reads_index in 0.003 seconds
+d_00: @00:00:02.474593   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.474593   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.474593  TESTSUITE store_index failed.
+d_00: @00:00:02.474593   PASS - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.474593   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.474593   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.474593   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.474593   PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.494393   PASS - test_cut_inside_chunk_write in 0.020 seconds
+d_00: @00:00:21.498693   PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+d_00: @00:00:21.505293   PASS - test_read_error_reports in 0.007 seconds
+d_00: @00:00:21.511893   PASS - test_recovered_close_record in 0.007 seconds
+d_00: @00:00:21.511893   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:21.511893   PASS - test_scan_summary in 0.000 seconds
+d_00: @00:00:21.511893   PASS - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:21.547093   PASS - test_callbacks_once_per_crossing in 0.036 seconds
+d_00: @00:00:21.547093   PASS - test_counts in 0.000 seconds
+d_00: @00:00:21.547093   PASS - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:21.547093   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:21.551493   PASS - test_boot_count in 0.005 seconds
+d_00: @00:00:22.152793   PASS - test_busy_while_operation_runs in 0.602 seconds
+d_00: @00:00:22.186893   PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+d_00: @00:00:22.192093   PASS - test_factory_area_test in 0.006 seconds
+d_00: @00:00:22.196493   PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+d_00: @00:00:23.000193   PASS - test_init_three_tries_200ms in 0.804 seconds
+d_00: @00:00:23.003493   PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+d_00: @00:00:23.005693   PASS - test_mount_reads_sector_count in 0.003 seconds
+d_00: @00:00:23.008993   PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+d_00: @00:00:23.461493   PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+d_00: @00:00:23.469193   PASS - test_no_rewrite_during_recording in 0.008 seconds
+twister exit code on the broken copy delete_without_confirm, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-delete_without_confirm-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+delete_without_confirm on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: store_delete.test_delete_needs_confirm (cases that failed: store_delete.test_delete_needs_confirm store_index.test_list_beyond_cache_reads_index ; 63 of 63 cases ran)
+##### broken copy: two_tries
+diff -u -r /ws/firmware/modules/ring_store/src/rst.c /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_two_tries/src/rst.c
+--- /ws/firmware/modules/ring_store/src/rst.c	2026-11-13 04:17:09.000000000 +0000
++++ /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_two_tries/src/rst.c	2026-11-13 04:41:12.920375105 +0000
+@@ -85,7 +85,7 @@
+ {
+ 	int r = -EIO;
+ 
+-	for (uint32_t i = 0; i < RREC_WRITE_TRIES && r != 0; i++) {
++	for (uint32_t i = 0; i < RREC_WRITE_TRIES - 1 && r != 0; i++) {
+ 		r = rhw_disk()->write(lba, buf, count);
+ 	}
+ 	return r == 0 ? 0 : -EIO;
+INFO    - 1/1 native_sim/native         ring_store.sim                                     FAILED rc=1 (native 0.739s <host/gnu>)
+ PASS - test_confirm_match_and_mismatch in 0.005 seconds
+ PASS - test_delete_needs_confirm in 0.004 seconds
+ PASS - test_delete_refused_while_open in 0.003 seconds
+ PASS - test_factory_recordings_deleted in 0.006 seconds
+ PASS - test_no_erase in 0.004 seconds
+ PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+ PASS - test_tail_moves_over_leading_only in 0.010 seconds
+ PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+ PASS - test_ring_of_2046 in 2.343 seconds
+ PASS - test_written_when_rail_on in 0.073 seconds
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+ PASS - test_chunk_header_bytes in 0.000 seconds
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+ PASS - test_crc_check_value in 0.000 seconds
+ PASS - test_digest in 0.000 seconds
+ PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+ PASS - test_index_record_bytes in 0.000 seconds
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+ PASS - test_little_endian in 0.000 seconds
+ PASS - test_log_record_bytes in 0.000 seconds
+ PASS - test_superblock_bytes in 0.000 seconds
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+ PASS - test_close_highlights_32 in 0.003 seconds
+ PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+ PASS - test_state_is_last_record in 0.000 seconds
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+ PASS - test_chunk_lba_wraps in 0.000 seconds
+ PASS - test_examples in 0.000 seconds
+ PASS - test_index_lba_wraps in 0.000 seconds
+ PASS - test_sector_map in 0.000 seconds
+ PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+ PASS - test_cut_inside_chunk_write in 0.020 seconds
+ PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+ PASS - test_read_error_reports in 0.007 seconds
+ PASS - test_recovered_close_record in 0.007 seconds
+ PASS - test_scan_read_error_reports in 0.000 seconds
+ PASS - test_scan_summary in 0.000 seconds
+ PASS - test_stop_on_each_mismatch in 0.000 seconds
+ PASS - test_callbacks_once_per_crossing in 0.036 seconds
+ PASS - test_counts in 0.000 seconds
+ PASS - test_s30_sfull_edges in 0.000 seconds
+ PASS - test_storage_left_minutes in 0.000 seconds
+ PASS - test_boot_count in 0.005 seconds
+ PASS - test_busy_while_operation_runs in 0.602 seconds
+ PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+ PASS - test_factory_area_test in 0.006 seconds
+ PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+ PASS - test_init_three_tries_200ms in 0.804 seconds
+ PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+ PASS - test_mount_reads_sector_count in 0.003 seconds
+ PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+ PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+ PASS - test_no_rewrite_during_recording in 0.008 seconds
+ PASS - test_one_open_recording in 0.003 seconds
+ PASS - test_one_write_per_chunk in 0.007 seconds
+ PASS - test_put_chunk_ring_of_three in 4.002 seconds
+ PASS - test_rail_sequence in 0.002 seconds
+twister exit code on the broken copy two_tries, native_sim: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-two_tries-native_sim.log)
+two_tries on native_sim: the named case failed, as required: store_svc.test_three_tries_then_fault_open_flag_kept (cases that failed: store_svc.test_three_tries_then_fault_open_flag_kept ; 63 of 63 cases ran)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               FAILED rc=1 (native 0.630s <host/gnu>)
+d_00: @00:00:00.004493   PASS - test_confirm_match_and_mismatch in 0.005 seconds
+d_00: @00:00:00.007793   PASS - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.009993   PASS - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.015493   PASS - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.018793   PASS - test_no_erase in 0.004 seconds
+d_00: @00:00:00.024293   PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.034193   PASS - test_tail_moves_over_leading_only in 0.010 seconds
+d_00: @00:00:00.034193   PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.055393   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:02.397793   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.470193   PASS - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.475693   PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+d_00: @00:00:02.475693   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.495493   PASS - test_cut_inside_chunk_write in 0.020 seconds
+d_00: @00:00:21.499793   PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+d_00: @00:00:21.506393   PASS - test_read_error_reports in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_recovered_close_record in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_scan_summary in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_callbacks_once_per_crossing in 0.036 seconds
+d_00: @00:00:21.548193   PASS - test_counts in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:21.552593   PASS - test_boot_count in 0.005 seconds
+d_00: @00:00:22.153893   PASS - test_busy_while_operation_runs in 0.602 seconds
+d_00: @00:00:22.187993   PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+d_00: @00:00:22.193193   PASS - test_factory_area_test in 0.006 seconds
+d_00: @00:00:22.197593   PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+d_00: @00:00:23.001293   PASS - test_init_three_tries_200ms in 0.804 seconds
+d_00: @00:00:23.004593   PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+d_00: @00:00:23.006793   PASS - test_mount_reads_sector_count in 0.003 seconds
+d_00: @00:00:23.010093   PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+d_00: @00:00:23.462593   PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+d_00: @00:00:23.470293   PASS - test_no_rewrite_during_recording in 0.008 seconds
+d_00: @00:00:23.472493   PASS - test_one_open_recording in 0.003 seconds
+d_00: @00:00:23.479093   PASS - test_one_write_per_chunk in 0.007 seconds
+d_00: @00:00:27.480893   PASS - test_put_chunk_ring_of_three in 4.002 seconds
+d_00: @00:00:27.481993   PASS - test_rail_sequence in 0.002 seconds
+twister exit code on the broken copy two_tries, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-two_tries-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+two_tries on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: store_svc.test_three_tries_then_fault_open_flag_kept (cases that failed: store_svc.test_three_tries_then_fault_open_flag_kept ; 63 of 63 cases ran)
+##### broken copy: init_before_rail
+diff -u -r /ws/firmware/modules/ring_store/src/rst.c /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_init_before_rail/src/rst.c
+--- /ws/firmware/modules/ring_store/src/rst.c	2026-11-13 04:17:09.000000000 +0000
++++ /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_init_before_rail/src/rst.c	2026-11-13 04:41:50.187555193 +0000
+@@ -342,6 +342,7 @@
+ {
+ 	int r = -EIO;
+ 
++	(void)rhw_disk()->init();
+ 	if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+ 		return -EIO;
+ 	}
+INFO    - 1/1 native_sim/native         ring_store.sim                                     FAILED rc=1 (native 0.862s <host/gnu>)
+ PASS - test_confirm_match_and_mismatch in 0.005 seconds
+ PASS - test_delete_needs_confirm in 0.004 seconds
+ PASS - test_delete_refused_while_open in 0.003 seconds
+ PASS - test_factory_recordings_deleted in 0.006 seconds
+ PASS - test_no_erase in 0.004 seconds
+ PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+ PASS - test_tail_moves_over_leading_only in 0.010 seconds
+ PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+ PASS - test_ring_of_2046 in 2.343 seconds
+ PASS - test_written_when_rail_on in 0.073 seconds
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+ PASS - test_chunk_header_bytes in 0.000 seconds
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+ PASS - test_crc_check_value in 0.000 seconds
+ PASS - test_digest in 0.000 seconds
+ PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+ PASS - test_index_record_bytes in 0.000 seconds
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+ PASS - test_little_endian in 0.000 seconds
+ PASS - test_log_record_bytes in 0.000 seconds
+ PASS - test_superblock_bytes in 0.000 seconds
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+ PASS - test_close_highlights_32 in 0.003 seconds
+ PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+ PASS - test_state_is_last_record in 0.000 seconds
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+ PASS - test_chunk_lba_wraps in 0.000 seconds
+ PASS - test_examples in 0.000 seconds
+ PASS - test_index_lba_wraps in 0.000 seconds
+ PASS - test_sector_map in 0.000 seconds
+ PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+ PASS - test_cut_inside_chunk_write in 0.020 seconds
+ PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+ PASS - test_read_error_reports in 0.007 seconds
+ PASS - test_recovered_close_record in 0.007 seconds
+ PASS - test_scan_read_error_reports in 0.000 seconds
+ PASS - test_scan_summary in 0.000 seconds
+ PASS - test_stop_on_each_mismatch in 0.000 seconds
+ PASS - test_callbacks_once_per_crossing in 0.036 seconds
+ PASS - test_counts in 0.000 seconds
+ PASS - test_s30_sfull_edges in 0.000 seconds
+ PASS - test_storage_left_minutes in 0.000 seconds
+ PASS - test_boot_count in 0.005 seconds
+ PASS - test_busy_while_operation_runs in 0.602 seconds
+ PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+ PASS - test_factory_area_test in 0.006 seconds
+ PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+ PASS - test_init_three_tries_200ms in 0.804 seconds
+ PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+ PASS - test_mount_reads_sector_count in 0.003 seconds
+ PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+ PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+ PASS - test_no_rewrite_during_recording in 0.008 seconds
+ PASS - test_one_open_recording in 0.003 seconds
+ PASS - test_one_write_per_chunk in 0.007 seconds
+ PASS - test_put_chunk_ring_of_three in 4.002 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_svc.c:155: store_svc_test_rail_sequence: (n not equal to 7u)
+twister exit code on the broken copy init_before_rail, native_sim: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-init_before_rail-native_sim.log)
+init_before_rail on native_sim: the named case failed, as required: store_svc.test_rail_sequence (cases that failed: store_svc.test_rail_sequence ; 63 of 63 cases ran)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               FAILED rc=1 (native 0.486s <host/gnu>)
+d_00: @00:00:00.004493   PASS - test_confirm_match_and_mismatch in 0.005 seconds
+d_00: @00:00:00.007793   PASS - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.009993   PASS - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.015493   PASS - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.018793   PASS - test_no_erase in 0.004 seconds
+d_00: @00:00:00.024293   PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.034193   PASS - test_tail_moves_over_leading_only in 0.010 seconds
+d_00: @00:00:00.034193   PASS - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.055393   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:02.397793   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.470193   PASS - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.475693   PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+d_00: @00:00:02.475693   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.495493   PASS - test_cut_inside_chunk_write in 0.020 seconds
+d_00: @00:00:21.499793   PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+d_00: @00:00:21.506393   PASS - test_read_error_reports in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_recovered_close_record in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_scan_summary in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_callbacks_once_per_crossing in 0.036 seconds
+d_00: @00:00:21.548193   PASS - test_counts in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:21.552593   PASS - test_boot_count in 0.005 seconds
+d_00: @00:00:22.153893   PASS - test_busy_while_operation_runs in 0.602 seconds
+d_00: @00:00:22.187993   PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+d_00: @00:00:22.193193   PASS - test_factory_area_test in 0.006 seconds
+d_00: @00:00:22.197593   PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+d_00: @00:00:23.001293   PASS - test_init_three_tries_200ms in 0.804 seconds
+d_00: @00:00:23.004593   PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+d_00: @00:00:23.006793   PASS - test_mount_reads_sector_count in 0.003 seconds
+d_00: @00:00:23.010093   PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+d_00: @00:00:23.462593   PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+d_00: @00:00:23.470293   PASS - test_no_rewrite_during_recording in 0.008 seconds
+d_00: @00:00:23.472493   PASS - test_one_open_recording in 0.003 seconds
+d_00: @00:00:23.479093   PASS - test_one_write_per_chunk in 0.007 seconds
+d_00: @00:00:27.480893   PASS - test_put_chunk_ring_of_three in 4.002 seconds
+d_00: @00:00:27.481993      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_svc.c:155: store_svc_test_rail_sequence: (n not equal to 7u)
+twister exit code on the broken copy init_before_rail, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-init_before_rail-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+init_before_rail on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: store_svc.test_rail_sequence (cases that failed: store_svc.test_rail_sequence ; 63 of 63 cases ran)
+##### broken copy: log_drops_newest
+diff -u -r /ws/firmware/modules/ring_store/src/rst_log.c /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_log_drops_newest/src/rst_log.c
+--- /ws/firmware/modules/ring_store/src/rst_log.c	2026-11-13 03:57:54.000000000 +0000
++++ /ws/out/20261113-053508-u-store-unit/broken-store/broken_ring_store_log_drops_newest/src/rst_log.c	2026-11-13 04:42:24.179807351 +0000
+@@ -292,9 +292,8 @@
+ void rst_evbuf_push(struct rst_evbuf *b, const struct rrec_logrec *r)
+ {
+ 	if (b->n == RREC_LOG_BUFFER_RECORDS) {
+-		b->first = (b->first + 1) % RREC_LOG_BUFFER_RECORDS;      /* the oldest unwritten is dropped */
+-		b->n--;
+ 		b->dropped++;
++		return;
+ 	}
+ 	b->r[(b->first + b->n) % RREC_LOG_BUFFER_RECORDS] = *r;
+ 	b->n++;
+INFO    - 1/1 native_sim/native         ring_store.sim                                     FAILED rc=1 (native 0.882s <host/gnu>)
+ PASS - test_confirm_match_and_mismatch in 0.005 seconds
+ PASS - test_delete_needs_confirm in 0.004 seconds
+ PASS - test_delete_refused_while_open in 0.003 seconds
+ PASS - test_factory_recordings_deleted in 0.006 seconds
+ PASS - test_no_erase in 0.004 seconds
+ PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+ PASS - test_tail_moves_over_leading_only in 0.010 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_evlog.c:42: store_evlog_test_buffer_of_8_drops_oldest: (got.code not equal to c)
+ FAIL - test_buffer_of_8_drops_oldest in 0.000 seconds
+ PASS - test_crash_block_roundtrip in 0.022 seconds
+ PASS - test_ring_of_2046 in 2.343 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_evlog.c:116: store_evlog_test_written_when_rail_on: (got.code not equal to 3u)
+ FAIL - test_written_when_rail_on in 0.073 seconds
+TESTSUITE store_evlog failed.
+ PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+ PASS - test_chunk_header_bytes in 0.000 seconds
+ PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+ PASS - test_crc_check_value in 0.000 seconds
+ PASS - test_digest in 0.000 seconds
+ PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+ PASS - test_index_record_bytes in 0.000 seconds
+ PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+ PASS - test_last_chunk_zero_tail in 0.000 seconds
+ PASS - test_little_endian in 0.000 seconds
+ PASS - test_log_record_bytes in 0.000 seconds
+ PASS - test_superblock_bytes in 0.000 seconds
+ PASS - test_unused_slots_are_ff in 0.000 seconds
+ PASS - test_close_highlights_32 in 0.003 seconds
+ PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+ PASS - test_state_is_last_record in 0.000 seconds
+ PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+ PASS - test_chunk_lba_wraps in 0.000 seconds
+ PASS - test_examples in 0.000 seconds
+ PASS - test_index_lba_wraps in 0.000 seconds
+ PASS - test_sector_map in 0.000 seconds
+ PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+ PASS - test_cut_inside_chunk_write in 0.020 seconds
+ PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+ PASS - test_read_error_reports in 0.007 seconds
+ PASS - test_recovered_close_record in 0.007 seconds
+ PASS - test_scan_read_error_reports in 0.000 seconds
+ PASS - test_scan_summary in 0.000 seconds
+ PASS - test_stop_on_each_mismatch in 0.000 seconds
+ PASS - test_callbacks_once_per_crossing in 0.036 seconds
+ PASS - test_counts in 0.000 seconds
+ PASS - test_s30_sfull_edges in 0.000 seconds
+ PASS - test_storage_left_minutes in 0.000 seconds
+ PASS - test_boot_count in 0.005 seconds
+ PASS - test_busy_while_operation_runs in 0.602 seconds
+ PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+ PASS - test_factory_area_test in 0.006 seconds
+ PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+ PASS - test_init_three_tries_200ms in 0.804 seconds
+ PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+ PASS - test_mount_reads_sector_count in 0.003 seconds
+ PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+ PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+ PASS - test_no_rewrite_during_recording in 0.008 seconds
+ PASS - test_one_open_recording in 0.003 seconds
+twister exit code on the broken copy log_drops_newest, native_sim: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-log_drops_newest-native_sim.log)
+log_drops_newest on native_sim: the named case failed, as required: store_evlog.test_buffer_of_8_drops_oldest (cases that failed: store_evlog.test_buffer_of_8_drops_oldest store_evlog.test_written_when_rail_on ; 63 of 63 cases ran)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               FAILED rc=1 (native 0.534s <host/gnu>)
+d_00: @00:00:00.004493   PASS - test_confirm_match_and_mismatch in 0.005 seconds
+d_00: @00:00:00.007793   PASS - test_delete_needs_confirm in 0.004 seconds
+d_00: @00:00:00.009993   PASS - test_delete_refused_while_open in 0.003 seconds
+d_00: @00:00:00.015493   PASS - test_factory_recordings_deleted in 0.006 seconds
+d_00: @00:00:00.018793   PASS - test_no_erase in 0.004 seconds
+d_00: @00:00:00.024293   PASS - test_read_chunk_deleted_not_found in 0.006 seconds
+d_00: @00:00:00.034193   PASS - test_tail_moves_over_leading_only in 0.010 seconds
+d_00: @00:00:00.034193      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_evlog.c:42: store_evlog_test_buffer_of_8_drops_oldest: (got.code not equal to c)
+d_00: @00:00:00.034193   FAIL - test_buffer_of_8_drops_oldest in 0.000 seconds
+d_00: @00:00:00.055393   PASS - test_crash_block_roundtrip in 0.022 seconds
+d_00: @00:00:02.397793   PASS - test_ring_of_2046 in 2.343 seconds
+d_00: @00:00:02.470193      Assertion failed at WEST_TOPDIR/firmware/tests/store/src/test_evlog.c:116: store_evlog_test_written_when_rail_on: (got.code not equal to 3u)
+d_00: @00:00:02.470193   FAIL - test_written_when_rail_on in 0.073 seconds
+d_00: @00:00:02.470193  TESTSUITE store_evlog failed.
+d_00: @00:00:02.470193   PASS - test_chunk_encode_rejects_bad_counts in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_chunk_header_roundtrip_and_rejects in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_crc_check_value in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_digest_stream_equals_oneshot in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_index_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_kit_disk_and_crc_names_exist in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_last_chunk_zero_tail in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_little_endian in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_log_record_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_superblock_bytes in 0.000 seconds
+d_00: @00:00:02.470193   PASS - test_unused_slots_are_ff in 0.000 seconds
+d_00: @00:00:02.472393   PASS - test_close_highlights_32 in 0.003 seconds
+d_00: @00:00:02.475693   PASS - test_list_beyond_cache_reads_index in 0.004 seconds
+d_00: @00:00:02.475693   PASS - test_state_is_last_record in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_table_pushes_out_oldest_and_finds_on_demand in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_chunk_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_examples in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_index_lba_wraps in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_sector_map in 0.000 seconds
+d_00: @00:00:02.475693   PASS - test_mount_picks_newer_valid_copy in 0.000 seconds
+d_00: @00:00:02.495493   PASS - test_cut_inside_chunk_write in 0.020 seconds
+d_00: @00:00:21.499793   PASS - test_loss_bound_with_stalled_card in 19.005 seconds
+d_00: @00:00:21.506393   PASS - test_read_error_reports in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_recovered_close_record in 0.007 seconds
+d_00: @00:00:21.512993   PASS - test_scan_read_error_reports in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_scan_summary in 0.000 seconds
+d_00: @00:00:21.512993   PASS - test_stop_on_each_mismatch in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_callbacks_once_per_crossing in 0.036 seconds
+d_00: @00:00:21.548193   PASS - test_counts in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_s30_sfull_edges in 0.000 seconds
+d_00: @00:00:21.548193   PASS - test_storage_left_minutes in 0.000 seconds
+d_00: @00:00:21.552593   PASS - test_boot_count in 0.005 seconds
+d_00: @00:00:22.153893   PASS - test_busy_while_operation_runs in 0.602 seconds
+d_00: @00:00:22.187993   PASS - test_chunks_wrap_on_small_card in 0.035 seconds
+d_00: @00:00:22.193193   PASS - test_factory_area_test in 0.006 seconds
+d_00: @00:00:22.197593   PASS - test_full_cycle_with_partial_last_chunk in 0.005 seconds
+d_00: @00:00:23.001293   PASS - test_init_three_tries_200ms in 0.804 seconds
+d_00: @00:00:23.004593   PASS - test_mount_never_formats_an_unreadable_card in 0.004 seconds
+d_00: @00:00:23.006793   PASS - test_mount_reads_sector_count in 0.003 seconds
+d_00: @00:00:23.010093   PASS - test_mount_uses_the_valid_copy in 0.004 seconds
+d_00: @00:00:23.462593   PASS - test_no_disk_call_with_rail_off in 0.453 seconds
+d_00: @00:00:23.470293   PASS - test_no_rewrite_during_recording in 0.008 seconds
+d_00: @00:00:23.472493   PASS - test_one_open_recording in 0.003 seconds
+twister exit code on the broken copy log_drops_newest, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-053508-u-store-unit/broken-store/twister-log_drops_newest-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+log_drops_newest on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: store_evlog.test_buffer_of_8_drops_oldest (cases that failed: store_evlog.test_buffer_of_8_drops_oldest store_evlog.test_written_when_rail_on ; 63 of 63 cases ran)
+RESULT PASS
+=== part broken-store end 2026-11-13T04:43:01Z exit 0
+UNIT PASS tests/store
+# finished (Mac clock): 2026-11-13 05:43:16 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-053508-u-store.log

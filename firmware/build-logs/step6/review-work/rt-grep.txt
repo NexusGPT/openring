@@ -1,0 +1,17 @@
+22:static uint32_t mic_at_screens;
+23:static uint32_t screens_told;
+49:	mic_at_screens = 0;
+50:	screens_told = 0;
+63:uint32_t rt_mic_at_screens(void)
+65:	return mic_at_screens;
+68:uint32_t rt_screens_told(void)
+70:	return screens_told;
+84:static bool w_after(const struct rc_actions *a, enum rc_event ev, enum rc_state st, rc_ms_t t)
+96:static const struct rglue_ops gops = {
+127:/* called inside rscr_glue_after (load_view): the moment the screens learn of a core state */
+134:		screens_told++;
+137:			mic_at_screens++;
+207:void rt_setup(void)
+281:void rt_fresh(const struct rt_boot *b)
+303:void rt_long(void)
+617:int rt_run_row(int row)

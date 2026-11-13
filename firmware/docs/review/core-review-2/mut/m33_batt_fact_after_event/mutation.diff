@@ -1,0 +1,13 @@
+file src/core.c
+--- old
+	c->facts.batt = (uint8_t)level;
+	if (level > old) {
+		/* a downward crossing: the row of the threshold reached */
+		sm_event(c, (enum rc_event)ev_of[level], t, out);
+	}
++++ new
+	if (level > old) {
+		/* a downward crossing: the row of the threshold reached */
+		sm_event(c, (enum rc_event)ev_of[level], t, out);
+	}
+	c->facts.batt = (uint8_t)level;

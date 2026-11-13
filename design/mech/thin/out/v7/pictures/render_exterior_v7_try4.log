@@ -1,0 +1,27 @@
+body [-3.6, 8.51, -3.53] [3.6, 11.43, 0.05]
+glass [-12.14, 6.43, 2.75] [12.1, 7.25, 3.17]
+screen [-9.33, -5.4, 3.39] [12.28, 5.4, 3.87]
+joystick [-2.7, -13.85, -9.86] [2.7, -11.92, -4.41]
+mic_1 [-12.77, -5.8, 0.04] [-10.77, -3.8, 0.1]
+mic_2 [10.77, -5.8, 0.04] [12.77, -3.8, 0.1]
+glb: design/look/s1/out/ring-merged32h-us9.glb d5ee05729e6c3ff8edf4e40a928339bbb5097cdb971e8229d8cedf2dd56b8ac2
+nodes in file: ['body', 'glass', 'screen', 'joystick', 'light', 'mic_1', 'mic_2'] drawn: ['body', 'glass', 'screen', 'joystick', 'mic_1', 'mic_2']
+bbox mm [-12.77, -13.85, -9.86] [12.77, 11.43, 3.87]
+wrote design/mech/thin/out/v7/pictures/v7-ring-exterior-iso.png: 2101 triangles drawn
+wrote design/mech/thin/out/v7/pictures/v7-ring-exterior-top.png: 2419 triangles drawn
+wrote design/mech/thin/out/v7/pictures/v7-ring-exterior-joystick.png: 210 triangles drawn
+Traceback (most recent call last):
+  File "design/mech/thin/out/v7/pictures/render_exterior_v7.py", line 68, in <module>
+    main()
+  File "design/mech/thin/out/v7/pictures/render_exterior_v7.py", line 64, in main
+    R.view(meshes, None, ((-20, -30, -4), (20, 30, 12)), (0, 0, -1), (0, 1, 0), OUTD / "v7-ring-exterior-underside.png", "Underside of the block seen from below, band cut away: the two 1.0 mm microphone holes.")
+  File "design/mech/thin/out/v7/pictures/render_v7.py", line 81, in view
+    total += draw(ax, meshes, names, crop, eye, up, ttl, hd)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "design/mech/thin/out/v7/pictures/render_v7.py", line 128, in draw
+    ax.set_xlim(P[..., 0].min() - 0.3, P[..., 0].max() + 0.3)
+                ^^^^^^^^^^^^^^^
+  File "design/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py", line 45, in _amin
+    return umr_minimum(a, axis, None, out, keepdims, initial, where)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: zero-size array to reduction operation minimum which has no identity

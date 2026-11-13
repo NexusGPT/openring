@@ -1,0 +1,51 @@
+C00 INFO inputs: design/mech/thin/placement.csv sha256 61ea0dd3d6cac632; design/mech/thin/layers.json sha256 8f488d873bc0f16e; design/look/s1/out/ring-merged32e.step sha256 8ed5e395bfecbf97
+C01 PASS placement.csv 38 rows, layers.json 38 parts, every part in exactly one layer: True; mic_1 and mic_2 rows in layer 'board'
+C02 PASS stack: board underside Z 1.450 (main_board row), part tops Z 1.430 (pad 0.02), floor top Z 0.400, pocket bottom Z 0.300
+C03 INFO interior pocket (R5) X +-13.725 Y +-6.450; board outline X +-13.600 Y +-6.300, corner radius 0.8 (placement.csv main_board note)
+C10.mic_1 INFO U5 Knowles SPK0641HT4H-1 body X -12.800..-8.800 Y -6.300..-3.300 Z 0.430..1.430 (centre -10.800, -4.800, 0.930); on the board's under face, port facing -Z at X -11.770 Y -4.800
+C10.mic_2 INFO U6 Knowles SPK0641HT4H-1 body X 8.800..12.800 Y -6.300..-3.300 Z 0.430..1.430 (centre 10.800, -4.800, 0.930); on the board's under face, port facing -Z at X 11.770 Y -4.800
+C11.mic_1 PASS overlap of the body at maximum size with every other part (box test, 35 parts): largest 0.0000 mm3 with main_chip (R1 limit 0.001)
+C11.mic_2 PASS overlap of the body at maximum size with every other part (box test, 35 parts): largest 0.0000 mm3 with main_chip (R1 limit 0.001)
+C12 PASS mic_1 x mic_2 at maximum size: 0.0000 mm3
+C13.mic_1 PASS plan gap to the nearest board part: 0.200 mm to recording_led, next 0.200 to storage (R2 keep-out 0.2)
+C13.mic_2 PASS plan gap to the nearest board part: 1.050 mm to screen_supply_coil, next 2.100 to power_chip (R2 keep-out 0.2)
+C14.mic_1 PASS body at maximum size inside the interior pocket: X -12.850..-8.750 in +-13.725, Y -6.350..-3.250 in +-6.450; least margin 0.100 mm
+C15.mic_1 PASS nominal outline on the board (27.2 x 12.6, corner radius 0.8): X -12.800..-8.800, Y -6.300..-3.300
+C14.mic_2 PASS body at maximum size inside the interior pocket: X 8.750..12.850 in +-13.725, Y -6.350..-3.250 in +-6.450; least margin 0.100 mm
+C15.mic_2 PASS nominal outline on the board (27.2 x 12.6, corner radius 0.8): X 8.800..12.800, Y -6.300..-3.300
+C16.mic_1 PASS gap from lid to pocket bottom: nominal 0.130, tallest part 0.030, shortest part 0.230 mm (must stay above 0; the gasket fills it)
+C17.mic_1 PASS floor under the pocket 0.300 mm (R4 at least 0.3); a part at maximum height is 0.070 mm below the floor top, so the pocket is needed
+C16.mic_2 PASS gap from lid to pocket bottom: nominal 0.130, tallest part 0.030, shortest part 0.230 mm (must stay above 0; the gasket fills it)
+C17.mic_2 PASS floor under the pocket 0.300 mm (R4 at least 0.3); a part at maximum height is 0.070 mm below the floor top, so the pocket is needed
+C18.mic_1 PASS floor pocket X -13.000..-8.600 Y -6.450..-3.100 depth 0.1; metal to the nearest floor slot (thin.py slot X -2.2, 2.6 x 0.6 at Y +-5.9) 5.100 mm (R3 0.4)
+C18.mic_2 PASS floor pocket X 8.600..13.000 Y -6.450..-3.100 depth 0.1; metal to the nearest floor slot (thin.py slot X -2.2, 2.6 x 0.6 at Y +-5.9) 9.500 mm (R3 0.4)
+C19.mic_1 PASS gasket ring OD 1.8 ID 1.0 centred on the port lies on the lid: least margin to the lid edge 0.130 mm
+C19.mic_2 PASS gasket ring OD 1.8 ID 1.0 centred on the port lies on the lid: least margin to the lid edge 0.130 mm
+C20 PASS gasket cavity diameter 1.0 (D1: at least 1.0)
+C21 PASS case hole diameter 1.0 (D2: 1.0 to 1.5)
+C22 PASS hole 1.0 and gasket 1.0 against port 0.25 + 0.05 + 0.1 = 0.40 (D3)
+C23 PASS gasket bore 1.0 equals the hole 1.0 (PUI guide lines 101-103: gasket as close as possible to the external hole)
+C24 INFO channel from port to the room, one straight vertical bore: gasket bore d 1.0 from Z 0.30 to 0.43 (0.13 nominal), hole d 1.0 from Z 0.10 to 0.30 (0.20), membrane seat d 2.0 from Z 0.00 to 0.10: total 0.43 mm
+C25.mic_1 PASS exterior at the port X -11.770 Y -4.800: body underside at Z 0.0, air at Z -0.05, -0.5 and -1.0: True; metal from Z 0.02 to 0.28 before the hole is cut: True
+C26.mic_1 PASS metal at 0.4 mm from the membrane seat edge (seat d 2.0) all round (24 directions, Z 0.02, 0.15, 0.28): True (R3)
+C26w.mic_1 INFO metal web between the membrane seat (Z 0 to 0.1) and the pocket bottom (Z 0.30): 0.20 mm over a ring from d 1.0 to d 2.0; below the 0.30 stack floor of R4 in this ring only: a local departure, no project rule covers it
+C27.mic_1 INFO [ESTIMATE] a finger as a cylinder of the bore (18.95 mm, axis Z -9.875) lies at Z -1.706 under the hole: air gap 1.706 mm; at Y 0 the gap is 0.400 mm
+C25.mic_2 PASS exterior at the port X 11.770 Y -4.800: body underside at Z 0.0, air at Z -0.05, -0.5 and -1.0: True; metal from Z 0.02 to 0.28 before the hole is cut: True
+C26.mic_2 PASS metal at 0.4 mm from the membrane seat edge (seat d 2.0) all round (24 directions, Z 0.02, 0.15, 0.28): True (R3)
+C26w.mic_2 INFO metal web between the membrane seat (Z 0 to 0.1) and the pocket bottom (Z 0.30): 0.20 mm over a ring from d 1.0 to d 2.0; below the 0.30 stack floor of R4 in this ring only: a local departure, no project rule covers it
+C27.mic_2 INFO [ESTIMATE] a finger as a cylinder of the bore (18.95 mm, axis Z -9.875) lies at Z -1.706 under the hole: air gap 1.706 mm; at Y 0 the gap is 0.400 mm
+C28.z0.35 INFO metal outward from the interior pocket at Z 0.35: -Y wall at X -11 0.570 mm, +Y wall at X -11 0.570, hand end at Y -4.8 0.570, fingertip end at Y -4.8 0.570
+C28.z0.84 INFO metal outward from the interior pocket at Z 0.84: -Y wall at X -11 0.870 mm, +Y wall at X -11 0.870, hand end at Y -4.8 0.870, fingertip end at Y -4.8 0.870
+C28.z1.2 INFO metal outward from the interior pocket at Z 1.2: -Y wall at X -11 0.925 mm, +Y wall at X -11 0.925, hand end at Y -4.8 0.925, fingertip end at Y -4.8 0.925
+C30.mic_1 INFO second best (end-wall slit): from the gasket bore edge to the inner end wall 1.455 mm, through the end wall at Z 0.35 0.570 mm, total 2.025 mm; slit height = lid gap 0.130 nominal, 0.030 to 0.230 with the height tolerance
+C30.mic_2 INFO second best (end-wall slit): from the gasket bore edge to the inner end wall 1.455 mm, through the end wall at Z 0.35 0.570 mm, total 2.025 mm; slit height = lid gap 0.130 nominal, 0.030 to 0.230 with the height tolerance
+C29.mic_1.4.0x3.0x1.0_L_along_X INFO at today's centre (-11.0, -5.125): X -13.000..-9.000 Y -6.625..-3.625; past the interior wall by 0.175 mm; below the floor top by 0.000 mm; part overlaps []; nearest board part recording_led at -0.000 mm (keep-out 0.2)
+C29.mic_2.4.0x3.0x1.0_L_along_X INFO at today's centre (11.0, -5.125): X 9.000..13.000 Y -6.625..-3.625; past the interior wall by 0.175 mm; below the floor top by 0.000 mm; part overlaps []; nearest board part screen_supply_coil at 1.250 mm (keep-out 0.2)
+C29.mic_1.4.0x3.0x1.0_L_along_Y INFO at today's centre (-11.0, -5.125): X -12.500..-9.500 Y -7.125..-3.125; past the interior wall by 0.675 mm; below the floor top by 0.000 mm; part overlaps []; nearest board part recording_led at 0.500 mm (keep-out 0.2)
+C29.mic_2.4.0x3.0x1.0_L_along_Y INFO at today's centre (11.0, -5.125): X 9.500..12.500 Y -7.125..-3.125; past the interior wall by 0.675 mm; below the floor top by 0.000 mm; part overlaps []; nearest board part screen_supply_coil at 1.750 mm (keep-out 0.2)
+C29.mic_1.4.0x2.0x1.1_L_along_X INFO at today's centre (-11.0, -5.125): X -13.000..-9.000 Y -6.125..-4.125; past the interior wall by 0.000 mm; below the floor top by 0.070 mm; part overlaps []; nearest board part recording_led at -0.000 mm (keep-out 0.2)
+C29.mic_2.4.0x2.0x1.1_L_along_X INFO at today's centre (11.0, -5.125): X 9.000..13.000 Y -6.125..-4.125; past the interior wall by 0.000 mm; below the floor top by 0.070 mm; part overlaps []; nearest board part screen_supply_coil at 1.250 mm (keep-out 0.2)
+C29.mic_1.4.0x2.0x1.1_L_along_Y INFO at today's centre (-11.0, -5.125): X -12.000..-10.000 Y -7.125..-3.125; past the interior wall by 0.675 mm; below the floor top by 0.070 mm; part overlaps []; nearest board part screen_connector at 0.525 mm (keep-out 0.2)
+C29.mic_2.4.0x2.0x1.1_L_along_Y INFO at today's centre (11.0, -5.125): X 10.000..12.000 Y -7.125..-3.125; past the interior wall by 0.675 mm; below the floor top by 0.070 mm; part overlaps []; nearest board part power_chip at 1.925 mm (keep-out 0.2)
+checks: 0 failed
+RESULT PASS

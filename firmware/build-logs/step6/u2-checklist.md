@@ -1,0 +1,26 @@
+# U2 store: checklist (opened 2026-11-13 05:0x CET; ticked at the end with evidence files in build-logs/step6/)
+
+- [ ] 1. Suites store_fmt, store_layout, store_log, store_index, store_space, store_recovery, store_delete, store_evlog (pure) and store_svc (thin) exist and pass on native_sim
+- [ ] 2. The same suites pass on nrf54lm20bsim/nrf54lm20a/cpuapp
+- [ ] 3. Broken copy hdr_crc_512 fails store_fmt.test_chunk_header_bytes on both targets, only for that reason
+- [ ] 4. Broken copy digest_big_endian fails store_fmt.test_digest on both targets
+- [ ] 5. Broken copy sb_older_wins fails store_log.test_mount_picks_newer_valid_copy on both targets
+- [ ] 6. Broken copy lba_no_wrap fails store_layout.test_chunk_lba_wraps on both targets
+- [ ] 7. Broken copy scan_accepts_gap fails store_recovery.test_stop_on_each_mismatch on both targets
+- [ ] 8. Broken copy sfull_17 fails store_space.test_s30_sfull_edges on both targets
+- [ ] 9. Broken copy delete_frees_middle fails store_delete.test_tail_moves_over_leading_only on both targets
+- [ ] 10. Broken copy delete_without_confirm fails store_delete.test_delete_needs_confirm on both targets
+- [ ] 11. Broken copy two_tries fails store_svc.test_three_tries_then_fault_open_flag_kept on both targets
+- [ ] 12. Broken copy init_before_rail fails store_svc.test_rail_sequence on both targets
+- [ ] 13. Broken copy log_drops_newest fails store_evlog.test_buffer_of_8_drops_oldest on both targets
+- [ ] 14. Last result line of the cited run log is "UNIT PASS tests/store"
+- [ ] 15. store-notes.md maps S2..S29 (each row), C3, C8, C9, C16, C24, T26 to case and log line (or NP with reason)
+- [ ] 16. Rows S25 (none), S30 (none), S1, X.. are not mine; rows that name U2 and are not provable (S6 CMD25, S19 bench) marked NP with reason
+- [ ] 17. K2 answered with file/count evidence
+- [ ] 18. K12 answered (test store_fmt.test_crc_check_value log line)
+- [ ] 19. Pure files make no kernel call (search saved); rst.c reaches hardware only through rhw.h (search saved)
+- [ ] 20. No number typed a second time (search of the sources for the spec numbers saved)
+- [ ] 21. No chip pin by number; no kit/Zephyr text printed (searches saved)
+- [ ] 22. Notes end with questions_for_owner and the RESULT line as last line
+- [ ] 23. Final audit script output saved; final reply saved to file and audited
+- [ ] 24. Clean up: processes started by me ended; listing saved; server folder named

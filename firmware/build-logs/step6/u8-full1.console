@@ -1,0 +1,1467 @@
+# remote.sh run 20261113-073157-u8-full1
+# command: bash tools/unit_run.sh tests/factory
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 07:31:57 CET
+# free on the server's /: 36 GB
+# source firmware copied to /root/ring-os/src-u-factory
+# started on the server as 20261113-073157-u8-full1; server log /root/ring-os/logs/20261113-073157-u8-full1.log
+=== part tests-native_sim start 2026-11-13T06:32:03Z log /ws/out/20261113-073157-u8-full1-unit/tests-native_sim.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-073157-u8-full1-unit/twister-native_sim/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   PASSED (native 0.120s <host/gnu>)
+INFO    - 2/2 native_sim/native         ring_factory.screen                                PASSED (native 0.116s <host/gnu>)
+
+INFO    - 2 test scenarios (2 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 2 of 2 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 26.57 seconds.
+INFO    - 41 of 41 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 2 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-073157-u8-full1-unit/twister-native_sim/twister.json
+INFO    - Writing xunit report /ws/out/20261113-073157-u8-full1-unit/twister-native_sim/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-073157-u8-full1-unit/twister-native_sim/twister_report.xml...
+INFO    - Run completed
+=== part tests-native_sim end 2026-11-13T06:32:32Z exit 0
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp start 2026-11-13T06:32:32Z log /ws/out/20261113-073157-u8-full1-unit/tests-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-073157-u8-full1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             PASSED (native 0.148s <host/gnu>)
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          PASSED (native 0.098s <host/gnu>)
+
+INFO    - 2 test scenarios (2 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 2 of 2 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 50.72 seconds.
+INFO    - 41 of 41 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 2 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-073157-u8-full1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.json
+INFO    - Writing xunit report /ws/out/20261113-073157-u8-full1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-073157-u8-full1-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister_report.xml...
+INFO    - Run completed
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp end 2026-11-13T06:33:23Z exit 0
+=== part broken-factory start 2026-11-13T06:33:23Z log /ws/out/20261113-073157-u8-full1-unit/broken-factory.log
+##### broken copy: flag_ignored
+diff -u -r /ws/firmware/modules/ring_factory/src/rfa_logic.c /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_flag_ignored/src/rfa_logic.c
+--- /ws/firmware/modules/ring_factory/src/rfa_logic.c	2026-11-13 05:52:25.000000000 +0000
++++ /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_flag_ignored/src/rfa_logic.c	2026-11-13 06:33:23.826018578 +0000
+@@ -15,7 +15,7 @@
+ 		return RREC_ST_BAD_ARG;
+ 	}
+ 	/* "With the flag clear, FACTORY returns NOT_ALLOWED" (FW l.1019): before anything else about the request. */
+-	if (!flag) {
++	if (false && !flag) {
+ 		return RREC_ST_NOT_ALLOWED;
+ 	}
+ 	memset(cmd, 0, sizeof(*cmd));
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   FAILED rc=1 (native 0.180s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:39: factory_cmd_test_flag_rules: (fx_do(&plain[i], 1, ft != 0, out, &n, &eff) not equal to NOT_ALLOWED)
+ FAIL - test_flag_rules in 0.021 seconds
+ PASS - test_result_layout in 0.521 seconds
+TESTSUITE factory_cmd failed.
+ PASS - test_centre_reported_never_records in 6.021 seconds
+ PASS - test_directions_reported in 3.121 seconds
+ PASS - test_no_screen_no_mic in 2.044 seconds
+ PASS - test_rms_and_runs in 8.066 seconds
+ PASS - test_type_2_recording in 2.040 seconds
+ PASS - test_reads_and_timing in 1.021 seconds
+ PASS - test_adv_parameters in 10.021 seconds
+ PASS - test_frame_sequence in 6.021 seconds
+ PASS - test_beacon_name in 0.021 seconds
+ PASS - test_beacon_window in 62.741 seconds
+ PASS - test_beacon_window_sample in 62.741 seconds
+ PASS - test_two_recordings_times in 3.045 seconds
+ PASS - test_area_write_read in 0.104 seconds
+ PASS - test_test_recordings_deleted in 3.563 seconds
+ PASS - test_ppm_arithmetic in 0.021 seconds
+SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+SUITE FAIL -  75.00% [factory_cmd]: pass = 3, fail = 1, skip = 0, total = 4 duration = 10.584 seconds
+ - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+ - FAIL - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+ - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+ - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+ - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+ - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+ - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+ - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+ - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+ - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+ - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+ - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+ - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+ - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+ - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+ - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+PROJECT EXECUTION FAILED
+INFO    - 2/2 native_sim/native         ring_factory.screen                                FAILED rc=1 (native 0.147s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:39: factory_cmd_test_flag_rules: (fx_do(&plain[i], 1, ft != 0, out, &n, &eff) not equal to NOT_ALLOWED)
+twister exit code on the broken copy flag_ignored, native_sim: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-flag_ignored-native_sim.log)
+flag_ignored on native_sim: the named case failed, as required:  - FAIL - [factory_cmd.test_flag_rules] duration = 0.021 seconds (failed cases listed: 2)
+flag_ignored on native_sim: cases that failed: factory_cmd.test_flag_rules 
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             FAILED rc=1 (native 0.142s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.060493      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:39: factory_cmd_test_flag_rules: (fx_do(&plain[i], 1, ft != 0, out, &n, &eff) not equal to NOT_ALLOWED)
+d_00: @00:00:10.080593   FAIL - test_flag_rules in 0.021 seconds
+d_00: @00:00:10.600793   PASS - test_result_layout in 0.521 seconds
+d_00: @00:00:10.600793  TESTSUITE factory_cmd failed.
+d_00: @00:00:16.620993   PASS - test_centre_reported_never_records in 6.021 seconds
+d_00: @00:00:19.741393   PASS - test_directions_reported in 3.121 seconds
+d_00: @00:00:21.784493   PASS - test_no_screen_no_mic in 2.044 seconds
+d_00: @00:00:29.849593   PASS - test_rms_and_runs in 8.066 seconds
+d_00: @00:00:31.889593   PASS - test_type_2_recording in 2.040 seconds
+d_00: @00:00:32.909893   PASS - test_reads_and_timing in 1.021 seconds
+d_00: @00:00:42.930093   PASS - test_adv_parameters in 10.021 seconds
+d_00: @00:00:48.950793   PASS - test_frame_sequence in 6.021 seconds
+d_00: @00:00:48.970893   PASS - test_beacon_name in 0.021 seconds
+d_00: @00:01:51.711393   PASS - test_beacon_window in 62.741 seconds
+d_00: @00:02:54.451893   PASS - test_beacon_window_sample in 62.741 seconds
+d_00: @00:02:57.496193   PASS - test_two_recordings_times in 3.045 seconds
+d_00: @00:02:57.599993   PASS - test_area_write_read in 0.104 seconds
+d_00: @00:03:01.162993   PASS - test_test_recordings_deleted in 3.563 seconds
+d_00: @00:03:01.183093   PASS - test_ppm_arithmetic in 0.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+d_00: @00:03:01.183093  SUITE FAIL -  75.00% [factory_cmd]: pass = 3, fail = 1, skip = 0, total = 4 duration = 10.584 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+d_00: @00:03:01.183093   - FAIL - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+d_00: @00:03:01.183093   - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+d_00: @00:03:01.183093   - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+d_00: @00:03:01.183093   - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+d_00: @00:03:01.183093   - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+d_00: @00:03:01.183093   - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+d_00: @00:03:01.183093   - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+d_00: @00:03:01.183093  PROJECT EXECUTION FAILED
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          FAILED rc=1 (native 0.114s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.060493      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:39: factory_cmd_test_flag_rules: (fx_do(&plain[i], 1, ft != 0, out, &n, &eff) not equal to NOT_ALLOWED)
+twister exit code on the broken copy flag_ignored, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-flag_ignored-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+flag_ignored on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:01.183093   - FAIL - [factory_cmd.test_flag_rules] duration = 0.021 seconds (failed cases listed: 2)
+flag_ignored on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed: factory_cmd.test_flag_rules 
+##### broken copy: x11_accepted
+diff -u -r /ws/firmware/modules/ring_factory/src/rfa_logic.c /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_x11_accepted/src/rfa_logic.c
+--- /ws/firmware/modules/ring_factory/src/rfa_logic.c	2026-11-13 05:52:25.000000000 +0000
++++ /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_x11_accepted/src/rfa_logic.c	2026-11-13 06:35:03.884935151 +0000
+@@ -25,6 +25,7 @@
+ 	switch (req[0]) {
+ 	case RREC_FAC_ENTER:
+ 	case RREC_FAC_EXIT:
++	case RREC_FAC_SKEW_REMOVED:
+ 	case RREC_FAC_SCREEN:
+ 	case RREC_FAC_MOTOR:
+ 	case RREC_FAC_SIGN:
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   FAILED rc=1 (native 0.303s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:114: factory_cmd_test_0x11_bad_arg: (fx_do(x11, sizeof(x11), true, out, &n, &eff) not equal to BAD_ARG)
+ FAIL - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+ PASS - test_result_layout in 0.521 seconds
+TESTSUITE factory_cmd failed.
+ PASS - test_centre_reported_never_records in 6.021 seconds
+ PASS - test_directions_reported in 3.121 seconds
+ PASS - test_no_screen_no_mic in 2.044 seconds
+ PASS - test_rms_and_runs in 8.066 seconds
+ PASS - test_type_2_recording in 2.040 seconds
+ PASS - test_reads_and_timing in 1.021 seconds
+ PASS - test_adv_parameters in 10.021 seconds
+ PASS - test_frame_sequence in 6.021 seconds
+ PASS - test_beacon_name in 0.021 seconds
+ PASS - test_beacon_window in 62.741 seconds
+ PASS - test_beacon_window_sample in 62.741 seconds
+ PASS - test_two_recordings_times in 3.045 seconds
+ PASS - test_area_write_read in 0.104 seconds
+ PASS - test_test_recordings_deleted in 3.563 seconds
+ PASS - test_ppm_arithmetic in 0.021 seconds
+SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+SUITE FAIL -  75.00% [factory_cmd]: pass = 3, fail = 1, skip = 0, total = 4 duration = 10.584 seconds
+ - FAIL - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+ - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+ - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+ - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+ - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+ - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+ - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+ - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+ - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+ - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+ - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+ - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+ - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+ - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+ - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+ - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+PROJECT EXECUTION FAILED
+INFO    - 2/2 native_sim/native         ring_factory.screen                                FAILED rc=1 (native 0.120s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:114: factory_cmd_test_0x11_bad_arg: (fx_do(x11, sizeof(x11), true, out, &n, &eff) not equal to BAD_ARG)
+ FAIL - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+twister exit code on the broken copy x11_accepted, native_sim: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-x11_accepted-native_sim.log)
+x11_accepted on native_sim: the named case failed, as required:  - FAIL - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds (failed cases listed: 2)
+x11_accepted on native_sim: cases that failed: factory_cmd.test_0x11_bad_arg 
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             FAILED rc=1 (native 0.178s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.020193      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:114: factory_cmd_test_0x11_bad_arg: (fx_do(x11, sizeof(x11), true, out, &n, &eff) not equal to BAD_ARG)
+d_00: @00:00:00.040293   FAIL - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+d_00: @00:00:10.600793   PASS - test_result_layout in 0.521 seconds
+d_00: @00:00:10.600793  TESTSUITE factory_cmd failed.
+d_00: @00:00:16.620993   PASS - test_centre_reported_never_records in 6.021 seconds
+d_00: @00:00:19.741393   PASS - test_directions_reported in 3.121 seconds
+d_00: @00:00:21.784493   PASS - test_no_screen_no_mic in 2.044 seconds
+d_00: @00:00:29.849593   PASS - test_rms_and_runs in 8.066 seconds
+d_00: @00:00:31.889593   PASS - test_type_2_recording in 2.040 seconds
+d_00: @00:00:32.909893   PASS - test_reads_and_timing in 1.021 seconds
+d_00: @00:00:42.930093   PASS - test_adv_parameters in 10.021 seconds
+d_00: @00:00:48.950793   PASS - test_frame_sequence in 6.021 seconds
+d_00: @00:00:48.970893   PASS - test_beacon_name in 0.021 seconds
+d_00: @00:01:51.711393   PASS - test_beacon_window in 62.741 seconds
+d_00: @00:02:54.451893   PASS - test_beacon_window_sample in 62.741 seconds
+d_00: @00:02:57.496193   PASS - test_two_recordings_times in 3.045 seconds
+d_00: @00:02:57.599993   PASS - test_area_write_read in 0.104 seconds
+d_00: @00:03:01.162993   PASS - test_test_recordings_deleted in 3.563 seconds
+d_00: @00:03:01.183093   PASS - test_ppm_arithmetic in 0.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+d_00: @00:03:01.183093  SUITE FAIL -  75.00% [factory_cmd]: pass = 3, fail = 1, skip = 0, total = 4 duration = 10.584 seconds
+d_00: @00:03:01.183093   - FAIL - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+d_00: @00:03:01.183093   - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+d_00: @00:03:01.183093   - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+d_00: @00:03:01.183093   - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+d_00: @00:03:01.183093   - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+d_00: @00:03:01.183093   - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+d_00: @00:03:01.183093   - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+d_00: @00:03:01.183093  PROJECT EXECUTION FAILED
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          FAILED rc=1 (native 0.120s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.020193      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:114: factory_cmd_test_0x11_bad_arg: (fx_do(x11, sizeof(x11), true, out, &n, &eff) not equal to BAD_ARG)
+d_00: @00:00:00.040293   FAIL - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+twister exit code on the broken copy x11_accepted, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-x11_accepted-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+x11_accepted on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:01.183093   - FAIL - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds (failed cases listed: 2)
+x11_accepted on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed: factory_cmd.test_0x11_bad_arg 
+##### broken copy: run_999
+diff -u -r /ws/firmware/modules/ring_factory/src/rfa_logic.c /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_run_999/src/rfa_logic.c
+--- /ws/firmware/modules/ring_factory/src/rfa_logic.c	2026-11-13 05:52:25.000000000 +0000
++++ /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_run_999/src/rfa_logic.c	2026-11-13 06:36:41.720886576 +0000
+@@ -269,7 +269,7 @@
+ 
+ bool rfa_run_is_stuck(uint32_t longest_run)
+ {
+-	return longest_run >= RREC_FAC_MIC_STUCK_RUN;
++	return longest_run >= 999u;
+ }
+ 
+ /* ------------------------------------------------------------------ crystal, charger, motor, name */
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   FAILED rc=1 (native 0.269s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+ PASS - test_result_layout in 0.521 seconds
+ PASS - test_centre_reported_never_records in 6.021 seconds
+ PASS - test_directions_reported in 3.121 seconds
+ PASS - test_no_screen_no_mic in 2.044 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_mic.c:26: pure_checks: (rfa_run_is_stuck(r.max) is true)
+ FAIL - test_rms_and_runs in 0.021 seconds
+ PASS - test_type_2_recording in 2.040 seconds
+TESTSUITE factory_mic failed.
+ PASS - test_reads_and_timing in 1.021 seconds
+ PASS - test_adv_parameters in 10.021 seconds
+ PASS - test_frame_sequence in 6.021 seconds
+ PASS - test_beacon_name in 0.021 seconds
+ PASS - test_beacon_window in 62.741 seconds
+ PASS - test_beacon_window_sample in 62.741 seconds
+ PASS - test_two_recordings_times in 3.045 seconds
+ PASS - test_area_write_read in 0.104 seconds
+ PASS - test_test_recordings_deleted in 3.563 seconds
+ PASS - test_ppm_arithmetic in 0.021 seconds
+SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+ - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+ - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+ - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+ - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+SUITE FAIL -  66.67% [factory_mic]: pass = 2, fail = 1, skip = 0, total = 3 duration = 4.105 seconds
+ - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+ - FAIL - [factory_mic.test_rms_and_runs] duration = 0.021 seconds
+ - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+ - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+ - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+ - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+ - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+ - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+ - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+ - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+ - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+ - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+PROJECT EXECUTION FAILED
+INFO    - 2/2 native_sim/native         ring_factory.screen                                FAILED rc=1 (native 0.124s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+twister exit code on the broken copy run_999, native_sim: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-run_999-native_sim.log)
+run_999 on native_sim: the named case failed, as required:  - FAIL - [factory_mic.test_rms_and_runs] duration = 0.021 seconds (failed cases listed: 2)
+run_999 on native_sim: cases that failed: factory_mic.test_rms_and_runs 
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             FAILED rc=1 (native 0.108s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+d_00: @00:00:10.600793   PASS - test_result_layout in 0.521 seconds
+d_00: @00:00:16.620993   PASS - test_centre_reported_never_records in 6.021 seconds
+d_00: @00:00:19.741393   PASS - test_directions_reported in 3.121 seconds
+d_00: @00:00:21.784493   PASS - test_no_screen_no_mic in 2.044 seconds
+d_00: @00:00:21.784493      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_mic.c:26: pure_checks: (rfa_run_is_stuck(r.max) is true)
+d_00: @00:00:21.804593   FAIL - test_rms_and_runs in 0.021 seconds
+d_00: @00:00:23.844593   PASS - test_type_2_recording in 2.040 seconds
+d_00: @00:00:23.844593  TESTSUITE factory_mic failed.
+d_00: @00:00:24.864893   PASS - test_reads_and_timing in 1.021 seconds
+d_00: @00:00:34.885093   PASS - test_adv_parameters in 10.021 seconds
+d_00: @00:00:40.905793   PASS - test_frame_sequence in 6.021 seconds
+d_00: @00:00:40.925893   PASS - test_beacon_name in 0.021 seconds
+d_00: @00:01:43.666393   PASS - test_beacon_window in 62.741 seconds
+d_00: @00:02:46.406893   PASS - test_beacon_window_sample in 62.741 seconds
+d_00: @00:02:49.451193   PASS - test_two_recordings_times in 3.045 seconds
+d_00: @00:02:49.554993   PASS - test_area_write_read in 0.104 seconds
+d_00: @00:02:53.117993   PASS - test_test_recordings_deleted in 3.563 seconds
+d_00: @00:02:53.138093   PASS - test_ppm_arithmetic in 0.021 seconds
+d_00: @00:02:53.138093  SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:02:53.138093   - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+d_00: @00:02:53.138093  SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+d_00: @00:02:53.138093   - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+d_00: @00:02:53.138093   - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+d_00: @00:02:53.138093   - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+d_00: @00:02:53.138093   - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+d_00: @00:02:53.138093  SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+d_00: @00:02:53.138093   - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+d_00: @00:02:53.138093   - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+d_00: @00:02:53.138093  SUITE FAIL -  66.67% [factory_mic]: pass = 2, fail = 1, skip = 0, total = 3 duration = 4.105 seconds
+d_00: @00:02:53.138093   - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+d_00: @00:02:53.138093   - FAIL - [factory_mic.test_rms_and_runs] duration = 0.021 seconds
+d_00: @00:02:53.138093   - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+d_00: @00:02:53.138093  SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+d_00: @00:02:53.138093   - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+d_00: @00:02:53.138093  SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+d_00: @00:02:53.138093   - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+d_00: @00:02:53.138093  SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+d_00: @00:02:53.138093   - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:02:53.138093  SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+d_00: @00:02:53.138093   - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+d_00: @00:02:53.138093   - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+d_00: @00:02:53.138093   - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+d_00: @00:02:53.138093  SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+d_00: @00:02:53.138093   - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+d_00: @00:02:53.138093  SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+d_00: @00:02:53.138093   - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+d_00: @00:02:53.138093   - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+d_00: @00:02:53.138093  SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:02:53.138093   - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+d_00: @00:02:53.138093  PROJECT EXECUTION FAILED
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          FAILED rc=1 (native 0.071s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+twister exit code on the broken copy run_999, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-run_999-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+run_999 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:02:53.138093   - FAIL - [factory_mic.test_rms_and_runs] duration = 0.021 seconds (failed cases listed: 2)
+run_999 on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed: factory_mic.test_rms_and_runs 
+##### broken copy: mic_without_sign
+diff -u -r /ws/firmware/modules/ring_factory/src/rfa.c /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_mic_without_sign/src/rfa.c
+--- /ws/firmware/modules/ring_factory/src/rfa.c	2026-11-13 06:12:24.000000000 +0000
++++ /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_mic_without_sign/src/rfa.c	2026-11-13 06:38:20.775802989 +0000
+@@ -214,7 +214,7 @@
+ 	if (ops.test_recording == NULL) {
+ 		return rfa_put_mic(out, RREC_FAC_RESULT_FAIL, RFA_DBFS_SILENT, RFA_DBFS_SILENT, 0, 0);
+ 	}
+-	/* mic path: the test recording only (rec_mics_on after the sign, R18) */
++	(void)rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rfa_mic");
+ 	rc = ops.test_recording(RREC_FAC_MIC_REC_MS, mic_block, &on, &off);
+ 	if (rc != 0 || mic_frames == 0) {
+ 		/* no sign, no test (-ENODEV), or the recording failed: nothing was measured */
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   FAILED rc=1 (native 0.299s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+ PASS - test_result_layout in 0.521 seconds
+ PASS - test_centre_reported_never_records in 6.021 seconds
+ PASS - test_directions_reported in 3.121 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_mic.c:195: factory_mic_test_no_screen_no_mic: (fx_mic_on_events() not equal to 0)
+ FAIL - test_no_screen_no_mic in 0.023 seconds
+ PASS - test_rms_and_runs in 8.066 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_mic.c:160: factory_mic_test_type_2_recording: fx_mic_on_events() not equal to 1
+ FAIL - test_type_2_recording in 2.040 seconds
+TESTSUITE factory_mic failed.
+ PASS - test_reads_and_timing in 1.021 seconds
+ PASS - test_adv_parameters in 10.021 seconds
+ PASS - test_frame_sequence in 6.021 seconds
+ PASS - test_beacon_name in 0.021 seconds
+ PASS - test_beacon_window in 62.741 seconds
+ PASS - test_beacon_window_sample in 62.741 seconds
+ PASS - test_two_recordings_times in 3.045 seconds
+ PASS - test_area_write_read in 0.104 seconds
+ PASS - test_test_recordings_deleted in 3.563 seconds
+ PASS - test_ppm_arithmetic in 0.021 seconds
+SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+ - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+ - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+ - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+ - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+SUITE FAIL -  33.33% [factory_mic]: pass = 1, fail = 2, skip = 0, total = 3 duration = 10.129 seconds
+ - FAIL - [factory_mic.test_no_screen_no_mic] duration = 0.023 seconds
+ - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+ - FAIL - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+ - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+ - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+ - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+ - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+ - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+ - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+ - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+ - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+ - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+PROJECT EXECUTION FAILED
+INFO    - 2/2 native_sim/native         ring_factory.screen                                FAILED rc=1 (native 0.129s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+twister exit code on the broken copy mic_without_sign, native_sim: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-mic_without_sign-native_sim.log)
+mic_without_sign on native_sim: the named case failed, as required:  - FAIL - [factory_mic.test_no_screen_no_mic] duration = 0.023 seconds (failed cases listed: 4)
+mic_without_sign on native_sim: cases that failed: factory_mic.test_no_screen_no_mic factory_mic.test_type_2_recording 
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             FAILED rc=1 (native 0.174s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+d_00: @00:00:10.600793   PASS - test_result_layout in 0.521 seconds
+d_00: @00:00:16.620993   PASS - test_centre_reported_never_records in 6.021 seconds
+d_00: @00:00:19.741393   PASS - test_directions_reported in 3.121 seconds
+d_00: @00:00:19.743493      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_mic.c:195: factory_mic_test_no_screen_no_mic: (fx_mic_on_events() not equal to 0)
+d_00: @00:00:19.763593   FAIL - test_no_screen_no_mic in 0.023 seconds
+d_00: @00:00:27.828693   PASS - test_rms_and_runs in 8.066 seconds
+d_00: @00:00:29.848593      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_mic.c:160: factory_mic_test_type_2_recording: fx_mic_on_events() not equal to 1
+d_00: @00:00:29.868693   FAIL - test_type_2_recording in 2.040 seconds
+d_00: @00:00:29.868693  TESTSUITE factory_mic failed.
+d_00: @00:00:30.888993   PASS - test_reads_and_timing in 1.021 seconds
+d_00: @00:00:40.909193   PASS - test_adv_parameters in 10.021 seconds
+d_00: @00:00:46.929893   PASS - test_frame_sequence in 6.021 seconds
+d_00: @00:00:46.949993   PASS - test_beacon_name in 0.021 seconds
+d_00: @00:01:49.690493   PASS - test_beacon_window in 62.741 seconds
+d_00: @00:02:52.430993   PASS - test_beacon_window_sample in 62.741 seconds
+d_00: @00:02:55.475293   PASS - test_two_recordings_times in 3.045 seconds
+d_00: @00:02:55.579093   PASS - test_area_write_read in 0.104 seconds
+d_00: @00:02:59.142093   PASS - test_test_recordings_deleted in 3.563 seconds
+d_00: @00:02:59.162193   PASS - test_ppm_arithmetic in 0.021 seconds
+d_00: @00:02:59.162193  SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:02:59.162193   - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+d_00: @00:02:59.162193  SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+d_00: @00:02:59.162193   - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+d_00: @00:02:59.162193   - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+d_00: @00:02:59.162193   - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+d_00: @00:02:59.162193   - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+d_00: @00:02:59.162193  SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+d_00: @00:02:59.162193   - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+d_00: @00:02:59.162193   - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+d_00: @00:02:59.162193  SUITE FAIL -  33.33% [factory_mic]: pass = 1, fail = 2, skip = 0, total = 3 duration = 10.129 seconds
+d_00: @00:02:59.162193   - FAIL - [factory_mic.test_no_screen_no_mic] duration = 0.023 seconds
+d_00: @00:02:59.162193   - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+d_00: @00:02:59.162193   - FAIL - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+d_00: @00:02:59.162193  SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+d_00: @00:02:59.162193   - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+d_00: @00:02:59.162193  SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+d_00: @00:02:59.162193   - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+d_00: @00:02:59.162193  SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+d_00: @00:02:59.162193   - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:02:59.162193  SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+d_00: @00:02:59.162193   - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+d_00: @00:02:59.162193   - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+d_00: @00:02:59.162193   - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+d_00: @00:02:59.162193  SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+d_00: @00:02:59.162193   - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+d_00: @00:02:59.162193  SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+d_00: @00:02:59.162193   - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+d_00: @00:02:59.162193   - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+d_00: @00:02:59.162193  SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:02:59.162193   - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+d_00: @00:02:59.162193  PROJECT EXECUTION FAILED
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          FAILED rc=1 (native 0.132s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+twister exit code on the broken copy mic_without_sign, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-mic_without_sign-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+mic_without_sign on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:02:59.162193   - FAIL - [factory_mic.test_no_screen_no_mic] duration = 0.023 seconds (failed cases listed: 4)
+mic_without_sign on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed: factory_mic.test_no_screen_no_mic factory_mic.test_type_2_recording 
+##### broken copy: centre_records
+diff -u -r /ws/firmware/modules/ring_factory/src/rfa.c /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_centre_records/src/rfa.c
+--- /ws/firmware/modules/ring_factory/src/rfa.c	2026-11-13 06:12:24.000000000 +0000
++++ /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_centre_records/src/rfa.c	2026-11-13 06:39:58.176746506 +0000
+@@ -156,7 +156,13 @@
+ 		}
+ 	}
+ 	k_spin_unlock(&in_lock, k);
+-	/* the events end here: they reach the jig only, never a recording */
++	{
++		int64_t a = 0, b = 0;
++
++		if (ev == RFA_IN_LONG && ops.test_recording != NULL) {
++			(void)ops.test_recording(RREC_FAC_SIGN_REC_MS, NULL, &a, &b);
++		}
++	}
+ }
+ 
+ static size_t run_events(const struct rfa_cmd *c, uint8_t *out)
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   FAILED rc=1 (native 0.282s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+ PASS - test_result_layout in 0.521 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_input.c:317: factory_input_test_centre_reported_never_records: (fx_rec_calls not equal to 0)
+ FAIL - test_centre_reported_never_records in 6.021 seconds
+ PASS - test_directions_reported in 3.121 seconds
+TESTSUITE factory_input failed.
+ PASS - test_no_screen_no_mic in 2.044 seconds
+ PASS - test_rms_and_runs in 8.066 seconds
+ PASS - test_type_2_recording in 2.040 seconds
+ PASS - test_reads_and_timing in 1.021 seconds
+ PASS - test_adv_parameters in 10.021 seconds
+ PASS - test_frame_sequence in 6.021 seconds
+ PASS - test_beacon_name in 0.021 seconds
+ PASS - test_beacon_window in 62.741 seconds
+ PASS - test_beacon_window_sample in 62.741 seconds
+ PASS - test_two_recordings_times in 3.045 seconds
+ PASS - test_area_write_read in 0.104 seconds
+ PASS - test_test_recordings_deleted in 3.563 seconds
+ PASS - test_ppm_arithmetic in 0.021 seconds
+SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+ - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+ - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+SUITE FAIL -  50.00% [factory_input]: pass = 1, fail = 1, skip = 0, total = 2 duration = 9.142 seconds
+ - FAIL - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+ - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+ - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+ - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+ - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+ - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+ - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+ - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+ - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+ - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+ - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+ - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+ - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+ - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+PROJECT EXECUTION FAILED
+INFO    - 2/2 native_sim/native         ring_factory.screen                                FAILED rc=1 (native 0.146s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+twister exit code on the broken copy centre_records, native_sim: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-centre_records-native_sim.log)
+centre_records on native_sim: the named case failed, as required:  - FAIL - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds (failed cases listed: 2)
+centre_records on native_sim: cases that failed: factory_input.test_centre_reported_never_records 
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             FAILED rc=1 (native 0.219s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+d_00: @00:00:10.600793   PASS - test_result_layout in 0.521 seconds
+d_00: @00:00:16.600893      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_input.c:317: factory_input_test_centre_reported_never_records: (fx_rec_calls not equal to 0)
+d_00: @00:00:16.620993   FAIL - test_centre_reported_never_records in 6.021 seconds
+d_00: @00:00:19.741393   PASS - test_directions_reported in 3.121 seconds
+d_00: @00:00:19.741393  TESTSUITE factory_input failed.
+d_00: @00:00:21.784493   PASS - test_no_screen_no_mic in 2.044 seconds
+d_00: @00:00:29.849593   PASS - test_rms_and_runs in 8.066 seconds
+d_00: @00:00:31.889593   PASS - test_type_2_recording in 2.040 seconds
+d_00: @00:00:32.909893   PASS - test_reads_and_timing in 1.021 seconds
+d_00: @00:00:42.930093   PASS - test_adv_parameters in 10.021 seconds
+d_00: @00:00:48.950793   PASS - test_frame_sequence in 6.021 seconds
+d_00: @00:00:48.970893   PASS - test_beacon_name in 0.021 seconds
+d_00: @00:01:51.711393   PASS - test_beacon_window in 62.741 seconds
+d_00: @00:02:54.451893   PASS - test_beacon_window_sample in 62.741 seconds
+d_00: @00:02:57.496193   PASS - test_two_recordings_times in 3.045 seconds
+d_00: @00:02:57.599993   PASS - test_area_write_read in 0.104 seconds
+d_00: @00:03:01.162993   PASS - test_test_recordings_deleted in 3.563 seconds
+d_00: @00:03:01.183093   PASS - test_ppm_arithmetic in 0.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+d_00: @00:03:01.183093  SUITE FAIL -  50.00% [factory_input]: pass = 1, fail = 1, skip = 0, total = 2 duration = 9.142 seconds
+d_00: @00:03:01.183093   - FAIL - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+d_00: @00:03:01.183093   - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+d_00: @00:03:01.183093   - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+d_00: @00:03:01.183093   - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+d_00: @00:03:01.183093   - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+d_00: @00:03:01.183093   - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+d_00: @00:03:01.183093  PROJECT EXECUTION FAILED
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          FAILED rc=1 (native 0.128s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+twister exit code on the broken copy centre_records, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-centre_records-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+centre_records on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:01.183093   - FAIL - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds (failed cases listed: 2)
+centre_records on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed: factory_input.test_centre_reported_never_records 
+##### broken copy: vbat_read_at_0
+diff -u -r /ws/firmware/modules/ring_factory/src/rfa_logic.c /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_vbat_read_at_0/src/rfa_logic.c
+--- /ws/firmware/modules/ring_factory/src/rfa_logic.c	2026-11-13 05:52:25.000000000 +0000
++++ /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_vbat_read_at_0/src/rfa_logic.c	2026-11-13 06:41:35.997674827 +0000
+@@ -305,7 +305,7 @@
+ 
+ uint32_t rfa_motor_read_delay_ms(void)
+ {
+-	return RREC_FAC_MOTOR_READ_MS;
++	return 0u;
+ }
+ 
+ int16_t rfa_motor_dip_mv(uint16_t before_mv, uint16_t during_mv)
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   FAILED rc=1 (native 0.160s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:230: factory_cmd_test_result_layout: o not equal to mot
+ FAIL - test_result_layout in 0.521 seconds
+TESTSUITE factory_cmd failed.
+ PASS - test_centre_reported_never_records in 6.021 seconds
+ PASS - test_directions_reported in 3.121 seconds
+ PASS - test_no_screen_no_mic in 2.044 seconds
+ PASS - test_rms_and_runs in 8.066 seconds
+ PASS - test_type_2_recording in 2.040 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_motor.c:34: factory_motor_test_reads_and_timing: (hi < s2 && s2 < lo is false)
+ FAIL - test_reads_and_timing in 0.521 seconds
+TESTSUITE factory_motor failed.
+ PASS - test_adv_parameters in 10.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_screen.c:202: factory_screen_test_frame_sequence: (fx_frame_ms[i] - fx_frame_ms[i - 1] not equal to 1000)
+ FAIL - test_frame_sequence in 6.021 seconds
+TESTSUITE factory_screen failed.
+ PASS - test_beacon_name in 0.021 seconds
+ PASS - test_beacon_window in 62.741 seconds
+ PASS - test_beacon_window_sample in 62.741 seconds
+ PASS - test_two_recordings_times in 3.044 seconds
+ PASS - test_area_write_read in 0.104 seconds
+ PASS - test_test_recordings_deleted in 3.563 seconds
+ PASS - test_ppm_arithmetic in 0.021 seconds
+SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+SUITE FAIL -  75.00% [factory_cmd]: pass = 3, fail = 1, skip = 0, total = 4 duration = 10.584 seconds
+ - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+ - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+ - FAIL - [factory_cmd.test_result_layout] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+ - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+ - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+ - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+ - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+ - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+SUITE FAIL -   0.00% [factory_motor]: pass = 0, fail = 1, skip = 0, total = 1 duration = 0.521 seconds
+ - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+ - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+SUITE FAIL -   0.00% [factory_screen]: pass = 0, fail = 1, skip = 0, total = 1 duration = 6.021 seconds
+ - FAIL - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+ - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+ - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+ - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.044 seconds
+ - PASS - [factory_sign.test_two_recordings_times] duration = 3.044 seconds
+SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+ - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+ - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+PROJECT EXECUTION FAILED
+INFO    - 2/2 native_sim/native         ring_factory.screen                                FAILED rc=1 (native 0.120s <host/gnu>)
+twister exit code on the broken copy vbat_read_at_0, native_sim: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-vbat_read_at_0-native_sim.log)
+vbat_read_at_0 on native_sim: the named case failed, as required:  - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds (failed cases listed: 6)
+vbat_read_at_0 on native_sim: cases that failed: factory_cmd.test_result_layout factory_motor.test_reads_and_timing factory_screen.test_frame_sequence 
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             FAILED rc=1 (native 0.091s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+d_00: @00:00:10.580693      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:230: factory_cmd_test_result_layout: o not equal to mot
+d_00: @00:00:10.600793   FAIL - test_result_layout in 0.521 seconds
+d_00: @00:00:10.600793  TESTSUITE factory_cmd failed.
+d_00: @00:00:16.620993   PASS - test_centre_reported_never_records in 6.021 seconds
+d_00: @00:00:19.741393   PASS - test_directions_reported in 3.121 seconds
+d_00: @00:00:21.784493   PASS - test_no_screen_no_mic in 2.044 seconds
+d_00: @00:00:29.849593   PASS - test_rms_and_runs in 8.066 seconds
+d_00: @00:00:31.889593   PASS - test_type_2_recording in 2.040 seconds
+d_00: @00:00:32.389693      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_motor.c:34: factory_motor_test_reads_and_timing: (hi < s2 && s2 < lo is false)
+d_00: @00:00:32.409793   FAIL - test_reads_and_timing in 0.521 seconds
+d_00: @00:00:32.409793  TESTSUITE factory_motor failed.
+d_00: @00:00:42.429993   PASS - test_adv_parameters in 10.021 seconds
+d_00: @00:00:48.430593      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_screen.c:202: factory_screen_test_frame_sequence: (fx_frame_ms[i] - fx_frame_ms[i - 1] not equal to 1000)
+d_00: @00:00:48.450693   FAIL - test_frame_sequence in 6.021 seconds
+d_00: @00:00:48.450693  TESTSUITE factory_screen failed.
+d_00: @00:00:48.470793   PASS - test_beacon_name in 0.021 seconds
+d_00: @00:01:51.211293   PASS - test_beacon_window in 62.741 seconds
+d_00: @00:02:53.951793   PASS - test_beacon_window_sample in 62.741 seconds
+d_00: @00:02:56.995093   PASS - test_two_recordings_times in 3.044 seconds
+d_00: @00:02:57.098893   PASS - test_area_write_read in 0.104 seconds
+d_00: @00:03:00.661893   PASS - test_test_recordings_deleted in 3.563 seconds
+d_00: @00:03:00.681993   PASS - test_ppm_arithmetic in 0.021 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+d_00: @00:03:00.681993  SUITE FAIL -  75.00% [factory_cmd]: pass = 3, fail = 1, skip = 0, total = 4 duration = 10.584 seconds
+d_00: @00:03:00.681993   - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+d_00: @00:03:00.681993   - FAIL - [factory_cmd.test_result_layout] duration = 0.521 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+d_00: @00:03:00.681993   - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+d_00: @00:03:00.681993   - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+d_00: @00:03:00.681993   - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+d_00: @00:03:00.681993   - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+d_00: @00:03:00.681993  SUITE FAIL -   0.00% [factory_motor]: pass = 0, fail = 1, skip = 0, total = 1 duration = 0.521 seconds
+d_00: @00:03:00.681993   - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+d_00: @00:03:00.681993  SUITE FAIL -   0.00% [factory_screen]: pass = 0, fail = 1, skip = 0, total = 1 duration = 6.021 seconds
+d_00: @00:03:00.681993   - FAIL - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+d_00: @00:03:00.681993   - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+d_00: @00:03:00.681993   - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.044 seconds
+d_00: @00:03:00.681993   - PASS - [factory_sign.test_two_recordings_times] duration = 3.044 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+d_00: @00:03:00.681993   - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+d_00: @00:03:00.681993   - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+d_00: @00:03:00.681993  PROJECT EXECUTION FAILED
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          FAILED rc=1 (native 0.078s <host/gnu>)
+twister exit code on the broken copy vbat_read_at_0, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-vbat_read_at_0-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+vbat_read_at_0 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:00.681993   - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds (failed cases listed: 6)
+vbat_read_at_0 on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed: factory_cmd.test_result_layout factory_motor.test_reads_and_timing factory_screen.test_frame_sequence 
+##### broken copy: store_lba_4097
+diff -u -r /ws/firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_rhw_store_lba_4097/include/ring_rhw/rrec_spec.h
+--- /ws/firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h	2026-11-13 03:35:44.000000000 +0000
++++ /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_rhw_store_lba_4097/include/ring_rhw/rrec_spec.h	2026-11-13 06:42:48.801129517 +0000
+@@ -59,7 +59,7 @@
+ #define RREC_LOG_RING_RECORDS         2046u       /* FW l.525: ring of 2,046 records, 1 per sector */
+ #define RREC_LBA_RESERVED1_FIRST      2048u       /* FW l.526 */
+ #define RREC_LBA_RESERVED1_LAST       8191u       /* FW l.526 */
+-#define RREC_LBA_FACTORY_FIRST        4096u       /* FW l.526, l.1030: T-STORE writes 65 sectors at LBA 4,096 */
++#define RREC_LBA_FACTORY_FIRST        4097u       /* FW l.526, l.1030: T-STORE writes 65 sectors at LBA 4,096 */
+ #define RREC_LBA_FACTORY_LAST         4160u       /* FW l.526 */
+ #define RREC_FACTORY_SECTORS          65u         /* FW l.1030 */
+ #define RREC_LBA_INDEX_FIRST          8192u       /* FW l.527 */
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   FAILED rc=1 (native 0.121s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+ PASS - test_result_layout in 0.521 seconds
+ PASS - test_centre_reported_never_records in 6.021 seconds
+ PASS - test_directions_reported in 3.121 seconds
+ PASS - test_no_screen_no_mic in 2.044 seconds
+ PASS - test_rms_and_runs in 8.066 seconds
+ PASS - test_type_2_recording in 2.040 seconds
+ PASS - test_reads_and_timing in 1.021 seconds
+ PASS - test_adv_parameters in 10.021 seconds
+ PASS - test_frame_sequence in 6.021 seconds
+ PASS - test_beacon_name in 0.021 seconds
+ PASS - test_beacon_window in 62.741 seconds
+ PASS - test_beacon_window_sample in 62.741 seconds
+ PASS - test_two_recordings_times in 3.045 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_store.c:35: factory_store_test_area_write_read: (e.a0 not equal to FAC_LBA)
+ FAIL - test_area_write_read in 0.062 seconds
+ PASS - test_test_recordings_deleted in 3.563 seconds
+TESTSUITE factory_store failed.
+ PASS - test_ppm_arithmetic in 0.021 seconds
+SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+ - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+ - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+ - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+ - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+ - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+ - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+ - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+ - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+ - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+ - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+ - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+ - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+ - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+ - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+SUITE FAIL -  50.00% [factory_store]: pass = 1, fail = 1, skip = 0, total = 2 duration = 3.625 seconds
+ - FAIL - [factory_store.test_area_write_read] duration = 0.062 seconds
+ - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+PROJECT EXECUTION FAILED
+INFO    - 2/2 native_sim/native         ring_factory.screen                                FAILED rc=1 (native 0.106s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+twister exit code on the broken copy store_lba_4097, native_sim: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-store_lba_4097-native_sim.log)
+store_lba_4097 on native_sim: the named case failed, as required:  - FAIL - [factory_store.test_area_write_read] duration = 0.062 seconds (failed cases listed: 2)
+store_lba_4097 on native_sim: cases that failed: factory_store.test_area_write_read 
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             FAILED rc=1 (native 0.102s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+d_00: @00:00:10.600793   PASS - test_result_layout in 0.521 seconds
+d_00: @00:00:16.620993   PASS - test_centre_reported_never_records in 6.021 seconds
+d_00: @00:00:19.741393   PASS - test_directions_reported in 3.121 seconds
+d_00: @00:00:21.784493   PASS - test_no_screen_no_mic in 2.044 seconds
+d_00: @00:00:29.849593   PASS - test_rms_and_runs in 8.066 seconds
+d_00: @00:00:31.889593   PASS - test_type_2_recording in 2.040 seconds
+d_00: @00:00:32.909893   PASS - test_reads_and_timing in 1.021 seconds
+d_00: @00:00:42.930093   PASS - test_adv_parameters in 10.021 seconds
+d_00: @00:00:48.950793   PASS - test_frame_sequence in 6.021 seconds
+d_00: @00:00:48.970893   PASS - test_beacon_name in 0.021 seconds
+d_00: @00:01:51.711393   PASS - test_beacon_window in 62.741 seconds
+d_00: @00:02:54.451893   PASS - test_beacon_window_sample in 62.741 seconds
+d_00: @00:02:57.496193   PASS - test_two_recordings_times in 3.045 seconds
+d_00: @00:02:57.537493      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_store.c:35: factory_store_test_area_write_read: (e.a0 not equal to FAC_LBA)
+d_00: @00:02:57.557593   FAIL - test_area_write_read in 0.062 seconds
+d_00: @00:03:01.120593   PASS - test_test_recordings_deleted in 3.563 seconds
+d_00: @00:03:01.120593  TESTSUITE factory_store failed.
+d_00: @00:03:01.140693   PASS - test_ppm_arithmetic in 0.021 seconds
+d_00: @00:03:01.140693  SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.140693   - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+d_00: @00:03:01.140693  SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+d_00: @00:03:01.140693   - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+d_00: @00:03:01.140693   - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+d_00: @00:03:01.140693   - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+d_00: @00:03:01.140693   - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+d_00: @00:03:01.140693  SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+d_00: @00:03:01.140693   - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+d_00: @00:03:01.140693   - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+d_00: @00:03:01.140693  SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+d_00: @00:03:01.140693   - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+d_00: @00:03:01.140693   - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+d_00: @00:03:01.140693   - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+d_00: @00:03:01.140693  SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+d_00: @00:03:01.140693   - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+d_00: @00:03:01.140693  SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+d_00: @00:03:01.140693   - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+d_00: @00:03:01.140693  SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+d_00: @00:03:01.140693   - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:03:01.140693  SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+d_00: @00:03:01.140693   - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+d_00: @00:03:01.140693   - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+d_00: @00:03:01.140693   - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+d_00: @00:03:01.140693  SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+d_00: @00:03:01.140693   - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+d_00: @00:03:01.140693  SUITE FAIL -  50.00% [factory_store]: pass = 1, fail = 1, skip = 0, total = 2 duration = 3.625 seconds
+d_00: @00:03:01.140693   - FAIL - [factory_store.test_area_write_read] duration = 0.062 seconds
+d_00: @00:03:01.140693   - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+d_00: @00:03:01.140693  SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.140693   - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+d_00: @00:03:01.140693  PROJECT EXECUTION FAILED
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          FAILED rc=1 (native 0.085s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+twister exit code on the broken copy store_lba_4097, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-store_lba_4097-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+store_lba_4097 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:01.140693   - FAIL - [factory_store.test_area_write_read] duration = 0.062 seconds (failed cases listed: 2)
+store_lba_4097 on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed: factory_store.test_area_write_read 
+##### broken copy: type2_left
+diff -u -r /ws/firmware/modules/ring_factory/src/rfa.c /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_type2_left/src/rfa.c
+--- /ws/firmware/modules/ring_factory/src/rfa.c	2026-11-13 06:12:24.000000000 +0000
++++ /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_type2_left/src/rfa.c	2026-11-13 06:43:47.373884422 +0000
+@@ -67,7 +67,7 @@
+ 		*read_us = fr.read_us;
+ 	}
+ 	/* the last step of T-STORE (FW l.1030): every test recording (type 2) goes */
+-	int rc2 = rst_delete_factory_recordings(deleted);
++	int rc2 = 0;
+ 
+ 	if (mounted_here) {
+ 		(void)rst_unmount();
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   FAILED rc=1 (native 0.118s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+ PASS - test_result_layout in 0.521 seconds
+ PASS - test_centre_reported_never_records in 6.021 seconds
+ PASS - test_directions_reported in 3.121 seconds
+ PASS - test_no_screen_no_mic in 2.044 seconds
+ PASS - test_rms_and_runs in 8.066 seconds
+ PASS - test_type_2_recording in 2.040 seconds
+ PASS - test_reads_and_timing in 1.021 seconds
+ PASS - test_adv_parameters in 10.021 seconds
+ PASS - test_frame_sequence in 6.021 seconds
+ PASS - test_beacon_name in 0.021 seconds
+ PASS - test_beacon_window in 62.741 seconds
+ PASS - test_beacon_window_sample in 62.741 seconds
+ PASS - test_two_recordings_times in 3.045 seconds
+ PASS - test_area_write_read in 0.104 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_store.c:101: factory_store_test_test_recordings_deleted: (fx_u32(&out[10]) not equal to 2)
+ FAIL - test_test_recordings_deleted in 3.561 seconds
+TESTSUITE factory_store failed.
+ PASS - test_ppm_arithmetic in 0.021 seconds
+SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+ - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+ - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+ - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+ - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+ - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+ - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+ - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+ - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+ - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+ - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+ - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+ - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+ - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+ - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+SUITE FAIL -  50.00% [factory_store]: pass = 1, fail = 1, skip = 0, total = 2 duration = 3.665 seconds
+ - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+ - FAIL - [factory_store.test_test_recordings_deleted] duration = 3.561 seconds
+SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+PROJECT EXECUTION FAILED
+INFO    - 2/2 native_sim/native         ring_factory.screen                                FAILED rc=1 (native 0.103s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+twister exit code on the broken copy type2_left, native_sim: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-type2_left-native_sim.log)
+type2_left on native_sim: the named case failed, as required:  - FAIL - [factory_store.test_test_recordings_deleted] duration = 3.561 seconds (failed cases listed: 2)
+type2_left on native_sim: cases that failed: factory_store.test_test_recordings_deleted 
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             FAILED rc=1 (native 0.114s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+d_00: @00:00:10.600793   PASS - test_result_layout in 0.521 seconds
+d_00: @00:00:16.620993   PASS - test_centre_reported_never_records in 6.021 seconds
+d_00: @00:00:19.741393   PASS - test_directions_reported in 3.121 seconds
+d_00: @00:00:21.784493   PASS - test_no_screen_no_mic in 2.044 seconds
+d_00: @00:00:29.849593   PASS - test_rms_and_runs in 8.066 seconds
+d_00: @00:00:31.889593   PASS - test_type_2_recording in 2.040 seconds
+d_00: @00:00:32.909893   PASS - test_reads_and_timing in 1.021 seconds
+d_00: @00:00:42.930093   PASS - test_adv_parameters in 10.021 seconds
+d_00: @00:00:48.950793   PASS - test_frame_sequence in 6.021 seconds
+d_00: @00:00:48.970893   PASS - test_beacon_name in 0.021 seconds
+d_00: @00:01:51.711393   PASS - test_beacon_window in 62.741 seconds
+d_00: @00:02:54.451893   PASS - test_beacon_window_sample in 62.741 seconds
+d_00: @00:02:57.496193   PASS - test_two_recordings_times in 3.045 seconds
+d_00: @00:02:57.599993   PASS - test_area_write_read in 0.104 seconds
+d_00: @00:03:01.140693      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_store.c:101: factory_store_test_test_recordings_deleted: (fx_u32(&out[10]) not equal to 2)
+d_00: @00:03:01.160793   FAIL - test_test_recordings_deleted in 3.561 seconds
+d_00: @00:03:01.160793  TESTSUITE factory_store failed.
+d_00: @00:03:01.180893   PASS - test_ppm_arithmetic in 0.021 seconds
+d_00: @00:03:01.180893  SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.180893   - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+d_00: @00:03:01.180893  SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+d_00: @00:03:01.180893   - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+d_00: @00:03:01.180893   - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+d_00: @00:03:01.180893   - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+d_00: @00:03:01.180893   - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+d_00: @00:03:01.180893  SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+d_00: @00:03:01.180893   - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+d_00: @00:03:01.180893   - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+d_00: @00:03:01.180893  SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+d_00: @00:03:01.180893   - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+d_00: @00:03:01.180893   - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+d_00: @00:03:01.180893   - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+d_00: @00:03:01.180893  SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+d_00: @00:03:01.180893   - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+d_00: @00:03:01.180893  SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+d_00: @00:03:01.180893   - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+d_00: @00:03:01.180893  SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+d_00: @00:03:01.180893   - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:03:01.180893  SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+d_00: @00:03:01.180893   - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+d_00: @00:03:01.180893   - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+d_00: @00:03:01.180893   - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+d_00: @00:03:01.180893  SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+d_00: @00:03:01.180893   - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+d_00: @00:03:01.180893  SUITE FAIL -  50.00% [factory_store]: pass = 1, fail = 1, skip = 0, total = 2 duration = 3.665 seconds
+d_00: @00:03:01.180893   - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+d_00: @00:03:01.180893   - FAIL - [factory_store.test_test_recordings_deleted] duration = 3.561 seconds
+d_00: @00:03:01.180893  SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.180893   - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+d_00: @00:03:01.180893  PROJECT EXECUTION FAILED
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          FAILED rc=1 (native 0.082s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+twister exit code on the broken copy type2_left, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-type2_left-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+type2_left on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:01.180893   - FAIL - [factory_store.test_test_recordings_deleted] duration = 3.561 seconds (failed cases listed: 2)
+type2_left on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed: factory_store.test_test_recordings_deleted 
+##### broken copy: beacon_connectable
+diff -u -r /ws/firmware/modules/ring_factory/src/rfa.c /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_beacon_connectable/src/rfa.c
+--- /ws/firmware/modules/ring_factory/src/rfa.c	2026-11-13 06:12:24.000000000 +0000
++++ /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_beacon_connectable/src/rfa.c	2026-11-13 06:44:45.003657957 +0000
+@@ -109,7 +109,7 @@
+ 
+ int rfa_ship_begin(void)
+ {
+-	return beacon_start(false); /* ship */
++	return beacon_start(true); /* ship */
+ }
+ 
+ void rfa_beacon_stop(void)
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   FAILED rc=1 (native 0.111s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+ PASS - test_result_layout in 0.521 seconds
+ PASS - test_centre_reported_never_records in 6.021 seconds
+ PASS - test_directions_reported in 3.121 seconds
+ PASS - test_no_screen_no_mic in 2.044 seconds
+ PASS - test_rms_and_runs in 8.066 seconds
+ PASS - test_type_2_recording in 2.040 seconds
+ PASS - test_reads_and_timing in 1.021 seconds
+ PASS - test_adv_parameters in 10.021 seconds
+ PASS - test_frame_sequence in 6.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_ship.c:128: factory_ship_test_beacon_name: (b.connectable is true)
+ FAIL - test_beacon_name in 0.021 seconds
+ PASS - test_beacon_window in 62.741 seconds
+ PASS - test_beacon_window_sample in 62.741 seconds
+TESTSUITE factory_ship failed.
+ PASS - test_two_recordings_times in 3.045 seconds
+ PASS - test_area_write_read in 0.104 seconds
+ PASS - test_test_recordings_deleted in 3.563 seconds
+ PASS - test_ppm_arithmetic in 0.021 seconds
+SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+ - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+ - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+ - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+ - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+ - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+ - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+ - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+ - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+ - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+ - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+SUITE FAIL -  66.67% [factory_ship]: pass = 2, fail = 1, skip = 0, total = 3 duration = 125.503 seconds
+ - FAIL - [factory_ship.test_beacon_name] duration = 0.021 seconds
+ - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+ - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+ - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+ - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+ - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+PROJECT EXECUTION FAILED
+INFO    - 2/2 native_sim/native         ring_factory.screen                                FAILED rc=1 (native 0.105s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+twister exit code on the broken copy beacon_connectable, native_sim: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-beacon_connectable-native_sim.log)
+beacon_connectable on native_sim: the named case failed, as required:  - FAIL - [factory_ship.test_beacon_name] duration = 0.021 seconds (failed cases listed: 2)
+beacon_connectable on native_sim: cases that failed: factory_ship.test_beacon_name 
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             FAILED rc=1 (native 0.083s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+d_00: @00:00:10.600793   PASS - test_result_layout in 0.521 seconds
+d_00: @00:00:16.620993   PASS - test_centre_reported_never_records in 6.021 seconds
+d_00: @00:00:19.741393   PASS - test_directions_reported in 3.121 seconds
+d_00: @00:00:21.784493   PASS - test_no_screen_no_mic in 2.044 seconds
+d_00: @00:00:29.849593   PASS - test_rms_and_runs in 8.066 seconds
+d_00: @00:00:31.889593   PASS - test_type_2_recording in 2.040 seconds
+d_00: @00:00:32.909893   PASS - test_reads_and_timing in 1.021 seconds
+d_00: @00:00:42.930093   PASS - test_adv_parameters in 10.021 seconds
+d_00: @00:00:48.950793   PASS - test_frame_sequence in 6.021 seconds
+d_00: @00:00:48.950793      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_ship.c:128: factory_ship_test_beacon_name: (b.connectable is true)
+d_00: @00:00:48.970893   FAIL - test_beacon_name in 0.021 seconds
+d_00: @00:01:51.711393   PASS - test_beacon_window in 62.741 seconds
+d_00: @00:02:54.451893   PASS - test_beacon_window_sample in 62.741 seconds
+d_00: @00:02:54.451893  TESTSUITE factory_ship failed.
+d_00: @00:02:57.496193   PASS - test_two_recordings_times in 3.045 seconds
+d_00: @00:02:57.599993   PASS - test_area_write_read in 0.104 seconds
+d_00: @00:03:01.162993   PASS - test_test_recordings_deleted in 3.563 seconds
+d_00: @00:03:01.183093   PASS - test_ppm_arithmetic in 0.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+d_00: @00:03:01.183093   - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+d_00: @00:03:01.183093   - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:03:01.183093  SUITE FAIL -  66.67% [factory_ship]: pass = 2, fail = 1, skip = 0, total = 3 duration = 125.503 seconds
+d_00: @00:03:01.183093   - FAIL - [factory_ship.test_beacon_name] duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+d_00: @00:03:01.183093   - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.045 seconds
+d_00: @00:03:01.183093   - PASS - [factory_sign.test_two_recordings_times] duration = 3.045 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+d_00: @00:03:01.183093   - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+d_00: @00:03:01.183093   - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+d_00: @00:03:01.183093  SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:01.183093   - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+d_00: @00:03:01.183093  PROJECT EXECUTION FAILED
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          FAILED rc=1 (native 0.073s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+twister exit code on the broken copy beacon_connectable, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-beacon_connectable-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+beacon_connectable on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:01.183093   - FAIL - [factory_ship.test_beacon_name] duration = 0.021 seconds (failed cases listed: 2)
+beacon_connectable on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed: factory_ship.test_beacon_name 
+##### broken copy: beacon_after_ship
+diff -u -r /ws/firmware/modules/ring_factory/src/rfa.c /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_beacon_after_ship/src/rfa.c
+--- /ws/firmware/modules/ring_factory/src/rfa.c	2026-11-13 06:12:24.000000000 +0000
++++ /ws/out/20261113-073157-u8-full1-unit/broken-factory/broken_ring_factory_beacon_after_ship/src/rfa.c	2026-11-13 06:45:42.758427573 +0000
+@@ -112,11 +112,19 @@
+ 	return beacon_start(false); /* ship */
+ }
+ 
+-void rfa_beacon_stop(void)
++static void late_fn(struct k_work *w)
+ {
++	ARG_UNUSED(w);
+ 	beacon_stop_now();
+ }
+ 
++static K_WORK_DELAYABLE_DEFINE(late_work, late_fn);
++
++void rfa_beacon_stop(void)
++{
++	(void)k_work_schedule(&late_work, K_MSEC(50));
++}
++
+ /* ------------------------------------------------------------------ init */
+ int rfa_init(const struct rfa_ops *o)
+ {
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   FAILED rc=1 (native 0.103s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+ PASS - test_result_layout in 0.521 seconds
+ PASS - test_centre_reported_never_records in 6.021 seconds
+ PASS - test_directions_reported in 3.121 seconds
+ PASS - test_no_screen_no_mic in 2.044 seconds
+ PASS - test_rms_and_runs in 8.066 seconds
+ PASS - test_type_2_recording in 2.040 seconds
+ PASS - test_reads_and_timing in 1.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_radio.c:31: factory_radio_test_adv_parameters: (fx_ev(sp).t_us - e.t_us not within 10000000 +/- 20000)
+ FAIL - test_adv_parameters in 10.021 seconds
+TESTSUITE factory_radio failed.
+ PASS - test_frame_sequence in 6.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_ship.c:131: factory_ship_test_beacon_name: fx_count(RHW_EV_BEACON_STOP) not equal to 1
+ FAIL - test_beacon_name in 0.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_ship.c:83: window: (st >= 0 && vb >= 0 && sp >= 0 && ship >= 0 && cfg >= 0 is false)
+ FAIL - test_beacon_window in 2.741 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_ship.c:87: window: (sp > vb is false)
+ FAIL - test_beacon_window_sample in 2.741 seconds
+TESTSUITE factory_ship failed.
+ PASS - test_two_recordings_times in 3.044 seconds
+ PASS - test_area_write_read in 0.104 seconds
+ PASS - test_test_recordings_deleted in 3.561 seconds
+ PASS - test_ppm_arithmetic in 0.021 seconds
+SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+ - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+ - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+ - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+ - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+ - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+ - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+ - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+ - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+SUITE FAIL -   0.00% [factory_radio]: pass = 0, fail = 1, skip = 0, total = 1 duration = 10.021 seconds
+ - FAIL - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+ - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+SUITE FAIL -   0.00% [factory_ship]: pass = 0, fail = 3, skip = 0, total = 3 duration = 5.503 seconds
+ - FAIL - [factory_ship.test_beacon_name] duration = 0.021 seconds
+ - FAIL - [factory_ship.test_beacon_window] duration = 2.741 seconds
+ - FAIL - [factory_ship.test_beacon_window_sample] duration = 2.741 seconds
+SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.044 seconds
+ - PASS - [factory_sign.test_two_recordings_times] duration = 3.044 seconds
+SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.665 seconds
+ - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+ - PASS - [factory_store.test_test_recordings_deleted] duration = 3.561 seconds
+SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+PROJECT EXECUTION FAILED
+INFO    - 2/2 native_sim/native         ring_factory.screen                                FAILED rc=1 (native 0.079s <host/gnu>)
+twister exit code on the broken copy beacon_after_ship, native_sim: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-beacon_after_ship-native_sim.log)
+beacon_after_ship on native_sim: the named case failed, as required:  - FAIL - [factory_ship.test_beacon_window] duration = 2.741 seconds (failed cases listed: 8)
+beacon_after_ship on native_sim: cases that failed: factory_radio.test_adv_parameters factory_ship.test_beacon_name factory_ship.test_beacon_window factory_ship.test_beacon_window_sample 
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             FAILED rc=1 (native 0.093s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+d_00: @00:00:10.600793   PASS - test_result_layout in 0.521 seconds
+d_00: @00:00:16.620993   PASS - test_centre_reported_never_records in 6.021 seconds
+d_00: @00:00:19.741393   PASS - test_directions_reported in 3.121 seconds
+d_00: @00:00:21.784493   PASS - test_no_screen_no_mic in 2.044 seconds
+d_00: @00:00:29.849593   PASS - test_rms_and_runs in 8.066 seconds
+d_00: @00:00:31.889593   PASS - test_type_2_recording in 2.040 seconds
+d_00: @00:00:32.909893   PASS - test_reads_and_timing in 1.021 seconds
+d_00: @00:00:42.909993      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_radio.c:31: factory_radio_test_adv_parameters: (fx_ev(sp).t_us - e.t_us not within 10000000 +/- 20000)
+d_00: @00:00:42.930093   FAIL - test_adv_parameters in 10.021 seconds
+d_00: @00:00:42.930093  TESTSUITE factory_radio failed.
+d_00: @00:00:48.950793   PASS - test_frame_sequence in 6.021 seconds
+d_00: @00:00:48.950793      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_ship.c:131: factory_ship_test_beacon_name: fx_count(RHW_EV_BEACON_STOP) not equal to 1
+d_00: @00:00:48.970893   FAIL - test_beacon_name in 0.021 seconds
+d_00: @00:00:51.691193      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_ship.c:83: window: (st >= 0 && vb >= 0 && sp >= 0 && ship >= 0 && cfg >= 0 is false)
+d_00: @00:00:51.711293   FAIL - test_beacon_window in 2.741 seconds
+d_00: @00:00:54.431593      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_ship.c:87: window: (sp > vb is false)
+d_00: @00:00:54.451693   FAIL - test_beacon_window_sample in 2.741 seconds
+d_00: @00:00:54.451693  TESTSUITE factory_ship failed.
+d_00: @00:00:57.494993   PASS - test_two_recordings_times in 3.044 seconds
+d_00: @00:00:57.598793   PASS - test_area_write_read in 0.104 seconds
+d_00: @00:01:01.159793   PASS - test_test_recordings_deleted in 3.561 seconds
+d_00: @00:01:01.179893   PASS - test_ppm_arithmetic in 0.021 seconds
+d_00: @00:01:01.179893  SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:01:01.179893   - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+d_00: @00:01:01.179893  SUITE PASS - 100.00% [factory_cmd]: pass = 4, fail = 0, skip = 0, total = 4 duration = 10.584 seconds
+d_00: @00:01:01.179893   - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+d_00: @00:01:01.179893   - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+d_00: @00:01:01.179893   - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+d_00: @00:01:01.179893   - PASS - [factory_cmd.test_result_layout] duration = 0.521 seconds
+d_00: @00:01:01.179893  SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+d_00: @00:01:01.179893   - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+d_00: @00:01:01.179893   - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+d_00: @00:01:01.179893  SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+d_00: @00:01:01.179893   - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+d_00: @00:01:01.179893   - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+d_00: @00:01:01.179893   - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+d_00: @00:01:01.179893  SUITE PASS - 100.00% [factory_motor]: pass = 1, fail = 0, skip = 0, total = 1 duration = 1.021 seconds
+d_00: @00:01:01.179893   - PASS - [factory_motor.test_reads_and_timing] duration = 1.021 seconds
+d_00: @00:01:01.179893  SUITE FAIL -   0.00% [factory_radio]: pass = 0, fail = 1, skip = 0, total = 1 duration = 10.021 seconds
+d_00: @00:01:01.179893   - FAIL - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+d_00: @00:01:01.179893  SUITE PASS - 100.00% [factory_screen]: pass = 1, fail = 0, skip = 0, total = 1 duration = 6.021 seconds
+d_00: @00:01:01.179893   - PASS - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:01:01.179893  SUITE FAIL -   0.00% [factory_ship]: pass = 0, fail = 3, skip = 0, total = 3 duration = 5.503 seconds
+d_00: @00:01:01.179893   - FAIL - [factory_ship.test_beacon_name] duration = 0.021 seconds
+d_00: @00:01:01.179893   - FAIL - [factory_ship.test_beacon_window] duration = 2.741 seconds
+d_00: @00:01:01.179893   - FAIL - [factory_ship.test_beacon_window_sample] duration = 2.741 seconds
+d_00: @00:01:01.179893  SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.044 seconds
+d_00: @00:01:01.179893   - PASS - [factory_sign.test_two_recordings_times] duration = 3.044 seconds
+d_00: @00:01:01.179893  SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.665 seconds
+d_00: @00:01:01.179893   - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+d_00: @00:01:01.179893   - PASS - [factory_store.test_test_recordings_deleted] duration = 3.561 seconds
+d_00: @00:01:01.179893  SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:01:01.179893   - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+d_00: @00:01:01.179893  PROJECT EXECUTION FAILED
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          FAILED rc=1 (native 0.083s <host/gnu>)
+twister exit code on the broken copy beacon_after_ship, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-073157-u8-full1-unit/broken-factory/twister-beacon_after_ship-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+beacon_after_ship on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:01:01.179893   - FAIL - [factory_ship.test_beacon_window] duration = 2.741 seconds (failed cases listed: 8)
+beacon_after_ship on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed: factory_radio.test_adv_parameters factory_ship.test_beacon_name factory_ship.test_beacon_window factory_ship.test_beacon_window_sample 
+RESULT PASS
+=== part broken-factory end 2026-11-13T06:46:40Z exit 0
+UNIT PASS tests/factory
+# finished (Mac clock): 2026-11-13 07:46:54 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-073157-u8-full1.log

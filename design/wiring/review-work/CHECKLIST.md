@@ -1,0 +1,23 @@
+# Checklist of the wiring review (pinned b9ec3cfa)
+
+- [x] 1. Artifact at the pinned version: judged files unchanged from b9ec3cfa. evidence: pinned-status.log, pinned-status-2.log, new-commits.log (HEAD moved to 46824af3 at 11:21; the diff of design/wiring, design/ecad, design/mfg/assembly, design/case, design/mech/thin since b9ec3cfa is empty)
+- [x] 2. B1 every csv line read (67 of 67). evidence: check_lines.log (last line "lines read 67")
+- [x] 3. B1 each connection exactly once (67 of 67 end pairs count 1). evidence: check_lines.log rows ONCE
+- [x] 4. B1 completeness from my own enumeration of interface pins (99 enumerated, 97 covered; the 2 not covered are DISP1/J1 contact 3, no-connect). evidence: check_cover.log
+- [x] 5. B1 marking and cut length per size or "not size dependent" for every lead, wire, tab and part cable line (28 of 28). evidence: check_lines.log rows CUT
+- [x] 6. B2 end nets on the board files equal the line's signal (59 lines with a board end; 262 board instances). evidence: check_lines.log rows END_NET
+- [x] 7. B2 copper path through the named carrier, all 7 sizes (25 lines, 152 path checks). evidence: check_lines.log rows PATH; honest control broken/make.log + broken/pads-broken.csv (cluster splits) + broken/drc-broken.log
+- [x] 8. B2 pin board copper from each wire pad to its spring pin or E1 (5 of 5). evidence: check_lines.log rows PINBOARD_PATH
+- [x] 9. B2 pairing ring pads to case spring pins at every size (28 of 28). evidence: check_pairing.log
+- [x] 10. B3 KiCad rules check on 17 of 17 boards, each in its own folder: 0 violations, 0 unconnected. evidence: drc-summary.log, drc/*.json; control broken/drc-broken.log
+- [x] 11. B3 rules set to ignore by the projects listed. evidence: ignored_rules.log
+- [x] 12. B3 pad nets against the netlists (888 matched, 0 wrong, 5 pads with no netlist row). evidence: check_parity.log; fake fakes/parity/run.log
+- [x] 13. B4 polarity, pin 1, face, solder order and limits, screen cable direction, tail land order: read in csv, band-interface.md, case-architecture.md, lead-decisions.md, assembly.md. evidence: assembly-quotes.log, assembly-180.log, j1-direction-search.log, quotes-misc.log, case_pins_outline.log
+- [x] 14. B4 assembly.md against the 13 November board (21 footprints on the screen face). evidence: ring_sides.log, assembly-quotes.log
+- [x] 15. B5 J_BAND_A and J_BAND_B land by land on 14 of 14 band circuits, mirror required by face-to-face mating. evidence: check_mating.log
+- [x] 16. B5 J1 15 pins against the screen contact list, direction by coordinates, screen turned 180 degrees. evidence: check_j1.log; fake fakes/j1/run.log
+- [x] 17. B5 case main board wire pads equal the pin board's (5 of 5). evidence: check_lines.log rows END_NET for W063 to W067
+- [x] 18. Fakes through my own checks: wrong pin, wrong signal, missing cut, duplicate line, missing part. evidence: fakes/fake1.log
+- [x] 19. No design file changed by my runs. evidence: gitstatus-diff.log (empty, diff exit 0)
+- [-] 20. 3D pin heights and working range per size (in_range column of ring-case-contact.csv): not done: needs the case and ring solids (case_check.py, build123d); I computed the lateral pairing only
+- [x] 21. Final audit of the reply. evidence: audit.log

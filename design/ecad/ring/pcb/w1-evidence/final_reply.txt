@@ -1,0 +1,11 @@
+W1 last line (C88), ring-parts. Notes: design/ecad/ring/pcb/footprint-notes.md, Round 2 section extended by three lines. Its last line: "RESULT: done, 19 footprints, 11 of 11 open part lines closed against a maker document, 0 lines without a code, 8 items under Not closed".
+
+C88 is Murata GRT188R61A106KE13D, 10 uF, 10 V, X5R, 0603, 0.8 mm. Page 1 of w1c_murata_grt188r61a106ke13.pdf lists the codes with packaging letters: D is the 180 mm paper tape, so the orderable code ends in D. Page 2 gives the capacitance, voltage, size and thickness. Changed: make_netlist.py, parts.csv (footprint Chip_0603), bom.csv (NOT CLOSED removed; no NOT CLOSED line is left), footprint-sources.csv. The value text stays 10uF because check_netlist.py test A7-4 asks for that value.
+Stated deviation from Nordic's table: 10 V instead of 16 V, because C88 sits on VSYS, which never exceeds VBUSOVP 5.5 V (nPM1304 PDF page 17); 10 V is 1.8 times that. No 16 V part with a readable document exists at 1.0 mm or less. The sentence is in bom.csv, bom-notes.md and the notes.
+
+Checks, rerun with run_final.sh:
+- check_band.py: "RESULT: PASS boards checked 14" (exit 0).
+- check_footprints.py: "RESULT PASS 118 parts, 19 footprints, 410 pins have pads, pad counts equal footprint-sources.csv, no PROVISIONAL" (exit 0).
+- check_netlist.py: "RESULT PASS netlist netlist.csv". ERC: "** ERC messages: 0  Errors 0  Warnings 0". check_bom.py: failures 0.
+
+Proof: pcb/w1-evidence/ (final_*.log, CHECKLIST.md, final_audit.log). No git, no browser.

@@ -1,0 +1,1042 @@
+{
+ "notes": {
+  "ring:U1": {
+   "what": "The main chip. It runs the ring's program, handles Bluetooth and USB, and receives the microphone signals.",
+   "why": "It is the brain of the ring: every other part is set up and read by this chip.",
+   "checked_against": "architecture 17.4",
+   "model_names": [
+    "main_chip"
+   ]
+  },
+  "ring:U2": {
+   "what": "The power chip. It charges the cell and makes the steady supply voltages the other parts need.",
+   "why": "The cell's voltage is not what the chips need, so this chip charges it safely and shares the power out.",
+   "checked_against": "architecture 3",
+   "model_names": [
+    "power_chip"
+   ]
+  },
+  "ring:R71": {
+   "what": "A small resistor that tells the power chip which output voltage to give.",
+   "why": "The power chip reads this resistor at start-up, so the main chip gets the right voltage.",
+   "checked_against": "architecture 3",
+   "model_names": []
+  },
+  "ring:R72": {
+   "what": "A small resistor that tells the power chip which output voltage to give.",
+   "why": "The power chip reads this resistor at start-up, so the main chip gets the right voltage.",
+   "checked_against": "architecture 3",
+   "model_names": []
+  },
+  "ring:R73": {
+   "what": "A resistor from the charging line to ground. It empties the charging line when the ring leaves its case.",
+   "why": "Without it the charging pad on your finger would keep several volts for a while after the ring leaves the case.",
+   "checked_against": "lead-decisions.md row sim finding 1",
+   "model_names": []
+  },
+  "ring:U3": {
+   "what": "The storage chip. It holds the recorded audio inside the ring.",
+   "why": "The ring records on its own, so the audio waits here until it is copied off.",
+   "checked_against": "architecture 17.4",
+   "model_names": [
+    "storage"
+   ]
+  },
+  "ring:U10": {
+   "what": "A small chip that translates the signals between the main chip and the storage chip.",
+   "why": "The main chip talks at 1.8 volts and the storage chip at 3.0 volts; without it they cannot understand each other.",
+   "checked_against": "architecture 17.13",
+   "model_names": []
+  },
+  "ring:U4": {
+   "what": "The screen supply chip. It turns the cell's voltage into the two voltages the screen needs.",
+   "why": "The screen needs a higher voltage and a negative voltage that the cell cannot give directly.",
+   "checked_against": "architecture 3",
+   "model_names": [
+    "screen_supply_chip"
+   ]
+  },
+  "ring:U5": {
+   "what": "A microphone. It hears sound through a small hole in the underside of the block.",
+   "why": "Two microphones together give a stereo recording of the voices around the wearer.",
+   "checked_against": "architecture 17.19",
+   "model_names": [
+    "mic_1"
+   ]
+  },
+  "ring:U6": {
+   "what": "A microphone. It hears sound through a small hole in the underside of the block.",
+   "why": "Two microphones together give a stereo recording of the voices around the wearer.",
+   "checked_against": "architecture 17.19",
+   "model_names": [
+    "mic_2"
+   ]
+  },
+  "ring:DISP1": {
+   "what": "The screen, a small display set under the cover glass on top of the block.",
+   "why": "It shows the wearer what the ring is doing, and the joystick moves around on it.",
+   "checked_against": "architecture 9",
+   "model_names": [
+    "screen",
+    "screen_tail"
+   ]
+  },
+  "ring:J1": {
+   "what": "A tiny connector on the main board that the screen's flat cable plugs into.",
+   "why": "It joins the screen to the main board so the chip can send pictures to the screen.",
+   "checked_against": "architecture 16.4",
+   "model_names": [
+    "screen_connector"
+   ]
+  },
+  "ring:ANT1": {
+   "what": "The antenna. It sends and receives the Bluetooth radio signal.",
+   "why": "Without it the ring cannot talk to a phone.",
+   "checked_against": "architecture 2",
+   "model_names": [
+    "antenna"
+   ]
+  },
+  "ring:L2": {
+   "what": "A small part of the antenna matching set. Together they tune the radio signal between chip and antenna.",
+   "why": "Tuning the match lets the radio signal pass cleanly instead of being reflected back. One position is left empty for later tuning.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:L3": {
+   "what": "A small part of the antenna matching set. Together they tune the radio signal between chip and antenna.",
+   "why": "Tuning the match lets the radio signal pass cleanly instead of being reflected back. One position is left empty for later tuning.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:L4": {
+   "what": "A small part of the antenna matching set. Together they tune the radio signal between chip and antenna.",
+   "why": "Tuning the match lets the radio signal pass cleanly instead of being reflected back. One position is left empty for later tuning.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C3": {
+   "what": "A small part of the antenna matching set. Together they tune the radio signal between chip and antenna.",
+   "why": "Tuning the match lets the radio signal pass cleanly instead of being reflected back. One position is left empty for later tuning.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C12": {
+   "what": "A small part of the antenna matching set. Together they tune the radio signal between chip and antenna.",
+   "why": "Tuning the match lets the radio signal pass cleanly instead of being reflected back. One position is left empty for later tuning.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C13": {
+   "what": "A small part of the antenna matching set. Together they tune the radio signal between chip and antenna.",
+   "why": "Tuning the match lets the radio signal pass cleanly instead of being reflected back. One position is left empty for later tuning.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:X1": {
+   "what": "A crystal. It makes a very steady beat that the main chip uses as its clock.",
+   "why": "The chip needs a steady clock for the radio and for keeping time, and a crystal keeps it exact.",
+   "checked_against": "architecture 2",
+   "model_names": [
+    "crystal_32M"
+   ]
+  },
+  "ring:X2": {
+   "what": "A crystal. It makes a very steady beat that the main chip uses as its clock.",
+   "why": "The chip needs a steady clock for the radio and for keeping time, and a crystal keeps it exact.",
+   "checked_against": "architecture 2",
+   "model_names": [
+    "crystal_32k"
+   ]
+  },
+  "ring:L1": {
+   "what": "A small coil next to the main chip that helps it make its own supply voltage efficiently.",
+   "why": "It lets the chip run on less energy, which keeps the battery lasting longer.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:FB1": {
+   "what": "A filter bead on the chip's supply line. It blocks electrical noise.",
+   "why": "Noise on the supply would disturb the radio, so this bead keeps it clean.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:R1": {
+   "what": "A resistor copied from the chip maker's reference design for the main chip.",
+   "why": "The chip maker tested the chip with this value, so the ring keeps it.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:R2": {
+   "what": "A resistor copied from the chip maker's reference design for the main chip.",
+   "why": "The chip maker tested the chip with this value, so the ring keeps it.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C1": {
+   "what": "A capacitor on the main chip's supply. It acts as a tiny local energy store.",
+   "why": "It smooths the supply so the chip does not stall when it suddenly needs more current.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C2": {
+   "what": "A capacitor on the main chip's supply. It acts as a tiny local energy store.",
+   "why": "It smooths the supply so the chip does not stall when it suddenly needs more current.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C5": {
+   "what": "A capacitor on the main chip's supply. It acts as a tiny local energy store.",
+   "why": "It smooths the supply so the chip does not stall when it suddenly needs more current.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C4": {
+   "what": "A capacitor on the main chip's supply. It acts as a tiny local energy store.",
+   "why": "It smooths the supply so the chip does not stall when it suddenly needs more current.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C6": {
+   "what": "A capacitor on the main chip's supply. It acts as a tiny local energy store.",
+   "why": "It smooths the supply so the chip does not stall when it suddenly needs more current.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C7": {
+   "what": "A capacitor on the main chip's supply. It acts as a tiny local energy store.",
+   "why": "It smooths the supply so the chip does not stall when it suddenly needs more current.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C10": {
+   "what": "A capacitor on the main chip's supply. It acts as a tiny local energy store.",
+   "why": "It smooths the supply so the chip does not stall when it suddenly needs more current.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C14": {
+   "what": "A capacitor on the main chip's supply. It acts as a tiny local energy store.",
+   "why": "It smooths the supply so the chip does not stall when it suddenly needs more current.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:C11": {
+   "what": "A capacitor on the main chip's supply. It acts as a tiny local energy store.",
+   "why": "It smooths the supply so the chip does not stall when it suddenly needs more current.",
+   "checked_against": "architecture 2",
+   "model_names": []
+  },
+  "ring:L10": {
+   "what": "A coil that is part of the screen supply circuit.",
+   "why": "The screen supply chip uses it to build the higher voltage the screen needs.",
+   "checked_against": "architecture 3",
+   "model_names": [
+    "screen_supply_coil"
+   ]
+  },
+  "ring:C21": {
+   "what": "A capacitor in the screen supply circuit. It smooths the supply voltages going to the screen.",
+   "why": "A steady voltage keeps the picture on the screen stable.",
+   "checked_against": "architecture 3",
+   "model_names": []
+  },
+  "ring:C26": {
+   "what": "A capacitor in the screen supply circuit. It smooths the supply voltages going to the screen.",
+   "why": "A steady voltage keeps the picture on the screen stable.",
+   "checked_against": "architecture 3",
+   "model_names": []
+  },
+  "ring:C27": {
+   "what": "A capacitor in the screen supply circuit. It smooths the supply voltages going to the screen.",
+   "why": "A steady voltage keeps the picture on the screen stable.",
+   "checked_against": "architecture 3",
+   "model_names": []
+  },
+  "ring:C24": {
+   "what": "A capacitor in the screen supply circuit. It smooths the supply voltages going to the screen.",
+   "why": "A steady voltage keeps the picture on the screen stable.",
+   "checked_against": "architecture 3",
+   "model_names": []
+  },
+  "ring:C25": {
+   "what": "A capacitor at the screen's supply chip.",
+   "why": "It holds one of the screen's supply voltages steady while the picture changes.",
+   "checked_against": "bom.csv row C25",
+   "model_names": []
+  },
+  "ring:C23": {
+   "what": "A capacitor in the screen supply circuit. It smooths the supply voltages going to the screen.",
+   "why": "A steady voltage keeps the picture on the screen stable.",
+   "checked_against": "architecture 3",
+   "model_names": []
+  },
+  "ring:C22": {
+   "what": "A capacitor in the screen supply circuit. It smooths the supply voltages going to the screen.",
+   "why": "A steady voltage keeps the picture on the screen stable.",
+   "checked_against": "architecture 3",
+   "model_names": []
+  },
+  "ring:C28": {
+   "what": "A capacitor in the screen supply circuit. It smooths the supply voltages going to the screen.",
+   "why": "A steady voltage keeps the picture on the screen stable.",
+   "checked_against": "architecture 3",
+   "model_names": []
+  },
+  "ring:C29": {
+   "what": "A capacitor in the screen supply circuit. It smooths the supply voltages going to the screen.",
+   "why": "A steady voltage keeps the picture on the screen stable.",
+   "checked_against": "architecture 3",
+   "model_names": []
+  },
+  "ring:C31": {
+   "what": "A capacitor next to each microphone's power pin. It smooths that microphone's supply.",
+   "why": "A clean supply keeps electrical noise out of the recorded sound.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C32": {
+   "what": "A capacitor next to each microphone's power pin. It smooths that microphone's supply.",
+   "why": "A clean supply keeps electrical noise out of the recorded sound.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C35": {
+   "what": "A capacitor next to each microphone's power pin. It smooths that microphone's supply.",
+   "why": "A clean supply keeps electrical noise out of the recorded sound.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C36": {
+   "what": "A capacitor next to each microphone's power pin. It smooths that microphone's supply.",
+   "why": "A clean supply keeps electrical noise out of the recorded sound.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:R31": {
+   "what": "A resistor on each microphone's data line.",
+   "why": "It keeps the fast data signal from ringing, so the audio reaches the chip cleanly.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:R32": {
+   "what": "A resistor on each microphone's data line.",
+   "why": "It keeps the fast data signal from ringing, so the audio reaches the chip cleanly.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:SW1": {
+   "what": "One of four small switches under the joystick cap, one for each direction.",
+   "why": "Pressing the cap toward a switch moves the choice on the screen in that direction.",
+   "checked_against": "architecture 17.15",
+   "model_names": [
+    "joy_sw_up"
+   ]
+  },
+  "ring:SW3": {
+   "what": "One of four small switches under the joystick cap, one for each direction.",
+   "why": "Pressing the cap toward a switch moves the choice on the screen in that direction.",
+   "checked_against": "architecture 17.15",
+   "model_names": [
+    "joy_sw_down"
+   ]
+  },
+  "ring:SW4": {
+   "what": "One of four small switches under the joystick cap, one for each direction.",
+   "why": "Pressing the cap toward a switch moves the choice on the screen in that direction.",
+   "checked_against": "architecture 17.15",
+   "model_names": [
+    "joy_sw_hand"
+   ]
+  },
+  "ring:SW5": {
+   "what": "One of four small switches under the joystick cap, one for each direction.",
+   "why": "Pressing the cap toward a switch moves the choice on the screen in that direction.",
+   "checked_against": "architecture 17.15",
+   "model_names": [
+    "joy_sw_fingertip"
+   ]
+  },
+  "ring:SW2": {
+   "what": "The centre switch under the joystick cap.",
+   "why": "A long press on the joystick starts or stops a recording, a short press marks a highlight.",
+   "checked_against": "architecture 17.15",
+   "model_names": [
+    "joy_sw_centre"
+   ]
+  },
+  "ring:R57": {
+   "what": "A resistor that holds the two data lines between the main chip and the power chip at a set level.",
+   "why": "These lines need it to talk to each other reliably.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:R58": {
+   "what": "A resistor that holds the two data lines between the main chip and the power chip at a set level.",
+   "why": "These lines need it to talk to each other reliably.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:R60": {
+   "what": "A resistor on the storage or motor circuit that holds a line at a set level.",
+   "why": "It keeps the line from floating, so the storage and the motor do not act on stray signals.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C60": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:M1": {
+   "what": "The vibration motor in the band, on the joystick side.",
+   "why": "It buzzes to confirm start, stop and warnings when you cannot look at the screen.",
+   "checked_against": "architecture 17.16",
+   "model_names": [
+    "vibration_motor"
+   ]
+  },
+  "ring:U11": {
+   "what": "The motor's own supply chip. It feeds the vibration motor straight from the cell.",
+   "why": "The motor's start current is higher than the power chip allows, so the motor gets its own supply.",
+   "checked_against": "architecture 17.22",
+   "model_names": [
+    "motor_regulator"
+   ]
+  },
+  "ring:C83": {
+   "what": "A capacitor beside the motor's supply chip. It is a small local energy store.",
+   "why": "It keeps the motor's supply steady at the moment the motor starts.",
+   "checked_against": "architecture 17.22",
+   "model_names": [
+    "motor_cap_in"
+   ]
+  },
+  "ring:C84": {
+   "what": "The capacitor at the output of the motor's supply chip.",
+   "why": "It holds the motor's supply steady. It was made smaller so that a motor start no longer pulls the cell voltage too low.",
+   "checked_against": "lead-decisions.md row sim finding 4",
+   "model_names": [
+    "motor_cap_out"
+   ]
+  },
+  "ring:BT1": {
+   "what": "Battery cell, curved to follow the inside of the band. It stores the energy that runs the ring.",
+   "why": "It is thin and long, so it fits the band instead of the block, which keeps the block flat.",
+   "checked_against": "architecture 17.3",
+   "model_names": [
+    "cell"
+   ]
+  },
+  "ring:PRT1": {
+   "what": "The protection circuit of the cell, on the cell's tab.",
+   "why": "It cuts the cell off if it is overcharged or shorted, so the ring stays safe.",
+   "checked_against": "architecture 17.3",
+   "model_names": [
+    "cell_protection"
+   ]
+  },
+  "ring:PCB1": {
+   "what": "The main circuit board. The chips and small parts sit on it and are wired together.",
+   "why": "It holds everything electronic in one flat piece, inside the block under the screen.",
+   "checked_against": "architecture 17.2",
+   "model_names": [
+    "main_board"
+   ]
+  },
+  "ring:TP1": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:TP3": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:TP4": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:TP5": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:TP6": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:TP12": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:TP14": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:TP15": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:HSG1": {
+   "what": "The metal body, block and band in one piece.",
+   "why": "It holds and protects every part, and it forms the ring you wear.",
+   "checked_against": "architecture 17.1",
+   "model_names": [
+    "outer_body"
+   ]
+  },
+  "ring:GL1": {
+   "what": "The cover glass over the screen.",
+   "why": "It protects the screen and lets you see it.",
+   "checked_against": "architecture 17.1",
+   "model_names": [
+    "cover_glass"
+   ]
+  },
+  "ring:ADH1": {
+   "what": "A clear adhesive layer between the glass and the screen.",
+   "why": "It glues the glass to the screen and leaves no air gap that would blur the picture.",
+   "checked_against": "architecture 17.2",
+   "model_names": [
+    "clear_adhesive"
+   ]
+  },
+  "ring:SEAL1": {
+   "what": "A thin seal ring between the cover glass and the metal body.",
+   "why": "It keeps water and dust from getting in around the edge of the glass.",
+   "checked_against": "architecture 17.23",
+   "model_names": [
+    "glass_seal"
+   ]
+  },
+  "ring:DAM1": {
+   "what": "A small frame of cured glue around the joystick's switches.",
+   "why": "It keeps the liner's resin out of the switches when the band is closed.",
+   "checked_against": "architecture 17.23",
+   "model_names": [
+    "joystick_dam"
+   ]
+  },
+  "ring:SEAL2": {
+   "what": "A small plug of sealant between the motor's pocket and the block, on ring sizes US 7 to 9.",
+   "why": "On small sizes the wall between motor and block opens; the plug closes it before the liner is cast.",
+   "checked_against": "architecture 17.27",
+   "model_names": [
+    "motor_window_seal"
+   ]
+  },
+  "ring:FOAM1": {
+   "what": "A thin foam pad between the screen and the board.",
+   "why": "It cushions the screen against the board and takes up small differences in thickness.",
+   "checked_against": "architecture 17.2",
+   "model_names": [
+    "foam"
+   ]
+  },
+  "ring:MEM1": {
+   "what": "A thin membrane over a microphone hole in the underside of the block.",
+   "why": "It lets sound in and keeps water and dust out of the microphone.",
+   "checked_against": "architecture 17.19",
+   "model_names": [
+    "mic_membrane_1"
+   ]
+  },
+  "ring:MEM2": {
+   "what": "A thin membrane over a microphone hole in the underside of the block.",
+   "why": "It lets sound in and keeps water and dust out of the microphone.",
+   "checked_against": "architecture 17.19",
+   "model_names": [
+    "mic_membrane_2"
+   ]
+  },
+  "ring:GSK2": {
+   "what": "A small foam ring between a microphone and the floor of the block.",
+   "why": "It makes sure the sound reaches the microphone and does not leak around it.",
+   "checked_against": "architecture 17.19",
+   "model_names": [
+    "mic_gasket_1"
+   ]
+  },
+  "ring:GSK3": {
+   "what": "A small foam ring between a microphone and the floor of the block.",
+   "why": "It makes sure the sound reaches the microphone and does not leak around it.",
+   "checked_against": "architecture 17.19",
+   "model_names": [
+    "mic_gasket_2"
+   ]
+  },
+  "ring:U9": {
+   "what": "A protection chip on the charging lines.",
+   "why": "It guards the ring against static shocks from the charging pads, which people touch.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:CP1": {
+   "what": "A small gold charging pad on the inside of the band, opposite the block.",
+   "why": "The case's pins touch these pads to charge the ring and to move data.",
+   "checked_against": "architecture 17.15",
+   "model_names": [
+    "pad_VBUS"
+   ]
+  },
+  "ring:CP2": {
+   "what": "A small gold charging pad on the inside of the band, opposite the block.",
+   "why": "The case's pins touch these pads to charge the ring and to move data.",
+   "checked_against": "architecture 17.15",
+   "model_names": [
+    "pad_D-"
+   ]
+  },
+  "ring:CP3": {
+   "what": "A small gold charging pad on the inside of the band, opposite the block.",
+   "why": "The case's pins touch these pads to charge the ring and to move data.",
+   "checked_against": "architecture 17.15",
+   "model_names": [
+    "pad_D+"
+   ]
+  },
+  "ring:CP4": {
+   "what": "A small gold charging pad on the inside of the band, opposite the block.",
+   "why": "The case's pins touch these pads to charge the ring and to move data.",
+   "checked_against": "architecture 17.15",
+   "model_names": [
+    "pad_GND"
+   ]
+  },
+  "ring:R61": {
+   "what": "A resistor on the storage or motor circuit that holds a line at a set level.",
+   "why": "It keeps the line from floating, so the storage and the motor do not act on stray signals.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:R62": {
+   "what": "A resistor on the storage or motor circuit that holds a line at a set level.",
+   "why": "It keeps the line from floating, so the storage and the motor do not act on stray signals.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:R66": {
+   "what": "A resistor on the storage or motor circuit that holds a line at a set level.",
+   "why": "It keeps the line from floating, so the storage and the motor do not act on stray signals.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:R63": {
+   "what": "A resistor on the storage or motor circuit that holds a line at a set level.",
+   "why": "It keeps the line from floating, so the storage and the motor do not act on stray signals.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:R64": {
+   "what": "A resistor on the storage or motor circuit that holds a line at a set level.",
+   "why": "It keeps the line from floating, so the storage and the motor do not act on stray signals.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:R65": {
+   "what": "A resistor on the storage or motor circuit that holds a line at a set level.",
+   "why": "It keeps the line from floating, so the storage and the motor do not act on stray signals.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C61": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C72": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C80": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C81": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C82": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C71": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C85": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C86": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C87": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C88": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C73": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C74": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C75": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C78": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C79": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C90": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C76": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:C77": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:L71": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": [
+    "power_coil_1"
+   ]
+  },
+  "ring:L72": {
+   "what": "A capacitor or coil around the power chip or the storage supply. It smooths or filters one supply line.",
+   "why": "These parts keep the supply steady while the cell charges and the storage writes.",
+   "checked_against": "architecture 14",
+   "model_names": [
+    "power_coil_2"
+   ]
+  },
+  "ring:RT1": {
+   "what": "A temperature sensor, a resistor whose value changes with heat, placed for the cell.",
+   "why": "The power chip reads it so charging stops if the cell gets too hot or too cold.",
+   "checked_against": "architecture 17.3",
+   "model_names": []
+  },
+  "ring:TP17": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:TP18": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:TP19": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:J_BAND_A": {
+   "what": "A row of solder pads on the main board where a flex tail is soldered on.",
+   "why": "The wiring of the band joins the main board here.",
+   "checked_against": "architecture 17.3",
+   "model_names": [
+    "band_flex_thumb"
+   ]
+  },
+  "ring:J_BAND_B": {
+   "what": "A row of solder pads on the main board where a flex tail is soldered on.",
+   "why": "The wiring of the band joins the main board here.",
+   "checked_against": "architecture 17.3",
+   "model_names": [
+    "band_flex_away"
+   ]
+  },
+  "ring:FLEX1": {
+   "what": "A thin flexible circuit that carries wires through the band from the main board.",
+   "why": "It reaches the parts in the band: the joystick on one side, the motor, cell and pads on the other.",
+   "checked_against": "architecture 17.3",
+   "model_names": []
+  },
+  "ring:FLEX2": {
+   "what": "A thin flexible circuit that carries wires through the band from the main board.",
+   "why": "It reaches the parts in the band: the joystick on one side, the motor, cell and pads on the other.",
+   "checked_against": "architecture 17.3",
+   "model_names": []
+  },
+  "ring:LNR1": {
+   "what": "A thin resin liner that closes the band channel on the side toward the finger.",
+   "why": "It seals and covers the parts in the band so they do not touch the skin.",
+   "checked_against": "architecture 17.3",
+   "model_names": [
+    "band_liner"
+   ]
+  },
+  "ring:CAP1": {
+   "what": "The joystick cap, a moulded cap with its own flange over the switches.",
+   "why": "You tilt it with the thumb to move, and you hold it down to start and stop a recording; it keeps water out.",
+   "checked_against": "architecture 17.3",
+   "model_names": [
+    "joystick_cap"
+   ]
+  },
+  "ring:FRM1": {
+   "what": "The round metal frame around the joystick.",
+   "why": "It holds the joystick cap in its opening in the band and closes the gap around it.",
+   "checked_against": "architecture 17.31",
+   "model_names": [
+    "joystick_frame"
+   ]
+  },
+  "ring:TP21": {
+   "what": "A bare copper pad on the board. It is a place to touch with a probe.",
+   "why": "Factory and bench tests use these pads to program the ring and check signals. There is nothing to buy.",
+   "checked_against": "architecture 14",
+   "model_names": []
+  },
+  "ring:LT1": {
+   "what": "A tiny part at the far end of the antenna.",
+   "why": "On the test bench it can be swapped to tune the antenna to the right frequency.",
+   "checked_against": "ring-board-plan.md e.2",
+   "model_names": []
+  },
+  "ring:C89": {
+   "what": "An empty place for one more antenna tuning part.",
+   "why": "Nothing is fitted at first; the bench measurement says whether a part is needed there.",
+   "checked_against": "ring-board-plan.md e.4",
+   "model_names": []
+  },
+  "ring:RC1": {
+   "what": "A corner of the block made of resin, not metal, around the antenna.",
+   "why": "Metal around the antenna would block the radio; the resin lets Bluetooth out.",
+   "checked_against": "architecture 17.20",
+   "model_names": [
+    "radio_corner"
+   ]
+  },
+  "case:U1": {
+   "what": "The case's main chip, a small computer on a module.",
+   "why": "It runs the case: it reads the ring, drives the light and uploads recordings.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": []
+  },
+  "case:U2": {
+   "what": "The case's charger chip. It charges the case cell and powers the ring.",
+   "why": "It lets one USB-C cable charge the case and, through the case, the ring.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": []
+  },
+  "case:U3": {
+   "what": "A voltage regulator that makes a steady supply for the case chips.",
+   "why": "The chips need a steady voltage, and the cell's voltage changes as it empties.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": []
+  },
+  "case:U4": {
+   "what": "A memory chip in the case. It holds recordings copied from the ring.",
+   "why": "It keeps the audio safe until the case sends it on.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": []
+  },
+  "case:U5": {
+   "what": "A switch with a current limit for the ring's charging line.",
+   "why": "It protects the case and the ring if something shorts the charging pins.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": []
+  },
+  "case:L1": {
+   "what": "A coil in the case's charging circuit.",
+   "why": "The charger chip needs it to turn the supply into the charging current.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": []
+  },
+  "case:L2": {
+   "what": "A coil in the case's voltage regulator.",
+   "why": "The regulator needs it to produce a steady supply.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": []
+  },
+  "case:J1": {
+   "what": "The USB-C socket of the case.",
+   "why": "You plug the charging cable in here.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": []
+  },
+  "case:LED1": {
+   "what": "The case's light.",
+   "why": "It shows the owner the state of the case and the ring.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": []
+  },
+  "case:BT1": {
+   "what": "The case's battery cell.",
+   "why": "It stores the energy that charges the ring away from a wall socket.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": [
+    "cell_dnk852338"
+   ]
+  },
+  "case:PCB1": {
+   "what": "The case's main circuit board.",
+   "why": "It carries the case chips and joins them together.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": [
+    "main_board"
+   ]
+  },
+  "case:PCB2": {
+   "what": "A small circuit board that carries the four contact pins.",
+   "why": "It brings the ring's charging contacts out to the main board.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": [
+    "pin_board_pcb2",
+    "pin_board_pcb2_wing_L",
+    "pin_board_pcb2_wing_R"
+   ]
+  },
+  "case:MECH1": {
+   "what": "The case shell, a soft pebble shape.",
+   "why": "It holds the parts and gives the ring its seat.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": [
+    "shell"
+   ]
+  },
+  "case:MECH2": {
+   "what": "The case lid, a crowned cap that swivels aside.",
+   "why": "It closes the case and covers the ring.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": [
+    "lid"
+   ]
+  },
+  "case:MECH3": {
+   "what": "The bottom plate that closes the underside of the case.",
+   "why": "It holds the case parts in place from below.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": [
+    "base_plate"
+   ]
+  },
+  "case:MECH4": {
+   "what": "A hidden metal pin that the lid turns around.",
+   "why": "It is the lid's pivot.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": [
+    "hinge_pivot"
+   ]
+  },
+  "case:MECH5": {
+   "what": "The centre post that the ring lies around.",
+   "why": "It holds the pin board and the four pins against the pads on the inside of the band.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": [
+    "post"
+   ]
+  },
+  "case:MECH8": {
+   "what": "A thin glide disc between the lid and the shell.",
+   "why": "It lets the lid swivel smoothly and without scratching.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": [
+    "glide_1",
+    "glide_2",
+    "glide_3",
+    "glide_4"
+   ]
+  },
+  "case:MECH9": {
+   "what": "A small magnet, one in the shell and one in the lid.",
+   "why": "The pair holds the lid closed.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": [
+    "magnet_base",
+    "magnet_lid"
+   ]
+  },
+  "case:MECH7": {
+   "what": "A clear fill in the window of the case light.",
+   "why": "It lets the light show through and seals the opening.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": []
+  },
+  "case:P1-P4": {
+   "what": "A spring-loaded contact pin that touches one pad of the ring.",
+   "why": "It carries charging power and data between the case and the ring.",
+   "checked_against": "design/case/case-architecture.md",
+   "model_names": [
+    "pin_P1_VBUS",
+    "pin_P2_D-",
+    "pin_P3_D+",
+    "pin_P4_GND"
+   ]
+  }
+ }
+}

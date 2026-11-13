@@ -1,0 +1,41 @@
+Hand derivations of review 4 (my reasoning, from the numbers in pads/ and the cited files).
+
+1. Tail files are a turn of the ring view, not a mirror.
+   Ring frame seen from +Z (above): X right, Y up (right-handed, Z toward the viewer). KiCad file view: x right, y down.
+   FLEX1 (pads/flex1-us9-pads.csv): u = x - 50.0, v = 80.0 - y; ring X = v - 2.5, Y = -(3.4 + u) (band-interface.md:65).
+   KiCad right (+x) -> ring -Y (down the page seen from above); KiCad down (+y) -> v falls -> ring -X (left).
+   right->down and down->left is a 90 degree clockwise turn: no mirror.
+   FLEX2 (pads/flex2-us9-pads.csv): v = y - 80.0, Y = +(3.4 + u). KiCad right -> ring +Y (up); KiCad down -> ring +X (right).
+   right->up and down->right is a 90 degree counter-clockwise turn: no mirror.
+   The tail lands are on F.Cu, which faces +Z (the board) in the ring, so the KiCad view of the tail is the view from +Z: consistent.
+   check_all.py uses exactly this map: 105 of 105 lands within 0.05 mm (check_all.log, INFO mating 105).
+
+2. Bench posture of step 14 against the ring.
+   Bench: board parts face (F.Cu) up, seen as the board file (x right, y down), J_BAND_A (ring Y -4.325) in the upper row.
+   Turning the joined board 180 degrees about X (step 15) maps a point (x, y, z) to (x, -y, -z): the upper row goes to the
+   lower side of the page; seen from above the ring frame has +Y up, so J_BAND_A ends at ring -Y, the FLEX1 slot side
+   (Y -5.9). The feet turn with the board (rigid turn), so no ribbon is twisted and the lands still face the board.
+
+3. Screen contact 1 at J1.
+   Screen maker page 5 (j1/disp-p5-05.png): back view prints the contacts "1 ... 15" left to right; the front (lit) view
+   prints "15" at the left, so contact 1 is on the right of the front view, with the cable at the bottom of the page.
+   Unturned screen in the ring: cable toward the hand end (-X), lit face up (+Z). Page down = -X, so page up = +X and page
+   right = -Y (seen from above, X right and Y up turned so +X is up). Contact 1 at -Y.
+   Screen turned 180 degrees about Z: contact 1 at +Y. The U-turn folds of layout C turn about axes along Y, which keep Y.
+   So cable contact 1 arrives at +Y. J1 pad 1 is at ring Y +2.097 (pads/ring-pads.csv: 102.097 - 100). Agree.
+   Which J1 land row faces the cable entry: first not settled at 80 dpi; settled in item 5 from the 220 dpi crop.
+
+4. Foot alignment numbers of step 14.
+   Board J_BAND land columns at X -3.015, -2.505, -1.995, -1.485, land 0.30 x 0.55 (pads/ring-pads.csv, minus offset 100).
+   Outer land edges X -3.165 and -1.335; foot X -3.50 and -1.00 (tail outline from 50.0 to ... with v -1.0 to +1.5):
+   3.50 - 3.165 = 0.335 and 1.335 - 1.00 = 0.335. Board land 0.55 long against tail land 0.30: (0.55 - 0.30) / 2 = 0.125.
+
+5. J1 insertion side (my reading of Hirose's drawing page 1, j1/hirose-p1-1.png and the 220 dpi crop j1/hirose-side-1.png).
+   Side view a(25:1): the FPC (t 0.2) enters from the left; the flip lever stands open on the right (back).
+   The lead tail on the entry side is 0.4 +-0.1 long, the one on the lever side 0.33 +-0.1.
+   Land pattern: the row with Contact No.1 (odd contacts) has lands 0.8 long and carries the two fitting tabs at its ends;
+   the row with Contact No.2 (even) has lands 0.65 long. I take the longer land row (0.8) as the row of the longer
+   tail (0.4), on the entry side; the top view also draws Contact No.2 on the actuator side.
+   Board (pads/ring-pads.csv): odd pads 0.30 x 0.80 at x 96.467 (ring X -3.533), even pads 0.30 x 0.65 at x 93.592
+   (ring X -6.408), MP tabs at x 96.192 (X -3.808) beside the odd row. So the entry side is +X: the opening faces the
+   fingertip, as the guide says (assembly.md:218). Agree, on my reading of the drawing.

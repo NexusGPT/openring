@@ -1,0 +1,9 @@
+search: cases or tools that count or list the event log codes (fix round 1, ruling on R6-03), ven. 13 nov. 2026 13:07:53 CET
+## grep -rn -E 'RREC_LOG_DROPPED|RREC_LOG_TIME_GUESS|RREC_LOG_SHIP_RETRY|0x0280|26 codes|R23' firmware/tests firmware/tools firmware/modules (rrec_spec.h excluded)
+firmware/tests/power/src/test_ship.c:142:	zassert_equal(pw_log_count(RREC_LOG_SHIP_RETRY), 1);
+firmware/tests/power/src/test_ship.c:161:	zassert_equal(pw_log_count(RREC_LOG_SHIP_RETRY), 1, "one retry record");
+firmware/tests/recorder/src/test_log.c:3: * codes", ruling R23; plan rows T27, C33, A10).
+firmware/modules/ring_recorder/src/rrec_boot.c:65:		rrec_log(RREC_LOG_TIME_GUESS, args, 8);   /* ruling D18: a guess, the clock stays not set */
+firmware/modules/ring_sys/include/ring_sys/rsy.h:69: * the join writes the guess once into the log (RREC_LOG_TIME_GUESS). Never blocks. */
+firmware/modules/ring_power/src/rpw.c:636:				cb.log(RREC_LOG_SHIP_RETRY, &n_try, 1);
+## end of hits

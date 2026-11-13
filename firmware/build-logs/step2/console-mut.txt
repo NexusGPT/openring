@@ -1,0 +1,84 @@
+# remote.sh run 20261111-133801-mut
+# command: tests/control/broken_run.sh; echo "control script exit $?"; tests/devices/broken_run.sh; echo "devices script exit $?"
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 13:38:01 CET
+# free on the server's /: 82 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-133801-mut; server log /root/ring-os/logs/20261111-133801-mut.log
+--- /ws/firmware/modules/ring_control/include/ring_control/rctl_modes.h	2026-11-11 11:59:09.000000000 +0000
++++ /ws/out/20261111-133801-mut-control-broken/broken_ring_control/include/ring_control/rctl_modes.h	2026-11-11 12:38:07.025353304 +0000
+@@ -109,7 +109,7 @@
+ 		[RCTL_UP]     = RCTL_E_KEY(RCTL_K_LEFT_ARROW),
+ 		[RCTL_DOWN]   = RCTL_E_KEY(RCTL_K_RIGHT_ARROW),
+ 		[RCTL_LEFT]   = RCTL_E_KEY(RCTL_K_LEFT_ARROW),
+-		[RCTL_RIGHT]  = RCTL_E_KEY(RCTL_K_RIGHT_ARROW),
++		[RCTL_RIGHT]  = RCTL_E_KEY(RCTL_K_LEFT_ARROW),
+ 	},
+ 	[RCTL_POINTER] = {
+ 		[RCTL_CENTRE] = RCTL_E_CLICK,
+INFO    - 1/1 native_sim/native         ring_control.logic                                 FAILED rc=1 (native 0.009s <host/gnu>)
+ PASS - test_mode_order_and_names in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/control/src/test_control.c:82: check_row: (r[0].data[2] not equal to e->usage)
+presenter right: key 0x4f got 0x50
+ FAIL - test_mode_tables in 0.000 seconds
+ PASS - test_only_joystick_actions_map in 0.000 seconds
+ PASS - test_out_of_range in 0.000 seconds
+START - test_presenter_page_keys_option
+ PASS - test_presenter_page_keys_option in 0.000 seconds
+ PASS - test_press_then_release in 0.000 seconds
+ PASS - test_report_map_matches_builder in 0.000 seconds
+TESTSUITE ring_control failed.
+SUITE FAIL -  85.71% [ring_control]: pass = 6, fail = 1, skip = 0, total = 7 duration = 0.000 seconds
+ - PASS - [ring_control.test_mode_order_and_names] duration = 0.000 seconds
+ - FAIL - [ring_control.test_mode_tables] duration = 0.000 seconds
+ - PASS - [ring_control.test_only_joystick_actions_map] duration = 0.000 seconds
+ - PASS - [ring_control.test_out_of_range] duration = 0.000 seconds
+ - PASS - [ring_control.test_presenter_page_keys_option] duration = 0.000 seconds
+ - PASS - [ring_control.test_press_then_release] duration = 0.000 seconds
+ - PASS - [ring_control.test_report_map_matches_builder] duration = 0.000 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 12.26 seconds.
+INFO    - 6 of 7 executed test cases passed (85.71%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_control.logic on native_sim/native failed (rc=1)
+twister exit code on the broken copy: 1 (log /ws/out/20261111-133801-mut-control-broken/twister.log)
+RESULT PASS
+control script exit 0
+--- /ws/firmware/modules/ring_devices/src/rdev_logic.c	2026-11-11 12:00:24.000000000 +0000
++++ /ws/out/20261111-133801-mut-devices-broken/broken_ring_devices/src/rdev_logic.c	2026-11-11 12:38:21.853036914 +0000
+@@ -97,7 +97,7 @@
+ 		return RDEV_SWITCH_REFUSE_RANGE;
+ 	}
+ 	if (!rdev_list_is_paired(l, target)) {
+-		return RDEV_SWITCH_REFUSE_EMPTY;
++		return RDEV_SWITCH_GO;
+ 	}
+ 	if (l->active == target) {
+ 		return RDEV_SWITCH_NOP;
+INFO    - 1/1 native_sim/native         ring_devices.logic                                 FAILED rc=1 (native 0.008s <host/gnu>)
+ PASS - test_choose_pair_slot in 0.000 seconds
+ PASS - test_new_pairing_becomes_active in 0.000 seconds
+ PASS - test_next_wraps in 0.000 seconds
+ PASS - test_plan in 0.000 seconds
+ PASS - test_remove_and_active in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/devices/src/test_devices.c:100: ring_devices_test_switch_decision: rdev_list_decide_switch(&l, 2) not equal to RDEV_SWITCH_REFUSE_EMPTY
+ FAIL - test_switch_decision in 0.000 seconds
+ PASS - test_three_slots in 0.000 seconds
+TESTSUITE ring_devices failed.
+SUITE FAIL -  85.71% [ring_devices]: pass = 6, fail = 1, skip = 0, total = 7 duration = 0.000 seconds
+ - PASS - [ring_devices.test_choose_pair_slot] duration = 0.000 seconds
+ - PASS - [ring_devices.test_new_pairing_becomes_active] duration = 0.000 seconds
+ - PASS - [ring_devices.test_next_wraps] duration = 0.000 seconds
+ - PASS - [ring_devices.test_plan] duration = 0.000 seconds
+ - PASS - [ring_devices.test_remove_and_active] duration = 0.000 seconds
+ - FAIL - [ring_devices.test_switch_decision] duration = 0.000 seconds
+ - PASS - [ring_devices.test_three_slots] duration = 0.000 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 14.57 seconds.
+INFO    - 6 of 7 executed test cases passed (85.71%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_devices.logic on native_sim/native failed (rc=1)
+twister exit code on the broken copy: 1 (log /ws/out/20261111-133801-mut-devices-broken/twister.log)
+RESULT PASS
+devices script exit 0
+# finished (Mac clock): 2026-11-11 13:38:41 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-133801-mut.log

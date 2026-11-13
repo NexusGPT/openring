@@ -1,0 +1,82 @@
+* own model: Nordic nPM1304 power chip, built only from values of the maker's datasheet v1.0 (design/datasheets/npm1304_datasheet_v1_0.pdf, PDF page numbers). No maker SPICE model exists.
+* Behavioural, not switching: the buck outputs are ideal regulated sources (no ripple, no inductor, no SW pins), the power path is current-limited conductances.
+* Every number below has its page. A number marked MODEL CHOICE is not a maker value; it only keeps the model stable and is listed in sim-notes.md.
+*
+* ports: VBUS VBUSOUT VSYS VBAT VOUT1 VOUT2 LSIN1 LSOUT1 LSIN2 LSOUT2 VSET1 VSET2 LS1EN LS2EN CHGEN
+*   LS1EN, LS2EN, CHGEN are logic nodes (0 or 1 V) that stand for the host's register writes (TASKLDSW1SET etc., BCHGENABLESET); they are not pins.
+* params: ichg   charge current limit, 15 mA after decision 65 (p29 ICHG 4 to 100 mA)
+*         vterm  termination voltage, 4.35 V after decision 65 (p29 VTERM, p36 option 4V35)
+*         ichg_acc, vterm_acc  relative error corner (p29: ICHGACC +-10 percent, VTERMACC +-1 percent)
+*         ibuslim VBUS input current limit: 0.1 A default (p17 IBUS100MA, minimum 95 mA), 0.5 A (IBUS500MA)
+*         ss1, ss2 soft start current of the load switches: 25 mA register default, 25 50 75 100 mA selectable (p77 LDSWCONFIG)
+*         ssdis1, ssdis2  1 = soft start disabled (p77 LDSW[n]SOFTSTARTDISABLE)
+*         eta    efficiency of the bucks (MODEL CHOICE 0.90; p45 states 93 percent only at VSYS 3.8 V, 3.3 V out, 200 mA)
+.subckt NPM1304 vbus vbusout vsys vbat vout1 vout2 lsin1 lsout1 lsin2 lsout2 vset1 vset2 ls1en ls2en chgen params: ichg=15m vterm=4.35 ichg_acc=0 vterm_acc=0 ibuslim=0.1 ss1=25m ss2=25m ssdis1=0 ssdis2=0 eta=0.90
+*
+* ---- VBUS valid (p17 Table 9): VBUS - VBAT > VBUSVALIDR 210 mV, VBUS above VBUSMIN 3.6 V, below VBUSOVP 5.5 V
+* with hysteresis: valid goes high when VBUS - VBAT > VBUSVALIDR 210 mV (rising, p17), low when it falls below VBUSVALIDF 160 mV (p17), or VBUS below VBUSMIN 3.6 V (p17) or above VBUSOVP 5.5 V (p17)
+Clat lat 0 1n IC=0
+Blat 0 lat I = ((v(vbus)-v(vbat) > 0.21) && (v(vbus) > 3.6) && (v(vbus) < 5.5) && (v(lat) < 1.0) ? 1m : 0) - (((v(vbus)-v(vbat) < 0.16) || (v(vbus) <= 3.6) || (v(vbus) >= 5.5)) && (v(lat) > 0) ? 1m : 0)
+Bvalid valid 0 V = (v(lat) > 0.5) ? 1 : 0
+* ---- VBUS to VSYS: RON 300 mohm (p17), current limited at ibuslim
+* 0 V sources only read currents: i(vsv) VBUS current, i(vsb) battery path current, i(vsl1), i(vsl2) load switch currents, i(vsn1), i(vsn2) buck output currents
+Vsv vbus vbx 0
+Bvs vbx vsys I = (v(valid) > 0.5) ? ( ((v(vbus)-v(vsys)) > 0) ? min((v(vbus)-v(vsys))/0.3, ibuslim) : 0 ) : 0
+* ---- battery to VSYS: RONCHARGER 550 mohm (p29), limited at IBATLIM 100 mA (p29, p11)
+Vsb vbat bsx 0
+Bbs bsx vsys I = ((v(vbat)-v(vsys)) > 0) ? min((v(vbat)-v(vsys))/0.55, 0.1) : 0
+* ---- VBUSOUT: RVBUSOUT 7.5 ohm from VBUS when valid (p17); pull-down RPDVBUSOUT 35 kohm when VBUS is gone (p17)
+Bvo vbx vbusout I = (v(valid) > 0.5) ? (v(vbus)-v(vbusout))/7.5 : 0
+Bpdvo vbusout 0 I = (v(valid) > 0.5) ? 0 : v(vbusout)/35k
+* ---- charger from VSYS to VBAT: constant current ichg, constant voltage vterm, trickle 10 percent of ichg below 2.9 V (p29), none below VBATLOW 2.1 V (p29)
+Bch vsys vbat I = ( (v(chgen) > 0.5) && (v(valid) > 0.5) && (v(vbat) > 2.1) ) ? max(0, min( ichg*(1+ichg_acc)*((v(vbat) < 2.9) ? 0.1 : 1), (vterm*(1+vterm_acc) - v(vbat))*1000 )) : 0
+*
+* ---- VSET resistor sense (MODEL CHOICE: 10 uA into the pin, R = V / 10 uA, nearest nominal value of Table 15 and 16, p43)
+Iset1 0 vset1 10u
+Iset2 0 vset2 10u
+* ranges are geometric midpoints between the nominal resistances of the tables; below 100 ohm = grounded = BUCK off (p42)
+Bs1 s1 0 V = (v(vset1)/10u < 100) ? 0 : (v(vset1)/10u < 6856) ? 1.0 : (v(vset1)/10u < 14832) ? 1.2 : (v(vset1)/10u < 32157) ? 1.5 : (v(vset1)/10u < 56530) ? 1.8 : (v(vset1)/10u < 82462) ? 2.0 : (v(vset1)/10u < 122474) ? 2.2 : (v(vset1)/10u < 193649) ? 2.5 : 2.7
+Bs2 s2 0 V = (v(vset2)/10u < 100) ? 0 : (v(vset2)/10u < 6856) ? 1.8 : (v(vset2)/10u < 14832) ? 2.0 : (v(vset2)/10u < 32157) ? 2.2 : (v(vset2)/10u < 56530) ? 2.4 : (v(vset2)/10u < 82462) ? 2.5 : (v(vset2)/10u < 122474) ? 2.7 : (v(vset2)/10u < 193649) ? 3.0 : 3.3
+*
+* ---- BUCK enable: VSYS above VSYSMIN 2.7 V (p45) and a VSET resistor present (p42)
+* VSYS power-fail comparator with hysteresis: falling threshold 2.7 V default, rising 100 mV above (p109 Table 27 VSYSPOF, POF rising threshold 2.8 V)
+Cpof pof 0 1n IC=0
+Bpof 0 pof I = ((v(vsys) > 2.8) && (v(pof) < 1.0) ? 1m : 0) - ((v(vsys) < 2.7) && (v(pof) > 0) ? 1m : 0)
+Ben1 en1 0 V = (v(pof) > 0.5 && v(s1) > 0.1) ? 1 : 0
+Ben2 en2 0 V = (v(pof) > 0.5 && v(s2) > 0.1) ? 1 : 0
+* soft start ramp: 1.2 ms to full output (p45 tSTRT, VOUT = 3.3 V, 10 uF)
+Cenv1 env1 0 1.2m
+Bienv1 0 env1 I = v(en1)
+Benvd1 env1 0 I = (1 - v(en1)) * v(env1) / 1
+Cenv2 env2 0 1.2m
+Bienv2 0 env2 I = v(en2)
+Benvd2 env2 0 I = (1 - v(en2)) * v(env2) / 1
+* target: set value times ramp (capped at 1), limited to VSYS minus drop-out voltage 100 mV (p45 VDROP_OUT, 1 mA load)
+Bt1 t1 0 V = min(v(s1) * min(v(env1), 1), max(v(vsys) - 0.1, 0))
+Bt2 t2 0 V = min(v(s2) * min(v(env2), 1), max(v(vsys) - 0.1, 0))
+* output: beyond IOUT 200 mA (p45, "maximum BUCK current to maintain performance") the model lets the output fall 5 V per ampere (MODEL CHOICE, no maker value)
+Bo1 x1 0 V = v(t1) - 5*max(0, abs(i(vsn1)) - 0.2)
+Vsn1 x1 vout1 0
+Bo2 x2 0 V = v(t2) - 5*max(0, abs(i(vsn2)) - 0.2)
+Vsn2 x2 vout2 0
+* active output discharge RDISCH 2 kohm when disabled (p45)
+Bdis1 vout1 0 I = (1 - v(en1)) * v(vout1) / 2k
+Bdis2 vout2 0 I = (1 - v(en2)) * v(vout2) / 2k
+* input current from VSYS = output power / (eta * VSYS)
+Bin1 vsys 0 I = max(i(vsn1), 0) * v(vout1) / (eta * max(v(vsys), 0.5))
+Bin2 vsys 0 I = max(i(vsn2), 0) * v(vout2) / (eta * max(v(vsys), 0.5))
+*
+* ---- load switches (p68, p69): RDSONLS 200 mohm, soft start current limit until the output has caught up, then no limit (p68 text)
+* latch done: 1 once VIN - VOUT is below (soft start current x RDSON), i.e. the limit no longer acts; cleared when the switch is off
+Cdn1 dn1 0 1u
+Bdn1 0 dn1 I = ( (v(ls1en) > 0.5) && ((v(lsin1)-v(lsout1)) < ss1*0.2) ? 1 : 0 ) * max(0, 1 - v(dn1)) - (v(ls1en) > 0.5 ? 0 : 1) * v(dn1) * 1
+Cdn2 dn2 0 1u
+Bdn2 0 dn2 I = ( (v(ls2en) > 0.5) && ((v(lsin2)-v(lsout2)) < ss2*0.2) ? 1 : 0 ) * max(0, 1 - v(dn2)) - (v(ls2en) > 0.5 ? 0 : 1) * v(dn2) * 1
+Vsl1 lsout1x lsout1 0
+Bls1 lsin1 lsout1x I = (v(ls1en) > 0.5) ? ( (((v(lsin1)-v(lsout1)) > 0) && (v(dn1) < 0.5) && (ssdis1 < 0.5)) ? min((v(lsin1)-v(lsout1))/0.2, ss1) : (v(lsin1)-v(lsout1))/0.2 ) : 0
+Vsl2 lsout2x lsout2 0
+Bls2 lsin2 lsout2x I = (v(ls2en) > 0.5) ? ( (((v(lsin2)-v(lsout2)) > 0) && (v(dn2) < 0.5) && (ssdis2 < 0.5)) ? min((v(lsin2)-v(lsout2))/0.2, ss2) : (v(lsin2)-v(lsout2))/0.2 ) : 0
+* active discharge RLSPD 2 kohm when off (p69; enabled by the firmware, firmware.md 8.1)
+Bld1 lsout1 0 I = (v(ls1en) > 0.5) ? 0 : v(lsout1) / 2k
+Bld2 lsout2 0 I = (v(ls2en) > 0.5) ? 0 : v(lsout2) / 2k
+.ends NPM1304

@@ -1,0 +1,20 @@
+Fabrication notes, flex2-us11 (band ribbon FLEX2, ring size US 11); written by design/ecad/band/make_fab.py
+Project: ring recorder, band ribbons. Board files: design/ecad/band/flex2-us11.kicad_pcb (generator build_band.py).
+
+1. Layers in this folder
+   flex2-us11-F_Cu.gbr, flex2-us11-B_Cu.gbr: copper, 12 um, two layers.
+   flex2-us11-F_Mask.gbr, flex2-us11-B_Mask.gbr: COVERLAY openings (polyimide coverlay, not liquid mask).
+   flex2-us11-User_1.gbr: STIFFENER outline, polyimide 0.10 mm, bonded on the back (B.Cu) face.
+   flex2-us11-Edge_Cuts.gbr: outline. flex2-us11.drl: vias 0.30 / 0.10 drill.
+   flex2-us11-B_Paste.gbr: SOLDER PASTE openings, disc face B (B.Cu side) (16 round openings 0.58 mm, four on each 1.6 mm disc land CP1 to CP4, centred 0.49 mm from the land centre on the diagonals, clear of the centre via). For the stencil: stainless steel, laser cut,
+   foil 0.08 mm (design/mfg/assembly/process.md section P2, rows "Band ribbon FLEX1" and "Band ribbon FLEX2").
+   No paste opening on the board-end lands (hot bar joint) nor on the cell tab lands P+, NTC, P- (soldered by hand).
+
+2. Panel (process.md section P7 "Locating features (fiducials)", change C4 of section P8)
+   The ribbon itself carries no fiducial (no copper added). The panel carries them:
+   - tooling rails of 5 mm on the panel;
+   - three fiducials of 1 mm, on the rails, on the paste face (B), centred 3.85 mm from the panel edges, not in a line.
+   Source: process.md P7, quoting the board maker's capability page (JL :102: "1 mm fiducials centered at 3.85 mm from the panel edges")
+   and P7 line "FLEX1 panel (each size): three on the switch face (F). FLEX2 panel (each size): three on the pad face (B)."
+   "Three" is marked [CHOICE] in process.md (the other option is two). The coverlay opening round each fiducial is not in a saved
+   document (process.md P7): the panel maker uses its own fiducial opening.

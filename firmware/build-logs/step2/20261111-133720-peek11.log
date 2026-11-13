@@ -1,0 +1,23 @@
+# remote.sh run 20261111-133720-peek11
+# command: O=/root/ring-os/ws/out/step2-exp-d; echo sdc_lines $(grep -c "SoftDevice Controller build" $O/run-A-ring.log); grep -E "rdev: (pairing|security|disconn)" $O/run-A-ring.log | head -5; grep -E "HOST H1 (security|pairing|disconn)" $O/run-A-host1.log | head -4; grep -E "LL_SW|LL_SOFT|BT_CTLR_ECDH|BT_LL" $O/ring/zephyr/.config | head
+# mode: host
+# started (Mac clock): 2026-11-11 13:37:20 CET
+# free on the server's /: 82 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-133720-peek11; server log /root/ring-os/logs/20261111-133720-peek11.log
+sdc_lines 0
+d_00: @00:00:00.000200  rdev: pairing window open for slot 0, 60000 ms
+d_00: @00:00:00.689303  rdev: pairing request accepted
+d_00: @00:00:05.189364  rdev: pairing failed slot 0 reason 9
+d_00: @00:00:05.189364  rdev: security slot 0 level 1 err 9
+d_00: @00:00:05.189364  rdev: disconnected slot 0, reason 0x3d
+d_01: @00:00:09.189334  HOST H1 pairing failed 9 
+d_01: @00:00:09.189334  HOST H1 security failed err 9  (t=9189)
+d_01: @00:00:09.189334  HOST H1 disconnected reason 0x08 (t=9189)
+d_01: @00:00:18.170503  HOST H1 pairing failed 9 
+CONFIG_DT_HAS_ZEPHYR_BT_HCI_LL_SW_SPLIT_ENABLED=y
+CONFIG_BT_LL_SW_SPLIT=y
+CONFIG_BT_LLL_VENDOR_NORDIC=y
+# finished (Mac clock): 2026-11-11 13:37:26 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-133720-peek11.log

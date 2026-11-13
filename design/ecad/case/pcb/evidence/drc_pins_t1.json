@@ -1,0 +1,107 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-13T00:07:32",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.8",
+    "schematic_parity": [],
+    "source": "case_pins.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Footprint E1",
+                    "pos": {
+                        "x": 100.0,
+                        "y": 98.275
+                    },
+                    "uuid": "82a0f24f-8399-4bee-9ca1-4b0dfefcbac4"
+                },
+                {
+                    "description": "Footprint P2",
+                    "pos": {
+                        "x": 98.803,
+                        "y": 100.0
+                    },
+                    "uuid": "c7cb54ea-be2c-4417-934b-07ad3ae41f7f"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Footprint E1",
+                    "pos": {
+                        "x": 100.0,
+                        "y": 98.275
+                    },
+                    "uuid": "82a0f24f-8399-4bee-9ca1-4b0dfefcbac4"
+                },
+                {
+                    "description": "Footprint P3",
+                    "pos": {
+                        "x": 101.197,
+                        "y": 100.0
+                    },
+                    "uuid": "d930323b-9862-4965-b982-56d6159ac5eb"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.2000 mm; actual 0.1750 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 102.25,
+                        "y": 97.5
+                    },
+                    "uuid": "07c1d5c5-5f30-4fab-9b8a-6c8affefa910"
+                },
+                {
+                    "description": "Pad 1 [RING_TOUCH] of E1 on F.Cu",
+                    "pos": {
+                        "x": 100.0,
+                        "y": 98.275
+                    },
+                    "uuid": "881ab3d0-34fa-4ba5-920a-8ead41490992"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        }
+    ]
+}

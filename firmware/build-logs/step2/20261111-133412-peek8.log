@@ -1,0 +1,35 @@
+# remote.sh run 20261111-133412-peek8
+# command: W=/root/ring-os/ws; D=$W/modules/bsim_hw_models/nrf_hw_models; grep -n -i "ccm\|aar\|ecb\|encrypt" $D/docs/README_impl_status.md | head -20; ls $W/nrf/tests/bsim 2>&1 | head; grep -rln "nrf54l15bsim\|nrf54lm20bsim" $W/nrf/tests $W/zephyr/tests/bsim 2>&1 | head -10; grep -n "SDC\|SOFTDEVICE\|softdevice" $W/zephyr/boards/native/nrf_bsim/Kconfig* $W/zephyr/boards/native/nrf_bsim/doc/nrf54l15bsim.rst | head; ls $W/nrfxlib/softdevice_controller/lib | head -20
+# mode: host
+# started (Mac clock): 2026-11-11 13:34:12 CET
+# free on the server's /: 53 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-133412-peek8; server log /root/ring-os/logs/20261111-133412-peek8.log
+19:| **AAR**         | Accelerated address resolver                               | &#x2714;     | &#x2714;    | &#x2714;     | &#x2714;      | See [NHW_AAR.c](../src/HW_models/NHW_AAR.c) or [NHW_54_AAR_CCM_ECB.c](../src/HW_models/NHW_54_AAR_CCM_ECB.c)               |
+22:| **CCM**         | AES CCM mode encryption                                    | &#x2714;     | &#x2714;    | &#x2714;     | &#x2714;      | See [NHW_AES_CCM.c](../src/HW_models/NHW_AES_CCM.c) or [NHW_54_AAR_CCM_ECB.c](../src/HW_models/NHW_54_AAR_CCM_ECB.c)       |
+25:| **CRACEN.CRYPTO** |                                                          | N/A          | N/A         | &#x2714;     | &#x2714;      | Only AES Crypto Engine (only ECB mode)                                                                                     |
+30:| **ECB**         | AES electronic codebook mode encryption                    | &#x2705;     | &#x2705;    | &#x2714;     | &#x2714;      |                                                                                                                            |
+ls: cannot access '/root/ring-os/ws/nrf/tests/bsim': No such file or directory
+/root/ring-os/ws/zephyr/tests/bsim/bluetooth/compile.nrf54l15bsim_nrf54l15_cpuapp.sh
+/root/ring-os/ws/zephyr/tests/bsim/bluetooth/audio/test_scripts/bap_broadcast_audio_multiple_group_multiple_bis.sh
+/root/ring-os/ws/zephyr/tests/bsim/bluetooth/audio/test_scripts/bap_broadcast_audio_vs_multiple_group_multiple_bis.sh
+/root/ring-os/ws/zephyr/tests/bsim/bluetooth/host/adv/periodic/testcase.yaml
+/root/ring-os/ws/zephyr/tests/bsim/ci.bt.sh
+/root/ring-os/ws/zephyr/tests/bsim/ci.uart.sh
+nrf52
+nrf52_bsim
+nrf53
+nrf53_bsim
+nrf54h
+nrf54l
+nrf54l_bsim
+nrf54lm
+nrf54lm_ns
+nrf54l_ns
+nrf54ls
+nrf54lv
+nrf54lv_ns
+nrf71
+# finished (Mac clock): 2026-11-11 13:34:29 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-133412-peek8.log

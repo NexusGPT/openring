@@ -1,0 +1,176 @@
+===== J-W001-B
+   joint_id : J-W001-B
+   wiring_line : W001
+   end : B
+   what_meets_what : FLEX1 SW1 pin 3, face F.Cu (reflow), switch terminal on its land, every ring size US 7 to 13
+   step : 6
+   solder_source : Kester NP505-HR SAC305 Type 4 (20 to 38 um), 88.5 % metal, no-clean, part 7040211410, printed through a 0.08 mm stainless stencil cut from the FLEX1 paste layer, one 0.55 x 0.55 opening per switch land (change C1, 12 openings per size): paste layer design/ecad/band/fab/flex1-us7/flex1-us7-F_Paste.gbr for SW1:3; paste layer design/ecad/band/fab/flex1-us8/flex1-us8-F_Paste.gbr for SW1:3; paste layer design/ecad/band/fab/flex1-us9/flex1-us9-F_Paste.gbr for SW1:3; paste layer design/ecad/band/fab/flex1-us10/flex1-us10-F_Paste.gbr for SW1:3; paste layer design/ecad/band/fab/flex1-us11/flex1-us11-F_Paste.gbr for SW1:3; paste layer design/ecad/band/fab/flex1-us12/flex1-us12-F_Paste.gbr for SW1:3; paste layer design/ecad/band/fab/flex1-us13/flex1-us13-F_Paste.gbr for SW1:3
+   flux : the ROL0 no-clean flux of the NP505-HR paste; no added liquid flux; residue left, never washed or brushed (process.md P1.2, P1.5); Alps forbids flux on the switch face
+   tool : 0.08 mm stainless laser-cut stencil, reflow oven with a thermocouple logger, the head on a flat carrier (process.md P2, P6)
+   heat : P3 profile: to 150 C at less than 2.5 C/s, 150 to 200 C in 90 to 110 s, 60 to 75 s above 217 C, at most 35 s above 230 C, peak 240 C (accepted 235 to 245 C on a thermocouple at the board surface), cool at 6 C/s or slower; 1 reflow (Alps: 260 C 3 s, 40 s above 230 C, at most 2 reflows) (process.md P3)
+   orientation : switch on the F.Cu face of the FLEX1 head, the head flat on the carrier with its stiffener under it; footprint turns SW1 90, SW2 90, SW3 -90, SW4 180, SW5 0 degrees
+   alignment : the cross at 2.4 mm from the cap axis, SW2 at the centre, 0.30 mm to its neighbours; each switch on the lands of footprint Alps_SKTAAAE010_pads34 (SW1, SW3, SW4, SW5) or Alps_SKTAAAE010_4pad (SW2), drawn in design/ecad/band/flex1-us7.kicad_pcb to flex1-us13.kicad_pcb
+   check : every joint passes the accept rules of step 2; the switch closes its own line and no other while pressed and reads open when released: ohmmeter at the FLEX1 foot between tail land 1 and land 8 (GND), lands numbered on the flex drawing flex1-usN-drawing.pdf, detail 'BOARD END OF THE RIBBON: LAND NUMBERS AND NETS' (change C13), needle tips 0.2 mm or finer; height 0.53 mm; switch base flat on the head, feeler 0.02 mm
+   check_possible_at_this_step : yes
+   source : joint_id: design/wiring/product-wiring.csv:2 | wiring_line: design/wiring/product-wiring.csv:2 | end: design/wiring/product-wiring.csv:2 | what_meets_what: design/wiring/product-wiring.csv:2 | step: design/mfg/assembly/assembly.md:130 | solder_source: design/mfg/assembly/assembly.md:133; design/mfg/assembly/process.md:86; design/mfg/assembly/process.md:195 | flux: design/mfg/assembly/v7-update-notes.md:27; design/mfg/assembly/joint-table-work/logs/flux-search.log:3 | tool: design/mfg/assembly/assembly.md:132; design/mfg/assembly/assembly.md:15 | heat: design/ecad/band/band-interface.md:106 | orientation: design/ecad/band/band-interface.md:105; design/wiring/product-wiring.csv:2; design/mfg/assembly/assembly.md:132 | alignment: design/mfg/assembly/assembly.md:134; design/ecad/band/band-interface.md:102; design/mfg/assembly/assembly.md:135 | check: design/mfg/assembly/assembly.md:136; design/mfg/assembly/hotbar-joint.md:149 | check_possible_at_this_step: design/mfg/assembly/assembly.md:136; process: design/mfg/assembly/process.md P1.2, P1.5, P2, P3, P6
+   gap : 
+===== J-W025-B
+   joint_id : J-W025-B
+   wiring_line : W025
+   end : B
+   what_meets_what : FLEX2 PRT1 pin 1 (land of footprint PRT1_Tabs), face F.Cu (hand solder (tab on land)), a tab of the bought cell pack on its land, every ring size US 7 to 13
+   step : 9
+   solder_source : Kester 275 SAC305 no-clean cored wire 0.25 mm, 2.2 % flux, part 2470687623 (process.md P1.3, P4); the land is not pre-tinned, the wire brings the solder
+   flux : the ROL0 no-clean core of the Kester 275 wire; residue left (process.md P1.3, P1.5)
+   tool : 50 W temperature-controlled soldering iron, chisel or conical tip 0.45 mm wide or narrower (process.md P4, P6)
+   heat : iron 280 C at most, 2 s per joint
+   orientation : tab P+ on land 1 (VBAT); the lands sit on the tail's outer face (F.Cu, facing the cell)
+   alignment : tabs in the order P+, NTC, P- from the slot toward the cell (lands 1, 3, 2); lands of footprint PRT1_Tabs 0.26 along the tail x 0.45 across, pitch 0.43; first land centre at s = 0.586 mm (US 7) to 1.774 mm (US 13) after the slot junction
+   check : the joints pass the accept rules of step 2; at the FLEX2 foot, lands numbered on the flex drawing, detail 'BOARD END OF THE RIBBON: LAND NUMBERS AND NETS' (change C13), needle tips 0.2 mm or finer: the red probe on tail land 1 (VBAT) and the black on land 2 (GND) read the cell voltage, positive; a negative reading: first check on the drawing that the probes sit on lands 1 and 2, only then is a tab on the wrong land; cell voltage measured before and after the joints
+   check_possible_at_this_step : yes
+   source : joint_id: design/wiring/product-wiring.csv:26 | wiring_line: design/wiring/product-wiring.csv:26 | end: design/wiring/product-wiring.csv:26 | what_meets_what: design/wiring/product-wiring.csv:26 | step: design/mfg/assembly/assembly.md:157 | solder_source: design/mfg/assembly/assembly.md:160; design/mfg/assembly/process.md:65 | flux: design/mfg/assembly/assembly.md:160; design/mfg/assembly/process.md:70 | tool: design/mfg/assembly/assembly.md:160; design/mfg/assembly/process.md:151 | heat: design/mfg/assembly/assembly.md:160 | orientation: design/mfg/assembly/assembly.md:159; design/ecad/band/band-interface.md:116 | alignment: design/mfg/assembly/assembly.md:159; design/ecad/band/band-interface.md:116; design/ecad/band/band-interface.md:116 | check: design/mfg/assembly/assembly.md:163 | check_possible_at_this_step: design/mfg/assembly/assembly.md:163; process: design/mfg/assembly/process.md P1.3, P1.5, P4, P6
+   gap : 
+===== J-W029-B
+   joint_id : J-W029-B
+   wiring_line : W029
+   end : B
+   what_meets_what : FLEX2 CP1 pin 1, face B.Cu (reflow (disc soldered flat with SAC305 paste)), gold-plated disc 1.6 mm x 0.07 mm soldered flat on its land, every ring size US 7 to 13
+   step : 8
+   solder_source : Kester NP505-HR SAC305 Type 4 (20 to 38 um), 88.5 % metal, no-clean, part 7040211410, printed through a 0.08 mm stainless stencil cut from the FLEX2 paste layer, four 0.58 mm round openings per disc land off the centre via (change C2): paste layer design/ecad/band/fab/flex2-us7/flex2-us7-B_Paste.gbr for CP1:1; paste layer design/ecad/band/fab/flex2-us8/flex2-us8-B_Paste.gbr for CP1:1; paste layer design/ecad/band/fab/flex2-us9/flex2-us9-B_Paste.gbr for CP1:1; paste layer design/ecad/band/fab/flex2-us10/flex2-us10-B_Paste.gbr for CP1:1; paste layer design/ecad/band/fab/flex2-us11/flex2-us11-B_Paste.gbr for CP1:1; paste layer design/ecad/band/fab/flex2-us12/flex2-us12-B_Paste.gbr for CP1:1; paste layer design/ecad/band/fab/flex2-us13/flex2-us13-B_Paste.gbr for CP1:1
+   flux : the ROL0 no-clean flux of the NP505-HR paste; no added liquid flux; residue left, never washed or brushed (process.md P1.2, P1.5)
+   tool : 0.08 mm stainless stencil, hot plate with a thermocouple taped on the ribbon beside a disc, tweezers, 10 times magnifier (process.md P5, P6)
+   heat : hot plate on the P3 profile: to 150 C at less than 2.5 C/s, 150 to 200 C in 90 to 110 s, 60 to 75 s above 217 C, at most 35 s above 230 C, peak 240 C (accepted 235 to 245 C on a thermocouple at the board surface), cool at 6 C/s or slower; ribbon slid off onto a metal block to cool (process.md P5)
+   orientation : flat ribbon on the plate, pad lands (B.Cu) up; one disc per land, the four discs are alike
+   alignment : disc centred on its 1.6 mm land by eye under a 10 times lens
+   check : the joint passes the accept rules of step 2; disc flat on its land and centred, no tilt; disc top 0.070 to 0.112 mm above the land copper (feeler or microscope focus, 0.02 mm steps); continuity from the disc to tail land 4 of the FLEX2 foot, numbered on the flex drawing, detail 'BOARD END OF THE RIBBON: LAND NUMBERS AND NETS' (change C13); no short between neighbouring discs or their lands; flush with the liner is checked at step 21
+   check_possible_at_this_step : yes
+   source : joint_id: design/wiring/product-wiring.csv:30 | wiring_line: design/wiring/product-wiring.csv:30 | end: design/wiring/product-wiring.csv:30 | what_meets_what: design/wiring/product-wiring.csv:30; design/mfg/assembly/assembly.md:150 | step: design/mfg/assembly/assembly.md:148 | solder_source: design/mfg/assembly/assembly.md:151 | flux: design/mfg/assembly/v7-update-notes.md:27; design/mfg/assembly/joint-table-work/logs/flux-search.log:3 | tool: design/mfg/assembly/assembly.md:151; design/mfg/assembly/assembly.md:151 | heat: design/mfg/assembly/assembly.md:151 | orientation: design/mfg/assembly/assembly.md:151; design/wiring/product-wiring.csv:30 | alignment: design/mfg/assembly/assembly.md:151 | check: design/mfg/assembly/assembly.md:154; design/mfg/assembly/process.md:163 | check_possible_at_this_step: design/mfg/assembly/assembly.md:154; process: design/mfg/assembly/process.md P1.2, P1.5, P2, P5, P6
+   gap : 
+===== J-W040-B
+   joint_id : J-W040-B
+   wiring_line : W040
+   end : B
+   what_meets_what : DISP1 cable contact 1 (ELVSS) (contact on the cable's back face) to ring main board J1 pin 1 (ELVSS), face B.Cu (pressed contact (cable plugged into J1, lever closed))
+   step : 16
+   solder_source : none: pressed contact
+   flux : none: pressed contact
+   tool : no tool on J1: fingertip on the middle of the lever, never tweezers or another sharp tool; the cable held by its stiffened end and pushed in flat to the very end; 10 times magnifier (process.md P6, change C18)
+   heat : none: pressed contact, no heat; lever open (1.8 mm high), cable in, lever closed
+   orientation : screen turned 180 degrees; the cable enters J1 from the fingertip side (+X), lying flat above the board, contacts facing UP away from the board, contact 1 on the +Y side (antenna side); the glass-and-panel unit lies folded away beyond the fingertip end while the cable goes in
+   alignment : J1 by its land pattern on the screen face at X -4.933, Y -0.003; the cable's neck, 4.8 mm wide, centred in J1's opening; the cable end at X -4.833
+   check : latch closed over the whole cable width (magnifier); contact 1 on the +Y side, checked on the maker's drawing page 5 before the lever is closed; cable flat in J1 and not skewed; continuity of every contact proven in the same step before step 17 closes J1: ring on its cell, USB from the jig through CP1 to CP4, FACTORY ENTER, screen folded down, T-SCREEN and T-SIGN pass; on a fault the cable is re-seated (process.md P8 change C12)
+   check_possible_at_this_step : yes
+   source : joint_id: design/wiring/product-wiring.csv:41 | wiring_line: design/wiring/product-wiring.csv:41 | end: design/wiring/product-wiring.csv:41 | what_meets_what: design/wiring/product-wiring.csv:41 | step: design/mfg/assembly/assembly.md:216 | solder_source: design/wiring/product-wiring.csv:41 | flux: design/wiring/product-wiring.csv:41 | tool: design/mfg/assembly/assembly.md:219; design/mfg/assembly/process.md:175 | heat: design/mfg/assembly/assembly.md:218; design/wiring/screen-cable-study.md:59 | orientation: design/mfg/assembly/assembly.md:53; design/mfg/assembly/assembly.md:218; design/wiring/screen-cable-study.md:211 | alignment: design/mfg/assembly/assembly.md:218; design/mfg/assembly/assembly.md:220; design/mfg/assembly/assembly.md:218 | check: design/mfg/assembly/assembly.md:222 | check_possible_at_this_step: design/mfg/assembly/assembly.md:222; process: design/mfg/assembly/process.md P6, P8 C12
+   gap : 
+===== J-W054-A
+   joint_id : J-W054-A
+   wiring_line : W054
+   end : A
+   what_meets_what : FLEX2 CP1 1 (gold disc face) (B.Cu) under case spring pin P1's plunger tip; pressed contact (pin tip on the disc)
+   step : 28
+   solder_source : none: pressed contact
+   flux : none: pressed contact
+   tool : none: the ring is set by hand into the pocket and around the post, lid closed
+   heat : no heat; the pins push the band with 4 x 0.39 N
+   orientation : ring with its band axis vertical, the band's bottom face on the floor, the block in the pocket on the +X side of the post; a ring flipped over is not blocked at every size (the case then blinks amber 3 times: turn the ring over)
+   alignment : pin y equals pad y within 0.006 mm (pins at +3.521, +1.197, -1.197, -3.521); pin working height 1.98 to 2.15 mm over the 7 sizes, inside the maker's 1.90 to 2.20 mm
+   check : the case lights blue breathing while it copies; no attach within 3 s gives an amber blink 3 times; on the first case the ring is listed by the case's chip and 100 MB are copied without an error
+   check_possible_at_this_step : yes
+   source : joint_id: design/wiring/product-wiring.csv:55 | wiring_line: design/wiring/product-wiring.csv:55 | end: design/wiring/product-wiring.csv:55 | what_meets_what: design/wiring/product-wiring.csv:55 | step: design/mfg/assembly/assembly.md:315; design/mfg/assembly/assembly.md:317 | solder_source: design/wiring/product-wiring.csv:55 | flux: design/wiring/product-wiring.csv:55 | tool: design/case/case-architecture.md:151 | heat: design/case/case-architecture.md:59 | orientation: design/case/case-architecture.md:217; design/case/case-architecture.md:223; design/case/case-architecture.md:155 | alignment: design/ecad/case/pcb/board-notes.md:172; design/case/case-architecture.md:151 | check: design/case/case-architecture.md:156; design/case/case-architecture.md:155; design/wiring/lead-decisions.md:60 | check_possible_at_this_step: design/case/case-architecture.md:156
+   gap : 
+===== J-W054-B
+   joint_id : J-W054-B
+   wiring_line : W054
+   end : B
+   what_meets_what : case pin board (PCB2) through hole,F.Cu,B.Cu, spring pin P1 (Harwin P70-6000045R) in its plated hole; solder (P1 to P4 soldered to PCB2)
+   step : case 4
+   solder_source : Kester NP505-HR SAC305 Type 4 (20 to 38 um), 88.5 % metal, no-clean, part 7040211410, printed through a 0.10 mm stainless stencil cut from the pin board paste file, one ring opening (1.70 mm outside, 1.10 mm inside) over each pin pad (pin in paste, case step 4 (a), change C6): paste layer design/ecad/case/pcb/fab/case_pins/gerber/case_pins-F_Paste.gbr for P1:1
+   flux : the ROL0 no-clean flux of the NP505-HR paste; no added liquid flux; residue left, never washed or brushed (process.md P1.2, P1.5)
+   tool : 0.10 mm stainless stencil, reflow oven with a thermocouple logger, PCB2 on a carrier with holes for the pin tails (process.md P4, P6)
+   heat : P3 profile: to 150 C at less than 2.5 C/s, 150 to 200 C in 90 to 110 s, 60 to 75 s above 217 C, at most 35 s above 230 C, peak 240 C (accepted 235 to 245 C on a thermocouple at the board surface), cool at 6 C/s or slower; pin limit 260 C for 10 s (Harwin product page) (process.md P3, P4)
+   orientation : pin on the front face of PCB2 (F.Cu, the face with the pins and the five wire pads), only the 0.60 mm plunger stands out of the holder
+   alignment : pin in its plated hole (pad 1.70, hole 1.10, footprint HARWIN_P70_6000045R); wing marks 'P1 +' and 'P4 -' on the front face: the mark on each wing, not its shape, tells which is which
+   check : depth gauge after the stakes are formed: free plunger tip in front of the holder face, P2 and P3 1.170 mm +-0.04, P1 and P4 1.021 mm +-0.03 [needs case 5]; continuity plunger tip to its main board pad, beep below about 50 ohm [needs case 9]
+   check_possible_at_this_step : no, case 9
+   source : joint_id: design/wiring/product-wiring.csv:55 | wiring_line: design/wiring/product-wiring.csv:55 | end: design/wiring/product-wiring.csv:55 | what_meets_what: design/wiring/product-wiring.csv:55 | step: design/ecad/case/pcb/board-notes.md:318 | solder_source: design/ecad/case/pcb/board-notes.md:318; design/mfg/assembly/process.md P4 | flux: design/mfg/assembly/v7-update-notes.md:27; design/mfg/assembly/joint-table-work/logs/flux-search.log:3 | tool: design/case/case-architecture.md:238; design/wiring/product-wiring.csv:55 | heat: design/case/case-architecture.md:238 | orientation: design/ecad/case/pcb/board-notes.md:358; design/case/case-architecture.md:234 | alignment: design/ecad/case/pcb/board-notes.md:48; design/ecad/case/pcb/board-notes.md:321 | check: design/ecad/case/pcb/board-notes.md:319; design/ecad/case/pcb/board-notes.md:323 | check_possible_at_this_step: design/ecad/case/pcb/board-notes.md:323; process: design/mfg/assembly/process.md P1.2, P1.5, P3, P4, P6
+   gap : 
+===== J-W063-A
+   joint_id : J-W063-A
+   wiring_line : W063
+   end : A
+   what_meets_what : case pin board (PCB2) WP1 pin 1, face F.Cu (hand solder), wire W1 red (30 AWG stranded) laid on the pad
+   step : case 7
+   solder_source : Kester 275 SAC305 no-clean cored wire 0.4 mm, 2.2 % flux, part 2470687608, also for tinning the stripped ends at case step 2 (process.md P1.3, P4)
+   flux : the ROL0 no-clean core of the Kester 275 wire; residue left (process.md P1.3, P1.5)
+   tool : 50 W temperature-controlled soldering iron, chisel tip 0.9 mm wide or narrower (process.md P4, P6)
+   heat : tip 340 C, at most 7 s per joint (process.md P4; a choice for the lead to confirm)
+   orientation : stripped end laid flat on the pad of the same number, on the front face of the pin board; order inside the end W4, W2, W3, W7, W1
+   alignment : each wire pad in the column of its pin (WP1 with P1, WP2 under P2, WP3 under P3, WP4 under P4, WP7 in the middle below E1); pads 0.9 mm wide, WP2, WP7 and WP3 only 0.30 mm apart
+   check : colour against the table and the wire not touching the next pad; continuity at case step 9, beep below about 50 ohm [needs case 9]
+   check_possible_at_this_step : no, case 9
+   source : joint_id: design/wiring/product-wiring.csv:64 | wiring_line: design/wiring/product-wiring.csv:64 | end: design/wiring/product-wiring.csv:64 | what_meets_what: design/wiring/product-wiring.csv:64; design/wiring/lead-decisions.md:68 | step: design/ecad/case/pcb/board-notes.md:321 | solder_source: design/ecad/case/pcb/board-notes.md:316 | flux: design/mfg/assembly/v7-update-notes.md:27; design/mfg/assembly/joint-table-work/logs/flux-search.log:3 | tool: design/wiring/product-wiring.csv:64 | heat: design/ecad/case/pcb/board-notes.md:316 | orientation: design/ecad/case/pcb/board-notes.md:321; design/ecad/case/pcb/board-notes.md:320 | alignment: design/ecad/case/pcb/board-notes.md:321 | check: design/ecad/case/pcb/board-notes.md:321; design/ecad/case/pcb/board-notes.md:323 | check_possible_at_this_step: design/ecad/case/pcb/board-notes.md:323; process: design/mfg/assembly/process.md P1.3, P1.5, P4, P6
+   gap : 
+===== J-W059-B
+   joint_id : J-W059-B
+   wiring_line : W059
+   end : B
+   what_meets_what : case main board (PCB1) W5 pin 1, face through hole,F.Cu,B.Cu (hand solder), the case cell's own lead
+   step : case 10
+   solder_source : Kester 275 SAC305 no-clean cored wire 0.5 mm, 2.2 % flux, part 2470687603 (process.md P1.3, P4)
+   flux : the ROL0 no-clean core of the Kester 275 wire; residue left (process.md P1.3, P1.5)
+   tool : 50 W temperature-controlled soldering iron, chisel tip 1.3 mm wide or narrower (process.md P4, P6)
+   heat : tip 340 C, at most 7 s per joint (process.md P4; the cell maker gives no limit; a choice for the lead to confirm)
+   orientation : red lead (+) through the hole marked 'W5 +', cut 13.0 mm, 2 mm stripped; before cutting, the red probe on the red lead reads +3.0 to 4.35 V
+   alignment : mark 'W5 +' 1.35 mm from hole W5 on the bottom face of the main board, printed mirrored
+   check : red probe on pad W5, black probe on pad W6: +3.0 to 4.35 V, the same reading as before cutting (process.md P8 change C16)
+   check_possible_at_this_step : yes
+   source : joint_id: design/wiring/product-wiring.csv:60 | wiring_line: design/wiring/product-wiring.csv:60 | end: design/wiring/product-wiring.csv:60 | what_meets_what: design/wiring/product-wiring.csv:60 | step: design/ecad/case/pcb/board-notes.md:324 | solder_source: design/ecad/case/pcb/board-notes.md:324 | flux: design/mfg/assembly/v7-update-notes.md:27; design/mfg/assembly/joint-table-work/logs/flux-search.log:3 | tool: design/wiring/product-wiring.csv:60 | heat: design/wiring/lead-decisions.md:70 | orientation: design/ecad/case/pcb/board-notes.md:324; design/ecad/case/pcb/board-notes.md:324 | alignment: design/ecad/case/pcb/board-notes.md:324 | check: design/ecad/case/pcb/board-notes.md:324 | check_possible_at_this_step: design/ecad/case/pcb/board-notes.md:324; process: design/mfg/assembly/process.md P1.3, P1.5, P4, P6, P8 C16
+   gap : 
+===== J-W061-B
+   joint_id : J-W061-B
+   wiring_line : W061
+   end : B
+   what_meets_what : case main board (PCB1) TH1 pin 1 (plated hole of footprint NTC_wired), face through hole,F.Cu,B.Cu (hand solder), a bare lead of the 103AT-2 thermistor
+   step : case 10
+   solder_source : Kester 275 SAC305 no-clean cored wire 0.5 mm, 2.2 % flux, part 2470687603 (process.md P1.3, P4)
+   flux : the ROL0 no-clean core of the Kester 275 wire; residue left (process.md P1.3, P1.5)
+   tool : 50 W soldering iron, chisel tip 1.3 mm wide or narrower (process.md P4, P6)
+   heat : at most 7 seconds at 340 degrees C, the joint 5 mm or more from the bead
+   orientation : either way round, one lead in each of the two holes TH1.1 and TH1.2, leads cut to 10 mm from the bead
+   alignment : mark 'TH1' 1.45 mm below the two thermistor holes, bottom face, printed mirrored
+   check : the two bare leads stay 2.54 mm apart and touch nothing else (by eye); continuity test to the cell's can: open
+   check_possible_at_this_step : yes
+   source : joint_id: design/wiring/product-wiring.csv:62 | wiring_line: design/wiring/product-wiring.csv:62 | end: design/wiring/product-wiring.csv:62 | what_meets_what: design/wiring/product-wiring.csv:62 | step: design/ecad/case/pcb/board-notes.md:324 | solder_source: design/ecad/case/pcb/board-notes.md:324 | flux: design/mfg/assembly/v7-update-notes.md:27; design/mfg/assembly/joint-table-work/logs/flux-search.log:3 | tool: design/ecad/case/pcb/board-notes.md:324 | heat: design/ecad/case/pcb/board-notes.md:324; design/ecad/case/pcb/board-notes.md:324 | orientation: design/ecad/case/pcb/board-notes.md:324 | alignment: design/ecad/case/pcb/board-notes.md:324 | check: design/wiring/lead-decisions.md:71 | check_possible_at_this_step: design/wiring/lead-decisions.md:71; process: design/mfg/assembly/process.md P1.3, P1.5, P4, P6
+   gap : 
+===== J-W036-A
+   joint_id : J-W036-A
+   wiring_line : W036
+   end : A
+   what_meets_what : ring main board ANT1 pin 1 (FEED), face F.Cu (reflow (part on the main board)), the antenna's pad on its maker's land pattern
+   step : 2
+   solder_source : paste layer design/ecad/ring/pcb/fab/gerber/ring-F_Paste.gbr for ANT1:1
+   flux : the ROL0 no-clean flux of the NP505-HR paste; no added liquid flux; residue left, never washed or brushed (process.md P1.2, P1.5)
+   tool : 0.075 mm stainless laser-cut stencil, reflow oven with a thermocouple logger (pass 2) (process.md P2, P6)
+   heat : P3 profile: to 150 C at less than 2.5 C/s, 150 to 200 C in 90 to 110 s, 60 to 75 s above 217 C, at most 35 s above 230 C, peak 240 C (accepted 235 to 245 C on a thermocouple at the board surface), cool at 6 C/s or slower; pass 2, 1 reflow for this part (process.md P3)
+   orientation : pass 2: parts face (F.Cu) up, the board on a carrier with the screen face down and a pocket under J1; nobody moves the board while the solder is liquid
+   alignment : by hand: the stencil laid on the board and moved until every opening sits over its land, seen under the 10 times magnifier (the board itself has no fiducial); a placing machine uses the three 1 mm fiducials on the panel rails of the face (change C4); in pass 2 the board on its outline in the carrier with a pocket under J1 (process.md P7, P6)
+   check : optical inspection of every part of the parts face after pass 2 other than U1, U2, U4 and U3; each joint passes the eight accept rules of step 2 (paste melted and flowed; solder wets land and part end in a hollow curve; no unwetted ball, no bare ring; no bridge; no loose ball; part flat and square, not on one end; each end on its own land; no crack or hole); for ANT1 each end wetted with a hollow curve onto its land (lead-decisions.md row 'soldering process')
+   check_possible_at_this_step : yes
+   source : joint_id: design/wiring/product-wiring.csv:37 | wiring_line: design/wiring/product-wiring.csv:37 | end: design/wiring/product-wiring.csv:37 | what_meets_what: design/wiring/product-wiring.csv:37 | step: design/mfg/assembly/assembly.md:94 | solder_source: design/mfg/assembly/assembly.md:96 | flux: design/mfg/assembly/v7-update-notes.md:27; design/mfg/assembly/joint-table-work/logs/flux-search.log:3 | tool: design/mfg/assembly/assembly.md:15 | heat: design/mfg/assembly/assembly.md:99; design/mfg/assembly/assembly.md:100; design/mfg/assembly/process.md:104 | orientation: design/mfg/assembly/assembly.md:96 | alignment: design/mfg/assembly/assembly.md:101; design/mfg/assembly/process.md:185; design/mfg/assembly/process.md:189 | check: design/mfg/assembly/assembly.md:103; design/wiring/lead-decisions.md:82 | check_possible_at_this_step: design/mfg/assembly/assembly.md:103; process: design/mfg/assembly/process.md P1.2, P1.5, P2, P3, P6
+   gap : 
+===== P-ring-B
+   joint_id : P-ring-B
+   wiring_line : board pass
+   end : ring B.Cu
+   what_meets_what : ring main board, screen face (KiCad B.Cu): J1 and the eight 0201 parts C1, C2, C5, C7, C14, FB1, R71, R72 (and the 12 test pads, which the stencil maker closes)
+   step : 2
+   solder_source : paste layer design/ecad/ring/pcb/fab/gerber/ring-B_Paste.gbr for parts of design/ecad/ring/pcb/fab/ring-pos-back.csv except TP1,TP3,TP4,TP5,TP6,TP12,TP14,TP15,TP17,TP18,TP19,TP21; J1 to Hirose's stencil pattern (8 openings 0.65 x 0.23, 7 of 0.55 x 0.23, 2 tabs 0.70 x 0.30); the 12 test pads get no paste (0 of 12 with an opening, checked by the guide helper, not by R4) (board-notes-r4.md E1, E8; process.md P2 change C3)
+   flux : the ROL0 no-clean flux of the NP505-HR paste; no added liquid flux; residue left, never washed or brushed (process.md P1.2, P1.5)
+   tool : 0.10 mm stainless laser-cut, electro-polished stencil, reflow oven with a thermocouple logger (pass 1) (process.md P2, P6)
+   heat : P3 profile: to 150 C at less than 2.5 C/s, 150 to 200 C in 90 to 110 s, 60 to 75 s above 217 C, at most 35 s above 230 C, peak 240 C (accepted 235 to 245 C on a thermocouple at the board surface), cool at 6 C/s or slower; this face sees pass 1 and pass 2: J1 at its limit of 2 reflows, so never a third reflow (process.md P3)
+   orientation : pass 1, first: the screen face; the parts face goes second
+   alignment : by hand: the stencil laid on the board and moved until every opening sits over its land, seen under the 10 times magnifier (the board itself has no fiducial); a placing machine uses the three 1 mm fiducials on the panel rails of the face (change C4); in pass 2 the board on its outline in the carrier with a pocket under J1 (process.md P7, P6)
+   check : optical inspection of the screen face at 10 times: J1 flat with none of its 15 contact tails and 2 mounting tails lifted, no bridge between neighbouring contacts (0.3 mm pitch), each 0201 part in place and not tilted, no solder on any of the 12 test pads
+   check_possible_at_this_step : yes
+   source : joint_id: design/mfg/assembly/assembly.md:96 | wiring_line: design/mfg/assembly/assembly.md:96 | end: design/mfg/assembly/assembly.md:96 | what_meets_what: design/mfg/assembly/assembly.md:96; design/mfg/assembly/assembly.md:96 | step: design/mfg/assembly/assembly.md:94 | solder_source: design/mfg/assembly/assembly.md:96 | flux: design/mfg/assembly/v7-update-notes.md:27; design/mfg/assembly/joint-table-work/logs/flux-search.log:3 | tool: design/mfg/assembly/assembly.md:15 | heat: design/mfg/assembly/assembly.md:99; design/mfg/assembly/assembly.md:100; design/mfg/assembly/process.md:104 | orientation: design/mfg/assembly/assembly.md:96 | alignment: design/mfg/assembly/assembly.md:101; design/mfg/assembly/process.md:185; design/mfg/assembly/process.md:189 | check: design/mfg/assembly/assembly.md:103; design/wiring/lead-decisions.md:82 | check_possible_at_this_step: design/mfg/assembly/assembly.md:103; process: design/mfg/assembly/process.md P1.2, P1.5, P2, P3, P6
+   gap : 

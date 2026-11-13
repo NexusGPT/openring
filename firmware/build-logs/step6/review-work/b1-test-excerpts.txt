@@ -1,0 +1,842 @@
+##### store test_sector_map: store/src/test_layout.c l.7, 18 assertion lines
+   9: 	zassert_equal(rst_lay_sb_lba(0), 0u);
+   10: 	zassert_equal(rst_lay_sb_lba(1), 1u);
+   11: 	zassert_equal(rst_lay_sb_lba(6), 0u);
+   12: 	zassert_equal(rst_lay_sb_lba(7), 1u, "the superblock goes to LBA sb_seq mod 2 (FW l.587)");
+   13: 	zassert_equal(rst_lay_log_lba(1), 2u, "the first record is in the first sector of the log area");
+   14: 	zassert_equal(rst_lay_log_lba(2), 3u);
+   15: 	zassert_equal(rst_lay_log_lba(2046), 2047u, "the last sector of the log area");
+   16: 	zassert_equal(rst_lay_index_lba(0), 8192u);
+   17: 	zassert_equal(rst_lay_index_lba(65535), 73727u);
+   18: 	zassert_equal(rst_lay_chunk_total(81920), 0u, "no room for a chunk");
+   19: 	zassert_equal(rst_lay_chunk_total(81920 + 64), 0u, "64 sectors do not hold a chunk of 65");
+   20: 	zassert_equal(rst_lay_chunk_total(81920 + 65), 1u);
+   21: 	zassert_equal(rst_lay_chunk_total(81920 + 130), 2u);
+   22: 	zassert_equal(rst_lay_chunk_total(100), 0u, "a card smaller than the metadata areas");
+##### store test_chunk_lba_wraps: store/src/test_layout.c l.30, 7 assertion lines
+   34: 	zassert_equal(rst_lay_chunk_lba(total, total - 1), 81920u + 118931u * 65u);
+   35: 	zassert_equal(rst_lay_chunk_lba(total, total), 81920u, "s = total wraps to the first chunk");
+   36: 	zassert_equal(rst_lay_chunk_lba(total, total + 1), 81920u + 65u);
+   37: 	zassert_equal(rst_lay_chunk_lba(total, 2 * total + 5), 81920u + 5u * 65u);
+   38: 	zassert_equal(rst_lay_chunk_lba(7, 6), 81920u + 6u * 65u);
+   39: 	zassert_equal(rst_lay_chunk_lba(7, 7), 81920u);
+   40: 	zassert_equal(rst_lay_chunk_lba(7, 8), 81920u + 65u);
+##### store test_examples: store/src/test_layout.c l.44, 2 assertion lines
+   46: 	zassert_equal(rst_lay_chunk_total(7812500), 118932u);
+   47: 	zassert_equal(rst_lay_chunk_total(7226562), 109917u);
+##### store test_mount_picks_newer_valid_copy: store/src/test_log.c l.16, 17 assertion lines
+   27: 	zassert_equal(rst_log_pick_sb(a, b, &out, &which), 0);
+   28: 	zassert_equal(which, 1);
+   29: 	zassert_equal(out.head_chunk_seq, 50u, "B (sb_seq 5) beats A (sb_seq 4)");
+   34: 	zassert_equal(rst_log_pick_sb(a, b, &out, &which), 0);
+   35: 	zassert_equal(which, 0);
+   36: 	zassert_equal(out.head_chunk_seq, 60u, "A (sb_seq 6) beats B (sb_seq 5)");
+   40: 	zassert_equal(rst_log_pick_sb(a, b, &out, &which), 0);
+   41: 	zassert_equal(which, 1);
+   42: 	zassert_equal(out.head_chunk_seq, 50u, "a copy with a bad CRC is not used");
+   48: 	zassert_equal(rst_log_pick_sb(a, b, &out, &which), 0);
+   49: 	zassert_equal(which, 1);
+   50: 	zassert_equal(out.sb_seq, 5u, "a copy with a bad magic is not used");
+   56: 	zassert_equal(rst_log_pick_sb(a, b, &out, &which), 0);
+   57: 	zassert_equal(which, 0);
+##### store test_three_tries_then_fault_open_flag_kept: store/src/test_svc.c l.384, 20 assertion lines
+   395: 	zassert_equal(rst_open(RREC_REC_TYPE_RECORDING, 0, &id), 0);
+   400: 	zassert_equal(tst_done_last_err(), 0, "written on the third try");
+   401: 	zassert_equal(rhw_sim_disk_write_calls() - w0, 3u, "1 + 2 tries");
+   402: 	zassert_equal(fault_n, 0);
+   404: 	zassert_equal(rst_close(NULL, &a), 0);
+   410: 	zassert_equal(rst_open(RREC_REC_TYPE_RECORDING, 0, &id), 0);
+   417: 	zassert_equal(rst_put_chunk(&big, tst_done_cb), 0);
+   418: 	zassert_equal(rst_put_chunk(&second, tst_done_cb), 0, "a second chunk waits behind the first");
+   419: 	zassert_true(tst_wait_done(2, 20000));
+   420: 	zassert_equal(tst_done_last_err(), -EIO);
+   421: 	zassert_equal(fault_n, 1, "the write fault is reported once");
+   422: 	zassert_equal(fault_err, -EIO);
+   423: 	zassert_equal(rhw_sim_disk_write_calls() - w0, 3u, "3 tries, and nothing more for the chunk behind it");
+   424: 	zassert_equal(rst_put_chunk(&big, tst_done_cb), -EIO, "after the fault no chunk is taken");
+##### store test_stop_on_each_mismatch: store/src/test_recovery.c l.34, 9 assertion lines
+   42: 	zassert_equal(run_scan(3, 5, &sc), 0);
+   43: 	zassert_equal(sc.kept, 4u, "all four are good");
+   77: 			zassert_equal(rst_fmt_chunk_encode(&rc, NULL), 0);
+   81: 		zassert_equal(run_scan(3, 5, &sc), 0);
+   82: 		zassert_equal(sc.kept, 2u, "field %d: stops at the first mismatch (0 magic, 1 header CRC, 2 payload CRC, "
+   89: 	zassert_equal(run_scan(3, 5, &sc), 0);
+   90: 	zassert_equal(sc.kept, 0u, "chunk 6 where chunk 5 was expected");
+   92: 	zassert_equal(run_scan(3, 5, &sc), 0);
+   93: 	zassert_equal(sc.kept, 0u, "nothing written");
+##### store test_tail_moves_over_leading_only: store/src/test_delete.c l.88, 24 assertion lines
+   98: 	zassert_equal(recs(3, 2, ids, dg), 0);
+   100: 		zassert_equal(rst_confirm(ids[i], dg[i]), 0);
+   102: 	zassert_equal(rst_space(&sp), 0);
+   103: 	zassert_equal(sp.free_chunks, 100u - 6u);
+   105: 	zassert_equal(rst_delete(ids[1], &freed), 0, "the second of three");
+   106: 	zassert_equal(freed, 94u, "free unchanged: the deleted recording is in the middle");
+   107: 	zassert_equal(rst_space(&sp), 0);
+   108: 	zassert_equal(sp.free_chunks, 94u);
+   109: 	zassert_equal(rst_list(0, 4, li, &n), 0);
+   110: 	zassert_equal(n, 2);
+   111: 	zassert_equal(li[0].recording_id, ids[0]);
+   112: 	zassert_equal(li[1].recording_id, ids[2]);
+   116: 	zassert_equal(mi.space.free_chunks, 94u, "also after a restart");
+   117: 	zassert_equal(mi.recordings, 2u);
+##### store test_buffer_of_8_drops_oldest: store/src/test_evlog.c l.28, 7 assertion lines
+   38: 	zassert_equal(b.n, 8u, "8 records wait");
+   39: 	zassert_equal(b.dropped, 2u, "two dropped and counted");
+   41: 		zassert_true(rst_evbuf_peek(&b, &got));
+   42: 		zassert_equal(got.code, c, "the oldest kept is record %u", c);
+   45: 	zassert_false(rst_evbuf_peek(&b, &got));
+   46: 	zassert_equal(b.dropped, 2u);
+   53: 	zassert_equal(rst_log_dropped(), 2u);
+##### store test_init_three_tries_200ms: store/src/test_svc.c l.226, 22 assertion lines
+   237: 	zassert_equal(rst_mount(true, &mi), 0);
+   240: 	zassert_equal(n, 4u, "rail on, 3 init calls");
+   241: 	zassert_equal(e[0].kind, RHW_EV_PMIC_RAIL);
+   242: 	zassert_equal(e[1].kind, RHW_EV_DISK_INIT);
+   243: 	zassert_equal(e[1].res, -EIO);
+   244: 	zassert_equal(e[2].res, -EIO);
+   245: 	zassert_equal(e[3].res, 0);
+   246: 	zassert_true(e[2].t_us - e[1].t_us >= 200000 && e[2].t_us - e[1].t_us < 205000, "gap 1: %lld us",
+   248: 	zassert_true(e[3].t_us - e[2].t_us >= 200000 && e[3].t_us - e[2].t_us < 205000, "gap 2: %lld us",
+   250: 	zassert_true(rst_mounted());
+   251: 	zassert_equal(rst_unmount(), 0);
+   258: 	zassert_equal(rst_mount(true, &mi), -EIO);
+   259: 	zassert_true(k_uptime_get() - t0 >= 400 && k_uptime_get() - t0 < 410, "2 gaps of 200 ms, not 3");
+   261: 	zassert_equal(n, 6u, "rail on, 3 init calls, suspend, rail off");
+##### store test_digest: store/src/test_fmt.c l.357, 3 assertion lines
+   364: 	zassert_equal(s, 0x6ddb5d74u, "3 chunks: got 0x%08x", s);
+   365: 	zassert_equal(rst_fmt_digest_add(0, 0xDEADBEEFu), 0x1a5a601fu, "1 chunk");
+   366: 	zassert_equal(rst_fmt_digest_add(0, 0x11111111u) != rst_fmt_digest_add(0, 0x11111112u), true);
+##### audio test_discard_800_frames: audio/src/test_chunk.c l.62, 6 assertion lines
+   68: 	zassert_is_null(rac_cut(&s, &cl), "768 frames are all inside the discard");
+   69: 	zassert_equal(cl.duration_frames, 0);
+   76: 	zassert_not_null(c);
+   77: 	zassert_equal(c->hdr.frames, 224, "1,024 - 800");
+   78: 	zassert_equal(cl.duration_frames, 224);
+   79: 	zassert_equal(t_left(c, 0), 800, "the first kept frame is raw frame 800, not 0");
+##### audio test_dropout_zero_fill: audio/src/test_chunk.c l.124, 26 assertion lines
+   130: 	zassert_ok(rac_block(&s, NULL, t_ops()));
+   134: 	zassert_not_null(c);
+   135: 	zassert_equal(c->hdr.frames, 1760, "10 blocks = 2,560 raw frames - 800: the length does not change");
+   136: 	zassert_equal(cl.duration_frames, 1760);
+   137: 	zassert_equal(c->hdr.dropout_blocks, 1);
+   138: 	zassert_equal(c->hdr.flags, RREC_CH_FLAG_FIRST | RREC_CH_FLAG_LAST | RREC_CH_FLAG_DROPOUT, "0x83");
+   139: 	zassert_equal(t_left(c, 735), 1535, "the frame before the gap");
+   141: 		zassert_equal(t_left(c, i), 0, "frame %u zero", i);
+   142: 		zassert_equal(t_right(c, i), 0, "frame %u zero", i);
+   144: 	zassert_equal(t_left(c, 992), 1792, "the stream goes on in place after the gap");
+   145: 	zassert_equal(t_dropouts(), 1, "logged once");
+   146: 	zassert_equal(t_dropout_chunk(0), 0);
+   147: 	zassert_equal(t_dropout_block(0), 2, "at frame 736 of the chunk = block position 2");
+   153: 	zassert_ok(rac_block(&s, NULL, t_ops()));
+##### audio test_interval_frames: audio/src/test_motor.c l.28, 6 assertion lines
+   38: 	zassert_not_null(c);
+   39: 	zassert_equal(c->hdr.frames, 4320);
+   40: 	zassert_equal(c->hdr.motor_count, 1);
+   41: 	zassert_equal(c->hdr.motor_frames[0][0], 2400, "start = frame of MOTOR high");
+   42: 	zassert_equal(c->hdr.motor_frames[0][1], 3840, "end = frame of MOTOR low + 800");
+   43: 	zassert_true(c->hdr.flags & RREC_CH_FLAG_MOTOR, "flag bit 3");
+##### audio test_fifth_merged_into_fourth: audio/src/test_motor.c l.99, 8 assertion lines
+   114: 	zassert_not_null(c);
+   115: 	zassert_equal(c->hdr.motor_count, 4, "at most 4");
+   116: 	zassert_equal(c->hdr.motor_frames[0][0], 100);
+   117: 	zassert_equal(c->hdr.motor_frames[0][1], 1000);
+   118: 	zassert_equal(c->hdr.motor_frames[1][0], 1100);
+   119: 	zassert_equal(c->hdr.motor_frames[2][0], 2100);
+   120: 	zassert_equal(c->hdr.motor_frames[3][0], 3100);
+   121: 	zassert_equal(c->hdr.motor_frames[3][1], 5000, "the fifth's end moved into the fourth");
+##### audio test_ring_of_three: audio/src/test_svc.c l.157, 11 assertion lines
+   165: 	zassert_equal(si_puts(), 3, "three chunks handed over, no fourth");
+   166: 	zassert_equal(reads_so_far(), reads, "the audio thread waits for a free chunk: it reads nothing more");
+   168: 		zassert_equal(memcmp(si_live(i), si_copy(i), sizeof(struct rst_chunk)), 0, "chunk %d not overwritten", i);
+   169: 		zassert_equal(si_copy(i)->hdr.chunk_in_recording, (uint32_t)i);
+   174: 	zassert_equal(si_puts(), 4, "the fourth chunk waited for a free buffer");
+   175: 	zassert_equal(si_copy(3)->hdr.first_frame_index, 24576);
+   176: 	zassert_equal(t_left(si_copy(3), 0), 25376, "24,576 + 800: the frames did not skip");
+   177: 	zassert_equal(si_copy(3)->hdr.dropout_blocks, 0);
+   179: 		zassert_equal(memcmp(si_live(i), si_copy(i), sizeof(struct rst_chunk)), 0, "chunk %d still intact", i);
+   181: 	zassert_equal(svc_ev.dropouts, 0);
+   182: 	zassert_equal(sizeof(((struct rst_chunk *)0)->bytes), 33280);
+##### audio test_no_block_100ms_reports: audio/src/test_svc.c l.269, 4 assertion lines
+   274: 	zassert_equal(svc_ev.no_block, 1, "reported once");
+   277: 	zassert_true(last > 0);
+   280: 	zassert_true(d >= 100 && d <= 101, "reported %lld ms after the last block (100 expected)", d);
+   281: 	zassert_ok(rau_halt());
+##### audio test_hfxo_before_trigger: audio/src/test_svc.c l.42, 4 assertion lines
+   51: 	zassert_true(req >= 0, "HFXO requested");
+   52: 	zassert_true(run > req, "HFXO running after its request (%d, %d)", req, run);
+   53: 	zassert_true(cfg > run, "configure after HFXO runs (running %d, configure %d)", run, cfg);
+   54: 	zassert_true(trg > cfg, "trigger after configure (%d, %d)", cfg, trg);
+##### audio test_highlight_frame_from_down_time: audio/src/test_chunk.c l.268, 6 assertion lines
+   277: 	zassert_not_null(c1);
+   278: 	zassert_equal(c1->hdr.highlight_count, 1);
+   279: 	zassert_equal(c1->hdr.highlight_frame[0], 8800, "frame number of CENTRE_DOWN, not an offset in the chunk");
+   280: 	zassert_equal(cl.highlight_count, 1);
+   281: 	zassert_equal(cl.highlight_ms[0], 550, "8,800 frames = 550 ms from the first kept frame");
+   282: 	zassert_equal(cl.highlight_ms[1], 0xFFFFFFFFu);
+##### audio test_dmic_config_values: audio/src/test_cfg.c l.21, 11 assertion lines
+   25: 	zassert_false(rhw_sim_mic_last_cfg(&got), "nothing configured before the start");
+   27: 	zassert_true(rhw_sim_mic_last_cfg(&got));
+   28: 	zassert_equal(got.pcm_rate, 16000, "FW l.411");
+   29: 	zassert_equal(got.pcm_width, 16, "FW l.412");
+   30: 	zassert_equal(got.channels, 2, "FW l.413");
+   31: 	zassert_equal(got.min_pdm_clk_hz, 1200000, "FW l.415");
+   32: 	zassert_equal(got.max_pdm_clk_hz, 1650000, "FW l.415");
+   33: 	zassert_equal(got.gain_db, 0, "FW l.417");
+   34: 	zassert_equal(got.block_size, 1024, "FW l.419");
+   35: 	zassert_equal(got.block_count, 8, "FW l.420");
+   41: 	zassert_true(c >= 0 && d > c && s > d, "configure %d, pins default %d, start %d", c, d, s);
+##### audio test_flags_each_bit: audio/src/test_chunk.c l.199, 9 assertion lines
+   201: 	zassert_equal(flags_of(true, false, -1, 0, false, false), 0x03, "first and last only");
+   202: 	zassert_equal(flags_of(true, false, -1, 0, false, true), 0x0B, "bit 3: a motor interval");
+   203: 	zassert_equal(flags_of(true, false, 0, INT16_MIN, false, false), 0x13, "bit 4: -32768");
+   204: 	zassert_equal(flags_of(true, false, 1, INT16_MAX, false, false), 0x13, "bit 4: 32767");
+   205: 	zassert_equal(flags_of(false, false, -1, 0, false, false), 0x23, "bit 5: time not set");
+   206: 	zassert_equal(flags_of(true, true, -1, 0, false, false), 0x43, "bit 6: battery at B15 or under");
+   207: 	zassert_equal(flags_of(true, false, -1, 0, true, false), 0x83, "bit 7: dropout");
+   217: 	zassert_not_null(c);
+   218: 	zassert_equal(c->hdr.flags, 0x03, "no clip flag for a sample that was dropped");
+##### xfer test_header_bytes: xfer/src/test_proto.c l.46, 13 assertion lines
+   54: 	zassert_equal(go(RREC_OP_CONFIRM, 0x12345678u, pl, 8, &res), 0);
+   55: 	zassert_equal(cap.total, 16u);
+   56: 	zassert_mem_equal(cap.buf, want_confirm, 16);
+   61: 	zassert_equal(go(RREC_OP_GET_BATTERY, 0xCAFEF00Du, NULL, 0, &res), 0);
+   62: 	zassert_equal(cap.total, 25u);
+   63: 	zassert_equal(cap.buf[0], 0x52);
+   64: 	zassert_equal(cap.buf[1], 0x52);
+   65: 	zassert_equal(cap.buf[2], 0x07, "opcode at offset 2");
+   66: 	zassert_equal(cap.buf[3], 0x00, "status at offset 3");
+   67: 	zassert_mem_equal(cap.buf + 4, ((const uint8_t[]){ 0x0D, 0xF0, 0xFE, 0xCA }), 4, "tag at offset 4");
+   68: 	zassert_mem_equal(cap.buf + 8, ((const uint8_t[]){ 9, 0, 0, 0 }), 4, "length at offset 8");
+   69: 	zassert_equal(cap_crc(), xt_crc(0, batt, 9), "crc of the payload at offset 12");
+   70: 	zassert_mem_equal(cap.buf + 16, batt, 9);
+##### xfer test_unknown_opcodes: xfer/src/test_proto.c l.242, 6 assertion lines
+   253: 		zassert_equal(xt_run(RREC_USB_MPS_FS, rq, n, &res), 0);
+   254: 		zassert_equal(cap_status(), RREC_ST_UNKNOWN_OPCODE, "opcode %02x", op);
+   255: 		zassert_equal(cap.total, 16u);
+   256: 		zassert_equal(cap_tag(), 0x77000000u + op);
+   259: 	zassert_equal(unknown, 243u);
+   261: 		zassert_true(rxf_proto_opcode_known((uint8_t)op));
+##### xfer test_list_args: xfer/src/test_proto.c l.284, 16 assertion lines
+   294: 		zassert_equal(go(RREC_OP_LIST_RECORDINGS, 9, pl, 6, &res), 0);
+   295: 		expect_error_only(RREC_ST_BAD_ARG, 9);
+   297: 	zassert_equal(fk.calls[RREC_OP_LIST_RECORDINGS], 0u, "the backend saw no invalid range");
+   301: 		zassert_equal(go(RREC_OP_LIST_RECORDINGS, 9, pl, 6, &res), 0);
+   302: 		zassert_equal(cap_status(), RREC_ST_OK, "max %u", good[i]);
+   303: 		zassert_equal(fk.last_max, good[i]);
+   304: 		zassert_equal(fk.last_first, 0x01020304u, "first passes through as a u32");
+   307: 	zassert_equal(go(RREC_OP_LIST_RECORDINGS, 9, pl, 5, &res), 0);
+   308: 	zassert_equal(cap_status(), RREC_ST_BAD_ARG);
+   309: 	zassert_equal(go(RREC_OP_LIST_RECORDINGS, 9, pl, 7, &res), 0);
+   310: 	zassert_equal(cap_status(), RREC_ST_BAD_ARG);
+   314: 	zassert_equal(go(RREC_OP_LIST_RECORDINGS, 9, pl, 6, &res), 0);
+   315: 	zassert_equal(cap_status(), RREC_ST_STORAGE_ERROR);
+   317: 	zassert_equal(go(RREC_OP_LIST_RECORDINGS, 9, pl, 6, &res), 0);
+##### xfer test_get_info_layout: xfer/src/test_proto.c l.266, 7 assertion lines
+   271: 	zassert_equal(go(RREC_OP_GET_INFO, 1, NULL, 0, &res), 0);
+   272: 	zassert_equal(cap_len(), 35u);
+   274: 		zassert_equal(cap.buf[16 + i], 0xA0 + i, "byte %u in the backend's order", i);
+   276: 	zassert_equal(go(RREC_OP_GET_INFO, 1, &one, 1, &res), 0);
+   277: 	zassert_equal(cap_status(), RREC_ST_BAD_ARG);
+   279: 	zassert_equal(go(RREC_OP_GET_INFO, 1, NULL, 0, &res), 0);
+   280: 	expect_error_only(RREC_ST_STORAGE_ERROR, 1);
+##### xfer test_busy_while_running: xfer/src/test_proto.c l.731, 18 assertion lines
+   737: 	zassert_equal(go(RREC_OP_GET_BATTERY, 0x10, NULL, 0, &res), 0);
+   738: 	zassert_equal(cap_status(), RREC_ST_OK, "the first command finishes normally");
+   739: 	zassert_equal(nested_outcome, 0);
+   740: 	zassert_equal(nested_n, 16u, "BUSY is the 16-byte header");
+   741: 	zassert_equal(nested_resp[3], RREC_ST_BUSY, "status 7");
+   742: 	zassert_equal(nested_resp[2], RREC_OP_GET_INFO, "the opcode is echoed");
+   743: 	zassert_equal(xt_le(nested_resp + 4, 4), 0x5151u, "the tag is echoed");
+   744: 	zassert_equal(xt_le(nested_resp + 8, 4), 0u);
+   745: 	zassert_equal(fk.calls[RREC_OP_GET_INFO], 0u, "the second command did not run");
+   746: 	zassert_equal(fk.after_calls, 1u, "only the command that ran is reported");
+   747: 	zassert_equal(nested_res.status, RREC_ST_BUSY);
+   748: 	zassert_false(nested_res.dispatched);
+   751: 	zassert_equal(go(RREC_OP_GET_INFO, 0x11, NULL, 0, &res), 0);
+   752: 	zassert_equal(cap_status(), RREC_ST_OK);
+##### xfer test_descriptor_bytes_fs_hs: xfer/src/test_desc.c l.12, 6 assertion lines
+   27: 	zassert_equal(rxf_desc_get(RHW_USB_FS, d), 23u);
+   28: 	zassert_mem_equal(d, fs, sizeof(fs), "full speed table");
+   30: 	zassert_equal(rxf_desc_get(RHW_USB_HS, d), 23u);
+   31: 	zassert_mem_equal(d, hs, sizeof(hs), "high speed table");
+   32: 	zassert_equal(rxf_desc_mps(RHW_USB_FS), 64u);
+   33: 	zassert_equal(rxf_desc_mps(RHW_USB_HS), 512u);
+##### xfer test_stack_follows_vbus: xfer/src/test_svc.c l.77, 13 assertion lines
+   82: 	zassert_false(rhw_sim_usb_enabled(), "no stack without VBUS");
+   83: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_USB_ENABLE), 0u, "no enable before VBUS");
+   84: 	zassert_equal(rhw_sim_usb_host_write(one, 1), -ENODEV, "nothing listens without VBUS");
+   88: 	zassert_true(rhw_sim_usb_enabled());
+   89: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_USB_ENABLE), 1u);
+   90: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_USB_DISABLE), 0u);
+   94: 	zassert_false(rhw_sim_usb_enabled());
+   95: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_USB_ENABLE), 1u);
+   96: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_USB_DISABLE), 1u);
+   103: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_USB_ENABLE), 2u);
+   104: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_USB_DISABLE), 2u);
+   109: 	zassert_true(e1 >= 0 && e1 < d1 && d1 < e2, "enable, disable, enable in this order");
+   110: 	zassert_false(rhw_sim_usb_enabled());
+##### xfer test_factory_not_allowed: xfer/src/test_proto.c l.654, 12 assertion lines
+   663: 		zassert_equal(go(RREC_OP_FACTORY, 0x31, subs[i], 2, &res), 0);
+   664: 		expect_error_only(RREC_ST_NOT_ALLOWED, 0x31);
+   665: 		zassert_equal(res.status, RREC_ST_NOT_ALLOWED);
+   666: 		zassert_equal(fk.last_factory[0], subs[i][0], "the backend got the sub-command byte");
+   669: 	zassert_equal(go(RREC_OP_FACTORY, 0x32, subs[1], 2, &res), 0);
+   670: 	zassert_equal(cap_status(), RREC_ST_OK);
+   671: 	zassert_equal(cap_len(), 3u);
+   672: 	zassert_equal(cap.buf[16], 0xC0);
+   673: 	zassert_equal(fk.last_factory[0], 0x02, "FACTORY_EXIT is sub-command 0x02");
+   674: 	zassert_equal(fk.last_factory_len, 2u);
+   676: 	zassert_equal(go(RREC_OP_FACTORY, 0x33, NULL, 0, &res), 0);
+   677: 	expect_error_only(RREC_ST_BAD_ARG, 0x33);
+##### xfer test_bad_crc: xfer/src/test_proto.c l.219, 7 assertion lines
+   226: 	zassert_equal(xt_run(RREC_USB_MPS_FS, rq, n, &res), 0);
+   227: 	expect_error_only(RREC_ST_BAD_CRC, 0x01020304u);
+   231: 	zassert_equal(xt_run(RREC_USB_MPS_FS, rq, n, &res), 0);
+   232: 	expect_error_only(RREC_ST_BAD_CRC, 0x01020305u);
+   236: 	zassert_equal(xt_run(RREC_USB_MPS_FS, rq, n, &res), 0);
+   237: 	expect_error_only(RREC_ST_BAD_CRC, 0x01020306u);
+   238: 	zassert_equal(fk.calls[RREC_OP_CONFIRM] + fk.calls[RREC_OP_GET_INFO], 0u, "no command ran");
+##### xfer test_response_length_exact: xfer/src/test_proto.c l.144, 25 assertion lines
+   150: 	zassert_equal(go(RREC_OP_GET_INFO, 1, NULL, 0, &res), 0);
+   151: 	zassert_equal(cap.total, 16u + 35u);
+   152: 	zassert_equal(cap_len(), 35u);
+   153: 	zassert_equal(go(RREC_OP_GET_BATTERY, 1, NULL, 0, &res), 0);
+   154: 	zassert_equal(cap.total, 16u + 9u);
+   156: 	zassert_equal(go(RREC_OP_DELETE, 1, pl, 4, &res), 0);
+   157: 	zassert_equal(cap.total, 16u + 4u);
+   158: 	zassert_equal(xt_le(cap.buf + 16, 4), 777u, "free chunks after, u32");
+   161: 	zassert_equal(go(RREC_OP_LIST_RECORDINGS, 1, pl, 6, &res), 0);
+   162: 	zassert_equal(cap.total, 16u + 2u + 3u * 64u);
+   163: 	zassert_equal(cap_len(), 2u + 3u * 64u);
+   165: 	zassert_equal(go(RREC_OP_GET_LOG, 1, pl, 6, &res), 0);
+   166: 	zassert_equal(cap.total, 16u + 2u + 2u * 512u);
+   174: 		zassert_equal(go(RREC_OP_FACTORY, 2, &fac, 1, &res), 0);
+##### power test_soc_edges: power/src/test_levels.c l.10, 3 assertion lines
+   31: 		zassert_equal(v.soc_x10, t[i].pct_x10, "case %u: gauge value passed on", (unsigned)i);
+   32: 		zassert_equal(v.level, t[i].level, "case %u: soc %u (x10) level %u", (unsigned)i, t[i].pct_x10,
+   35: 		zassert_equal(rpwl_level(t[i].pct_x10, 3900, 1), t[i].level, "pure rule, case %u", (unsigned)i);
+##### power test_voltage_edges: power/src/test_levels.c l.40, 7 assertion lines
+   54: 		zassert_equal(v.battery_mv, t[i].mv, "case %u: sample passed on", (unsigned)i);
+   55: 		zassert_equal(v.level, t[i].level, "case %u: %u mV level %u", (unsigned)i, t[i].mv, v.level);
+   56: 		zassert_equal(rpwl_level(800, t[i].mv, 1), t[i].level, "pure rule, case %u", (unsigned)i);
+   59: 	zassert_equal(rpwl_level(800, 34509, 10), 0);
+   60: 	zassert_equal(rpwl_level(800, 34500, 10), 2);
+   61: 	zassert_equal(rpwl_level(800, 33001, 10), 2);
+   62: 	zassert_equal(rpwl_level(800, 33000, 10), 3);
+##### power test_mean_of_ten_in_recording: power/src/test_levels.c l.68, 4 assertion lines
+   84: 		zassert_equal(v.battery_mv, mv[j - 1], "sample %u was taken", j);
+   86: 			zassert_equal(v.level, 3, "mean of ten is 3,300 mV: B2 at sample 10");
+   88: 			zassert_not_equal(v.level, 3, "mean 3,306 mV: no longer B2 after sample 11");
+   90: 			zassert_not_equal(v.level, 3, "sample %u: mean above 3,300 mV, not B2", j);
+##### power test_charge_on_twice_writes_once: power/src/test_charger.c l.22, 9 assertion lines
+   28: 	zassert_ok(rpw_charge_on());
+   29: 	zassert_equal(n_enable(1), 1, "enabled once");
+   30: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_PMIC_CHG_CURRENT), 1, "current written once");
+   31: 	zassert_true(rhw_sim_pmic_charger_on());
+   32: 	zassert_equal(rhw_sim_pmic_charger_ua(), 15000);
+   34: 	zassert_ok(rpw_charge_on());
+   35: 	zassert_equal(n_enable(1), 1, "the second call enabled nothing");
+   36: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_PMIC_CHG_CURRENT), 1, "the second call wrote nothing");
+   37: 	zassert_equal(rhw_sim_log_count(), n1, "the second call made no call at all");
+##### power test_disable_write_enable_order: power/src/test_charger.c l.59, 10 assertion lines
+   64: 	zassert_ok(rhw_pmic()->charger_enable(true));
+   66: 	zassert_ok(rpw_charge_on());
+   67: 	zassert_equal(rhw_sim_log_count(), 3);
+   71: 	zassert_equal(pw_ev(a).kind, RHW_EV_PMIC_CHG_ENABLE);
+   72: 	zassert_equal(pw_ev(a).a0, 0, "first: disable");
+   73: 	zassert_equal(pw_ev(b).kind, RHW_EV_PMIC_CHG_CURRENT);
+   74: 	zassert_equal(pw_ev(b).a0, 15000);
+   75: 	zassert_equal(pw_ev(b).a1, 0, "the current is written while the charger is disabled");
+   76: 	zassert_equal(pw_ev(c).kind, RHW_EV_PMIC_CHG_ENABLE);
+   77: 	zassert_equal(pw_ev(c).a0, 1, "last: enable");
+##### power test_motor_charge_added: power/src/test_gauge.c l.9, 15 assertion lines
+   18: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_GAUGE_START), 1);
+   22: 	zassert_true(g >= 0, "a gauge step after the sample");
+   24: 	zassert_within(pw_ev(g).a1, 1000, 2, "the sample covers 1,000 ms");
+   25: 	zassert_within(pw_ev(g).a0, 54500, 100, "3,000 uA measured + about 51,500 uA of the motor (FW l.927)");
+   26: 	zassert_within(pw_ev(g).a0, 3000 + 51500000 / pw_ev(g).a1, 1, "I_fed = I_measured + Q / t over the ms fed");
+   29: 	zassert_true(g >= 0);
+   30: 	zassert_equal(pw_ev(g).a0, 3000, "the charge was used once");
+   32: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_GAUGE_PROCESS), 3);
+   35: 	zassert_equal(rpwl_fed_ua(3000, 51500, 1000), 54500);
+   36: 	zassert_equal(rpwl_fed_ua(3000, 51500, 2000), 3000 + 25750, "spread over the longer sample");
+   37: 	zassert_equal(rpwl_fed_ua(-15000, 0, 1000), -15000, "charging current is kept as it is");
+   38: 	zassert_equal(rpwl_fed_ua(-15000, 51500, 1000), 36500);
+   39: 	zassert_equal(rpwl_fed_ua(3000, 51500, 0), 3000, "no time, no division");
+   53: 	zassert_true(g >= 0);
+##### power test_period_per_state: power/src/test_sample.c l.9, 4 assertion lines
+   29: 	zassert_equal(rpw_priv_period_ms(), 60000, "60 s until rpw_state says otherwise");
+   32: 		zassert_equal(rpw_priv_period_ms(), want[st], "state %u", st);
+   33: 		zassert_equal(rpwl_period_ms(st), want[st], "pure rule, state %u", st);
+   38: 	zassert_equal(rpw_priv_period_ms(), 60000, "an unknown state changes nothing");
+##### power test_entry_order_without_vbus: power/src/test_ship.c l.43, 21 assertion lines
+   52: 	zassert_equal(rpw_ship(hook), -ETIMEDOUT, "the simulated chip cannot cut the supply for real: returns");
+   54: 	zassert_true(cfg >= 0, "SHPHLDCONFIG written");
+   56: 	zassert_true(str > cfg, "the strobe follows the configuration");
+   58: 	zassert_true(task > str, "the task follows the strobe");
+   59: 	zassert_equal(pw_ev(cfg).a0, 96, "FW l.938: the default press time, 96 ms");
+   60: 	zassert_equal(pw_ev(task).a0, 0, "no VBUS at the task");
+   61: 	zassert_equal(task, cfg + 2, "nothing between the three writes");
+   62: 	zassert_equal(hook_calls, 1, "the beacon hook runs once");
+   63: 	zassert_equal(hook_log_n, (uint32_t)task, "the hook runs right before the task");
+   64: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_PMIC_SHIP), 1, "one task that reached the chip");
+   65: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_PMIC_SAMPLE), 0, "no sample during the ship steps");
+   72: 		zassert_equal(rpwl_ship_next(&s, false), RPWL_SHIP_CONFIG);
+   73: 		zassert_equal(rpwl_ship_next(&s, false), RPWL_SHIP_STROBE);
+   74: 		zassert_equal(rpwl_ship_next(&s, false), RPWL_SHIP_BEFORE_TASK);
+##### power test_retry_once_after_1s: power/src/test_ship.c l.149, 13 assertion lines
+   157: 	zassert_equal(rpw_ship(NULL), -ETIMEDOUT);
+   160: 	zassert_true(task >= 0);
+   161: 	zassert_equal(pw_log_count(RREC_LOG_SHIP_RETRY), 1, "one retry record");
+   162: 	zassert_equal(cap.log[0].code, 0x0250);
+   163: 	zassert_equal(cap.log[0].n, 1);
+   164: 	zassert_equal(cap.log[0].args[0], 1, "try 1");
+   165: 	zassert_within(cap.log[0].t_ms - pw_ev(task).t_us / 1000, 1000, 2, "logged 1 s after the task");
+   167: 	zassert_true(refused > task, "the second task was tried");
+   168: 	zassert_equal(pw_ev(refused).a0, RHW_EV_PMIC_SHIP, "what was refused is the task");
+   169: 	zassert_within(pw_ev(refused).t_us - pw_ev(task).t_us, 1000000, 2000, "the retry comes 1 s after");
+   170: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_PMIC_SHIP), 1);
+   171: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_SHIP_REFUSED), 1, "once, not more");
+   172: 	zassert_within(t_end - t_start, 2000, 20, "two tries of 1 s each");
+##### power test_causes_logged_then_cleared: power/src/test_reset.c l.24, 12 assertion lines
+   32: 		zassert_ok(rpw_boot_causes(boot_log), "bit %u", bit);
+   33: 		zassert_equal(cap.n_log, 1, "bit %u: one record", bit);
+   34: 		zassert_equal(cap.log[0].code, 0x0220);
+   35: 		zassert_equal(cap.log[0].n, 3);
+   36: 		zassert_equal(cap.log[0].args[0], 1u << bit, "bit %u in the record", bit);
+   37: 		zassert_equal(cap.log[0].args[1], 0x01 + bit);
+   38: 		zassert_equal(cap.log[0].args[2], 0x10 + bit);
+   41: 		zassert_true(rd >= 0 && cl > rd, "bit %u: read, then clear", bit);
+   42: 		zassert_ok(rhw_pmic()->reset_causes(&rc, &er, &es));
+   43: 		zassert_equal(rc, 0, "bit %u: RSTCAUSE cleared", bit);
+   44: 		zassert_equal(er, 0, "bit %u: error reason cleared", bit);
+   45: 		zassert_equal(es, 0, "bit %u: error sensor cleared", bit);
+##### power test_first_active: power/src/test_ilim.c l.15, 17 assertion lines
+   26: 	zassert_equal(cap.n_ilim, 1, "one callback");
+   27: 	zassert_true(cap.ilim[0].first, "first reading of a run");
+   28: 	zassert_equal(cap.ilim[0].mv, 3777);
+   29: 	zassert_equal(cap.ilim[0].count, 1);
+   30: 	zassert_equal(pw_log_count(RREC_LOG_ILIM_ACTIVE), 1, "one record");
+   31: 	zassert_equal(cap.log[0].code, 0x0210);
+   32: 	zassert_equal(cap.log[0].n, 8);
+   33: 	zassert_equal(cap.log[0].args[0] | (cap.log[0].args[1] << 8), 3777, "battery mV");
+   34: 	zassert_equal(cap.log[0].args[2], RC_ST_RECORDING, "the state");
+   35: 	zassert_equal(cap.log[0].args[3], 1, "the screen was on");
+   36: 	zassert_equal(le32(&cap.log[0].args[4]), 1, "count 1");
+   37: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_MOTOR), 0, "no motor pattern (FW l.995)");
+   38: 	zassert_equal(rhw_sim_log_count_kind(RHW_EV_PMIC_RAIL), 0, "no rail changed");
+   39: 	zassert_equal(cap.n_level, 0, "nothing closed or refused: no level change");
+##### motor test_replace_rules: motor/src/test_player.c l.129, 13 assertion lines
+   141: 			zassert_equal(rmo_play(spec[a].id), 0);
+   146: 			zassert_equal(r, expect_ret[a][b], "%s playing, %s asked for: returned %d, expected %d",
+   147: 				      spec[a].name, spec[b].name, r, expect_ret[a][b]);
+   160: 				zassert_equal(t_n_started(), 2, "both patterns reported started");
+   161: 				zassert_equal(t_started(1)->pattern, spec[b].id);
+   168: 				zassert_equal(t_n_started(), 1, "a refused pattern is not reported");
+   173: 				zassert_equal(n, nw, "%s then %s: %d pin events, expected %d", spec[a].name, spec[b].name, n, nw);
+   178: 					zassert_equal(ev[k].high, (k % 2) == 0);
+   179: 					zassert_true(d >= e - 1 && d < e + 1000, "%s then %s: edge %d at %lld us after the call, expected %lld",
+   185: 			zassert_false(rmo_playing());
+   186: 			zassert_false(rhw_sim_motor_pin());
+   190: 	zassert_equal(refused, 8, "FW l.318: MH and MT against M1, M2, M3, MF are the 8 refusals");
+   191: 	zassert_equal(played, 41);
+##### motor test_vibration_off_keeps_the_others: motor/src/test_player.c l.218, 13 assertion lines
+   223: 	zassert_equal(rmo_play(RREC_PAT_MH), -ECANCELED);
+   224: 	zassert_equal(rmo_play(RREC_PAT_MT), -ECANCELED);
+   226: 	zassert_equal(t_pin_events(ev), 0, "MH and MT: no pin event");
+   227: 	zassert_false(rmo_playing());
+   228: 	zassert_equal(t_n_started(), 0);
+   235: 		zassert_equal(rmo_play(spec[i].id), 0, "%s plays with Vibration off", spec[i].name);
+   239: 		zassert_true(n >= 1, "%s: no edge with Vibration off", spec[i].name);
+   241: 		zassert_equal(t_n_started(), 1);
+   246: 	zassert_equal(rmo_play(RREC_PAT_M1), 0);
+   247: 	zassert_equal(rmo_play(RREC_PAT_MT), -ECANCELED);
+   248: 	zassert_true(rmo_playing());
+   251: 	zassert_equal(rmo_play(RREC_PAT_MH), 0);
+   253: 	zassert_equal(t_pin_events(ev), 4, "M1 (2 edges) and MH (2 edges)");
+##### motor test_edge_times_reported: motor/src/test_player.c l.272, 9 assertion lines
+   278: 		zassert_equal(rhw_clock()->cycles_per_sec(), 1000000u, "the simulated counter");
+   279: 		zassert_equal(rmo_play(spec[i].id), 0);
+   283: 		zassert_equal(n, spec[i].n, "%s", spec[i].name);
+   284: 		zassert_equal(t_n_edge(), n, "%s: one edge callback per pin edge", spec[i].name);
+   286: 			zassert_equal(t_edge(k)->high, ev[k].high, "%s edge %d level", spec[i].name, k);
+   287: 			zassert_equal((int64_t)t_edge(k)->cycles, ev[k].t_us, "%s edge %d: cycles %llu, pin time %lld us",
+   290: 		zassert_equal(t_n_started(), 1);
+   291: 		zassert_equal(t_started(0)->pattern, spec[i].id);
+   292: 		zassert_equal(t_started(0)->t_ms, ev[0].t_us / 1000, "%s: start time in ms", spec[i].name);
+##### motor test_one_high_per_on_segment: motor/src/test_player.c l.78, 9 assertion lines
+   84: 		zassert_equal(rmo_play(spec[i].id), 0);
+   93: 				zassert_true(k == 0 || !ev[k - 1].high, "%s: two highs in a row", spec[i].name);
+   96: 				zassert_true(k > 0 && ev[k - 1].high, "%s: low without a high", spec[i].name);
+   99: 		zassert_equal(highs, spec[i].pulses, "%s: one high per on segment", spec[i].name);
+   100: 		zassert_equal(lows, spec[i].pulses, "%s: one low per on segment", spec[i].name);
+   101: 		zassert_equal(n, 2 * spec[i].pulses, "%s: no other pin event", spec[i].name);
+   105: 	zassert_equal(rmo_play(RREC_PAT_MF), 0);
+   109: 	zassert_equal(t_pin_events(ev), 1, "MF at 150 ms: one event (the high), no pulse train");
+   110: 	zassert_true(rhw_sim_motor_pin());
+##### motor test_pin_low_between_patterns: motor/src/test_player.c l.298, 11 assertion lines
+   302: 	zassert_false(rhw_sim_motor_pin(), "low after init");
+   304: 	zassert_equal(t_pin_events(ev), 0, "no pin event while nothing plays");
+   305: 	zassert_equal(rmo_play(RREC_PAT_M3), 0);
+   313: 		zassert_equal(rhw_sim_motor_pin(), want_high[k], "M3 at %u ms", mid_ms[k]);
+   316: 	zassert_false(rhw_sim_motor_pin(), "low after M3");
+   317: 	zassert_false(rmo_playing());
+   319: 	zassert_equal(rmo_play(RREC_PAT_M1), 0);
+   321: 	zassert_false(rhw_sim_motor_pin());
+   322: 	zassert_equal(rmo_play(RREC_PAT_MH), 0);
+   324: 	zassert_false(rhw_sim_motor_pin());
+   325: 	zassert_equal(t_pin_events(ev), 6 + 2 + 2);
+##### sys test_allowed_rule: sys/src/test_update.c l.207, 9 assertion lines
+   210: 	zassert_equal(rsy_fw_begin(100u, 0u, 300u, false), 11, "30.0 % without VBUS: NOT_ALLOWED");
+   211: 	zassert_equal(rsy_fw_begin(100u, 0u, 299u, false), 11, "29.9 %: NOT_ALLOWED");
+   212: 	zassert_equal(rsy_fw_begin(100u, 0u, 0u, false), 11, "0 %: NOT_ALLOWED");
+   213: 	zassert_equal(ev_count(RHW_EV_IMG_ERASE), 0u, "a refused update erases nothing");
+   214: 	zassert_equal(rsy_fw_begin(100u, 0u, 301u, false), RREC_ST_OK, "30.1 % without VBUS: accepted");
+   215: 	zassert_equal(rsy_fw_begin(100u, 0u, 1000u, false), RREC_ST_OK, "100 %: accepted");
+   216: 	zassert_equal(rsy_fw_begin(100u, 0u, 0u, true), RREC_ST_OK, "0 % with VBUS: accepted");
+   217: 	zassert_equal(rsy_fw_begin(100u, 0u, 300u, true), RREC_ST_OK, "30.0 % with VBUS: accepted");
+   218: 	zassert_equal(ev_count(RHW_EV_IMG_ERASE), 4u);
+##### sys test_data_end_limit: sys/src/test_update.c l.69, 13 assertion lines
+   74: 	zassert_equal(rsy_fw_begin(999424u, 0u, 1000u, true), RREC_ST_OK);
+   75: 	zassert_equal(rsy_fw_data(999324u, img, 100u), RREC_ST_OK, "end exactly at 999,424 accepted");
+   78: 	zassert_equal(w, 1u);
+   79: 	zassert_equal(rsy_fw_data(999324u, img, 101u), 4, "end at 999,425 refused (BAD_ARG)");
+   80: 	zassert_equal(rsy_fw_data(999424u, img, 1u), 4, "offset 999,424 refused");
+   81: 	zassert_equal(rsy_fw_data(4294967295u, img, 2u), 4, "a sum that wraps 32 bits is refused");
+   82: 	zassert_equal(ev_count(RHW_EV_IMG_WRITE), w, "refused FW_DATA writes nothing");
+   84: 	zassert_equal(rsy_fw_begin(8192u, 0u, 1000u, true), RREC_ST_OK);
+   85: 	zassert_equal(rsy_fw_data(4096u, img, 4096u), RREC_ST_OK, "end exactly at 8,192 accepted");
+   86: 	zassert_equal(rsy_fw_data(4096u, img, 4097u), 4, "end at 8,193 refused");
+   87: 	zassert_equal(rsy_fw_data(8192u, img, 1u), 4, "offset 8,192 refused");
+   88: 	zassert_equal(ev_count(RHW_EV_IMG_WRITE), w + 1u);
+   91: 	zassert_equal(rsy_fw_data(0u, img, 16u), 4, "FW_DATA without FW_BEGIN: BAD_ARG");
+##### sys test_self_test_timeout_reboots: sys/src/test_update.c l.275, 15 assertion lines
+   279: 	zassert_equal(rsy_selftest_start(false), 1);
+   282: 	zassert_true(start_ev >= 0);
+   285: 	zassert_true(rsy_selftest_running(), "still running at 29.9 s");
+   286: 	zassert_equal(rhw_sim_image_reboots(), 0u, "no reboot before 30 s");
+   288: 	zassert_false(rsy_selftest_running(), "the window ended");
+   289: 	zassert_equal(rhw_sim_image_reboots(), 1u, "rebooted once");
+   290: 	zassert_equal(rhw_sim_image_last_reboot(), 5, "reason SELFTEST_FAIL (5)");
+   291: 	zassert_equal(ev_count(RHW_EV_IMG_CONFIRM), 0u, "never confirmed");
+   294: 	zassert_true(ev_get(start_ev, &s));
+   295: 	zassert_true(ev_get(ev_find(RHW_EV_IMG_REBOOT, 0), &r));
+   298: 	zassert_true(dt_us >= 30000000 && dt_us <= 30005000, "reboot %lld us after the start (30 s = 30,000,000 us)", dt_us);
+   299: 	zassert_equal(t_nlog(), 1);
+   300: 	zassert_equal(t_log_at(0)->code, RREC_LOG_SELFTEST);
+   301: 	zassert_equal(t_log_at(0)->args[0], 2, "log result 2 = window ended");
+##### sys test_boot_copies_valid_block_once: sys/src/test_crash.c l.86, 14 assertion lines
+   94: 	zassert_equal(rsy_crash_capture(4u, 0x0001A2B4u, 0x0001A2B5u, 0x61000000u, "audio", words64, 64u), 0);
+   95: 	zassert_equal(rhw_retained()->gpregret1_set(4u), 0);
+   98: 	zassert_equal(rsy_crash_take(&c, &gp), 1, "a valid block is found at boot");
+   99: 	zassert_equal(c.reason, 4u);
+   100: 	zassert_equal(c.pc, 0x0001A2B4u);
+   101: 	zassert_equal(c.lr, 0x0001A2B5u);
+   102: 	zassert_equal(c.psr, 0x61000000u);
+   103: 	zassert_mem_equal(c.thread, "audio", 6);
+   105: 		zassert_equal(c.stack[i], 0xA5000000u + i, "stack word %u", i);
+   107: 	zassert_equal(gp, 4u, "gpregret1 handed back");
+   110: 		zassert_equal(raw[i], 0, "retained byte %u cleared", (unsigned)i);
+   112: 	zassert_equal(rhw_sim_gpregret1_get(), 0, "gpregret1 cleared");
+   114: 	zassert_equal(rsy_crash_take(&c, &gp), 0, "the block is not copied a second time");
+   116: 	zassert_equal(rsy_crash_take(&c, &gp), 0, "nor at the boot after");
+##### sys test_guess_is_not_set: sys/src/test_time.c l.71, 11 assertion lines
+   77: 	zassert_equal(rsy_time_save(1794513600000, 60, true), 0);
+   79: 	zassert_true(rsy_time_guess(&g));
+   80: 	zassert_equal(g, 1794513600000, "the guess itself is available for the log");
+   81: 	zassert_false(rtime_is_set(), "the clock is not set by a guess");
+   82: 	zassert_equal(rtime_utc_ms(), 0, "utc_ms reads 0 (not set)");
+   83: 	zassert_false(rtime_zone_known(), "no zone is known from a guess");
+   84: 	zassert_equal(rtime_updates(), upd0, "nothing was written to the clock");
+   88: 	zassert_true(rsy_time_guess(&g2));
+   89: 	zassert_equal(g2, g);
+   90: 	zassert_false(rtime_is_set());
+   91: 	zassert_equal(rtime_utc_ms(), 0);
+##### sys test_factory_flag_survives_reboot: sys/src/test_persist.c l.21, 20 assertion lines
+   28: 	zassert_false(rsy_factory_flag(), "no flag before rsy_init");
+   30: 	zassert_equal(rsy_init(t_log_fn), 0);
+   31: 	zassert_true(rsy_factory_flag(), "flag 1 read from the settings");
+   33: 	zassert_true(rsy_factory_flag(), "flag still 1 after a reboot");
+   35: 	zassert_true(rsy_factory_flag(), "flag still 1 after a second reboot");
+   37: 	zassert_equal(rsy_time_save(1794513600000, 60, true), 0);
+   39: 	zassert_true(rsy_factory_flag(), "saving the time keeps the flag");
+   41: 	zassert_equal(rsy_factory_flag_set(false), 0);
+   42: 	zassert_false(rsy_factory_flag(), "cleared at once");
+   44: 	zassert_equal(p.factory_flag, 0, "cleared in the settings");
+   45: 	zassert_true(p.time_saved, "clearing the flag keeps the saved time");
+   46: 	zassert_equal(p.saved_utc_ms, 1794513600000);
+   48: 	zassert_false(rsy_factory_flag(), "a cleared flag stays cleared after a reboot");
+   51: 	zassert_true(rsy_time_guess(&g), "the saved time survived the flag write");
+##### sys test_self_test_no_mic: sys/src/test_update.c l.309, 8 assertion lines
+   313: 	zassert_equal(rsy_selftest_start(true), 1);
+   317: 	zassert_equal(ev_count(RHW_EV_PMIC_RAIL), 0u, "a passing self-test switches no rail");
+   318: 	zassert_equal(ev_count(RHW_EV_MIC_CONFIGURE) + ev_count(RHW_EV_MIC_START) + ev_count(RHW_EV_MIC_READ), 0u);
+   319: 	zassert_equal(strlen(rhw_sim_pmic_rail_caller(RHW_RAIL_MIC)), 0u, "the microphone rail was never written");
+   323: 	zassert_equal(rsy_selftest_start(true), 1);
+   325: 	zassert_equal(rhw_sim_image_reboots(), 1u);
+   326: 	zassert_equal(ev_count(RHW_EV_PMIC_RAIL), 0u, "a failing self-test switches no rail");
+   327: 	zassert_equal(ev_count(RHW_EV_MIC_START), 0u);
+##### factory test_flag_rules: factory/src/test_cmd.c l.26, 38 assertion lines
+   39: 			zassert_equal(fx_do(&plain[i], 1, ft != 0, out, &n, &eff), NOT_ALLOWED, "flag clear: sub 0x%02x ft %d",
+   41: 			zassert_equal(n, 0, "no response bytes");
+   42: 			zassert_equal(eff, RFA_EFFECT_NONE, "no effect");
+   44: 		zassert_equal(fx_do(mic1, sizeof(mic1), ft != 0, out, &n, &eff), NOT_ALLOWED);
+   45: 		zassert_equal(fx_do(joy, sizeof(joy), ft != 0, out, &n, &eff), NOT_ALLOWED);
+   46: 		zassert_equal(fx_do(centre, sizeof(centre), ft != 0, out, &n, &eff), NOT_ALLOWED);
+   48: 	zassert_equal(side_effects(), 0, "a refused request does nothing: %u", side_effects());
+   52: 	zassert_equal(fx_do1(0x01, false, out, &n, &eff), 0);
+   53: 	zassert_equal(eff, RFA_EFFECT_ENTER);
+   54: 	zassert_equal(n, 1);
+   55: 	zassert_equal(out[0], 0, "result pass");
+   56: 	zassert_true(rsy_factory_flag(), "ENTER keeps the flag");
+   59: 	zassert_equal(fx_do1(0x02, true, out, &n, &eff), 0);
+   60: 	zassert_equal(eff, RFA_EFFECT_EXIT);
+##### factory test_0x11_bad_arg: factory/src/test_cmd.c l.105, 10 assertion lines
+   114: 	zassert_equal(fx_do(x11, sizeof(x11), true, out, &n, &eff), BAD_ARG, "0x11 in FACTORY_TEST");
+   115: 	zassert_equal(n, 0);
+   116: 	zassert_equal(eff, RFA_EFFECT_NONE);
+   117: 	zassert_equal(fx_do(x11a, sizeof(x11a), true, out, &n, &eff), BAD_ARG);
+   118: 	zassert_equal(fx_do(x11b, sizeof(x11b), true, out, &n, &eff), BAD_ARG);
+   119: 	zassert_equal(fx_do(x11, sizeof(x11), false, out, &n, &eff), BAD_ARG, "0x11 outside FACTORY_TEST");
+   120: 	zassert_equal(side_effects(), 0, "the removed test runs nothing");
+   134: 		zassert_equal(fx_do(&r, 1, true, out, &n, &eff), BAD_ARG, "sub 0x%02x", s);
+   136: 	zassert_equal(fx_do(x11, 0, true, out, &n, &eff), BAD_ARG, "empty request");
+   137: 	zassert_equal(side_effects(), 0);
+##### factory test_rms_and_runs: factory/src/test_mic.c l.75, 18 assertion lines
+   86: 	zassert_equal(fx_do(req, sizeof(req), true, out, &n, &eff), 0);
+   87: 	zassert_equal(n, 13, "T-MIC answers 13 bytes");
+   88: 	zassert_equal(out[0], 0, "pass");
+   92: 	zassert_within(l, -230, 2, "left RMS %d tenths of dBFS", l);
+   93: 	zassert_within(r, -230, 2, "right RMS %d tenths of dBFS", r);
+   94: 	zassert_true(fx_u32(&out[5]) >= 1 && fx_u32(&out[5]) < RREC_FAC_MIC_STUCK_RUN, "left run %u", fx_u32(&out[5]));
+   95: 	zassert_true(fx_u32(&out[9]) >= 1 && fx_u32(&out[9]) < RREC_FAC_MIC_STUCK_RUN, "right run %u", fx_u32(&out[9]));
+   99: 	zassert_equal(fx_do(req, sizeof(req), true, out, &n, &eff), 0);
+   100: 	zassert_within((int16_t)fx_u16(&out[1]), -130, 2);
+   107: 	zassert_equal(fx_do(req, sizeof(req), true, out, &n, &eff), 0);
+   108: 	zassert_equal(out[0], 1, "a stuck channel fails (no run of 1,000 equal samples)");
+   109: 	zassert_true(fx_frames_seen > 30000, "about 2 s of kept frames: %u", fx_frames_seen);
+   110: 	zassert_equal(fx_u32(&out[9]), fx_frames_seen, "the stuck channel's run is every kept frame");
+   111: 	zassert_true(fx_u32(&out[5]) < RREC_FAC_MIC_STUCK_RUN, "the left channel is not stuck");
+##### factory test_no_screen_no_mic: factory/src/test_mic.c l.179, 16 assertion lines
+   189: 	zassert_equal(fx_do(req, sizeof(req), true, out, &n, &eff), 0, "the request itself is answered");
+   190: 	zassert_equal(n, 13);
+   191: 	zassert_equal(out[0], 1, "no screen: the test fails");
+   192: 	zassert_equal((int16_t)fx_u16(&out[1]), INT16_MIN, "nothing measured");
+   193: 	zassert_equal(fx_u32(&out[5]), 0);
+   194: 	zassert_equal(fx_sign_calls, 1, "the sign was asked");
+   195: 	zassert_equal(fx_mic_on_events(), 0, "VDD_MIC never on without the sign");
+   196: 	zassert_equal(fx_count(RHW_EV_MIC_START), 0, "the input never started");
+   197: 	zassert_equal(fx_count(RHW_EV_MIC_READ), 0, "no block read");
+   201: 	zassert_equal(fx_do(sreq, sizeof(sreq), true, out, &n, &eff), 0);
+   202: 	zassert_equal(out[0], 1, "T-SIGN with no sign fails too");
+   203: 	zassert_equal(fx_mic_on_events(), 0, "VDD_MIC never on");
+   204: 	zassert_equal(fx_count(RHW_EV_MIC_START), 0);
+   208: 	zassert_equal(fx_do(req, sizeof(req), true, out, &n, &eff), 0);
+##### factory test_area_write_read: factory/src/test_store.c l.11, 25 assertion lines
+   19: 	zassert_equal(fx_do1(0x50, true, out, &n, &eff), 0);
+   20: 	zassert_equal(n, 14, "T-STORE answers 14 bytes");
+   21: 	zassert_equal(out[0], 0, "pass");
+   22: 	zassert_equal(out[1], 1, "data equal");
+   23: 	zassert_true(fx_u32(&out[2]) >= 20000, "the write took %u us (the card stalls 20 ms)", fx_u32(&out[2]));
+   24: 	zassert_true(fx_u32(&out[2]) < 40000, "write time %u us", fx_u32(&out[2]));
+   25: 	zassert_equal(fx_u32(&out[10]), 0, "no test recording to delete");
+   33: 		zassert_true(rhw_sim_log_get(i, &e));
+   35: 			zassert_equal(e.a0, FAC_LBA, "the area is written at LBA 4,096, not %lld", e.a0);
+   40: 			zassert_equal(e.a0, FAC_LBA, "the area is read at LBA 4,096, not %lld", e.a0);
+   45: 	zassert_equal(area_writes, 1, "one write of 65 sectors");
+   46: 	zassert_equal(area_reads, 1, "one read of 65 sectors");
+   47: 	zassert_true(w >= 0 && r > w, "read after write");
+   52: 		zassert_true(rhw_sim_log_get(i, &e));
+##### factory test_beacon_name: factory/src/test_ship.c l.113, 16 assertion lines
+   122: 	zassert_equal(fx_do1(0x7F, true, out, &n, &eff), 0);
+   124: 	zassert_true(b.running);
+   125: 	zassert_equal(strcmp(b.name, "RingCDEF"), 0, "name '%s'", b.name);
+   126: 	zassert_equal(b.interval_ms, 100, "every 100 ms (FW l.1057)");
+   127: 	zassert_equal(b.tx_dbm, 0, "at 0 dBm (FW l.1057)");
+   128: 	zassert_false(b.connectable, "advertising that cannot be connected to (FW l.1057)");
+   129: 	zassert_equal(b.starts, 1);
+   131: 	zassert_equal(fx_count(RHW_EV_BEACON_STOP), 1);
+   133: 	zassert_equal(fx_count(RHW_EV_BEACON_STOP), 1, "a second stop does nothing");
+   138: 	zassert_equal(fx_do1(0x7E, true, out, &n, &eff), 0);
+   140: 	zassert_equal(strcmp(b.name, "Ring0A0F"), 0, "name '%s'", b.name);
+   141: 	zassert_false(b.connectable);
+   145: 	zassert_equal(rfa_beacon_name(0x000000000000F000ull, name), RREC_BEACON_NAME_LEN);
+   146: 	zassert_equal(strcmp(name, "RingF000"), 0);
+##### factory test_beacon_window: factory/src/test_ship.c l.102, 0 assertion lines
+##### factory test_fail_when_off_or_error: factory/src/test_charge.c l.20, 17 assertion lines
+   32: 		zassert_equal(result, 0, "state %d passes", st);
+   33: 		zassert_equal(state, st);
+   34: 		zassert_equal(err, 0);
+   35: 		zassert_equal(ua, 15000, "the battery current is reported");
+   40: 	zassert_equal(result, 1, "state off fails");
+   41: 	zassert_equal(state, 0);
+   47: 	zassert_equal(result, 1, "an error is latched: fail");
+   48: 	zassert_equal(state, 5, "state error (FW l.702)");
+   49: 	zassert_equal(err, 0x04, "the latched reason");
+   54: 	zassert_equal(result, 1, "a latched error fails whatever the state says");
+   55: 	zassert_equal(state, 2);
+   56: 	zassert_equal(err, 0x04);
+   59: 	zassert_equal(rfa_charge_result(0, 0), 1);
+   60: 	zassert_equal(rfa_charge_result(1, 0), 0);
+##### factory test_ppm_arithmetic: factory/src/test_xtal.c l.9, 23 assertion lines
+   14: 	zassert_equal(rfa_ppm_x10(327680, 10000, &ok), 0);
+   15: 	zassert_true(ok);
+   17: 	zassert_equal(rfa_ppm_x10(327696, 10000, &ok), 488);
+   18: 	zassert_equal(rfa_ppm_x10(327664, 10000, &ok), -488);
+   20: 	zassert_equal(rfa_ppm_x10(327697, 10000, &ok), 518);
+   23: 	zassert_false(ok);
+   25: 	zassert_true(rfa_ppm_within(500));
+   26: 	zassert_false(rfa_ppm_within(501));
+   27: 	zassert_true(rfa_ppm_within(-500));
+   28: 	zassert_false(rfa_ppm_within(-501));
+   35: 	zassert_equal(fx_do1(0x71, true, out, &n, &eff), 0);
+   36: 	zassert_equal(n, 17);
+   37: 	zassert_equal(out[0], 1, "no count: fail");
+   42: 	zassert_equal(fx_do1(0x71, true, out, &n, &eff), 0);
+##### factory test_result_layout: factory/src/test_cmd.c l.171, 21 assertion lines
+   177: 	zassert_equal(RREC_FAC_RESULT_PASS, 0);
+   178: 	zassert_equal(RREC_FAC_RESULT_FAIL, 1);
+   179: 	zassert_equal(RREC_FAC_RESULT_TIMEOUT, 2);
+   185: 	zassert_equal(n, sizeof(mic));
+   186: 	zassert_mem_equal(o, mic, sizeof(mic));
+   194: 	zassert_equal(n, sizeof(sign));
+   195: 	zassert_mem_equal(o, sign, sizeof(sign));
+   201: 	zassert_equal(n, sizeof(st));
+   202: 	zassert_mem_equal(o, st, sizeof(st));
+   209: 	zassert_equal(n, sizeof(ev));
+   210: 	zassert_mem_equal(o, ev, sizeof(ev));
+   220: 	zassert_equal(fx_do1(0x70, true, o, &n, &eff), 0);
+   221: 	zassert_equal(n, sizeof(chg));
+   222: 	zassert_mem_equal(o, chg, sizeof(chg));
+##### rhw test_disk_write_fault_at_n: rhw/src/test_rhw.c l.87, 8 assertion lines
+   91: 	zassert_ok(rhw_disk()->write(100, buf, 1), "a call before the fault is set");
+   93: 	zassert_ok(rhw_disk()->write(101, buf, 1), "call 1");
+   94: 	zassert_ok(rhw_disk()->write(102, buf, 1), "call 2");
+   95: 	zassert_equal(rhw_disk()->write(103, buf, 1), -EIO, "call 3 fails");
+   96: 	zassert_equal(rhw_disk()->write(104, buf, 1), -EIO, "call 4 fails");
+   97: 	zassert_ok(rhw_disk()->write(105, buf, 1), "call 5 works again");
+   99: 	zassert_true(all_zero(rd, 512), "a failed write stores nothing");
+   101: 	zassert_mem_equal(rd, buf, 512);
+##### rhw test_disk_cut_after_sector: rhw/src/test_rhw.c l.119, 13 assertion lines
+   124: 	zassert_ok(rhw_disk()->write(81920, buf, 65), "call 1 whole");
+   125: 	zassert_false(rhw_sim_disk_was_cut());
+   126: 	zassert_ok(rhw_disk()->write(81985, buf, 65), "call 2 is cut (the caller sees no error)");
+   127: 	zassert_true(rhw_sim_disk_was_cut());
+   128: 	zassert_ok(rhw_disk()->write(82050, buf, 65), "call 3 lost");
+   130: 	zassert_mem_equal(rd, buf + 32 * 512, 512, "sector 33 of the cut write kept");
+   132: 	zassert_true(all_zero(rd, 512), "sector 34 of the cut write lost");
+   134: 	zassert_true(all_zero(rd, 512), "the last sector of the cut write lost");
+   136: 	zassert_true(all_zero(rd, 512), "a later write lost");
+   138: 	zassert_mem_equal(rd, buf + 64 * 512, 512, "the write before the cut kept");
+   140: 	zassert_false(rhw_sim_disk_was_cut(), "the cut ends at the reboot");
+   142: 	zassert_ok(rhw_disk()->write(82050, buf, 1));
+   144: 	zassert_mem_equal(rd, buf, 512, "writes work after the reboot");
+##### rhw test_reboot_keeps_card_settings_retained: rhw/src/test_rhw.c l.954, 41 assertion lines
+   963: 	zassert_ok(rhw_sim_add_reboot_hook(hook));
+   964: 	zassert_ok(rhw_sim_add_reboot_hook(hook), "twice counts once");
+   968: 	zassert_ok(rhw_disk()->write(81920, buf, 2));
+   974: 	zassert_ok(rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on"));
+   975: 	zassert_ok(rhw_pmic()->charger_enable(true));
+   976: 	zassert_ok(rhw_hfxo()->request(NULL));
+   977: 	zassert_ok(rhw_motor()->set(true));
+   978: 	zassert_ok(rhw_usb()->enable());
+   979: 	zassert_ok(rhw_wdt()->start(8000));
+   980: 	zassert_ok(rhw_beacon()->start("RingCDEF", 100, 0, false));
+   981: 	zassert_ok(rhw_image()->erase_slot1());
+   982: 	zassert_ok(rhw_image()->write(0, buf, 16));
+   983: 	zassert_ok(rhw_image()->request_test_upgrade());
+   984: 	zassert_ok(rhw_mic()->configure(&cfg));
+##### rhw test_mic_stop_delivering: rhw/src/test_rhw.c l.302, 7 assertion lines
+   307: 	zassert_ok(rhw_mic()->configure(&cfg));
+   308: 	zassert_ok(rhw_mic()->start());
+   312: 		zassert_ok(res, "block %d delivered", i);
+   318: 	zassert_equal(res, -EAGAIN, "no third block");
+   319: 	zassert_within(k_uptime_get() - t0, 100, 1, "the read waited its whole timeout");
+   321: 	zassert_equal(res, -EAGAIN, "and none later");
+   322: 	zassert_equal(rhw_sim_mic_delivered(), 2);
+##### core test_row_16: NOT FOUND
+##### core test_sign_hook_once_per_press: core/src/test_rules.c l.428, 14 assertion lines
+   434: 	zassert_equal(hook_calls, 1, "calls for one long press");
+   435: 	zassert_equal(hook_t, TH_T0 + SPEC_LONG_MS, "time of the press");
+   436: 	zassert_true(hook_ctx_seen == &hook_marker, "context");
+   437: 	zassert_equal(out.last_row, 12);
+   438: 	zassert_equal(rc_core_state(&core), RC_ST_RECORDING);
+   443: 	zassert_equal(hook_calls, 1, "calls for one refused long press");
+   444: 	zassert_equal(out.last_row, 16);
+   445: 	zassert_equal(rc_core_state(&core), RC_ST_STANDBY);
+   446: 	zassert_false(th_has(&out, RC_ACT_OPEN));
+   447: 	zassert_false(rc_core_mic_rail(&core));
+   451: 	zassert_equal(hook_calls, 2, "calls for two long presses");
+   452: 	zassert_equal(out.last_row, 12);
+   453: 	zassert_false(rc_core_facts(&core)->sign_not_drawn, "the refusal is kept for one press only");
+   458: 	zassert_equal(hook_calls, 0);
+##### core test_sign_hook_not_called_when_refused_otherwise: core/src/test_rules.c l.461, 11 assertion lines
+   468: 	zassert_equal(hook_calls, 0, "open flag set");
+   469: 	zassert_equal(out.last_row, 13);
+   476: 		zassert_equal(hook_calls, 0, "battery %d", b);
+   477: 		zassert_equal(out.last_row, 14);
+   484: 	zassert_equal(hook_calls, 0, "free space at SFULL");
+   485: 	zassert_equal(out.last_row, 15);
+   492: 	zassert_equal(hook_calls, 0);
+   493: 	zassert_equal(out.last_row, 14);
+   503: 		zassert_equal(hook_calls, 0, "state %d", all_states[s]);
+   510: 	zassert_equal(hook_calls, 1);
+   511: 	zassert_equal(out.last_row, 12);
+##### core test_no_hook_takes_the_sign_as_drawn: core/src/test_rules.c l.514, 4 assertion lines
+   518: 	zassert_equal(out.last_row, 12);
+   519: 	TH_EXPECT(A(M1), A(OPEN));
+   525: 	zassert_equal(hook_calls, 0);
+   526: 	zassert_equal(out.last_row, 12);
+##### screens test_ilim_dim_never_dark_in_recording: screens/src/test_table.c l.1227, 11 assertion lines
+   1245: 		zassert_equal(s.screen, SCR_REC_DIM, "from %s: SCR_REC_DIM at once, got %s", rscr_screen_name(before[i]),
+   1247: 		zassert_equal(rscr_brightness_level(&s), 85, "panel level 85, never 0");
+   1248: 		zassert_true(rscr_sign_ok(&s, RC_ST_RECORDING), "R-SIGN holds");
+   1249: 		zassert_equal(s.ilim_until, 15000, "held until 15,000 ms");
+   1259: 				zassert_equal(s.ilim_until, 15000, "not extended");
+   1264: 			zassert_not_equal(s.screen, SCR_OFF, "from %s: dark at %lld ms", rscr_screen_name(before[i]), (long long)t);
+   1265: 			zassert_true(rscr_sign_ok(&s, RC_ST_RECORDING), "R-SIGN at %lld ms", (long long)t);
+   1267: 				zassert_equal(s.screen, SCR_REC_DIM, "dimmed at %lld ms, got %s", (long long)t,
+   1269: 				zassert_equal(rscr_brightness_level(&s), 85, "level 85 at %lld ms", (long long)t);
+   1274: 		zassert_equal(s.screen, SCR_RECORDING, "after the 10 s an input shows SCR_RECORDING");
+   1275: 		zassert_equal(s.ilim_until, RC_NO_TICK, "the hold ended");
+##### screens test_ilim_off_10s_outside_recording: screens/src/test_table.c l.1315, 10 assertion lines
+   1330: 		zassert_equal(s.screen, SCR_OFF, "from %s: off at once", rscr_screen_name(before[i]));
+   1331: 		zassert_false(rscr_lock_fact(&s), "the lock fact: the screen is not lit");
+   1332: 		zassert_equal(s.ilim_until, 15000, "held until 15,000 ms");
+   1341: 				zassert_equal(s.ilim_until, 15000, "not extended");
+   1346: 			zassert_equal(s.screen, SCR_OFF, "from %s: off at %lld ms, got %s", rscr_screen_name(before[i]),
+   1350: 		zassert_equal(s.ilim_until, RC_NO_TICK, "the hold ended at 15,000 ms");
+   1351: 		zassert_equal(s.screen, SCR_OFF, "still off until an input");
+   1353: 		zassert_equal(s.screen, SCR_STATUS, "an input at 15,000 ms wakes the screen");
+   1356: 		zassert_equal(s.screen, SCR_OFF, "off again");
+   1357: 		zassert_equal(s.ilim_until, 26000, "a new 10 s");
+##### screens test_factory_colours: screens/src/test_draw.c l.1230, 16 assertion lines
+   1245: 		zassert_equal(rscr_factory_frame(col[i].f), 0, "%s accepted", col[i].name);
+   1248: 		zassert_equal(s.screen, SCR_FACTORY, "on SCR_FACTORY");
+   1249: 		zassert_equal(count_rgb(col[i].r, col[i].g, col[i].b), RSCR_W * RSCR_H, "%s: every one of the 28,800 pixels is (%u, %u, %u), found %d",
+   1252: 		zassert_false(m.blanked, "the panel is on for the %s frame", col[i].name);
+   1255: 	zassert_equal(rscr_factory_frame(FAC_GRID), 0, "grid accepted");
+   1257: 	zassert_equal(count_rgb(255, 255, 255), 3149, "13 columns x 120 + 7 rows x 240 - 91 crossings = 3149 white pixels, found %d",
+   1259: 	zassert_equal(count_rgb(0, 0, 0), RSCR_W * RSCR_H - 3149, "every other pixel is black, found %d", count_rgb(0, 0, 0));
+   1261: 		zassert_equal(pic[(0 * RSCR_W + x) * 3], 255, "first row, x %d", x);
+   1262: 		zassert_equal(pic[((RSCR_H - 1) * RSCR_W + x) * 3], 255, "last row, x %d", x);
+   1265: 		zassert_equal(pic[(y * RSCR_W + 0) * 3], 255, "first column, y %d", y);
+   1266: 		zassert_equal(pic[(y * RSCR_W + 20) * 3], 255, "column 20, y %d", y);
+   1267: 		zassert_equal(pic[(y * RSCR_W + (RSCR_W - 1)) * 3], 255, "last column, y %d", y);
+   1269: 	zassert_equal(pic[(10 * RSCR_W + 10) * 3], 0, "inside a cell: black");
+   1271: 	zassert_equal(rscr_factory_frame(FAC_NONE), 0, "plain accepted");
+##### screens test_factory_frame_refused_outside_factory: screens/src/test_draw.c l.1278, 20 assertion lines
+   1286: 	zassert_equal(rscr_factory_frame(FAC_RED), -EPERM, "STANDBY: refused");
+   1289: 	zassert_equal(b.writes, a.writes, "STANDBY: nothing was written to the display");
+   1291: 	zassert_equal(s.fac_frame, FAC_NONE, "STANDBY: no frame kept");
+   1294: 	zassert_equal(rscr_factory_frame(FAC_GREEN), -EPERM, "CHARGING: refused");
+   1296: 	zassert_equal(count_rgb(0, 255, 0), 0, "CHARGING: no green frame");
+   1299: 	zassert_equal(rc_core_state(&core), RC_ST_TRANSFER, "TRANSFER");
+   1300: 	zassert_equal(rscr_factory_frame(FAC_BLUE), -EPERM, "TRANSFER: refused");
+   1302: 	zassert_equal(count_rgb(0, 0, 255), 0, "TRANSFER: no blue frame");
+   1304: 	zassert_equal(s.fac_frame, FAC_NONE, "TRANSFER: no frame kept");
+   1308: 	zassert_equal(rc_core_state(&core), RC_ST_RECORDING, "recording");
+   1309: 	zassert_equal(rscr_factory_frame(FAC_WHITE), -EPERM, "RECORDING: refused");
+   1312: 	zassert_equal(s.screen, SCR_RECORDING, "RECORDING: still the recording picture");
+   1313: 	zassert_true(count_px(14, 84, 30, 100, red) >= 40, "RECORDING: the red dot is still drawn");
+   1314: 	zassert_equal(count_rgb(255, 255, 255), 0, "RECORDING: no white frame");

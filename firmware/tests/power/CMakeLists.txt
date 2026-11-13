@@ -1,0 +1,25 @@
+cmake_minimum_required(VERSION 3.20.0)
+
+# RING_RHW_DIR and RING_POWER_DIR let a run point at a broken copy of ring_rhw or ring_power to prove that these tests
+# can fail (broken_run.sh).
+if(NOT DEFINED RING_RHW_DIR)
+  set(RING_RHW_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../modules/ring_rhw)
+endif()
+if(NOT DEFINED RING_POWER_DIR)
+  set(RING_POWER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../modules/ring_power)
+endif()
+list(APPEND ZEPHYR_EXTRA_MODULES ${RING_RHW_DIR} ${RING_POWER_DIR})
+
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+project(ring_power_tests)
+
+# The pure part's header (src/rpw_logic.h) and the thin part's test control (src/rpw_priv.h) are the unit's own,
+# not public: the tests reach them through the unit's source folder. ring_core's include folder only for rc_types.h
+# (the state names; the core itself is not built here).
+target_include_directories(app PRIVATE ${RING_POWER_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/../../modules/ring_core/include)
+
+target_sources(app PRIVATE
+  src/common.c
+  src/test_levels.c src/test_charger.c src/test_gauge.c src/test_sample.c src/test_ship.c
+  src/test_reset.c src/test_ilim.c src/test_cfg.c src/test_report.c
+  src/test_read.c)

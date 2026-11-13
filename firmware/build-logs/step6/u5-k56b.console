@@ -1,0 +1,53 @@
+# remote.sh run 20261113-050431-u-power-k56b
+# command: bash tests/power/k_probe2.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:04:31 CET
+# free on the server's /: 29 GB
+# source firmware copied to /root/ring-os/src-u-power
+# started on the server as 20261113-050431-u-power-k56b; server log /root/ring-os/logs/20261113-050431-u-power-k56b.log
+## K6: lines of the library header that hold both words (counts)
+negative+discharg 0
+positive+discharg 0
+negative+charg(not discharg) 0
+positive+charg(not discharg) 0
+## K6: the kit sample for the same chip family: where the current comes from and whether it is negated (counts)
+sample lines with SENSOR_CHAN_GAUGE_AVG_CURRENT 1
+sample lines with nrf_fuel_gauge_process 1
+sample lines with a minus sign directly before a name holding 'curr' 1
+sample lines with nrf_fuel_gauge_process and a minus sign inside the call 0
+sample lines with 'negative' 4 with 'discharg' 3 with 'sign' 0
+## K5: charger binding files, property-name counts (the names with hyphens, as the devicetree reads them)
+term-microvolt in nordic,npm13xx-charger-common.yaml 0
+current-microamp in nordic,npm13xx-charger-common.yaml 0
+term-current-percent in nordic,npm13xx-charger-common.yaml 0
+trickle-microvolt in nordic,npm13xx-charger-common.yaml 1
+vbus-limit-microamp in nordic,npm13xx-charger-common.yaml 1
+thermistor-ohms in nordic,npm13xx-charger-common.yaml 1
+thermistor-beta in nordic,npm13xx-charger-common.yaml 1
+dietemp-stop-millidegrees in nordic,npm13xx-charger-common.yaml 1
+dietemp-resume-millidegrees in nordic,npm13xx-charger-common.yaml 1
+charging-enable in nordic,npm13xx-charger-common.yaml 1
+thermistor-cold-millidegrees in nordic,npm13xx-charger-common.yaml 1
+term-warm-microvolt in nordic,npm13xx-charger-common.yaml 0
+soft-start-microamp in nordic,npm13xx-regulator-common.yaml 1 in nordic,npm1304-regulator.yaml 0
+active-discharge in nordic,npm13xx-regulator-common.yaml 2 in nordic,npm1304-regulator.yaml 0
+regulator-boot-off in nordic,npm13xx-regulator-common.yaml 1 in nordic,npm1304-regulator.yaml 0
+regulator-initial-mode in nordic,npm13xx-regulator-common.yaml 1 in nordic,npm1304-regulator.yaml 0
+## K5: the call that writes a task register: names in the MFD header (counts)
+mfd_npm13xx_reg_write 2
+mfd_npm13xx_reg_write2 0
+mfd_npm13xx_reg_update 1
+mfd_npm13xx_reg_read 2
+mfd_npm13xx_add_callback 1
+mfd_npm13xx_set_timer 1
+mfd_npm13xx_hibernate 1
+mfd_npm13xx_reset 1
+## K5: charger header names (counts)
+SENSOR_CHAN_NPM13XX_CHARGER_STATUS 1
+SENSOR_CHAN_NPM13XX_CHARGER_ERROR 1
+SENSOR_CHAN_NPM13XX_CHARGER_VBUS_STATUS 1
+SENSOR_ATTR_NPM13XX_CHARGER_CHARGING_ENABLE 0
+SENSOR_ATTR_NPM13XX_CHARGER_CURRENT_LIMIT 0
+# finished (Mac clock): 2026-11-13 05:04:49 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-050431-u-power-k56b.log

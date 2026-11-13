@@ -1,0 +1,17 @@
+Option D is added to hotbar-joint.md section 2.5 as items D1 to D6. I did not choose. D fails outright on one number only, the 3 columns at 0.51 pitch you suggested; everything else fits, but only at the rule minimums.
+
+1. D1, foot and land grid: the widest foot through the slot is 2.10 - 2 x 0.15 = 1.800. A 1.800 x 0.21 stiffened foot fits the slot's 2.1 x 0.6 opening. 3 columns at 0.51 need 1.920, so they FAIL by 0.120. 4 of the 15 grids tried fit, all with a 0.45 pitch in one direction. That leaves 0.15 gaps against 0.21 today and at most 0.375 of board land length, so today's 0.55 board land is lost. The grid used for the numbers is 3 x 3 at 0.45. Each notch is 0.995 deep (|Y| 6.30 to 5.305) and 2.10 wide. Not checked: the rigid foot's turn from the channel into the slot.
+2. D2, length: each tail needs +0.510 mm at every size (0.300 board + 2 x (0.02 + 0.03) + 0.11), and 0 of 14 ribbons have it. The generator takes the length as one constant (FOOT_EXTRA), but the foot itself does not change with it: the tail land footprint, the stiffener face and the routing are drawn by fixed code in build_band.py. The planted copy turns FLEX1 US 7 into "length enough as drawn".
+3. D3, room above: the foot stack is 0.260 under a panel 1.070 above the board (0.810 clear). The cable plane is 0.400 above the board (0.140 clear in height), but the cable never crosses the land places in plan: its neck is 0.791 clear in Y and its wide part 4.770 clear in X. J1 (0.9 high) is 0.100 from the foot outline and 0.250 from the blade in plan.
+4. D4, screen face parts within 3 mm: 11 (J1 at 0.417, the rest test pads). Under the board at the land places there is no part and the floor is 1.050 below, so a 1.050 support post is needed under each land field. U3 is 0.203 from it.
+5. D5, change lists: ring board (15 lands moved to B.Cu, notches through copper on 4 layers, nets listed in logs/check_notch.log, and the "no notch" rule changes), 14 band boards, model and guide.
+6. D6, what D does not solve: J1 heat is worse (same face, 0.417), the grid is finer, the routing is not shown, the board change is large, and lands A6 and A8 still cannot be told apart by a meter.
+
+Proof (last lines, verbatim):
+- logs/geom_check.log: `RESULT option D: foot 1.80 passes slot 2.10: yes; grids that fit 4 of 15; extra length 0.510 per tail; tails long enough as drawn 0 of 14; screen face parts within 3 mm 11`, then `exit 0`.
+- planted/geom_check-planted.log: same line with `tails long enough as drawn 1 of 14`, then `exit 0`.
+- logs/audit-final.log: see its last two lines.
+
+Files: design/mfg/assembly/hotbar-joint.md and hotbar-work/ beside it (geom_check.py, check_notch.py, q1_paste_D.py, CHECKLIST.md).
+
+RESULT: done, option D added; no arrangement works today and four options (A, B, C, D) are given; A is the smallest change in files; the lead and owner decide.

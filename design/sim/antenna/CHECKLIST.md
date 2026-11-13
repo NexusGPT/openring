@@ -1,0 +1,28 @@
+# Checklist (every requirement of the brief and of the experimenter rules, closed with evidence or a measured limit)
+
+- [x] 1. H1 pass line written from the maker's datasheet before any run, with tolerance and reason. evidence: antenna-sim.md section 0.2 (frozen 2026-11-13 00:25:34 CET)
+- [x] 2. H1 run: S11 from 2.0 to 3.0 GHz and efficiency and gain at 2.44 GHz. evidence: results/h1_run3_s11.csv, results/h1_run3.json (also run 1 and 2)
+- [x] 3. Permittivity assumed and how chosen, ONE unknown tuned, then held fixed for H2. evidence: antenna-sim.md sections 0.4 and 1 (28.905), section 6 (held)
+- [x] 4. H2 pass line written before the first H2 run. evidence: antenna-sim.md section 0.5 (00:25:34 CET); first H2 solver launch 00:44 CET
+- [x] 5. H1 failed, so H2 is labelled "tool not validated". evidence: antenna-sim.md sections 1 and 6
+- [x] 6. openEMS in Docker on the build server, folder /root/ring-antenna-sim, nice 19, time limit at most 60 minutes (55). evidence: server/Dockerfile, server/run_py.sh, logs/image_check.log
+- [x] 7. Look up openEMS install and Python usage in its own documentation first. evidence: docs/install_*.txt, logs/api_dump*.log
+- [x] 8. Reuse the way of reaching the server of design/wiring/probe/srv.sh. evidence: server/*.sh call srv.sh
+- [x] 9. H1: evaluation board as page 3 gives it (board 40 x 20, ground plane, 4 x 6 clearance, feed line), antenna block with terminals. evidence: src/h1_eval_board.py, antenna-sim.md section 0.4 (simplification S-H1-1 stated)
+- [x] 10. H2: board with ground, antenna at its place, titanium body, glass, screen as blocks, finger as lossy cylinder with cited tissue values. evidence: src/h2_ring.py, antenna-sim.md sections 0.6, 2, 3, docs/PMC8155875.xml, logs/tissue_extract.log
+- [x] 11. Case A (body as designed): S11 before, three match values, S11 after, radiated share. evidence: results/h2_A.json, antenna-sim.md section 6
+- [x] 12. Case B (corner replaced by resin): same numbers. evidence: results/h2_B.json, antenna-sim.md section 6
+- [-] 13. Case C (antenna at the best other place): not done: the 8-run cap was used (3 H1 runs, 3 H2 launches stopped by me under server overload, 2 H2 runs finished). evidence of the count: antenna-sim.md sections 3, 4, 5, 9; logs/h2_A_aborted*.log
+- [-] 14. Control D (board and antenna in free air, added by me, not in the brief): not done, same limit.
+- [x] 15. Every input script, mesh setting and result table kept; mesh size, steps, end criterion, run time per run. evidence: antenna-sim.md sections 1 and 6, results/*.json, logs/server/*.log
+- [x] 16. Match: three-part values solved by script from the simulated impedance. evidence: src/ringsim_lib.py, results/h2_*.json, results/h2_rematch_all.json
+- [x] 17. Scorer check on a known-pass and a known-fail case, match solver against an independent calculation, hand-labelled recorded cases. evidence: results/test_scorer.json, results/test_hand_labels.json, tests/hand_labels_p4.json
+- [x] 18. Pass lines, falsifier, spend cap written before runs; no change after a run. evidence: antenna-sim.md section 0 unchanged; changes only as amendments A1 to A4 with time stamps, none touching a pass line
+- [x] 19. Never edit the code under test; no git; work only in own folders. evidence: no git command in any log; writes only in design/sim/antenna and /root/ring-antenna-sim
+- [x] 20. No browser; no Docker image or large file on this Mac. evidence: only curl and pdftotext were used; folder size 4.3 MB (logs/final_listing.txt)
+- [x] 21. No secret, server written as <build-server>. evidence: logs/secret_scan_ip.log and logs/secret_scan_key.log list 0 files
+- [x] 22. Containers of mine removed, images named with sizes. evidence: logs/server_final_state.txt, antenna-sim.md section 10
+- [x] 23. Both pass lines with time stamps, verdict on H1 and each H2 case, match start values, every simplification, "simulated, not proven on hardware" beside each result. evidence: antenna-sim.md sections 0 to 8
+- [x] 24. Final audit run, saved. evidence: results/final_audit.txt
+- [x] 25. Last line of antenna-sim.md starts with RESULT:. evidence: results/final_audit.txt (tail check)
+- [x] 26. Final reply under 3,500 characters saved to a file. evidence: results/final_reply.txt

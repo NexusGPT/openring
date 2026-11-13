@@ -1,0 +1,27 @@
+# Checklist (guide-joints)
+
+- [x] 1. Step 2: stencils, paste, profile, 15 ribbon lands in pass 2, never a third reflow, stencil location without board fiducial, accept criteria. evidence: ../assembly.md lines 96 to 104; logs/check_assembly-final.log (CITE lines of process.md 84, 85, 104 to 110, 116, 185, 189)
+- [x] 2. Step 4: inspection only, the microphone maker's words. evidence: ../assembly.md line 116; logs/check_assembly-final.log (CITE process.md:71)
+- [x] 3. Step 6: solder source, flux, tool, heat, checks; probe points by land number. evidence: ../assembly.md lines 132 to 137
+- [x] 4. Step 7: wire 0.25 mm, tip of P4. evidence: ../assembly.md line 142
+- [x] 5. Step 8: C2 stencil, hot plate, height; flush check moved to step 21. evidence: ../assembly.md lines 151, 154, 262
+- [x] 6. Step 9: wire, tip, probe points, G2 wording. evidence: ../assembly.md lines 160, 163
+- [x] 7. Hot-bar joint on the bench, fixture, sub-steps, meter check, J1 limit. evidence: ../assembly.md lines 199 to 206
+- [x] 8. Threading step; slit size "as the body drawing gives it". evidence: ../assembly.md line 210
+- [x] 9. Screen step after threading; C12 proof; C18 tool line. evidence: ../assembly.md lines 219, 222
+- [x] 10. Slits filled at step 19; two slit seams in section 4. evidence: ../assembly.md lines 243, 246, 357
+- [x] 11. Sections 1, 3, 5, 6 stale lines; G4; K-A6. evidence: logs/g-lines.log; ../assembly.md lines 73, 334, 384
+- [x] 12. State-b item 10. evidence: ../assembly.md line 380
+- [x] 13. State-b item 122. evidence: logs/check_assembly-final.log last line RESULT PASS
+- [x] 14. State-b item 123. evidence: ../assembly.md line 295; logs/check_assembly-final.log (FWCITE Cell-only check)
+- [x] 15. State-b item 124. evidence: logs/section6-rows4-5-grep.log; ../assembly.md lines 403, 404
+- [x] 16. Step 21 test strip C19. evidence: ../assembly.md line 259
+- [x] 17. Guide style; [PROPOSED] wording; no em dash. evidence: logs/check_assembly-final.log (F1 PASS)
+- [x] 18. joints.csv filled; waits named; joint-gaps.md rebuilt. evidence: logs/fill_joints.log, logs/waits-run1.log, logs/make_gaps-run1.log (15 unplaced: script keyed on old step numbers, reported to the lead)
+- [x] 19. Bar 1. evidence: logs/check_assembly-final.log, logs/check_docs-final.log
+- [x] 20. Bar 2. evidence: logs/check_joints-before.log, logs/check_joints-run2.log, logs/waits-run1.log
+- [x] 21. Bar 3. evidence: logs/g-lines.log, logs/g7-g11-state.log
+- [x] 22. Bar 4. evidence: logs/cites_moved.log, logs/cites-moved.tsv, logs/bar4-other-moved.md
+- [x] 23. Notes complete, RESULT last. evidence: ../guide-joints-notes.md
+- [x] 24. No edit outside Owns; no git; no browser; no web request. evidence: the commands of this session wrote only into ../assembly.md, ../joints.csv, ../joint-gaps.md, ../guide-joints-notes.md and this folder
+- [x] 25. Final audit. evidence: logs/final-audit.log

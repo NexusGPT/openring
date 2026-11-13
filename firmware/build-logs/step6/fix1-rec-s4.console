@@ -1,0 +1,34 @@
+# remote.sh run 20261113-140534-fix1-rec-s4
+# command: rm -rf /ws/out/fix1rec-u1 && RING_OUT=/ws/out/fix1rec-s4 bash tests/recorder/short_run.sh; echo "recorder short exit $?"; for b in native_sim nrf54lm20bsim/nrf54lm20a/cpuapp; do t=$(echo $b | tr / _); west twister -T tests/xfer -T tests/screens -p $b -O /ws/out/fix1rec-s4/tw-$t -j 8 --inline-logs -v > /ws/out/fix1rec-s4/xs-$t.log 2>&1; echo "twister xfer+screens $b exit $?"; grep -E ' - FAIL - |executed test' /ws/out/fix1rec-s4/xs-$t.log | head; done; RING_OUT=/ws/out/fix1rec-s4/brec bash tests/recorder/broken_run.sh ship_screen_on > /ws/out/fix1rec-s4/brec.txt 2>&1; echo "recorder broken ship_screen_on exit $?"; grep -E 'named case|^RESULT' /ws/out/fix1rec-s4/brec.txt; RING_OUT=/ws/out/fix1rec-s4/bxf bash tests/xfer/broken_run.sh usb_on_without_vbus > /ws/out/fix1rec-s4/bxf.txt 2>&1; echo "xfer broken usb_on_without_vbus exit $?"; grep -E 'named case|extra|^RESULT' /ws/out/fix1rec-s4/bxf.txt
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 14:05:34 CET
+# free on the server's /: 32 GB
+# source firmware copied to /root/ring-os/src-u-fix6
+# started on the server as 20261113-140534-fix1-rec-s4; server log /root/ring-os/logs/20261113-140534-fix1-rec-s4.log
+twister exit code on native_sim: 0 (log /ws/out/fix1rec-s4/twister-native_sim.log)
+INFO    - 1/1 native_sim/native         ring_recorder.sim                                  PASSED (native 5.679s <host/gnu>)
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 30.75 seconds.
+INFO    - 53 of 53 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+twister exit code on nrf54lm20bsim/nrf54lm20a/cpuapp: 0 (log /ws/out/fix1rec-s4/twister-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_recorder.sim                            PASSED (native 6.526s <host/gnu>)
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 35.97 seconds.
+INFO    - 53 of 53 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+SHORT RUN exit 0
+recorder short exit 0
+twister xfer+screens native_sim exit 0
+INFO    - 2 of 3 executed test configurations passed (66.67%), 1 built (not run), 0 failed, 0 errored, with no warnings in 27.48 seconds.
+INFO    - 104 of 104 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+twister xfer+screens nrf54lm20bsim/nrf54lm20a/cpuapp exit 0
+INFO    - 2 of 2 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 27.11 seconds.
+INFO    - 104 of 104 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+recorder broken ship_screen_on exit 0
+ship_screen_on on native_sim: the named case failed, as required:  - FAIL - [recorder_ship.test_ship_closes_each_part_first] duration = 0.664 seconds
+ship_screen_on on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:22.934322   - FAIL - [recorder_ship.test_ship_closes_each_part_first] duration = 0.664 seconds
+RESULT PASS
+xfer broken usb_on_without_vbus exit 0
+usb_on_without_vbus on native_sim: the named case failed, as required: xfer_svc.test_stack_follows_vbus (cases that failed: xfer_svc.test_stack_follows_vbus ; 48 of 48 cases ran)
+usb_on_without_vbus on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: xfer_svc.test_stack_follows_vbus (cases that failed: xfer_svc.test_stack_follows_vbus ; 48 of 48 cases ran)
+RESULT PASS
+# finished (Mac clock): 2026-11-13 14:09:24 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-140534-fix1-rec-s4.log

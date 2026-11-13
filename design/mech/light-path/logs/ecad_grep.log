@@ -1,0 +1,72 @@
+design/ecad/ring/parts.csv:88:R41,R,680R,,ring:R_0201,controls,no
+design/ecad/ring/parts.csv:89:LED1,LED_KPG1005,red 631nm,KPG-1005SURC-TT,ring:LED_0402,controls,no
+design/ecad/ring/netlist.csv:154:LED_A,LED1,P1,A,passive
+design/ecad/ring/netlist.csv:155:LED_A,R41,2,~,passive
+design/ecad/ring/netlist.csv:156:LED_K,LED1,P2,K,passive
+design/ecad/ring/netlist.csv:330:VDD_3V0,R41,1,~,passive
+design/ecad/ring/netlist.csv:376:,U2,P12,LED1,no_connect
+design/ecad/ring/make_netlist.py:36:    ('LED0', 'open_collector'), ('LED1', 'open_collector'), ('LED2', 'open_collector'),
+design/ecad/ring/make_netlist.py:214:       'LED0': None, 'LED1': None, 'LED2': None, 'VSET1': 'VSET1', 'VSET2': 'VSET2',
+design/ecad/ring/make_netlist.py:316:two('R41', 'R', '680R', '', 'ring:R_0201', K, 'VDD_3V0', 'LED_A')  # A3 W5: 680 ohm
+design/ecad/ring/make_netlist.py:317:part('LED1', 'LED_KPG1005', 'red 631nm', 'KPG-1005SURC-TT', 'ring:LED_0402', K,
+design/ecad/ring/make_netlist.py:427:        'LED_KPG1005': ('Kingbright datasheet not readable (download returned HTTP 404)', 'Kingbright KPG-1005SURC-TT datasheet (action 12.5)'),
+design/ecad/ring/pcb/placement-report.csv:83:R41,L72,2,VDD_3V0,1.24,11.688,1.964,0
+design/ecad/ring/pcb/placement-report.csv:85:LED1,R41,2,LED_A,0.94,12.777,1.431,90
+design/ecad/ring/ring_controls.kicad_sch:91:(symbol (lib_id "ring:R") (at 40.64 95.25 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "70e0bc55-ad3d-5159-912e-dd06f9bbbb52") (property "Reference" "R41" (at 40.64 91.44 0) (effects (font (size 1.27 1.27)))) (property "Value" "680R" (at 40.64 99.06 0) (effects (font (size 1.27 1.27)))) (property "Footprint" "" (at 40.64 95.25 0) (effects (font (size 1.27 1.27)) (hide yes))) (property "Footprint_plan" "ring:R_0201" (at 40.64 95.25 0) (effects (font (size 1.27 1.27)) (hide yes))) (property "Datasheet" "" (at 40.64 95.25 0) (effects (font (size 1.27 1.27)) (hide yes))) (property "Description" "" (at 40.64 95.25 0) (effects (font (size 1.27 1.27)) (hide yes))) (property "MPN" "" (at 40.64 95.25 0) (effects (font (size 1.27 1.27)) (hide yes))) (pin "1" (uuid "9b14353d-476b-5d2c-8df3-0599a2eb4f0b")) (pin "2" (uuid "f35a3dc3-ab64-511d-ba81-7b4994372dfa")) (instances (project "ring" (path "/f43c2afb-e39e-59ac-a6e8-3d1217c4eeae/9a29e1aa-1bb3-56d8-a676-848702844961" (reference "R41") (unit 1)))))
+design/ecad/ring/ring_controls.kicad_sch:92:(symbol (lib_id "ring:LED_KPG1005") (at 38.1 109.22 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "b2277a6c-3ee6-523e-83a1-98bf84428ea8") (property "Reference" "LED1" (at 38.1 105.41 0) (effects (font (size 1.27 1.27)))) (property "Value" "red 631nm" (at 38.1 113.03 0) (effects (font (size 1.27 1.27)))) (property "Footprint" "" (at 38.1 109.22 0) (effects (font (size 1.27 1.27)) (hide yes))) (property "Footprint_plan" "ring:LED_0402" (at 38.1 109.22 0) (effects (font (size 1.27 1.27)) (hide yes))) (property "Datasheet" "" (at 38.1 109.22 0) (effects (font (size 1.27 1.27)) (hide yes))) (property "Description" "" (at 38.1 109.22 0) (effects (font (size 1.27 1.27)) (hide yes))) (property "MPN" "KPG-1005SURC-TT" (at 38.1 109.22 0) (effects (font (size 1.27 1.27)) (hide yes))) (pin "P1" (uuid "9250503c-16b9-54dc-8e4f-2fe6133ff36f")) (pin "P2" (uuid "7bddaed4-bc3a-5dbc-9bc9-28a87e1fedf5")) (instances (project "ring" (path "/f43c2afb-e39e-59ac-a6e8-3d1217c4eeae/9a29e1aa-1bb3-56d8-a676-848702844961" (reference "LED1") (unit 1)))))
+design/ecad/ring/pcb/check_board.py:21:          "Q1": {"G": "1", "S": "2", "D": "3"}, "Q2": {"G": "1", "S": "2", "D": "3"}, "LED1": {"P1": "1", "P2": "2"}}
+design/ecad/ring/sch-notes.md:40:**Motor drive and recording light (sheet 7).** MOTOR (F6) through R61 100 ohm to the gate of Q1, R62 100 kohm gate to ground, Q1 source to ground, drain MOTOR_DRV; D1 cathode on VDD_3V0, anode on MOTOR_DRV. M1 is on the band sheet. Light (W5): VDD_3V0, R41 680 ohm, LED1, drain of Q2; Q2 source to ground, gate on VDD_MIC. No chip pin touches the light.
+design/ecad/ring/sch-notes.md:67:- Q1, Q2 (G, S, D pad numbers), LED1 (anode, cathode), M1 (plus, minus and tail contact numbers: VC0720B088L has an FPC tail, no polarity printed), BT1 (tabs), X1, X2.
+design/ecad/ring/sch-notes.md:119:Checks kept: section 7 pin plan (now with the three A5 spare rows), contact pad order, R41 and the light, P3.05 spare, designators, every pin once, single-pin nets, rails of section 3, H8, KiCad export compare. Checks removed or changed: (a) the check that each JOY line passes the wire link J2, wire, J3 (J2, J3, W5 to W10 no longer exist; A5-3 and A5-9 replace it); (b) the LR check on U5 to U8 became a SELECT check on U5, U6 (same logic); (c) the second-level R33, R34 data check and the FUNC rows for U7, U8, SW1 five-way pins and EVPAVAA1A (parts removed; A5-1, A5-3, A5-5 replace them). `prove_fail.sh` (A3 proofs) still holds the PWR_FLAG ERC probe; its first case names a pin LR that no longer exists and its output is the A3 state.
+design/ecad/ring/sch-notes.md:172:Fixed in the owned files: K1 (motor angle: `bom.csv` line 44 no longer says -38; its place waits for the rebuild, 17.11), K2 (the record pill is gone, line 40), K3 (joystick: line 78 and line 75 carry no +38), K4 (BT1: line 50 and `parts.csv` line 41 say 15 to 20 mAh and 28.4 mm), K5 (pads: line 61 says inside, 17.12), K6 (protection circuit: line 51), K7 (cross radius 2.1 mm: lines 39 and 78), K8 (this file, change e), K10 (charge voltage, change f, in the owned files), K12 (section 11.4), K16 (R41 key figure: line 48 now (3.0 V - 2.0 V) / 680 ohm = 1.5 mA as W5).
+design/ecad/ring/pcb/build_board.py:70:    "LED1": {"P1": "1", "P2": "2"},               # PROVISIONAL, KiCad LED pad 1 = cathode: polarity unverified
+design/ecad/ring/pcb/build_board.py:459:pending = sorted(rest, key=lambda r: (not (r.startswith('TP') or r=='LED1'), -_area(r)))
+design/ecad/ring/pcb/board-notes.md:48:- Library footprints with a provisional pin-to-pad map (`open-pins.csv`): X1 (P1, P2 on diagonal pads 1 and 3 of the 4-pin 2016 crystal), X2, Q1, Q2 (G, S, D on pads 1, 2, 3), LED1 (pad 1 = KiCad cathode, but the netlist puts P1 = anode: polarity unverified).
+design/ecad/ring/pcb/ring.kicad_pcb:2757:		(property "Reference" "R41"
+design/ecad/ring/pcb/ring.kicad_pcb:5596:		(property "Reference" "LED1"
+design/ecad/ring/pcb/ring.kicad_pcb:5653:		(property "MPN" "KPG-1005SURC-TT"
+design/ecad/ring/pcb/evidence/build6.log:2:NO SPOT LED1
+design/ecad/ring/pcb/evidence/build6.log:19:UNPLACED ['LED1', 'TP6', 'TP8', 'TP11', 'TP12', 'TP13', 'TP14', 'TP15', 'TP16', 'TP17', 'TP18', 'TP19', 'TP20', 'TP21', 'TP22']
+design/ecad/ring/pcb/drc-report.txt:518:    @(111.3681 mm, 101.9641 mm): Pad 1 [VDD_3V0] of R41 on F.Cu
+design/ecad/ring/pcb/drc-report.txt:522:    @(111.3681 mm, 101.9641 mm): Pad 1 [VDD_3V0] of R41 on F.Cu
+design/ecad/ring/pcb/drc-report.txt:646:    @(112.0081 mm, 101.9641 mm): Pad 2 [LED_A] of R41 on F.Cu
+design/ecad/ring/pcb/drc-report.txt:647:    @(112.7771 mm, 101.9161 mm): Pad 1 [LED_A] of LED1 on F.Cu
+design/ecad/ring/pcb/drc-report.txt:759:    @(112.7771 mm, 100.9461 mm): Pad 2 [LED_K] of LED1 on F.Cu
+design/ecad/ring/pcb/evidence/build7.log:2:NO SPOT LED1
+design/ecad/ring/pcb/evidence/build7.log:13:UNPLACED ['LED1', 'TP11', 'TP12', 'TP13', 'TP18', 'TP19', 'TP20', 'TP21', 'TP22']
+design/ecad/ring/pcb/evidence/broken_overlap.kicad_pcb:2838:		(property "Reference" "R41"
+design/ecad/ring/pcb/evidence/broken_overlap.kicad_pcb:5698:		(property "Reference" "LED1"
+design/ecad/ring/pcb/evidence/broken_overlap.kicad_pcb:5755:		(property "MPN" "KPG-1005SURC-TT"
+design/ecad/ring/pcb/board-top.svg:9832:text-anchor="middle" opacity="0" stroke-opacity="0">R41</text>
+design/ecad/ring/pcb/board-top.svg:9833:<g class="stroked-text"><desc>R41</desc>
+design/ecad/ring/pcb/board-top.svg:9893:text-anchor="middle" opacity="0" stroke-opacity="0">R41</text>
+design/ecad/ring/pcb/board-top.svg:9894:<g class="stroked-text"><desc>R41</desc>
+design/ecad/ring/pcb/board-top.svg:12977:text-anchor="middle" opacity="0" stroke-opacity="0">LED1</text>
+design/ecad/ring/pcb/board-top.svg:12979:<g class="stroked-text"><desc>LED1</desc>
+design/ecad/ring/pcb/board-top.svg:13052:text-anchor="middle" opacity="0" stroke-opacity="0">LED1</text>
+design/ecad/ring/pcb/board-top.svg:13054:<g class="stroked-text"><desc>LED1</desc>
+design/ecad/ring/pcb/evidence/build2.log:4:NO SPOT LED1
+design/ecad/ring/pcb/evidence/build5.log:2:NO SPOT LED1
+design/ecad/ring/pcb/evidence/broken_moved.kicad_pcb:2838:		(property "Reference" "R41"
+design/ecad/ring/pcb/evidence/broken_moved.kicad_pcb:5698:		(property "Reference" "LED1"
+design/ecad/ring/pcb/evidence/broken_moved.kicad_pcb:5755:		(property "MPN" "KPG-1005SURC-TT"
+design/ecad/ring/pcb/evidence/broken_net.kicad_pcb:2838:		(property "Reference" "R41"
+design/ecad/ring/pcb/evidence/broken_net.kicad_pcb:5698:		(property "Reference" "LED1"
+design/ecad/ring/pcb/evidence/broken_net.kicad_pcb:5755:		(property "MPN" "KPG-1005SURC-TT"
+design/ecad/ring/pcb/evidence/drc_broken_overlap.txt:866:    @(111.3681 mm, 101.9641 mm): Pad 1 [VDD_3V0] of R41 on F.Cu
+design/ecad/ring/pcb/evidence/drc_broken_overlap.txt:870:    @(111.3681 mm, 101.9641 mm): Pad 1 [VDD_3V0] of R41 on F.Cu
+design/ecad/ring/pcb/evidence/drc_broken_overlap.txt:994:    @(112.0081 mm, 101.9641 mm): Pad 2 [LED_A] of R41 on F.Cu
+design/ecad/ring/pcb/evidence/drc_broken_overlap.txt:995:    @(112.7771 mm, 101.9161 mm): Pad 1 [LED_A] of LED1 on F.Cu
+design/ecad/ring/pcb/evidence/drc_broken_overlap.txt:1107:    @(112.7771 mm, 100.9461 mm): Pad 2 [LED_K] of LED1 on F.Cu
+design/ecad/ring/pcb/evidence/broken_outside.kicad_pcb:2838:		(property "Reference" "R41"
+design/ecad/ring/pcb/evidence/broken_outside.kicad_pcb:5698:		(property "Reference" "LED1"
+design/ecad/ring/pcb/evidence/broken_outside.kicad_pcb:5755:		(property "MPN" "KPG-1005SURC-TT"
+design/ecad/ring/pcb/evidence/broken_missing.kicad_pcb:2838:		(property "Reference" "R41"
+design/ecad/ring/pcb/evidence/broken_missing.kicad_pcb:5698:		(property "Reference" "LED1"
+design/ecad/ring/pcb/evidence/broken_missing.kicad_pcb:5755:		(property "MPN" "KPG-1005SURC-TT"
+design/ecad/ring/pcb/evidence/build9.log:2:NO SPOT LED1
+design/ecad/ring/pcb/evidence/build9.log:6:NO SPOT R41
+design/ecad/ring/pcb/evidence/build9.log:9:UNPLACED ['LED1', 'R66', 'R61', 'R62', 'R41']
+design/ecad/ring/pcb/evidence/build8.log:2:NO SPOT LED1
+design/ecad/ring/pcb/evidence/build8.log:6:NO SPOT R41
+design/ecad/ring/pcb/evidence/build8.log:9:UNPLACED ['LED1', 'R66', 'R61', 'R62', 'R41']

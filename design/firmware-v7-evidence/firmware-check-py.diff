@@ -1,0 +1,75 @@
+119a120,135
+>   Changed and added for v7 (architecture 17.29 round joystick, 17.30 no
+>   recording light; each replaces an assertion about the light):
+>   18a. (changed) the netlist fact "Q2 whose gate is VDD_MIC" is no longer
+>       required (Q2, R41 and LED1 left the design).
+>   21. v7 rules: any line naming LED1, R41, Q2, LG1, LP1, T-LIGHT, "recording
+>       light", "light window", "hard-wired", "record button" or "nub" fails
+>       unless it says "removed in v7"; section 3.2 states rule R-SIGN (never
+>       dark, red dot and timer, dimmed after 3 s, rec_mics_on() the only code
+>       that enables VDD_MIC, test SIGN-1, the dot's cost a bench item with no
+>       mA figure); the RECORDING screen cell of 1.1 starts "never dark" and its
+>       8.2 screen supply is on for the whole recording; 4.5 start step 2 enables
+>       VDD_MIC only after the sign is drawn; one STANDBY -> STANDBY refusal row
+>       "recording sign not drawn"; 9.3 holds T-SIGN and no T-LIGHT; 8.5 counts
+>       no light and names the dot as a bench item; "centre switch SW2 (net
+>       BTN_REC)" is written; the 2.2 heading names the round joystick with five
+>       switches; architecture 17.29 and 17.30 still say what v7 relies on.
+866c882
+<         ("VDD_MIC", "Q2", "G", r"Q2 whose gate is VDD_MIC"),
+---
+>         # v7 (architecture 17.30): Q2, R41 and LED1 left the design; no fact about them is required
+975a992,1044
+>     # 21. v7 (architecture 17.29, 17.30): no recording light, the screen is the recording sign,
+>     #     the one control is the round joystick with the centre switch SW2 (net BTN_REC)
+>     v7 = 0
+>     gone_re = re.compile(r"\bLED1\b|\bR41\b|\bQ2\b|\bLG1\b|\bLP1\b|T-LIGHT|recording light|light window|hard-wired|record button|\bnub\b|\bnub's\b", re.I)
+>     ngone = 0
+>     for i, ln in enumerate(fw.splitlines(), 1):
+>         if gone_re.search(ln) and "removed in v7" not in ln:
+>             ngone += 1
+>             errors.append(f"v7: line {i} names a removed part or the old control without saying 'removed in v7': {ln[:90]}")
+>     v7 += 1
+>     s32 = section(fw, r"^### 3\.2 ", r"^### |^## ") or ""
+>     for need in ("R-SIGN", "never dark", "red dot and the timer", "3 s", "SCR_REC_DIM", "`rec_mics_on()`",
+>                  "only code that enables VDD_MIC", "Test SIGN-1", "no state records with the screen dark", "bench"):
+>         if need not in s32:
+>             errors.append(f"v7: section 3.2 lacks '{need}' (the recording sign rule of architecture 17.30)")
+>     if re.search(r"\d[\d.]* ?mA", s32.replace("1.5 mA once counted for the recording light", "")):
+>         errors.append("v7: section 3.2 gives the always-lit dot a current figure; it is a bench item with no number")
+>     v7 += 1
+>     rec_row = next((c for c in table_rows(states_block or "") if rec and c[0] == f"`{rec}`"), None)
+>     if not rec_row or len(rec_row) < 5 or not rec_row[4].startswith("never dark"):
+>         errors.append(f"v7: the screen cell of `{rec}` in 1.1 must start with 'never dark': {rec_row and rec_row[4]}")
+>     rec82 = next((c for c in table_rows(s82 or "") if rec and c[0] == f"`{rec}`"), None)
+>     if not rec82 or len(rec82) < 6 or not rec82[5].startswith("on for the whole recording"):
+>         errors.append(f"v7: the screen supply of `{rec}` in 8.2 must be on for the whole recording: {rec82 and rec82[5]}")
+>     s45 = section(fw, r"^### 4\.5 ", r"^### |^## ") or ""
+>     st2 = re.search(r"^2\. `regulator_enable\(\)`[^\n]*", s45, re.M)
+>     if not st2 or "`rec_mics_on()`" not in st2.group(0) or "after the screen accepted the red dot and the timer" not in st2.group(0):
+>         errors.append("v7: 4.5 start step 2 must enable VDD_MIC only from `rec_mics_on()` after the screen accepted the red dot and the timer")
+>     refuse = [r for r in trows if r[1] == "long press of the joystick centre, recording sign not drawn"]
+>     if len(refuse) != 1 or refuse[0][0] != "STANDBY" or refuse[0][2] != "STANDBY" or "VDD_MIC stays off" not in refuse[0][3]:
+>         errors.append(f"v7: 1.2 must hold one row STANDBY -> STANDBY 'long press of the joystick centre, recording sign not drawn' with VDD_MIC off: {refuse}")
+>     v7 += 1
+>     if re.search(r"^\| 0x41 \| T-LIGHT", s93, re.M) or not re.search(r"^\| 0x41 \| T-SIGN \|[^\n]*red dot is lit", s93, re.M):
+>         errors.append("v7: 9.3 must hold T-SIGN (the red dot lit while VDD_MIC is on) and no T-LIGHT row")
+>     if "includes the recording light" in s85 or not re.search(r"red dot and timer[^\n]*bench item", s85):
+>         errors.append("v7: 8.5 must not count the recording light and must name the dot's cost as a bench item")
+>     v7 += 1
+>     if "centre switch SW2 (net BTN_REC)" not in fw:
+>         errors.append("v7: firmware.md does not name the centre switch as 'centre switch SW2 (net BTN_REC)'")
+>     if not re.search(r"round joystick[^\n]*five switches", s22h):
+>         errors.append("v7: the heading of 2.2 must name the round joystick with five switches")
+>     v7 += 1
+>     a1729 = section(arch, r"^### 17\.29 ", r"^### |^## ") or ""
+>     a1730 = section(arch, r"^### 17\.30 ", r"^### |^## ") or ""
+>     if "**Joystick: round.**" not in a1729:
+>         errors.append("architecture 17.29 no longer makes the joystick round")
+>     for need in ("**Recording light: removed.**", "the screen never goes fully dark", "a test proves that no state records with the screen dark"):
+>         if need not in a1730:
+>             errors.append(f"architecture 17.30 no longer says '{need}'")
+>     left = sorted({r for n, r, pn, pname in netrows if r in ("LED1", "R41", "Q2")})
+>     v7 += 1
+>     print(f"check 21 v7: {v7} rule groups checked, {ngone} lines name a removed part without 'removed in v7'; netlist.csv still holds {left or 'none'} of LED1, R41, Q2 (reported, not judged: the wiring is another helper's file)")
+> 

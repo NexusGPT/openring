@@ -1,0 +1,33 @@
+# Checklist (risk review, started 16:25 CET 2026-11-13, limit 120 min)
+
+- [x] 1. Ring 1 screen power sequence: CLOSED evidence: risk-review.md ring 1, tailor-p-09.png, quotes-verify.log
+- [x] 2. Ring 2 SGM38046 AVIN: CLOSED evidence: sgm38046-p-04.png, sgm38046-p-13.png, quotes-verify.log
+- [x] 3. Ring 3 USB protection 5.5 V: CLOSED (P3) evidence: quotes-verify.log, searches.log
+- [x] 4. Ring 4 antenna retune: NEEDS HARDWARE (M1) evidence: quotes-verify.log
+- [x] 5. Ring 5 power chip pin numbers: CLOSED evidence: ring5_balls.log
+- [x] 6. Ring 6 back-powering: CLOSED evidence: quotes-verify.log, audit-lines.log (firmware.md 465, 506)
+- [x] 7. Ring 7 3.0 V rail load: CLOSED evidence: audit-lines.log (netlist 295), quotes-verify.log
+- [x] 8. Ring 9 crystal X1 load: NEEDS HARDWARE (M2) evidence: x1-nets.log, searches.log, quotes-verify.log
+- [x] 9. Ring 10 charger vs cell: CLOSED evidence: searches.log (cell.md 78)
+- [x] 10. Ring 11 place of U9: CLOSED evidence: u9-board-positions.log
+- [x] 11. Ring 12 storage pads 1 and 7: CLOSED evidence: quotes-verify.log, audit-lines.log
+- [x] 12. Case 2: CLOSED evidence: quotes-verify.log
+- [x] 13. Case 3: NEEDS HARDWARE (M3) evidence: quotes-verify.log
+- [x] 14. Case 4: NEEDS HARDWARE (M4) evidence: searches.log
+- [x] 15. Case 5: CLOSED (P4) evidence: quotes-verify.log
+- [x] 16. Case 7: CLOSED evidence: ts_window.log
+- [x] 17. Case 9: CLOSED evidence: audit-lines.log (case netlist 126)
+- [x] 18. Settled ring 8, ring 13, case 6, case 8 confirmed evidence: audit-1.log, audit-lines.log
+- [x] 19. Case 8 conflict: netlist right, sim-notes:16 wrong (P5); lead-decisions:30 vs :34 (P6) evidence: audit-lines.log
+- [x] 20. Table and verdicts in brief order evidence: audit-final.log (table rows 17)
+- [x] 21. Proposed changes, Questions for makers (none), Measurements evidence: audit-final.log (proposals 6, measurements 6)
+- [x] 22. Decision lines 11 ring + 6 case, no line removed evidence: sch-notes-counts.log
+- [x] 23. quotes-verify.log last line "quotes checked 52, not found 0"
+- [x] 24. check_netlist.py PASS evidence: final-check_netlist.log
+- [x] 25. firmware-check.py 0 failures evidence: final-firmware-check.log
+- [x] 26. check_docs.py PASS evidence: final-check_docs.log
+- [x] 27. Work folder size evidence: final-du.log
+- [x] 28. Last line RESULT evidence: audit-final.log
+- [x] 29. No git, no web, no browser; nice on heavy commands evidence: this session's commands (no git or network command was run)
+- [x] 30. Reply under 3,500 chars evidence: reply.txt, audit-final.log
+Note: the brief counts 16 open risks; its list names 17 (11 ring, 6 case). All 17 are reviewed.

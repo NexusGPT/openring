@@ -1,0 +1,45 @@
+broken copy run 2026-11-13 04:15:13 CET, mutation row12to
+change applied (diff of the copy against its original):
+15c15
+< RC_ROW(12, 144, STANDBY, LONG_PRESS, OPEN_CLEAR_ABOVE_B5_ABOVE_SFULL_SIGN, RECORDING, "long press of the joystick centre")
+---
+> RC_ROW(12, 144, STANDBY, LONG_PRESS, OPEN_CLEAR_ABOVE_B5_ABOVE_SFULL_SIGN, STANDBY, "long press of the joystick centre")
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+FAIL generator.fresh_run_matches_committed_table
+    assert failed firmware/tests/core/src/test_rules.c:254: rc_core_state(&core) == RC_ST_RECORDING (left 4, right 5)
+FAIL rc_collisions.test_c2_long_press_with_screen_on_starts
+    assert failed firmware/tests/core/src/test_rules.c:300: rc_core_state(&core) == RC_ST_RECORDING (left 4, right 5)
+FAIL rc_collisions.test_c4_long_press_with_screen_off_starts
+    assert failed firmware/tests/core/src/th.c:103: o->n == n (left 1, right 2)
+FAIL rc_feedback.test_vibration_off_drops_mh_mt_only
+    assert failed firmware/tests/core/src/test_rules.c:207: r->to == RC_ST_RECORDING (left 4, right 5)
+FAIL rc_mic_rail.test_open_only_into_recording_and_every_exit_turns_mic_off
+    assert failed firmware/tests/core/src/test_rules.c:230: rc_core_mic_rail(&core) == rc_core_state(&core) == RC_ST_RECORDING (left 1, right 0)
+FAIL rc_mic_rail.test_rail_follows_state_on_every_event_from_every_state
+    assert failed firmware/tests/core/src/test_rules.c:182: rc_core_state(&core) == RC_ST_RECORDING (left 4, right 5)
+FAIL rc_owner_rule.test_long_press_starts_and_same_long_press_stops
+    assert failed firmware/tests/core/src/test_rules.c:48: n == 1 (left 0, right 1)
+FAIL rc_owner_rule.test_only_row_12_enters_recording
+    assert failed firmware/tests/core/src/test_round2.c:376: th_has(&out, RC_ACT_M3) (left 0, right 0)
+FAIL rc_round2.test_code_c3_s30_rearmed_by_new_recording
+    assert failed firmware/tests/core/src/test_round2.c:211: rc_core_state(&core) == RC_ST_RECORDING (left 4, right 5)
+FAIL rc_round2.test_r4b_failed_write_then_case_then_long_press_never_records_over_it
+    assert failed firmware/tests/core/src/test_round2.c:203: rc_core_state(&core) == RC_ST_RECORDING (left 4, right 5)
+FAIL rc_round2.test_r4b_long_press_with_open_flag_runs_recovery_first
+    assert failed firmware/tests/core/src/test_round2.c:253: rc_core_state(&core) == RC_ST_RECORDING (left 4, right 5)
+FAIL rc_round2.test_r7_hold_begun_in_charging_never_starts
+    assert failed firmware/tests/core/src/test_round2.c:282: rc_core_state(&core) == RC_ST_RECORDING (left 4, right 5)
+FAIL rc_round2.test_r7_no_change_of_state_keeps_the_hold
+    assert failed firmware/tests/core/src/test_round3.c:78: F->storage_fault (left 0, right 0)
+FAIL rc_round3.test_r11_storage_fault_survives_the_case
+    assert failed firmware/tests/core/src/test_rows.c:156: rc_core_state(&core) == RC_ST_RECORDING (left 4, right 5)
+FAIL rc_row_variants.test_row30_m3_once_per_discharge
+    assert failed firmware/tests/core/src/test_rows.c:57: rc_core_state(&core) == RC_ST_RECORDING (left 4, right 5)
+FAIL rc_rows.test_row_12
+    assert failed firmware/tests/core/src/test_rules.c:438: rc_core_state(&core) == RC_ST_RECORDING (left 4, right 5)
+FAIL rc_rules.test_sign_hook_once_per_press
+    assert failed firmware/tests/core/src/test_rules.c:26: rc_table_checksum() == rc_table_fnv1a (left 1064000626, right 3860720864)
+FAIL rc_table.test_table_checksum_matches_generator
+suites=13 tests=221 pass=204 fail=17
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation row12to, named case rc_rows.test_row_12 failed

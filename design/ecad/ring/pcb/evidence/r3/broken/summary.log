@@ -1,0 +1,46 @@
+== net
+written design/ecad/ring/pcb/evidence/r3/broken/broken_net.kicad_pcb
+FAIL 2 U1 pad A4 net 'GND' but netlist says 'VDD_1V8'
+FAIL 6 check_escapes.py exit 1: FAIL U1 A4: pad net GND, plan VDD_1V8
+FAIL 7 rules check: 2 violations {'shorting_items': 1, 'solder_mask_bridge': 1}, 1 unconnected items
+checked: 97 parts (1), 362 pad nets (2), 3060 courtyard pairs (3), 362 pads and every courtyard, via and track for the outline and keep-outs (4), 97 table positions (5), escapes: RESULT FAIL 1 (6), rules check: 2 violations, 1 unconnected (7)
+RESULT: FAIL, 3 problems
+exit 1
+== outside
+written design/ecad/ring/pcb/evidence/r3/broken/broken_outside.kicad_pcb
+FAIL 4 C79 pad 1 centre outside the outline
+FAIL 4 C79 pad 2 centre outside the outline
+FAIL 4 C79 courtyard leaves the outline (1.0592 mm2, 0.690 mm deep)
+FAIL 5 C79 at offset (12.000, -0.000) from the placement table
+FAIL 7 rules check: 2 violations {'track_dangling': 1, 'via_dangling': 1}, 3 unconnected items
+checked: 97 parts (1), 362 pad nets (2), 3060 courtyard pairs (3), 362 pads and every courtyard, via and track for the outline and keep-outs (4), 97 table positions (5), escapes: RESULT PASS (6), rules check: 2 violations, 3 unconnected (7)
+RESULT: FAIL, 5 problems
+exit 1
+== track
+deleted MIC_A_DATA In1.Cu 12.1
+written design/ecad/ring/pcb/evidence/r3/broken/broken_track.kicad_pcb
+FAIL 7 rules check: 2 violations {'via_dangling': 1, 'track_dangling': 1}, 1 unconnected items
+checked: 97 parts (1), 362 pad nets (2), 3060 courtyard pairs (3), 362 pads and every courtyard, via and track for the outline and keep-outs (4), 97 table positions (5), escapes: RESULT PASS (6), rules check: 2 violations, 1 unconnected (7)
+RESULT: FAIL, 1 problems
+exit 1
+== missing
+written design/ecad/ring/pcb/evidence/r3/broken/broken_missing.kicad_pcb
+FAIL 1 C5 has 0 footprints
+FAIL 7 rules check: 2 violations {'track_dangling': 2}, 1 unconnected items
+checked: 97 parts (1), 360 pad nets (2), 3040 courtyard pairs (3), 360 pads and every courtyard, via and track for the outline and keep-outs (4), 96 table positions (5), escapes: RESULT PASS (6), rules check: 2 violations, 1 unconnected (7)
+RESULT: FAIL, 2 problems
+exit 1
+== antvia
+written design/ecad/ring/pcb/evidence/r3/broken/broken_antvia.kicad_pcb
+FAIL 4 via (GND) inside the antenna copper-free zone at (-11.000, 4.000)
+FAIL 7 rules check: 2 violations {'items_not_allowed': 1, 'via_dangling': 1}, 1 unconnected items
+checked: 97 parts (1), 362 pad nets (2), 3060 courtyard pairs (3), 362 pads and every courtyard, via and track for the outline and keep-outs (4), 97 table positions (5), escapes: RESULT PASS (6), rules check: 2 violations, 1 unconnected (7)
+RESULT: FAIL, 2 problems
+exit 1
+== swap
+written design/ecad/ring/pcb/evidence/r3/broken/broken_swap.kicad_pcb
+FAIL 6 check_escapes.py exit 1: FAIL U1 B4: via ('L1', 'L3'), plan ('L1', 'L2') | FAIL U1 D5: via ('L1', 'L2'), plan ('L1', 'L3')
+FAIL 7 rules check: 8 violations {'shorting_items': 2, 'hole_clearance': 1, 'clearance': 1, 'tracks_crossing': 1, 'track_dangling': 3}, 2 unconnected items
+checked: 97 parts (1), 362 pad nets (2), 3060 courtyard pairs (3), 362 pads and every courtyard, via and track for the outline and keep-outs (4), 97 table positions (5), escapes: RESULT FAIL 2 (6), rules check: 8 violations, 2 unconnected (7)
+RESULT: FAIL, 2 problems
+exit 1

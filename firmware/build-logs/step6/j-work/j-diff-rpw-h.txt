@@ -1,0 +1,13 @@
+97a98,109
+> /* ------------------------------------------------------------------ addition of the join (lead's ruling 3 on the factory
+>  * unit's gaps): two reads taken NOW by the power thread (the one owner of the power chip, rhw.h) and handed to the
+>  * caller, for the factory tests. They do not feed the gauge or the levels. Any thread but the power thread (it would
+>  * wait for itself: -EDEADLK); blocks up to RPW_READ_WAIT_MS for the power thread. 0; -ETIMEDOUT when the power thread
+>  * did not answer (not started, or ship mode runs); the chip's errno. */
+> #define RPW_READ_WAIT_MS 1000
+> /* T-MOTOR (FW l.1028): battery voltage in mV and battery current in µA (positive = discharge) of one sample now. */
+> int rpw_sample_now(uint16_t *mv, int32_t *ua);
+> /* T-CHARGE (FW l.1032): charger state (enum rrec_charge_state), the latched error reason (BCHGERRREASON, 0 = none) and
+>  * the battery current in µA (one sample), read now. */
+> int rpw_charger_now(uint8_t *state, uint8_t *err_reason, int32_t *ua);
+> 

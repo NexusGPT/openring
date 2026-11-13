@@ -1,0 +1,18 @@
+tests:
+  ring_factory.sim:
+    tags: ring_factory
+    platform_allow:
+      - native_sim
+      - nrf54lm20bsim/nrf54lm20a/cpuapp
+    integration_platforms:
+      - native_sim
+  # the same suites with the real screens part on the memory display: factory_screen.test_frames_reach_display
+  ring_factory.screen:
+    tags: ring_factory
+    timeout: 180
+    extra_args: FACTORY_SCREEN=ON
+    platform_allow:
+      - native_sim
+      - nrf54lm20bsim/nrf54lm20a/cpuapp
+    integration_platforms:
+      - native_sim

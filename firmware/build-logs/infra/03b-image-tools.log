@@ -1,0 +1,38 @@
+#! /bin/bash
+
+# Set toolchain environemnt
+if [ -z "${ZEPHYR_SDK_INSTALL_DIR}" ]; then
+  source /opt/toolchain-env.sh
+fi
+
+# Install JLink if it is not installed and license was accepted
+if [[ "${ACCEPT_JLINK_LICENSE}" == "1" ]] && [ ! -f /usr/bin/JLinkExe ] ; then
+  /jlink/install.sh
+fi
+===
+/opt/ncs/toolchains/197d1ad490/usr/local/bin/west
+/usr/bin/gcc
+/opt/ncs/toolchains/197d1ad490/usr/local/bin/cmake
+/opt/ncs/toolchains/197d1ad490/usr/local/bin/ninja
+/opt/ncs/toolchains/197d1ad490/usr/local/bin/python3
+West version: v1.5.0
+gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+ncs
+non-interactive-setup.sh
+toolchain-env.sh
+ZEPHYR_SDK=/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk
+GIT_EXEC_PATH=/opt/ncs/toolchains/197d1ad490/usr/local/libexec/git-core
+PYTHONPATH=/opt/ncs/toolchains/197d1ad490/usr/local/lib/python3.12:/opt/ncs/toolchains/197d1ad490/usr/local/lib/python3.12/site-packages
+ZEPHYR_TOOLCHAIN_VARIANT=zephyr/gnu
+LD_LIBRARY_PATH=/opt/ncs/toolchains/197d1ad490/usr/lib:/opt/ncs/toolchains/197d1ad490/usr/lib/x86_64-linux-gnu:/opt/ncs/toolchains/197d1ad490/usr/local/lib:
+ZEPHYR_SDK_INSTALL_DIR=/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk
+PATH=/opt/ncs/toolchains/197d1ad490/usr/bin:/opt/ncs/toolchains/197d1ad490/usr/bin:/opt/ncs/toolchains/197d1ad490/usr/local/bin:/opt/ncs/toolchains/197d1ad490/opt/bin:/opt/ncs/toolchains/197d1ad490/opt/nanopb/generator-bin:/opt/ncs/toolchains/197d1ad490/nrfutil/bin:/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin:/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/riscv64-zephyr-elf/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+NRFUTIL_HOME=/opt/ncs/toolchains/197d1ad490/nrfutil/home
+dpkg-multilib
+ii  gcc-13-multilib                      13.3.0-6ubuntu2~24.04.1                amd64        GNU C compiler (multilib support)
+ii  gcc-multilib                         4:13.2.0-7ubuntu1                      amd64        GNU C compiler (multilib files)
+ii  libc6-dev-i386                       2.39-0ubuntu8.9                        amd64        GNU C Library: 32-bit development libraries for AMD64
+ii  libc6-i386                           2.39-0ubuntu8.9                        amd64        GNU C Library: 32-bit shared libraries for AMD64
+/usr/lib32

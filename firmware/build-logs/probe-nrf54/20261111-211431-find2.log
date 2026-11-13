@@ -1,0 +1,247 @@
+# remote.sh run 20261111-211431-find2
+# command: bash tests/bsim/probe-nrf54/find2.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 21:14:31 CET
+# free on the server's /: 48 GB
+# source firmware copied to /root/ring-os/src-probe54
+# started on the server as 20261111-211431-find2; server log /root/ring-os/logs/20261111-211431-find2.log
+bond_overwrite_allowed
+bond_overwrite_denied
+bond_per_connection
+ccc_update
+id_addr_update
+security_changed_callback
+## samples after peripheral_hr
+periodic_sync
+periodic_sync_conn
+periodic_sync_rsp
+peripheral
+peripheral_accept_list
+peripheral_ans
+peripheral_csc
+peripheral_dis
+peripheral_esp
+peripheral_ets
+peripheral_gap_svc
+peripheral_gatt_write
+peripheral_hids
+peripheral_hr
+peripheral_ht
+peripheral_identity
+peripheral_nus
+peripheral_ots
+peripheral_past
+peripheral_sc_only
+scan_adv
+st_ble_sensor
+tmap_bmr
+tmap_bms
+tmap_central
+tmap_peripheral
+## prj.conf and sample.yaml of peripheral_sc_only / peripheral_hr / central_hr
+--- peripheral_sc_only
+CMakeLists.txt
+README.rst
+boards
+prj.conf
+sample.yaml
+src
+-- prj.conf
+   # Uncomment the following two options to get thread stack usage logs
+   #CONFIG_INIT_STACKS=y
+   #CONFIG_THREAD_STACK_INFO=y
+   
+   CONFIG_BT=y
+   CONFIG_LOG=y
+   CONFIG_BT_PERIPHERAL=y
+   CONFIG_BT_SMP=y
+   CONFIG_BT_SMP_SC_ONLY=y
+   CONFIG_BT_MAX_PAIRED=2
+   CONFIG_BT_DEVICE_NAME="SC only peripheral"
+-- sample.yaml
+sample:
+  name: Bluetooth Peripheral SC-only
+  description: Demonstrates Secure Connections Only mode
+tests:
+  sample.bluetooth.peripheral_sc_only:
+    harness: bluetooth
+    platform_allow:
+      - qemu_cortex_m3
+      - qemu_x86
+    tags: bluetooth
+    integration_platforms:
+      - qemu_cortex_m3
+--- peripheral_hr
+CMakeLists.txt
+Kconfig.sysbuild
+README.rst
+boards
+overlay-bt_ll_sw_split-minimal.conf
+overlay-bt_ll_sw_split.conf
+overlay-extended.conf
+overlay-phy_coded.conf
+overlay-static_callbacks.conf
+prj.conf
+prj_minimal.conf
+sample.yaml
+src
+sysbuild.cmake
+-- prj.conf
+   CONFIG_BT=y
+   CONFIG_LOG=y
+   CONFIG_BT_SMP=y
+   CONFIG_BT_PERIPHERAL=y
+   CONFIG_BT_DIS=y
+   CONFIG_BT_DIS_PNP=n
+   CONFIG_BT_BAS=y
+   CONFIG_BT_HRS=y
+   CONFIG_BT_DEVICE_NAME="Zephyr Heartrate Sensor"
+   CONFIG_BT_DEVICE_APPEARANCE=833
+-- sample.yaml
+sample:
+  name: Bluetooth Peripheral HR
+  description: Demonstrates the HR (Heart Rate) GATT Service
+tests:
+  sample.bluetooth.peripheral_hr:
+    harness: bluetooth
+    platform_allow:
+      - qemu_cortex_m3
+      - qemu_x86
+      - nrf52_bsim
+      - nrf5340bsim/nrf5340/cpuapp
+      - nrf51dk/nrf51822
+      - nrf52dk/nrf52832
+      - nrf52840dk/nrf52840
+      - nrf5340dk/nrf5340/cpuapp
+      - nrf54l15dk/nrf54l15/cpuapp
+      - ophelia4ev/nrf54l15/cpuapp
+      - nrf54lm20dk/nrf54lm20a/cpuapp
+    integration_platforms:
+      - qemu_cortex_m3
+      - nrf52_bsim
+      - nrf5340bsim/nrf5340/cpuapp
+      - nrf51dk/nrf51822
+      - nrf52dk/nrf52832
+      - nrf52840dk/nrf52840
+      - nrf5340dk/nrf5340/cpuapp
+      - nrf54l15dk/nrf54l15/cpuapp
+      - ophelia4ev/nrf54l15/cpuapp
+      - nrf54lm20dk/nrf54lm20a/cpuapp
+    tags: bluetooth
+--- central_hr
+CMakeLists.txt
+Kconfig.sysbuild
+README.rst
+boards
+overlay-bt_ll_sw_split.conf
+overlay-extended.conf
+overlay-phy_coded.conf
+overlay-static_callbacks.conf
+prj.conf
+prj_minimal.conf
+sample.yaml
+src
+sysbuild.cmake
+-- prj.conf
+   CONFIG_BT=y
+   CONFIG_LOG=y
+   CONFIG_BT_CENTRAL=y
+   CONFIG_BT_SMP=y
+   CONFIG_BT_GATT_CLIENT=y
+-- sample.yaml
+sample:
+  name: Bluetooth Central HR
+tests:
+  sample.bluetooth.central_hr:
+    arch_allow: x86
+    harness: bluetooth
+    tags: bluetooth
+  sample.bluetooth.central_hr.minimal:
+    harness: bluetooth
+    platform_allow:
+      - bbc_microbit
+    integration_platforms:
+      - bbc_microbit
+    extra_args: CONF_FILE=prj_minimal.conf
+    tags: bluetooth
+  sample.bluetooth.central_hr.bt_ll_sw_split.extended:
+    harness: bluetooth
+    platform_allow:
+      - nrf52_bsim
+      - nrf52dk/nrf52832
+      - nrf52840dk/nrf52840
+    integration_platforms:
+      - nrf52_bsim
+      - nrf52dk/nrf52832
+      - nrf52840dk/nrf52840
+    extra_args: EXTRA_CONF_FILE=overlay-extended.conf
+    tags: bluetooth
+  sample.bluetooth.central_hr.multicore.bt_ll_sw_split.extended:
+    harness: bluetooth
+    platform_allow:
+## bsim tests naming nrf54 boards
+zephyr/tests/bsim/bluetooth/compile.nrf54l15bsim_nrf54l15_cpuapp.sh
+zephyr/tests/bsim/bluetooth/audio/test_scripts/bap_broadcast_audio_multiple_group_multiple_bis.sh
+zephyr/tests/bsim/bluetooth/audio/test_scripts/bap_broadcast_audio_vs_multiple_group_multiple_bis.sh
+zephyr/tests/bsim/bluetooth/host/adv/periodic/testcase.yaml
+zephyr/tests/bsim/ci.bt.sh
+zephyr/tests/bsim/ci.uart.sh
+## sdk-nrf samples/tests bluetooth
+central_and_peripheral_hrs
+central_bas
+central_hids
+central_hr_coded
+central_nfc_pairing
+central_smp_client
+central_uart
+channel_sounding
+conn_time_sync
+direct_test_mode
+direction_finding_central
+direction_finding_connectionless_rx
+direction_finding_connectionless_tx
+direction_finding_peripheral
+enocean
+event_trigger
+fast_pair
+hci_lpuart
+iso_combined_bis_and_cis
+iso_time_sync
+llpm
+mesh
+multiple_adv_sets
+nrf_auraconfig
+nrf_dm
+path_loss_monitoring
+peripheral_ams_client
+peripheral_ancs_client
+peripheral_bms
+peripheral_cgms
+peripheral_cts_client
+peripheral_gatt_dm
+peripheral_hids_keyboard
+peripheral_hids_mouse
+peripheral_hr_coded
+peripheral_lbs
+peripheral_mds
+peripheral_nfc_pairing
+peripheral_power_profiling
+peripheral_rscs
+peripheral_status
+peripheral_uart
+peripheral_with_multiple_identities
+radio_coex_1wire
+radio_notification_cb
+rpc_host
+rssi_power_control
+scanning_while_connecting
+shell_bt_nus
+shorter_conn_intervals
+subrating
+throughput
+bsim
+iso
+tester
+# finished (Mac clock): 2026-11-11 21:14:47 CET
+# remote exit code: 0
+# local log: firmware/build-logs/probe-nrf54/20261111-211431-find2.log

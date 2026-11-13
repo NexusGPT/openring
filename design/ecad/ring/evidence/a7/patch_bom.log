@@ -1,0 +1,229 @@
+started 2026-11-11 01:11:17
+CHANGE U2 maker_part_number
+   old: 
+   new: nPM1304-CAAA-R7
+CHANGE U2 package
+   old: CSP-35 (package code CA)
+   new: CSP-35 (nPM1304-CAAA)
+CHANGE U2 size_mm
+   old: 3.1 x 2.4
+   new: 2.3775 x 3.0775 x 0.464
+CHANGE U2 key_figures
+   old: nPM1304 replaces the nPM1300 (review F05): charge current 4 to 100 mA in 0.5 mA steps, termination voltage 3.6 to 4.65 V in 50 mV steps, 2 buck 200 mA 1.0 to 3.3 V, 2 load switches 100 mA or LDO 50 mA, ship mode 370 nA (product page summary); charge setting 15 mA and 4.35 V (4.35 V is on the 50 mV grid, not named as an option by Nordic); ball map against the nPM1300 not confirmed, every U2 ball provisional
+   new: nPM1304 (review F05): charge current 4 to 100 mA in 0.5 mA steps, accuracy +-10 % (p29); charge voltage 4.35 V is register BCHGVTERM value 9 (p36); battery discharge current limit IBATLIM 100 mA minimum (p29); 35 balls, VBUS B1 B2, VSYS C1 C2, VBAT D1 D2, no GPIO4 (Table 33 p153); order code nPM1304-CAAA-R7, reel of 1500 (Table 50 p168); charge setting 15 mA and 4.35 V
+CHANGE U2 evidence
+   old: LIST
+   new: DS
+CHANGE U2 source_file_or_url
+   old: https://www.nordicsemi.com/Products/nPM1304 ; https://docs.nordicsemi.com/r/bundle/ps_npm1304/page/keyfeatures_html5.html ; design/parts/research-npm1304.md sections 1 to 3
+   new: design/datasheets/npm1304_datasheet_v1_0.pdf p29, p36, p153, p155, p157, p168 ; design/ecad/ring/npm1304-balls.csv ; design/architecture.md 17.18
+CHANGE U2 open_action
+   old: S18: Nordic must answer: the orderable part number (order code left empty here), the ball map of the 35-ball CSP against the nPM1300, whether 4.35 V is a selectable termination voltage, the termination current options, the passives and the two resistor-set supplies of the nPM1304 (architecture 17.9 S18, 17.13)
+   new: S22 (architecture 17.22): bench proof of the motor regulator U11, which keeps the motor out of the IBATLIM path; price at quantity 1 not read (a distributor)
+CHANGE R71 open_action
+   old: to confirm against the nPM1304 product specification (S18): the value is Nordic's nPM1300 reference configuration 1; the nPM1304 page read gives none
+   new: confirmed for the nPM1304: spec Table 36 page 156 (47 kohm gives 1.8 V, 150 kohm gives 3.0 V), resistor tolerance 5 % or better (npm1304-reference.md)
+CHANGE R72 open_action
+   old: to confirm against the nPM1304 product specification (S18): the value is Nordic's nPM1300 reference configuration 1; the nPM1304 page read gives none
+   new: confirmed for the nPM1304: spec Table 36 page 156 (47 kohm gives 1.8 V, 150 kohm gives 3.0 V), resistor tolerance 5 % or better (npm1304-reference.md)
+CHANGE C71 item
+   old: Schematic addition: U2 VBUS 4.7 uF (DK PCA10184 C36)
+   new: Power chip VBUS capacitor 1.0 uF 25 V
+CHANGE C71 function
+   old: U2 VBUS 4.7 uF (DK PCA10184 C36); value from the nPM1300 kit design (DK PCA10184); to confirm against the nPM1304 product specification (S18)
+   new: U2 VBUS capacitor at balls B1, B2 (A7, npm1304-reference.md D1: Nordic C1 is 1.0 uF X5R 25 V; the former 4.7 uF part GRM155R60J475ME47D is rated 6.3 V)
+CHANGE C71 maker
+   old: Murata
+   new: 
+CHANGE C71 maker_part_number
+   old: GRM155R60J475ME47D
+   new: 
+CHANGE C71 package
+   old: C_0402
+   new: C_0402
+CHANGE C71 value
+   old: 4.7uF
+   new: 1.0 uF 25 V X5R
+CHANGE C71 key_figures
+   old: 
+   new: X5R, 25 V, +-10 % (Nordic Table 37); VBUS accepts transients to 22 V (npm1304-reference.md D1)
+CHANGE C71 evidence
+   old: LIST
+   new: DS
+CHANGE C71 source_file_or_url
+   old: design/ecad/ring/additions.csv; design/ecad/ring/sch-notes.md
+   new: design/datasheets/npm1304_datasheet_v1_0.pdf p157 Table 37 ; design/ecad/ring/npm1304-reference.md D1
+CHANGE C71 open_action
+   old: to confirm against the nPM1304 product specification (S18)
+   new: NEW-13: a distributor or the electronics designer must answer: a 1.0 uF 25 V X5R part (0402 or 0603) with its maker sheet; no such sheet is on file
+NEW after C71: ['Power chip VBAT capacitor 2.2 uF', 'C85', '1', 'U2 VBAT capacitor at balls D1, D2 (A7, npm1304-reference.md D2: Nordic C6; C21 on VBAT serves U4)', '', '', 'C_0402', '', '2.2 uF 10 V X5R', 'X5R, 10 V, +-10 % (Nordic Table 37)', 'DS', 'design/datasheets/npm1304_datasheet_v1_0.pdf p157 Table 37 ; design/ecad/ring/npm1304-reference.md D2', '', 'NEW-13: a distributor or the electronics designer must answer: the part code with its maker sheet']
+NEW after C85: ['Power chip load switch output capacitors 1.0 uF', 'C86,C87', '2', 'U2 LSOUT1 (VDD_MIC, ball A4) and LSOUT2 (VDD_SD, ball A5), one each next to the ball (A7, npm1304-reference.md D4: Nordic configuration 2 puts C14 1.0 uF on the load switch output; the LOADSW chapter 6.4 itself states no capacitor rule)', '', '', 'C_0201', '', '1.0 uF 10 V X5R', 'X5R, 10 V, +-10 % (Nordic Table 38)', 'DS', 'design/datasheets/npm1304_datasheet_v1_0.pdf p158 Figure 59, p159 Table 38, p67 to p69 ; design/ecad/ring/npm1304-reference.md D4', '', 'NEW-13: a distributor or the electronics designer must answer: the part code with its maker sheet (a 10 V part; GRM033R60J105MEA2D on file is 6.3 V)']
+NEW after C86,C87: ['Power chip VSYS capacitor, third 10 uF', 'C88', '1', 'U2 VSYS/PVDD third 10 uF at balls C1, C2, C7 (A7, npm1304-reference.md D3: Nordic C2, C3, C4)', '', '', 'C_0402', '', '10 uF 16 V X5R', 'X5R, 16 V, +-20 % (Nordic Table 37); a 10 uF 0402 loses much of its value under voltage (npm1304-reference.md D7)', 'DS', 'design/datasheets/npm1304_datasheet_v1_0.pdf p157 Table 37 ; design/ecad/ring/npm1304-reference.md D3', '', 'NEW-13: a distributor or the electronics designer must answer: the part code with its maker sheet (16 V)']
+DELETE Q1: ['Motor switch', 'Q1', '1', 'N-channel MOSFET, 1.8 V gate drive, switches the motor from VDD_3V0 at full duty (architecture 17.4)', 'Diodes Inc.', 'DMN2450UFB4', 'X2-DFN1006-3', '1.0 x 0.6 x 0.4', '', '20 V, RDS(on) 0.7 ohm max at 1.8 V gate, 0.8 A at 1.8 V', 'DS', 'design/datasheets/p3_dmn2450ufb4.pdf p1, p3', '', '']
+DELETE D1: ['Motor diode', 'D1', '1', 'flyback Schottky diode across the motor', 'onsemi', 'NSR0230P2T5G', 'SOD-923', '', '', '30 V, 200 mA, VF 0.5 V max at 200 mA', 'DS', 'design/datasheets/p3_nsr0230.pdf p1', '', '']
+NEW after M1: ['Motor regulator (in place of the motor switch and the motor diode)', 'U11', '1', '3.0 V LDO from VBAT for the motor, enabled by MOTOR; keeps the motor current out of the nPM1304 battery limit (architecture 17.22)', 'Texas Instruments', 'TLV75530PDQNR', 'X2SON-4 (DQN)', '1.0 x 1.0 x 0.4 max', '3.0 V', '500 mA, dropout 325 mV max at 500 mA, +-1.2 %, shutdown 1 uA max', 'DS', 'design/datasheets/motor_tlv755p.pdf p3 p5 p6 p28 p41 ; design/ecad/motor-drive/motor-drive.md 2.2', '', 'S22: bench proof of this circuit and the layout room for U11, C83, C84 (architecture 17.22); price not read']
+NEW after U11: ['Capacitor 10 uF 0402 6.3 V', 'C83,C84', '2', 'U11 input and output; C84 is also the 2 uF or more across the motor that Jinlong asks', 'Murata', 'GRM155R60J106ME15', '0402', '1.0 x 0.5', '10 uF', 'X5R, 6.3 V', 'DS', 'design/datasheets/p3_sgm38046.pdf p4 Table 1 ; design/ecad/motor-drive/motor-drive.md 2.2', '', '']
+CHANGE M1 open_action
+   old: S21: the electronics designer must recheck the motor switch Q1 and the 3.0 V rail for 175 mA at start (they were sized for 85 mA); the maker must confirm the part and its price (no price read); rim metal at the motor is 0.425 mm (rule 0.40)
+   new: S21 closed by design/ecad/motor-drive/motor-drive.md: the motor is fed from VBAT by U11, outside the nPM1304 limit; the maker must confirm the part and its price (no price read); rim metal at the motor is 0.425 mm (rule 0.40)
+CHANGE M1 function
+   old: haptic motor in the joystick-side shoulder of the band at -44 degrees, 0.7 mm off the band's centre line (inside model v4, architecture 17.15); two lead wires soldered to flex tail A (joystick side) by the BAND_SPLIT table of make_netlist.py
+   new: haptic motor in the joystick-side shoulder of the band at -44 degrees, 0.7 mm off the band's centre line (inside model v4, architecture 17.15); red lead + on VMOT (U11 output), blue lead - on ground; two lead wires soldered to flex tail A pads MOT+ and MOT- (BAND_SPLIT table of make_netlist.py)
+CHANGE R61 item
+   old: Schematic addition: W6 gate series resistor 100 ohm
+   new: Motor regulator enable series resistor 100 ohm
+CHANGE R61 function
+   old: W6 gate series resistor 100 ohm
+   new: motor regulator enable series resistor 100 ohm
+CHANGE R62,R66 item
+   old: Schematic addition: W6 gate pull-down 100 kohm
+   new: Pull-down 100 kohm: motor regulator enable (R62) and screen supply AVDDEN (R66)
+CHANGE R62,R66 function
+   old: W6 gate pull-down 100 kohm
+   new: motor regulator enable pull-down 100 kohm (R62); AVDDEN pull-down 100 kohm (R66, W10)
+CHANGE U5,U6 function
+   old: PDM microphone, bottom port, one stereo input (architecture 16.6)
+   new: PDM microphone, top port facing down through the floor, one stereo input (architecture 17.19); pins 1 DATA, 2 CLOCK, 3 SELECT, 4 Vdd, 5 to 8 GROUND
+CHANGE U5,U6 maker
+   old: Infineon
+   new: Knowles
+CHANGE U5,U6 maker_part_number
+   old: IM68D128BV01XTMA1
+   new: SPK0641HT4H-1
+CHANGE U5,U6 package
+   old: PG-LLGA-5 class (3.5 x 2.65 x 0.98)
+   new: 8-pad LGA, top port 0.25 mm
+CHANGE U5,U6 size_mm
+   old: 3.5 x 2.65 x 0.98
+   new: 4.00 x 3.00 x 1.00
+CHANGE U5,U6 key_figures
+   old: Infineon IM68D128B product brief (design/datasheets/mic-research/im68d128b-brief.txt): SNR 67.5 dB(A), 580/190 uA (HPM/LPM), supply 1.62 to 3.60 V, bottom port, acoustic port diameter 0.325 mm; 22 mm apart on the X axis (architecture 16.4); the order code is the part number in a DigiKey URL seen in search text (bench-kits.md section 3), IM68D128B datasheet not saved
+   new: SNR 64.5 dB(A), sensitivity -26 dBFS, 630 uA at 1.8 V (710 max), supply 1.6 to 3.6 V, clock 1.0 to 4.8 MHz, AOP 120 dB SPL (Knowles Rev A sheets 2 and 6, third-party host copy); U5 at X -10.8 and U6 at X +10.8, Y -4.8, ports 23.54 mm apart
+CHANGE U5,U6 evidence
+   old: LIST
+   new: DS
+CHANGE U5,U6 source_file_or_url
+   old: design/parts/slim.md section 5 and 5.1 ; design/datasheets/slim_infineon-im68d121j-brief.pdf p1 ; design/bench/bench-kits.md section 3 ; architecture.md 16.4, 17.4
+   new: design/mech/mic-path/datasheets/knowles-spk0641ht4h-1_chipsmall.pdf sheets 2, 4, 6 ; design/mech/mic-path/mic-path.md sections 3, 4, 9 ; design/architecture.md 17.19
+CHANGE U5,U6 open_action
+   old: Infineon or a distributor must answer: is IM68D128BV01XTMA1 the orderable code, and what are its pin order, LR pin and sound-port data (IM68D128B datasheet not in design/datasheets); price at quantity 1 not read
+   new: S23: Knowles or a distributor must answer: the orderable code (reel suffix) and stock of SPK0641HT4H-1; price at quantity 1 not read; second source SPK0838HT4H-B has another pin order
+CHANGE C31,C32 function
+   old: one per microphone (2), at the VDD pad; Infineon IM73D122 datasheet text 'shall be placed close to the microphone VDD pad'; same rule kept for the IM68D128B, which has no saved datasheet
+   new: one per microphone (2), 1 uF on VDD_MIC kept from W4; Knowles sheet 4 (text lines 230 to 231): 'Bypass capacitors should be placed next to each microphone's Vdd pin' and 'Capacitors near the microphone should not contain Class 2 dielectrics': this X5R part is Class 2, so it sits on VDD_MIC away from the microphone and C35, C36 are the bypass next to Vdd
+CHANGE C31,C32 source_file_or_url
+   old: design/parts/order-codes.md
+   new: design/mech/mic-path/datasheets/knowles-spk0641ht4h-1_chipsmall.pdf sheet 4 ; design/parts/order-codes.md
+CHANGE C35,C36 function
+   old: one per microphone (2), VDD to GND, 'strongly recommended' (IM73D122 datasheet; same rule kept for IM68D128B)
+   new: one per microphone (2), 0.1 uF next to the Vdd pin (Knowles SPK0641HT4H-1 sheet 4, Figure 4); no Class 2 dielectric near the microphone (same sheet)
+CHANGE C35,C36 maker
+   old: Samsung
+   new: 
+CHANGE C35,C36 maker_part_number
+   old: CL03A104KP3NNNC
+   new: 
+CHANGE C35,C36 value
+   old: 100 nF X5R 10 V
+   new: 100 nF Class 1 (C0G/NP0)
+CHANGE C35,C36 key_figures
+   old: package not stated
+   new: Class 1 dielectric required near the microphone (Knowles sheet 4); 0201 assumed
+CHANGE C35,C36 evidence
+   old: LIST
+   new: DS
+CHANGE C35,C36 source_file_or_url
+   old: design/parts/order-codes.md
+   new: design/mech/mic-path/datasheets/knowles-spk0641ht4h-1_chipsmall.pdf sheet 4
+CHANGE C35,C36 open_action
+   old: 
+   new: NEW-14: a distributor or the electronics designer must answer: a 100 nF Class 1 (C0G/NP0) part that fits under the board, with its maker sheet; the former code CL03A104KP3NNNC is X5R (Class 2)
+CHANGE R31,R32 function
+   old: series resistor on DATA, one per microphone (2); datasheet of the removed IM73D122 says 'may be added' to reduce ringing
+   new: series resistor on DATA, one per microphone (2); design choice kept from W4 (the SPK0641HT4H-1 sheet names no series resistor); pads kept on the board
+CHANGE PCB1 key_figures
+   old: 0.325 mm ball pitch of U1; stack-up and pad pattern not yet drawn; 15 test pads; sound holes: none (microphones port sideways)
+   new: 0.325 mm ball pitch of U1; stack-up and pad pattern not yet drawn; 15 test pads; sound holes: none (top-port microphones port down through the floor)
+CHANGE HSG1 key_figures
+   old: plan corner radius 2.5; glass face curved across the finger, arc radius 30.7; shell 0.5 mm outside and 0.6 mm at each edge, channel 6.8 mm wide; openings: 2 microphone slots 1.2 x 0.3, 2 floor slots, joystick frame 6.4 x 5.4 on the outer face at 78 degrees on the joystick side (architecture 17.11); no record opening; no pad holes: the 4 charging pads are on the inside face of the band in the resin liner (architecture 17.12); material not fixed (titanium or stainless steel, architecture 16.10)
+   new: plan corner radius 2.5; glass face curved across the finger, arc radius 30.7; shell 0.5 mm outside and 0.6 mm at each edge, channel 6.8 mm wide; openings: 2 floor pockets 4.4 x 3.35 x 0.10, 2 holes 1.0 dia, 2 seats 2.0 dia x 0.10 on the underside (no microphone slots; design/mech/mic-path/mic-path.md section 5), 2 floor slots, joystick frame 6.4 x 5.4 on the outer face at 78 degrees on the joystick side (architecture 17.11); no record opening; no pad holes: the 4 charging pads are on the inside face of the band in the resin liner (architecture 17.12); material not fixed (titanium or stainless steel, architecture 16.10)
+CHANGE MEM1,MEM2 function
+   old: acoustic membrane over each of the 2 slots in the block wall
+   new: acoustic membrane disc over each floor hole of the 2 microphones, in a 2.0 x 0.10 mm seat flush with the underside (architecture 17.19)
+CHANGE MEM1,MEM2 package
+   old: die-cut ring
+   new: disc with adhesive ring
+CHANGE MEM1,MEM2 size_mm
+   old: 1.6 outer, 0.8 inner, 0.24 thick
+   new: 2.0 dia, 0.10 thick at most
+CHANGE MEM1,MEM2 key_figures
+   old: GAW112 series, under 2 dB loss 200 to 5000 Hz; custom cut with adhesive ring
+   new: hydrophobic acoustic membrane (ePTFE class), at most 0.10 thick with its adhesive; the GAW112 cut on file is 0.24 thick, too thick for the seat (mic-path.md section 5)
+CHANGE MEM1,MEM2 evidence
+   old: DS
+   new: CALC
+CHANGE MEM1,MEM2 source_file_or_url
+   old: <work>/ai-ring-recorder-power-evidence/gore_portable_vents_brochure.pdf p5
+   new: design/mech/mic-path/mic-path.md sections 5 and 9 item 19
+CHANGE MEM1,MEM2 open_action
+   old: 12.6: Gore must answer: GAW112-series custom die-cut part number, and price (none in any source); slot is 1.2 x 0.3 mm in A5, the ring cut is 1.6 outer, 0.8 inner
+   new: 12.6: Gore must answer: a thinner cut (at most 0.10 mm) part number and price; no membrane part is chosen (mic-path.md O4)
+CHANGE GSK2,GSK3 function
+   old: moulded gasket channel from each microphone's side port to its slot in the wall (architecture 16.3; 17.1 keeps the slots)
+   new: foam gasket ring between each microphone lid and the floor pocket, PSA on both faces (architecture 17.19)
+CHANGE GSK2,GSK3 size_mm
+   old: 
+   new: 1.8 outer dia, 1.0 bore
+CHANGE GSK2,GSK3 value
+   old: 0.6 mm tall
+   new: free thickness 0.10, 0.20 or 0.30, chosen per unit
+CHANGE GSK2,GSK3 key_figures
+   old: outline from the mechanics step; bench B7 channel resonance and wind noise
+   new: soft closed-cell foam ring OD 1.8, bore 1.0, PSA both faces; thickness chosen per unit from the measured lid gap (mic-path.md section 8)
+CHANGE GSK2,GSK3 source_file_or_url
+   old: design/architecture.md section 16.3, 17.1
+   new: design/mech/mic-path/mic-path.md sections 5, 8 and 9 item 20
+CHANGE GSK2,GSK3 open_action
+   old: Design partner must answer: gasket material, drawing and quote; bench B7 (channel resonance, wind noise)
+   new: S23: a gasket maker must answer: material, the three thicknesses and quote; bench B7 (seal, response)
+CHANGE LED1 function
+   old: red top-view LED under a clear window, on top of the board
+   new: red top-view LED on the board's under face at X -9.70, Y -2.10, shining down into light guide LG1; pad 1 cathode, pad 2 anode (architecture 17.21)
+CHANGE LED1 key_figures
+   old: forward voltage 2.0 V typ, 2.4 V max at 20 mA; 631 nm; 125 degrees (Kingbright preliminary sheet 2013)
+   new: forward voltage 1.767 V typ at 1.5 mA (p3 curve), 2.0 V typ and 2.4 V max at 20 mA; 631 nm; 125 degrees (Kingbright preliminary sheet 2013)
+CHANGE LED1 source_file_or_url
+   old: design/datasheets/codes_kpg-1005surc-tt-rs-copy.pdf
+   new: design/datasheets/light_kb_KPG-1005SURC-TT_rs-copy.pdf p1, p2, p3 ; design/mech/light-path/light-path.md sections 3, 4, 6
+CHANGE LED1 open_action
+   old: 12.5 current maker sheet still to obtain
+   new: S25: Kingbright or a distributor must answer: is KPG-1005SURC-TT still sold, and its current sheet (12.5); fallback APHHS1005SURCK, not fit-checked
+CHANGE R41 value
+   old: 680 ohm 1 %
+   new: 820 ohm 1 %
+CHANGE R41 key_figures
+   old: (3.0 V - 2.0 V) / 680 ohm = 1.5 mA (architecture W5; 2.0 V typical from Kingbright's 2013 preliminary sheet)
+   new: (3.0 V - 1.767 V - 1.5 mA x 0.7 ohm) / 1.5 mA = 821 ohm; 820 ohm gives 1.502 mA, 1.381 to 1.624 mA over the +-0.1 V spread (light-path.md section 6)
+CHANGE R41 function
+   old: series resistor of the recording light, 1.5 mA from 3.0 V (architecture W5)
+   new: series resistor of the recording light, 1.5 mA from 3.0 V (architecture 17.21)
+CHANGE R41 source_file_or_url
+   old: design/parts/order-codes.md
+   new: design/mech/light-path/light-path.md section 6 ; design/datasheets/light_kb_KPG-1005SURC-TT_rs-copy.pdf p3
+CHANGE R41 open_action
+   old: NEW-9: a distributor (DigiKey or LCSC) must answer: the order code of the 680 ohm 0201 in the Yageo RC0201FR-07 series
+   new: NEW-9: a distributor (DigiKey or LCSC) must answer: the order code of the 820 ohm 0201 in the Yageo RC0201FR-07 series
+NEW after R41: ['Recording light guide', 'LG1', '1', 'clear moulded L-shaped light guide under the board: LED1 light turned by three 45 degree mirrors and up a riser through a 0.5 mm board hole to the window at X -12.425, Y -2.95 (architecture 17.21)', '', '', 'custom moulded part (polycarbonate or PMMA, mirror faces aluminium-coated)', 'legs 3.265 and 1.390 long, section 0.40 x 0.680, riser 0.3 dia', '', 'three aluminium-coated 45 degree mirrors; riser glued in the board hole with clear UV glue (light-path.md section 4)', 'CALC', 'design/mech/light-path/light-path.md sections 2, 4, 10', '', 'S25 (S-L3): a guide maker must answer: LG1 quote, the mirror coat and the glue']
+NEW after LG1: ['Light plug', 'LP1', '1', 'clear block on the screen ledge at X -12.425, Y -2.95, between the ledge glass and the adhesive under the window (architecture 17.21)', '', '', 'custom clear block', '0.4 x 0.4 x 0.4', '', 'clear, glued with clear glue to the glass (light-path.md section 4)', 'CALC', 'design/mech/light-path/light-path.md sections 4, 10', '', 'S25: the screen maker must confirm the ledge glass is clear at the plug; a maker must quote LP1']
+CHANGE BT1 value
+   old: 20 to 27 mAh
+   new: 20 to 27 mAh at US 9 (18.2 to 24.3 mAh at US 7)
+CHANGE BT1 key_figures
+   old: 377.9 cubic mm x 0.054 to 0.072 mAh per cubic mm = 20.4 to 27.2 mAh (architecture 17.15); 4.35 V; charge 15 mA (0.55 to 0.74 C) with the nPM1304 until Grepow states its own limit (architecture 17.13, S12); the motor draws up to 175 mA at each start (17.16); shorter per smaller ring size, not re-measured per size (thin-notes.md K9)
+   new: 377.9 cubic mm x 0.054 to 0.072 mAh per cubic mm = 20.4 to 27.2 mAh (architecture 17.15); 4.35 V; charge 15 mA (0.55 to 0.74 C) with the nPM1304 until Grepow states its own limit (architecture 17.13, S12); the motor draws up to 175 mA at each start (17.16); shorter per smaller ring size, not re-measured per size (thin-notes.md K9); by ring size 18.2 to 24.3 mAh at US 7 up to 24.7 to 32.9 mAh at US 13, smallest 18.2 mAh at US 7 (architecture 17.17)
+CHANGE BT1 source_file_or_url
+   old: design/architecture.md sections 17.13, 17.15, 17.16 (S12) ; design/mech/thin/thin-notes.md section Model v4
+   new: design/architecture.md sections 17.13, 17.15, 17.16 (S12) ; design/mech/thin/thin-notes.md section Model v4 ; design/architecture.md 17.17
+rows 83
+exit 0
+ended 2026-11-11 01:11:18

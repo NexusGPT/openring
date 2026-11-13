@@ -1,0 +1,21 @@
+config RING_CONTROL_LOGIC
+	bool "Ring control logic: mode tables and HID report builder"
+	select RING_CORE
+	help
+	  Pure logic (no kernel, driver or Bluetooth call): the four mode tables,
+	  the HID report map and the report builder. Needs the ring core only for
+	  the names of its actions.
+
+config RING_CONTROL
+	bool "Ring control: keyboard, media keys and pointer over HID over GATT"
+	select RING_CONTROL_LOGIC
+	select RING_DEVICES
+	depends on BT_PERIPHERAL && BT_HIDS
+	help
+	  Sends the joystick actions to the active device as HID reports.
+
+config RING_CONTROL_TEST_HOOKS
+	bool "Ring control test hooks (failing releases, sending to a given link)"
+	depends on RING_CONTROL
+	help
+	  For the two-device tests only. Off in the product.

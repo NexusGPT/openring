@@ -1,0 +1,79 @@
+# remote.sh run 20261112-200649-s5-relay-broken-2
+# command: tests/relay/broken_run.sh text_cut_inside_char
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 20:06:49 CET
+# free on the server's /: 44 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261112-200649-s5-relay-broken-2; server log /root/ring-os/logs/20261112-200649-s5-relay-broken-2.log
+##### broken copy: text_cut_inside_char
+Common subdirectories: /ws/firmware/modules/ring_inbox/include and /ws/out/20261112-200649-s5-relay-broken-2-relay-broken/broken_ring_inbox_text_cut_inside_char/include
+Common subdirectories: /ws/firmware/modules/ring_inbox/src and /ws/out/20261112-200649-s5-relay-broken-2-relay-broken/broken_ring_inbox_text_cut_inside_char/src
+Common subdirectories: /ws/firmware/modules/ring_inbox/zephyr and /ws/out/20261112-200649-s5-relay-broken-2-relay-broken/broken_ring_inbox_text_cut_inside_char/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.019s <host/gnu>)
+ PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+ PASS - test_code_3_order in 0.000 seconds
+ PASS - test_code_4_total in 0.000 seconds
+ PASS - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+ PASS - test_code_7_one_source_per_link in 0.000 seconds
+ PASS - test_every_opcode in 0.000 seconds
+ PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+ PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+ PASS - test_fields_in_any_order_each_once in 0.000 seconds
+ PASS - test_flags_and_category in 0.000 seconds
+ PASS - test_info_and_out_frames in 0.000 seconds
+ PASS - test_pieces_of_every_size in 0.000 seconds
+ PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+ PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+ PASS - test_refused_frames_change_nothing in 0.000 seconds
+ PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+ PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:944: ring_relay_test_texts_cut_at_a_character: (b.items[0].app not equal to want)
+ FAIL - test_texts_cut_at_a_character in 0.000 seconds
+ PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+TESTSUITE ring_relay failed.
+SUITE FAIL -  95.45% [ring_relay]: pass = 21, fail = 1, skip = 0, total = 22 duration = 0.000 seconds
+ - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_3_order] duration = 0.000 seconds
+twister exit code on the broken copy text_cut_inside_char, native_sim: 1 (log /ws/out/20261112-200649-s5-relay-broken-2-relay-broken/twister-text_cut_inside_char-native_sim.log)
+text_cut_inside_char on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_texts_cut_at_a_character] duration = 0.000 seconds (failed cases listed: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.016s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:944: ring_relay_test_texts_cut_at_a_character: (b.items[0].app not equal to want)
+d_00: @00:00:00.000093   FAIL - test_texts_cut_at_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_relay failed.
+d_00: @00:00:00.000093  SUITE FAIL -  95.45% [ring_relay]: pass = 21, fail = 1, skip = 0, total = 22 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_3_order] duration = 0.000 seconds
+twister exit code on the broken copy text_cut_inside_char, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-200649-s5-relay-broken-2-relay-broken/twister-text_cut_inside_char-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+text_cut_inside_char on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_texts_cut_at_a_character] duration = 0.000 seconds (failed cases listed: 1)
+RESULT PASS
+# finished (Mac clock): 2026-11-12 20:07:36 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step5/20261112-200649-s5-relay-broken-2.log

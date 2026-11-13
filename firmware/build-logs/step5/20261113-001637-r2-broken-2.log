@@ -1,0 +1,28 @@
+# remote.sh run 20261113-001637-r2-broken-2
+# command: mkdir -p /ws/out/r2-d && RING_OUT=/ws/out/r2-d/lg bash tests/relay/broken_run.sh > /ws/out/r2-d/lg.log 2>&1; echo "logic broken exit $?"; grep -a -c "the named case failed, as required" /ws/out/r2-d/lg.log; grep -a "^RESULT" /ws/out/r2-d/lg.log; RING_OUT=/ws/out/r2-d/bt bash tests/bsim/relay/run.sh --broken "relay_reaches_core code7_not_enforced action_without_flag remove_ignored put_early refused_changes_store no_security_check action_id hello_keeps_store error_not_notified replace_moves_front relay_wakes_screen source_not_fixed" > /ws/out/r2-d/bt.log 2>&1; echo "bsim broken exit $?"; grep -a "^broken .*: \|^RESULT" /ws/out/r2-d/bt.log | sed "s/^\(broken [a-z_0-9]*: .\{0,120\}\).*/\1/"
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 00:16:37 CET
+# free on the server's /: 44 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261113-001637-r2-broken-2; server log /root/ring-os/logs/20261113-001637-r2-broken-2.log
+logic broken exit 0
+26
+RESULT PASS
+bsim broken exit 0
+broken relay_reaches_core: test H failed on its named check, as required: d_00: @00:00:55.057402  RING CHECK H: the core is still RECORDING, no rec
+broken code7_not_enforced: test I failed on its named check, as required: d_01: @00:00:13.626560  HELPER CHECK I: PUT on an iPhone's link: refused 
+broken action_without_flag: test H failed on its named check, as required: d_01: @00:00:30.619744  HELPER CHECK H: no ACTION frame arrived for an ac
+broken remove_ignored: test H failed on its named check, as required: d_00: @00:01:15.618702  RING CHECK H: REMOVE arrived: 1002 left the store
+broken put_early: test H failed on its named check, as required: d_01: @00:00:14.356460  HELPER CHECK H: PUT 1001 (59 bytes in 6 frames of
+broken refused_changes_store: test H failed on its named check, as required: d_01: @00:01:23.856344  HELPER CHECK H: M20 flag bit 7 set: refused with 
+broken no_security_check: test H failed on its named check, as required: d_01: @00:00:06.256428  HELPER CHECK H: a write to In before security lev
+broken action_id: test H failed on its named check, as required: d_01: @00:00:44.614544  HELPER CHECK H: ACTION arrived: id 1002, negative
+broken hello_keeps_store: test H failed on its named check, as required: d_00: @00:01:02.726302  RING CHECK H: the store holds 2003, 2002, 2001 (H
+broken error_not_notified: test H failed on its named check, as required: d_01: @00:00:15.406428  HELPER CHECK H: PUT before HELLO: refused with AT
+broken replace_moves_front: test H failed on its named check, as required: d_00: @00:01:22.345002  RING CHECK H: the replace of 1002 arrives (new ca
+broken relay_wakes_screen: test H failed on its named check, as required: d_00: @00:01:01.314902  RING CHECK H: relay frames (CLEAR, PUT) did not w
+broken source_not_fixed: test B failed on its named check, as required: d_00: @00:01:00.886776  RING CHECK B: Apple's notification service was fo
+RESULT PASS
+# finished (Mac clock): 2026-11-13 00:35:10 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step5/20261113-001637-r2-broken-2.log

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ring Explorer: journeys</title>
+<style>
+  :root { --ink:#14161a; --muted:#5b6370; --line:#cfd5dd; --bg:#f6f8fb; --card:#ffffff; --accent:#ff6600; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.45 -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  header { padding:28px 32px 8px; }
+  h1 { font-size:26px; margin:0 0 6px; letter-spacing:-0.01em; }
+  header p { margin:0; color:var(--muted); max-width:880px; }
+  .journey { margin:22px 32px; }
+  .journey h2 { font-size:16px; margin:0 0 4px; }
+  .journey .meta { color:var(--muted); font-size:13px; margin-bottom:10px; }
+  .row { display:flex; align-items:stretch; gap:0; overflow-x:auto; padding-bottom:6px; }
+  .box { flex:0 0 250px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
+  .box .screen { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); font-weight:600; }
+  .box .do { font-weight:600; margin:4px 0 6px; }
+  .box .see { color:var(--muted); font-size:13px; }
+  .box .via { font-size:12px; color:var(--muted); border-top:1px dashed var(--line); margin-top:8px; padding-top:6px; }
+  .arrow { flex:0 0 38px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:22px; }
+  .done { flex:0 0 190px; border:1px solid #1a7f4b; background:#eefaf3; border-radius:12px; padding:12px 14px; font-size:13px; }
+  .done b { display:block; color:#1a7f4b; font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
+  footer { padding:8px 32px 40px; color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Ring Explorer: the 7 journeys</h1>
+  <p>Each row is one thing you do in the app. Each box is one step: the screen (orange), what you do (bold), what you then see (grey), and the control that took you there. The values are the real ring design.</p>
+</header>
+<div id="root"></div>
+<footer>Read-only app on this Mac. Nothing you do in it changes the design files.</footer>
+<script>
+const J = [
+ { t:"J1  See the ring and understand one part", m:"You want to know what is inside the ring", done:"A part card tells you what the part is, why it is there, and its order code", s:[
+  ["Home","Rotate the ring","The ring in 3D. 30 x 20 x 9.5 mm, 135 mAh. 8 area tiles with their state","you open localhost"],
+  ["Inside","Drag “open it up”","Glass, screen, board, cell and housing separate into layers","Home › tile “Inside”"],
+  ["Inside","Click the cell","Card: “Battery cell. Stores the energy. Custom order, 4.6 x 13 x 25 mm, 135 mAh minimum. Open: quote from Grepow”","click on the part"],
+  ["Inside","Open “source”","The datasheet or note behind that figure opens in a new tab","part card › “source”"]]},
+ { t:"J2  Compare the exterior options", m:"You must pick the ring's look", done:"Options A, B and C seen side by side in the same view and finish", s:[
+  ["Look","Rotate an option","A, B, C in 3D, each with its idea in two lines and what it is worse at","Home › tile “Look”"],
+  ["Look","Pick a finish","Body and band change colour on all three: black, titanium, silver, gold","switch “finish”"],
+  ["Look","Pick “on a finger”","The ring sits on a finger-sized cylinder, to judge its size","switch “view”"]]},
+ { t:"J3  Check where the design stands", m:"You want to know what is finished and what is open", done:"Each open item names who must act and what to ask for", s:[
+  ["Home","Read the 8 tiles","Each area: done, in progress, not started, or waiting on a supplier","top bar › “Home”"],
+  ["Board","Open “Board”","Banner “not routed yet” and the plan of where each part goes","Home › tile “Board”"],
+  ["Open items","Filter “waiting on a supplier”","7 supplier requests, each with who to ask and for what","top bar › “Open items”"]]},
+ { t:"J4  Follow the circuit from a block to a part", m:"You or a partner want to see how a function is wired", done:"The wiring page of that function is on screen with its parts listed", s:[
+  ["Electronics","Click “Microphones”","Block diagram: chip, 4 microphones, storage, screen, power, controls, case link. The microphone page opens beside it","Home › tile “Electronics”"],
+  ["Electronics","Zoom into U5","The page zooms; microphone U5 IM73D122V01 and its wiring are readable","page list"],
+  ["Parts","Click U5","The parts list filtered to this page; the microphone's part card opens","“parts of this page”"]]},
+ { t:"J5  See how the ring behaves", m:"You want to check the recording rule", done:"A long press starts a recording and the red light turns on", s:[
+  ["Behaviour","Hold the button 1 second","State “Recording”, red light on, one vibration, timer runs","Home › tile “Behaviour”"],
+  ["Behaviour","Tap the button once","A highlight mark appears; the recording continues","the virtual button"],
+  ["Behaviour","Hold the button 1 second","State “Standby”, light off, two vibrations","the virtual button"]]},
+ { t:"J6  Hand the design to a build partner", m:"You want to send the design to a firm", done:"One archive with every design file is downloaded", s:[
+  ["Files","Click “Download partner bundle”","A zip downloads; the page lists what it contains","top bar › “Files”"],
+  ["Parts","Click “Export CSV”","The parts list downloads with all 77 lines","top bar › “Parts”"]]},
+ { t:"J7  See the charging case", m:"You want to see the case", done:"The case is seen in 3D with the ring seated on its pins", s:[
+  ["Case","Open the lid","Case 33.6 x 33.4 x 55.2 mm, 700 mAh. The ring shows seated on 4 pins","Home › tile “Case”"],
+  ["Case","Click the pins","Card: spring pins carrying power and data to the ring","click on the part"]]}
+];
+const root = document.getElementById('root');
+for (const j of J) {
+  const d = document.createElement('section'); d.className='journey';
+  d.innerHTML = `<h2>${j.t}</h2><div class="meta">Starts when: ${j.m}</div>`;
+  const r = document.createElement('div'); r.className='row';
+  j.s.forEach((s,i)=>{ r.innerHTML += `<div class="box"><div class="screen">${s[0]}</div><div class="do">${s[1]}</div><div class="see">${s[2]}</div><div class="via">arrives by: ${s[3]}</div></div><div class="arrow">→</div>`; });
+  r.innerHTML += `<div class="done"><b>Done when</b>${j.done}</div>`;
+  d.appendChild(r); root.appendChild(d);
+}
+window.__ready = true;
+</script>
+</body>
+</html>

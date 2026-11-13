@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "manifest.schema.json",
+  "type": "object",
+  "properties": {
+    "built_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "git_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "git_dirty": {
+      "type": "boolean"
+    },
+    "source_root": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^/\\\\:][^:]*$",
+      "description": "A relative label of the design folder the bundle was built from (its folder name). Never an absolute path."
+    },
+    "records": {
+      "type": "object",
+      "properties": {
+        "ring-model": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "part-placements": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "parts": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "key-numbers": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "area-states": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "look-options": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "electronics": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "schematic-pages": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "board-files": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "firmware-rules": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "case": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "open-items": {
+          "$ref": "#/$defs/ManifestEntry"
+        },
+        "files": {
+          "$ref": "#/$defs/ManifestEntry"
+        }
+      },
+      "required": [
+        "ring-model",
+        "part-placements",
+        "parts",
+        "key-numbers",
+        "area-states",
+        "look-options",
+        "electronics",
+        "schematic-pages",
+        "board-files",
+        "firmware-rules",
+        "case",
+        "open-items",
+        "files"
+      ],
+      "additionalProperties": false
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "part-notes": {
+          "$ref": "#/$defs/ManifestEntry"
+        }
+      },
+      "required": [
+        "part-notes"
+      ],
+      "additionalProperties": false,
+      "description": "Hand-written content copied into the bundle (content/part-notes.json): listed like a record, not counted among the 13."
+    }
+  },
+  "required": [
+    "built_at",
+    "git_commit",
+    "git_dirty",
+    "source_root",
+    "records",
+    "content"
+  ],
+  "additionalProperties": false,
+  "title": "Manifest",
+  "description": "manifest.json: one entry per record, always all 13. built_at and git_commit say when and from which design commit the bundle was built.",
+  "$defs": {
+    "ManifestEntry": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "common.schema.json#/$defs/Status"
+        },
+        "source": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "basis_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "current_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "source",
+        "basis_version",
+        "current_version",
+        "message"
+      ],
+      "additionalProperties": false,
+      "title": "ManifestEntry"
+    }
+  }
+}

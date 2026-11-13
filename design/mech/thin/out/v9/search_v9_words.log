@@ -1,0 +1,67 @@
+architecture.md:443:- Antenna: it is 1.2 mm tall and only 1.0 mm is free under the board, so it sits in a notch of the board, 1.8 x 3.6 mm, at the hand-end corner (found by the 3D model).
+architecture.md:669:- The antenna (Johanson 2450AT18D0100001E, at X -12.7, Y 4.4) has body metal 0.050 mm under it, 0.225 mm from the hand-end wall and 0.450 mm from the thumb-side wall. The screen's driver ledge covers all of it,
+architecture.md:676:NOT DECIDED: the fix changes the ring's look, which is the owner's decision. Until the owner decides, the body stays one metal piece in every file, and the radio is an open risk of the design.
+mfg/parts-notes.md:28:- **main-board** (STEP): the bare board core with the antenna notch; no other hole. No mask, pads, copper or parts: a board house needs Gerber and drill files.
+mfg/tools/draw_v63.py:50:     "6 layers, 0.3 mm thick (default, to confirm with the maker)"),
+mfg/tools/testdata/specs_wrong/main-board.md:6:The bare printed circuit board of the ring electronics: 6 layers, 0.3 mm thick, 27.2 x 12.6 mm. Parts on the under side only (the top faces the screen). This page is the bare board; t
+mfg/tools/testdata/specs_wrong/main-board.md:12:Default, to confirm with the maker: 6 layers, 0.3 mm thick. Laminate type, copper weight and the stack-up: open point 2 (bom.csv line 51: the ring electronics designer answers with t
+mfg/tools/testdata/specs_wrong/main-board.md:31:| antenna notch, X | 1.8 mm | ISO 2768-m | notch at the hand-end corner, thumb side |
+mfg/tools/testdata/specs_wrong/main-board.md:32:| antenna notch, Y | 3.6 mm | ISO 2768-m | same notch |
+mfg/tools/testdata/specs_wrong/main-board.md:56:6. Antenna keep-out, section 6 (older state): no copper and no metal within 4.2 x 4.7 mm on every layer; the antenna now sits in a 1.8 x 3.6 notch (17.3). The electronics designer st
+mfg/specs/main-board.md:31:| antenna notch | 0 (none) | not a dimension | the board is the full rectangle with 0.8 corners; the antenna sits on the under face (design/wiring/ring-board-plan.md e.7, R2.0; inside model v9). Before v
+mfg/specs/main-board.md:37:| motor capacitors C83, C84 | C83 X 0.0, Y 5.45; C84 X 1.27, Y 5.0 turned 90 | ISO 2768-m | C83 10 uF, C84 4.7 uF, 0402 (1.0 x 0.5 mm, height 0.5 assumed), under face, board plan (placement-plan.csv); be
+mfg/specs/main-board.md:62:6. Closed in v9: the antenna keep-out is the copper-free zone of the board plan (X -13.60 to -8.75, Y 3.10 to 6.30, all layers, less the notch at the storage chip's corner; ring-board-plan.md R2.0), and 
+mfg/tools/draw_merged32c.py:50:     "6 layers, 0.3 mm thick (default, to confirm with the maker)"),
+mfg/specs/v5-refresh-notes.md:38:| main-board.md:34 to 38 (new) | none | hole dia 0.50 at X -12.425, Y -2.95; LED1 at X -9.70, Y -2.10; U11 X 0.0, Y 4.2; C83 X 0.0, Y 5.45; C84 X 1.2, Y 5.0; keep-free X -3.5 to -0.9, Y +-3.4 to +-
+mfg/tools/draw.py:49:    ("board", "Main board, bare (antenna notch, no other hole)", "PCB1",
+mfg/tools/draw.py:50:     "6 layers, 0.3 mm thick (default, to confirm with the maker)"),
+mfg/assembly/assembly.md:62:| Radio corner (only if the owner adopts it) | RC1 | resin corner of the body round the antenna | `design/architecture.md:674`, `design/architecture.md:676` | 10 |
+mfg/assembly/assembly.md:89:- **Locate:** the outline 27.2 x 12.6 mm and the antenna notch 1.8 x 3.6 (`design/mfg/specs/main-board.md:27`, `design/mfg/specs/main-board.md:31`).
+mfg/assembly/assembly.md:158:### Step 10. Accept the body, and fit the radio corner if adopted
+mfg/assembly/assembly.md:165:- **Radio corner:** if adopted, the resin corner RC1 is bonded to the body here, on the planes X -10.6 and Y 2.05 (`design/mech/antenna/antenna-study.md:91`), with an adhesive no file names (section 5)
+mfg/assembly/assembly.md:270:- **Radio corner:** if adopted, part of the seat is the resin corner's top (`design/mech/antenna/antenna-study.md:92`); the seal must hold on resin and on metal.
+mfg/assembly/assembly.md:345:| 9 | Radio corner seams, only if adopted | "two bonded seams" (`design/mech/antenna/antenna-study.md:79`), adhesive not named | no dust and no harmful water through the seams | needs a test |
+mfg/parts/index.csv:19:main-board,all,STEP,mfg/parts/main-board/main-board.step,mm,27.2,12.6,0.28,-13.6,-6.3,1.47,94.0318,1,,,design/mech/thin/thin.py v7 built at US 9; same shape at every size (main_board__pcb),"bare board core 2
+wiring/ring-board-plan.md:361:7. **Board outline change:** the 1.8 x 3.6 notch is removed; the board is the full 27.2 x 12.6 rectangle with 0.8 corners (main-board.md point 4 already closes the joystick notch; `board-notes.md` lin
+wiring/ring-board-plan.md:369:Fixed by PLACE (kept): U1 (4.0, 0.0), U2 (8.5, 0.0), U4 (4.0, -3.5), L10 (6.5, -3.5), X1 (3.0, 3.0), U3 (-5.0, 0.0), U5 (-10.8, -4.8), U6 (10.8, -4.8), J1 (-12.0, 0.0), U11 (0.0, 4.2), C83 (0.0, 5.45)
+wiring/ring-board-plan.md:465:| `design/mech/thin/placement.csv` row ANT1 | X -12.700, Y 4.400, Z 1.050, size 1.600 x 3.200 x 1.200, "stands in the board notch" | X -11.500, Y 5.250, Z 0.850, size 3.200 x 1.600 x 1.200, "on the bo
+wiring/ring-board-plan.md:466:| same, row PCB1 | 0.300 thick, "antenna notch 1.8 x 3.6" | 0.300 thick, no notch | e.7 |
+wiring/ring-board-plan.md:467:| same, rows L71 and L72 | L71 (8.500, 3.200), L72 (11.000, 3.200) | L71 (11.000, 3.450), L72 (8.500, 3.450) | f.1, b |
+wiring/ring-board-plan.md:476:| `design/mfg/specs/main-board.md` | 6 layers; notch 1.8 x 3.6; open points 2 and 6 | 4 layers, stack of c.2, rules c.5, coupons of h.2; no notch; keep-out of e.3 | c, e |
+wiring/ring-board-plan.md:531:At PLACE's (-12.0, 0.0), rotation 270 (`j1check.py`): lands X -13.80 to -10.20, Y -3.00 to 3.00. **It does not fit:** the lands pass the board end (X -13.60) by 0.20 mm, and the +Y mounting pad (Y 2.6
+wiring/ring-board-plan.md:682:| `design/mech/thin/placement.csv` | ANT1 X -12.700, Y 4.400, 1.6 x 3.2; J1 (-12.000, 0.000) 3.2 x 5.2; U4 Y -3.500; L10 (6.500, -3.500) 2.5 x 2.0; L71 (8.500, 3.200), L72 (11.000, 3.200) 2.0 x 1.6; X
+wiring/lead-decisions.md:20:| 2, 3, 6, 8, W2 | The antenna sits on the board's under face at the hand-end corner on the +Y edge, on its maker's land pattern. No notch in the board (neither the antenna notch nor the old joystick no
+wiring/ring-board-plan-work/round2.md:24:At PLACE's (-12.0, 0.0), rotation 270 (`j1check.py`): lands X -13.80 to -10.20, Y -3.00 to 3.00. **It does not fit:** the lands pass the board end (X -13.60) by 0.20 mm, and the +Y mounting
+wiring/ring-board-plan-work/round2.md:70:| `design/mech/thin/placement.csv` | ANT1 X -12.700, Y 4.400, 1.6 x 3.2; J1 (-12.000, 0.000) 3.2 x 5.2; U4 Y -3.500; L10 (6.500, -3.500) 2.5 x 2.0; L71 (8.500, 3.200), L72 (11.000, 3.200) 2
+case/look/c5d_placement_pads_at_band_middle.csv:22:main_board,PCB1,board,0.000,0.000,1.600,27.200,12.600,0.300,,False,"27.2 x 12.6 x 0.3, corner radius 0.8 (ASSUMED), antenna notch 1.8 x 3.6; non-plated hole dia 0.50 at X -12.425 
+mech/light-path/light-path.md:15:The v4 window at X -13.25, Y -4.7 lies on that bond (check.log, INFO line "v4 window ... over the FPC bond ...: yes"). Light from below meets the bonded tail and its metal fingers. So the light col
+mech/light-path/light-path.md:57:| LG1 leg 2 (along X) | X -12.765 to -9.500, Y -3.150 to -2.750, Z 0.450 to 1.130 | 0.40 wide, 0.680 high, 3.265 long |
+mech/light-path/light-path.md:60:| Mirror C | under the riser, end of leg 2: a 45 degree face from (X -12.085, Z 0.450) to (X -12.765, Z 1.130); turns -X to +Z | aluminium coat outside |
+mech/light-path/light-path.md:148:| design/ecad/ring/pcb/ring.kicad_pcb lines 5590 to 5596 (LED1 footprint) | `(layer "F.Cu")`, `(at 112.777098 101.431119 90)` | LED1 on the populated under face at model X -9.70, Y -2.10, long sid
+mech/thin/placement.csv:22:main_board,PCB1,board,0.000,0.000,1.600,27.200,12.600,0.300,,False,"27.2 x 12.6 x 0.3, corner radius 0.8 (ASSUMED), antenna notch 1.8 x 3.6; no other hole (v7: the light guide's hole is removed); solder-
+mech/thin/thin_v1.py:272:        "6 layers, one side populated (under side); notch 1.8 x 3.6 at the hand-end +Y corner for the antenna "
+mech/thin/thin_v1.py:288:    add("antenna", "ANT1", "board", box(1.6, 3.2, 1.2, -12.7, 4.4, Z_UB0 + 0.6), (-12.7, 4.4, Z_UB0 + 0.6),
+mech/thin/thin.py:370:    p = newp("antenna", "ANT1", "board", (-12.7, 4.4, Z_UB0 + 0.6), (1.6, 3.2, 1.2), None, False,
+mech/thin/thin.py:372:    p.add("ceramic", box(1.6, 2.4, 1.2, -12.7, 4.4, Z_UB0 + 0.6))
+mech/thin/thin.py:374:        p.add("metal", box(1.6, 0.4, 1.2, -12.7, 4.4 + s * 1.4, Z_UB0 + 0.6))
+mech/thin/thin.py:414:             "27.2 x 12.6 x 0.3, corner radius 0.8 (ASSUMED), antenna notch 1.8 x 3.6; no other hole (v7: the light guide's hole is removed); "
+mech/thin/thin-notes-v1.md:26:C9. The thicker shoulder (outer radius 13.075) lifts the joystick cap's rim 0.18 mm into the board layer (0.0738 mm3 overlap at X +-1.12, Y 5.93 to 6.30). Board notch 2.8 x 0.6 at the +Y edge. The mot
+mech/thin/thin-notes-v1.md:36:C2. Antenna: section 2 gives 3.2 x 1.6 x 1.2; 17.2 gives only 1.00 under the board. 1.2 does not fit under it. I made a notch 1.8 x 3.6 in the board's hand-end +Y corner and stand the antenna in it (Z
+mech/thin/thin-notes-v1.md:47:- Chip positions on the board (under side, X, Y): main chip U1 (4.0, 0), power chip U2 (8.5, 0), screen supply U4 (4.0, -3.5) with its coil L10 (6.5, -3.5), storage U3 (-5.0, 0) long side along X, pow
+mech/thin/thin-notes.md:25:- foam: foam, frame 1.2 wide. main_board: pcb (core, outline radius 0.8, antenna notch), resin (solder-mask face), gold (pad rectangles under every part: 61 + 35 + 16 ball pads and pads for the others).
+mech/thin/thin-notes.md:33:C13. The board no longer needs the v1 notches for the motor or the joystick (joystick now at +95); only the antenna notch (1.8 x 3.6) stays. The antenna (1.2 tall) still stands in it (v1 C2 stands).
+mech/thin/thin-notes.md:120:- Not changed: antenna (X -12.7, Y 4.4), the body as one metal piece (no resin corner), motor at -44 degrees, the pads, the ribbons.
+mech/thin/thin-notes.md:131:- Light column: LP1 X -12.625 to -12.225, Y -3.150 to -2.750; riser X -12.575 to -12.275. LP1 to the bond 0.150 mm, riser to the bond 0.200 mm, LP1 to the upper glass 1.501 mm, riser to the 0.50 board h
+mech/thin/thin-notes.md:179:out/v5/broken/: thin.py with two faults (out/v5/broken/broken.diff: riser and LP1 moved to X -12.700, microphone ports to X +-11.65) and the delivered check_thin.py, run with THIN_CHECK_SKIP_PAIRS=1 (pa
+mech/thin/thin-notes.md:436:- Recording light removed (17.30): no recording_led (LED1), light_guide (LG1), light_pipe (LP1); the main board has no hole (only the antenna notch); the foam frame has no notch; the cover glass note sa
+mech/antenna/insert_check.py:17:KX0, KX1, KY0, KY1 = -14.8, -10.6, 2.05, 6.75          # keep-out 4.2 (X) x 4.7 (Y) centred on (-12.7, 4.4)
+sim/antenna/antenna-sim.md:96:- Board: 27.2 x 12.6 (X +-13.6, Y +-6.3), Z 1.5 to 1.8, eps_r 4.3, loss tangent 0.02, ground as one PEC sheet at Z 1.6 over the whole outline except the keep-out (X -10.6 to the end side, Y 2.0 to 6.3
+sim/antenna/antenna-sim.md:98:- Antenna ANT1: same chip model as H1 (src/chipant.py, eps_r 28.905 held from H1 run 3, loss tangent 0.005), centre X -12.7, Y 4.4, Z 0.5 to 1.7 (terminal face up at Z 1.7, as the part hangs under the
+sim/antenna/antenna-sim.md:112:- A as designed: metal body, antenna at X -12.7, Y 4.4.
+sim/antenna/logs/antenna-sim_round1_final_copy.md:96:- Board: 27.2 x 12.6 (X +-13.6, Y +-6.3), Z 1.5 to 1.8, eps_r 4.3, loss tangent 0.02, ground as one PEC sheet at Z 1.6 over the whole outline except the keep-out (X -10.6 to the
+sim/antenna/logs/antenna-sim_round1_final_copy.md:98:- Antenna ANT1: same chip model as H1 (src/chipant.py, eps_r 28.905 held from H1 run 3, loss tangent 0.005), centre X -12.7, Y 4.4, Z 0.5 to 1.7 (terminal face up at Z 1.7, as t
+sim/antenna/logs/antenna-sim_round1_final_copy.md:112:- A as designed: metal body, antenna at X -12.7, Y 4.4.
+sim/antenna/src/h2_ring_v1_notch_mount.py:99:# notch (hand-end thumb-side corner, 1.8 x 3.6) back to air
+mech/antenna/antenna-study.md:11:Antenna ANT1, Johanson 2450AT18D0100001E: centre X -12.7, Y 4.4, Z 1.05, size 1.6 x 3.2 x 1.2 (placement.csv line 13; measure.log line 2). Box X -13.5 to -11.9, Y 2.8 to 6.0, Z 0.45 to 1.65; the ST
+mech/antenna/antenna-study.md:93:- Antenna ANT1 unchanged: X -12.7, Y 4.4, Z 1.05 (placement.csv line 13). Its nearest body metal becomes 0.752 mm (insert_check.log line 9).
+mech/antenna/antenna-study.md:99:1. design/architecture.md line 156. Present: `| Antenna | +12.0 | on top of the board | no copper and no metal within 4.2 x 4.7 mm, on every layer |`. New: `| Antenna | X -12.7, Y 4.4 (inside model

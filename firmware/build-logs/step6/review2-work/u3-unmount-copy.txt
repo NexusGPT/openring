@@ -1,0 +1,51 @@
+640: +++ /ws/out/fix1rec-u3/broken-recorder/broken_ring_recorder_unmount_result_dropped/src/rrec.c	2026-11-13 15:28:10.502056256 +0000
+641: @@ -305,7 +305,8 @@
+642:  		unmount_tries_end(0);   /* unmounted meanwhile: the tries ended with VDD_SD off */
+643:  		return 0;
+644:  	}
+645: -	r = rst_unmount_wait(FINISH_WAIT_MS);
+646: +	(void)rst_unmount();
+647: +	r = 0;
+648:  	if (unmount_tries != 0 && unmount_tries < UINT8_MAX) {
+649:  		unmount_tries++;        /* one more try of the same failed unmount */
+650:  	}
+651: START - test_failed_unmount_retried_and_reported
+652:     Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_unmount.c:140: recorder_unmount_test_failed_unmount_retried_and_reported: (busy not equal to 2)
+653: two records for a step with several failed tries (0)
+654:  FAIL - test_failed_unmount_retried_and_reported in 45.564 seconds
+655:     Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_unmount.c:73: sd_off_in_the_step: (rt_sd() is true)
+656:     Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_unmount.c:31: transfer_with_busy_store: (rt_state() not equal to RC_ST_TRANSFER)
+657: TESTSUITE recorder_unmount failed.
+658:  - FAIL - [recorder_unmount.test_failed_unmount_retried_and_reported] duration = 45.564 seconds
+659:  - FAIL - [recorder_unmount.test_unconfigured_finish_times_out] duration = 5.524 seconds
+660:  - FAIL - [recorder_unmount.test_vbus_out_during_read_command] duration = 0.362 seconds
+661: INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 28.52 seconds.
+662: INFO    - 0 of 3 executed test cases passed (0.00%), 3 failed on 1 out of total 1514 platforms (0.07%).
+663: INFO    - 1) ring_recorder.sim on native_sim/native failed (rc=1)
+664: twister exit code on the broken copy unmount_result_dropped, native_sim: 1 (log /ws/out/fix1rec-u3/broken-recorder/twister-unmount_result_dropped-native_sim.log)
+665: unmount_result_dropped on native_sim: the named case failed, as required:  - FAIL - [recorder_unmount.test_unconfigured_finish_times_out] duration = 5.524 seconds
+666: unmount_result_dropped on native_sim: cases that failed (distinct): FAIL - [recorder_unmount.test_failed_unmount_retried_and_reported] FAIL - [recorder_unmount.test_unconfigured_finish_times_out] FAIL - [recorder_unmount.test_vbus_out_during_read_command]  (li
+667: d_00: @00:00:00.000122  START - test_failed_unmount_retried_and_reported
+668: d_00: @00:00:45.563222      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_unmount.c:140: recorder_unmount_test_failed_unmount_retried_and_reported: (busy not equal to 2)
+669: d_00: @00:00:45.563222  two records for a step with several failed tries (0)
+670: d_00: @00:00:45.563222   FAIL - test_failed_unmount_retried_and_reported in 45.564 seconds
+671: d_00: @00:00:51.086322      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_unmount.c:73: sd_off_in_the_step: (rt_sd() is true)
+672: d_00: @00:00:51.447822      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_unmount.c:31: transfer_with_busy_store: (rt_state() not equal to RC_ST_TRANSFER)
+673: d_00: @00:00:51.447822  TESTSUITE recorder_unmount failed.
+674: d_00: @00:00:51.447822   - FAIL - [recorder_unmount.test_failed_unmount_retried_and_reported] duration = 45.564 seconds
+675: d_00: @00:00:51.447822   - FAIL - [recorder_unmount.test_unconfigured_finish_times_out] duration = 5.524 seconds
+676: d_00: @00:00:51.447822   - FAIL - [recorder_unmount.test_vbus_out_during_read_command] duration = 0.362 seconds
+677: INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 29.39 seconds.
+678: INFO    - 0 of 3 executed test cases passed (0.00%), 3 failed on 1 out of total 1514 platforms (0.07%).
+679: INFO    - 1) ring_recorder.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+680: twister exit code on the broken copy unmount_result_dropped, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/fix1rec-u3/broken-recorder/twister-unmount_result_dropped-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+681: unmount_result_dropped on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:51.447822   - FAIL - [recorder_unmount.test_unconfigured_finish_times_out] duration = 5.524 seconds
+682: unmount_result_dropped on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_unmount.test_failed_unmount_retried_and_reported] FAIL - [recorder_unmount.test_unconfigured_finish_times_out] FAIL - [recorder_unmount.test_vbus_out_duri
+683: ##### broken copy: no_hfxo_in_boot
+684: diff -u -r /ws/firmware/modules/ring_recorder/src/rrec.c /ws/out/fix1rec-u3/broken-recorder/broken_ring_recorder_no_hfxo_in_boot/src/rrec.c
+685: --- /ws/firmware/modules/ring_recorder/src/rrec.c	2026-11-13 15:03:18.000000000 +0000
+686: +++ /ws/out/fix1rec-u3/broken-recorder/broken_ring_recorder_no_hfxo_in_boot/src/rrec.c	2026-11-13 15:29:10.239775742 +0000
+687: @@ -532,7 +532,7 @@
+688:   * part's (rau_prepare); STANDBY and the error states "when the radio runs" (the radio's own request) */
+689:  static bool hfxo_wanted(enum rc_state s)
+690:  {

@@ -1,0 +1,16 @@
+# remote.sh run 20261111-223632-r3-q2
+# command: RING_OUT=/ws/out/r3-G bash tests/bsim/control/run.sh G > /ws/out/r3-G.txt 2>&1; echo "G exit $?"; grep -E "^TEST|CHECK .* FAIL" /ws/out/r3-G.txt | head -5; RING_OUT=/ws/out/r3-b bash tests/bsim/control/run.sh --broken fourth_slot > /ws/out/r3-b.txt 2>&1; echo "broken exit $?"; grep -E "^TEST|broken fourth|^RESULT" /ws/out/r3-b.txt | cut -c1-200
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 22:36:32 CET
+# free on the server's /: 43 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-223632-r3-q2; server log /root/ring-os/logs/20261111-223632-r3-q2.log
+G exit 0
+TEST G RESULT PASS (56 checks passed)
+broken exit 1
+TEST G RESULT FAIL (55 checks passed; infra: none; checks: ring-result 1-failed-checks)
+broken fourth_slot: the named check line did not say FAIL: HOST H4 CHECK pairing over a fourth slot is refused FAIL
+RESULT FAIL fourth_slot(not-caught)
+# finished (Mac clock): 2026-11-11 22:39:00 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-223632-r3-q2.log

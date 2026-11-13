@@ -1,0 +1,181 @@
+# remote.sh run 20261113-055850-u4-k34
+# command: bash tests/xfer/k34.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:58:51 CET
+# free on the server's /: 52 GB
+# source firmware copied to /root/ring-os/src-u-xfer
+# started on the server as 20261113-055850-u4-k34; server log /root/ring-os/logs/20261113-055850-u4-k34.log
+== ls /ws
+bootloader
+firmware
+modules
+nrf
+nrfxlib
+out
+test
+tools
+zephyr
+== native_sim boards dir
+CMakeLists.txt
+Kconfig
+Kconfig.defconfig
+Kconfig.native_sim
+board.cmake
+board.yml
+board_irq.h
+board_soc.h
+cmdline.c
+cmdline.h
+cpu_wait.c
+doc
+irq_handler.c
+irq_handler.h
+misc.c
+native_sim.dts
+native_sim.yaml
+native_sim_64.dts
+native_sim_64_defconfig
+native_sim_defconfig
+native_sim_native_64.yaml
+nsi_if.c
+posix_arch_if.c
+reboot.c
+reboot_bottom.c
+reboot_bottom.h
+== count of udc and uhc words in native_sim.dts
+2
+0
+1
+== usb bindings with virtual in the name
+zephyr,udc-virtual.yaml
+zephyr,uhc-virtual.yaml
+== usb bindings (file names with udc or uhc)
+bflb,udc-1.yaml
+nxp,uhc-ehci.yaml
+nxp,uhc-ip3516hs.yaml
+nxp,uhc-khci.yaml
+nxp,uhc-ohci.yaml
+zephyr,native-posix-udc.yaml
+zephyr,udc-skeleton.yaml
+zephyr,udc-virtual.yaml
+zephyr,uhc-virtual.yaml
+== tests/subsys/usb
+bos
+desc_sections
+device
+device_next
+host
+os_desc
+uac2
+uvc
+== tests/subsys/usb/device_next
+CMakeLists.txt
+boards
+build_all.conf
+build_all.overlay
+prj.conf
+src
+testcase.yaml
+== subsys/usb/device_next/class
+Kconfig
+Kconfig.bt
+Kconfig.cdc_acm
+Kconfig.cdc_ecm
+Kconfig.cdc_ncm
+Kconfig.dfu
+Kconfig.hid
+Kconfig.loopback
+Kconfig.midi2
+Kconfig.msc
+Kconfig.uac2
+Kconfig.uvc
+bt_hci.c
+loopback.c
+usbd_cdc_acm.c
+usbd_cdc_ecm.c
+usbd_cdc_ncm.c
+usbd_dfu.c
+usbd_dfu.ld
+usbd_dfu_flash.c
+usbd_hid.c
+usbd_hid_api.c
+usbd_hid_internal.h
+usbd_hid_macros.h
+usbd_midi2.c
+usbd_msc.c
+usbd_msc.ld
+usbd_msc_scsi.c
+usbd_msc_scsi.h
+usbd_uac2.c
+usbd_uac2_macros.h
+usbd_uvc.c
+== drivers/usb/udc virtual
+Kconfig.virtual
+udc_virtual.c
+== drivers/usb/uhc virtual
+Kconfig.virtual
+uhc_virtual.c
+== samples with virtual host
+cdc_acm
+cdc_acm_bridge
+common
+console
+dfu
+hid-keyboard
+hid-mouse
+host_uvc
+legacy
+mass
+midi
+shell
+testusb
+uac2_explicit_feedback
+uac2_implicit_feedback
+usb.rst
+uvc
+webusb
+== K4 counts in usbd.h
+USBD_DEFINE_CLASS 1
+usbd_add_configuration 1
+usbd_bus_speed 1
+usbd_enable 3
+usbd_disable 1
+usbd_init 2
+usbd_msg_register_cb 1
+usbd_ep_enqueue 1
+usbd_register_class 4
+USBD_SPEED_FS 1
+USBD_SPEED_HS 1
+== K4 counts in usbd_msg.h
+USBD_MSG_VBUS_READY 1
+USBD_MSG_VBUS_REMOVED 1
+USBD_MSG_CONFIGURATION 1
+USBD_MSG_SUSPEND 1
+USBD_MSG_RESUME 1
+USBD_MSG_RESET 1
+== loopback class
+Kconfig.loopback
+loopback.c
+grep: /ws/zephyr/subsys/usb/device_next/class/usbd_loopback.c: No such file or directory
+== samples using device_next with virtual host (file names)
+/ws/zephyr/samples/subsys/usb/shell/virtual.overlay
+/ws/zephyr/samples/subsys/usb/shell/boards/qemu_cortex_m3.overlay
+/ws/zephyr/tests/subsys/usb/device_next/boards/qemu_cortex_m3.overlay
+/ws/zephyr/tests/subsys/usb/device_next/boards/native_sim.overlay
+/ws/zephyr/tests/subsys/usb/device_next/build_all.overlay
+/ws/zephyr/tests/subsys/usb/uvc/boards/native_sim.overlay
+/ws/zephyr/tests/subsys/usb/host/boards/native_sim.overlay
+== usbd_bus_speed in loopback
+/ws/zephyr/subsys/usb/device_next/class/usbd_midi2.c
+/ws/zephyr/subsys/usb/device_next/class/loopback.c
+/ws/zephyr/subsys/usb/device_next/class/usbd_msc.c
+/ws/zephyr/subsys/usb/device_next/class/usbd_hid.c
+/ws/zephyr/subsys/usb/device_next/class/bt_hci.c
+/ws/zephyr/subsys/usb/device_next/class/usbd_cdc_ecm.c
+/ws/zephyr/subsys/usb/device_next/class/usbd_cdc_ncm.c
+/ws/zephyr/subsys/usb/device_next/class/usbd_cdc_acm.c
+/ws/zephyr/subsys/usb/device_next/class/usbd_uac2.c
+/ws/zephyr/subsys/usb/device_next/class/usbd_uvc.c
+# finished (Mac clock): 2026-11-13 05:59:26 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step6/20261113-055850-u4-k34.log

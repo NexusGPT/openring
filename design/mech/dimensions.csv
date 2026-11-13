@@ -1,0 +1,155 @@
+name,value_mm,source
+block_x,30.0,"architecture.md A1 s1 'One block, 30 x 20 x 9.5 mm'"
+block_y,20.0,architecture.md A1 s1
+block_z,9.5,architecture.md A1 s1
+corner_r,2.4,CHANGED round 2 from 3.0 (brief round 1): at 3.0 the screen-pocket corners left 0.325 mm of wall; 2.4 gives 0.6
+wall,1.0,architecture.md A1 s6 'Top shell: walls 1.0 mm'
+min_wall,0.5,"ASSUMED: minimum wall, skin, lip, ledge or rib for printed nylon PA12 (lead round 2); to be confirmed by the printing service"
+top_plate,1.0,"ASSUMED: top of the strip taken equal to the wall, 1.0 mm (brief: walls 1.0 mm)"
+floor_t,0.8,architecture.md A1 s6 'Floor of the base 0.80'
+screen_zone_y0,-9.0,architecture.md A1 s6 screen zone Y -9.0
+screen_zone_y1,3.9,architecture.md A1 s6 screen zone to +3.9
+strip_y0,4.3,architecture.md A1 s6 strip Y +4.3
+strip_y1,9.0,architecture.md A1 s6 strip to +9.0
+glass_t,0.5,architecture.md A1 s6 stack
+adhesive_t,0.1,architecture.md A1 s6 stack
+screen_t,0.8,architecture.md A1 s2 TOH095XVT-01 [DS] 12.8 x 27.35 x 0.8
+foam_t,0.2,architecture.md A1 s6 stack 'Gap with foam pad 0.20'
+board_t,0.6,architecture.md A1 s6 main board 0.6
+cell_gap,0.15,architecture.md A1 s6 stack gap 0.15
+swell_t,0.5,architecture.md A1 s6 'Room for cell swelling 0.50'
+cell_t,4.6,architecture.md A1 s2 cell 4.6 x 13.0 x 25.0 max
+cell_w,13.0,architecture.md A1 s2
+cell_l,25.0,architecture.md A1 s2
+cell_x0,-11.9,"CHANGED from -11.6 (s6): cell X -11.9 to 13.1; +X corner clears the 1.4 inner corner radius by 0.1, -X end leaves room for the contact-board ledge pad"
+cell_y0,-8.8,CHANGED: cell 13.0 wide does not fit the 12.9 mm screen zone; chosen Y -8.8 to 4.2
+glass_x,28.6,architecture.md A1 s6 'cut to 28.6 x 13.6 mm'
+glass_y,13.3,CHANGED round 2 from 13.6 (s6): the seat lip on the -Y side was 0.25; at 13.3 it is 0.55
+glass_y0,-9.4,"CALC: glass +Y edge on the zone edge 3.9, so -Y edge = 3.9 - 13.3"
+glass_r_minus_y,1.75,CALC: covers the screen corner (margin 0.03) and leaves a 0.5 mm seat lip to the 2.4 outer corner
+glass_r_plus_y,0.5,"ASSUMED: inner corners of the glass (inside the outline, no outer corner there)"
+seat_clear,0.05,ASSUMED: glass seat and screen pocket clearance per side
+screen_x,27.35,architecture.md A1 s2 [DS]
+screen_y,12.8,architecture.md A1 s2 [DS]
+screen_y0,-8.95,"CHOSEN: screen Y -8.95 to 3.85, so the screen corners stay under the r1.75 glass corners"
+fold_t,0.6,architecture.md A1 s6 'screen cable fold from +13.4 to +14.0'
+fold_x0,13.4,architecture.md A1 s6
+fold_w,8.0,ASSUMED: cable width; screen datasheet p.2 prints only the 4.8 mm tail length
+fold_z0,6.3,"CHOSEN: fold volume beside the board end, Z 6.3 to 7.9 (under the screen overhang; run3 showed overlap with the foam pad when it went to 8.1)"
+board_x,27.0,architecture.md A1 s6 main board 27.0 x 17.4
+board_y,17.4,architecture.md A1 s6
+board_x0,-13.6,CHOSEN: board +X end at 13.4 so the cable fold (13.4 to 14.0) is free
+board_corner_r,1.5,CHOSEN: board corners rounded to clear the 2.0 mm inner wall radius
+notch_clear,0.1,ASSUMED: clearance around the joystick board in the main board notch
+joy_x,-6.0,architecture.md A1 s6 joystick X centre -6.0
+joy_w,7.45,Alps SKRH catalogue p.1 SKRHADE010 7.45 x 7.5 x 1.85 [DS]
+joy_h,7.5,Alps SKRH catalogue p.1 [DS]
+joy_t,1.85,Alps SKRH catalogue p.1 [DS]
+joy_stem_h,4.3,Alps SKRH catalogue p.1 note 2 '4.3mm height from the bottom of the switch' [DS]
+joy_stem_d,2.5,ASSUMED: stem drawing is an image only (parts/ui-pass2.md s4); confirm from Alps drawing No.4
+joy_open_d,5.0,architecture.md A1 s6 '5.0 mm round opening in the wall'
+joy_z,4.65,CHOSEN: stem axis height; joystick body Z 0.9 to 8.4 under the strip top
+jb_x,9.0,architecture.md A1 s6 joystick board 9.0 x 8.0 x 0.6
+jb_z,8.0,architecture.md A1 s6
+jb_t,0.6,architecture.md A1 s6
+mic_x,4.0,architecture.md A1 s2 IM73D122 4.0 x 3.0 x 1.2 [DS]
+mic_y,3.0,architecture.md A1 s2
+mic_z,1.2,architecture.md A1 s2
+mic1_x,-11.9,CHANGED from -12.0 (s5/s6): at -12.0 the 4.0 mm body touches the wall at X -14.0
+mic2_x,-5.5,architecture.md A1 s5
+mic3_x,1.0,architecture.md A1 s5
+mic4_x,7.5,architecture.md A1 s5
+mic_yc,4.9,CHOSEN round 2: openings 0.55 from the glass seat edge (3.95); port at the package centre ASSUMED
+mic3_rotated,1.0,CHOSEN round 2: mic 3 turned 90 deg (3.0 along X) so it clears the record button at Y 4.9
+mic_open_d,0.8,architecture.md A1 s5 '0.8 mm opening'
+mic_open_x1,-12.0,"brief: openings at X -12.0, -5.5, +1.0, +7.5"
+btn_x,2.8,architecture.md A1 s2 EVPAVAA1A 2.8 x 2.3 x 1.95 [DS]
+btn_y,2.3,architecture.md A1 s2
+btn_z,1.95,architecture.md A1 s2
+btn_plate,0.35,parts/ui-pass2.md: external 2.65 mm with push plate minus 2.30 body
+btn_xc,4.0,architecture.md A1 s6 record button X +4.0
+btn_recess,0.3,"CHANGED round 2 from 0.8 (s6): the 0.8 recess left a 0.2 skin; now no recess pocket, the key face stands 0.3 below the wall face"
+btn_open_x,2.0,"ASSUMED: through opening for the key, 2.0 x 1.4"
+btn_open_z,1.4,ASSUMED
+key_x,1.8,"ASSUMED: printed key in the opening, 1.8 x 1.2"
+key_z,1.2,ASSUMED
+led_x,1.0,architecture.md A1 s2 KPG-1005SURC-TT 1.0 x 0.5 x 0.2
+led_y,0.5,architecture.md A1 s2
+led_z,0.2,architecture.md A1 s2
+led_xc,4.0,architecture.md A1 s6 light X +4.0
+win_d,2.0,ASSUMED: clear window disc 2.0 mm
+win_t,0.4,ASSUMED: clear window 0.4 mm (round 2: leaves a 0.6 plate under the recess)
+led_hole_d,1.0,ASSUMED: light hole under the window
+ant_x,3.2,architecture.md A1 s2 2450AT18D0100001E 3.2 x 1.6 x 1.2 [DS]
+ant_y,1.6,architecture.md A1 s2
+ant_z,1.2,architecture.md A1 s2
+ant_xc,12.0,architecture.md A1 s6 antenna X +12.0
+ko_x,4.2,architecture.md A1 s6 'no metal within 4.2 x 4.7 mm'
+ko_y,4.7,architecture.md A1 s6
+pocket_clear,0.05,ASSUMED: clearance of pockets in the top plate
+mot_d,3.2,"architecture.md A1 s2 3.2 dia, 11.6 long [DS]"
+mot_l,11.6,architecture.md A1 s2
+sleeve,0.3,brief: 0.3 mm clearance sleeve
+mot_gap_jb,0.1,CHOSEN: gap between the joystick body end and the motor sleeve
+cradle_t,0.55,"CHOSEN round 2: one rail on the +Y side, 0.55 wide (two 0.4 rails broke the 0.5 rule)"
+mot_yc,6.5,"CHOSEN round 2: motor axis Y, sleeve Y 4.6 to 8.4, rail 8.4 to 8.95"
+cb_x,2.6,architecture.md A1 s6 contact board X -13.9 to -11.3
+cb_y,10.0,architecture.md A1 s6 10.0 x 2.6
+cb_t,0.4,"CHANGED round 2 from 0.6 (s6), lead instruction: 0.4 board, pads flush with the underside"
+cb_ledge,0.4,lead round 2: ledge 0.4 wide on the +Y and -Y sides
+cb_ledge_x,0.6,CHOSEN round 2: -X ledge 0.6 wide; at 0.4 the raised pad above it was a 0.35 lip (check_fit r2_run1)
+tvs_xc,-12.4,"CHOSEN round 2: chip centre X on the contact board, clear of the -X ledge and the cell"
+cb_pad_top,0.95,CHOSEN round 2: floor raised to Z 0.95 over X -13.9 to -12.0 so the ledge is 0.55 thick
+tvs_x,1.0,lead round 2: TPD4E05U06 2.5 x 1.0
+tvs_y,2.5,lead round 2
+tvs_z,0.5,ASSUMED height (lead round 2)
+fpc_conn_x,3.2,ASSUMED footprint (lead round 2): FH35C-15S-0.3SHW 5.2 x 3.2 x 0.9
+fpc_conn_y,5.2,ASSUMED
+fpc_conn_z,0.9,ASSUMED
+wpad,0.5,"ASSUMED: wire pad 0.5 x 0.5, copper 0.035"
+wpad_t,0.035,ASSUMED
+wpad_pitch,0.9,ASSUMED
+cb_xc,-12.6,architecture.md A1 s6 X = -12.6
+cb_clear,0.05,ASSUMED: window clearance
+mcu_x,3.02,architecture.md A1 s2
+mcu_y,2.43,architecture.md A1 s2
+mcu_z,0.43,architecture.md A1 s2
+pmic_x,3.1,architecture.md A1 s2 (updated) nPM1300 WLCSP 3.1 x 2.4 [DS Nordic product page]
+pmic_y,2.4,architecture.md A1 s2 (updated) 3.1 x 2.4; lead correction 2026-11-10
+pmic_z,0.5,lead brief: power chip 3.1 x 2.4 x 0.5
+mem_x,8.0,architecture.md A1 s2 6.2 x 8.0
+mem_y,6.2,architecture.md A1 s2
+mem_z,0.8,brief: storage 0.8 thick
+sup_x,2.0,architecture.md A1 s2
+sup_y,2.0,architecture.md A1 s2
+sup_z,0.58,architecture.md A1 s2
+coil_x,2.5,architecture.md A1 s2
+coil_y,2.0,architecture.md A1 s2
+coil_z,1.0,architecture.md A1 s2
+chip_row_y,-2.5,CHOSEN: chips in one row at Y -2.5 under the board in the screen zone
+screw_l,3.0,architecture.md A1 s6 'M1.2 x 3'
+screw_core_d,0.95,"ASSUMED: M1.2 core diameter, also the pilot hole in the shell"
+screw_clear_d,1.3,ASSUMED: clearance hole in the floor
+screw_head_d,2.0,ASSUMED: wafer head 2.0 x 0.3
+screw_head_t,0.3,ASSUMED round 2: 0.3 so the floor over the counterbore is 0.5
+screw_x,12.35,"CHANGED round 2: two screws only, at the +Y corners; at the X ends the pilot rib, the clearance hole and the gasket groove cannot all keep 0.5 mm"
+screw_y,7.0,"CHOSEN round 2: counterbore 0.9 from the contact window, 0.55 from the gasket groove"
+boss_top,3.8,CHOSEN: boss height; pilot hole runs through it
+boss_r,1.0,"CHOSEN round 2: boss radius, 0.525 around the pilot"
+gasket_w,0.5,brief: 0.5 mm gasket groove
+gasket_d,0.25,"ASSUMED round 2: groove depth 0.25, floor under it 0.55"
+gasket_off,0.55,"CHOSEN round 2: groove from 0.55 to 1.05 in from the outer edge, outer lip 0.55"
+band_w,8.0,brief: band width 8.0 along X
+band_wall,2.0,brief: band wall 2.0
+ring_a,11.63,en.wikipedia.org/wiki/Ring_size (raw saved src_text/wikipedia_ring_size_raw.txt line 81): d_ISO = 0.8128 x s_NA + 11.63
+ring_b,0.8128,same source
+blend_r,0.5,ASSUMED: fillet between the band outer surface and the floor underside; 1.5 reaches past the floor edge at size 13
+band_inner_d_size5,15.694,CALC ring_a + ring_b x size
+band_inner_d_size6,16.5068,CALC ring_a + ring_b x size
+band_inner_d_size7,17.3196,CALC ring_a + ring_b x size
+band_inner_d_size8,18.1324,CALC ring_a + ring_b x size
+band_inner_d_size9,18.9452,CALC ring_a + ring_b x size
+band_inner_d_size10,19.758,CALC ring_a + ring_b x size
+band_inner_d_size11,20.5708,CALC ring_a + ring_b x size
+band_inner_d_size12,21.3836,CALC ring_a + ring_b x size
+band_inner_d_size13,22.1964,CALC ring_a + ring_b x size

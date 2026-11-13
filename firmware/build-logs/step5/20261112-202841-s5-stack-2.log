@@ -1,0 +1,30 @@
+# remote.sh run 20261112-202841-s5-stack-2
+# command: cd /ws/out/s5-stages1/dk && for f in in_write info_read relay_action out_fn on_disconnected rrl_frame rrl_parse rrl_info rip_relay_put rip_relay_open rip_relay_remove rip_relay_clear rinbox_upsert rinbox_set_text rinbox_add rinbox_modify rip_action rip_dismiss q_push_locked refuse_locked; do find . -path "*ring_relay*" -o -path "*ring_iphone*" -o -path "*ring_inbox*" | grep "\.su$" | xargs grep -h ":$f	" 2>&1 | awk -F"\t" -v n=$f "{print n, \$2, \$3}"; done
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 20:28:41 CET
+# free on the server's /: 46 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261112-202841-s5-stack-2; server log /root/ring-os/logs/20261112-202841-s5-stack-2.log
+in_write 96 static
+info_read 48 static
+relay_action 24 static
+out_fn 72 static
+on_disconnected 16 static
+on_disconnected 16 static
+rrl_frame 32 static
+rrl_parse 32 static
+rrl_info 0 static
+rip_relay_put 72 static
+rip_relay_open 24 static
+rip_relay_remove 16 static
+rip_relay_clear 8 static
+rinbox_upsert 48 static
+rinbox_set_text 24 static
+rinbox_add 40 static
+rinbox_modify 16 static
+rip_action 24 static
+rip_dismiss 0 static
+q_push_locked 16 static
+# finished (Mac clock): 2026-11-12 20:28:56 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step5/20261112-202841-s5-stack-2.log

@@ -1,0 +1,21 @@
+# remote.sh run 20261113-061120-u7-kit3b
+# command: grep -n -E 'error|FAILED|undefined|rsy_hw_real.c:31|Macro is deprecated' /ws/out/u7-kit3.build.txt | cut -c1-240 | head; tail -5 /ws/out/u7-kit3.build.txt | cut -c1-240; sed -n 31p /ws/firmware/modules/ring_sys/src/rsy_hw_real.c
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 06:11:20 CET
+# free on the server's /: 51 GB
+# source firmware copied to /root/ring-os/src-u-sys
+# started on the server as 20261113-061120-u7-kit3b; server log /root/ring-os/logs/20261113-061120-u7-kit3b.log
+289:/ws/firmware/modules/ring_sys/src/rsy_hw_real.c:31:20: warning: Macro is deprecated
+356:FAILED: [code=1] zephyr/zephyr_pre0.elf zephyr/zephyr_pre0.map /ws/out/u7-kit3/zephyr/zephyr_pre0.map 
+357:: && ccache /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc  -gdwarf-4 -Os zephyr/CMakeFiles/zephyr_pre0.dir/misc/empty_file.c.obj -o zephyr/zephyr_pre0.elf  zephyr/CMakeFiles/offsets.dir/./arch
+359:/ws/firmware/modules/ring_sys/src/rsy_hw_real.c:99:(.text.ri_reboot+0x4): undefined reference to `sys_reboot'
+360:collect2: error: ld returned 1 exit status
+/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/../lib/gcc/arm-zephyr-eabi/14.3.0/../../../../arm-zephyr-eabi/bin/ld.bfd: modules/ring_sys/libring_sys.a(rsy_hw_real.c.obj): in function `ri_reboot':
+/ws/firmware/modules/ring_sys/src/rsy_hw_real.c:99:(.text.ri_reboot+0x4): undefined reference to `sys_reboot'
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+FATAL ERROR: command exited with status 1: /opt/ncs/toolchains/197d1ad490/usr/local/bin/cmake --build /ws/out/u7-kit3
+	return flash_area_open(SLOT1_ID, fa);
+# finished (Mac clock): 2026-11-13 06:11:39 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-061120-u7-kit3b.log

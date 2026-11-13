@@ -1,0 +1,82 @@
+/* Behaviour panel, S1 Gallery: white, hairlines, serif state name, mono labels, no shadows. Tokens only. */
+.behaviour { display: flex; flex-direction: column; gap: 18px; }
+.beh-head .display { font-size: 26px; }
+.beh-head .label { margin: 4px 0 0; }
+.behaviour [data-kind] { padding: 8px 12px; font-size: 13px; line-height: 1.4; margin: 0; }
+.beh-body { display: flex; flex-direction: column; gap: 18px; }
+.behaviour h3.label { margin: 0 0 8px; font-weight: 400; }
+
+/* readout */
+.readout { display: flex; flex-direction: column; gap: 6px; padding-bottom: 14px; border-bottom: 1px solid var(--hairline); }
+.readout > .label { margin: 0; }
+.state-name-big { font-size: 44px; line-height: 1.05; animation: beh-in var(--t-slow) var(--ease-settle); }
+.state-meaning-big { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; max-width: 46ch; }
+.meters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 10px 0 0; }
+.meter { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.meter dt { margin: 0; }
+.meter dd { margin: 0; display: flex; align-items: center; gap: 8px; min-height: 28px; }
+.meter-word { font-size: 14px; color: var(--muted); }
+.lamp {
+  width: 14px; height: 14px; border-radius: var(--radius-pill); border: 1px solid var(--muted-2); background: var(--bg);
+  transition: background var(--t-med) var(--ease-settle), border-color var(--t-med) var(--ease-settle), box-shadow var(--t-med) var(--ease-settle);
+}
+.lamp[data-on='true'] { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-bg); }
+.timer { font-family: var(--font-label); font-size: 22px; letter-spacing: 0.02em; color: var(--muted-2); transition: color var(--t-med) var(--ease); }
+.meter[data-active='true'] .timer { color: var(--ink); }
+.hl-row { display: inline-flex; gap: 4px; flex-wrap: wrap; max-width: 90px; }
+.hl-mark { width: 8px; height: 8px; border-radius: var(--radius-pill); background: var(--ink); animation: beh-in var(--t-med) var(--ease-settle); }
+.vib { display: flex; align-items: center; gap: 12px; min-height: 22px; margin-top: 8px; }
+.vib-row { display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
+.vib-none { font-size: 13px; color: var(--muted-2); }
+.vib-mark { height: 10px; border-radius: var(--radius-pill); background: var(--accent); animation: beh-fade calc(var(--t-slow) * 14) var(--ease) forwards; }
+
+/* controls */
+.controls { padding-bottom: 16px; border-bottom: 1px solid var(--hairline); }
+.joy-wrap { display: grid; grid-template-columns: minmax(0, 290px) minmax(0, 1fr); gap: 20px; align-items: center; }
+.joy-how { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.joy-lead { margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
+.rec-btn {
+  position: relative; width: 96px; height: 96px; padding: 0; border: 0; background: transparent; cursor: pointer; touch-action: none;
+  border-radius: var(--radius-pill); outline-offset: 4px; transition: transform var(--t-fast) var(--ease);
+}
+.rec-btn svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.rec-track { fill: none; stroke: var(--hairline); stroke-width: 3; }
+.rec-fill { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+.rec-dot { position: absolute; inset: 16px; border-radius: var(--radius-pill); background: var(--ink); transition: transform var(--t-med) var(--ease-settle), background var(--t-med) var(--ease-settle); }
+.rec-btn[data-pressed='true'] { transform: scale(0.97); }
+.rec-btn[data-pressed='true'] .rec-dot { transform: scale(0.9); }
+.rec-btn[data-fired='true'] .rec-dot { background: var(--accent); }
+.rec-hint { margin: 0; color: var(--muted); padding: 0; list-style: none; text-transform: none; letter-spacing: 0; font-size: 11.5px; line-height: 1.5; }
+.joy { display: grid; grid-template: 'x n y' 40px 'w c e' 104px 'z s q' 40px / 1fr 104px 1fr; gap: 4px; max-width: 290px; align-items: stretch; }
+.joy-centre { grid-area: c; display: grid; place-items: center; }
+.joy-btn {
+  border: 1px solid var(--hairline); background: var(--bg); color: var(--ink); font: inherit; font-size: 11.5px; line-height: 1.15; padding: 0 4px; min-width: 0;
+  overflow: hidden; white-space: normal; text-align: center; cursor: pointer; transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.joy-btn:hover { border-color: var(--ink); }
+.joy-btn:active { transform: scale(0.96); }
+.joy-btn[data-area='n'] { grid-area: n; }
+.joy-btn[data-area='s'] { grid-area: s; }
+.joy-btn[data-area='w'] { grid-area: w; }
+.joy-btn[data-area='e'] { grid-area: e; }
+
+/* what a press does now */
+.does ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--hairline); }
+.does li { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); column-gap: 14px; padding: 6px 0; border-bottom: 1px solid var(--hairline); }
+.does-kind { font-weight: 500; font-size: 13px; text-transform: capitalize; }
+.does-effect { font-size: 13px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* every state: chips, the current one marked */
+.states { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.state-row { display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px 4px 9px; border: 1px solid var(--hairline); border-radius: var(--radius-pill); color: var(--muted); font-size: 12.5px; transition: color var(--t-med) var(--ease), border-color var(--t-med) var(--ease), background var(--t-med) var(--ease); }
+.state-mark { width: 6px; height: 6px; border-radius: var(--radius-pill); background: var(--hairline); transition: background var(--t-med) var(--ease-settle); }
+.state-row[data-current='true'] { color: var(--ink); border-color: var(--ink); font-weight: 600; }
+.state-row[data-current='true'] .state-mark { background: var(--ink); }
+
+@keyframes beh-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes beh-fade { from { opacity: 1; } to { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) {
+  .state-name-big, .hl-mark { animation: none; }
+  .vib-mark { animation: none; opacity: 0.6; }
+  .lamp, .rec-btn, .rec-dot, .timer, .state-row, .state-mark, .joy-btn { transition: none; }
+}

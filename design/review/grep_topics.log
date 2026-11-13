@@ -1,0 +1,79 @@
+##### IP6|IPX|waterproof
+requirements.md:26:| S6 | Water and dust | IP65 or better | Proposed. Aina states IP65. The microphones carry IP57 at part level |
+design/architecture.md:47:| Joystick | 4 x SKTAAAE010 under one cap, on the band at +38 degrees | Alps Alpine | 2.6 x 1.6 x 0.53 each | 1.6 N, 0.11 mm travel, 300,000 presses, IP6X and IPX7 | [DS] spec; outli
+design/architecture.md:353:| Joystick | Alps SKRHADE010 | 4 x Alps SKTAAAE010 under one cap (16.5) | [DS] 1.6 N, 0.11 mm, 300,000 presses, IP6X and IPX7; outline 2.6 x 1.6 x 0.53 [LIST], open item S9 |
+design/bom.csv:38:Joystick switches x4,"SW1, SW3, SW4, SW5",4,"4 directions under one cap: toward fingertip, toward hand, up, down; centre press read as two opposite switches closing within 40 ms (architectur
+##### weight|grams
+requirements.md:25:| S5 | Weight | Under 12 g | Proposed. No source: Aina publishes no weight. Bench |
+design/architecture.md:527:The current ring in five figures (17.10 wins over 17.8, 17.5 and 17.1). Weight is not stated: no mass estimate exists for this ring.
+design/mfg/specs/band-flex-tails.md:17:Default, to confirm with the maker: polyimide base with two copper layers. Stack-up details (copper weight, coverlay, adhesive): open point 2.
+design/mfg/specs/band-flex-tails.md:60:2. Stack-up, copper weight, coverlay, stiffener, pad finish, tolerances: the flex maker proposes.
+design/mfg/specs/main-board.md:12:Default, to confirm with the maker: 6 layers, 0.3 mm thick. Laminate type, copper weight and the stack-up: open point 2 (bom.csv line 51: the ring electronics designer answer
+design/mfg/specs/main-board.md:52:2. Laminate, copper weight, via type, track and gap, finished thickness tolerance, impedance: the board maker proposes after the stack-up exists.
+design/firmware.md:731:- Entry: USB FACTORY sub-command 0x01 (ENTER) while the factory flag in settings is 1. The flag is written when the factory first programs the ring, and cleared by SHIP_ENTER (sub-comma
+##### assembly order|assemble|order of assembly
+design/architecture.md:269:| B4 | antenna match values from Nordic's reference | measure the antenna on the assembled ring with a network analyser | new coil and capacitor values |
+design/mech/thin/thin-notes.md:7:Run: `cd design/mech/thin && ../../.venv/bin/python thin.py` (about 1 minute) writes placement.csv (37 rows, same columns),
+design/mech/thin/thin-notes.md:53:Check: out/v3/check3.log (before the swap) and out/check_v3_inplace.log (after the swap, files in place) both end `RESULT PASS pairs=665 parts=37`; 351,200 triangles. The 17.
+design/mfg/specs/cover-glass.md:34:| block height at the centre line (glass on body) | 3.85 mm | ISO 2768-m | assembled, from the underside |
+design/mfg/specs/cover-glass.md:35:| block height at the long edges | 2.95 mm | ISO 2768-m | assembled |
+##### first charge|ship mode|SHPHLD
+design/architecture.md:45:| Power chip | nPM1300, WLCSP package | Nordic | 3.1 x 2.4 | charger 32 to 800 mA, termination 3.5 to 4.45 V in 50 mV steps, 2 buck outputs 200 mA each, 1.0 to 3.3 V, load switches 1
+design/architecture.md:79:- Ship mode: the ring leaves the factory in the power chip's ship mode. The first case contact wakes it.
+design/architecture.md:291:| W14 | Power chip interrupt and wake | PMIC_INT comes from power chip pin GPIO0; its SHPHLD pin goes to a test pad; VBUS from the case wakes the ring from ship mode | schematic cho
+design/bom.csv:3:Power chip,U2,1,"charger, 2 buck rails, 2 load switches, ship mode",Nordic,NPM1300-CAAA-R,WLCSP-35 (CAAA),3.1 x 2.4,,"charge 32 to 800 mA, termination 3.5 to 4.45 V, 2 buck 200 mA, LDO 50 mA,
+design/ecad/ring/sch-notes.md:32:**Power (sheet 3).** U2 nPM1300 with its passives C71 to C80, L71, L72, R71, R72, R57, R58, as in A3. The cell BT1 and the thermistor RT1 moved to the band sheet (section 17.3
+design/ecad/ring/sch-notes.md:44:**USB protection and test pads (sheet 9 of the PDF).** U9 TPD4E05U06 at the main board end of J_BAND_B: D1+ = USB_DP, D1- = USB_DN, D2+ and D2- both on VBUS, pins 3 and 8 grou
+design/ecad/ring/sch-notes.md:86:- PMIC_INT on nPM1300 GPIO0; U9 channel 2 both on VBUS; SHPHLD on TP19; CC1, CC2 open (as A3).
+design/firmware.md:23:5. PMIC_INT is nPM1300 GPIO0 and SHPHLD sits on test pad TP19 (sch-notes section 2); ship mode is left by VBUS (H6 closed; the VBUS exit stays to confirm, section 10.5).
+design/firmware.md:67:| `SHIP` | factory ship mode of the nPM1300; the main chip has no power | off | off | off | off |
+design/firmware.md:68:| `OFF` | same ship mode, entered by the user or by an empty battery | off | off | off | off |
+design/firmware.md:102:| `SHIP` | VBUS appears (case contact) | `BOOT` | the nPM1300 leaves ship mode and powers the bucks; the chip starts |
+design/firmware.md:108:| `BOOT` | battery at B2 and no VBUS | `OFF` | enter ship mode (section 8.4) |
+design/firmware.md:116:| `STANDBY` | menu "Power off" confirmed | `OFF` | save settings and time; M2; ship mode |
+design/firmware.md:120:| `STANDBY` | battery reaches B2 | `OFF` | save settings and time; ship mode |
+design/firmware.md:129:| `RECORDING` | battery reaches B2 | `OFF` | close; ship mode |
+design/firmware.md:149:| `ERR_STORAGE_FULL` | battery reaches B2 | `OFF` | ship mode |
+design/firmware.md:152:| `ERR_BATTERY_LOW` | battery reaches B2 | `OFF` | save settings and time; ship mode |
+design/firmware.md:155:| `ERR_STORAGE_FAULT` | battery reaches B2 | `OFF` | ship mode |
+design/firmware.md:160:| `FACTORY_TEST` | command SHIP_ENTER | `SHIP` | clear the factory flag; ship mode |
+design/firmware.md:695:### 8.4 Ship mode entry and exit
+design/firmware.md:698:- Exit: VBUS from the case contacts. The Zephyr driver exposes hibernate with a timer, not a separate "ship mode" task [SRC 11]; the nPM1300 datasheet (architecture action 12.2) is need
+design/firmware.md:746:| 0x7F | SHIP_ENTER | | clear the factory flag; ship mode | |
+design/firmware.md:868:| H6 | F1: PMIC_INT GPIO and SHPHLD not named. | closed: PMIC_INT on nPM1300 GPIO0, SHPHLD on test pad TP19 (sch-notes sections 2 and 8) | `pmic-int-pin = 0`; wake from `SHIP` and `OFF`
+##### SWD|DFU|bootloader|programm
+design/architecture.md:209:| SWDCLK / SWDIO / nRESET | dedicated | D5 / E4 / E2 | test pads for programming |
+design/architecture.md:289:| W12 | Debug and programming | test pads for SWDCLK, SWDIO, nRESET, VDD_1V8, ground, DBG_TX, DBG_RX and every spare pin | factory programming and test |
+design/bom.csv:52:Test pads,"TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15",15,"copper pads on PCB1: DBG_TX, DBG_RX, SWDCLK, SWDIO, nRESET and 10 spare pins; no part to buy",
+design/ecad/ring/sch-notes.md:44:**USB protection and test pads (sheet 9 of the PDF).** U9 TPD4E05U06 at the main board end of J_BAND_B: D1+ = USB_DP, D1- = USB_DN, D2+ and D2- both on VBUS, pins 3 and 8 grou
+design/firmware.md:722:- Boot loader: MCUboot, with the Zephyr image API `boot_request_upgrade()`, `boot_is_img_confirmed()`, `boot_write_img_confirmed()` [SRC 13] and image writing through `subsys/dfu/img_ut
+design/firmware.md:815:| SRC 13 | Zephyr `include/zephyr/dfu/mcuboot.h` |
+design/case/case-architecture.md:148:| 39 | TXD0 | UART test pad | programming and log |
+##### light guide|LED1|recording light.*(window|top|face|visible)
+requirements.md:61:| U5 | Recording light | A light that faces outward, visible to other people, on whenever a microphone records | Owner: "indicator". Outward-facing is Proposed. Vocci's light faces the wear
+design/architecture.md:52:| Recording light | KPG-1005SURC-TT, red, top view | Kingbright | 1.0 x 0.5 x 0.2 | 2.4 V, 631 nm | [LIST] (action 12.5) |
+design/architecture.md:154:| Recording light | +4.0 | on top of the board | under a clear window in the housing top |
+design/bom.csv:46:Recording light,LED1,1,"red top-view LED under a clear window, on top of the board",Kingbright,KPG-1005SURC-TT,0402 top view,1.0 x 0.5 x 0.2,,"forward voltage 2.0 V typ, 2.4 V max at 20 mA; 
+design/bom-notes.md:61:DS, LIST and CALC as in architecture.md. LIST lines still needing a maker document are those whose `open_action` or `key_figures` say so (U1, U2, IM68D128B, LED1, FH35C).
+design/ecad/ring/sch-notes.md:40:**Motor drive and recording light (sheet 7).** MOTOR (F6) through R61 100 ohm to the gate of Q1, R62 100 kohm gate to ground, Q1 source to ground, drain MOTOR_DRV; D1 cathode 
+design/ecad/ring/sch-notes.md:66:- Q1, Q2 (G, S, D pad numbers), LED1 (anode, cathode), M1 (plus, minus and tail contact numbers: VC0720B088L has an FPC tail, no polarity printed), BT1 (tabs), X1, X2.
+design/ecad/ring/pcb/board-notes.md:48:- Library footprints with a provisional pin-to-pad map (`open-pins.csv`): X1 (P1, P2 on diagonal pads 1 and 3 of the 4-pin 2016 crystal), X2, Q1, Q2 (G, S, D on pads 1, 
+design/case/case-architecture.md:20:C2 changes against C1 (2026-11-10, after the case schematic `design/ecad/case/sch-notes.md`): 464.4 MB per recorded hour (4-microphone ring figure with block headers), so 6
+design/case/case-architecture.md:49:   |  D+, D-  : not connected (U2 D+/D- open: no 9/12 V handshake) +--> [TPS63802 U3 buck-boost] --3V3--> U1, U4, LED1
+design/case/case-architecture.md:58:   |-- 3 GPIO, active low --> RGB LED1 (common anode on 3V3)                      ring pads (C3: in a row across the band, X = -2.4, -0.8, +0.8, +2.4)
+design/case/case-architecture.md:75:| LED1 | One light, RGB, common anode (pin 1), cathodes red 2, green 3, blue 4 (package drawing p.1, read by the schematic helper) | Kingbright APTF1616SEEZGQBDC | 1.6 x 1.
+design/case/case-architecture.md:91:| 3V3 | U3 | 3.308 V (R3 511 kΩ top, R4 91 kΩ bottom: 0.5 x (1 + 511/91), the 3.3 V row of TI Table 10-5) | U1 (355 mA peak), U4, LED1, pull-ups |
+design/case/case-architecture.md:142:| 25 | IO21 | LED_R | R8 470 Ω to LED1 red cathode (pin 2); active low |
+design/case/case-architecture.md:144:| 27 | IO47 | LED_G | R9 150 Ω to LED1 green cathode (pin 3); active low (bench B4) |
+design/case/case-architecture.md:145:| 30 | IO48 | LED_B | R10 150 Ω to LED1 blue cathode (pin 4); active low (bench B4) |
+design/case/case-notes.md:19:| M11 | Reserved volumes of the electronics (positions of U1 to U5, L1, L2, J1, LED1) | C2 sizes kept; the board layout is the ecad owner's |
+design/case/case-notes.md:89:| B4 | LED1 green and blue from 3.3 V: VF typ 3.3 V at 20 mA [DS], so at 3.3 V drive the current is only a few mA; check brightness, else drive the anodes from SYS through a trans
+design/case/case-notes.md:110:| LED1 | common anode on 3V3, GPIO through R8-R10 to the cathodes, active low (architecture corrected; schematic already right) | package drawing p.1 as read by the schematic hel
+design/case/case-notes.md:135:No change needed for the TPS2553 pins, LED1, W7 or L1: the schematic already has them as above.
+##### antenna.*metal|metal.*antenna|RF window
+design/architecture.md:156:| Antenna | +12.0 | on top of the board | no copper and no metal within 4.2 x 4.7 mm, on every layer |
+design/mech/thin/thin-notes.md:26:- main_chip, power_chip, screen_supply_chip: chip body, metal balls (grid underneath, toward the board), mark plate on the exposed face. storage: chip body, 8 gold pads, mark
+design/mech/thin/placement.csv:13:antenna,ANT1,board,-12.700,4.400,1.050,1.600,3.200,1.200,,False,"Johanson 2450AT18D0100001E: ceramic body, two metal end terminations (ASSUMED shape); stands in the board not
+design/mfg/specs/main-board.md:42:Outline and notch sizes; thickness (finished); layer count and stack-up by a section coupon; impedance if the antenna line needs it (open point 2); electrical test of every n
+design/mfg/specs/main-board.md:56:6. Antenna keep-out, section 6 (older state): no copper and no metal within 4.2 x 4.7 mm on every layer; the antenna now sits in a 1.8 x 3.6 notch (17.3). The electronics des
+design/bench/bench-plan.md:83:- The ring's size, its antenna and its microphone openings: sound through a slot in a metal wall is bench test B7 on the first housing.

@@ -1,0 +1,32 @@
+# Checklist (band circuits into the 3D model, v8). Started 2026-11-13 00:34 (clock from `date`). Logs in design/mech/thin/out/v8/. Ticked at the end from the saved logs; band-fit-notes.md has the table of each.
+
+- [x] 1. Baseline US 9, `RESULT PASS pairs=1080 parts=47` reproduced. evidence: out/v8/baseline_us9_default.log
+- [x] 2. neck 1.8 centred in the floor slot. evidence: out/v8/v8_us9_default.log (`band circuit ... neck in the slot`, `slot X -3.550 to -1.450 (centre -2.500)`)
+- [x] 3. foot and fold at the board end. evidence: out/v8/v8_us9_default.log (`foot`, `fold at 30 deg`, `fold at 60 deg`, `fold width at 45 deg`)
+- [x] 4. stiffener 0.10. evidence: out/v8/v8_us9_default.log (`head stiffener`, `foot stiffener`)
+- [x] 5. FLEX2 pad strip X -3.4 to 0.25. evidence: out/v8/v8_us9_default.log (`pad strip at 180.0 deg`)
+- [x] 6. every other part where it is; parameters in one place. evidence: out/v8/thin_diff_v7_to_v8.diff, placement diff in band-fit-notes.md g.1 (rows liner, motor note, 47, 48); cell line identical to v7 at US 7 and 9
+- [x] 7. US 7 PASS. evidence: out/v8/v8b_us7.log
+- [x] 8. US 8 PASS. evidence: out/v8/v8_us8.log
+- [x] 9. US 9 PASS. evidence: out/v8/v8_us9_default.log
+- [x] 10. US 10 PASS. evidence: out/v8/v8_us10.log
+- [x] 11. US 11 PASS. evidence: out/v8/v8_us11.log
+- [x] 12. US 12 PASS (second run). evidence: out/v8/v8b_us12.log
+- [x] 13. US 13 PASS. evidence: out/v8/v8_us13.log
+- [x] 14. ribbon pairs and smallest clearances per size. evidence: band-fit-notes.md c.2, c.3 (out/v8/ribbon_table.py over the logs)
+- [x] 15. model changes with before, after, reason. evidence: band-fit-notes.md section d (4 changes)
+- [x] 16. conflicts for the lead. evidence: band-fit-notes.md section d (2, none of the four stop conditions)
+- [x] 17. changes other files need. evidence: band-fit-notes.md section e
+- [x] 18. named test passes. evidence: section 13 lines in every size log
+- [x] 19. named test fails on one broken copy. evidence: out/v8/broken_trunk/named_test.log (`RESULT FAIL`)
+- [x] 20. model outputs regenerated in place. evidence: out/v8/build_v8_final.log (exit 0; glb 9657464 bytes, step 7898764 bytes, triangles.txt), first build out/v8/build_v8_us9.log
+- [x] 21. placement.csv rows 47 and 48. evidence: out/v8/placement_v7_before.csv against placement.csv
+- [x] 22. ribbon STEP files 7 sizes x 2 tails. evidence: out/v8/export_flex_us7.log to export_flex_us13.log (7 x `exit 0`), band-fit-notes.md g.2
+- [x] 23. check_band `RESULT: PASS boards checked 14`, exit 0. evidence: out/v8/check_band_final.log; path differences per board: out/v8/measure_step_v8.log (0 of 14 over 0.05)
+- [x] 24. band-flex-tails.md words. evidence: out/v8/band-flex-tails_before.md against the file
+- [x] 25. thin-notes.md section. evidence: out/v8/thin-notes_before.md against the file
+- [x] 26. architecture.md lines listed. evidence: band-fit-notes.md section h
+- [x] 27. notes file, last line RESULT. evidence: band-fit-notes.md (tail -1), out/v8/notes_result.md
+- [ ] 28. final audit: out/v8/audit.log
+- [x] 29. no git; writes only in design/mech/thin/, the two ribbon folders and band-flex-tails.md (and the exporter's __pycache__ in design/mfg/parts, the three drc rpt files check_band rewrites in design/ecad/band)
+- [x] 30. no browser, nice -n 19, one heavy run at a time (the 20 s gap_probe runs and check_band excepted), no stderr to /dev/null

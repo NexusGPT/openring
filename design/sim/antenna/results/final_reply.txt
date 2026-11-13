@@ -1,0 +1,18 @@
+Report: ring antenna field simulation (openEMS in Docker on <build-server>). File (full report): design/sim/antenna/antenna-sim.md and everything below is simulated, not proven on hardware.
+
+H1 (tool trusted): NOT CONFIRMED. Pass line written 00:25:34 CET before any run. On the maker's evaluation board, three runs (the one free number, ceramic permittivity, tuned 14, 20.991, 28.905) never put the S11 minimum in 2.440 to 2.460 GHz (best 2.720 GHz). Return loss at 2.44 GHz was 3.89 dB against the 10 dB line. Efficiency (82.2 percent, maker 72) and peak gain (2.27 dBi, maker 1.5) were inside their limits. Cause seen in the data: the assumed chip inside gives 227 ohm at its resonance. The part's inside is not published.
+
+H2 (the ring), run as "tool not validated". Board and antenna mount taken from ring-board-plan.md (it had its RESULT line):
+- Case A, as designed (metal body, floor pocket): FAIL. Best three-part match leaves 1.84 dB return loss worst case (line 6 dB); radiated share 8.3 percent (line 10). Zin about 0.4 - j4 ohm.
+- Case B, resin corner: FAIL. 2.52 dB, radiated share 2.0 percent. This is worse than A, the opposite of what I expected. Cause not tested; hypothesis: the metal floor shields the antenna from the finger.
+- Case C (other place): NOT RUN. The 8-run cap is used: 3 H1 runs, 3 H2 launches I stopped while the server load average was 57 to 78, and 2 finished H2 runs. The server was fast again for the last two (under 3 minutes each), so this was avoidable in hindsight.
+- Match values: A shunt L 1.18 nH, series C 3.02 pF, shunt L 0.24 nH; B shunt L 6.43, series L 3.58, shunt L 1.90 nH. Neither reaches 6 dB, so they are not usable start values.
+
+What it cannot show: the real chip's inside (the result depends on it), mesh error (final mesh is coarse, no finer run left), the finger as a hand, parts not drawn. Measurement that settles it: bench tests T0, T1, T2 of design/mech/antenna/antenna-study.md section 6 (vector network analyser, return loss 2.3 to 2.6 GHz worn; nRF54LM20 DK signal strength at 1 m). To test my hypothesis in the model: copy src/h2_ring.py, delete its two finger AddCylinder lines, rerun A and B.
+
+Defects and deviations (all in the file): wrong "file does not exist" text corrected in section 3; reporting bug in match_solve's list of topologies (winner unaffected, rechecked); amendments A1 to A4 changed model and mesh, never a pass line; no expectation written before H1 runs.
+
+Server: no container of mine left. Images left: ring-antenna-openems:1 (2.79 GB), ubuntu:24.04 (119 MB). Folder /root/ring-antenna-sim holds field dumps. No git run. No secret in any file. Folder 4.3 MB.
+
+Last line of antenna-sim.md:
+RESULT: done, H1 not confirmed (S11 minimum 2.720 GHz and 3.89 dB at 2.44 GHz against 2.440 to 2.460 GHz and 10 dB, efficiency 82.2 percent and gain 2.27 dBi inside their limits); H2 as "tool not validated": case A fails (return loss 1.84 dB after a three-part match against 6 dB, radiated share 8.3 percent against 10), case B fails (2.52 dB, 2.0 percent), case C not run (run cap used); simulated, not proven on hardware

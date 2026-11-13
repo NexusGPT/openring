@@ -1,0 +1,74 @@
+== rrec.c mount_now/sd_wanted/rrec_close
+141:static int mount_now(void)
+229:int rrec_close(rc_ms_t mark)
+255:	case RC_ACT_STOP_PDM:
+258:	case RC_ACT_CLOCKS_LOW:
+261:	case RC_ACT_MIC_OFF:
+300:static int unmount_now(void)
+324:static int unmount_last_err = -EBUSY;   /* the answer of the last try (rrec_unmount_retry) */
+350:void rrec_ship_now(void)
+364:	(void)unmount_now();                     /* storage closed (the queued log records are written first) */
+395:void rrec_unmount_retry(void)
+405:	unmount_last_err = unmount_now();
+413:void rrec_action(enum rc_action a, rc_ms_t t)
+416:	case RC_ACT_OPEN:
+419:	case RC_ACT_CLOSE:
+422:	case RC_ACT_CHARGE_ON:
+425:	case RC_ACT_CHARGE_OFF:
+428:	case RC_ACT_M1:
+431:	case RC_ACT_M2:
+434:	case RC_ACT_M3:
+437:	case RC_ACT_MH:
+440:	case RC_ACT_MT:
+443:	case RC_ACT_MF:
+446:	case RC_ACT_MW:
+449:	case RC_ACT_SD_ON:
+450:	case RC_ACT_MOUNT:
+453:	case RC_ACT_SD_OFF:
+454:		(void)unmount_now();             /* FW l.178, l.179: the result is kept (R6-03) */
+456:	case RC_ACT_STOP_PDM:
+457:	case RC_ACT_CLOCKS_LOW:
+458:	case RC_ACT_MIC_OFF:
+461:	case RC_ACT_SHIP_MODE:
+462:		rrec_st.ship_pending = true;     /* on the recorder's thread after this step (rrec_glue_after) */
+464:	case RC_ACT_SAVE_SETTINGS_TIME:
+468:	case RC_ACT_CLEAR_FACTORY_FLAG:
+473:	case RC_ACT_REQUEST_UPGRADE_TEST:
+476:	case RC_ACT_REBOOT:
+479:	case RC_ACT_FACTORY_MODE:
+482:	case RC_ACT_RETRY_STORAGE:
+485:	case RC_ACT_LOG_EVENT:
+489:	case RC_ACT_LOG_CHARGE_ERROR: {
+495:	case RC_ACT_WRITE_CLOSE_RECOVERED:
+496:	case RC_ACT_CLEAR_OPEN_FLAG:
+499:	case RC_ACT_HIGHLIGHT:
+502:	case RC_ACT_FINISH_COMMAND:
+505:	case RC_ACT_ABORT_COMMAND:
+520:static bool sd_wanted(enum rc_state s)
+533:static bool hfxo_wanted(enum rc_state s)
+538:void rrec_hfxo_follow_state(enum rc_state s)
+540:	bool want = hfxo_wanted(s);
+550:static void rails_follow_state(enum rc_state s)
+556:			(void)unmount_now();
+560:	if (s != RC_ST_RECORDING && atomic_get(&rrec_st.test_recording) == 0 && rhw_pmic()->rail_get(RHW_RAIL_MIC)) {
+569:	rrec_hfxo_follow_state(s);   /* FW 8.2, for the state that follows */
+655:	rpw_state(atomic_get(&rrec_st.test_recording) != 0 ? RC_ST_RECORDING : state);   /* ruling 8 of the root unit's notes */
+656:	rails_follow_state(state);
+665:	if (rrec_st.ship_pending) {
+667:		rrec_st.ship_pending = false;
+714:int rrec_test_recording(uint32_t ms, void (*on_block)(const int16_t *frames, uint32_t n), int64_t *mic_on_ms,
+733:	atomic_set(&rrec_st.test_recording, 1);
+778:	atomic_set(&rrec_st.test_recording, 0);
+== rmo_playing
+<scratch>/review2-src/firmware/modules/ring_motor/include/ring_motor/rmo.h:47:bool rmo_playing(void);  /* FW l.318 */
+<scratch>/review2-src/firmware/modules/ring_motor/src/rmo.c:179:bool rmo_playing(void)
+== rpw_ship decl
+74- * once (FW l.941). Returns only when the chip did not cut the supply: -ETIMEDOUT after the retry. Join's thread;
+75- * blocks until VBUS is removed. */
+76:int rpw_ship(void (*before_task)(void));
+77-
+78-/* GET_BATTERY (FW l.702): RREC_GET_BATTERY_BYTES bytes from the last sample and gauge step. Any thread; blocks for
+79- * the charger status read. */
+80-int rpw_battery_report(uint8_t out[RREC_GET_BATTERY_BYTES]);
+81-
+82-struct rpw_values {               /* for SCR_CHARGING (FW l.374) and the rules of other units */

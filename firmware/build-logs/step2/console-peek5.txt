@@ -1,0 +1,52 @@
+# remote.sh run 20261111-131822-peek5
+# command: O=/root/ring-os/ws/out/20261111-131637-bsimA5-bsim-control; for f in ring host1; do echo ===$f; grep -E "@00:00:0(5.[3-9]|6)" $O/run-A-$f.log | grep -E "bt_smp|bt_conn|rdev|HOST|RING|sdc|hci_core: (hci_|bt_hci_cmd_send:)" | grep -v "kick TX\|tx_process\|net_buf" | cut -c1-170 | head -40; done
+# mode: host
+# started (Mac clock): 2026-11-11 13:18:22 CET
+# free on the server's /: 59 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-131822-peek5; server log /root/ring-os/logs/20261111-131822-peek5.log
+===ring
+d_00: @00:00:05.341356  [00:00:05.341,356] [0m<dbg> bt_hci_core: hci_event: event 0x3e[0m
+d_00: @00:00:05.341356  [00:00:05.341,356] [0m<dbg> bt_hci_core: hci_le_meta_event: subevent 0x05[0m
+d_00: @00:00:05.341356  [00:00:05.341,356] [0m<dbg> bt_conn: bt_conn_ref: handle 0 ref 2 -> 3[0m
+d_00: @00:00:05.341356  [00:00:05.341,356] [0m<dbg> bt_hci_core: bt_hci_cmd_send: opcode 0x201a param_len 18[0m
+d_00: @00:00:05.341356  [00:00:05.341,356] [0m<dbg> bt_conn: bt_conn_unref: handle 0 ref 3 -> 2[0m
+d_00: @00:00:05.341356  [00:00:05.341,356] [0m<dbg> bt_hci_core: hci_core_send_cmd: fetch cmd[0m
+d_00: @00:00:05.341356  [00:00:05.341,356] [0m<dbg> bt_hci_core: hci_core_send_cmd: Sending command 0x201a (buf 0x81328c0) to driver[0m
+d_00: @00:00:05.341366  [00:00:05.341,366] [0m<dbg> bt_hci_core: hci_cmd_complete: opcode 0x201a[0m
+d_00: @00:00:05.341366  [00:00:05.341,366] [0m<dbg> bt_hci_core: hci_cmd_done: opcode 0x201a status 0x00  buf 0x8131bd4[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_hci_core: hci_disconn_complete_prio: status 0x00  handle 0 reason 0x3d[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: bt_conn_ref: handle 0 ref 2 -> 3[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: bt_conn_set_state: connected -> disconnect-complete[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: process_unack_tx: 0x8115ec0[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: bt_conn_unref: handle 0 ref 3 -> 2[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_hci_core: hci_event: event 0x05[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_hci_core: hci_disconn_complete: status 0x00  handle 0 reason 0x3d[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: bt_conn_ref: handle 0 ref 2 -> 3[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: bt_conn_set_state: disconnect-complete -> disconnected[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: tx_notify_process: conn 0x8115ec0[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: bt_conn_set_state: trigger disconnect work[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: bt_conn_unref: handle 0 ref 3 -> 2[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: deferred_work: conn 0x8115ec0[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_smp: bt_smp_disconnected: chan 0x811636c cid 0x0006[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_smp: smp_pairing_complete: got status 0x8[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_smp: bt_smp_encrypt_change: chan 0x811636c conn 0x8115ec0 handle 0 encrypt 0x00 hci status 0x1f [0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_smp: smp_pairing_complete: got status 0x8[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [1;33m<wrn> bt_smp: The in-progress pairing has been deleted![0m
+d_00: @00:00:05.541258  rdev: pairing failed slot 0 reason 9
+d_00: @00:00:05.541258  rdev: security slot 0 level 1 err 9
+d_00: @00:00:05.541258  rdev: disconnected slot 0, reason 0x3d
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: bt_conn_unref: handle 0 ref 2 -> 1[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_conn: bt_conn_unref: handle 0 ref 1 -> 0[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_hci_core: bt_hci_cmd_send: opcode 0x2006 param_len 15[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_hci_core: hci_core_send_cmd: fetch cmd[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_hci_core: hci_core_send_cmd: Sending command 0x2006 (buf 0x81328c0) to driver[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_hci_core: hci_cmd_complete: opcode 0x2006[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_hci_core: hci_cmd_done: opcode 0x2006 status 0x00  buf 0x8131bd4[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_hci_core: hci_cmd_done: sync cmd released[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_hci_core: bt_hci_cmd_send: opcode 0x2008 param_len 32[0m
+d_00: @00:00:05.541258  [00:00:05.541,258] [0m<dbg> bt_hci_core: hci_core_send_cmd: fetch cmd[0m
+===host1
+# finished (Mac clock): 2026-11-11 13:18:27 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-131822-peek5.log

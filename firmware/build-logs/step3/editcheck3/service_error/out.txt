@@ -1,0 +1,13 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -709,6 +709,7 @@
+ 		st.gattp_missing++;
+ 	} else if (p == P_ANCS) {
+ 		st.ancs_missing++;
++		st.dm_errors++;
+ 	} else if (p == P_AMS) {
+ 		st.ams_missing++;
+ 	} else if (p == P_CTS) {
+MODULE=ring_iphone
+SCEN=P
+EXPECT=RING CHECK h: Service Changed was looked for and found \(the host has the GATT service\), the three Apple services were looked for and not found \(not an error\) FAIL

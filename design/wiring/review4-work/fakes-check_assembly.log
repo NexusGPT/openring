@@ -1,0 +1,10 @@
+CASE honest_copy            want_exit=0 got_exit=0 as expected | RESULT PASS
+CASE step7_no_check_field   want_exit=1 got_exit=1 as expected | RESULT FAIL C1
+CASE no_result_line         want_exit=1 got_exit=1 as expected | RESULT FAIL G1
+CASE G1_reintroduced        want_exit=1 got_exit=0 DIFFERS | RESULT PASS
+CASE cell_tabs_swapped      want_exit=1 got_exit=0 DIFFERS | RESULT PASS
+CASE citation_wrong_line    want_exit=1 got_exit=0 DIFFERS | RESULT PASS
+CASE citation_past_end      want_exit=1 got_exit=1 as expected | RESULT FAIL E1
+CASE flood_steps_twice      want_exit=1 got_exit=1 as expected | RESULT FAIL B1
+CASE empty                  want_exit=1 got_exit=1 as expected | RESULT FAIL S0, B1, A1, A2, K1, G1
+RESULT fakes=9 differs=3

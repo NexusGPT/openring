@@ -1,0 +1,25 @@
+Circuit bench for the ring and the case is built and run. 13 tests: 9 pass, 4 fail on the real design (findings, design not changed). No git command, nothing outside the folder.
+
+Folder: design/sim/circuit/ . Notes: sim-notes.md (last line begins `RESULT: done, 13 tests, 9 pass and 4 fail`).
+Commands: `sh run_all.sh` (about 215 s). Last line of results/run_all.log: `RESULT FAIL`, exit 1. `sh prove_fail.sh`. Last line of results/prove_fail.log: `PROOF RESULT OK`.
+
+How it works: make_decks.py writes 13 ngspice decks from netlist.csv and parts.csv (ring and case); run_tests.py runs them through KiCad's libngspice (the bundle has no ngspice program) and compares 88 rows with pass-lines.md (written before the runs, time stamps in the file). 7 own models, each from datasheet pages. TI's own PSpice models were fetched and kept unchanged but ngspice cannot run them.
+
+Findings (tests that fail):
+1. Ring pads: 4.498 V on the VBUS pad 10 s after removal (cell 4.35 V; limit 0.1 V). The chip holds VBUS at VBAT plus 160 mV and C71, C72, C11 keep the charge. A 330 kohm bleeder would give 0.021 V (what-if, not in the design).
+2. Case charger: CE is low at power-on, so the BQ25895 charges at its defaults: 4.208 V against the cell's 4.2 V, 2.048 A register against the cell's 0.35 A maximum; bench gives 602 mA.
+3. Case LEDs: green and blue get 1.41 to 1.97 mA (my line: 2 mA); red 2.99 to 3.18 mA.
+4. Ring motor start: at the resistance implied by decision 41 (1.9565 ohm at 3.45 V) the cell dips to 2.995 V (limit 3.0 V), peak 232.5 mA, not 230 mA. Largest passing resistance 1.9277 ohm. Marginal: the settled value is 3.0232 V; the dip is the C84 charge (sensitivity in results/sensitivity.txt).
+
+Passing: ring 8 microphone supply ripple (new: 2.53 mV peak to peak at 2 mm, 4.38 mV at 5 mm, lead's limit 10 mV; the microphone sheet gives none), power-up, charge path, storage inrush (3.40 uF, 0.185 ms against 1.8 ms), level shifter, joystick, boost to VRING (limit 400.6 mA minimum, 497.4 mA maximum), thermistor window (edges within 0.4 percent of TI's example), 3V3 rail 3.3075 V.
+
+Bench proof: three broken copies each fail their named test as written in expected-failures.md: C60 470 uF fails ring4 R4.7 and R4.8; pull-up R63 removed fails ring5 R5.6; U2 outputs swapped fails ring2 (six rows, plus two extra).
+
+Case risks: 1, 6, 7, 8 simulated; 9 partly (3V3 level only); 2, 3, 4, 5 cannot be simulated, reasons in sim-notes.md section 5.
+
+Limits: every result rests on our own models; no radio, sound, real cell or layout; nothing measured on hardware. Nordic input limits are not on disk (search saved); the stand-in is another maker's nRF54L15 sheet.
+
+Changes other files need (listed, not made): cell.md and decision 41 (state 235 mA or the resistance limit and the 20 percent voltage); a VBUS discharge path in the ring circuit; case CE and R21 plus firmware writing REG04 and REG06 first; LED supply above 3V3.
+
+Inputs: ring netlist.csv time stamp 00:56:46 (already holds C60 2.2 uF, C35 and C36 1nF C0G, the Murata L71 and L72; sha in results/inputs.txt). Rerun after the footprint helper if the files change.
+Audit: results/final_audit.txt.

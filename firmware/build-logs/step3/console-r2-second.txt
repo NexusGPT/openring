@@ -1,0 +1,390 @@
+# remote.sh run 20261112-010032-r2-second
+# command: west twister -T tests/inbox -T tests/time -T tests/iphone -p native_sim -O /ws/out/r2-logic --inline-logs -v ; tests/bsim/iphone/run.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 01:00:32 CET
+# free on the server's /: 67 GB
+# source firmware copied to /root/ring-os/src-step3r2
+# started on the server as 20261112-010032-r2-second; server log /root/ring-os/logs/20261112-010032-r2-second.log
+Renaming previous output directory to /ws/out/r2-logic.1
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/r2-logic/testplan.json
+INFO    - JOBS: 32
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/3 native_sim/native         ring_time.logic                                    PASSED (native 0.008s <host/gnu>)
+INFO    - 2/3 native_sim/native         ring_inbox.logic                                   PASSED (native 0.013s <host/gnu>)
+INFO    - 3/3 native_sim/native         ring_iphone.logic                                  PASSED (native 0.016s <host/gnu>)
+
+INFO    - 3 test scenarios (3 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 3 of 3 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 18.39 seconds.
+INFO    - 37 of 37 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 3 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/r2-logic/twister.json
+INFO    - Writing xunit report /ws/out/r2-logic/twister.xml...
+INFO    - Writing xunit report /ws/out/r2-logic/twister_report.xml...
+INFO    - Run completed
+bsim-iphone: firmware /ws/firmware/tests/bsim/iphone, outputs /ws/out/20261112-010032-r2-second-bsim-iphone, scenarios N R P L D, broken 0
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-010032-r2-second-bsim-iphone/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== build ring for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-010032-r2-second-bsim-iphone/build-ring.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring ok
+=== test N (ok): ring + stand-in iPhone, 130 simulated seconds, 2026-11-12T00:01:44Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-010032-r2-second-bsim-iphone/run-ok-N-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:07.164500  RING CHECK the iPhone pairs; the ring finds and subscribes to the notification service at security level 4 PASS (t=7164)
+d_00: @00:00:07.164500  RING CHECK nothing in the inbox before the iPhone sends PASS (t=7164)
+d_00: @00:00:08.867927  RING CHECK the three services are found and subscribed PASS (t=8867)
+d_00: @00:00:11.868027  RING CHECK the link is ready for keys too PASS (t=11868)
+d_00: @00:00:11.868027  RING CHECK the player state and track follow the iPhone's first report (paused, Bohemian Rhapsody, Queen) PASS (t=11868)
+d_00: @00:00:11.868027  RING CHECK the ring's clock equals the iPhone's time within 1 s, as UTC (the iPhone's zone +2 h taken off) PASS (t=11868)
+d_00: @00:00:11.868027  RING CHECK the zone is known and is +120 minutes PASS (t=11868)
+d_00: @00:00:11.868027  RING CHECK the clock was set from the iPhone (at least once) PASS (t=11868)
+d_00: @00:00:13.521327  RING CHECK five notifications arrived with their text PASS (t=13521)
+d_00: @00:00:13.521327  RING CHECK a: newest first (105, 104, 103, 102, 101) PASS (t=13521)
+d_00: @00:00:13.521327  RING CHECK a: 101 exact (SMS: category 4, flags important+positive+negative) PASS (t=13521)
+d_00: @00:00:13.521327  RING CHECK a: 102 exact (mail: category 6, negative action) PASS (t=13521)
+d_00: @00:00:13.521327  RING CHECK a: 103 exact: identifier cut at 48 bytes, title at 48, the 200-byte message cut to 159 bytes on a character PASS (t=13521)
+d_00: @00:00:13.521327  RING CHECK a: 104 exact (no actions, empty message) PASS (t=13521)
+d_00: @00:00:13.521327  RING CHECK a: 105 exact (the iPhone sent all 200 bytes: kept 160 and cut at a character) PASS (t=13521)
+d_00: @00:00:13.521327  RING CHECK a: no message is longer than 160 bytes and none ends inside a character (every entry) PASS (t=13521)
+d_00: @00:00:16.477227  RING CHECK b: the change arrived PASS (t=16477)
+d_00: @00:00:16.477227  RING CHECK b: the changed notification keeps its place and has the new flags (positive action gone) PASS (t=16477)
+d_00: @00:00:18.381027  RING CHECK b: the removal deletes the entry PASS (t=18381)
+d_00: @00:00:18.381027  RING CHECK b: order after the removal 105, 104, 103, 101 PASS (t=18381)
+d_00: @00:00:26.447127  RING CHECK b: thirteen more arrive: the store holds 16 PASS (t=26447)
+d_00: @00:00:26.447127  RING CHECK b: the 17th notification dropped the oldest (101) and only that one PASS (t=26447)
+d_00: @00:00:26.447127  RING CHECK b: all 16 entries have their text PASS (t=26447)
+d_00: @00:00:30.164227  RING CHECK c: dismiss chosen on the ring for 122 is sent PASS (t=30164)
+d_00: @00:00:30.164227  RING CHECK c: the inbox does not change on the ring's own command (122 is still there) PASS (t=30164)
+d_00: @00:00:30.664327  RING CHECK c: positive action for 121 is sent PASS (t=30664)
+d_00: @00:00:31.164427  RING CHECK c: an action without its flag is refused: dismiss of 104 (no actions) PASS (t=31164)
+d_00: @00:00:31.164427  RING CHECK c: an action without its flag is refused: positive action of 103 (negative only) PASS (t=31164)
+d_00: @00:00:31.164427  RING CHECK c: an unknown id is refused PASS (t=31164)
+d_00: @00:00:31.164427  RING CHECK c: two commands were sent and three were refused PASS (t=31164)
+d_00: @00:00:31.164427  RING CHECK c: the iPhone reports the dismissed notification removed: 122 leaves the inbox PASS (t=31164)
+d_00: @00:00:35.372827  RING CHECK f: a new track and the playing state arrive from the iPhone PASS (t=35372)
+d_00: @00:00:35.372827  RING CHECK f: media command 0 is sent PASS (t=35372)
+d_00: @00:00:35.872927  RING CHECK f: media command 1 is sent PASS (t=35872)
+d_00: @00:00:36.373027  RING CHECK f: media command 2 is sent PASS (t=36373)
+d_00: @00:00:36.873127  RING CHECK f: media command 3 is sent PASS (t=36873)
+d_00: @00:00:37.373227  RING CHECK f: media command 4 is sent PASS (t=37373)
+d_00: @00:00:37.873327  RING CHECK f: media command 5 is sent PASS (t=37873)
+d_00: @00:00:38.373427  RING CHECK f: the stored state did not change on the commands alone (pause was sent, the state is still playing) PASS (t=38373)
+d_00: @00:00:38.373427  RING CHECK f: six commands counted PASS (t=38373)
+d_00: @00:00:45.337327  RING CHECK f: the stored state follows the iPhone's next report (paused) PASS (t=45337)
+d_00: @00:00:45.337327  RING CHECK f: play is sent while the player is paused PASS (t=45337)
+d_00: @00:00:46.137427  RING CHECK f: the stored state did not change on a play command either (paused stays paused) PASS (t=46137)
+d_00: @00:00:47.339827  RING CHECK g: the ring's clock follows the iPhone's time change (two hours) PASS (t=47339)
+d_00: @00:00:47.339827  RING CHECK g: the clock was set again (at least twice in all) PASS (t=47339)
+d_00: @00:00:47.339827  RING CHECK g: the zone stays known and +120 minutes PASS (t=47339)
+d_00: @00:00:53.164127  RING EVENT recording start (t=53164)
+d_00: @00:00:53.965127  RING CHECK i: a long press starts a recording PASS (t=53965)
+d_00: @00:01:03.164247  RING CHECK i: events arrived during RECORDING (one added, one modified, one removed, a track, a state, a time) PASS (t=63164)
+d_00: @00:01:03.164247  RING CHECK i: the media record shows the report PASS (t=63164)
+d_00: @00:01:03.164247  RING CHECK i: the clock shows the iPhone's time (+2 h 1 min) PASS (t=63164)
+d_00: @00:01:03.164247  RING CHECK i: the core is still RECORDING, no recording started or stopped, no key sent PASS (t=63164)
+d_00: @00:01:04.164447  RING EVENT recording stop (t=64164)
+d_00: @00:01:04.964447  RING CHECK i: a long press stops the recording PASS (t=64964)
+d_00: @00:01:13.164535  RING CHECK i: events arrived during STANDBY (one added, one modified, one removed, a track, a state, a time) PASS (t=73164)
+d_00: @00:01:13.164535  RING CHECK i: the media record shows the report (standby) PASS (t=73164)
+d_00: @00:01:13.164535  RING CHECK i: the clock shows the iPhone's time (+2 h 2 min) PASS (t=73164)
+d_00: @00:01:13.164535  RING CHECK i: the core is still STANDBY, no recording started or stopped, no key sent PASS (t=73164)
+d_00: @00:01:13.864735  RING CHECK keys still go to the active device: media centre sends 2 reports PASS (t=73864)
+d_00: @00:01:13.864735  RING CHECK no error was counted by the iPhone part PASS (t=73864)
+d_00: @00:01:13.864735  RING INFO system workqueue stack: 3048 bytes never used of 3072 (scenario N, shared setting)
+d_00: @00:01:13.864735  RING SCRIPT DONE t=73864 checks=61 fails=0
+d_00: @00:01:13.864735  RING RESULT PASS
+--- stand-in iPhone /ws/out/20261112-010032-r2-second-bsim-iphone/run-ok-N-phone.log
+d_01: @00:00:00.000122  PHONE START scenario N
+d_01: @00:00:00.000174  PHONE CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.000174  PHONE CHECK the three Apple services are registered PASS (t=0)
+d_01: @00:00:00.645537  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:01.144997  PHONE CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  PHONE CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:06.444957  PHONE INFO HID client subscribed to 3 input reports (t=6444)
+d_01: @00:00:07.294853  PHONE INFO Notification Source subscribed (#1, security level 4, t=7294)
+d_01: @00:00:08.434953  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:08.584957  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:08.584957  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:09.295057  PHONE INFO NS event 0 uid 101 flags 0x1a (0)
+d_01: @00:00:10.294197  PHONE INFO NS event 0 uid 102 flags 0x10 (0)
+d_01: @00:00:11.294297  PHONE INFO NS event 0 uid 103 flags 0x11 (0)
+d_01: @00:00:12.294397  PHONE INFO NS event 0 uid 104 flags 0x00 (0)
+d_01: @00:00:13.294497  PHONE INFO NS event 0 uid 105 flags 0x10 (0)
+d_01: @00:00:16.294597  PHONE INFO NS event 1 uid 101 flags 0x12 (0)
+d_01: @00:00:18.294697  PHONE INFO NS event 2 uid 102 flags 0x10 (0)
+d_01: @00:00:20.294797  PHONE INFO NS event 0 uid 110 flags 0x18 (0)
+d_01: @00:00:20.794897  PHONE INFO NS event 0 uid 111 flags 0x18 (0)
+d_01: @00:00:21.294997  PHONE INFO NS event 0 uid 112 flags 0x18 (0)
+d_01: @00:00:21.795097  PHONE INFO NS event 0 uid 113 flags 0x18 (0)
+d_01: @00:00:22.294197  PHONE INFO NS event 0 uid 114 flags 0x18 (0)
+d_01: @00:00:22.794297  PHONE INFO NS event 0 uid 115 flags 0x18 (0)
+d_01: @00:00:23.294397  PHONE INFO NS event 0 uid 116 flags 0x18 (0)
+d_01: @00:00:23.794497  PHONE INFO NS event 0 uid 117 flags 0x18 (0)
+d_01: @00:00:24.294597  PHONE INFO NS event 0 uid 118 flags 0x18 (0)
+d_01: @00:00:24.794697  PHONE INFO NS event 0 uid 119 flags 0x18 (0)
+d_01: @00:00:25.294797  PHONE INFO NS event 0 uid 120 flags 0x18 (0)
+d_01: @00:00:25.794897  PHONE INFO NS event 0 uid 121 flags 0x18 (0)
+d_01: @00:00:26.294997  PHONE INFO NS event 0 uid 122 flags 0x18 (0)
+d_01: @00:00:30.194869  PHONE INFO action 1 for notification 122
+d_01: @00:00:30.494969  PHONE INFO NS event 2 uid 122 flags 0x18 (0)
+d_01: @00:00:30.694869  PHONE INFO action 0 for notification 121
+d_01: @00:00:35.295069  PHONE INFO EU 2/0 'Queen and David Bowie' (0)
+d_01: @00:00:35.295069  PHONE INFO EU 2/2 'Under Pressure' (0)
+d_01: @00:00:35.295069  PHONE INFO EU 0/1 '1,1.0,0.000' (0)
+d_01: @00:00:35.394849  PHONE INFO remote command 0
+d_01: @00:00:35.894849  PHONE INFO remote command 1
+d_01: @00:00:36.394849  PHONE INFO remote command 3
+d_01: @00:00:36.894849  PHONE INFO remote command 4
+d_01: @00:00:37.394849  PHONE INFO remote command 5
+d_01: @00:00:37.894849  PHONE INFO remote command 6
+d_01: @00:00:45.294169  PHONE INFO EU 0/1 '0,0.0,5.000' (0)
+d_01: @00:00:45.344849  PHONE INFO remote command 0
+d_01: @00:00:55.294369  PHONE INFO NS event 0 uid 130 flags 0x10 (0)
+d_01: @00:00:56.294497  PHONE INFO NS event 1 uid 130 flags 0x10 (0)
+d_01: @00:00:57.294597  PHONE INFO EU 2/0 'Artist R' (0)
+d_01: @00:00:57.294597  PHONE INFO EU 2/2 'In recording' (0)
+d_01: @00:00:57.294597  PHONE INFO EU 0/1 '1,1.0,9.000' (0)
+d_01: @00:00:59.294797  PHONE INFO NS event 2 uid 130 flags 0x10 (0)
+d_01: @00:01:07.294897  PHONE INFO NS event 0 uid 131 flags 0x10 (0)
+d_01: @00:01:08.294997  PHONE INFO NS event 1 uid 131 flags 0x10 (0)
+d_01: @00:01:09.295097  PHONE INFO EU 2/0 'Artist S' (0)
+d_01: @00:01:09.295097  PHONE INFO EU 2/2 'In standby' (0)
+d_01: @00:01:09.295097  PHONE INFO EU 0/1 '0,0.0,10.000' (0)
+d_01: @00:01:11.294297  PHONE INFO NS event 2 uid 131 flags 0x10 (0)
+d_01: @00:01:13.694853  PHONE REPORT t=73694 id=2 len=2 data=cd00
+d_01: @00:01:13.695293  PHONE REPORT t=73695 id=2 len=2 data=0000
+d_01: @00:01:27.294397  PHONE EVAL t=87294
+d_01: @00:01:27.294397  PHONE CHECK ring subscribed to the Notification Source once, on a level 4 link PASS (t=87294)
+d_01: @00:01:27.294397  PHONE CHECK ring subscribed to the Data Source once PASS (t=87294)
+d_01: @00:01:27.294397  PHONE INFO 23 Get Notification Attributes requests, 0 malformed, 20 distinct ids
+d_01: @00:01:27.294397  PHONE CHECK every Get Notification Attributes request is the 13 bytes Apple's format and the kit's encoder give PASS (t=87294)
+d_01: @00:01:27.294397  PHONE CHECK attributes were requested for each of the 20 notifications PASS (t=87294)
+d_01: @00:01:27.294397  PHONE CHECK 23 attribute requests (20 added, 3 modified) PASS (t=87294)
+d_01: @00:01:27.294397  PHONE CHECK two actions arrived: negative for 122, positive for 121, and no other PASS (t=87294)
+d_01: @00:01:27.294397  PHONE CHECK the six media commands arrived: play, pause, next, previous, volume up, volume down (ids 0,1,3,4,5,6), then play again (id 0) PASS (t=87294)
+d_01: @00:01:27.294397  PHONE CHECK no action command arrived for a notification that does not have that action (every command is recorded before it can be refused) PASS (t=87294)
+d_01: @00:01:27.294397  PHONE CHECK the ring read Local Time Information PASS (t=87294)
+d_01: @00:01:27.294397  PHONE CHECK the ring wrote Entity Update twice: player playback info, track artist and title PASS (t=87294)
+d_01: @00:01:27.294397  PHONE CHECK the ring never wrote Entity Update before subscribing to it PASS (t=87294)
+d_01: @00:01:27.294397  PHONE CHECK the ring subscribed to Current Time and read it PASS (t=87294)
+d_01: @00:01:27.294397  PHONE CHECK the ring's key arrived once (media centre: usage 0x00CD, then release) PASS (t=87294)
+d_01: @00:01:27.294397  PHONE RESULT PASS checks=18 fails=0
+ring script done at 73864 ms, stand-in evaluated at 87294 ms
+TEST N RESULT PASS (79 checks passed)
+=== test R (ok): ring + stand-in iPhone, 130 simulated seconds, 2026-11-12T00:01:46Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-010032-r2-second-bsim-iphone/run-ok-R-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:07.164500  RING CHECK the iPhone pairs; the notification service is found and subscribed PASS (t=7164)
+d_00: @00:00:10.421027  RING CHECK R: two notifications arrive PASS (t=10421)
+d_00: @00:00:10.421027  RING CHECK R: the iPhone gave no zone: the clock holds its local time and says the zone is not known PASS (t=10421)
+d_00: @00:00:10.421027  RING CHECK R: 202 then 201, flags exact, no pre-existing mark PASS (t=10421)
+d_00: @00:00:16.344826  RING EVENT link slot 0 down
+d_00: @00:00:16.382927  RING CHECK d: the link drops PASS (t=16382)
+d_00: @00:00:16.483027  RING CHECK d: the inbox is empty when the link has ended PASS (t=16483)
+d_00: @00:00:16.483027  RING CHECK d: the notification service is no longer ready PASS (t=16483)
+d_00: @00:00:16.483027  RING CHECK d: the clock stays set (time is not lost with the link) PASS (t=16483)
+d_00: @00:00:26.180618  RING EVENT link slot 0 up
+d_00: @00:00:27.855767  RING CHECK d: after the reconnect the service is subscribed again PASS (t=27855)
+d_00: @00:00:28.557163  RING CHECK d: the inbox holds what the iPhone sends again PASS (t=28557)
+d_00: @00:00:28.557163  RING CHECK d: rebuilt from the iPhone: 203 then 201 with the pre-existing mark, the edited text; 202 is gone PASS (t=28557)
+d_00: @00:00:36.122231  RING CHECK e: the ring stops when the service goes away PASS (t=36122)
+d_00: @00:00:36.122231  RING CHECK e: the inbox is emptied when the service ends PASS (t=36122)
+d_00: @00:00:36.122231  RING CHECK e: Service Changed was indicated and the services were stopped (twice: the drop and the removal) PASS (t=36122)
+d_00: @00:00:38.126231  RING CHECK e: the media and time services were stopped and found again with it PASS (t=38126)
+d_00: @00:00:45.290531  RING CHECK e: the ring subscribes again when the service is back PASS (t=45290)
+d_00: @00:00:49.599131  RING CHECK e: a new notification arrives and is stored exactly PASS (t=49599)
+d_00: @00:00:49.599131  RING CHECK e: what the iPhone still holds came again too (204, 203, 201) PASS (t=49599)
+d_00: @00:00:49.599131  RING CHECK e: subscribed three times in all (start, after the drop, after Service Changed) PASS (t=49599)
+d_00: @00:00:49.599131  RING CHECK e: the sessions counted: two links PASS (t=49599)
+d_00: @00:00:49.599131  RING CHECK no error was counted by the iPhone part PASS (t=49599)
+d_00: @00:00:49.599131  RING SCRIPT DONE t=49599 checks=24 fails=0
+d_00: @00:00:49.599131  RING RESULT PASS
+--- stand-in iPhone /ws/out/20261112-010032-r2-second-bsim-iphone/run-ok-R-phone.log
+d_01: @00:00:00.000122  PHONE START scenario R
+d_01: @00:00:00.000174  PHONE CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.000174  PHONE CHECK the three Apple services are registered PASS (t=0)
+d_01: @00:00:00.645537  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:01.144997  PHONE CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  PHONE CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:06.444957  PHONE INFO HID client subscribed to 3 input reports (t=6444)
+d_01: @00:00:07.294853  PHONE INFO Notification Source subscribed (#1, security level 4, t=7294)
+d_01: @00:00:08.434953  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:08.584957  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:08.584957  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:09.295057  PHONE INFO NS event 0 uid 201 flags 0x18 (0)
+d_01: @00:00:10.294197  PHONE INFO NS event 0 uid 202 flags 0x10 (0)
+d_01: @00:00:16.294297  PHONE INFO the link is ended (a drop) (t=16294)
+d_01: @00:00:25.930637  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:26.180621  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=26180)
+d_01: @00:00:27.130661  PHONE INFO HID client subscribed to 3 input reports (t=27130)
+d_01: @00:00:27.980557  PHONE INFO Notification Source subscribed (#2, security level 4, t=27980)
+d_01: @00:00:28.280653  PHONE INFO NS event 0 uid 201 flags 0x1c (0)
+d_01: @00:00:28.340753  PHONE INFO NS event 0 uid 203 flags 0x04 (0)
+d_01: @00:00:29.020657  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:29.170661  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:29.170661  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:36.015861  PHONE INFO the Notification Center Service is removed (t=36015)
+d_01: @00:00:37.670657  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:37.820661  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:37.820661  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:44.015961  PHONE INFO the Notification Center Service is added again (t=44015)
+d_01: @00:00:45.430557  PHONE INFO Notification Source subscribed (#3, security level 4, t=45430)
+d_01: @00:00:45.730661  PHONE INFO NS event 0 uid 201 flags 0x1c (0)
+d_01: @00:00:45.790761  PHONE INFO NS event 0 uid 203 flags 0x04 (0)
+d_01: @00:00:46.470657  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:46.620661  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:46.620661  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:49.468961  PHONE INFO NS event 0 uid 204 flags 0x18 (0)
+d_01: @00:01:04.469001  PHONE EVAL t=64469
+d_01: @00:01:04.469001  PHONE CHECK the ring subscribed to the Notification Source three times (start, after the drop, after Service Changed) PASS (t=64469)
+d_01: @00:01:04.469001  PHONE CHECK the ring subscribed to Entity Update and Current Time four times (start, after the drop, and after each of the two Service Changed) PASS (t=64469)
+d_01: @00:01:04.469001  PHONE CHECK the ring never wrote Entity Update before subscribing to it PASS (t=64469)
+d_01: @00:01:04.469001  PHONE RESULT PASS checks=9 fails=0
+ring script done at 49599 ms, stand-in evaluated at 64469 ms
+TEST R RESULT PASS (33 checks passed)
+=== test P (ok): ring + stand-in iPhone, 90 simulated seconds, 2026-11-12T00:01:48Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-010032-r2-second-bsim-iphone/run-ok-P-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:09.707095  RING CHECK the host pairs and its link is ready PASS (t=9707)
+d_00: @00:00:21.707195  RING CHECK h: the ring looked: a session started PASS (t=21707)
+d_00: @00:00:21.707195  RING CHECK h: Service Changed was looked for and found (the host has the GATT service), the three Apple services were looked for and not found (not an error) PASS (t=21707)
+d_00: @00:00:21.707195  RING CHECK h: no service is up PASS (t=21707)
+d_00: @00:00:21.707195  RING CHECK h: the inbox stays empty PASS (t=21707)
+d_00: @00:00:21.707195  RING CHECK h: an action finds nothing (-ENOENT), a media command says there is no media service (-ENOTCONN) PASS (t=21707)
+d_00: @00:00:21.707195  RING CHECK h: the player state stays unknown PASS (t=21707)
+d_00: @00:00:21.707195  RING CHECK h: the clock is not set by a host without the time service PASS (t=21707)
+d_00: @00:00:22.407395  RING CHECK h: keys still work: media centre sends 2 reports PASS (t=22407)
+d_00: @00:00:22.407395  RING CHECK h: the keys did not touch the inbox PASS (t=22407)
+d_00: @00:00:22.407395  RING SCRIPT DONE t=22407 checks=13 fails=0
+d_00: @00:00:22.407395  RING RESULT PASS
+--- stand-in iPhone /ws/out/20261112-010032-r2-second-bsim-iphone/run-ok-P-phone.log
+d_01: @00:00:00.000122  PHONE START scenario P
+d_01: @00:00:00.000174  PHONE CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.645537  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:01.144997  PHONE CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  PHONE CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:06.444897  PHONE INFO HID client subscribed to 3 input reports (t=6444)
+d_01: @00:00:22.244853  PHONE REPORT t=22244 id=2 len=2 data=cd00
+d_01: @00:00:22.245293  PHONE REPORT t=22245 id=2 len=2 data=0000
+d_01: @00:00:46.444337  PHONE EVAL t=46444
+d_01: @00:00:46.444337  PHONE CHECK no Apple service was served PASS (t=46444)
+d_01: @00:00:46.444337  PHONE CHECK the ring's key arrived once (media centre: usage 0x00CD, then release) PASS (t=46444)
+d_01: @00:00:46.444337  PHONE RESULT PASS checks=6 fails=0
+ring script done at 22407 ms, stand-in evaluated at 46444 ms
+TEST P RESULT PASS (19 checks passed)
+=== test L (ok): ring + stand-in iPhone, 90 simulated seconds, 2026-11-12T00:01:49Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-010032-r2-second-bsim-iphone/run-ok-L-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:07.164500  RING CHECK the iPhone pairs; the notification service is found and subscribed PASS (t=7164)
+d_00: @00:00:12.775727  RING CHECK L: the four notifications all get their text, although the answer for the first is late PASS (t=12775)
+d_00: @00:00:12.775727  RING CHECK L: each of the four holds its own text (none shifted to its neighbour) PASS (t=12775)
+d_00: @00:00:12.775727  RING CHECK L: one request timed out and was asked for once more, nothing was given up PASS (t=12775)
+d_00: @00:00:21.443027  RING CHECK L: a later notification gets its own text too PASS (t=21443)
+d_00: @00:00:21.443027  RING CHECK L: no wrong answer was counted and no request was given up PASS (t=21443)
+d_00: @00:00:21.443027  RING SCRIPT DONE t=21443 checks=9 fails=0
+d_00: @00:00:21.443027  RING RESULT PASS
+--- stand-in iPhone /ws/out/20261112-010032-r2-second-bsim-iphone/run-ok-L-phone.log
+d_01: @00:00:00.000122  PHONE START scenario L
+d_01: @00:00:00.000174  PHONE CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.000174  PHONE CHECK the three Apple services are registered PASS (t=0)
+d_01: @00:00:00.645537  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:01.144997  PHONE CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  PHONE CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:06.444957  PHONE INFO HID client subscribed to 3 input reports (t=6444)
+d_01: @00:00:07.294853  PHONE INFO Notification Source subscribed (#1, security level 4, t=7294)
+d_01: @00:00:08.434953  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:08.584957  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:08.584957  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:09.295057  PHONE INFO NS event 0 uid 401 flags 0x18 (0)
+d_01: @00:00:09.295057  PHONE INFO NS event 0 uid 402 flags 0x18 (0)
+d_01: @00:00:09.295057  PHONE INFO NS event 0 uid 403 flags 0x18 (0)
+d_01: @00:00:09.295057  PHONE INFO NS event 0 uid 404 flags 0x18 (0)
+d_01: @00:00:09.345437  PHONE INFO the answer for 401 is held for 3500 ms (t=9345)
+d_01: @00:00:12.845597  PHONE INFO the held answer is sent now (t=12845)
+d_01: @00:00:21.294197  PHONE INFO NS event 0 uid 405 flags 0x18 (0)
+d_01: @00:00:37.294297  PHONE EVAL t=37294
+d_01: @00:00:37.294297  PHONE INFO 6 requests, 2 for 401, 0 malformed
+d_01: @00:00:37.294297  PHONE CHECK the answer for 401 was held past the timeout and then sent PASS (t=37294)
+d_01: @00:00:37.294297  PHONE CHECK the ring asked for 401 twice (the timeout, then one retry) and once for each other notification PASS (t=37294)
+d_01: @00:00:37.294297  PHONE RESULT PASS checks=7 fails=0
+ring script done at 21443 ms, stand-in evaluated at 37294 ms
+TEST L RESULT PASS (16 checks passed)
+=== test D (ok): ring + stand-in iPhone, 90 simulated seconds, 2026-11-12T00:01:51Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-010032-r2-second-bsim-iphone/run-ok-D-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:07.344826  RING EVENT link slot 0 down
+d_00: @00:00:07.364900  RING CHECK D: the first link ends (the stand-in ends it while the ring is discovering) PASS (t=7364)
+d_00: @00:00:07.565000  RING CHECK D: the ring counted a session that ended in discovery PASS (t=7565)
+d_00: @00:00:11.168376  RING EVENT link slot 0 up
+d_00: @00:00:14.528900  RING CHECK D: the three services are found in the next session PASS (t=14528)
+d_00: @00:00:16.132100  RING CHECK D: a notification sent in the next session arrives with its text PASS (t=16132)
+d_00: @00:00:16.132100  RING CHECK D: the Media and Current Time services were each subscribed once (in the next session), the Notification Center service at least once, and Service Changed was found PASS (t=16132)
+d_00: @00:00:16.132100  RING CHECK D: no service was reported missing FAIL (t=16132)
+d_00: @00:00:16.132100  RING SCRIPT DONE t=16132 checks=9 fails=1
+d_00: @00:00:16.132100  RING RESULT FAIL
+--- stand-in iPhone /ws/out/20261112-010032-r2-second-bsim-iphone/run-ok-D-phone.log
+d_01: @00:00:00.000122  PHONE START scenario D
+d_01: @00:00:00.000174  PHONE CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.000174  PHONE CHECK the three Apple services are registered PASS (t=0)
+d_01: @00:00:00.645537  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:01.144997  PHONE CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  PHONE CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:06.444957  PHONE INFO HID client subscribed to 3 input reports (t=6444)
+d_01: @00:00:07.254949  PHONE INFO the link is ended while the ring is discovering: Entity Update subscriptions 0, Current Time subscriptions 0 (t=7254)
+d_01: @00:00:10.918395  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:11.168379  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=11168)
+d_01: @00:00:12.118419  PHONE INFO HID client subscribed to 3 input reports (t=12118)
+d_01: @00:00:12.968315  PHONE INFO Notification Source subscribed (#1, security level 4, t=12968)
+d_01: @00:00:14.108415  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:14.258419  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:14.258419  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:16.012019  PHONE INFO NS event 0 uid 301 flags 0x18 (0)
+d_01: @00:00:31.012159  PHONE EVAL t=31012
+d_01: @00:00:31.012159  PHONE CHECK the link ended before the ring had subscribed to Media and Time (the drop came during discovery) PASS (t=31012)
+d_01: @00:00:31.012159  PHONE CHECK in the next session the ring subscribed to the Notification Source, Entity Update and Current Time PASS (t=31012)
+d_01: @00:00:31.012159  PHONE CHECK the ring never wrote Entity Update before subscribing to it PASS (t=31012)
+d_01: @00:00:31.012159  PHONE RESULT PASS checks=9 fails=0
+ring script done at 16132 ms, stand-in evaluated at 31012 ms
+TEST D RESULT FAIL (17 checks passed; infra: none; checks: ring-result 1-failed-checks)
+RESULT FAIL D
+# finished (Mac clock): 2026-11-12 01:02:03 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step3/20261112-010032-r2-second.log

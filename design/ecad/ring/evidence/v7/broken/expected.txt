@@ -1,0 +1,7 @@
+Written before the broken runs (2026-11-11).
+case 1 netlist_r41_led1_back.csv: R41 (VDD_3V0-LED_A) and LED1 (LED_K, LED_A) rows put back into netlist.csv.
+  expected: exit 1; FAIL A8-1 (R41, LED1 in the netlist; nets LED_A, LED_K present); FAIL "netlist part ... not in parts.csv"; FAIL KiCad compare (net names differ)
+case 2 bom_r41_back.csv: the R41 line of the v6/A7 bom.csv put back into bom.csv.
+  expected: exit 1; FAIL A8-1 (R41 in the bom.csv reference column; bom.csv line names the light)
+case 3 bom_old_cap.csv: the A7 CAP1 line (rounded rectangular nub) in place of the v7 CAP1 line, FRM1 line removed.
+  expected: exit 1; FAIL A8-2 (CAP1 tokens missing, FRM1 missing, nub and rectangular named)

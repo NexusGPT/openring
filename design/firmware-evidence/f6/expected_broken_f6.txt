@@ -1,0 +1,16 @@
+# Written before the broken-copy run. One line per copy: name, expected exit, expected FAIL texts (substrings).
+b1_charge_current | 1 | CHARGE_CURRENT is 20000 uA ; above 1 C of the smallest cell ; `current-microamp` row lacks '15,000'
+b2_motor_q1 | 1 | section 3.1 still names Q1
+b3_ship_hibernate | 1 | must wait for the event EVENTVBUSREMOVED before it writes TASKENTERSHIPMODE ; still holds the timed hibernate ; removed name 'mfd_npm13xx_hibernate'
+b4_battery_range | 1 | removed name '15 to 20 mAh'
+b5_pin | 1 | MIC_A_CLK is P1.11 in firmware.md but P1.13 in architecture section 7 ; MIC_A_CLK P1.11 in firmware.md: netlist.csv gives P1.11 the net MIC_A_DATA
+b6_mic_part | 1 | removed name 'IM68D128B'
+b7_power_chip_name | 1 | removed name 'nPM1300'
+b8_protocol_sentence | 1 | section 7 lacks the sentence on the link protocol
+b9_ship_vbus | 1 | must wait for the event EVENTVBUSREMOVED before it writes TASKENTERSHIPMODE
+b10_gain_minus11 | 1 | the lead's decision (H16) is 0 dB ; is not 0x28 ; differs from the PDM register ; differs from the AOP ; 4.1 states full scale at 94 + 26 = 120 dB SPL, computed 131
+b11_header_gain | 1 | chunk header gain_code 0x12 differs from the PDM register 0x28
+b12_restore_18_2 | 1 | former cell value '18.2' named as a current value
+b13_limit_18200 | 1 | 8.1 compile limit ; former cell value '18,200'
+b14_row_us13 | 1 | 8.5 recording row for US 13 ; former cell value '32.9'
+control_unchanged | 0 | (none)

@@ -1,0 +1,21 @@
+Step 5 (relay service): done. Notes: firmware/docs/relay-notes.md (last line `RESULT: done`).
+
+Final run: `tools/build_all.sh` through `firmware/tools/remote.sh` (run name os-relay, source copy `/root/ring-os/src-os-relay`, `nice -n 19`): exit 0, last line `RESULT PASS`, 27 stage end lines, 0 of them with another code. Log: firmware/build-logs/20261112-225014-os-relay.log (copy in build-logs/step5/).
+
+Bar:
+- a. The service is built as 7.7 says (UUIDs, In/Out/Info, frames, record, codes 1 to 7, sessions, one source per link, actions, level 4). No point of 7.7 was stopped.
+- b. 23 logic cases pass on native_sim and on the simulated chip: every opcode, every code, pieces of every size, records of 2, 512 and 513 bytes, every truncation, character cuts, replace, the 17th. 346 of 346 cases overall (base 323 plus 23).
+- c. Two-device test (`tests/bsim/relay`), scenario H, 183 checks pass: a write before level 4 fails, Info, HELLO and READY, 4 notifications (one in 28 pieces of 11 bytes, multi-byte texts cut), list and detail on the screens, dismiss then ACTION negative then REMOVE, positive action, an action without its flag sends nothing, 21 malformed frames, RECORDING untouched, link drop and rebuilt store.
+- d. Scenario I (stand-in iPhone): 42 checks, every relay frame refused with code 7. Scenario B (HELLO first, before it subscribes to Out): 30 checks. Steps 1 to 4 pass; no assertion changed.
+- e. 26 broken copies, each fails its named check: 12 for the logic suite (both boards) and 14 for the two-device test. The 8 faults named in the brief are all in.
+- f. The development kit build compiles: flash 522,148 bytes, RAM 183,072 bytes (base 518,984 and 182,184).
+- g. As above.
+- 7.7 Details (7 answers): the ring code needed no change; the helper specification's worked example (62-byte record, six frames of 20 bytes and one of 71) is used byte for byte in the logic case `test_helper_example_bytes` and in the stand-in helper; HELLO before the subscription is tested (scenario B); the positive action is tested through the screen.
+
+Mechanism (ruling 2): the store stays in ring_iphone (rip.c, mutex lk). Each link has a source (none, Apple, relay) fixed by its first user. The relay writes through rip_relay_*; rip_action sends an action to the source of the entry. The screens and rscr_real.c are unchanged. Lock order: relay lock, then lk; lk is never held when the relay is called. Changed outside the new files: rip.c and rip.h, rinbox.c and rinbox.h (rinbox_upsert), three app files, build_all.sh, README.
+
+Readings of 7.7 (15 of them, notes section 4): a PUT of 9 bytes is code 1; a PUT refused with code 3, 4 or 5 drops the unfinished record; a category above 11 is stored as sent. Scenario I uses a reduced iPhone service inside the new stand-in, because step 3's stand-in cannot write to the relay service.
+
+Not proven: no real Android phone, iPhone or hardware; the helper app is not built; a failed notify, a full Out queue and a failed `bt_conn_ref` have no test; a relay on a link that is not the iPhone part's session link has no test; no stack peak was measured.
+
+Rules: I deleted two lookup logs and two hidden temporary files that held Zephyr source lines (said in the notes). The server folders of my runs are removed (step5/server-cleanup.txt). Audit: step5/audit-final.txt.

@@ -1,0 +1,264 @@
+# remote.sh run 20261111-125452-explore2
+# command: W=/root/ring-os/ws; sed -n 55,100p $W/nrf/include/bluetooth/services/hids.h; sed -n 225,260p $W/nrf/include/bluetooth/services/hids.h; sed -n 440,520p $W/nrf/include/bluetooth/services/hids.h; sed -n 590,680p $W/nrf/include/bluetooth/services/hids.h
+# mode: host
+# started (Mac clock): 2026-11-11 12:54:53 CET
+# free on the server's /: 42 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-125452-explore2; server log /root/ring-os/logs/20261111-125452-explore2.log
+#define BT_HIDS_SCI_INFORMATION_MIN_LEN  2
+
+/** The transport interval which the device must support to be compliant
+ *  with the HID over GATT Profile specification (chapter 7.4).
+ */
+#define BT_HIDS_MAX_MINIMAL_TRANSPORT_INTERVAL_US 1250
+
+/**
+ * @brief Declare a HIDS instance.
+ *
+ * @param _name Name of the HIDS instance.
+ * @param ...               Lengths of HIDS reports
+ */
+#define BT_HIDS_DEF(_name, ...)					       \
+	BT_CONN_CTX_DEF(_name,						       \
+			CONFIG_BT_HIDS_MAX_CLIENT_COUNT,		       \
+			_BT_HIDS_CONN_CTX_SIZE_CALC(__VA_ARGS__));	       \
+	static struct bt_hids _name =				       \
+	{								       \
+		.gp = BT_GATT_POOL_INIT(CONFIG_BT_HIDS_ATTR_MAX),	       \
+		.conn_ctx = &_CONCAT(_name, _ctx_lib),			       \
+	}
+
+
+/**@brief Helping macro for @ref BT_HIDS_DEF, that calculates
+ *        the link context size for HIDS instance.
+ */
+#define _BT_HIDS_CONN_CTX_SIZE_CALC(...)		   \
+	(FOR_EACH(_BT_HIDS_GET_ARG1, (+), __VA_ARGS__)	+ \
+	sizeof(struct bt_hids_conn_data))
+#define _BT_HIDS_GET_ARG1(...) GET_ARG_N(1, __VA_ARGS__)
+
+/** @brief Possible values for the Protocol Mode Characteristic value.
+ */
+enum bt_hids_pm {
+	/** Boot protocol. */
+	BT_HIDS_PM_BOOT = 0x00,
+	/** Report protocol. */
+	BT_HIDS_PM_REPORT = 0x01
+};
+
+/** @brief Report types as defined in the Report Reference Characteristic
+ *         descriptor.
+ */
+enum bt_hids_report_type {
+	/** Reserved value. */
+/** @brief HID Report event handler.
+ *
+ * @param rep	Pointer to the report descriptor.
+ * @param conn	Pointer to Connection Object.
+ * @param write	@c true if handler is called for report write.
+ */
+typedef void (*bt_hids_rep_handler_t) (struct bt_hids_rep *rep,
+				       struct bt_conn *conn,
+				       bool write);
+
+/** @brief Input Report.
+ */
+struct bt_hids_inp_rep {
+	/** CCC descriptor. */
+	struct bt_gatt_ccc_managed_user_data ccc;
+
+	/** Report ID defined in the HIDS Report Map. */
+	uint8_t id;
+
+	/** Index in Input Report Array. */
+	uint8_t idx;
+
+	/** Index in the service attribute array. */
+	uint8_t att_ind;
+
+	/** Size of report. */
+	uint8_t size;
+
+	/** Report data offset. */
+	uint8_t offset;
+
+	/** Report permissions
+	 *
+	 * Use GATT attribute permission bit field values here.
+	 * As input report can only be read only 3 flags are used:
+	 * - BT_GATT_PERM_READ
+
+/** @brief Control Point.
+ */
+struct bt_hids_cp {
+	/** Current value of the Control Point. */
+	uint8_t value;
+
+	/** Callback with new Control Point state.*/
+	bt_hids_cp_evt_handler_t evt_handler;
+
+	/** Callback with new Control Point state.*/
+	bt_hids_conn_cp_evt_handler_t conn_evt_handler;
+};
+
+#if defined(CONFIG_BT_HIDS_SCI)
+/** @brief SCI mode.
+ */
+struct bt_hids_sci_mode_data {
+	/** CCC descriptor. */
+	struct bt_gatt_ccc_managed_user_data ccc;
+
+	/** Index in the service attribute array. */
+	uint8_t att_ind;
+};
+#endif /* CONFIG_BT_HIDS_SCI */
+
+/** @brief HID initialization.
+ */
+struct bt_hids_init_param {
+	/** HIDS Information. */
+	struct bt_hids_info info;
+
+	/** Input Report collection. */
+	struct bt_hids_inp_rep_group inp_rep_group_init;
+
+	/** Output Report collection. */
+	struct bt_hids_outp_rep_group outp_rep_group_init;
+
+	/** Feature Report collection. */
+	struct bt_hids_feat_rep_group feat_rep_group_init;
+
+	/** Report Map. */
+	struct bt_hids_rep_map rep_map;
+
+	/** Callback for Protocol Mode characteristic. */
+	bt_hids_pm_evt_handler_t pm_evt_handler;
+
+	/** Callback for Control Point event.
+	 *
+	 * @deprecated Use @ref conn_cp_evt_handler instead
+	 */
+	bt_hids_cp_evt_handler_t cp_evt_handler;
+
+	/** Callback for Control Point event. */
+	bt_hids_conn_cp_evt_handler_t conn_cp_evt_handler;
+
+	/** Callback for Boot Mouse Input Report. */
+	bt_hids_notify_handler_t boot_mouse_notif_handler;
+
+	/** Callback for Boot Keyboard Input Report. */
+	bt_hids_notify_handler_t boot_kb_notif_handler;
+
+	/** Callback for Boot Keyboard Output Report. */
+	bt_hids_rep_handler_t boot_kb_outp_rep_handler;
+
+	/** Flag indicating that the device has mouse capabilities. */
+	bool is_mouse;
+
+	/** Flag indicating that the device has keyboard capabilities. */
+	bool is_kb;
+};
+
+/** @brief HID Service structure.
+ */
+struct bt_hids {
+	/** Descriptor of the service attribute array. */
+	struct bt_gatt_pool gp;
+
+	/** Input Report collection. */
+	struct bt_hids_inp_rep_group inp_rep_group;
+
+};
+
+
+/** @brief Initialize the HIDS instance.
+ *
+ *  @param hids_obj Pointer to HIDS instance.
+ *  @param init_param HIDS initialization descriptor.
+ *
+ *  @return 0 If the operation was successful. Otherwise, a (negative) error
+ *	      code is returned.
+ */
+int bt_hids_init(struct bt_hids *hids_obj,
+		 const struct bt_hids_init_param *init_param);
+
+/** @brief Uninitialize a HIDS instance.
+ *
+ *  @param hids_obj Pointer to HIDS instance.
+ *
+ *  @return 0 If the operation was successful. Otherwise, a (negative) error
+ *	      code is returned.
+ */
+int bt_hids_uninit(struct bt_hids *hids_obj);
+
+/**
+ * @brief Function for informing the HID service about connection to the device
+ *	  This function should be used in main application.
+ *
+ * @param hids_obj Pointer to HIDS instance.
+ * @param conn Pointer to Connection Object.
+ *
+ * @return 0 If the operation was successful. Otherwise, a (negative) error
+ *	     code is returned.
+ */
+int bt_hids_connected(struct bt_hids *hids_obj, struct bt_conn *conn);
+
+/**
+ * @brief Function for informing the HID service about disconnection
+ *	  from the device. This function should be used in main application.
+ *
+ * @param hids_obj Pointer to HIDS instance.
+ * @param conn Pointer to Connection Object.
+ *
+ * @return 0 If the operation was successful. Otherwise, a (negative) error
+ *	     code is returned.
+ */
+int bt_hids_disconnected(struct bt_hids *hids_obj, struct bt_conn *conn);
+
+/** @brief Send Input Report, operation complete callback has user data as argument.
+ *
+ *  @note The function is not thread safe.
+ *	     It cannot be called from multiple threads at the same time.
+ *
+ *  @param hids_obj Pointer to HIDS instance.
+ *  @param conn Pointer to Connection Object.
+ *  @param rep_index Index of report descriptor.
+ *  @param rep Pointer to the report data.
+ *  @param len Length of report data.
+ *  @param cb Notification complete callback (can be NULL).
+ *  @param userdata Argument passed to notificaion complete callback.
+ *
+ *  @return 0 If the operation was successful. Otherwise, a (negative) error
+ *	      code is returned.
+ */
+int bt_hids_inp_rep_send_userdata(struct bt_hids *hids_obj, struct bt_conn *conn,
+				  uint8_t rep_index, uint8_t const *rep, uint8_t len,
+				  bt_gatt_complete_func_t cb, void *userdata);
+
+/** @brief Send Input Report.
+ *
+ *  @note The function is not thread safe.
+ *	     It cannot be called from multiple threads at the same time.
+ *
+ *  @param hids_obj Pointer to HIDS instance.
+ *  @param conn Pointer to Connection Object.
+ *  @param rep_index Index of report descriptor.
+ *  @param rep Pointer to the report data.
+ *  @param len Length of report data.
+ *  @param cb Notification complete callback (can be NULL).
+ *
+ *  @return 0 If the operation was successful. Otherwise, a (negative) error
+ *	      code is returned.
+ */
+static inline int bt_hids_inp_rep_send(struct bt_hids *hids_obj, struct bt_conn *conn,
+				       uint8_t rep_index, uint8_t const *rep, uint8_t len,
+				       bt_gatt_complete_func_t cb)
+{
+	return bt_hids_inp_rep_send_userdata(hids_obj, conn, rep_index, rep, len, cb, NULL);
+}
+
+/** @brief Send Boot Mouse Input Report.
+ *
+# finished (Mac clock): 2026-11-11 12:55:06 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-125452-explore2.log

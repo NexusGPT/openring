@@ -1,0 +1,2581 @@
+{
+ "status": "taste_answered_awaiting_plan_approval",
+ "screen": "Ring Explorer, local app at http://127.0.0.1:8790/ (9 routes: / , /look, /inside, /electronics, /board, /parts, /behaviour, /case, /open with a #files section)",
+ "bar_narrative": "Bar word: slick (owner). From journey J1, on the frozen real-data record (the A3 ring design, 77 parts-list lines): the owner types localhost:8790 in Chrome. Home shows the black ring on white, turning slowly, with its key numbers (30 x 20 x 9.5 mm, 135 mAh, the weight from the mass estimate, 27 hours estimated against the 10-hour target, 8 GB) and eight area tiles, each with one state word. He drags the ring and it turns. He clicks the tile Inside: the ring stays on the stage and a slider 'Closed ... Open it up' appears. He drags it: cover glass, screen, circuit board, cell and housing separate into layers. He clicks the cell: it lights up and the card on the right reads 'Battery cell', what it does and why it is there, then 4.6 x 13.0 x 25.0 mm, 135 mAh minimum, custom order, 'Open: quote from Grepow' (BT1, evidence: calculated). He clicks 'source': the architecture note or the cell datasheet opens in a new tab; a source that is not on disk is greyed with 'not on disk'. If the data was never built, every screen says 'Not built yet. Run npm run collect.'",
+ "interpretations": [
+  {
+   "constraint": "\"I want in my browser a full app that allows me to go and see the design, internal, PCB, etc. and have EVERYTHING\" (PRD line 5)",
+   "interpreted_as": "9 screens of PRD 'Screens'; every ring parts-list line opens a card; every project file is listed and downloadable",
+   "confidence": "stated"
+  },
+  {
+   "constraint": "\"On this Mac only (Recommended)\" (PRD line 11, Access LOCAL)",
+   "interpreted_as": "server bound to 127.0.0.1:8790 with strictPort; no sign-in; no network at run time",
+   "confidence": "stated"
+  },
+  {
+   "constraint": "\"any part of the ring is reached in 3 clicks or fewer\" (PRD success 1)",
+   "interpreted_as": "Home -> Parts -> row (2 clicks) or Home -> Inside -> part/search (2-3); measured by the journey helper",
+   "confidence": "stated"
+  },
+  {
+   "constraint": "\"rotate the ring and open it layer by layer without reading any text\" (PRD success 4)",
+   "interpreted_as": "drag rotates; the explode slider works with its two end labels only; no instruction text is needed to do either",
+   "confidence": "stated"
+  },
+  {
+   "constraint": "owner 2026-11-10 on exteriors A, B, C: \"I hate all of them, they are not as slick as the ring I shared\"",
+   "interpreted_as": "A, B and C are listed in design/status.json look.rejected and never shown as current; Look shows 'New options in design' until slim options exist",
+   "confidence": "stated"
+  },
+  {
+   "constraint": "owner 2026-11-10 size: \"Slim, like the photo (Recommended)\" (about 22 x 15 x 6.5 mm, 35 to 55 mAh, 2 microphones, about 0.9 inch screen); thumb control \"Custom joystick\"",
+   "interpreted_as": "every ring figure on screen comes from the bundle; the journey example figures (30 x 20 x 9.5 mm, 135 mAh, 4 microphones, 77 lines) hold only on the frozen A3 fixture",
+   "confidence": "stated"
+  },
+  {
+   "constraint": "app quality bar: the owner's word \"slick\" (lead relay of the owner, 2026-11-10) with style \"S1 Gallery (Recommended)\"",
+   "interpreted_as": "each screen is judged against the S1 board for slickness by the taste judge; the blind checks are the S1 floor in visual-routes-s1 and visual-part-card",
+   "confidence": "stated"
+  },
+  {
+   "constraint": "lead fact 4: \"no ring fact written into app source\"",
+   "interpreted_as": "a guard in npm test greps src/ for every distinctive token of the fixture bundle and fails on any hit",
+   "confidence": "stated"
+  },
+  {
+   "constraint": "DATA-MAP area-states: \"collector, from the project record export\"; PRD success 3: \"that state matches the project files\"",
+   "interpreted_as": "the project record export is a file design/status.json that the lead writes when a board row moves ({areas:{<area>:{state, why, who}}, look:{picked, rejected[]}}); the collector only reads it; no file -> every area shows 'state unknown'",
+   "confidence": "inferred",
+   "surface_to_user": true
+  },
+  {
+   "constraint": "JOURNEYS line 2: \"real-data: the ring design in this project at git commit 7274c69\" + lead fact 4: \"THE RING DESIGN IS CHANGING WHILE THE APP IS BUILT\"",
+   "interpreted_as": "the journeys run against a frozen bundle built from commit 99dfb85 plus a frozen copy of look C (7274c69 holds no exterior files), so J1 to J7 keep their A3 values; the app the owner opens shows whatever npm run collect last built from the live (slim) design",
+   "confidence": "inferred",
+   "surface_to_user": true
+  },
+  {
+   "constraint": "lead fact 4: \"every screen must show an honest state when its source is missing or in rework\"",
+   "interpreted_as": "'in rework' = the source says it follows an older architecture version than architecture.md's current one (e.g. firmware 'follows A3' while architecture is A4), or its area state is 'in progress' in design/status.json; the screen then shows its content dimmed under 'Made for design A3; the design is now A4. Being redone.', never hidden",
+   "confidence": "inferred",
+   "surface_to_user": true
+  }
+ ],
+ "assumptions_decided": [
+  "Blocks of the Electronics diagram = the 7 schematic sheets with their own titles; links = nets spanning 2 or more sheets (architecture section 1 is a text drawing with no machine-readable shape). DATA-MAP 'created by' cell differs: see Conflicts C4.",
+  "Placement-to-part link lives in content/part-notes.json model_names (placement.csv has no reference column). DATA-MAP part-notes row gains one field: see Conflicts C5.",
+  "Case supplier items (case section 8) show on the Case screen; Open items keeps architecture sections 12 and 13 as DATA-MAP says, so J3.3 counts 7 supplier requests.",
+  "Internals in 3D: true-size named blocks from placement.csv, unless the STEP-label probe passes (rival in functionality-ring-model-extract).",
+  "Screen 9 has two tab-bar entries: 'Open items' (tab) and 'Files' (right of the bar), one route /open.",
+  "The partner bundle = every file under design/ not ignored by git, tracked or not, plus requirements.md, feasibility.md, partners.md.",
+  "Phone layout excluded (PRD Non-goals: 'no phone layout'); desktop viewports 1512x982 and 1280x800.",
+  "Part ids '<bom>:<ref>' cover the ring and the case parts lists; grouped references ('U5, U6, U7, U8') are split.",
+  "Large GLBs are compressed by gltf-transform (meshopt) at collect time; cap GLB_MAX_MB in docs/CONSTANTS.md.",
+  "Python collector runs on design/.venv (build123d, numpy present; KiCad CLI 10.0.8 at the given path)."
+ ],
+ "capture_manifest": [
+  {
+   "id": "cap-home",
+   "feature": "Home: key numbers and 8 area tiles (ux-home, visual-shell-stage-layout, visual-tokens-fonts, interaction-tab-nav)",
+   "states": [
+    "fixture bundle",
+    "empty bundle",
+    "status.json absent"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": false,
+   "asserted_outcome": "fixture: '30 x 20 x 9.5 mm' and '135 mAh' visible; 8 tiles with one vocabulary pill each; no page scroll. empty: 'Run npm run collect' banner with the command in <code>.",
+   "holds_under": [
+    "1280x800",
+    "reload",
+    "status.json absent -> 8 x 'state unknown'"
+   ]
+  },
+  {
+   "id": "cap-stage-rotate",
+   "feature": "Stage drag rotate and render (interaction-stage-rotate, visual-stage-render)",
+   "states": [
+    "before drag",
+    "after 200 px drag"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": true,
+   "asserted_outcome": "azimuth changes by > 20 degrees; autoRotate false; frames rendered after",
+   "holds_under": [
+    "1280x800",
+    "second drag",
+    "after route change Home -> Inside (same canvas)"
+   ]
+  },
+  {
+   "id": "cap-inside-explode",
+   "feature": "Inside explode slider and layer list (interaction-explode, ux-inside-layer-list)",
+   "states": [
+    "slider 0",
+    "slider 1"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": true,
+   "asserted_outcome": "slider 1: every layer gap >= EXPLODE_MIN_GAP_MM; slider 0: centres equal placements within 0.05 mm",
+   "holds_under": [
+    "keyboard ArrowRight",
+    "reload",
+    "a layer with no model listed as text (J1.2 on-failure)"
+   ]
+  },
+  {
+   "id": "cap-inside-card",
+   "feature": "Pick the cell and read its card (interaction-pick-part, ux-part-card, visual-part-card)",
+   "states": [
+    "nothing selected",
+    "ring:BT1 selected",
+    "Exact data open",
+    "unlinked part 'gasket'"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": true,
+   "asserted_outcome": "card text contains 'Battery cell', '4.6 x 13.0 x 25.0', 'Grepow'; part number hidden until disclosure; URL has part=ring%3ABT1; unlinked part says 'no parts-list line for this object'",
+   "holds_under": [
+    "reload keeps selection",
+    "1280x800",
+    "source not on disk -> 'not on disk' aria-disabled"
+   ]
+  },
+  {
+   "id": "cap-inside-search",
+   "feature": "Part search (interaction-part-search)",
+   "states": [
+    "empty",
+    "'grepow' typed",
+    "result chosen"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": true,
+   "asserted_outcome": "'grepow' lists ring:BT1; 'MICROPHONE' == 'microphone' list; choosing selects on stage",
+   "holds_under": [
+    "'u5'",
+    "no match -> plain empty text",
+    "Escape clears"
+   ]
+  },
+  {
+   "id": "cap-look-options",
+   "feature": "Look options side by side (ux-look-options)",
+   "states": [
+    "no pick (fixture)",
+    "picked b (fixture status.json)",
+    "a, b, c retired, no new option (live 2026-11-10)"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": false,
+   "asserted_outcome": "no pick: 3 option panels with bundle titles, sentences <= 20 words; picked: only b with 'Picked'; retired: 0 option panels and the banner 'New options in design'",
+   "holds_under": [
+    "option folder without ring.glb -> labelled placeholder",
+    "1280x800"
+   ]
+  },
+  {
+   "id": "cap-look-switches",
+   "feature": "Finish and view switches (interaction-look-switches)",
+   "states": [
+    "Eclipse Black three-quarter",
+    "Slate Titanium",
+    "on a finger"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": true,
+   "asserted_outcome": "body colour of every option equals the finish colour from finishes.json; finger visible in every option; aria-pressed on the active value",
+   "holds_under": [
+    "switch back",
+    "reload resets to defaults"
+   ]
+  },
+  {
+   "id": "cap-electronics",
+   "feature": "Block to page, zoom, parts of this page (ux-electronics, interaction-block-to-page, interaction-zoom-page, interaction-expand-panel)",
+   "states": [
+    "diagram only",
+    "Microphones page open",
+    "zoom 400 % on U5",
+    "panel expanded"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": true,
+   "asserted_outcome": "page src is the microphones SVG; scale 4.0 +/- 0.05; U5 region non-blank; expanded panel >= 0.9 of main width; 'parts of this page' -> /parts filtered",
+   "holds_under": [
+    "Escape collapses",
+    "kicad export missing -> PDF link"
+   ]
+  },
+  {
+   "id": "cap-board",
+   "feature": "Board banner and plan toggles (ux-board-banner-plan, interaction-board-toggles)",
+   "states": [
+    "Both sides",
+    "Bottom only"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": true,
+   "asserted_outcome": "banner names 'not routed' and 'ring.kicad_pcb'; Bottom hides every [data-side=top]; clicking mic1 opens a card",
+   "holds_under": [
+    "1280x800",
+    "expanded panel"
+   ]
+  },
+  {
+   "id": "cap-parts",
+   "feature": "Parts table, filter, export (ux-parts-table, interaction-parts-filter, interaction-parts-export)",
+   "states": [
+    "all lines",
+    "needs supplier",
+    "export"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": true,
+   "asserted_outcome": "totals '77 lines' and '146 parts'; filter leaves section-12 lines only; downloaded bom.csv sha256 equals the source",
+   "holds_under": [
+    "reload keeps filter",
+    "clear-all restores 77"
+   ]
+  },
+  {
+   "id": "cap-behaviour",
+   "feature": "Hold, tap, hold (interaction-behaviour-controls, ux-behaviour, visual-ring-screen-face)",
+   "states": [
+    "Standby",
+    "after 1 s hold",
+    "after tap",
+    "after second hold"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": true,
+   "asserted_outcome": "Recording + light on + 1 vibration mark + timer moving; tap adds 1 highlight and keeps Recording; second hold -> Standby, light off, 2 marks",
+   "holds_under": [
+    "Space key instead of mouse",
+    "700 ms hold changes nothing"
+   ]
+  },
+  {
+   "id": "cap-case",
+   "feature": "Case lid and pins (ux-case, interaction-case-lid-pins)",
+   "states": [
+    "closed",
+    "lid open",
+    "pins selected"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": true,
+   "asserted_outcome": "facts '33.6 x 33.4 x 55.2 mm' and '700 mAh'; lid rotation >= 90 degrees; pin card shows VBUS, D-, D+, GND",
+   "holds_under": [
+    "close lid again",
+    "1280x800"
+   ]
+  },
+  {
+   "id": "cap-open-files",
+   "feature": "Open items filter and files bundle (ux-open-items, interaction-open-filter, ux-files, interaction-bundle-download)",
+   "states": [
+    "all open items",
+    "waiting on a supplier",
+    "files",
+    "bundle downloading"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": true,
+   "asserted_outcome": "7 supplier rows each with who; files in 8 groups with size and date; download suggestedFilename ends '.zip' with the bundle's size",
+   "holds_under": [
+    "bundle absent -> disabled + 'run npm run collect'",
+    "0 supplier items -> 'nothing waiting'"
+   ]
+  },
+  {
+   "id": "cap-honest-states",
+   "feature": "Honest state on every screen (ux-honest-states)",
+   "states": [
+    "empty bundle",
+    "stale record (A3 vs A4 copy)",
+    "unparsed record"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": false,
+   "asserted_outcome": "each of 9 routes: banner text equals a vocabulary.ts entry, side panel non-empty, 0 console errors; stale shows 'Made for design A3; the design is now A4'",
+   "holds_under": [
+    "reload",
+    "1280x800"
+   ]
+  },
+  {
+   "id": "cap-freshness",
+   "feature": "Built-at and commit stamp (ux-freshness-stamp)",
+   "states": [
+    "clean tree",
+    "dirty tree"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": false,
+   "asserted_outcome": "stamp equals manifest built_at and git_commit[:7]; dirty adds 'files changed since'",
+   "holds_under": [
+    "reload"
+   ]
+  },
+  {
+   "id": "cap-offline",
+   "feature": "No network at run time (functionality-offline-local-libs)",
+   "states": [
+    "all non-localhost requests aborted"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": false,
+   "asserted_outcome": "9 routes load with window.__stage.ready true and 0 console errors",
+   "holds_under": [
+    "fixture bundle",
+    "live bundle"
+   ]
+  },
+  {
+   "id": "cap-collector",
+   "feature": "Collector and contract checks, no screen (functionality-bundle-contract, functionality-collector-runner, functionality-file-server, consistency-no-ring-facts-guard, functionality-parts-extract, functionality-files-index, functionality-ring-model-extract, functionality-state-extract, functionality-part-notes, functionality-fixture-a3, functionality-journeys-a, functionality-journeys-b, functionality-open-extract, functionality-board-extract, functionality-look-extract, functionality-electronics-extract, functionality-behaviour-extract, functionality-behaviour-engine, functionality-bundle-zip, functionality-case-extract, functionality-smoke-perf)",
+   "states": [
+    "fixture copy of 99dfb85",
+    "live design folder",
+    "broken source copy"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": false,
+   "asserted_outcome": "npm test exits 0 (pytest per lane folder, vitest, the no-ring-facts guard); each todo's acceptance values hold on the fixture; on the broken copy the affected record is 'unparsed' and the run exits 0; captured as the command output whose last line is quoted in the lane report",
+   "holds_under": [
+    "live folder mid-rewrite",
+    "second run byte-identical",
+    "a source file deleted"
+   ]
+  },
+  {
+   "id": "cap-seams",
+   "feature": "Cross-screen agreement and S1 floor (consistency-one-card, consistency-counts-states, consistency-vocabulary-nav, visual-routes-s1, interaction-keyboard-floor)",
+   "states": [
+    "fixture with status.json"
+   ],
+   "viewports": [
+    "1512x982",
+    "1280x800"
+   ],
+   "themes": [
+    "light"
+   ],
+   "interaction_beforeafter": false,
+   "asserted_outcome": "BT1 card innerText equal on Inside, Parts, Board; counts equal on Home, Parts, Files; area state equal on tile and banner; tab bar box equal on 9 routes",
+   "holds_under": [
+    "1280x800"
+   ]
+  }
+ ],
+ "data_model_notes": "No database and no app state (DATA-MAP state-home: none). The data model is the generated bundle under explorer/public/data/ (gitignored, rebuildable), one file per DATA-MAP row, frozen as JSON Schema in explorer/contract/schema/ and as types in explorer/src/contract/ by the contract lane before any other lane starts. Records -> DATA-MAP rows: ring-model -> exterior.glb + internals.glb (row 9); part-placements -> placements.json (row 10); parts -> parts.json (row 11, ring + case lines); part-notes -> explorer/content/part-notes.json (row 12, hand-written, the only non-generated record); key-numbers -> facts.json (row 13); area-states -> areas.json (row 14); look-options -> looks/ (row 15); blocks -> blocks.json (row 16); schematic-pages -> schematic/ (row 17); board-files -> board/ (row 18); firmware-rules -> behaviour.json (row 19); case-model/facts/parts -> case/ (row 20); open-items/decisions -> open.json (row 21); files -> files.json + bundle.zip (row 22). Plus manifest.json and screens.json (screen geometry and states, a derived part of ring-model). Invariants: (1) LINES vs PARTS: a line is one bom.csv row, parts = sum of quantity; '77 lines, 146 parts' on the fixture, and every screen uses these two words with these meanings. (2) part id '<bom>:<ref>', refs split from the reference cell; one ref belongs to exactly one line. (3) every value carries its source {file, line}; no value without one. (4) a record's status is one of ok | missing | unparsed | stale; a failing extractor never stops the run. (5) the app never computes a ring fact: it renders bundle values. (6) design files win over the bundle; deleting public/data and running npm run collect rebuilds it byte-identically for an unchanged source. Two deltas against the owner-checked DATA-MAP, shown to the owner first (gap G5): blocks are created from the schematic sheets and cross-sheet nets instead of architecture section 1; part-notes entries gain model_names[] (the link from 3D objects to parts-list lines, since placement.csv has no reference column). Consumers by path (all to be created): explorer/src/routes/<route>/ for the 9 routes, explorer/src/components/PartCard/, explorer/src/stage/, explorer/src/engine/behaviour/, explorer/tests/** and explorer/journeys/**. No existing consumer: the explorer folder holds only docs/.",
+ "todos": [
+  {
+   "id": "functionality-bundle-contract",
+   "dimension": "functionality",
+   "lane": "contract",
+   "what": "JSON Schema (draft 2020-12) for each of the 13 DATA-MAP records plus manifest.json, and matching TypeScript types in src/contract/. manifest.json = {built_at, git_commit, git_dirty, source_root, records:{<record>:{status: ok|missing|unparsed|stale, source:[path], basis_version, current_version, message}}}. Parts carry LINES (one per bom.csv row) and PARTS (sum of quantity); a line holds refs[] split from the reference cell. Part ids are '<bom>:<ref>' with bom in {ring, case}.",
+   "why": "PRD Data architecture: 'every value comes from the design files'; lead fact (4): 'plan the collector and the data contract first, as a root every screen builds against'.",
+   "acceptance": "python collector/run.py --check-schemas exits 0 and prints 14 schema names; `npx tsc --noEmit -p explorer` output contains 0 occurrences of 'error TS'; a schema test feeds a parts.json whose line lacks 'refs' and the validator exits 1.",
+   "reuse": "explorer/docs/DATA-MAP.md:9-22 (the 13 records, their homes and readers)",
+   "novelty": "the frozen record shapes; nothing exists yet",
+   "effort": "M",
+   "journey_steps": [],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-collector-runner",
+   "dimension": "functionality",
+   "lane": "contract",
+   "what": "collector/run.py: globs collector/extract/*.py (each module exposes RECORD and extract(ctx) -> (data, status)), runs each in isolation, validates output against its schema, writes explorer/public/data/<record>, writes manifest.json with the git commit of the design repo. `npm run collect` calls it with ${COLLECT_PY:-../design/.venv/bin/python} and --source <repo root> (default) or --source <copy> for tests. Shared helpers in collector/lib/: markdown table by heading, CSV reader, version reader ('Version A3', 'follows ... A3'), source pointer {file, line}.",
+   "why": "PRD Data sources: 'a command npm run collect rebuilds the app's data from the files; the app shows when the data was built and from which git commit'; lead fact (4) honest state when a source is missing or in rework.",
+   "acceptance": "With zero extractors present: exit 0 and manifest.json lists all 13 records with status 'missing'. A test extractor in collector/tests/contract/ that raises makes only its record 'unparsed' with the exception text in 'message', exit stays 0, and the other records are unchanged. manifest.git_commit equals `git -C <repo> rev-parse HEAD`.",
+   "reuse": "design/look/viewer/collect.py:1-3 and 21-57 (tolerant parse that 'reads whatever headings exist'); design/look/viewer/collect.py:72-77 (limits enforced by assert)",
+   "novelty": "runner, isolation per record, schema validation, staleness fields",
+   "effort": "M",
+   "journey_steps": [
+    "J1.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-file-server",
+   "dimension": "functionality",
+   "lane": "contract",
+   "what": "tools/serve-files: a Vite plugin (dev and preview) that serves /data/* from the active bundle dir (EXPLORER_BUNDLE, default public/data) and /files/<path> read-only from the repo root ONLY for paths listed in files.json; server bound to 127.0.0.1:8790 with strictPort.",
+   "why": "PRD Access: 'runs on localhost on the owner's Mac'; J1.4 'the datasheet PDF or the note opens in a new tab'; J6.1 download.",
+   "acceptance": "GET http://127.0.0.1:8790/files/design/datasheets/mic_infineon_im73d122v01_en.pdf returns 200 with content-type application/pdf; GET /files/..%2F..%2Fetc%2Fpasswd and GET /files/design/.venv/bin/python both return 404; `lsof -iTCP:8790 -sTCP:LISTEN` shows 127.0.0.1 only; starting a second server on 8790 fails instead of moving port.",
+   "reuse": "design/look/viewer/serve.sh:1-9 (static server bound to 127.0.0.1, pid file)",
+   "novelty": "path whitelist from files.json; bundle switch for the fixture",
+   "effort": "S",
+   "journey_steps": [
+    "J1.4",
+    "J6.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-offline-local-libs",
+   "dimension": "functionality",
+   "lane": "contract",
+   "what": "three.js, React, fonts (Libre Caslon Text, Geist, Geist Mono) and the meshopt decoder come from npm packages, never a CDN.",
+   "why": "PRD External services: 'The 3D library loads from the local install, not from the internet, so the app works offline.' The seed imports three from jsdelivr and the style board from Google Fonts.",
+   "acceptance": "A Playwright run that aborts every request whose host is not 127.0.0.1 loads all 9 routes with window.__stage.ready === true and zero console errors; `grep -rn 'cdn.jsdelivr\\|fonts.googleapis' explorer/src explorer/index.html` returns nothing.",
+   "reuse": "design/look/viewer/index.html:52-57 (the CDN import map this replaces); explorer/docs/boards/styles.html:7-8 (Google Fonts link this replaces)",
+   "novelty": "local packages",
+   "effort": "S",
+   "journey_steps": [
+    "J1.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "consistency-no-ring-facts-guard",
+   "dimension": "consistency",
+   "lane": "contract",
+   "what": "scripts/guard-no-ring-facts: reads the fixture bundle, collects distinctive tokens (every part ref, maker part number, firmware state name, finish name, look title, size string like '30 x 20 x 9.5') and greps explorer/src/**; part of `npm test`.",
+   "why": "Lead fact (4): 'no ring fact written into app source'.",
+   "acceptance": "On a clean tree the guard exits 0; adding the line `const x = 'BT1'` to any file under explorer/src makes it exit 1 naming that file and token (proved once, then reverted).",
+   "reuse": "design/look/viewer/check_viewer.py:20-32 (prove-the-check-fails pattern)",
+   "novelty": "fact leak guard",
+   "effort": "S",
+   "journey_steps": [],
+   "priority": "must"
+  },
+  {
+   "id": "ux-honest-states",
+   "dimension": "ux",
+   "lane": "contract",
+   "what": "src/contract/vocabulary.ts + StateBanner + StatePill: one plain sentence and one next action per record status (missing: 'Not built yet. Run npm run collect.'; unparsed: 'The file changed and cannot be read: <file>'; stale: 'Made for design <basis>; the design is now <current>. Being redone.'; plus 'exterior not picked yet', 'New options in design', 'board not routed yet'). Area pill words exactly: done, in progress, not started, waiting on a supplier, state unknown.",
+   "why": "PRD success (3) area states; lead fact (4): 'every screen must show an honest state when its source is missing or in rework'; JOURNEYS on-failure cells J1.1, J1.2, J1.3, J1.4, J3.1, J4.1, J6.1.",
+   "acceptance": "With EXPLORER_BUNDLE pointing at an empty folder, each of the 9 routes renders [data-testid=state-banner] whose text equals a vocabulary.ts entry, its side panel innerText is non-empty, and the console has 0 errors.",
+   "reuse": "design/look/viewer/viewer.js:142 and 169 (placeholder text 'Design X is not ready yet. Waiting for <file>'); design/look/viewer/index.html:39-40 (.ph placeholder style)",
+   "novelty": "one vocabulary for every screen",
+   "effort": "S",
+   "journey_steps": [
+    "J1.1",
+    "J1.2",
+    "J1.3",
+    "J1.4",
+    "J3.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-parts-extract",
+   "dimension": "functionality",
+   "lane": "collector-parts",
+   "what": "extract/parts.py: ring lines from design/bom.csv and case lines from design/case/case-bom.csv; refs split ('U5, U6, U7, U8' -> 4 refs); evidence code with its plain meaning read from architecture.md 'How to read this'; open_action resolved to architecture section 12 (who, what to ask) or case section 8; price parsed with currency; each source_file_or_url resolved to a files.json entry (on disk or not); plain notes joined from content/part-notes.json.",
+   "why": "PRD success (2): 'Every line of the ring parts list (77 today) opens a part card with: what it is in plain words, why it is in the ring, maker order code or the named open action, and its evidence level.'",
+   "acceptance": "On the fixture: ring lines = 77, ring parts = 146, ref 'U7' resolves to the line with maker_part_number 'IM73D122V01XTMA1', ring:BT1 open_action resolves to who 'Grepow'; pytest collector/tests/collector-parts exits 0; a bom.csv copy without the 'reference' column gives status 'unparsed' and exit 0.",
+   "reuse": "design/bom.csv:1 (14 columns); design/architecture.md:5-10 (evidence legend), 248-257 (section 12 table); design/case/case-architecture.md:152-161 (case section 8)",
+   "novelty": "join of parts, legend, open actions, notes",
+   "effort": "M",
+   "journey_steps": [
+    "J1.3",
+    "J4.3",
+    "J6.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-files-index",
+   "dimension": "functionality",
+   "lane": "collector-parts",
+   "what": "extract/files.py: index of every project file (design/ minus .venv and __pycache__, plus requirements.md, feasibility.md, partners.md) with size, modified date, area (folder-to-area rule written in docs/SOURCE-CONTRACT.md) and the git state (tracked or not).",
+   "why": "PRD screen 9 'every project file grouped by area'; J1.4 source link; J6.1.",
+   "acceptance": "On the live folder files.json contains design/datasheets/mic_infineon_im73d122v01_en.pdf with area 'parts' and size equal to os.path.getsize; no entry path contains '.venv' or '__pycache__'; every area of the 8 has at least one file or an explicit empty list.",
+   "reuse": "none (no file index exists in the design folder)",
+   "novelty": "new",
+   "effort": "S",
+   "journey_steps": [
+    "J1.4",
+    "J6.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-ring-model-extract",
+   "dimension": "functionality",
+   "lane": "collector-model",
+   "what": "extract/placements.py: placements.json (name, centre, size, rotation note, metal flag, layer) with layers taken from architecture section 6 stack table by Z range, parts outside the screen zone grouped as 'thumb-side strip'. extract/ring_model.py: internals.glb with one named node per placement row; exterior.glb = the picked look (design/status.json look.picked) or absent with status 'not picked'; GLBs compressed with gltf-transform (meshopt). extract/screens.py: screen rectangle and band size from design/look/shared/envelope.py, screen states from firmware section 3.3. collector/cad/: STEP-to-GLB helper reused by the case extractor.",
+   "why": "PRD Pivotal loop: 'The 3D ring with its inside is the core'; success (4) 'rotate the ring and open it layer by layer'.",
+   "acceptance": "On the fixture: set of internals.glb node names == set of placement.csv 'part' values; placements.json has >= 5 layers ordered top to bottom including cover glass, screen, circuit board, cell; every .glb under the bundle is <= GLB_MAX_MB in docs/CONSTANTS.md; with design/status.json absent the exterior record is status 'not picked' and the run exits 0.",
+   "reuse": "design/mech/placement.csv:1 (header part,x,y,z,size_x,size_y,size_z,rotation,metal,note); design/architecture.md:121-134 (stack table); design/look/shared/envelope.py:14-33 (screen rect, band size, part names); design/firmware.md:235-250 (screens)",
+   "novelty": "internals model from placement data; layer assignment",
+   "effort": "L",
+   "journey_steps": [
+    "J1.1",
+    "J1.2",
+    "J1.3"
+   ],
+   "priority": "must",
+   "rival": "Rival: convert design/mech/out/ring-assembly-size9.step to GLB with build123d instead of boxes from placement.csv. Probe before ring_model.py is written: a 20-line script imports the STEP and prints the solid labels; if >= 90 % of placement.csv part names appear as labels, internals use the STEP shapes; else boxes. The loser is recorded in docs/DIGEST.md."
+  },
+  {
+   "id": "functionality-state-extract",
+   "dimension": "functionality",
+   "lane": "collector-state",
+   "what": "extract/facts.py: the 5 key numbers (size, weight from design/mech/out/mass-estimate.csv sum, battery, recording hours, storage) each with value, unit and source file:line; reads a '## Key numbers' table first if architecture.md has one, else the section 1, 2 and 4 lines. extract/areas.py: the 8 area states from design/status.json (the project record export), each area's basis version vs architecture.md's current version, the look pick and rejected looks.",
+   "why": "PRD screen 1 'its key numbers (size, weight, battery, hours, storage), and the state of each of the 8 areas'; success (3).",
+   "acceptance": "On the fixture: facts size value '30 x 20 x 9.5 mm' and battery '135 mAh', each with a source line number; with no design/status.json all 8 areas are 'unknown'; on a temp copy whose architecture.md says 'Version A4' while firmware.md says 'Follows design/architecture.md version A3', the behaviour area has stale=true, basis 'A3', current 'A4'.",
+   "reuse": "design/architecture.md:3 and 14 (version line, block size), 44 (cell row), 94 (hours row); design/firmware.md:3 ('Follows ... version A3'); design/mech/out/mass-estimate.csv:1 (header)",
+   "novelty": "status file reader and staleness rule",
+   "effort": "M",
+   "journey_steps": [
+    "J1.1",
+    "J3.1",
+    "J3.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-part-notes",
+   "dimension": "functionality",
+   "lane": "part-notes",
+   "what": "content/part-notes.json: per part id ('ring:BT1', 'case:P1') {what (<= NOTE_WHAT_WORDS words), why (<= NOTE_WHY_WORDS words), checked_against (architecture section), model_names[] (placement.csv or case part names)}; every ring line of the bom.csv present at dispatch, and the case lines shown as 3D parts on the Case screen.",
+   "why": "PRD success (2) 'what it is in plain words, why it is in the ring'; DATA-MAP row part-notes 'written once per part by the build, checked against the architecture'.",
+   "acceptance": "collector/tests/part-notes check: coverage 77/77 ring lines of the fixture bom; ring:BT1 what starts 'Battery cell'; every model_names entry exists in design/mech/placement.csv (ring) or design/case/out/case_params.json parts (case); word limits hold; an id not in the bom fails the check.",
+   "reuse": "explorer/docs/boards/styles.html:123-124 (the BT1 card wording the owner saw); design/architecture.md:34-58 (fixed parts with their role)",
+   "novelty": "77 plain notes",
+   "effort": "L",
+   "journey_steps": [
+    "J1.3",
+    "J7.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-fixture-a3",
+   "dimension": "functionality",
+   "lane": "fixture-a3",
+   "what": "tests/fixtures/make-fixture.sh: exports design/ and the 3 root docs at commit 99dfb85 with `git archive` into .cache/fixture-99dfb85/src, adds tests/fixtures/extra/look-c-ring.glb (the optimized copy of the untracked design/look/c/out/ring.glb, frozen once) and a fixture status.json, runs the collector into .cache/fixture-99dfb85/data. Journeys run with EXPLORER_BUNDLE pointing there.",
+   "why": "JOURNEYS line 2 'real-data: the ring design in this project at git commit 7274c69' (see Conflicts C1) while lead fact (4) says the design is rewritten while the app is built: the journeys need a record that does not move.",
+   "acceptance": "`bash explorer/tests/fixtures/make-fixture.sh` exits 0; the fixture manifest.json git_commit starts with '99dfb85'; parts lines = 77; a second run produces byte-identical JSON files (sha256 equal).",
+   "reuse": "none",
+   "novelty": "frozen real-data record",
+   "effort": "M",
+   "journey_steps": [],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-journeys-a",
+   "dimension": "functionality",
+   "lane": "journeys-a",
+   "what": "journeys/J1.spec.ts, J3.spec.ts, J6.spec.ts written from docs/JOURNEYS.md (never from the built screens), headless Chromium with SwiftShader, against the fixture bundle on JOURNEY_PORT; seen RED at scaffold.",
+   "why": "PRD Test plan: 'End-to-end: one test per journey with headless Playwright, seen red at scaffold.'",
+   "acceptance": "`npm run journeys -- J1 J3 J6` before the surfaces exist exits non-zero with assertion failures (not syntax or import errors); every step id of J1, J3, J6 appears in a test title; `grep -oE '\"J[0-9]+#[0-9]+\"' -r explorer/journeys | sort | uniq -d` prints nothing.",
+   "reuse": "design/look/viewer/check_viewer.py:17 (SwiftShader args), 43-58 (ready wait and console error capture)",
+   "novelty": "journey tests",
+   "effort": "M",
+   "journey_steps": [
+    "J1.1",
+    "J1.2",
+    "J1.3",
+    "J1.4",
+    "J3.1",
+    "J3.2",
+    "J3.3",
+    "J6.1",
+    "J6.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "visual-tokens-fonts",
+   "dimension": "visual",
+   "lane": "shell",
+   "what": "src/styles/tokens.css with exactly the DESIGN.md tokens; primitives.css; fonts from @fontsource packages (Libre Caslon Text 400, Geist 400-600, Geist Mono).",
+   "why": "DESIGN.md:11 tokens; DESIGN.md:6-8 light, comfortable, restrained.",
+   "acceptance": "`grep -rnE '#[0-9a-fA-F]{3,8}\\b' explorer/src --include=*.css` matches only src/styles/tokens.css; computed font-family of the brand text contains 'Libre Caslon Text'; no panel has box-shadow other than 'none' and border-radius other than '0px' (state pills 999px excepted).",
+   "reuse": "explorer/docs/boards/styles.html:41-55 (S1 values)",
+   "novelty": "token layer",
+   "effort": "S",
+   "journey_steps": [
+    "J1.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "visual-shell-stage-layout",
+   "dimension": "visual",
+   "lane": "shell",
+   "what": "App shell per L1 Stage: a 56 px tab bar (brand + 9 areas), the stage on the left at 1.55 fr kept mounted across route changes, the area panel on the right at 1 fr; each route renders only into the right panel and drives the stage through the contract's StageScene.",
+   "why": "DESIGN.md:2 picked-layout L1 Stage; owner_reasoning DESIGN.md:35 'keeps the ring on screen at all times'.",
+   "acceptance": "At 1512x982 and 1280x800: stage width / (stage + panel) is 0.608 +/- 0.02; tab bar height 56 +/- 2 px; navigating Home -> Inside -> Parts keeps the same canvas element (same data-stage-id, no WebGL context re-created: window.__stage.contexts === 1); Home has no page scroll (document.scrollingElement.scrollHeight <= innerHeight).",
+   "reuse": "explorer/docs/boards/layouts.html:26-28 and 52-67 (L1 grid); explorer/docs/boards/styles.html:21-26 and 111-114 (frame, tabs)",
+   "novelty": "persistent stage across routes",
+   "effort": "M",
+   "journey_steps": [
+    "J1.1",
+    "J1.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-tab-nav",
+   "dimension": "interaction",
+   "lane": "shell",
+   "what": "Tab bar: 9 tabs, active tab with aria-current='page' and the S1 underline; a 'Files' entry at the right of the bar leading to screen 9's file section; routes registered by import.meta.glob over src/routes/*/index.tsx, a missing route shows the honest 'screen not built yet' panel.",
+   "why": "JOURNEYS J3.1 'top bar Home', J3.3 'top bar Open items', J6.1 'top bar Files', J6.2 'top bar Parts'; PRD success (1) '3 clicks or fewer'.",
+   "acceptance": "From Home, one click on each of the 9 tabs and on 'Files' reaches its route (URL path changes, aria-current moves); every BOM line card is reachable in <= 3 clicks from Home (Parts tab, row) measured by the journey helper.",
+   "reuse": "explorer/docs/boards/styles.html:44-45 and 112 (tab look and markup)",
+   "novelty": "route glob registry",
+   "effort": "S",
+   "journey_steps": [
+    "J3.1",
+    "J3.3",
+    "J6.1",
+    "J6.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "ux-freshness-stamp",
+   "dimension": "ux",
+   "lane": "shell",
+   "what": "In the tab bar: 'Data built <date time> · commit <7 chars>' and, when git_dirty, 'files changed since'.",
+   "why": "PRD Data sources: 'the app shows when the data was built and from which git commit'.",
+   "acceptance": "The stamp text equals manifest.built_at formatted in the browser's locale and manifest.git_commit[:7]; with a manifest whose git_dirty is true the stamp also shows 'files changed since'.",
+   "reuse": "none",
+   "novelty": "new",
+   "effort": "S",
+   "journey_steps": [
+    "J1.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "visual-stage-render",
+   "dimension": "visual",
+   "lane": "stage",
+   "what": "src/stage/: the seed viewer's rendering ported into one React-hosted three.js stage: room environment, materials by KIND (finish metal, glass, screen, light, satin, matte, gold, plain) where the node-to-kind map comes from the bundle, contact shadow, screen face texture drawn from the screens record, light glow, creased normals, millimetre scaling, GLB and STL loading with the meshopt decoder, N side-by-side views in one canvas.",
+   "why": "PRD seeds (1): 'the 3D look viewer ... supplies the 3D rendering and materials; becomes the Look screen'; lead fact (3) 'plan to carry its rendering into the app's stage'.",
+   "acceptance": "For each fixture model the stage canvas has >= 2 % pixels differing from the row background (check_viewer.py method); window.__stage.unmappedNodes() returns []; renderer clear colour is white with alpha 0; a GLB that fails to load shows the vocabulary placeholder and 0 uncaught errors.",
+   "reuse": "design/look/viewer/viewer.js:87-103 (environment), 106-123 (materials), 176-233 (model build: mm scale, creased normals, screen plane, glow, shadow, finger), 145-150 (renderer settings), 311-331 (render loop, still mode, ready flag)",
+   "novelty": "material map from data instead of PART_NAMES (design/look/viewer/viewer.js:7-8 hard-codes names and screen size)",
+   "effort": "L",
+   "journey_steps": [
+    "J1.1",
+    "J1.2",
+    "J2.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-stage-rotate",
+   "dimension": "interaction",
+   "lane": "stage",
+   "what": "Drag to rotate with damping, scroll to zoom, auto-rotate that stops at the first drag, view presets (three-quarter, top, side, on a finger) with eased camera moves; window.__stage test API frozen in src/contract/stage-api.ts.",
+   "why": "PRD success (4) 'The owner can rotate the ring ... without reading any text'; J1.1 'rotates the ring'.",
+   "acceptance": "A 200 px horizontal mouse drag on the canvas changes window.__stage.azimuthDeg() by > 20 degrees and sets autoRotate false; 3 consecutive frames render after the drag (window.__stage.frames increases by >= 3).",
+   "reuse": "design/look/viewer/viewer.js:155-159 (OrbitControls, auto-rotate stop), 247-268 (fit distance, view specs, eased setView)",
+   "novelty": "test API",
+   "effort": "S",
+   "journey_steps": [
+    "J1.1",
+    "J2.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "ux-home",
+   "dimension": "ux",
+   "lane": "home",
+   "what": "Home panel: the 5 key numbers (value + unit + source on hover), the 8 area tiles each with its state pill and one line of what is open, and 'What is next for you' (the open items whose 'who' is the owner, else the next supplier asks). Stage: the ring (exterior per tq-stage-without-exterior) turning slowly.",
+   "why": "PRD screen 1; J1.1; J3.1.",
+   "acceptance": "On the fixture at 1512x982: panel text contains '30 x 20 x 9.5 mm' and '135 mAh'; exactly 8 [data-testid=area-tile] each holding one StatePill whose text is in the vocabulary list; one click on the tile 'Inside' navigates to /inside; with an empty bundle the panel shows the 'Run npm run collect' banner with the command in a <code> element.",
+   "reuse": "explorer/docs/boards/layouts.html:56-57 (L1 Home right side boxes)",
+   "novelty": "new screen",
+   "effort": "M",
+   "journey_steps": [
+    "J1.1",
+    "J3.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-explode",
+   "dimension": "interaction",
+   "lane": "inside",
+   "what": "Inside: a slider 'open it up' (Closed ... Open it up) that moves each layer along Z by its order; 0 = assembled, 1 = fully separated; reassemble by dragging back.",
+   "why": "PRD screen 3 'The ring opening layer by layer (glass, screen, board, cell, housing)'; J1.2.",
+   "acceptance": "On the fixture: at slider value 1 every gap between consecutive layers' bounding boxes from window.__stage.layerBoxes() is >= EXPLODE_MIN_GAP_MM; at 0 every part centre equals its placements.json centre within 0.05 mm; keyboard ArrowRight on the focused slider moves it.",
+   "reuse": "explorer/docs/boards/styles.html:28-31 and 118 (slider look and labels)",
+   "novelty": "explode by data layers",
+   "effort": "M",
+   "journey_steps": [
+    "J1.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-pick-part",
+   "dimension": "interaction",
+   "lane": "inside",
+   "what": "Hover a part: highlight and a name tag; click: select, URL gets ?part=<id>, the part card opens in the panel; parts with no parts-list line say so.",
+   "why": "PRD screen 3 'every part highlighted on hover ... click a part for its card'; J1.3.",
+   "acceptance": "Clicking at window.__stage.screenPos('cell') sets location.search to contain 'part=ring%3ABT1' and [data-testid=part-card] shows the note heading 'Battery cell'; clicking a placement part with no model_names link (e.g. 'gasket' on the fixture) shows 'no parts-list line for this object'; reload keeps the selection.",
+   "reuse": "explorer/docs/boards/styles.html:32 and 117 (the tag)",
+   "novelty": "picking",
+   "effort": "M",
+   "journey_steps": [
+    "J1.3"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-part-search",
+   "dimension": "interaction",
+   "lane": "inside",
+   "what": "A part search on Inside: substring, case- and accent-insensitive over refs, item, maker, maker part number and the note; Enter selects; at most 8 results.",
+   "why": "PRD screen 3 'search a part'; PRD Interaction model: 'a part search' is one of the two open-ended controls.",
+   "acceptance": "Typing 'grepow' lists ring:BT1; typing 'u5' lists the microphone line; typing 'MICROPHONE' and 'microphone' give the same list; choosing a result selects it on the stage and opens its card.",
+   "reuse": "none",
+   "novelty": "search over parts.json",
+   "effort": "S",
+   "journey_steps": [
+    "J1.3"
+   ],
+   "priority": "must",
+   "component_source": "resolve at root: @<org>/apps-ui is not vendored yet (gap G2); the lead reads node_modules/@<org>/apps-ui/docs/catalog.json + CHOOSING.md after the contract lane and writes the file:line here before this lane dispatches"
+  },
+  {
+   "id": "ux-inside-layer-list",
+   "dimension": "ux",
+   "lane": "inside",
+   "what": "Panel under the card: the layers of the ring with their part count; clicking a layer isolates it on the stage.",
+   "why": "L1 board Inside 'Part list of this layer'; PRD screen 3 'Do I understand what each part is and where it sits'.",
+   "acceptance": "On the fixture the layer list rows equal placements.json layers in order with counts equal to the number of parts per layer; clicking a row sets window.__stage.isolatedLayer() to that layer id.",
+   "reuse": "explorer/docs/boards/styles.html:133-141 (layer list); explorer/docs/boards/layouts.html:65",
+   "novelty": "new",
+   "effort": "S",
+   "journey_steps": [
+    "J1.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "ux-part-card",
+   "dimension": "ux",
+   "lane": "part-card",
+   "what": "src/components/PartCard: plain words first (heading = note.what, then note.why), then size, capacity-type key figure, order code or the open action ('Open: quote from Grepow'), evidence pill with its plain meaning; 'Exact data' disclosure with maker, part number, package, value, price, all source links; a missing source link is greyed 'not on disk'.",
+   "why": "PRD Users: 'plain words first, exact data one click below'; J1.3 card text; J1.4.",
+   "acceptance": "For ring:BT1 on the fixture the card's text contains 'Battery cell', '4.6 x 13.0 x 25.0' and 'Grepow' before the disclosure; the maker part number is not visible until 'Exact data' is opened; a source whose file is absent renders aria-disabled='true' with the text 'not on disk'; a present datasheet link has target=_blank and an href under /files/.",
+   "reuse": "explorer/docs/boards/styles.html:121-131 (card markup: label, h3, plain, kv)",
+   "novelty": "card component",
+   "effort": "M",
+   "journey_steps": [
+    "J1.3",
+    "J1.4",
+    "J7.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "visual-part-card",
+   "dimension": "visual",
+   "lane": "part-card",
+   "what": "Card in S1: label line in Geist Mono 11 px caps, heading Libre Caslon Text 30 px 400, plain text 16 px, kv grid 118 px keys, accent pill only for attention states.",
+   "why": "DESIGN.md:11 tokens; styles board S1 picked.",
+   "acceptance": "Computed styles: heading font-size 30px and family includes 'Libre Caslon Text'; label font-family includes 'Geist Mono' and text-transform uppercase; the pill background is the accent token only when the line's state is 'waiting on a supplier' or has an open action.",
+   "reuse": "explorer/docs/boards/styles.html:48-53",
+   "novelty": "none",
+   "effort": "S",
+   "journey_steps": [
+    "J1.3"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-open-extract",
+   "dimension": "functionality",
+   "lane": "collector-open",
+   "what": "extract/open_items.py: supplier requests (architecture section 12: id, item, who, what to ask), bench tests (section 13), risks (requirements.md section 6), owner decisions with dates (every source line quoting 'owner, <date>' with the quote and file:line). Case supplier items (case section 8) go to the case record, not here (DATA-MAP open-items row).",
+   "why": "PRD screen 9 'Supplier requests, bench tests, risks, the owner's past decisions with dates'; J3.3.",
+   "acceptance": "On the fixture: 7 supplier requests, each with a non-empty 'who'; 5 bench tests; >= 3 decisions each with an ISO date and a file:line that, read back, contains the quote.",
+   "reuse": "design/architecture.md:248-268 (sections 12 and 13); design/requirements.md section 6 heading at line 143",
+   "novelty": "decision scan",
+   "effort": "M",
+   "journey_steps": [
+    "J3.3"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-board-extract",
+   "dimension": "functionality",
+   "lane": "collector-board",
+   "what": "extract/board.py: if design/ecad/ring/*.kicad_pcb exists, kicad-cli pcb export svg for top and bottom; else a placement plan from design/mech/placement.csv: the main_board outline, parts within BOARD_SIDE_MM above the board's top face on 'top', below its bottom face on 'bottom', with routed=false and the list of what is missing.",
+   "why": "PRD screen 5 'honest state banner while the board is not routed'; J3.2 'the banner names what is missing'.",
+   "acceptance": "On the fixture: routed=false; outline 27.0 x 17.4 mm; both sides non-empty; 'mic1' is on 'bottom' and 'recording_light' on 'top'; 'missing' names 'design/ecad/ring/ring.kicad_pcb'.",
+   "reuse": "design/mech/placement.csv:6 (main_board row), 10-13, 18",
+   "novelty": "plan from placement",
+   "effort": "M",
+   "journey_steps": [
+    "J3.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "ux-board-banner-plan",
+   "dimension": "ux",
+   "lane": "board",
+   "what": "Board screen: banner 'Board not routed yet' with what is missing; the placement plan drawn as SVG in the panel (expandable), parts labelled; the stage shows the board layer isolated.",
+   "why": "PRD screen 5; J3.2.",
+   "acceptance": "On the fixture: [data-testid=state-banner] text contains 'not routed' and 'ring.kicad_pcb'; the plan SVG has one element per listed part with data-part attributes; window.__stage.isolatedLayer() equals the circuit board layer id.",
+   "reuse": "none",
+   "novelty": "new screen",
+   "effort": "M",
+   "journey_steps": [
+    "J3.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-board-toggles",
+   "dimension": "interaction",
+   "lane": "board",
+   "what": "Toggle Top / Bottom / Both (aria-pressed); click a part on the plan opens its card.",
+   "why": "PRD screen 5 'Toggle sides and layers; click a part'.",
+   "acceptance": "Clicking 'Bottom' sets aria-pressed true on it and hides every [data-side=top] element; clicking the 'mic1' element opens the card of ring:U5 (via part-notes model_names) or the 'no parts-list line' text.",
+   "reuse": "design/look/viewer/viewer.js:278-285 (segmented control pattern)",
+   "novelty": "none",
+   "effort": "S",
+   "journey_steps": [
+    "J3.2"
+   ],
+   "priority": "must",
+   "component_source": "resolve at root: @<org>/apps-ui is not vendored yet (gap G2); the lead reads node_modules/@<org>/apps-ui/docs/catalog.json + CHOOSING.md after the contract lane and writes the file:line here before this lane dispatches"
+  },
+  {
+   "id": "ux-open-items",
+   "dimension": "ux",
+   "lane": "open-files",
+   "what": "Open items section: groups supplier requests, bench tests, risks, decisions; each supplier row says who and what to ask; decisions show date and quote with a source link.",
+   "why": "PRD screen 9; J3.3 done-when 'each open item names who must act'.",
+   "acceptance": "On the fixture: 4 group headings; 7 supplier rows each with a non-empty [data-field=who]; decisions sorted by date descending.",
+   "reuse": "none",
+   "novelty": "new screen",
+   "effort": "M",
+   "journey_steps": [
+    "J3.3"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-open-filter",
+   "dimension": "interaction",
+   "lane": "open-files",
+   "what": "Filter chips: all, waiting on a supplier, bench tests, risks, decisions; empty filter text 'nothing waiting'.",
+   "why": "J3.3 'filters waiting on a supplier' and its on-failure 'empty filter says nothing waiting'.",
+   "acceptance": "Clicking 'waiting on a supplier' leaves exactly 7 rows on the fixture; on a bundle with 0 supplier requests the list shows 'nothing waiting'; the chip carries aria-pressed.",
+   "reuse": "none",
+   "novelty": "filter",
+   "effort": "S",
+   "journey_steps": [
+    "J3.3"
+   ],
+   "priority": "must",
+   "component_source": "resolve at root: @<org>/apps-ui is not vendored yet (gap G2); the lead reads node_modules/@<org>/apps-ui/docs/catalog.json + CHOOSING.md after the contract lane and writes the file:line here before this lane dispatches"
+  },
+  {
+   "id": "functionality-look-extract",
+   "dimension": "functionality",
+   "lane": "collector-look",
+   "what": "extract/look_options.py: every design/look/<id>/ holding out/ring.glb (viewer/ and shared/ excluded) with title, sentence and trade-offs (plain-text.json, then direction.md), size measured from the GLB, rejected flag from design/status.json; finishes from design/look/shared/finishes.json (gap G3).",
+   "why": "PRD screen 2; J2.1 'options A, B, C in 3D, each with its two-line thesis and what it is worse at'.",
+   "acceptance": "On the fixture: options a, b, c; each sentence <= 20 words and <= 3 trade-offs of <= 12 words; 4 finishes; an option folder without ring.glb is listed with status 'missing' (J2.1 on-failure); on the live folder with status.json look.rejected=['a','b','c'] every option carries rejected=true and the record's open-option count is 0.",
+   "reuse": "design/look/viewer/collect.py:21-57 (direction.md parse), 59-83 (plain-text limits and assembly)",
+   "novelty": "pick and rejection state",
+   "effort": "M",
+   "journey_steps": [
+    "J2.1",
+    "J2.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "ux-look-options",
+   "dimension": "ux",
+   "lane": "look",
+   "what": "Look screen: while no look is picked, the OPEN (not rejected) options side by side on the stage, each with its title, one sentence, trade-offs and a 'Details' disclosure; once picked, the picked one alone with a 'Picked' label. Options listed in status.json look.rejected are never shown as current; with no open option the screen shows the honest state 'New options in design'. Where rejected options can still be seen follows tq-rejected-looks.",
+   "why": "PRD screen 2 'while the look is not picked, the 3 options side by side'; owner 2026-11-10 on A, B, C: \"I hate all of them, they are not as slick as the ring I shared\" (lead: retired, never shown as current).",
+   "acceptance": "On the fixture (A3, no rejection): 3 [data-testid=look-option] panels with titles 'Look A: MONOLITH', and the B and C titles from the bundle; with status.json look.picked='b' only option b renders and shows 'Picked'; with status.json look.rejected=['a','b','c'] and no other option folder, 0 look-option panels render and [data-testid=state-banner] reads 'New options in design' (the live state on 2026-11-10).",
+   "reuse": "design/look/viewer/viewer.js:127-136 (panel head markup)",
+   "novelty": "pick state",
+   "effort": "M",
+   "journey_steps": [
+    "J2.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-look-switches",
+   "dimension": "interaction",
+   "lane": "look",
+   "what": "Finish, screen state and view switches that apply to every option at once; 'on a finger' shows a finger-sized cylinder from the bundle's band size.",
+   "why": "J2.2 'body and band change colour on all options'; J2.3 'the ring sits on a finger-sized cylinder'.",
+   "acceptance": "After clicking the finish named 'Slate Titanium' (from finishes.json), window.__stage.material(<option>, 'body').color equals that finish's colour for every option; after 'On a finger', window.__stage.fingerVisible(<option>) is true for every option; each switch has aria-pressed on the active value.",
+   "reuse": "design/look/viewer/viewer.js:11-19 (finish/screen/view state), 235-244 (apply finish and screen), 278-299 (switch wiring)",
+   "novelty": "values from data",
+   "effort": "S",
+   "journey_steps": [
+    "J2.2",
+    "J2.3"
+   ],
+   "priority": "must",
+   "component_source": "resolve at root: @<org>/apps-ui is not vendored yet (gap G2); the lead reads node_modules/@<org>/apps-ui/docs/catalog.json + CHOOSING.md after the contract lane and writes the file:line here before this lane dispatches"
+  },
+  {
+   "id": "functionality-journeys-b",
+   "dimension": "functionality",
+   "lane": "journeys-b",
+   "what": "journeys/J2.spec.ts, J4.spec.ts, J5.spec.ts, J7.spec.ts from docs/JOURNEYS.md, red at scaffold.",
+   "why": "PRD Test plan: one test per journey, seen red at scaffold.",
+   "acceptance": "`npm run journeys -- J2 J4 J5 J7` before the surfaces exist exits non-zero with assertion failures only; every step id of J2, J4, J5, J7 appears in a test title; no duplicate test ids across journeys/.",
+   "reuse": "design/look/viewer/check_viewer.py:43-79",
+   "novelty": "journey tests",
+   "effort": "M",
+   "journey_steps": [
+    "J2.1",
+    "J2.2",
+    "J2.3",
+    "J4.1",
+    "J4.2",
+    "J4.3",
+    "J5.1",
+    "J5.2",
+    "J5.3",
+    "J7.1",
+    "J7.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-electronics-extract",
+   "dimension": "functionality",
+   "lane": "collector-electronics",
+   "what": "extract/schematic.py: kicad-cli sch export svg of design/ecad/ring (one SVG per sheet, 8 pages) with the PDF as fallback; extract/electronics.py: blocks = the 7 sub-sheets (label = Sheetname), links = nets whose pins span 2 or more sheets (netlist.csv + parts.csv sheet column), parts per page, the pin plan (architecture section 7) and the power budget (section 4).",
+   "why": "PRD screen 4 'The block diagram, the 8 pages of the wiring diagram, the chip's pin plan, the power budget'; J4.1-J4.3.",
+   "acceptance": "On the fixture: 8 SVG files that parse as XML; 7 blocks; block 'Microphones' lists refs U5, U6, U7, U8; pin plan rows >= 30; with KICAD_CLI pointing at a missing binary the pages record is 'missing' with a link to design/ecad/ring/ring-schematic.pdf and the run exits 0.",
+   "reuse": "design/ecad/ring/ring.kicad_sch Sheetname properties (7 sheets); design/ecad/ring/netlist.csv:1 and parts.csv:1 (headers); design/architecture.md:80-95 and 171-209",
+   "novelty": "blocks from sheets (Conflicts C4)",
+   "effort": "M",
+   "journey_steps": [
+    "J4.1",
+    "J4.2",
+    "J4.3"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-zoom-page",
+   "dimension": "interaction",
+   "lane": "svg-viewer",
+   "what": "src/components/SvgViewer: show an SVG as an image (never inline script), zoom with buttons, wheel and pinch, pan by drag, fit; keyboard + and -.",
+   "why": "J4.2 'zooms into U5; the page zooms; U5 IM73D122V01 is readable'.",
+   "acceptance": "On the fixture microphone page at zoom 400 % the viewer's scale reads 4.0 +/- 0.05 and the screenshot crop around U5 is not blank (>= 2 % differing pixels); the SVG is rendered through <img> or an <object> with scripts disabled, never innerHTML.",
+   "reuse": "none",
+   "novelty": "new component",
+   "effort": "M",
+   "journey_steps": [
+    "J4.2"
+   ],
+   "priority": "must",
+   "component_source": "resolve at root: @<org>/apps-ui is not vendored yet (gap G2); the lead reads node_modules/@<org>/apps-ui/docs/catalog.json + CHOOSING.md after the contract lane and writes the file:line here before this lane dispatches; commodity fallback: react-zoom-pan-pinch (MIT)"
+  },
+  {
+   "id": "ux-electronics",
+   "dimension": "ux",
+   "lane": "electronics",
+   "what": "Electronics: block diagram (blocks and their links) and the page of the selected block beside it, expandable to wide; secondary tabs for pin plan and power budget tables.",
+   "why": "PRD screen 4; L1 'worse at wide documents ... unless you expand them' (layouts.html:50).",
+   "acceptance": "On the fixture: 7 [data-testid=block] elements; the pin plan tab shows a table whose row count equals electronics.json pin plan length; the power budget shows the 'From the cell' row.",
+   "reuse": "none",
+   "novelty": "new screen",
+   "effort": "M",
+   "journey_steps": [
+    "J4.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-block-to-page",
+   "dimension": "interaction",
+   "lane": "electronics",
+   "what": "Click a block: its page opens beside the diagram; 'parts of this page' goes to /parts?page=<sheet>.",
+   "why": "J4.1 'clicks Microphones; the microphone page opens beside the diagram'; J4.3.",
+   "acceptance": "Clicking the block 'Microphones' shows the SvgViewer with the microphones page src within 1 s; clicking 'parts of this page' navigates to /parts with the filter 'page: Microphones' and 1 visible line (the 4 microphones line) plus its passives.",
+   "reuse": "none",
+   "novelty": "selection state",
+   "effort": "S",
+   "journey_steps": [
+    "J4.1",
+    "J4.3"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "ux-parts-table",
+   "dimension": "ux",
+   "lane": "parts",
+   "what": "Parts: the full table (part, maker, order code, price, evidence, open action) with totals (77 lines, 146 parts, priced sum and count of unpriced lines); row click opens the card; filters has code / made to drawing / needs supplier / page.",
+   "why": "PRD screen 6 'What can I order today; what is blocked'.",
+   "acceptance": "On the fixture: 77 rows (virtualized rows count from the table model, not the DOM); the totals line reads '77 lines' and '146 parts'; clicking the U5 row opens the card of ring:U5.",
+   "reuse": "none",
+   "novelty": "new screen",
+   "effort": "M",
+   "journey_steps": [
+    "J4.3",
+    "J6.2"
+   ],
+   "priority": "must",
+   "component_source": "record-core/DataTable per explorer starter-guide import (<home>/.claude/skills/<platform>-app-builder/references/starter-guide.md:35); resolve at root: @<org>/apps-ui is not vendored yet (gap G2); the lead reads node_modules/@<org>/apps-ui/docs/catalog.json + CHOOSING.md after the contract lane and writes the file:line here before this lane dispatches"
+  },
+  {
+   "id": "interaction-parts-filter",
+   "dimension": "interaction",
+   "lane": "parts",
+   "what": "Filter chips write into one filter model with a clear-all chip; URL keeps the filter.",
+   "why": "PRD screen 6 'Filter (has code, made to drawing, needs supplier)'.",
+   "acceptance": "Clicking 'needs supplier' leaves only lines whose open_action is a section 12 item; clear-all restores 77; reload keeps the filter (URL query).",
+   "reuse": "none",
+   "novelty": "filter",
+   "effort": "S",
+   "journey_steps": [
+    "J4.3"
+   ],
+   "priority": "must",
+   "component_source": "resolve at root: @<org>/apps-ui is not vendored yet (gap G2); the lead reads node_modules/@<org>/apps-ui/docs/catalog.json + CHOOSING.md after the contract lane and writes the file:line here before this lane dispatches"
+  },
+  {
+   "id": "interaction-expand-panel",
+   "dimension": "interaction",
+   "lane": "shell",
+   "what": "The right panel can expand over the stage for wide documents (schematic page, board plan, parts table); Escape or the same control collapses it; the stage keeps its state.",
+   "why": "L1 worse-at: 'The wiring diagram and the parts table get the narrower right side unless you expand them' (layouts.html:50).",
+   "acceptance": "Clicking [data-testid=panel-expand] makes the panel width >= 0.9 x main width; Escape restores 0.392 +/- 0.02; window.__stage.azimuthDeg() is unchanged across expand and collapse.",
+   "reuse": "none",
+   "novelty": "new",
+   "effort": "S",
+   "journey_steps": [
+    "J4.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-behaviour-extract",
+   "dimension": "functionality",
+   "lane": "collector-behaviour",
+   "what": "extract/behaviour.py: states (name, meaning, microphones on/off, screen rule), transitions (from, event text, event kind classified as long_press | short_press | double_press | joystick | vbus | battery | storage | other, to, actions, motor ids), gesture timings, motor patterns, joystick mapping, the light rule (on exactly where the microphones column is on).",
+   "why": "PRD screen 7 'watch the ring react per the firmware rules'; DATA-MAP firmware-rules row.",
+   "acceptance": "On the fixture: STANDBY --long_press--> RECORDING with motor M1 pattern [80]; RECORDING --short_press--> RECORDING with a highlight action; RECORDING --long_press--> STANDBY with M2 [80,120,80]; long press 1000 ms, short press 40-600 ms, double window 400 ms; light on only in RECORDING.",
+   "reuse": "design/firmware.md:50-67 (states), 78-147 (transitions), 156-180 (gestures and timings), 212-219 (motor patterns)",
+   "novelty": "event classifier",
+   "effort": "M",
+   "journey_steps": [
+    "J5.1",
+    "J5.2",
+    "J5.3"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-behaviour-engine",
+   "dimension": "functionality",
+   "lane": "behaviour-engine",
+   "what": "src/engine/behaviour: a pure interpreter of behaviour.json: press and release events with times -> gesture -> transition -> outputs {state, light, motor pulses, highlight count, recording timer}. No state name or timing literal in its source.",
+   "why": "PRD screen 7; lead fact (4) no ring fact in app source.",
+   "acceptance": "vitest on the fixture behaviour.json: hold 1000 ms in STANDBY gives RECORDING, light true, pulses [80]; a 200 ms tap then 400 ms idle gives highlight 1, state RECORDING; hold 1000 ms gives STANDBY, 2 pulses; a 700 ms hold changes nothing; `grep -rn 'RECORDING\\|STANDBY\\|1000' explorer/src/engine` returns nothing.",
+   "reuse": "none",
+   "novelty": "interpreter",
+   "effort": "M",
+   "journey_steps": [
+    "J5.1",
+    "J5.2",
+    "J5.3"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "ux-behaviour",
+   "dimension": "ux",
+   "lane": "behaviour",
+   "what": "Behaviour: state name large, timer while recording, light indicator, vibration marks (one mark per pulse, fading), highlight marks; the state list from the firmware with the current one marked.",
+   "why": "PRD screen 7 'Do I agree with how it behaves'; J5.1-J5.3 visible results.",
+   "acceptance": "On the fixture after the J5.1 hold: [data-testid=behaviour-state] reads 'Recording' (display label from the bundle), [data-testid=light] has data-on='true', exactly 1 vibration mark, the timer text changes within 1.5 s.",
+   "reuse": "none",
+   "novelty": "new screen",
+   "effort": "M",
+   "journey_steps": [
+    "J5.1",
+    "J5.2",
+    "J5.3"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-behaviour-controls",
+   "dimension": "interaction",
+   "lane": "behaviour",
+   "what": "Virtual record button (pointer and Space key: press and hold) and a 5-way joystick pad per tq-behaviour-button; the ring on the stage reacts (light node lit, screen face shows the screen of the state).",
+   "why": "PRD screen 7 'Press and hold the virtual button, move the joystick'; J5.",
+   "acceptance": "Mouse down on [data-testid=record-button], wait 1000 ms, mouse up: state Recording and window.__stage.lightOn() true; Space key held 1000 ms does the same; a 200 ms click during Recording adds 1 highlight mark and keeps Recording.",
+   "reuse": "none",
+   "novelty": "press-and-hold control",
+   "effort": "M",
+   "journey_steps": [
+    "J5.1",
+    "J5.2",
+    "J5.3"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "visual-ring-screen-face",
+   "dimension": "visual",
+   "lane": "stage",
+   "what": "The lit screen face drawn from the screens record (fields per screen state: e.g. the recording screen's dot, timer, battery, storage), never from text written in the app.",
+   "why": "PRD screen 2 'the screen lit'; lead fact (4).",
+   "acceptance": "Stage screen texture for state 'recording' contains the field labels listed in screens.json for that screen (checked by window.__stage.screenFields()); with screens.json missing the face renders black and the banner shows 'missing'.",
+   "reuse": "design/look/viewer/viewer.js:24-71 (canvas screen texture; its literal '11.6 GB free' and date move to data)",
+   "novelty": "fields from data",
+   "effort": "M",
+   "journey_steps": [
+    "J5.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-bundle-zip",
+   "dimension": "functionality",
+   "lane": "collector-parts",
+   "what": "Partner bundle: bundle.zip of `git ls-files --cached --others --exclude-standard` over design/ plus requirements.md, feasibility.md, partners.md, with a contents list in files.json.",
+   "why": "PRD success (5) 'A build partner downloads the complete file set from one screen'; J6.1.",
+   "acceptance": "zipfile.testzip() returns None; the zip entry list equals files.json 'bundle' list; no entry contains '.venv/' or '__pycache__/'.",
+   "reuse": "none",
+   "novelty": "new",
+   "effort": "S",
+   "journey_steps": [
+    "J6.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "ux-files",
+   "dimension": "ux",
+   "lane": "open-files",
+   "what": "Files section: every file grouped by area with size and date; open (new tab) or download; 'Download partner bundle' with the list of what it contains; disabled with 'run npm run collect' when no bundle.",
+   "why": "PRD screen 9; J6.1.",
+   "acceptance": "On the fixture: 8 area groups; each row shows a size and a date; with bundle.zip absent the button has disabled and the text 'run npm run collect'.",
+   "reuse": "none",
+   "novelty": "new screen",
+   "effort": "M",
+   "journey_steps": [
+    "J6.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-bundle-download",
+   "dimension": "interaction",
+   "lane": "open-files",
+   "what": "The bundle button downloads bundle.zip; the page lists its contents.",
+   "why": "J6.1 'a zip downloads; the page lists what it contains'.",
+   "acceptance": "Playwright waitForEvent('download') after the click yields suggestedFilename ending '.zip' and size equal to the bundle file's size.",
+   "reuse": "none",
+   "novelty": "none",
+   "effort": "S",
+   "journey_steps": [
+    "J6.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-parts-export",
+   "dimension": "interaction",
+   "lane": "parts",
+   "what": "Export CSV downloads design/bom.csv as it is on disk.",
+   "why": "PRD screen 6 'export CSV'; J6.2 'bom.csv downloads'.",
+   "acceptance": "The downloaded file's sha256 equals the sha256 of the bundle's source design/bom.csv; suggestedFilename is 'bom.csv'.",
+   "reuse": "none",
+   "novelty": "none",
+   "effort": "S",
+   "journey_steps": [
+    "J6.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-case-extract",
+   "dimension": "functionality",
+   "lane": "collector-case",
+   "what": "extract/case.py: case.glb from design/case/out/parts/*.step (one node per file stem) with the lid as its own node and its hinge axis from hinge_pin, the US5 ring seated; case facts (outer size from case_size.txt, cell, transfer minutes per recorded hour) with source lines; case parts from case-bom.csv; case supplier items (case section 8).",
+   "why": "PRD screen 8; J7.1, J7.2.",
+   "acceptance": "On the fixture: case.glb node names include lid, pin_P1_VBUS, pin_P2_D-, pin_P3_D+, pin_P4_GND, ring_US5_block; facts size '33.6 x 33.4 x 55.2 mm' and cell '700 mAh', each with a source line; case.glb <= GLB_MAX_MB.",
+   "reuse": "design/case/out/case_params.json (parts and rings lists); design/case/out/case_size.txt:1; design/case/case-architecture.md:55 (cell row); collector/cad from the collector-model lane",
+   "novelty": "case model assembly",
+   "effort": "M",
+   "journey_steps": [
+    "J7.1",
+    "J7.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "ux-case",
+   "dimension": "ux",
+   "lane": "case",
+   "what": "Case screen: the closed case on the stage, its numbers (size, cell, transfer time), its parts list, its supplier items.",
+   "why": "PRD screen 8 'The case in 3D with the ring seated, its parts, charge and transfer times'.",
+   "acceptance": "On the fixture: panel text contains '33.6 x 33.4 x 55.2 mm' and '700 mAh'; the parts list has 74 rows (case-bom lines).",
+   "reuse": "none",
+   "novelty": "new screen",
+   "effort": "M",
+   "journey_steps": [
+    "J7.1"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-case-lid-pins",
+   "dimension": "interaction",
+   "lane": "case",
+   "what": "'Open the lid' animates the lid about its hinge; the ring shows on its 4 pins; clicking the pins highlights them and opens the card of case:P1.",
+   "why": "J7.1 'opens the lid; the lid opens and the ring shows on its 4 pins'; J7.2.",
+   "acceptance": "After the click, window.__stage.nodeRotationDeg('lid') >= 90 within 1.5 s; clicking at window.__stage.screenPos('pin_P1_VBUS') opens a card whose text contains 'VBUS', 'D-', 'D+' and 'GND'.",
+   "reuse": "none",
+   "novelty": "lid animation",
+   "effort": "M",
+   "journey_steps": [
+    "J7.1",
+    "J7.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "consistency-one-card",
+   "dimension": "consistency",
+   "lane": "seams",
+   "what": "Seam check: the card of one part is the same wherever it opens.",
+   "why": "PRD Pivotal loop 'every other screen hangs off a part'; plan-format Step 6 (seams).",
+   "acceptance": "On the fixture the innerText of [data-testid=part-card] for ring:BT1 is identical when opened from Inside, Parts and Board; for ring:U5 identical from Parts and Electronics.",
+   "reuse": "none",
+   "novelty": "cross-surface assertion",
+   "effort": "S",
+   "journey_steps": [
+    "J1.3",
+    "J4.3"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "consistency-counts-states",
+   "dimension": "consistency",
+   "lane": "seams",
+   "what": "Seam check: '77 lines' and '146 parts' read the same on Home, Parts and Files; each area's state is the same on its Home tile and its own screen's banner.",
+   "why": "PRD success (3) states must match; DIGEST number definitions.",
+   "acceptance": "On the fixture with a fixture status.json, for each of 8 areas the Home tile pill text equals the screen banner's state text; the line and part counts are equal on the 3 screens.",
+   "reuse": "none",
+   "novelty": "cross-surface assertion",
+   "effort": "S",
+   "journey_steps": [
+    "J3.1",
+    "J3.2"
+   ],
+   "priority": "must"
+  },
+  {
+   "id": "consistency-vocabulary-nav",
+   "dimension": "consistency",
+   "lane": "seams",
+   "what": "Seam check: banner and pill words come only from src/contract/vocabulary.ts; the tab bar sits at the same position on every route.",
+   "why": "ux-canon 'ONE nav pattern app-wide'.",
+   "acceptance": "`grep -rn \"'not started'\\|'in progress'\\|'waiting on a supplier'\" explorer/src --exclude-dir=contract` returns nothing; the tab bar bounding box (x, y, height) is equal on all 9 routes.",
+   "reuse": "none",
+   "novelty": "none",
+   "effort": "S",
+   "journey_steps": [],
+   "priority": "must"
+  },
+  {
+   "id": "functionality-smoke-perf",
+   "dimension": "functionality",
+   "lane": "smoke-perf",
+   "what": "Smoke: the server starts and every route loads with 0 console errors on the fixture and on an empty bundle. Perf: first paint, interaction and route read measured cold and warm against the PRD Perf-budget line; 3D frame time recorded, not gated (gap G7).",
+   "why": "PRD Test plan 'Smoke' and 'Performance'; PRD Perf-budget line.",
+   "acceptance": "`npm run journeys -- smoke` exits 0; perf output records first-paint <= 1500 ms and warm route-read <= 100 ms on every route (cold recorded); a route with a console error makes it exit 1 (proved once by an injected error).",
+   "reuse": "design/look/viewer/check_viewer.py:43-58 (console capture)",
+   "novelty": "budget run",
+   "effort": "M",
+   "journey_steps": [],
+   "priority": "must"
+  },
+  {
+   "id": "interaction-keyboard-floor",
+   "dimension": "interaction",
+   "lane": "smoke-perf",
+   "what": "a11y floor across routes: every control is a real button/link/input with a name; toggles carry aria-pressed; the active tab aria-current; visible focus; colour never the only signal.",
+   "why": "frontend-architecture.md section 4 (six mechanical checks).",
+   "acceptance": "axe-core run on all 9 routes reports 0 violations of rules button-name, link-name, label, color-contrast; Tab walk of J1 reaches the slider, the search and the card's source link with a visible focus ring.",
+   "reuse": "none",
+   "novelty": "none",
+   "effort": "S",
+   "journey_steps": [],
+   "priority": "must"
+  },
+  {
+   "id": "visual-routes-s1",
+   "dimension": "visual",
+   "lane": "smoke-perf",
+   "what": "Each screen judged against the S1 board: white panels, hairlines, no shadows, serif headings, few words.",
+   "why": "PRD Quality bar 'Each screen is judged against the picked boards'; DESIGN anti-references.",
+   "acceptance": "On every route: computed box-shadow of [data-panel] is 'none' and border-radius '0px'; the panel's first heading uses 'Libre Caslon Text'; the side panel at 1512x982 shows no more than PANEL_MAX_WORDS words before the first disclosure.",
+   "reuse": "explorer/docs/boards/styles.html:41-55",
+   "novelty": "none",
+   "effort": "S",
+   "journey_steps": [],
+   "priority": "must"
+  }
+ ],
+ "slices": [
+  {
+   "id": "slice-see-a-part",
+   "rank": 1,
+   "delivers": "Open the app, turn the ring, open it up, click the cell and read what it is, why it is there and its order code; open its source.",
+   "demo": "J1",
+   "todos": [
+    "functionality-bundle-contract",
+    "functionality-collector-runner",
+    "functionality-file-server",
+    "functionality-offline-local-libs",
+    "consistency-no-ring-facts-guard",
+    "ux-honest-states",
+    "functionality-parts-extract",
+    "functionality-files-index",
+    "functionality-ring-model-extract",
+    "functionality-state-extract",
+    "functionality-part-notes",
+    "functionality-fixture-a3",
+    "functionality-journeys-a",
+    "visual-tokens-fonts",
+    "visual-shell-stage-layout",
+    "interaction-tab-nav",
+    "ux-freshness-stamp",
+    "visual-stage-render",
+    "interaction-stage-rotate",
+    "ux-home",
+    "interaction-explode",
+    "interaction-pick-part",
+    "interaction-part-search",
+    "ux-inside-layer-list",
+    "ux-part-card",
+    "visual-part-card"
+   ]
+  },
+  {
+   "id": "slice-where-it-stands",
+   "rank": 2,
+   "delivers": "See which areas are done, see the board's honest state, and list who must act on each open item.",
+   "demo": "J3",
+   "todos": [
+    "functionality-open-extract",
+    "functionality-board-extract",
+    "ux-board-banner-plan",
+    "interaction-board-toggles",
+    "ux-open-items",
+    "interaction-open-filter"
+   ]
+  },
+  {
+   "id": "slice-compare-looks",
+   "rank": 3,
+   "delivers": "Compare the exterior options side by side in one finish and on a finger.",
+   "demo": "J2",
+   "todos": [
+    "functionality-look-extract",
+    "ux-look-options",
+    "interaction-look-switches",
+    "functionality-journeys-b"
+   ]
+  },
+  {
+   "id": "slice-circuit",
+   "rank": 4,
+   "delivers": "Go from a block of the circuit to its wiring page and its parts.",
+   "demo": "J4",
+   "todos": [
+    "functionality-electronics-extract",
+    "interaction-zoom-page",
+    "ux-electronics",
+    "interaction-block-to-page",
+    "ux-parts-table",
+    "interaction-parts-filter",
+    "interaction-expand-panel"
+   ]
+  },
+  {
+   "id": "slice-behaviour",
+   "rank": 5,
+   "delivers": "Hold the virtual button and watch the ring start, mark and stop a recording as the firmware says.",
+   "demo": "J5",
+   "todos": [
+    "functionality-behaviour-extract",
+    "functionality-behaviour-engine",
+    "ux-behaviour",
+    "interaction-behaviour-controls",
+    "visual-ring-screen-face"
+   ]
+  },
+  {
+   "id": "slice-partner-handoff",
+   "rank": 6,
+   "delivers": "Download the full partner bundle and the parts list.",
+   "demo": "J6",
+   "todos": [
+    "functionality-bundle-zip",
+    "ux-files",
+    "interaction-bundle-download",
+    "interaction-parts-export"
+   ]
+  },
+  {
+   "id": "slice-case",
+   "rank": 7,
+   "delivers": "See the case, open its lid and read what its pins are.",
+   "demo": "J7",
+   "todos": [
+    "functionality-case-extract",
+    "ux-case",
+    "interaction-case-lid-pins"
+   ]
+  },
+  {
+   "id": "slice-whole-app-checks",
+   "rank": 8,
+   "delivers": "Trust that every screen agrees with the others, loads fast and works by keyboard (infrastructure: cross-surface checks).",
+   "demo": "J1-J7 (all journeys, after every surface merges)",
+   "todos": [
+    "consistency-one-card",
+    "consistency-counts-states",
+    "consistency-vocabulary-nav",
+    "functionality-smoke-perf",
+    "interaction-keyboard-floor",
+    "visual-routes-s1"
+   ]
+  }
+ ],
+ "units": 52,
+ "lane_dag": {
+  "roots": [
+   "contract"
+  ],
+  "units": 52,
+  "digest": [
+   "explorer/docs/CONTRACT.md",
+   "explorer/docs/DIGEST.md",
+   "explorer/docs/SOURCE-CONTRACT.md",
+   "explorer/docs/CONSTANTS.md"
+  ],
+  "root_files": [
+   "explorer/package.json",
+   "explorer/tsconfig.json",
+   "explorer/vite.config.ts",
+   "explorer/index.html",
+   "explorer/contract/schema/**",
+   "explorer/src/contract/**",
+   "explorer/src/data/**",
+   "explorer/collector/run.py",
+   "explorer/collector/lib/**",
+   "explorer/tests/playwright.config.ts",
+   "explorer/tests/support/**",
+   "explorer/docs/CONTRACT.md",
+   "explorer/docs/DIGEST.md",
+   "explorer/docs/SOURCE-CONTRACT.md",
+   "explorer/docs/CONSTANTS.md"
+  ],
+  "lanes": [
+   {
+    "id": "contract",
+    "owns": [
+     "explorer/package.json",
+     "explorer/package-lock.json",
+     "explorer/vendor/**",
+     "explorer/tsconfig.json",
+     "explorer/vite.config.ts",
+     "explorer/index.html",
+     "explorer/.gitignore",
+     "explorer/tools/serve-files/**",
+     "explorer/src/contract/**",
+     "explorer/src/data/**",
+     "explorer/contract/schema/**",
+     "explorer/collector/run.py",
+     "explorer/collector/lib/**",
+     "explorer/collector/tests/conftest.py",
+     "explorer/collector/tests/contract/**",
+     "explorer/tests/playwright.config.ts",
+     "explorer/tests/support/**",
+     "explorer/scripts/**",
+     "explorer/docs/CONTRACT.md",
+     "explorer/docs/DIGEST.md",
+     "explorer/docs/SOURCE-CONTRACT.md",
+     "explorer/docs/CONSTANTS.md"
+    ],
+    "depends_on": [],
+    "builds_against": [],
+    "acceptance": [
+     "npm install exits 0 with @<org>/apps-ui installed from vendor/ (<platform> apps vendor-package; its named next command run)",
+     "npx tsc --noEmit output has 0 'error TS'",
+     "python collector/run.py with no extractors exits 0 and writes manifest.json listing 13 records 'missing'",
+     "pytest collector/tests/contract exits 0",
+     "npx playwright test --list -c tests/playwright.config.ts exits 0 (0 tests)",
+     "docs/CONTRACT.md states: output encoding (React text only, SVG via <img>, no dangerouslySetInnerHTML), the line/part count definitions, the component-to-shape map, the honest-state vocabulary, the testid grammar '<route>.<element>', the part id grammar '<bom>:<ref>', check id ranges per lane '<lane>-C01..C99', ports 8790 (app) and 8797 (journeys), and the line 'where a brief and this file disagree, this file wins: follow it and report the conflict'"
+    ],
+    "model": "sonnet",
+    "surfaces": []
+   },
+   {
+    "id": "shell",
+    "owns": [
+     "explorer/src/main.tsx",
+     "explorer/src/app/**",
+     "explorer/src/styles/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "npm run build exits 0 with only shell + contract merged",
+     "with an empty bundle the 9 tabs render, each route shows 'screen not built yet' or its banner, 0 console errors",
+     "tests/checks/shell is not owned: shell's checks live in src/app/__checks__ (vitest) and pass"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "app shell: tab bar, layout, freshness stamp (desktop)"
+    ]
+   },
+   {
+    "id": "stage",
+    "owns": [
+     "explorer/src/stage/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "vitest src/stage passes",
+     "a stage harness page (src/stage/harness.html, dev only) loads the fixture's internals.glb or design/look/viewer/sample/out/ring.glb and sets window.__stage.ready; >= 2 % differing pixels",
+     "no CDN import; no part name literal from the bundle in src/stage (guard)"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "3D stage (shared component, desktop)"
+    ]
+   },
+   {
+    "id": "svg-viewer",
+    "owns": [
+     "explorer/src/components/SvgViewer/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "vitest src/components/SvgViewer passes: zoom 4.0 via buttons, fit resets to 1.0, SVG rendered through <img>"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "SvgViewer (shared component)"
+    ]
+   },
+   {
+    "id": "part-card",
+    "owns": [
+     "explorer/src/components/PartCard/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "vitest with a parts.json sample: BT1 plain words before the disclosure, part number hidden until opened, 'not on disk' link aria-disabled"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "PartCard (shared component)"
+    ]
+   },
+   {
+    "id": "part-notes",
+    "owns": [
+     "explorer/content/part-notes.json",
+     "explorer/collector/tests/part-notes/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "pytest collector/tests/part-notes exits 0: 77/77 ring lines covered, word limits, model_names exist"
+    ],
+    "model": "sonnet",
+    "surfaces": []
+   },
+   {
+    "id": "collector-parts",
+    "owns": [
+     "explorer/collector/extract/parts.py",
+     "explorer/collector/extract/files.py",
+     "explorer/collector/tests/collector-parts/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "pytest collector/tests/collector-parts exits 0 on a git-archive copy of commit 99dfb85 and on the live folder",
+     "parts.json and files.json validate against contract/schema"
+    ],
+    "model": "sonnet",
+    "surfaces": [],
+    "merged_units": [
+     "parts",
+     "files index",
+     "partner bundle zip"
+    ],
+    "unsplittable_reason": "files.py resolves every bom source link; the bundle reuses the same file walk; splitting duplicates the walk"
+   },
+   {
+    "id": "collector-model",
+    "owns": [
+     "explorer/collector/extract/placements.py",
+     "explorer/collector/extract/ring_model.py",
+     "explorer/collector/extract/screens.py",
+     "explorer/collector/cad/**",
+     "explorer/collector/tests/collector-model/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "the STEP-label rival probe result is written to docs/DIGEST.md by the lead from this lane's report",
+     "pytest collector/tests/collector-model exits 0",
+     "internals.glb node set == placement.csv part set"
+    ],
+    "model": "sonnet",
+    "surfaces": [],
+    "merged_units": [
+     "placements",
+     "ring model",
+     "screens spec",
+     "STEP-to-GLB helper"
+    ],
+    "unsplittable_reason": "layers, model nodes and screen geometry are derived in one pass over placement.csv and the look contract; the cad helper is consumed by collector-case"
+   },
+   {
+    "id": "collector-state",
+    "owns": [
+     "explorer/collector/extract/facts.py",
+     "explorer/collector/extract/areas.py",
+     "explorer/collector/tests/collector-state/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "pytest collector/tests/collector-state exits 0 including the A3/A4 staleness case and the no-status-file case"
+    ],
+    "model": "sonnet",
+    "surfaces": [],
+    "merged_units": [
+     "key numbers",
+     "area states"
+    ],
+    "unsplittable_reason": "both are read only by Home and the banners; one small lane avoids two 40-line lanes"
+   },
+   {
+    "id": "collector-look",
+    "owns": [
+     "explorer/collector/extract/look_options.py",
+     "explorer/collector/tests/collector-look/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "pytest collector/tests/collector-look exits 0"
+    ],
+    "model": "sonnet",
+    "surfaces": []
+   },
+   {
+    "id": "collector-electronics",
+    "owns": [
+     "explorer/collector/extract/schematic.py",
+     "explorer/collector/extract/electronics.py",
+     "explorer/collector/tests/collector-electronics/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "pytest collector/tests/collector-electronics exits 0, including the missing-kicad-cli fallback"
+    ],
+    "model": "sonnet",
+    "surfaces": [],
+    "merged_units": [
+     "schematic pages",
+     "blocks + pin plan + power budget"
+    ],
+    "unsplittable_reason": "blocks are defined by the same sheets the SVG export walks"
+   },
+   {
+    "id": "collector-board",
+    "owns": [
+     "explorer/collector/extract/board.py",
+     "explorer/collector/tests/collector-board/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "pytest collector/tests/collector-board exits 0"
+    ],
+    "model": "sonnet",
+    "surfaces": []
+   },
+   {
+    "id": "collector-behaviour",
+    "owns": [
+     "explorer/collector/extract/behaviour.py",
+     "explorer/collector/tests/collector-behaviour/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "pytest collector/tests/collector-behaviour exits 0"
+    ],
+    "model": "sonnet",
+    "surfaces": []
+   },
+   {
+    "id": "collector-case",
+    "owns": [
+     "explorer/collector/extract/case.py",
+     "explorer/collector/tests/collector-case/**"
+    ],
+    "depends_on": [
+     "collector-model"
+    ],
+    "builds_against": [
+     "contract",
+     "collector-model"
+    ],
+    "acceptance": [
+     "pytest collector/tests/collector-case exits 0"
+    ],
+    "model": "sonnet",
+    "surfaces": []
+   },
+   {
+    "id": "collector-open",
+    "owns": [
+     "explorer/collector/extract/open_items.py",
+     "explorer/collector/tests/collector-open/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "pytest collector/tests/collector-open exits 0"
+    ],
+    "model": "sonnet",
+    "surfaces": [],
+    "merged_units": [
+     "open items",
+     "decisions"
+    ],
+    "unsplittable_reason": "one DATA-MAP row (open-items, decisions) and one output file open.json"
+   },
+   {
+    "id": "behaviour-engine",
+    "owns": [
+     "explorer/src/engine/behaviour/**"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "vitest src/engine/behaviour passes the 4 cases of functionality-behaviour-engine; no state name literal in the folder"
+    ],
+    "model": "sonnet",
+    "surfaces": []
+   },
+   {
+    "id": "home",
+    "owns": [
+     "explorer/src/routes/home/**",
+     "explorer/tests/checks/home/**"
+    ],
+    "depends_on": [
+     "shell",
+     "stage",
+     "collector-state",
+     "collector-model"
+    ],
+    "builds_against": [
+     "contract",
+     "shell",
+     "stage"
+    ],
+    "acceptance": [
+     "tests/checks/home (lane ids home-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+     "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "Home (desktop)"
+    ]
+   },
+   {
+    "id": "look",
+    "owns": [
+     "explorer/src/routes/look/**",
+     "explorer/tests/checks/look/**"
+    ],
+    "depends_on": [
+     "shell",
+     "stage",
+     "collector-look",
+     "collector-model"
+    ],
+    "builds_against": [
+     "contract",
+     "shell",
+     "stage"
+    ],
+    "acceptance": [
+     "tests/checks/look (lane ids look-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+     "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "Look (desktop)"
+    ],
+    "merged_units": [
+     "option panels",
+     "finish/screen/view switches"
+    ],
+    "unsplittable_reason": "one surface; merged interaction units: the switches mutate every option panel of the same view; one state object"
+   },
+   {
+    "id": "inside",
+    "owns": [
+     "explorer/src/routes/inside/**",
+     "explorer/tests/checks/inside/**"
+    ],
+    "depends_on": [
+     "shell",
+     "stage",
+     "part-card",
+     "part-notes",
+     "collector-model",
+     "collector-parts"
+    ],
+    "builds_against": [
+     "contract",
+     "shell",
+     "stage"
+    ],
+    "acceptance": [
+     "tests/checks/inside (lane ids inside-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+     "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "Inside (desktop)"
+    ],
+    "merged_units": [
+     "explode slider",
+     "part pick",
+     "part search",
+     "layer list"
+    ],
+    "unsplittable_reason": "one surface; merged interaction units: all four read and write the one view state (selected part, explode value, isolated layer) that drives the shared stage; splitting them would invent a store"
+   },
+   {
+    "id": "electronics",
+    "owns": [
+     "explorer/src/routes/electronics/**",
+     "explorer/tests/checks/electronics/**"
+    ],
+    "depends_on": [
+     "shell",
+     "stage",
+     "svg-viewer",
+     "collector-electronics",
+     "collector-parts"
+    ],
+    "builds_against": [
+     "contract",
+     "shell",
+     "stage"
+    ],
+    "acceptance": [
+     "tests/checks/electronics (lane ids electronics-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+     "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "Electronics (desktop)"
+    ],
+    "merged_units": [
+     "block diagram",
+     "page viewer wiring",
+     "pin plan and power tables"
+    ],
+    "unsplittable_reason": "one surface; merged interaction units: block selection decides the page shown; one view state"
+   },
+   {
+    "id": "board",
+    "owns": [
+     "explorer/src/routes/board/**",
+     "explorer/tests/checks/board/**"
+    ],
+    "depends_on": [
+     "shell",
+     "stage",
+     "svg-viewer",
+     "part-card",
+     "collector-board",
+     "collector-parts"
+    ],
+    "builds_against": [
+     "contract",
+     "shell",
+     "stage"
+    ],
+    "acceptance": [
+     "tests/checks/board (lane ids board-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+     "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "Board (desktop)"
+    ],
+    "merged_units": [
+     "plan",
+     "side toggles"
+    ],
+    "unsplittable_reason": "one surface; merged interaction units: the toggles filter the plan they sit on"
+   },
+   {
+    "id": "parts",
+    "owns": [
+     "explorer/src/routes/parts/**",
+     "explorer/tests/checks/parts/**"
+    ],
+    "depends_on": [
+     "shell",
+     "part-card",
+     "collector-parts"
+    ],
+    "builds_against": [
+     "contract",
+     "shell"
+    ],
+    "acceptance": [
+     "tests/checks/parts (lane ids parts-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+     "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "Parts (desktop)"
+    ],
+    "merged_units": [
+     "table",
+     "filters",
+     "CSV export"
+    ],
+    "unsplittable_reason": "one surface; merged interaction units: filters and export act on the one table model"
+   },
+   {
+    "id": "behaviour",
+    "owns": [
+     "explorer/src/routes/behaviour/**",
+     "explorer/tests/checks/behaviour/**"
+    ],
+    "depends_on": [
+     "shell",
+     "stage",
+     "behaviour-engine",
+     "collector-behaviour",
+     "collector-model"
+    ],
+    "builds_against": [
+     "contract",
+     "shell",
+     "stage"
+    ],
+    "acceptance": [
+     "tests/checks/behaviour (lane ids behaviour-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+     "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "Behaviour (desktop)"
+    ],
+    "merged_units": [
+     "controls",
+     "ring reaction",
+     "state display"
+    ],
+    "unsplittable_reason": "one surface; merged interaction units: all three render one engine state"
+   },
+   {
+    "id": "case",
+    "owns": [
+     "explorer/src/routes/case/**",
+     "explorer/tests/checks/case/**"
+    ],
+    "depends_on": [
+     "shell",
+     "stage",
+     "part-card",
+     "collector-case"
+    ],
+    "builds_against": [
+     "contract",
+     "shell",
+     "stage"
+    ],
+    "acceptance": [
+     "tests/checks/case (lane ids case-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+     "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "Case (desktop)"
+    ],
+    "merged_units": [
+     "case stage",
+     "lid",
+     "pin cards"
+    ],
+    "unsplittable_reason": "one surface; merged interaction units: lid and pins act on the one case scene"
+   },
+   {
+    "id": "open-files",
+    "owns": [
+     "explorer/src/routes/open-files/**",
+     "explorer/tests/checks/open-files/**"
+    ],
+    "depends_on": [
+     "shell",
+     "collector-open",
+     "collector-parts",
+     "collector-state"
+    ],
+    "builds_against": [
+     "contract",
+     "shell"
+    ],
+    "acceptance": [
+     "tests/checks/open-files (lane ids open-files-C01..C99) pass against the live collect AND against an empty bundle (honest banner, 0 console errors)",
+     "with only its dependencies merged, the route renders inside the shell at 1512x982 with no page scroll"
+    ],
+    "model": "sonnet",
+    "surfaces": [
+     "Open items and files (desktop)"
+    ],
+    "merged_units": [
+     "open items + filter",
+     "files + bundle download"
+    ],
+    "unsplittable_reason": "one surface; merged interaction units: screen 9 is one screen with two sections behind one route (PRD screen 9; JOURNEYS J3.3 and J6.1 reach it from two tab-bar entries)"
+   },
+   {
+    "id": "fixture-a3",
+    "owns": [
+     "explorer/tests/fixtures/**"
+    ],
+    "depends_on": [
+     "collector-parts",
+     "collector-model",
+     "collector-state",
+     "collector-look",
+     "collector-electronics",
+     "collector-board",
+     "collector-behaviour",
+     "collector-case",
+     "collector-open",
+     "part-notes"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "make-fixture.sh exits 0 twice with byte-identical JSON; manifest git_commit starts '99dfb85'; parts lines 77"
+    ],
+    "model": "sonnet",
+    "surfaces": []
+   },
+   {
+    "id": "journeys-a",
+    "owns": [
+     "explorer/journeys/J1.spec.ts",
+     "explorer/journeys/J3.spec.ts",
+     "explorer/journeys/J6.spec.ts"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "the three specs list every step id of J1, J3, J6 and fail RED with assertion failures before the surfaces exist"
+    ],
+    "model": "sonnet",
+    "surfaces": [],
+    "merged_units": [
+     "J1",
+     "J3",
+     "J6"
+    ],
+    "unsplittable_reason": "each journey file is about 40 lines against one frozen testid grammar; the shared prologue (JOURNEYS + CONTRACT + harness) is paid once per lane, so 2 lanes instead of 7"
+   },
+   {
+    "id": "journeys-b",
+    "owns": [
+     "explorer/journeys/J2.spec.ts",
+     "explorer/journeys/J4.spec.ts",
+     "explorer/journeys/J5.spec.ts",
+     "explorer/journeys/J7.spec.ts"
+    ],
+    "depends_on": [
+     "contract"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "the four specs list every step id of J2, J4, J5, J7 and fail RED with assertion failures before the surfaces exist"
+    ],
+    "model": "sonnet",
+    "surfaces": [],
+    "merged_units": [
+     "J2",
+     "J4",
+     "J5",
+     "J7"
+    ],
+    "unsplittable_reason": "same as journeys-a"
+   },
+   {
+    "id": "seams",
+    "owns": [
+     "explorer/tests/seams/**"
+    ],
+    "depends_on": [
+     "home",
+     "inside",
+     "parts",
+     "board",
+     "electronics",
+     "open-files",
+     "fixture-a3"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "tests/seams pass on the fixture: one card everywhere, equal counts, equal area states, one vocabulary, one tab bar position"
+    ],
+    "model": "sonnet",
+    "surfaces": []
+   },
+   {
+    "id": "smoke-perf",
+    "owns": [
+     "explorer/tests/smoke/**"
+    ],
+    "depends_on": [
+     "home",
+     "look",
+     "inside",
+     "electronics",
+     "board",
+     "parts",
+     "behaviour",
+     "case",
+     "open-files",
+     "fixture-a3"
+    ],
+    "builds_against": [
+     "contract"
+    ],
+    "acceptance": [
+     "tests/smoke pass: 0 console errors on 9 routes x 2 bundles (fixture, empty); perf numbers written to tests/smoke/out/perf.json with cold and warm route reads; axe floor green"
+    ],
+    "model": "sonnet",
+    "surfaces": [],
+    "merged_units": [
+     "smoke",
+     "perf",
+     "a11y floor",
+     "S1 route checks"
+    ],
+    "unsplittable_reason": "all four drive the same 9 routes x 2 bundles in one browser session; the run, not the assertions, is the cost"
+   }
+  ]
+ },
+ "screen_links_owners": {
+  "Home": "home",
+  "Look": "look",
+  "Inside": "inside",
+  "Electronics": "electronics",
+  "Board": "board",
+  "Parts": "parts",
+  "Behaviour": "behaviour",
+  "Case": "case",
+  "Open items and files": "open-files",
+  "top bar (every 'top bar' link-in)": "shell",
+  "part card links (source, J1.4)": "part-card"
+ },
+ "surfaces_inherit_design": {
+  "surfaces": [
+   "Home",
+   "Look",
+   "Inside",
+   "Electronics",
+   "Board",
+   "Parts",
+   "Behaviour",
+   "Case",
+   "Open items and files"
+  ],
+  "picked-layout": "L1 Stage (inherited from docs/DESIGN.md)",
+  "picked-style": "S1 Gallery (inherited from docs/DESIGN.md)"
+ },
+ "base_decision": {
+  "verdict": "build fresh (Vite + React + TypeScript + three.js, Python collector) and KEEP the org component library @<org>/apps-ui, vendored with `<platform> apps vendor-package`",
+  "org_starter": "reject: a record-system skeleton with a node data spine, sign-in wiring and a deploy-gate marker; this app has no records, no writes and no hosting",
+  "scorecard": "explorer/docs/plan-notes.md section 'Base decision'"
+ },
+ "complexity_record": [
+  {
+   "added": "@gltf-transform/cli (meshopt)",
+   "why": "look C is 24 MB and about 1.06 million triangles (viewer-notes.md:29); first paint budget 1500 ms",
+   "simpler_alternative_rejected": "serve the raw GLB: a 24 MB load on every stage mount misses the budget and starves headless checks (viewer-notes.md:29)"
+  },
+  {
+   "added": "TanStack Query over static JSON",
+   "why": "frontend-architecture 1a: one named data layer, one cache entry per record, never-blank",
+   "simpler_alternative_rejected": "fetch per route: each of 9 routes re-fetches parts.json and drifts on loading states"
+  },
+  {
+   "added": "react-router",
+   "why": "9 routes with bookmarkable ?part= selection",
+   "simpler_alternative_rejected": "a hand-written hash switch: no nested panel routes, re-done per screen"
+  },
+  {
+   "added": "@fontsource packages",
+   "why": "offline fonts (PRD External services: none)",
+   "simpler_alternative_rejected": "Google Fonts link: breaks offline and the no-network check"
+  }
+ ],
+ "taste_questions": [
+  {
+   "id": "tq-stage-without-exterior",
+   "fork": "The owner retired exteriors A, B, C (\"I hate all of them\") and no slim exterior exists yet, but Home and Inside put the ring on the stage at all times (L1). What sits on the stage while no exterior is picked?",
+   "options": [
+    {
+     "label": "A neutral frosted shell at the block size from the architecture, the real internal parts visible through it, labelled 'Exterior not picked yet'",
+     "consequence": "shows the true size and what is inside; looks deliberately unfinished; nothing rejected is shown"
+    },
+    {
+     "label": "The internal parts only, no shell",
+     "consequence": "most honest and simplest; the stage reads as a technical model, nearer the 'toy' anti-reference"
+    },
+    {
+     "label": "A plain opaque black slab at the block size, no detail",
+     "consequence": "reads closest to the owner's reference object; hides the inside on Home until Inside opens it"
+    }
+   ],
+   "recommendation": "The neutral frosted shell: it keeps the ring on screen (the owner's reason for L1) at the true slim size, without showing a retired look."
+  },
+  {
+   "id": "tq-rejected-looks",
+   "fork": "A, B, C are retired and never shown as current (lead, from the owner's answer). Should the app still let the owner see them anywhere?",
+   "options": [
+    {
+     "label": "Hidden by default; one link 'Earlier options (rejected)' shows them",
+     "consequence": "the comparison stays about live choices; history one click away"
+    },
+    {
+     "label": "Shown below the new ones in a dimmed row marked 'Retired'",
+     "consequence": "full context at once; more rings on one screen, nearer the 'cluttered dashboard' anti-reference"
+    },
+    {
+     "label": "Not shown in the app at all",
+     "consequence": "cleanest; the history is only in the files list"
+    }
+   ],
+   "recommendation": "Hidden by default with one link: calm screen, nothing lost."
+  },
+  {
+   "id": "tq-behaviour-button",
+   "fork": "On Behaviour the owner presses and holds the record button and moves the joystick. Where does he press?",
+   "options": [
+    {
+     "label": "A large virtual button and a 5-way pad in the right panel; the 3D ring reacts on the stage",
+     "consequence": "reliable press-and-hold at any rotation, works by keyboard; the hand is not on the ring"
+    },
+    {
+     "label": "On the button and joystick of the 3D ring itself",
+     "consequence": "most direct; the button is small and can be hidden by the rotation; a long drag can rotate instead of press"
+    },
+    {
+     "label": "Both",
+     "consequence": "most complete; two ways to do one thing"
+    }
+   ],
+   "recommendation": "The panel controls: a 1-second hold must work every time, which a 2 mm button on a turning model cannot promise."
+  }
+ ],
+ "resolved_taste": [
+  {
+   "id": "tq-stage-without-exterior",
+   "answer": "Plain black slab (Recommended)",
+   "by": "owner",
+   "date": "2026-11-10"
+  },
+  {
+   "id": "tq-rejected-looks",
+   "answer": "Not in the app (Recommended)",
+   "by": "owner",
+   "date": "2026-11-10"
+  },
+  {
+   "id": "tq-behaviour-button",
+   "answer": "Both",
+   "by": "owner",
+   "date": "2026-11-10"
+  }
+ ],
+ "scope_diff": {
+  "added": [],
+  "dropped": [],
+  "deferred": [
+   {
+    "item": "phone layout (no mobile todos)",
+    "user_approved": "PRD Non-goals 'No hosting, no sign-in, no phone layout', signed: \"Approve the spec (Recommended)\" (answer on the spec card that listed the 9 screens, the read-only scope and the non-goals)"
+   },
+   {
+    "item": "'ask about this part' chat",
+    "user_approved": "PRD Non-goals 'No AI chat in version 1', same signed answer"
+   }
+  ]
+ },
+ "gaps": [
+  {
+   "id": "G1",
+   "blocking": "every surface lane",
+   "gap": "docs/surfaces/<surface>.md does not exist for any of the 9 surfaces; this plan names all 9 as inheriting DESIGN.md (L1 Stage, S1 Gallery).",
+   "resolution": "the lead writes the 9 files carrying 'picked-layout: L1 Stage (inherited)' and 'picked-style: S1 Gallery (inherited)' before surface lanes dispatch."
+  },
+  {
+   "id": "G2",
+   "blocking": "parts, inside, look, board, open-files, svg-viewer (complex controls)",
+   "gap": "Component inventory root does not resolve: the repo has no package.json yet, so @<org>/apps-ui is not installed and its catalog.json was not read. component_source on 7 todos says 'resolve at root'.",
+   "resolution": "the contract lane runs `<platform> apps vendor-package` once package.json exists; the lead reads catalog.json + CHOOSING.md + MOTION.md and fills component_source before those lanes dispatch. If the verb returns 403 or unknown, the scorecard fallback is shown to the owner."
+  },
+  {
+   "id": "G3",
+   "blocking": "J2.2 on the live design (the fixture carries a frozen copy)",
+   "gap": "The four finishes exist only as a table in the seed viewer (design/look/viewer/viewer.js:11-16); no design file holds them.",
+   "resolution": "the look lane writes design/look/shared/finishes.json (name, colour, roughness), or the lead allows the collector to read the seed's table once."
+  },
+  {
+   "id": "G4",
+   "blocking": "J3.1 tile states (else 'state unknown')",
+   "gap": "No project record export exists: design/status.json is not written by anyone.",
+   "resolution": "the lead writes it when board rows move (interpretation row 6)."
+  },
+  {
+   "id": "G5",
+   "blocking": "owner's one-line OK",
+   "gap": "Data-map deltas: blocks from schematic sheets (C4) and part-notes gains model_names (C5).",
+   "resolution": "the lead shows the owner the two deltas in one line before dispatch; the plan runs as written on 'yes'."
+  },
+  {
+   "id": "G6",
+   "blocking": "journeys J2 and J7 assertions",
+   "gap": "JOURNEYS real-data commit 7274c69 holds no exterior files; look C's GLB is not in git; J7.1 says '6.4 minutes per recorded hour' but the files say 6.3 (Conflicts C1, C9).",
+   "resolution": "owner confirms the re-pin to the 99dfb85 fixture; the J7.1 figure is corrected in JOURNEYS.md by the lead or the test asserts the source value."
+  },
+  {
+   "id": "G7",
+   "blocking": "no (recorded only)",
+   "gap": "PRD Test plan names '3D frame time against the budget' but the Perf-budget line has no frame-time number.",
+   "resolution": "frame time is recorded in tests/smoke/out/perf.json, not gated, until the owner sets a number."
+  }
+ ],
+ "coverage_note": "Todos per dimension: functionality 21, ux 13, interaction 17, visual 6, consistency 4, mobile 0. Mobile is EMPTY on purpose: the signed PRD Non-goals say 'no phone layout' (scope_diff.deferred row 1); desktop sizes 1512x982 and 1280x800 are in every capture row. No other dimension is empty. Every journey step J1.1-J7.2 (20 steps) maps to at least one todo (journey_steps). Every DATA-MAP row has a collector todo; no row lives in a database, so no migrations todo is owed. Every screen link has one owning lane (screen_links_owners). Cautions: (a) docs/CONTRACT.md wins over any lane brief; (b) collector extractors read design files the slim-ring lanes are rewriting right now: every extractor must degrade to 'unparsed' with the file name, never crash, and its tests run on the frozen 99dfb85 copy; (c) explorer/public/data/ is generated and owned by no lane: never commit it; (d) the stage is one shared canvas: routes drive it only through the StageScene contract, never by importing three.js; (e) 30 lanes in 5 dependency levels: level 0 contract (1); level 1 shell, stage, svg-viewer, part-card, part-notes, 8 collector lanes, behaviour-engine, journeys-a, journeys-b (16); level 2 collector-case and 8 surfaces (9); level 3 case and fixture-a3 (2); level 4 seams and smoke-perf (2). NOT verified: the org starter's and apps-ui's contents (nothing fetched; scorecard rows come from starter-guide.md:22-28); kicad-cli sch export svg output (only its help was read); whether build123d reads STEP labels or exports the case GLB (rival probe owed); whether meshopt brings look C under GLB_MAX_MB; the weight value (mass-estimate.csv not summed); firmware.md beyond line 260, requirements.md, feasibility.md, partners.md, mech-notes.md, bom-notes.md and case-architecture.md beyond their headings and the lines cited; REF/parallel-agent-builds.md (0 of 715 lines read); ports 8790 and 8797 were free at planning time only. Would change the plan: STEP labels readable (internals switch to real shapes, same lane); apps-ui lacking a table (parts lane becomes a library-addition request); kicad-cli SVG unusable (Electronics shows PDF pages, same lane).",
+ "unverified": [
+  "org starter and apps-ui contents",
+  "kicad-cli svg export output",
+  "build123d STEP labels and STEP->GLB export",
+  "meshopt size of look C",
+  "weight value",
+  "firmware.md after line 260 and the other documents beyond the cited lines",
+  "REF/parallel-agent-builds.md not read",
+  "port availability after planning time"
+ ]
+}

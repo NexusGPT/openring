@@ -1,0 +1,11 @@
+--- a/ring_control/src/rctl.c
++++ b/ring_control/src/rctl.c
+@@ -220,7 +220,7 @@
+ 			stats.errors++;
+ 			printk("rctl: send failed %d (%s %s, report %zu)\n", err, rctl_mode_name(mode),
+ 			       rctl_action_name(action), i);
+-			if (i > 0) {
++			if (false) {
+ 				/* the press went out: the release must follow, later */
+ 				memcpy(pend, &r[i], sizeof(r[0]) * (n - i));
+ 				rctl_wait_start(&wait_state, (int)(n - i));

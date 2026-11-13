@@ -1,0 +1,9 @@
+53a54,57
+> # Board round 4 (lead's ruling of 2026-11-13, E2): J1's pin MP is the two fitting tabs of the screen connector, pads of a part on
+> # its own board soldered to that board's ground (ring-board-plan.md R2.6); no connection between boards or to an off-board part,
+> # so the wiring list has no line for them and they are left out of the terminal set
+> NOT_TERMINALS = {("ring", "J1", "MP")}
+92c96
+<             if r["reference"] in refs:
+---
+>             if r["reference"] in refs and (prod, r["reference"], r["pin_number"]) not in NOT_TERMINALS:

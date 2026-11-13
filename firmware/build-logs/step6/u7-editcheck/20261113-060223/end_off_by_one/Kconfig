@@ -1,0 +1,27 @@
+config RING_SYS_LOGIC
+	bool "Ring sys: update checks, self-test steps, crash block, watchdog rule, saved time (pure part, no kernel call)"
+	select CRC
+	help
+	  Image size and range checks, the running CRC-32, the 30 s self-test step machine, the update-allowed rule,
+	  the crash block format, the watchdog feed decision and the saved-time guess (design/firmware.md sections 9.1
+	  to 9.4). Stdint, stdbool, string and the CRC library only.
+
+config RING_SYS
+	bool "Ring sys: firmware update, settings, crash capture, watchdog (thin part, hardware only through ring_rhw)"
+	depends on RING_RHW
+	select RING_SYS_LOGIC
+	help
+	  The update calls on slot 1, the self-test window, the factory flag and saved time in the settings, the crash
+	  block in retained memory and the watchdog feed work (design/firmware.md sections 9.1 to 9.4).
+
+if RING_SYS
+
+config RING_SYS_FATAL_HANDLER
+	bool "Replace k_sys_fatal_error_handler() with the crash capture of FW l.1063"
+	default y
+	depends on !ZTEST
+	help
+	  The test framework defines its own handler, so test builds leave this off and call the capture function
+	  of rsy_int.h directly.
+
+endif

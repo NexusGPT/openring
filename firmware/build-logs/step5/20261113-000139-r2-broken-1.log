@@ -1,0 +1,21 @@
+# remote.sh run 20261113-000139-r2-broken-1
+# command: mkdir -p /ws/out/r2-b && RING_OUT=/ws/out/r2-b/lg bash tests/relay/broken_run.sh category_above_11_refused > /ws/out/r2-b/lg.log 2>&1; echo "logic broken exit $?"; grep -a "named case\|^RESULT" /ws/out/r2-b/lg.log | cut -c1-200; RING_OUT=/ws/out/r2-b/bt bash tests/bsim/relay/run.sh --broken "store_not_emptied_at_link_end refused_frame_changes_store sc_clears_relay_entries hello_keeps_queue action_counted_when_queue_full" > /ws/out/r2-b/bt.log 2>&1; echo "bsim broken exit $?"; grep -a "^broken .*: \|^RESULT" /ws/out/r2-b/bt.log | sed "s/^\(broken [a-z_0-9]*: .\{0,160\}\).*/\1/" 
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 00:01:39 CET
+# free on the server's /: 47 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261113-000139-r2-broken-1; server log /root/ring-os/logs/20261113-000139-r2-broken-1.log
+logic broken exit 0
+category_above_11_refused on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_flags_and_category] duration = 0.000 seconds (failed cases listed: 1)
+category_above_11_refused on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_flags_and_category] duration = 0.000 seconds (faile
+RESULT PASS
+bsim broken exit 0
+broken store_not_emptied_at_link_end: test H failed on its named check, as required: d_00: @00:01:01.716902  RING CHECK H: the link dropped: the store is empty FAIL (t=61716)
+broken refused_frame_changes_store: test H failed on its named check, as required: d_00: @00:00:59.972602  RING CHECK H: the malformed frames changed nothing: no put, remove, clear or HELLO accept
+broken sc_clears_relay_entries: test B failed on its named check, as required: d_00: @00:00:24.611470  RING CHECK B: Service Changed was indicated and the ring still holds the relay's entries 
+broken hello_keeps_queue: test Q failed on its named check, as required: d_01: @00:00:14.316744  HELPER CHECK Q: after the second HELLO the first frame on Out is READY (81 01 10) FAIL (t
+broken action_counted_when_queue_full: test Q failed on its named check, as required: d_00: @00:00:14.113762  RING CHECK Q: with the Out queue full an action is refused on the ring (-EBUSY) and is no
+RESULT PASS
+# finished (Mac clock): 2026-11-13 00:07:35 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step5/20261113-000139-r2-broken-1.log

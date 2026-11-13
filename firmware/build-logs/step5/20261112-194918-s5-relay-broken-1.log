@@ -1,0 +1,775 @@
+# remote.sh run 20261112-194918-s5-relay-broken-1
+# command: tests/relay/broken_run.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 19:49:18 CET
+# free on the server's /: 45 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261112-194918-s5-relay-broken-1; server log /root/ring-os/logs/20261112-194918-s5-relay-broken-1.log
+##### broken copy: put_early
+Common subdirectories: /ws/firmware/modules/ring_relay/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_put_early/include
+Common subdirectories: /ws/firmware/modules/ring_relay/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_put_early/src
+Common subdirectories: /ws/firmware/modules/ring_relay/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_put_early/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.029s <host/gnu>)
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:109: put_pieces: (r.act not equal to RRL_ACT_NONE)
+ FAIL - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:344: ring_relay_test_code_3_order: (one(&s, false, f, n).act not equal to RRL_ACT_NONE)
+ FAIL - test_code_3_order in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:399: ring_relay_test_code_4_total: (one(&s, false, f, n).act not equal to RRL_ACT_NONE)
+ FAIL - test_code_4_total in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:109: put_pieces: (r.act not equal to RRL_ACT_NONE)
+ FAIL - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+ PASS - test_code_7_one_source_per_link in 0.000 seconds
+ PASS - test_every_opcode in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:109: put_pieces: (r.act not equal to RRL_ACT_NONE)
+ FAIL - test_every_truncation_of_a_valid_record in 0.000 seconds
+ PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+ PASS - test_fields_in_any_order_each_once in 0.000 seconds
+ PASS - test_flags_and_category in 0.000 seconds
+ PASS - test_info_and_out_frames in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:109: put_pieces: (r.act not equal to RRL_ACT_NONE)
+ FAIL - test_pieces_of_every_size in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:887: ring_relay_test_put_not_stored_before_its_last_piece: (res.act not equal to RRL_ACT_NONE)
+ FAIL - test_put_not_stored_before_its_last_piece in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:109: put_pieces: (r.act not equal to RRL_ACT_NONE)
+ FAIL - test_record_of_2_and_512_and_513 in 0.000 seconds
+ PASS - test_refused_frames_change_nothing in 0.000 seconds
+ PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+ PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+ PASS - test_texts_cut_at_a_character in 0.000 seconds
+twister exit code on the broken copy put_early, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-put_early-native_sim.log)
+put_early on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_put_not_stored_before_its_last_piece] duration = 0.000 seconds (failed cases listed: 8)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.021s <host/gnu>)
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:109: put_pieces: (r.act not equal to RRL_ACT_NONE)
+d_00: @00:00:00.000093   FAIL - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:344: ring_relay_test_code_3_order: (one(&s, false, f, n).act not equal to RRL_ACT_NONE)
+d_00: @00:00:00.000093   FAIL - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:399: ring_relay_test_code_4_total: (one(&s, false, f, n).act not equal to RRL_ACT_NONE)
+d_00: @00:00:00.000093   FAIL - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:109: put_pieces: (r.act not equal to RRL_ACT_NONE)
+d_00: @00:00:00.000093   FAIL - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:109: put_pieces: (r.act not equal to RRL_ACT_NONE)
+d_00: @00:00:00.000093   FAIL - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:109: put_pieces: (r.act not equal to RRL_ACT_NONE)
+d_00: @00:00:00.000093   FAIL - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:887: ring_relay_test_put_not_stored_before_its_last_piece: (res.act not equal to RRL_ACT_NONE)
+d_00: @00:00:00.000093   FAIL - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:109: put_pieces: (r.act not equal to RRL_ACT_NONE)
+d_00: @00:00:00.000093   FAIL - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_texts_cut_at_a_character in 0.000 seconds
+twister exit code on the broken copy put_early, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-put_early-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+put_early on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_put_not_stored_before_its_last_piece] duration = 0.000 seconds (failed cases listed: 8)
+##### broken copy: refused_changes_store
+Common subdirectories: /ws/firmware/modules/ring_relay/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_refused_changes_store/include
+Common subdirectories: /ws/firmware/modules/ring_relay/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_refused_changes_store/src
+Common subdirectories: /ws/firmware/modules/ring_relay/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_refused_changes_store/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.024s <host/gnu>)
+ PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+ PASS - test_code_3_order in 0.000 seconds
+ PASS - test_code_4_total in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+ FAIL - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+ PASS - test_code_7_one_source_per_link in 0.000 seconds
+ PASS - test_every_opcode in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:794: ring_relay_test_every_truncation_of_a_valid_record: (res.act not equal to RRL_ACT_ERROR)
+ FAIL - test_every_truncation_of_a_valid_record in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:862: ring_relay_test_every_truncation_of_the_largest_record: (res.act not equal to boundary ? RRL_ACT_PUT : RRL_ACT_ERROR)
+ FAIL - test_every_truncation_of_the_largest_record in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1071: ring_relay_test_fields_in_any_order_each_once: res.act not equal to RRL_ACT_ERROR
+ FAIL - test_fields_in_any_order_each_once in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1002: ring_relay_test_flags_and_category: (res.act not equal to RRL_ACT_ERROR)
+ FAIL - test_flags_and_category in 0.000 seconds
+ PASS - test_info_and_out_frames in 0.000 seconds
+ PASS - test_pieces_of_every_size in 0.000 seconds
+ PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+ PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:597: ring_relay_test_refused_frames_change_nothing: (res.act not equal to RRL_ACT_ERROR)
+ FAIL - test_refused_frames_change_nothing in 0.000 seconds
+ PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+ PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+ PASS - test_texts_cut_at_a_character in 0.000 seconds
+ PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+TESTSUITE ring_relay failed.
+twister exit code on the broken copy refused_changes_store, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-refused_changes_store-native_sim.log)
+refused_changes_store on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_refused_frames_change_nothing] duration = 0.000 seconds (failed cases listed: 6)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.020s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:794: ring_relay_test_every_truncation_of_a_valid_record: (res.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:862: ring_relay_test_every_truncation_of_the_largest_record: (res.act not equal to boundary ? RRL_ACT_PUT : RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1071: ring_relay_test_fields_in_any_order_each_once: res.act not equal to RRL_ACT_ERROR
+d_00: @00:00:00.000093   FAIL - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1002: ring_relay_test_flags_and_category: (res.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:597: ring_relay_test_refused_frames_change_nothing: (res.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_texts_cut_at_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_relay failed.
+twister exit code on the broken copy refused_changes_store, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-refused_changes_store-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+refused_changes_store on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_refused_frames_change_nothing] duration = 0.000 seconds (failed cases listed: 6)
+##### broken copy: text_cut_inside_char
+Common subdirectories: /ws/firmware/modules/ring_inbox/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_inbox_text_cut_inside_char/include
+Common subdirectories: /ws/firmware/modules/ring_inbox/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_inbox_text_cut_inside_char/src
+Common subdirectories: /ws/firmware/modules/ring_inbox/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_inbox_text_cut_inside_char/zephyr
+FAILED: [code=1] modules/ring_inbox/CMakeFiles/ring_inbox.dir/src/rinbox.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 11.47 seconds.
+INFO    - 0 of 22 executed test cases passed (0.00%), 22 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy text_cut_inside_char, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-text_cut_inside_char-native_sim.log)
+text_cut_inside_char on native_sim: the named case did not fail (twister exit 1): FAIL - [ring_relay.test_texts_cut_at_a_character]
+FAILED: [code=1] modules/ring_inbox/CMakeFiles/ring_inbox.dir/src/rinbox.c.obj 
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 11.77 seconds.
+INFO    - 0 of 22 executed test cases passed (0.00%), 22 blocked on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy text_cut_inside_char, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-text_cut_inside_char-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+text_cut_inside_char on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): FAIL - [ring_relay.test_texts_cut_at_a_character]
+##### broken copy: remove_ignored
+Common subdirectories: /ws/firmware/modules/ring_relay/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_remove_ignored/include
+Common subdirectories: /ws/firmware/modules/ring_relay/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_remove_ignored/src
+Common subdirectories: /ws/firmware/modules/ring_relay/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_remove_ignored/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.016s <host/gnu>)
+ PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+ PASS - test_code_3_order in 0.000 seconds
+ PASS - test_code_4_total in 0.000 seconds
+ PASS - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+ PASS - test_code_7_one_source_per_link in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:220: ring_relay_test_every_opcode: (r.act not equal to RRL_ACT_REMOVE)
+ FAIL - test_every_opcode in 0.000 seconds
+ PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+ PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+ PASS - test_fields_in_any_order_each_once in 0.000 seconds
+ PASS - test_flags_and_category in 0.000 seconds
+ PASS - test_info_and_out_frames in 0.000 seconds
+ PASS - test_pieces_of_every_size in 0.000 seconds
+ PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+ PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+ PASS - test_refused_frames_change_nothing in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1184: ring_relay_test_remove_clear_and_hello_empty_the_store: res.act not equal to RRL_ACT_REMOVE
+ FAIL - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+ PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+ PASS - test_texts_cut_at_a_character in 0.000 seconds
+ PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+TESTSUITE ring_relay failed.
+SUITE FAIL -  90.91% [ring_relay]: pass = 20, fail = 2, skip = 0, total = 22 duration = 0.000 seconds
+ - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+twister exit code on the broken copy remove_ignored, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-remove_ignored-native_sim.log)
+remove_ignored on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_remove_clear_and_hello_empty_the_store] duration = 0.000 seconds (failed cases listed: 2)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.017s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:220: ring_relay_test_every_opcode: (r.act not equal to RRL_ACT_REMOVE)
+d_00: @00:00:00.000093   FAIL - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1184: ring_relay_test_remove_clear_and_hello_empty_the_store: res.act not equal to RRL_ACT_REMOVE
+d_00: @00:00:00.000093   FAIL - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_texts_cut_at_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_relay failed.
+d_00: @00:00:00.000093  SUITE FAIL -  90.91% [ring_relay]: pass = 20, fail = 2, skip = 0, total = 22 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+twister exit code on the broken copy remove_ignored, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-remove_ignored-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+remove_ignored on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_remove_clear_and_hello_empty_the_store] duration = 0.000 seconds (failed cases listed: 2)
+##### broken copy: total_min_1
+Common subdirectories: /ws/firmware/modules/ring_relay/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_total_min_1/include
+Common subdirectories: /ws/firmware/modules/ring_relay/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_total_min_1/src
+Common subdirectories: /ws/firmware/modules/ring_relay/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_total_min_1/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.016s <host/gnu>)
+ PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+ PASS - test_code_3_order in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:150: expect_err: (r.err not equal to code)
+ FAIL - test_code_4_total in 0.000 seconds
+ PASS - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+ PASS - test_code_7_one_source_per_link in 0.000 seconds
+ PASS - test_every_opcode in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:778: ring_relay_test_every_truncation_of_a_valid_record: (res.err not equal to 4)
+ FAIL - test_every_truncation_of_a_valid_record in 0.000 seconds
+ PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+ PASS - test_fields_in_any_order_each_once in 0.000 seconds
+ PASS - test_flags_and_category in 0.000 seconds
+ PASS - test_info_and_out_frames in 0.000 seconds
+ PASS - test_pieces_of_every_size in 0.000 seconds
+ PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:150: expect_err: (r.err not equal to code)
+ FAIL - test_record_of_2_and_512_and_513 in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:593: ring_relay_test_refused_frames_change_nothing: (res.err not equal to (4))
+ FAIL - test_refused_frames_change_nothing in 0.000 seconds
+ PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+ PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+ PASS - test_texts_cut_at_a_character in 0.000 seconds
+ PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+TESTSUITE ring_relay failed.
+SUITE FAIL -  81.82% [ring_relay]: pass = 18, fail = 4, skip = 0, total = 22 duration = 0.000 seconds
+ - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+twister exit code on the broken copy total_min_1, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-total_min_1-native_sim.log)
+total_min_1 on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_code_4_total] duration = 0.000 seconds (failed cases listed: 4)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.019s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:150: expect_err: (r.err not equal to code)
+d_00: @00:00:00.000093   FAIL - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:778: ring_relay_test_every_truncation_of_a_valid_record: (res.err not equal to 4)
+d_00: @00:00:00.000093   FAIL - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:150: expect_err: (r.err not equal to code)
+d_00: @00:00:00.000093   FAIL - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:593: ring_relay_test_refused_frames_change_nothing: (res.err not equal to (4))
+d_00: @00:00:00.000093   FAIL - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_texts_cut_at_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_relay failed.
+d_00: @00:00:00.000093  SUITE FAIL -  81.82% [ring_relay]: pass = 18, fail = 4, skip = 0, total = 22 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+twister exit code on the broken copy total_min_1, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-total_min_1-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+total_min_1 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_code_4_total] duration = 0.000 seconds (failed cases listed: 4)
+##### broken copy: total_max_513
+Common subdirectories: /ws/firmware/modules/ring_relay/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_total_max_513/include
+Common subdirectories: /ws/firmware/modules/ring_relay/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_total_max_513/src
+Common subdirectories: /ws/firmware/modules/ring_relay/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_total_max_513/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.017s <host/gnu>)
+ PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+ PASS - test_code_3_order in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+ FAIL - test_code_4_total in 0.000 seconds
+ PASS - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+ PASS - test_code_7_one_source_per_link in 0.000 seconds
+ PASS - test_every_opcode in 0.000 seconds
+ PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+ PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+ PASS - test_fields_in_any_order_each_once in 0.000 seconds
+ PASS - test_flags_and_category in 0.000 seconds
+ PASS - test_info_and_out_frames in 0.000 seconds
+ PASS - test_pieces_of_every_size in 0.000 seconds
+ PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+ FAIL - test_record_of_2_and_512_and_513 in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:591: ring_relay_test_refused_frames_change_nothing: (res.act not equal to RRL_ACT_ERROR)
+ FAIL - test_refused_frames_change_nothing in 0.000 seconds
+ PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+ PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+ PASS - test_texts_cut_at_a_character in 0.000 seconds
+ PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+TESTSUITE ring_relay failed.
+SUITE FAIL -  86.36% [ring_relay]: pass = 19, fail = 3, skip = 0, total = 22 duration = 0.000 seconds
+ - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+twister exit code on the broken copy total_max_513, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-total_max_513-native_sim.log)
+total_max_513 on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_code_4_total] duration = 0.000 seconds (failed cases listed: 3)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.020s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:591: ring_relay_test_refused_frames_change_nothing: (res.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_texts_cut_at_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_relay failed.
+d_00: @00:00:00.000093  SUITE FAIL -  86.36% [ring_relay]: pass = 19, fail = 3, skip = 0, total = 22 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+twister exit code on the broken copy total_max_513, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-total_max_513-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+total_max_513 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_code_4_total] duration = 0.000 seconds (failed cases listed: 3)
+##### broken copy: replace_moves_front
+Common subdirectories: /ws/firmware/modules/ring_inbox/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_inbox_replace_moves_front/include
+Common subdirectories: /ws/firmware/modules/ring_inbox/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_inbox_replace_moves_front/src
+Common subdirectories: /ws/firmware/modules/ring_inbox/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_inbox_replace_moves_front/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.017s <host/gnu>)
+ PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+ PASS - test_code_3_order in 0.000 seconds
+ PASS - test_code_4_total in 0.000 seconds
+ PASS - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+ PASS - test_code_7_one_source_per_link in 0.000 seconds
+ PASS - test_every_opcode in 0.000 seconds
+ PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+ PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+ PASS - test_fields_in_any_order_each_once in 0.000 seconds
+ PASS - test_flags_and_category in 0.000 seconds
+ PASS - test_info_and_out_frames in 0.000 seconds
+ PASS - test_pieces_of_every_size in 0.000 seconds
+ PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+ PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+ PASS - test_refused_frames_change_nothing in 0.000 seconds
+ PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:160: expect_item: (it->uid not equal to uid)
+ FAIL - test_replace_keeps_place_and_read_mark in 0.000 seconds
+ PASS - test_texts_cut_at_a_character in 0.000 seconds
+ PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+TESTSUITE ring_relay failed.
+SUITE FAIL -  95.45% [ring_relay]: pass = 21, fail = 1, skip = 0, total = 22 duration = 0.000 seconds
+ - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_3_order] duration = 0.000 seconds
+twister exit code on the broken copy replace_moves_front, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-replace_moves_front-native_sim.log)
+replace_moves_front on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_replace_keeps_place_and_read_mark] duration = 0.000 seconds (failed cases listed: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.016s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:160: expect_item: (it->uid not equal to uid)
+d_00: @00:00:00.000093   FAIL - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_texts_cut_at_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_relay failed.
+d_00: @00:00:00.000093  SUITE FAIL -  95.45% [ring_relay]: pass = 21, fail = 1, skip = 0, total = 22 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_3_order] duration = 0.000 seconds
+twister exit code on the broken copy replace_moves_front, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-replace_moves_front-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+replace_moves_front on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_replace_keeps_place_and_read_mark] duration = 0.000 seconds (failed cases listed: 1)
+##### broken copy: store_17
+Common subdirectories: /ws/firmware/modules/ring_inbox/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_inbox_store_17/include
+Common subdirectories: /ws/firmware/modules/ring_inbox/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_inbox_store_17/src
+Common subdirectories: /ws/firmware/modules/ring_inbox/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_inbox_store_17/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.019s <host/gnu>)
+ PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+ PASS - test_code_3_order in 0.000 seconds
+ PASS - test_code_4_total in 0.000 seconds
+ PASS - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+ PASS - test_code_7_one_source_per_link in 0.000 seconds
+ PASS - test_every_opcode in 0.000 seconds
+ PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+ PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+ PASS - test_fields_in_any_order_each_once in 0.000 seconds
+ PASS - test_flags_and_category in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:181: ring_relay_test_info_and_out_frames: o not equal to info
+ FAIL - test_info_and_out_frames in 0.000 seconds
+ PASS - test_pieces_of_every_size in 0.000 seconds
+ PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+ PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+ PASS - test_refused_frames_change_nothing in 0.000 seconds
+ PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+ PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+ PASS - test_texts_cut_at_a_character in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1160: ring_relay_test_the_17th_pushes_the_oldest_out: (rinbox_count(&b) not equal to 16)
+ FAIL - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+TESTSUITE ring_relay failed.
+SUITE FAIL -  90.91% [ring_relay]: pass = 20, fail = 2, skip = 0, total = 22 duration = 0.000 seconds
+ - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+twister exit code on the broken copy store_17, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-store_17-native_sim.log)
+store_17 on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_the_17th_pushes_the_oldest_out] duration = 0.000 seconds (failed cases listed: 2)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.019s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:181: ring_relay_test_info_and_out_frames: o not equal to info
+d_00: @00:00:00.000093   FAIL - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_texts_cut_at_a_character in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1160: ring_relay_test_the_17th_pushes_the_oldest_out: (rinbox_count(&b) not equal to 16)
+d_00: @00:00:00.000093   FAIL - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_relay failed.
+d_00: @00:00:00.000093  SUITE FAIL -  90.91% [ring_relay]: pass = 20, fail = 2, skip = 0, total = 22 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+twister exit code on the broken copy store_17, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-store_17-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+store_17 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_the_17th_pushes_the_oldest_out] duration = 0.000 seconds (failed cases listed: 2)
+##### broken copy: flag_bit5_ok
+Common subdirectories: /ws/firmware/modules/ring_relay/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_flag_bit5_ok/include
+Common subdirectories: /ws/firmware/modules/ring_relay/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_flag_bit5_ok/src
+Common subdirectories: /ws/firmware/modules/ring_relay/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_flag_bit5_ok/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.017s <host/gnu>)
+ PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+ PASS - test_code_3_order in 0.000 seconds
+ PASS - test_code_4_total in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+ FAIL - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+ PASS - test_code_7_one_source_per_link in 0.000 seconds
+ PASS - test_every_opcode in 0.000 seconds
+ PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+ PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+ PASS - test_fields_in_any_order_each_once in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1002: ring_relay_test_flags_and_category: (res.act not equal to RRL_ACT_ERROR)
+ FAIL - test_flags_and_category in 0.000 seconds
+ PASS - test_info_and_out_frames in 0.000 seconds
+ PASS - test_pieces_of_every_size in 0.000 seconds
+ PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+ PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:597: ring_relay_test_refused_frames_change_nothing: (res.act not equal to RRL_ACT_ERROR)
+ FAIL - test_refused_frames_change_nothing in 0.000 seconds
+ PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+ PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+ PASS - test_texts_cut_at_a_character in 0.000 seconds
+ PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+TESTSUITE ring_relay failed.
+SUITE FAIL -  86.36% [ring_relay]: pass = 19, fail = 3, skip = 0, total = 22 duration = 0.000 seconds
+ - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+twister exit code on the broken copy flag_bit5_ok, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-flag_bit5_ok-native_sim.log)
+flag_bit5_ok on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_code_5_malformed_record] duration = 0.000 seconds (failed cases listed: 3)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.017s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1002: ring_relay_test_flags_and_category: (res.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:597: ring_relay_test_refused_frames_change_nothing: (res.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_texts_cut_at_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_relay failed.
+d_00: @00:00:00.000093  SUITE FAIL -  86.36% [ring_relay]: pass = 19, fail = 3, skip = 0, total = 22 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+twister exit code on the broken copy flag_bit5_ok, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-flag_bit5_ok-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+flag_bit5_ok on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_code_5_malformed_record] duration = 0.000 seconds (failed cases listed: 3)
+##### broken copy: code7_not_enforced
+Common subdirectories: /ws/firmware/modules/ring_relay/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_code7_not_enforced/include
+Common subdirectories: /ws/firmware/modules/ring_relay/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_code7_not_enforced/src
+Common subdirectories: /ws/firmware/modules/ring_relay/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_code7_not_enforced/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.015s <host/gnu>)
+ PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+ PASS - test_code_3_order in 0.000 seconds
+ PASS - test_code_4_total in 0.000 seconds
+ PASS - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:486: expect_apple: (r.act not equal to RRL_ACT_ERROR)
+ FAIL - test_code_7_one_source_per_link in 0.000 seconds
+ PASS - test_every_opcode in 0.000 seconds
+ PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+ PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+ PASS - test_fields_in_any_order_each_once in 0.000 seconds
+ PASS - test_flags_and_category in 0.000 seconds
+ PASS - test_info_and_out_frames in 0.000 seconds
+ PASS - test_pieces_of_every_size in 0.000 seconds
+ PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+ PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:623: ring_relay_test_refused_frames_change_nothing: res.err not equal to 7
+ FAIL - test_refused_frames_change_nothing in 0.000 seconds
+ PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+ PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+ PASS - test_texts_cut_at_a_character in 0.000 seconds
+ PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+TESTSUITE ring_relay failed.
+SUITE FAIL -  90.91% [ring_relay]: pass = 20, fail = 2, skip = 0, total = 22 duration = 0.000 seconds
+ - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+twister exit code on the broken copy code7_not_enforced, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-code7_not_enforced-native_sim.log)
+code7_not_enforced on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_code_7_one_source_per_link] duration = 0.000 seconds (failed cases listed: 2)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.018s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:486: expect_apple: (r.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:623: ring_relay_test_refused_frames_change_nothing: res.err not equal to 7
+d_00: @00:00:00.000093   FAIL - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_texts_cut_at_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_relay failed.
+d_00: @00:00:00.000093  SUITE FAIL -  90.91% [ring_relay]: pass = 20, fail = 2, skip = 0, total = 22 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+twister exit code on the broken copy code7_not_enforced, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-code7_not_enforced-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+code7_not_enforced on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_code_7_one_source_per_link] duration = 0.000 seconds (failed cases listed: 2)
+##### broken copy: repeat_type_ok
+Common subdirectories: /ws/firmware/modules/ring_relay/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_repeat_type_ok/include
+Common subdirectories: /ws/firmware/modules/ring_relay/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_repeat_type_ok/src
+Common subdirectories: /ws/firmware/modules/ring_relay/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_repeat_type_ok/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.018s <host/gnu>)
+ PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+ PASS - test_code_3_order in 0.000 seconds
+ PASS - test_code_4_total in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+ FAIL - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+ PASS - test_code_7_one_source_per_link in 0.000 seconds
+ PASS - test_every_opcode in 0.000 seconds
+ PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+ PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1071: ring_relay_test_fields_in_any_order_each_once: res.act not equal to RRL_ACT_ERROR
+ FAIL - test_fields_in_any_order_each_once in 0.000 seconds
+ PASS - test_flags_and_category in 0.000 seconds
+ PASS - test_info_and_out_frames in 0.000 seconds
+ PASS - test_pieces_of_every_size in 0.000 seconds
+ PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+ PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:602: ring_relay_test_refused_frames_change_nothing: (res.act not equal to RRL_ACT_ERROR)
+ FAIL - test_refused_frames_change_nothing in 0.000 seconds
+ PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+ PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+ PASS - test_texts_cut_at_a_character in 0.000 seconds
+ PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+TESTSUITE ring_relay failed.
+SUITE FAIL -  86.36% [ring_relay]: pass = 19, fail = 3, skip = 0, total = 22 duration = 0.000 seconds
+ - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+twister exit code on the broken copy repeat_type_ok, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-repeat_type_ok-native_sim.log)
+repeat_type_ok on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_code_5_malformed_record] duration = 0.000 seconds (failed cases listed: 3)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.018s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:1071: ring_relay_test_fields_in_any_order_each_once: res.act not equal to RRL_ACT_ERROR
+d_00: @00:00:00.000093   FAIL - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:602: ring_relay_test_refused_frames_change_nothing: (res.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_texts_cut_at_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_relay failed.
+d_00: @00:00:00.000093  SUITE FAIL -  86.36% [ring_relay]: pass = 19, fail = 3, skip = 0, total = 22 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+twister exit code on the broken copy repeat_type_ok, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-repeat_type_ok-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+repeat_type_ok on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_code_5_malformed_record] duration = 0.000 seconds (failed cases listed: 3)
+##### broken copy: order_ignored
+Common subdirectories: /ws/firmware/modules/ring_relay/include and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_order_ignored/include
+Common subdirectories: /ws/firmware/modules/ring_relay/src and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_order_ignored/src
+Common subdirectories: /ws/firmware/modules/ring_relay/zephyr and /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/broken_ring_relay_order_ignored/zephyr
+INFO    - 1/1 native_sim/native         ring_relay.logic                                   FAILED rc=1 (native 0.015s <host/gnu>)
+ PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+ PASS - test_code_1_wrong_length in 0.000 seconds
+ PASS - test_code_2_no_hello in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+ FAIL - test_code_3_order in 0.000 seconds
+ PASS - test_code_4_total in 0.000 seconds
+ PASS - test_code_5_malformed_record in 0.000 seconds
+ PASS - test_code_6_version in 0.000 seconds
+ PASS - test_code_7_one_source_per_link in 0.000 seconds
+ PASS - test_every_opcode in 0.000 seconds
+ PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+ PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+ PASS - test_fields_in_any_order_each_once in 0.000 seconds
+ PASS - test_flags_and_category in 0.000 seconds
+ PASS - test_info_and_out_frames in 0.000 seconds
+ PASS - test_pieces_of_every_size in 0.000 seconds
+ PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+ PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+ PASS - test_refused_frames_change_nothing in 0.000 seconds
+ PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+ PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+ PASS - test_texts_cut_at_a_character in 0.000 seconds
+ PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+TESTSUITE ring_relay failed.
+SUITE FAIL -  95.45% [ring_relay]: pass = 21, fail = 1, skip = 0, total = 22 duration = 0.000 seconds
+ - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+ - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+ - FAIL - [ring_relay.test_code_3_order] duration = 0.000 seconds
+twister exit code on the broken copy order_ignored, native_sim: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-order_ignored-native_sim.log)
+order_ignored on native_sim: the named case failed, as required:  - FAIL - [ring_relay.test_code_3_order] duration = 0.000 seconds (failed cases listed: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_relay.logic                             FAILED rc=1 (native 0.017s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_a_new_record_at_offset_0_drops_the_unfinished_one in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_1_wrong_length in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_2_no_hello in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/relay/src/test_relay.c:149: expect_err: (r.act not equal to RRL_ACT_ERROR)
+d_00: @00:00:00.000093   FAIL - test_code_3_order in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_4_total in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_5_malformed_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_6_version in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_code_7_one_source_per_link in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_opcode in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_a_valid_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_every_truncation_of_the_largest_record in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_fields_in_any_order_each_once in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_flags_and_category in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_info_and_out_frames in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_pieces_of_every_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_put_not_stored_before_its_last_piece in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_record_of_2_and_512_and_513 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_refused_frames_change_nothing in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_remove_clear_and_hello_empty_the_store in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_replace_keeps_place_and_read_mark in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_texts_cut_at_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_the_17th_pushes_the_oldest_out in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_relay failed.
+d_00: @00:00:00.000093  SUITE FAIL -  95.45% [ring_relay]: pass = 21, fail = 1, skip = 0, total = 22 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_a_new_record_at_offset_0_drops_the_unfinished_one] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_1_wrong_length] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_relay.test_code_2_no_hello] duration = 0.000 seconds
+d_00: @00:00:00.000093   - FAIL - [ring_relay.test_code_3_order] duration = 0.000 seconds
+twister exit code on the broken copy order_ignored, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-194918-s5-relay-broken-1-relay-broken/twister-order_ignored-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+order_ignored on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_relay.test_code_3_order] duration = 0.000 seconds (failed cases listed: 1)
+RESULT FAIL text_cut_inside_char/native_sim text_cut_inside_char/nrf54lm20bsim/nrf54lm20a/cpuapp
+# finished (Mac clock): 2026-11-12 19:55:19 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step5/20261112-194918-s5-relay-broken-1.log

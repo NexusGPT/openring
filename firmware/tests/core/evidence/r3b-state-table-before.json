@@ -1,0 +1,697 @@
+{
+ "source": "design/firmware.md section 1.2",
+ "rows": 69,
+ "fnv1a32": "0x97ba8011",
+ "table": [
+  {
+   "row": 1,
+   "doc_line": 133,
+   "from": "SHIP",
+   "event_text": "VBUS appears (case contact)",
+   "to": "BOOT",
+   "actions_text": "the nPM1304 leaves ship mode (VBUS above VBUSPOR, 3.9 V [NPM p17, p116]) and powers the bucks; the chip starts; charge on",
+   "event": "VBUS_IN",
+   "guard": "NONE"
+  },
+  {
+   "row": 2,
+   "doc_line": 134,
+   "from": "OFF",
+   "event_text": "VBUS appears",
+   "to": "BOOT",
+   "actions_text": "as above, including charge on",
+   "event": "VBUS_IN",
+   "guard": "NONE"
+  },
+  {
+   "row": 3,
+   "doc_line": 135,
+   "from": "BOOT",
+   "event_text": "init done, superblock open flag clear, no VBUS, battery above B5",
+   "to": "STANDBY",
+   "actions_text": "VDD_SD off",
+   "event": "INIT_DONE",
+   "guard": "OPEN_CLEAR_NO_VBUS_ABOVE_B5"
+  },
+  {
+   "row": 4,
+   "doc_line": 136,
+   "from": "BOOT",
+   "event_text": "init done, superblock open flag set",
+   "to": "RECOVERY",
+   "actions_text": "keep VDD_SD on",
+   "event": "INIT_DONE",
+   "guard": "OPEN_SET"
+  },
+  {
+   "row": 5,
+   "doc_line": 137,
+   "from": "BOOT",
+   "event_text": "init done, VBUS present",
+   "to": "CHARGING",
+   "actions_text": "VDD_SD off; charge on",
+   "event": "INIT_DONE",
+   "guard": "VBUS"
+  },
+  {
+   "row": 6,
+   "doc_line": 138,
+   "from": "BOOT",
+   "event_text": "storage init fails 3 times, 200 ms apart",
+   "to": "ERR_STORAGE_FAULT",
+   "actions_text": "log event; MF",
+   "event": "STORAGE_INIT_FAILED",
+   "guard": "NONE"
+  },
+  {
+   "row": 7,
+   "doc_line": 139,
+   "from": "BOOT",
+   "event_text": "battery at B2 and no VBUS",
+   "to": "OFF",
+   "actions_text": "enter ship mode (section 8.4)",
+   "event": "BATT_B2",
+   "guard": "NO_VBUS"
+  },
+  {
+   "row": 8,
+   "doc_line": 140,
+   "from": "BOOT",
+   "event_text": "battery at B5 and no VBUS",
+   "to": "ERR_BATTERY_LOW",
+   "actions_text": "VDD_SD off; M3 (ruling R13)",
+   "event": "BATT_B5",
+   "guard": "NO_VBUS"
+  },
+  {
+   "row": 9,
+   "doc_line": 141,
+   "from": "RECOVERY",
+   "event_text": "scan done, no VBUS",
+   "to": "STANDBY",
+   "actions_text": "write index CLOSE record with state RECOVERED; clear open flag; VDD_SD off",
+   "event": "SCAN_DONE",
+   "guard": "NO_VBUS"
+  },
+  {
+   "row": 10,
+   "doc_line": 142,
+   "from": "RECOVERY",
+   "event_text": "scan done, VBUS present",
+   "to": "CHARGING",
+   "actions_text": "same actions; charge on",
+   "event": "SCAN_DONE",
+   "guard": "VBUS"
+  },
+  {
+   "row": 11,
+   "doc_line": 143,
+   "from": "RECOVERY",
+   "event_text": "read error during scan",
+   "to": "ERR_STORAGE_FAULT",
+   "actions_text": "log event; MF",
+   "event": "SCAN_READ_ERROR",
+   "guard": "NONE"
+  },
+  {
+   "row": 12,
+   "doc_line": 144,
+   "from": "STANDBY",
+   "event_text": "long press of the joystick centre",
+   "to": "RECORDING",
+   "actions_text": "only with the superblock open flag clear, the battery above B5 and free space above SFULL (rulings R1, R4b; otherwise the next three rows, in their order): open; M1",
+   "event": "LONG_PRESS",
+   "guard": "OPEN_CLEAR_ABOVE_B5_ABOVE_SFULL"
+  },
+  {
+   "row": 13,
+   "doc_line": 145,
+   "from": "STANDBY",
+   "event_text": "long press, superblock open flag set",
+   "to": "RECOVERY",
+   "actions_text": "no recording starts (ruling R4b: a recording never starts while the open flag is set); VDD_SD on; mount; `RECOVERY` scans and closes the unfinished recording; the wearer presses again",
+   "event": "LONG_PRESS",
+   "guard": "OPEN_SET"
+  },
+  {
+   "row": 14,
+   "doc_line": 146,
+   "from": "STANDBY",
+   "event_text": "long press of the joystick centre, battery at B5",
+   "to": "STANDBY",
+   "actions_text": "no recording starts; screen \"Battery low\" 3 s (ruling R1)",
+   "event": "LONG_PRESS",
+   "guard": "AT_B5"
+  },
+  {
+   "row": 15,
+   "doc_line": 147,
+   "from": "STANDBY",
+   "event_text": "long press of the joystick centre, free space at SFULL",
+   "to": "STANDBY",
+   "actions_text": "no recording starts; screen \"Storage full\" 3 s (ruling R1)",
+   "event": "LONG_PRESS",
+   "guard": "SFULL"
+  },
+  {
+   "row": 16,
+   "doc_line": 148,
+   "from": "STANDBY",
+   "event_text": "short press of the joystick centre",
+   "to": "STANDBY",
+   "actions_text": "screen off: screen on, status screen, 5 s; screen on: the centre action of the screen (section 2.2), then MT (ruling R6)",
+   "event": "SHORT_PRESS",
+   "guard": "NONE"
+  },
+  {
+   "row": 17,
+   "doc_line": 149,
+   "from": "STANDBY",
+   "event_text": "double press of the joystick centre",
+   "to": "STANDBY",
+   "actions_text": "nothing",
+   "event": "DOUBLE_PRESS",
+   "guard": "NONE"
+  },
+  {
+   "row": 18,
+   "doc_line": 150,
+   "from": "STANDBY",
+   "event_text": "menu \"Power off\" confirmed",
+   "to": "OFF",
+   "actions_text": "save settings and time; M2; ship mode",
+   "event": "MENU_POWER_OFF",
+   "guard": "NONE"
+  },
+  {
+   "row": 19,
+   "doc_line": 151,
+   "from": "STANDBY",
+   "event_text": "VBUS appears",
+   "to": "CHARGING",
+   "actions_text": "charge on",
+   "event": "VBUS_IN",
+   "guard": "NONE"
+  },
+  {
+   "row": 20,
+   "doc_line": 152,
+   "from": "STANDBY",
+   "event_text": "battery reaches B15",
+   "to": "STANDBY",
+   "actions_text": "M3 once per discharge; status screen 5 s",
+   "event": "BATT_B15",
+   "guard": "NONE"
+  },
+  {
+   "row": 21,
+   "doc_line": 153,
+   "from": "STANDBY",
+   "event_text": "battery reaches B5",
+   "to": "ERR_BATTERY_LOW",
+   "actions_text": "M3",
+   "event": "BATT_B5",
+   "guard": "NONE"
+  },
+  {
+   "row": 22,
+   "doc_line": 154,
+   "from": "STANDBY",
+   "event_text": "battery reaches B2",
+   "to": "OFF",
+   "actions_text": "save settings and time; ship mode",
+   "event": "BATT_B2",
+   "guard": "NONE"
+  },
+  {
+   "row": 23,
+   "doc_line": 155,
+   "from": "STANDBY",
+   "event_text": "free space at SFULL",
+   "to": "ERR_STORAGE_FULL",
+   "actions_text": "M3",
+   "event": "STORAGE_SFULL",
+   "guard": "NONE"
+  },
+  {
+   "row": 24,
+   "doc_line": 156,
+   "from": "STANDBY",
+   "event_text": "storage fault set at entry (rule R-STB)",
+   "to": "ERR_STORAGE_FAULT",
+   "actions_text": "none; the 60 s retry starts (ruling R11)",
+   "event": "STORAGE_FAULT_SET",
+   "guard": "NONE"
+  },
+  {
+   "row": 25,
+   "doc_line": 157,
+   "from": "RECORDING",
+   "event_text": "long press of the joystick centre",
+   "to": "STANDBY",
+   "actions_text": "close; M2",
+   "event": "LONG_PRESS",
+   "guard": "NONE"
+  },
+  {
+   "row": 26,
+   "doc_line": 158,
+   "from": "RECORDING",
+   "event_text": "short press of the joystick centre",
+   "to": "RECORDING",
+   "actions_text": "highlight marker; MH; screen 3 s with highlight count",
+   "event": "SHORT_PRESS",
+   "guard": "NONE"
+  },
+  {
+   "row": 27,
+   "doc_line": 159,
+   "from": "RECORDING",
+   "event_text": "double press of the joystick centre",
+   "to": "RECORDING",
+   "actions_text": "nothing (no highlight, no stop)",
+   "event": "DOUBLE_PRESS",
+   "guard": "NONE"
+  },
+  {
+   "row": 28,
+   "doc_line": 160,
+   "from": "RECORDING",
+   "event_text": "BLE control \"highlight\" from a bonded phone",
+   "to": "RECORDING",
+   "actions_text": "highlight marker; MH",
+   "event": "BLE_HIGHLIGHT",
+   "guard": "NONE"
+  },
+  {
+   "row": 29,
+   "doc_line": 161,
+   "from": "RECORDING",
+   "event_text": "VBUS appears (case insertion during a recording)",
+   "to": "CHARGING",
+   "actions_text": "close; M2; charge on",
+   "event": "VBUS_IN",
+   "guard": "NONE"
+  },
+  {
+   "row": 30,
+   "doc_line": 162,
+   "from": "RECORDING",
+   "event_text": "battery reaches B15",
+   "to": "RECORDING",
+   "actions_text": "M3 once per discharge",
+   "event": "BATT_B15",
+   "guard": "NONE"
+  },
+  {
+   "row": 31,
+   "doc_line": 163,
+   "from": "RECORDING",
+   "event_text": "battery reaches B5",
+   "to": "ERR_BATTERY_LOW",
+   "actions_text": "close; M3",
+   "event": "BATT_B5",
+   "guard": "NONE"
+  },
+  {
+   "row": 32,
+   "doc_line": 164,
+   "from": "RECORDING",
+   "event_text": "battery reaches B2",
+   "to": "OFF",
+   "actions_text": "close; ship mode",
+   "event": "BATT_B2",
+   "guard": "NONE"
+  },
+  {
+   "row": 33,
+   "doc_line": 165,
+   "from": "RECORDING",
+   "event_text": "free space reaches S30",
+   "to": "RECORDING",
+   "actions_text": "M3 once; screen 3 s \"30 min left\"",
+   "event": "STORAGE_S30",
+   "guard": "NONE"
+  },
+  {
+   "row": 34,
+   "doc_line": 166,
+   "from": "RECORDING",
+   "event_text": "free space at SFULL",
+   "to": "ERR_STORAGE_FULL",
+   "actions_text": "close; M3",
+   "event": "STORAGE_SFULL",
+   "guard": "NONE"
+  },
+  {
+   "row": 35,
+   "doc_line": 167,
+   "from": "RECORDING",
+   "event_text": "chunk write fails 3 times",
+   "to": "ERR_STORAGE_FAULT",
+   "actions_text": "stop PDM; clocks low; VDD_MIC off; superblock left open (RECOVERY at next boot); MF",
+   "event": "CHUNK_WRITE_FAILED",
+   "guard": "NONE"
+  },
+  {
+   "row": 36,
+   "doc_line": 168,
+   "from": "RECORDING",
+   "event_text": "the PDM instance gives no block for 100 ms",
+   "to": "ERR_MIC_FAULT",
+   "actions_text": "close; MF",
+   "event": "MIC_NO_BLOCK",
+   "guard": "NONE"
+  },
+  {
+   "row": 37,
+   "doc_line": 169,
+   "from": "RECORDING",
+   "event_text": "sudden power loss (cell cut, short, brown-out) during a write",
+   "to": "BOOT",
+   "actions_text": "nothing runs; at the next power-on the open flag leads to `RECOVERY`; loss bounded in section 5.5",
+   "event": "POWER_LOSS",
+   "guard": "NONE"
+  },
+  {
+   "row": 38,
+   "doc_line": 170,
+   "from": "CHARGING",
+   "event_text": "USB configured by the case (`USBD_MSG_CONFIGURATION`)",
+   "to": "TRANSFER",
+   "actions_text": "VDD_SD on; mount; charge on stays",
+   "event": "USB_CONFIGURED",
+   "guard": "NONE"
+  },
+  {
+   "row": 39,
+   "doc_line": 171,
+   "from": "CHARGING",
+   "event_text": "VBUS removed, free space above SFULL, battery above B5",
+   "to": "STANDBY",
+   "actions_text": "none",
+   "event": "VBUS_OUT",
+   "guard": "ABOVE_SFULL_ABOVE_B5"
+  },
+  {
+   "row": 40,
+   "doc_line": 172,
+   "from": "CHARGING",
+   "event_text": "VBUS removed, free space at SFULL, battery above B5",
+   "to": "ERR_STORAGE_FULL",
+   "actions_text": "none (ruling R2: with the battery at B5 the next row applies)",
+   "event": "VBUS_OUT",
+   "guard": "SFULL_ABOVE_B5"
+  },
+  {
+   "row": 41,
+   "doc_line": 173,
+   "from": "CHARGING",
+   "event_text": "VBUS removed, battery at B2",
+   "to": "OFF",
+   "actions_text": "save settings and time; ship mode (ruling R10)",
+   "event": "VBUS_OUT",
+   "guard": "AT_B2"
+  },
+  {
+   "row": 42,
+   "doc_line": 174,
+   "from": "CHARGING",
+   "event_text": "VBUS removed, battery at B5",
+   "to": "ERR_BATTERY_LOW",
+   "actions_text": "none",
+   "event": "VBUS_OUT",
+   "guard": "AT_B5"
+  },
+  {
+   "row": 43,
+   "doc_line": 175,
+   "from": "CHARGING",
+   "event_text": "nPM1304 event charge error",
+   "to": "ERR_CHARGER",
+   "actions_text": "log BCHGERRREASON and BCHGERRSENSOR [NPM p41]; charge off; MF",
+   "event": "CHARGE_ERROR",
+   "guard": "NONE"
+  },
+  {
+   "row": 44,
+   "doc_line": 176,
+   "from": "CHARGING",
+   "event_text": "long press",
+   "to": "CHARGING",
+   "actions_text": "refused: M3; screen \"In case\" 3 s; charge on stays",
+   "event": "LONG_PRESS",
+   "guard": "NONE"
+  },
+  {
+   "row": 45,
+   "doc_line": 177,
+   "from": "TRANSFER",
+   "event_text": "USB suspended or unconfigured by the case",
+   "to": "CHARGING",
+   "actions_text": "finish the current command; VDD_SD off; charge on",
+   "event": "USB_UNCONFIGURED",
+   "guard": "NONE"
+  },
+  {
+   "row": 46,
+   "doc_line": 178,
+   "from": "TRANSFER",
+   "event_text": "VBUS removed",
+   "to": "STANDBY",
+   "actions_text": "abort the command; VDD_SD off",
+   "event": "VBUS_OUT",
+   "guard": "NONE"
+  },
+  {
+   "row": 47,
+   "doc_line": 179,
+   "from": "TRANSFER",
+   "event_text": "command FW_END accepted",
+   "to": "BOOT",
+   "actions_text": "`boot_request_upgrade(BOOT_UPGRADE_TEST)`; reboot (section 9.2)",
+   "event": "FW_END",
+   "guard": "NONE"
+  },
+  {
+   "row": 48,
+   "doc_line": 180,
+   "from": "TRANSFER",
+   "event_text": "command FACTORY_ENTER with the factory flag set",
+   "to": "FACTORY_TEST",
+   "actions_text": "section 9.3",
+   "event": "FACTORY_ENTER",
+   "guard": "FACTORY_FLAG"
+  },
+  {
+   "row": 49,
+   "doc_line": 181,
+   "from": "TRANSFER",
+   "event_text": "long press",
+   "to": "TRANSFER",
+   "actions_text": "refused: M3",
+   "event": "LONG_PRESS",
+   "guard": "NONE"
+  },
+  {
+   "row": 50,
+   "doc_line": 182,
+   "from": "ERR_STORAGE_FULL",
+   "event_text": "VBUS appears",
+   "to": "CHARGING",
+   "actions_text": "charge on",
+   "event": "VBUS_IN",
+   "guard": "NONE"
+  },
+  {
+   "row": 51,
+   "doc_line": 183,
+   "from": "ERR_STORAGE_FULL",
+   "event_text": "long press",
+   "to": "ERR_STORAGE_FULL",
+   "actions_text": "refused: M3; screen \"Storage full\" 3 s",
+   "event": "LONG_PRESS",
+   "guard": "NONE"
+  },
+  {
+   "row": 52,
+   "doc_line": 184,
+   "from": "ERR_STORAGE_FULL",
+   "event_text": "battery reaches B5",
+   "to": "ERR_BATTERY_LOW",
+   "actions_text": "M3",
+   "event": "BATT_B5",
+   "guard": "NONE"
+  },
+  {
+   "row": 53,
+   "doc_line": 185,
+   "from": "ERR_STORAGE_FULL",
+   "event_text": "battery reaches B2",
+   "to": "OFF",
+   "actions_text": "ship mode",
+   "event": "BATT_B2",
+   "guard": "NONE"
+  },
+  {
+   "row": 54,
+   "doc_line": 186,
+   "from": "ERR_BATTERY_LOW",
+   "event_text": "VBUS appears",
+   "to": "CHARGING",
+   "actions_text": "charge on",
+   "event": "VBUS_IN",
+   "guard": "NONE"
+  },
+  {
+   "row": 55,
+   "doc_line": 187,
+   "from": "ERR_BATTERY_LOW",
+   "event_text": "long press",
+   "to": "ERR_BATTERY_LOW",
+   "actions_text": "refused: M3; screen \"Battery low\" 3 s",
+   "event": "LONG_PRESS",
+   "guard": "NONE"
+  },
+  {
+   "row": 56,
+   "doc_line": 188,
+   "from": "ERR_BATTERY_LOW",
+   "event_text": "battery reaches B2",
+   "to": "OFF",
+   "actions_text": "save settings and time; ship mode",
+   "event": "BATT_B2",
+   "guard": "NONE"
+  },
+  {
+   "row": 57,
+   "doc_line": 189,
+   "from": "ERR_STORAGE_FAULT",
+   "event_text": "VBUS appears",
+   "to": "CHARGING",
+   "actions_text": "charge on; the case reads the event log (GET_LOG)",
+   "event": "VBUS_IN",
+   "guard": "NONE"
+  },
+  {
+   "row": 58,
+   "doc_line": 190,
+   "from": "ERR_STORAGE_FAULT",
+   "event_text": "60 s elapsed",
+   "to": "ERR_STORAGE_FAULT",
+   "actions_text": "retry storage: the caller runs the storage init and reports the result as an event (ruling R3; every 60 s while in this state; ruling R14: at most one try per call of the tick, whatever the delay, the next one 60 s after it)",
+   "event": "TIMER_60S",
+   "guard": "NONE"
+  },
+  {
+   "row": 59,
+   "doc_line": 191,
+   "from": "ERR_STORAGE_FAULT",
+   "event_text": "storage retry succeeds, superblock open flag set",
+   "to": "RECOVERY",
+   "actions_text": "keep VDD_SD on; `RECOVERY` scans and closes the unfinished recording (ruling R9)",
+   "event": "STORAGE_RETRY_OK",
+   "guard": "OPEN_SET"
+  },
+  {
+   "row": 60,
+   "doc_line": 192,
+   "from": "ERR_STORAGE_FAULT",
+   "event_text": "storage retry succeeds, superblock open flag clear",
+   "to": "STANDBY",
+   "actions_text": "none (rule R-STB applies)",
+   "event": "STORAGE_RETRY_OK",
+   "guard": "OPEN_CLEAR"
+  },
+  {
+   "row": 61,
+   "doc_line": 193,
+   "from": "ERR_STORAGE_FAULT",
+   "event_text": "storage retry fails",
+   "to": "ERR_STORAGE_FAULT",
+   "actions_text": "none; the next try comes 60 s later (ruling R3)",
+   "event": "STORAGE_RETRY_FAILED",
+   "guard": "NONE"
+  },
+  {
+   "row": 62,
+   "doc_line": 194,
+   "from": "ERR_STORAGE_FAULT",
+   "event_text": "battery reaches B2",
+   "to": "OFF",
+   "actions_text": "ship mode",
+   "event": "BATT_B2",
+   "guard": "NONE"
+  },
+  {
+   "row": 63,
+   "doc_line": 195,
+   "from": "ERR_MIC_FAULT",
+   "event_text": "5 s elapsed",
+   "to": "STANDBY",
+   "actions_text": "the fault is in the event log",
+   "event": "TIMER_5S",
+   "guard": "NONE"
+  },
+  {
+   "row": 64,
+   "doc_line": 196,
+   "from": "ERR_MIC_FAULT",
+   "event_text": "VBUS appears",
+   "to": "CHARGING",
+   "actions_text": "charge on",
+   "event": "VBUS_IN",
+   "guard": "NONE"
+  },
+  {
+   "row": 65,
+   "doc_line": 197,
+   "from": "ERR_CHARGER",
+   "event_text": "VBUS removed",
+   "to": "STANDBY",
+   "actions_text": "none",
+   "event": "VBUS_OUT",
+   "guard": "NONE"
+  },
+  {
+   "row": 66,
+   "doc_line": 198,
+   "from": "FACTORY_TEST",
+   "event_text": "command FACTORY_EXIT",
+   "to": "BOOT",
+   "actions_text": "reboot",
+   "event": "FACTORY_EXIT",
+   "guard": "NONE"
+  },
+  {
+   "row": 67,
+   "doc_line": 199,
+   "from": "FACTORY_TEST",
+   "event_text": "command SHIP_ENTER",
+   "to": "SHIP",
+   "actions_text": "clear the factory flag; ship mode (waits for VBUS removal, section 8.4)",
+   "event": "SHIP_ENTER",
+   "guard": "NONE"
+  },
+  {
+   "row": 68,
+   "doc_line": 200,
+   "from": "FACTORY_TEST",
+   "event_text": "command SHIP_SAMPLE (sample rings only)",
+   "to": "SHIP",
+   "actions_text": "keep the factory flag; ship mode (waits for VBUS removal, section 8.4)",
+   "event": "SHIP_SAMPLE",
+   "guard": "NONE"
+  },
+  {
+   "row": 69,
+   "doc_line": 201,
+   "from": "FACTORY_TEST",
+   "event_text": "VBUS removed, no ship command accepted",
+   "to": "BOOT",
+   "actions_text": "reboot",
+   "event": "VBUS_OUT",
+   "guard": "NONE"
+  }
+ ]
+}

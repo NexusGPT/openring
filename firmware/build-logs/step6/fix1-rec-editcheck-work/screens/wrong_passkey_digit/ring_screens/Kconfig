@@ -1,0 +1,53 @@
+config RING_SCREENS
+	bool "Ring screens: the screens of design/firmware.md 3.3 and 3.4, drawn with LVGL"
+	select RING_CORE
+	select RING_CONTROL_LOGIC
+	select RING_DEVICES_LOGIC
+	select RING_INBOX
+	select RING_TIME
+	select RING_IPHONE_LOGIC
+	select DISPLAY
+	select LVGL
+	select RING_MEM_DISPLAY
+	help
+	  The pure part (rscr_logic.c) decides which screen is shown; the drawing part (rscr.c,
+	  rscr_draw.c) draws it with LVGL in a 240 x 120 frame and turns the frame for the 120 x 240 panel.
+
+config RING_SCREENS_PURE
+	bool "Ring screens: the pure part only (no graphics)"
+	select RING_CORE
+	select RING_CONTROL_LOGIC
+	select RING_DEVICES_LOGIC
+	select RING_INBOX
+	help
+	  For the logic test: rscr_logic.c without the display, LVGL or the iPhone part.
+
+config RING_MEM_DISPLAY
+	bool "Ring memory display driver (stand-in for the panel)"
+	depends on DT_HAS_RING_MEM_DISPLAY_ENABLED
+	default y if DT_HAS_RING_MEM_DISPLAY_ENABLED
+
+config RING_SCREENS_CAPTURE
+	bool "Ring screens: test hook that reads the frame back and writes PNG files (host builds only)"
+	depends on RING_SCREENS
+
+config RING_SCREENS_SIGN_WAIT_MS
+	int "How long rscr_sign_start waits for the screens thread (ms)"
+	default 5000
+	depends on RING_SCREENS
+
+config RING_SCREENS_STACK_SIZE
+	int "Stack size of the screens thread"
+	default 8192
+	depends on RING_SCREENS
+	help
+	  Static chain on the DK build (tools/stack_report.py): 760 bytes for the largest named chain, without LVGL's own frames,
+	  which no tool here measured (the simulated builds run on host stacks). 8192 keeps the figure that the pictures ran with.
+
+config RING_SCREENS_REAL
+	bool "Ring screens: call the real devices, control, iPhone and glue parts (the product and the two-device test)"
+	depends on RING_SCREENS
+	select RING_CONTROL
+	select RING_DEVICES
+	select RING_IPHONE
+	select RING_GLUE

@@ -1,0 +1,263 @@
+--- design/ecad/ring/pcb/w1-evidence/make_netlist_before.py	2026-11-13 00:13:20
++++ design/ecad/ring/make_netlist.py	2026-11-13 00:50:49
+@@ -76,7 +76,8 @@
+ # (design/datasheets/motor_tlv755p.pdf p3; text copy design/ecad/motor-drive/src_tlv755p.txt): OUT 1, GND 2, EN 3,
+ # IN 4; the thermal pad has no number in TI's table ("internally connected to GND"): drawn as pin EP on GND.
+ SYM['TLV75530P_DQN'] = [('1', 'OUT', 'power_out'), ('2', 'GND', 'power_in'), ('3', 'EN', 'input'),
+-                        ('4', 'IN', 'power_in'), ('EP', 'PAD', 'passive')]
++                        ('4', 'IN', 'power_in'), ('5', 'PAD', 'passive')]
++# W1: pad 5 is the thermal pad as TI's land drawing numbers it (motor_tlv755p.pdf p42, DQN0004A example board layout)
+ 
+ # Screen TOH095XVT-01, 15 contacts, names in the order printed in the table of parts/slim.md section 1.3
+ # (maker p6; the table prints pin 4 twice and no pin 3: position k here = k-th entry as printed)
+@@ -85,28 +86,36 @@
+              ('CS', 'input'), ('SCL', 'input'), ('RS', 'input'), ('SDA', 'input'),
+              ('GND', 'power_in'), ('GND', 'power_in'), ('GND', 'power_in')]
+ SYM['TOH095XVT-01'] = [(str(i + 1), n, t) for i, (n, t) in enumerate(DISP_PINS)]
+-# J1 board connector Hirose FH35C-15S-0.3SHW(50), 15 positions: position numbers provisional (drawing not read); names follow the tail
+-SYM['FPC_15'] = [('P%d' % (i + 1), n, 'passive') for i, (n, _) in enumerate(DISP_PINS)]
++# J1 board connector Hirose FH35C-15S-0.3SHW(50), 15 positions numbered 1 to 15 as the Hirose drawing (design/datasheets/
++# w1_hirose_fh35c-15s-0.3shw50_drawing.pdf p1: Contact No.1 and No.2; the numbers run in 0.3 steps along the connector); the
++# names follow the screen tail: contact k of the tail on position k (both ends numbered along the same 4.2 mm row)
++SYM['FPC_15'] = [(str(i + 1), n, 'passive') for i, (n, _) in enumerate(DISP_PINS)]
+ 
+ # TPD4E05U06 DQA: TI datasheet SLVSBO7O Table 4-2
+ SYM['TPD4E05U06'] = [('1', 'D1+', 'passive'), ('2', 'D1-', 'passive'), ('3', 'GND', 'power_in'),
+                      ('4', 'D2+', 'passive'), ('5', 'D2-', 'passive'), ('6', 'NC', 'no_connect'),
+                      ('7', 'NC', 'no_connect'), ('8', 'GND', 'power_in'), ('9', 'NC', 'no_connect'),
+                      ('10', 'NC', 'no_connect')]
+-# Alps SKTAAAE010: 1 pole 1 throw tact switch (maker spec KTA-601 p1); the spec shows no terminal numbers
+-# (drawing not in the copy): two terminals P1, P2, provisional
+-SYM['SKTAAAE010'] = [('P1', '~', 'passive'), ('P2', '~', 'passive')]
++# Alps SKTAAAE010: 1 pole 1 throw tact switch with four terminals; terminals 1 and 3 are one contact, 2 and 4 the other
++# (Alps SKTA catalogue, design/datasheets/w1_alps_skta_catalog.pdf p2 Drawing No.1: dimensions and circuit diagram)
++SYM['SKTAAAE010'] = [('1', '~', 'passive'), ('2', '~', 'passive'), ('3', '~', 'passive'), ('4', '~', 'passive')]
++# Alps SKTA catalogue (design/datasheets/w1_alps_skta_catalog.pdf p2, Drawing No.1): terminals 1 and 3 are one contact, 2 and 4 the other.
++# Round 2 (lead, 2026-11-13): the band parts carry the makers' numbers; band circuits are checked against them (ecad/band/check_band.py)
+ # v7 (architecture 17.30): the recording light and its transistor are removed in v7, with their two symbols
+ # A7 (architecture 17.16): Jinlong W0525AB001D, two lead wires, red + and blue - (architecture 17.16 'Part', citing spec S-525113 rev 0 pages 2, 4, 6, 8,
+ # design/datasheets/slim2_jinlong-w0525ab001d.pdf); the maker gives colours, not numbers: P1, P2 are this schematic's
+-SYM['MOTOR'] = [('P1', '+', 'passive'), ('P2', '-', 'passive')]
+-# Cell: custom, tab order open (12.7)
+-SYM['CELL'] = [('P1', '+', 'power_out'), ('P2', '-', 'passive')]
++# W1: land 1 = red lead (+), land 2 = black or blue lead (-): pcb/custom-part-interfaces.md section M1
++SYM['MOTOR'] = [('1', '+', 'passive'), ('2', '-', 'passive')]
++# Cell: custom part; land 1 = pack output +, land 2 = pack output - : ecad/band/band-interface.md
++SYM['CELL'] = [('1', '+', 'power_out'), ('2', '-', 'passive')]
+ # Johanson 2450AT18D0100: datasheet terminal configuration (pin 1 feed, 2-4 GND)
+ SYM['2450AT18D0100'] = [('1', 'FEED', 'passive'), ('2', 'GND', 'passive'), ('3', 'GND', 'passive'),
+                         ('4', 'GND', 'passive')]
+-# crystals: crystal data sheets not on disk: provisional terminals
+-SYM['XTAL'] = [('P1', 'X1', 'passive'), ('P2', 'X2', 'passive')]
++# crystals. X1 Kyocera CX2016DB: crystal on #1 and #3, #2 marked GND, #4 not connected (Kyocera crystal catalogue,
++# design/datasheets/w1_kyocera_cx2016db_catalog_page10.pdf p1, connection diagram). X2 TXC 9HT11: two terminals
++# (land of Nordic's reference layout, nrf54lm20x_caaa_ref_pcb_0_2.pdf p1)
++SYM['XTAL_CX2016DB'] = [('1', 'X1', 'passive'), ('2', 'GND', 'passive'), ('3', 'X2', 'passive'), ('4', 'NC', 'no_connect')]
++SYM['XTAL_2PAD'] = [('1', 'X1', 'passive'), ('2', 'X2', 'passive')]
+ SYM['R'] = [('1', '~', 'passive'), ('2', '~', 'passive')]
+ SYM['C'] = [('1', '~', 'passive'), ('2', '~', 'passive')]
+ SYM['L'] = [('1', '~', 'passive'), ('2', '~', 'passive')]
+@@ -153,7 +162,42 @@
+ PARTS = []  # ref, symbol, value, mpn, footprint, sheet, dnp
+ CONN = {}   # ref -> {pin_name_or_number: net}
+ 
++# W1: every part uses a footprint of the library pcb/OpenRing.pretty (written by pcb/make_footprints.py, one file per package).
++# The old names of the first drafts (left column) are mapped here so that the part lines below stay readable.
++FPMAP = {
++    'ring:WLCSP-61_CAAA': 'OpenRing:WLCSP-61_nRF54LM20A-CAAA',
++    'ring:WLCSP-35_nPM1304': 'OpenRing:WLCSP-35_nPM1304-CAAA',
++    'ring:WLCSP-2x2-16B': 'OpenRing:WLCSP-16_SGM38046_2.0x2.0_P0.5',
++    'ring:LGA-8_6.2x8': 'OpenRing:LGA-9_CSNP32GCR01-BOW_8.0x6.2',
++    'ring:Knowles_SPK0641HT4H_LGA8_4.0x3.0': 'OpenRing:LGA-8_Knowles_SPK0641HT4H-1_3.0x4.0',
++    'ring:USON-10_DQA': 'OpenRing:USON-10_TPD4E05U06DQA',
++    'ring:UQFN-16_RSV_2.6x1.8': 'OpenRing:UQFN-16_SN74AXC4T774RSV_1.8x2.6',
++    'ring:X2SON-4_DQN_1x1': 'OpenRing:X2SON-4_TLV755xxPDQN_1.0x1.0',
++    'ring:ANT_1206_Johanson': 'OpenRing:ANT_Johanson_2450AT18D0100001E_3.2x1.6',
++    'ring:XTAL_2016': 'OpenRing:XTAL_Kyocera_CX2016DB_2.0x1.6',
++    'ring:XTAL_2012': 'OpenRing:XTAL_TXC_9HT11_2.0x1.2',
++    'ring:Hirose_FH35C-15S-0.3SHW': 'OpenRing:FPC_Hirose_FH35C-15S-0.3SHW',
++    'ring:NONE_module_tail': 'OpenRing:FPCtail_Tailor_TOH095XVT-01_15',
++    'ring:Alps_SKTA': 'OpenRingBand:Alps_SKTAAAE010_4pad',
++    'ring:WIRE_LEADS_2': 'OpenRingBand:W0525AB001D_Lands',
++    'ring:CELL_TABS': 'OpenRingBand:PRT1_Tabs',
++    'ring:PAD_1.0': 'OpenRingBand:CP_Pad_1.6',
++    'ring:TESTPAD_0.8': 'OpenRing:TESTPAD_0.8',
++    'ring:FLEX_PADS_1x8': 'OpenRingBand:J_BAND_A_BOARD',
++    'ring:FLEX_PADS_1x7': 'OpenRingBand:J_BAND_B_BOARD',
++    'ring:C_0201': 'OpenRing:Chip_0201', 'ring:R_0201': 'OpenRing:Chip_0201', 'ring:L_0201': 'OpenRing:Chip_0201',
++    'ring:C_0402': 'OpenRing:Chip_0402', 'ring:R_0402': 'OpenRing:Chip_0402',
++    'ring:C_0603': 'OpenRing:Chip_0603', 'ring:R_0603': 'OpenRing:Chip_0603',
++    'ring:L_0603': 'OpenRing:L_TDK_MLZ1608_1.6x0.8',
++    'ring:C_0805': 'OpenRing:Chip_0805',
++    'ring:RT1_BAND': 'OpenRingBand:RT1_NTC_0402',
++    'ring:L_0806': 'OpenRing:L_Murata_1269AS-H_2.5x2.0',
++    'ring:L_2520': 'OpenRing:L_Murata_1269AS-H_2.5x2.0',
++}
++
++
+ def part(ref, sym, value, mpn, fp, sheet, conn, dnp=False, by='name'):
++    fp = FPMAP[fp]
+     PARTS.append(dict(reference=ref, symbol=sym, value=value, mpn=mpn, footprint=fp, sheet=sheet,
+                       dnp='yes' if dnp else 'no'))
+     CONN[ref] = (by, conn)
+@@ -194,8 +238,8 @@
+ two('R1', 'R', '2.2R', '', 'ring:R_0603', M, 'VBUS', 'U1_VBUS')
+ two('C11', 'C', '4.7uF', 'GRM155R61A475MEAAD', 'ring:C_0402', M, 'U1_VBUS', 'GND')
+ two('R2', 'R', '220R', '', 'ring:R_0201', M, 'TXRTUNE', 'GND')
+-part('X1', 'XTAL', '32MHz', 'CX2016DB32000D0WZRC1', 'ring:XTAL_2016', M, {'X1': 'XC1', 'X2': 'XC2'})
+-part('X2', 'XTAL', '32.768kHz', '9HT11-32.768KDZC-T', 'ring:XTAL_2012', M, {'X1': 'XL1', 'X2': 'XL2'})
++part('X1', 'XTAL_CX2016DB', '32MHz', 'CX2016DB32000D0WZRC1', 'ring:XTAL_2016', M, {'1': 'XC1', '2': 'GND', '3': 'XC2', '4': None}, by='number')
++part('X2', 'XTAL_2PAD', '32.768kHz', '9HT11-32.768KDZC-T', 'ring:XTAL_2012', M, {'1': 'XL1', '2': 'XL2'}, by='number')
+ two('L2', 'L', '3.6nH', 'LQP03HQ3N6B02', 'ring:L_0201', M, 'ANT1_NODE', 'ANT2_NODE')
+ two('C3', 'C', '1.2pF', 'GJM0335C1H1R2WB01D', 'ring:C_0201', M, 'ANT2_NODE', 'GND')
+ two('L3', 'L', '4.7nH', 'LQP03HQ4N7H02', 'ring:L_0201', M, 'ANT2_NODE', 'ANT3_NODE')
+@@ -220,31 +264,31 @@
+ # order code nPM1304-CAAA-R7: Nordic spec Table 50, page 168 (architecture 17.18)
+ part('U2', 'nPM1304_CSP35', 'nPM1304', 'nPM1304-CAAA-R7', 'ring:WLCSP-35_nPM1304', P, npm, by='number')
+ # A7 D1 (npm1304-reference.md): VBUS capacitor 1.0 uF X5R 25 V as Nordic C1 (spec Table 37, page 157)
+-two('C71', 'C', '1.0uF 25V', '', 'ring:C_0402', P, 'VBUS', 'GND')
++two('C71', 'C', '1.0uF 25V', 'GRM155R61E105KA12D', 'ring:C_0402', P, 'VBUS', 'GND')
+ # A7 D2: 2.2 uF X5R 10 V at the VBAT balls D1, D2 as Nordic C6 (Table 37, page 157); C21 serves U4, not U2
+-two('C85', 'C', '2.2uF', '', 'ring:C_0402', P, 'VBAT', 'GND')
++two('C85', 'C', '2.2uF', '0402ZC225KAT2A', 'ring:C_0402', P, 'VBAT', 'GND')
+ # A7 D3: third 10 uF on VSYS/PVDD as Nordic C2, C3, C4 (Table 37, page 157; X5R 16 V)
+-two('C88', 'C', '10uF', '', 'ring:C_0402', P, 'VSYS', 'GND')
++two('C88', 'C', '10uF', 'GRT188R61A106KE13D', 'ring:C_0603', P, 'VSYS', 'GND')
+ # A7 D4: load switch mode outputs: Nordic configuration 2 (one LOADSW in load switch mode) puts C14 1.0 uF on LSOUT1
+ # (spec Figure 59 page 158, Table 38 page 159: X5R 10 V); chapter 6.4 itself gives no capacitor rule (tSS is
+ # specified with 10 uF, Table 20 page 69). Applied to both outputs: C86 at ball A4 (VDD_MIC), C87 at ball A5 (VDD_SD)
+-two('C86', 'C', '1.0uF', '', 'ring:C_0201', P, 'VDD_MIC', 'GND')
+-two('C87', 'C', '1.0uF', '', 'ring:C_0201', P, 'VDD_SD', 'GND')
++two('C86', 'C', '1.0uF', 'GRM155R61E105KA12D', 'ring:C_0402', P, 'VDD_MIC', 'GND')
++two('C87', 'C', '1.0uF', 'GRM155R61E105KA12D', 'ring:C_0402', P, 'VDD_SD', 'GND')
+ two('C72', 'C', '100nF', '', 'ring:C_0201', P, 'VBUS', 'GND')
+ two('C73', 'C', '1.0uF', '', 'ring:C_0201', P, 'VBUSOUT', 'GND')
+ two('C74', 'C', '10uF', '', 'ring:C_0402', P, 'VSYS', 'GND')
+ two('C75', 'C', '10uF', '', 'ring:C_0402', P, 'VSYS', 'GND')
+ two('C76', 'C', '1.0nF', '', 'ring:C_0201', P, 'VSYS', 'GND')
+ two('C77', 'C', '1.0nF', '', 'ring:C_0201', P, 'VSYS', 'GND')
+-two('L71', 'L', '2.2uH', 'OPEN 12.2', 'ring:L_0806', P, 'SW1', 'VDD_1V8')
++two('L71', 'L', '2.2uH', '1269AS-H-2R2M=P2', 'ring:L_2520', P, 'SW1', 'VDD_1V8')
+ two('C78', 'C', '10uF', '', 'ring:C_0402', P, 'VDD_1V8', 'GND')
+-two('L72', 'L', '2.2uH', 'OPEN 12.2', 'ring:L_0806', P, 'SW2', 'VDD_3V0')
++two('L72', 'L', '2.2uH', '1269AS-H-2R2M=P2', 'ring:L_2520', P, 'SW2', 'VDD_3V0')
+ two('C79', 'C', '10uF', '', 'ring:C_0402', P, 'VDD_3V0', 'GND')
+ two('C80', 'C', '100nF', '', 'ring:C_0201', P, 'VDD_1V8', 'GND')
+ two('R71', 'R', '47k', '', 'ring:R_0201', P, 'VSET1', 'GND')
+ two('R72', 'R', '150k', '', 'ring:R_0201', P, 'VSET2', 'GND')
+-two('RT1', 'NTC', '10k NTC', 'OPEN 12.2', 'ring:R_0402', BD, 'NTC', 'GND')  # in the band at the cell (A5 17.3)
+-part('BT1', 'CELL', '4.35V 20-27mAh at US9 (17.6mAh min at US7) curved', 'Grepow custom', 'ring:CELL_TABS', BD, {'+': 'VBAT', '-': 'GND'})  # A7: architecture 17.15 and 17.17 (was 15-20 mAh of 17.10); cell sweep 2026-11-11: smallest 17.6 mAh per 17.26 (before it 18.2 mAh)
++two('RT1', 'NTC', '10k NTC', 'NCP15XH103F03RC', 'ring:RT1_BAND', BD, 'NTC', 'GND')  # in the band at the cell (A5 17.3)
++part('BT1', 'CELL', '4.35V 20-27mAh at US9 (17.6mAh min at US7) curved', 'Grepow custom', 'ring:CELL_TABS', BD, {'1': 'VBAT', '2': 'GND'}, by='number')  # A7: architecture 17.15 and 17.17 (was 15-20 mAh of 17.10); cell sweep 2026-11-11: smallest 17.6 mAh per 17.26 (before it 18.2 mAh)
+ two('R57', 'R', '4.7k', '', 'ring:R_0201', P, 'PMIC_SDA', 'VDD_1V8')
+ two('R58', 'R', '4.7k', '', 'ring:R_0201', P, 'PMIC_SCL', 'VDD_1V8')
+ 
+@@ -258,7 +302,7 @@
+     two(r, 'R', '100R', '', 'ring:R_0201', A, dl, bus)
+     two(c1, 'C', '1uF', '', 'ring:C_0201', A, 'VDD_MIC', 'GND')
+     # Knowles sheet 4 (Figure 4 and notes): 0.1 uF next to each Vdd pin, no Class 2 dielectric near the microphone
+-    two(c2, 'C', '100nF Class 1', '', 'ring:C_0201', A, 'VDD_MIC', 'GND')
++    two(c2, 'C', '1nF C0G', '04025A102JAT2A', 'ring:C_0402', A, 'VDD_MIC', 'GND')
+ 
+ # ---- storage (W3) and its level shifter (A6, review F07)
+ # U1 balls A9, B10, D10, D9 are on VDD (1.8 V): the chip has one supply for every I/O (balls A4 and E10, no separate I/O
+@@ -280,7 +324,7 @@
+ two('R63', 'R', '47k', '', 'ring:R_0201', S, 'SD_DAT1', 'VDD_SD')
+ two('R64', 'R', '47k', '', 'ring:R_0201', S, 'SD_DAT2', 'VDD_SD')
+ two('R65', 'R', '47k', '', 'ring:R_0201', S, 'SDC_CS', 'VDD_SD')
+-two('C60', 'C', '4.7uF', '', 'ring:C_0402', S, 'VDD_SD', 'GND')
++two('C60', 'C', '2.2uF', '0402ZC225KAT2A', 'ring:C_0402', S, 'VDD_SD', 'GND')  # lead decision 24 (wiring/lead-decisions.md): CS maker asks 2.2 uF on VCC
+ two('C61', 'C', '100nF', '', 'ring:C_0201', S, 'VDD_SD', 'GND')
+ 
+ # ---- screen and its supply (W9, W10; SGM38046 typical application)
+@@ -303,7 +347,7 @@
+ scr = ['ELVSS', 'ELVDD', None, 'VDD_3V0', 'VDD_1V8', 'SWIRE', 'LCD_TE', 'LCD_RST', 'LCD_CS',
+        'LCD_SCK', 'LCD_DCX', 'LCD_MOSI', 'GND', 'GND', 'GND']
+ part('J1', 'FPC_15', 'FH35C-15S-0.3SHW(50)', 'FH35C-15S-0.3SHW(50)', 'ring:Hirose_FH35C-15S-0.3SHW', D,
+-     {'P%d' % (i + 1): n for i, n in enumerate(scr)}, by='number')
++     {str(i + 1): n for i, n in enumerate(scr)}, by='number')
+ part('DISP1', 'TOH095XVT-01', 'TOH095XVT-01', 'TOH095XVT-01', 'ring:NONE_module_tail', D,
+      {str(i + 1): n for i, n in enumerate(scr)}, by='number')
+ 
+@@ -318,13 +362,13 @@
+ part('J_BAND_B', 'BAND_PADS_B', 'flex tail B (other side) %d pads' % len(BAND_B), '', 'ring:FLEX_PADS_1x%d' % len(BAND_B), BD,
+      {str(i + 1): n for i, n in enumerate(BAND_B)}, by='number')
+ for sw, line in (('SW1', 'JOY_UP'), ('SW2', 'BTN_REC'), ('SW3', 'JOY_DOWN'), ('SW4', 'JOY_LEFT'), ('SW5', 'JOY_RIGHT')):
+-    part(sw, 'SKTAAAE010', 'SKTAAAE010', 'SKTAAAE010', 'ring:Alps_SKTA', BD, {'P1': line, 'P2': 'GND'}, by='number')
++    part(sw, 'SKTAAAE010', 'SKTAAAE010', 'SKTAAAE010', 'ring:Alps_SKTA', BD, {'1': line, '3': line, '2': 'GND', '4': 'GND'}, by='number')
+ # A7 (architecture 17.16, 17.22; motor-drive.md 2.1, W3 to W8): M1 W0525AB001D on VMOT and GND; U11 TLV75530PDQNR
+ # from VBAT, EN from MOTOR through R61 with R62 to ground; C83 at IN, C84 at OUT; Q1 and D1 removed
+ part('M1', 'MOTOR', 'W0525AB001D', 'W0525AB001D', 'ring:WIRE_LEADS_2', BD,
+-     {'+': 'VMOT', '-': 'GND'})
++     {'1': 'VMOT', '2': 'GND'}, by='number')
+ part('U11', 'TLV75530P_DQN', 'TLV75530P 3.0V', 'TLV75530PDQNR', 'ring:X2SON-4_DQN_1x1', K,
+-     {'1': 'VMOT', '2': 'GND', '3': 'MOT_EN', '4': 'VBAT', 'EP': 'GND'}, by='number')
++     {'1': 'VMOT', '2': 'GND', '3': 'MOT_EN', '4': 'VBAT', '5': 'GND'}, by='number')
+ two('C83', 'C', '10uF', 'GRM155R60J106ME15', 'ring:C_0402', K, 'VBAT', 'GND')
+ two('C84', 'C', '10uF', 'GRM155R60J106ME15', 'ring:C_0402', K, 'VMOT', 'GND')
+ two('R61', 'R', '100R', '', 'ring:R_0201', K, 'MOTOR', 'MOT_EN')
+@@ -336,7 +380,7 @@
+ # pads from -Y to +Y: VBUS, D-, D+, GND (case design, lead 2026-11-10); on the INSIDE face of the band, in the resin liner
+ # (architecture 17.12), they touch the skin; they reach the board by the tail the BAND_SPLIT table gives them
+ for cp, net in (('CP1', 'VBUS'), ('CP2', 'USB_DN'), ('CP3', 'USB_DP'), ('CP4', 'GND')):
+-    part(cp, 'CONTACTPAD_VBUS' if net == 'VBUS' else 'CONTACTPAD', 'gold pad 1.0mm', '', 'ring:PAD_1.0',
++    part(cp, 'CONTACTPAD_VBUS' if net == 'VBUS' else 'CONTACTPAD', 'gold pad 1.6mm', '', 'ring:PAD_1.0',
+          BD, {'1': net}, by='number')
+ part('U9', 'TPD4E05U06', 'TPD4E05U06', 'TPD4E05U06DQAR', 'ring:USON-10_DQA', T,
+      {'1': 'USB_DP', '2': 'USB_DN', '3': 'GND', '4': 'VBUS', '5': 'VBUS', '6': None, '7': None,
+@@ -391,16 +435,10 @@
+               ('LED1', 'recording light removed in v7 (architecture 17.30): a recording shows on the screen'),
+               ('R41', 'series resistor of the recording light, removed in v7 (architecture 17.30)'),
+               ('Q2', 'transistor of the recording light, removed in v7 (architecture 17.30)')]
+-# parts whose order code is empty on purpose (never invented): reference -> why
+-OPEN_ORDER_CODE = {
+-    'C71': ('A7 D1: 1.0 uF X5R 25 V 10 % (nPM1304 spec Table 37, page 157); no maker sheet of such a part is on file', 'a distributor or the electronics designer: a 1.0 uF 25 V X5R part in 0402 or 0603 with its maker sheet'),
+-    'C85': ('A7 D2: 2.2 uF X5R 10 V (nPM1304 spec Table 37, page 157); no maker sheet on file', 'a distributor or the electronics designer: the part code with its maker sheet'),
+-    'C86': ('A7 D4: 1.0 uF X5R 10 V (nPM1304 spec Table 38, page 159); no maker sheet of a 10 V part on file', 'a distributor or the electronics designer: the part code with its maker sheet'),
+-    'C87': ('A7 D4: 1.0 uF X5R 10 V (nPM1304 spec Table 38, page 159); no maker sheet of a 10 V part on file', 'a distributor or the electronics designer: the part code with its maker sheet'),
+-    'C88': ('A7 D3: 10 uF X5R 16 V (nPM1304 spec Table 37, page 157); no maker sheet of a 16 V part on file', 'a distributor or the electronics designer: the part code with its maker sheet'),
+-    'C35': ('A7: 100 nF next to the microphone Vdd pin, no Class 2 dielectric near the microphone (Knowles SPK0641HT4H-1 sheet 4); the old code CL03A104KP3NNNC is X5R (Class 2)', 'a distributor or the electronics designer: a 100 nF Class 1 (C0G/NP0) part that fits under the board, or the lead accepts a Class 2 part'),
+-    'C36': ('as C35', 'as C35'),
+-}
++# W1: every part line has an order code or a custom-part interface (pcb/custom-part-interfaces.md); no pin map waits on a document.
++# What is still open (documents not obtained) is listed in pcb/footprint-notes.md under 'Not closed' and in the columns
++# land_source and document_obtained of pcb/footprint-sources.csv.  open-pins.csv therefore holds only the header.
++OPEN_ROWS = []   # (reference, pin_number, pin_name, why_open, closed_by): a pin whose number or name waits on a document
+ TESTPAD_REFS = ['TP%d' % (i + 1) for i in range(len(TPS))]
+ 
+ 
+@@ -450,32 +488,11 @@
+         for r, why in ADD: w.writerow([r, 'added', why])
+         for r, why in NOT_PLACED: w.writerow([r, 'bom_not_placed', why])
+         for r in TESTPAD_REFS: w.writerow([r, 'testpad', 'single-pin net allowed'])
+-    PROV = {
+-        'SKTAAAE010': ('Alps spec KTA-601 shows two terminals but no terminal numbers or drawing (open item S9)', 'Alps SKTAAAE010 assembly drawing (S9)'),
+-        'FPC_15': ('Hirose FH35C-15S-0.3SHW(50) selected (A5 16.4) but its drawing and position numbering are not read; tail contact k assumed on connector position k', 'Hirose FH35C drawing and the screen tail drawing (action 12.1, open item S8)'),
+-        'BAND_PADS_A': ('pad numbers are this schematic\'s own order (BAND_SPLIT at the top of make_netlist.py), not a maker pin; the split of signals between the two tails is confirmed by the lead after the inside model (A6, sch-notes)', 'flex tail drawing from the flex maker and the inside model (open items S16 and the lead\'s confirmation)'),
+-        'BAND_PADS_B': ('as BAND_PADS_A', 'as BAND_PADS_A'),
+-        'MOTOR': ('Jinlong W0525AB001D has two lead wires, red + and blue - (architecture 17.16, spec S-525113 rev 0); the maker gives colours, not numbers: P1 (+) and P2 (-) are this schematic\'s names; the lead length is open item S10', 'Jinlong drawing of the leads (S10, S4)'),
+-        'CELL': ('custom curved cell 1.6 x 6.0 x 39.175 mm on its centre line at US 9 in the band (architecture 17.26; 33.936 mm at US 7); tab order and its protection circuit (on the tab, at -77 degrees) not drawn', 'Grepow cell drawing (action 12.7, open item S12)'),
+-        'XTAL': ('crystal maker datasheets not on disk; Nordic reference symbol shows two terminals only', 'Kyocera CX2016DB and TXC 9HT11 datasheets (pad numbers, case ground pads)'),
+-    }
+-    DISP1_PROV = {'3': 'MTP: the Tailor table (slim.md 1.3 p6) prints "4 MTP, 4 VCI": pin 3 is absent and pin 4 appears twice; order kept as printed, this entry is the 3rd printed',
+-                  '4': 'VCI: second printed "4" of the Tailor table (slim.md 1.3); number provisional'}
+     with open(os.path.join(HERE, 'open-pins.csv'), 'w', newline='') as f:
+         w = csv.writer(f); w.writerow(['reference', 'pin_number', 'pin_name', 'why_open', 'closed_by'])
+         n = 0
+-        for p in PARTS:
+-            if p['symbol'] in PROV:
+-                for num, name, typ in SYM[p['symbol']]:
+-                    w.writerow([p['reference'], num, name] + list(PROV[p['symbol']])); n += 1
+-        for k, why in DISP1_PROV.items():
+-            nm = [x[1] for x in SYM['TOH095XVT-01'] if x[0] == k][0]
+-            w.writerow(['DISP1', k, nm, why, 'Tailor Pixels pin table correction (open item S8)']); n += 1
+-        for p in PARTS:
+-            if p['reference'] in OPEN_ORDER_CODE:
+-                w.writerow([p['reference'], '', 'order code'] + list(OPEN_ORDER_CODE[p['reference']]))
+-            if 'OPEN' in p['value'] or 'OPEN' in p['mpn']:
+-                w.writerow([p['reference'], '', 'value or part number', 'value=%s mpn=%s' % (p['value'], p['mpn']), 'Nordic nPM1300 reference BOM (action 12.2) / screen connector (12.1)'])
++        for row in OPEN_ROWS:
++            w.writerow(row); n += 1
+     print('open pin rows', n)
+     print('netlist rows', len(rows), 'parts', len(PARTS), 'nets', len(set(r['net'] for r in rows if r['net'])))
+ 

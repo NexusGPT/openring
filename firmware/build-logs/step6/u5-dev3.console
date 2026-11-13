@@ -1,0 +1,373 @@
+# remote.sh run 20261113-052120-u-power-dev3
+# command: west twister -T tests/power -p native_sim -p nrf54lm20bsim/nrf54lm20a/cpuapp -O /ws/out/u5-dev3 -j 8 --inline-logs -v
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:21:20 CET
+# free on the server's /: 27 GB
+# source firmware copied to /root/ring-os/src-u-power
+# started on the server as 20261113-052120-u-power-dev3; server log /root/ring-os/logs/20261113-052120-u-power-dev3.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/u5-dev3/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/2 native_sim/native         ring_power.sim                                     ERROR Build failure (native <host/gnu>)
+INFO    - ------/ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/build.log------
+ERROR   - Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/tests/power
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: native_sim, qualifiers: native
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/native/native_sim/native_sim.dts
+-- Generated zephyr.dts: /ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/zephyr/zephyr.dts
+-- Generated pickled edt: /ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/zephyr/include/generated/zephyr/devicetree_generated.h
+Parsing /ws/zephyr/Kconfig
+Loaded configuration '/ws/zephyr/boards/native/native_sim/native_sim_defconfig'
+Merged configuration '/ws/firmware/tests/power/prj.conf'
+Merged configuration '/ws/firmware/tests/power/boards/native_sim.conf'
+Merged configuration '/ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/zephyr/misc/generated/extra_kconfig_options.conf'
+Configuration saved to '/ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/zephyr/.config'
+Kconfig header saved to '/ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /usr/bin/ld.bfd (found version "2.42")
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/gcc
+CMake Warning at /ws/nrf/cmake/device_support.cmake:34 (message):
+  SoC native is not supported by this release.
+Call Stack (most recent call first):
+  /ws/nrf/CMakeLists.txt:27 (include)
+
+
+-- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+-- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+-- Configuring done (11.2s)
+-- Generating done (0.3s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    TC_NAME
+
+
+-- Build files have been written to: /ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim
+[1/140] Preparing syscall dependency handling
+
+[2/140] Generating ../../zephyr/include/generated/ncs_version.h
+[3/140] Generating ../../zephyr/include/generated/zephyr_commit.h
+[4/140] Generating ../../zephyr/include/generated/ncs_commit.h
+[5/140] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.2 (/ws/zephyr), build: 9133dab6b066
+[6/140] Generating misc/generated/syscalls_subdirs.trigger
+[7/140] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[8/140] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[9/140] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[10/140] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[11/140] Generating include/generated/zephyr/driver-validation.h
+[12/140] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[13/140] Generating ../../include/generated/zephyr/heap_constants.h
+[14/140] Building C object zephyr/CMakeFiles/offsets.dir/arch/posix/core/offsets/offsets.c.obj
+[15/140] Generating include/generated/zephyr/offsets.h
+[16/140] Building C object CMakeFiles/app.dir/src/test_ilim.c.obj
+[17/140] Building C object CMakeFiles/app.dir/src/test_reset.c.obj
+[18/140] Building C object CMakeFiles/app.dir/src/test_charger.c.obj
+[19/140] Building C object CMakeFiles/app.dir/src/test_gauge.c.obj
+[20/140] Building C object CMakeFiles/app.dir/src/test_levels.c.obj
+[21/140] Building C object CMakeFiles/app.dir/src/common.c.obj
+[22/140] Building C object CMakeFiles/app.dir/src/test_sample.c.obj
+[23/140] Building C object CMakeFiles/app.dir/src/test_ship.c.obj
+[24/140] Building C object CMakeFiles/app.dir/src/test_cfg.c.obj
+[25/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/thread_entry.c.obj
+[26/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/libc/validate_libc.c.obj
+[27/140] Building C object CMakeFiles/app.dir/src/test_report.c.obj
+[28/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/sem.c.obj
+[29/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/printk.c.obj
+[30/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/dec.c.obj
+[31/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/hex.c.obj
+[32/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/clock.c.obj
+[33/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/set.c.obj
+[34/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf.c.obj
+[35/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/heap/heap.c.obj
+[36/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_packaged.c.obj
+[37/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/assert.c.obj
+[38/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitmask.c.obj
+[39/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt_common.c.obj
+[40/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_complete.c.obj
+[41/140] Building C object zephyr/CMakeFiles/zephyr.dir/misc/generated/configs.c.obj
+[42/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt.c.obj
+[43/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/ring_buffer.c.obj
+[44/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/rb.c.obj
+[45/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitarray.c.obj
+[46/140] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_cache.c.obj
+[47/140] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/timeutil.c.obj
+[48/140] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_core.c.obj
+[49/140] Generating linker_zephyr_pre0.cmd
+[50/140] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/backends/log_backend_native_posix.c.obj
+[51/140] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_mgmt.c.obj
+[52/140] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/tracing/tracing_none.c.obj
+[53/140] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/lib/boot_banner/banner.c.obj
+[54/140] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/init.c.obj
+[55/140] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/posix_core_nsi.c.obj
+[56/140] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/cpuhalt.c.obj
+[57/140] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/native_tasks.c.obj
+[58/140] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/irq.c.obj
+[59/140] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/thread.c.obj
+[60/140] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/fatal.c.obj
+[61/140] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_msg.c.obj
+[62/140] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/cmdline.c.obj
+[63/140] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/native_remap.c.obj
+[64/140] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/swap.c.obj
+[65/140] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_output.c.obj
+[66/140] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/misc.c.obj
+[67/140] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/posix_arch_if.c.obj
+[68/140] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/soc.c.obj
+[69/140] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/nsi_if.c.obj
+[70/140] Building C object zephyr/subsys/random/CMakeFiles/subsys__random.dir/random_entropy_device.c.obj
+[71/140] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/cpu_wait.c.obj
+[72/140] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_error_hook.c.obj
+[73/140] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest.c.obj
+[74/140] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/sys_clock_init.c.obj
+[75/140] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/irq_handler.c.obj
+[76/140] Building C object zephyr/drivers/entropy/CMakeFiles/drivers__entropy.dir/fake_entropy_native_sim.c.obj
+[77/140] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_rules.c.obj
+[78/140] Building C object zephyr/drivers/console/CMakeFiles/drivers__console.dir/posix_arch_console.c.obj
+[79/140] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_posix.c.obj
+[80/140] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/native_sim_timer.c.obj
+[81/140] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/rhw_clock_real.c.obj
+[82/140] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/rhw.c.obj
+[83/140] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_hfxo.c.obj
+[84/140] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_pmic.c.obj
+[85/140] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_core.c.obj
+[86/140] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_disk.c.obj
+[87/140] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_mic.c.obj
+[88/140] Building C object modules/ring_power/CMakeFiles/ring_power.dir/src/rpw_logic.c.obj
+[89/140] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_misc.c.obj
+[90/140] Building C object zephyr/kernel/CMakeFiles/kernel.dir/main_weak.c.obj
+[91/140] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_usb.c.obj
+[92/140] Building C object zephyr/kernel/CMakeFiles/kernel.dir/banner.c.obj
+[93/140] Building C object zephyr/kernel/CMakeFiles/kernel.dir/busy_wait.c.obj
+[94/140] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_image.c.obj
+[95/140] Building C object zephyr/kernel/CMakeFiles/kernel.dir/errno.c.obj
+[96/140] Building C object modules/ring_power/CMakeFiles/ring_power.dir/src/rpw.c.obj
+FAILED: [code=1] modules/ring_power/CMakeFiles/ring_power.dir/src/rpw.c.obj 
+ccache /usr/bin/gcc -DKERNEL -DK_HEAP_MEM_POOL_SIZE=0 -DTC_RUNID=d955fcae4af02d6e607341bafe12387e -D__ZEPHYR__=1 -I/ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/zephyr/include/generated/zephyr -I/ws/zephyr/include -I/ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/zephyr/include/generated -I/ws/zephyr/soc/native/inf_clock -I/ws/zephyr/boards/native/native_sim -I/ws/zephyr/scripts/native_simulator/common/src/include -I/ws/zephyr/scripts/native_simulator/native/src/include -I/ws/zephyr/subsys/testsuite/include -I/ws/zephyr/subsys/testsuite/coverage -I/ws/zephyr/subsys/testsuite/ztest/include -I/ws/nrf/include -I/ws/nrf/tests/include -I/ws/firmware/modules/ring_rhw/include -I/ws/firmware/modules/ring_power/include -I/ws/firmware/modules/ring_power/src -I/ws/firmware/modules/ring_power/../ring_core/include -fno-strict-aliasing -Werror -Os -imacros /ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/zephyr/include/generated/zephyr/autoconf.h -fno-common -g -gdwarf-4 -fdiagnostics-color=always -Wall -Wformat -Wformat-security -Wno-format-zero-length -Wdouble-promotion -Wno-pointer-sign -Wpointer-arith -Wexpansion-to-defined -Wno-unused-but-set-variable -Werror=implicit-int -fno-pic -fno-pie -fno-asynchronous-unwind-tables -fno-reorder-functions --param=min-pagesize=0 -fno-defer-pop -fmacro-prefix-map=/ws/firmware/tests/power=CMAKE_SOURCE_DIR -fmacro-prefix-map=/ws/zephyr=ZEPHYR_BASE -fmacro-prefix-map=/ws=WEST_TOPDIR -ffunction-sections -fdata-sections -m32 -msse2 -mfpmath=sse -fvisibility=hidden -fno-freestanding -std=c17 -MD -MT modules/ring_power/CMakeFiles/ring_power.dir/src/rpw.c.obj -MF modules/ring_power/CMakeFiles/ring_power.dir/src/rpw.c.obj.d -o modules/ring_power/CMakeFiles/ring_power.dir/src/rpw.c.obj -c /ws/firmware/modules/ring_power/src/rpw.c
+/ws/firmware/modules/ring_power/src/rpw.c: In function ‘do_sample’:
+/ws/firmware/modules/ring_power/src/rpw.c:284:13: error: unused variable ‘a’ [-Werror=unused-variable]
+  284 |         int a;
+      |             ^
+cc1: all warnings being treated as errors
+[97/140] Building C object zephyr/kernel/CMakeFiles/kernel.dir/version.c.obj
+[98/140] Building C object zephyr/kernel/CMakeFiles/kernel.dir/float.c.obj
+[99/140] Building C object zephyr/kernel/CMakeFiles/kernel.dir/device.c.obj
+[100/140] Building C object zephyr/kernel/CMakeFiles/kernel.dir/kheap.c.obj
+[101/140] Building C object zephyr/kernel/CMakeFiles/kernel.dir/fatal.c.obj
+[102/140] Building C object zephyr/kernel/CMakeFiles/kernel.dir/init.c.obj
+[103/140] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mem_slab.c.obj
+ninja: build stopped: subcommand failed.
+
+INFO    - ------/ws/out/u5-dev3/native_sim_native/host_gnu/firmware/tests/power/ring_power.sim/build.log------
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_power.sim                               ERROR Build failure (native <host/gnu>)
+INFO    - /ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/build.log
+ERROR   - Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/tests/power
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: nrf54lm20bsim, qualifiers: nrf54lm20a/cpuapp
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/native/nrf_bsim/nrf54lm20bsim_nrf54lm20a_cpuapp.dts
+-- Generated zephyr.dts: /ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/zephyr/zephyr.dts
+-- Generated pickled edt: /ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/zephyr/include/generated/zephyr/devicetree_generated.h
+Parsing /ws/zephyr/Kconfig
+Loaded configuration '/ws/zephyr/boards/native/nrf_bsim/nrf54lm20bsim_nrf54lm20a_cpuapp_defconfig'
+Merged configuration '/ws/firmware/tests/power/prj.conf'
+Merged configuration '/ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/zephyr/misc/generated/extra_kconfig_options.conf'
+Configuration saved to '/ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/zephyr/.config'
+Kconfig header saved to '/ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /usr/bin/ld.bfd (found version "2.42")
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/gcc
+-- Using BSIM from BSIM_COMPONENTS_PATH=/ws/tools/bsim/components BSIM_OUT_PATH=/ws/tools/bsim
+CMake Warning at /ws/nrf/cmake/device_support.cmake:34 (message):
+  SoC native is not supported by this release.
+Call Stack (most recent call first):
+  /ws/nrf/CMakeLists.txt:27 (include)
+
+
+-- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+-- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+-- Configuring done (11.6s)
+-- Generating done (0.3s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    TC_NAME
+
+
+-- Build files have been written to: /ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim
+[1/183] Preparing syscall dependency handling
+
+[2/183] Generating ../../zephyr/include/generated/ncs_version.h
+[3/183] Generating ../../zephyr/include/generated/ncs_commit.h
+[4/183] Generating ../../zephyr/include/generated/zephyr_commit.h
+[5/183] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.2 (/ws/zephyr), build: 9133dab6b066
+[6/183] Generating misc/generated/syscalls_subdirs.trigger
+[7/183] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[8/183] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[9/183] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[10/183] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[11/183] Generating include/generated/zephyr/driver-validation.h
+[12/183] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[13/183] Generating ../../include/generated/zephyr/heap_constants.h
+[14/183] Building C object zephyr/CMakeFiles/offsets.dir/arch/posix/core/offsets/offsets.c.obj
+[15/183] Generating include/generated/zephyr/offsets.h
+[16/183] Building C object CMakeFiles/app.dir/src/test_charger.c.obj
+[17/183] Building C object CMakeFiles/app.dir/src/test_ship.c.obj
+[18/183] Building C object CMakeFiles/app.dir/src/test_levels.c.obj
+[19/183] Building C object CMakeFiles/app.dir/src/common.c.obj
+[20/183] Building C object CMakeFiles/app.dir/src/test_sample.c.obj
+[21/183] Building C object CMakeFiles/app.dir/src/test_gauge.c.obj
+[22/183] Building C object CMakeFiles/app.dir/src/test_reset.c.obj
+[23/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/libc/validate_libc.c.obj
+[24/183] Building C object CMakeFiles/app.dir/src/test_ilim.c.obj
+[25/183] Building C object CMakeFiles/app.dir/src/test_cfg.c.obj
+[26/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_packaged.c.obj
+[27/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_complete.c.obj
+[28/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/clock.c.obj
+[29/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/printk.c.obj
+[30/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/thread_entry.c.obj
+[31/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/heap/heap.c.obj
+[32/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/sem.c.obj
+[33/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/hex.c.obj
+[34/183] Building C object CMakeFiles/app.dir/src/test_report.c.obj
+[35/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/dec.c.obj
+[36/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/set.c.obj
+[37/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/assert.c.obj
+[38/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf.c.obj
+[39/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/timeutil.c.obj
+[40/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitarray.c.obj
+[41/183] Building C object zephyr/CMakeFiles/zephyr.dir/misc/generated/configs.c.obj
+[42/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt.c.obj
+[43/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt_common.c.obj
+[44/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitmask.c.obj
+[45/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/rb.c.obj
+[46/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/notify.c.obj
+[47/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/ring_buffer.c.obj
+[48/183] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/onoff.c.obj
+[49/183] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_cache.c.obj
+[50/183] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_output.c.obj
+[51/183] Generating linker_zephyr_pre0.cmd
+[52/183] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_mgmt.c.obj
+[53/183] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_msg.c.obj
+[54/183] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/tracing/tracing_none.c.obj
+[55/183] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/backends/log_backend_native_posix.c.obj
+[56/183] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_core.c.obj
+[57/183] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/lib/boot_banner/banner.c.obj
+[58/183] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/irq.c.obj
+[59/183] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/posix_core_nsi.c.obj
+[60/183] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/cpuhalt.c.obj
+[61/183] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/init.c.obj
+[62/183] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/native_tasks.c.obj
+[63/183] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/native_remap.c.obj
+[64/183] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/swap.c.obj
+[65/183] Building C object zephyr/boards/native/nrf_bsim/CMakeFiles/boards__native__nrf_bsim.dir/argparse.c.obj
+[66/183] Building C object zephyr/boards/native/nrf_bsim/CMakeFiles/boards__native__nrf_bsim.dir/native_remap.c.obj
+[67/183] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/fatal.c.obj
+[68/183] Building C object zephyr/boards/native/nrf_bsim/CMakeFiles/boards__native__nrf_bsim.dir/cpu_wait.c.obj
+[69/183] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/thread.c.obj
+[70/183] Building C object zephyr/boards/native/nrf_bsim/CMakeFiles/boards__native__nrf_bsim.dir/common/bstests_entry.c.obj
+[71/183] Building C object zephyr/boards/native/nrf_bsim/CMakeFiles/boards__native__nrf_bsim.dir/soc/nrfx_coredep.c.obj
+[72/183] Building C object zephyr/boards/native/nrf_bsim/CMakeFiles/boards__native__nrf_bsim.dir/common/trace_hook.c.obj
+[73/183] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/soc.c.obj
+[74/183] Building C object zephyr/boards/native/nrf_bsim/CMakeFiles/boards__native__nrf_bsim.dir/common/cmsis/cmsis.c.obj
+[75/183] Building C object zephyr/boards/native/nrf_bsim/CMakeFiles/boards__native__nrf_bsim.dir/nsi_if.c.obj
+[76/183] Building C object zephyr/boards/native/nrf_bsim/CMakeFiles/boards__native__nrf_bsim.dir/gpiote_nrfx_bsim.c.obj
+[77/183] Building C object zephyr/boards/native/nrf_bsim/CMakeFiles/boards__native__nrf_bsim.dir/irq_handler.c.obj
+[78/183] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_rules.c.obj
+[79/183] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest.c.obj
+[80/183] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_error_hook.c.obj
+[81/183] Building C object zephyr/drivers/console/CMakeFiles/drivers__console.dir/posix_arch_console.c.obj
+[82/183] Building C object zephyr/boards/native/nrf_bsim/CMakeFiles/boards__native__nrf_bsim.dir/ws/zephyr/soc/nordic/common/gpiote_nrfx.c.obj
+[83/183] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/sys_clock_init.c.obj
+[84/183] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_posix.c.obj
+[85/183] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/bsp/stable/mdk/system_nrf54l.c.obj
+[86/183] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/helpers/nrfx_flag32_allocator.c.obj
+[87/183] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/nrfx_glue.c.obj
+[88/183] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/nrf_grtc_timer.c.obj
+[89/183] Building C object zephyr/drivers/clock_control/CMakeFiles/drivers__clock_control.dir/clock_control_nrf.c.obj
+[90/183] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_hfclk192m.c.obj
+[91/183] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_hfclkaudio.c.obj
+[92/183] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock.c.obj
+[93/183] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_hfclk.c.obj
+[94/183] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/rhw.c.obj
+[95/183] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/rhw_clock_real.c.obj
+[96/183] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_lfclk.c.obj
+[97/183] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_grtc.c.obj
+[98/183] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_core.c.obj
+[99/183] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_xo24m.c.obj
+[100/183] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_xo.c.obj
+[101/183] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_disk.c.obj
+[102/183] Building C object modules/ring_power/CMakeFiles/ring_power.dir/src/rpw_logic.c.obj
+[103/183] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_pmic.c.obj
+[104/183] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_hfxo.c.obj
+[105/183] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_mic.c.obj
+[106/183] Building C object modules/ring_power/CMakeFiles/ring_power.dir/src/rpw.c.obj
+FAILED: [code=1] modules/ring_power/CMakeFiles/ring_power.dir/src/rpw.c.obj 
+ccache /usr/bin/gcc -DKERNEL -DK_HEAP_MEM_POOL_SIZE=0 -DNRF54LM20A_XXAA -DNRF54L_CONFIGURATION_56_ENABLE=0 -DNRF_APPLICATION -DTC_RUNID=4e29169c3c53404ae4da28ec9957529a -D__ZEPHYR__=1 -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/mdk_replacements -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/hal_replacements -I/ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/zephyr/include/generated/zephyr -I/ws/zephyr/include -I/ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/zephyr/include/generated -I/ws/zephyr/soc/native/inf_clock -I/ws/zephyr/boards/native/nrf_bsim -I/ws/zephyr/boards/native/nrf_bsim/soc -I/ws/zephyr/boards/native/nrf_bsim/common -I/ws/zephyr/boards/native/nrf_bsim/common/cmsis -I/ws/zephyr/scripts/native_simulator/common/src/include -I/ws/zephyr/soc/nordic/common -I/ws/zephyr/subsys/testsuite/include -I/ws/zephyr/subsys/testsuite/coverage -I/ws/zephyr/subsys/testsuite/ztest/include -I/ws/nrf/include -I/ws/nrf/tests/include -I/ws/nrf/modules/hal_nordic/. -I/ws/modules/hal/nordic/nrfx -I/ws/modules/hal/nordic/nrfx/drivers/include -I/ws/modules/hal/nordic/nrfx/bsp/stable -I/ws/modules/hal/nordic/nrfx/bsp/stable/templates -I/ws/zephyr/modules/hal_nordic/nrfx/. -I/ws/firmware/modules/ring_rhw/include -I/ws/firmware/modules/ring_power/include -I/ws/firmware/modules/ring_power/src -I/ws/firmware/modules/ring_power/../ring_core/include -I/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/nrfx_replacements -fno-strict-aliasing -Werror -O0 -imacros /ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/zephyr/include/generated/zephyr/autoconf.h -fno-common -g -gdwarf-4 -fdiagnostics-color=always -Wall -Wformat -Wformat-security -Wno-format-zero-length -Wdouble-promotion -Wno-pointer-sign -Wpointer-arith -Wexpansion-to-defined -Wno-unused-but-set-variable -Werror=implicit-int -fno-pic -fno-pie -fno-asynchronous-unwind-tables -fno-reorder-functions --param=min-pagesize=0 -fno-defer-pop -fmacro-prefix-map=/ws/firmware/tests/power=CMAKE_SOURCE_DIR -fmacro-prefix-map=/ws/zephyr=ZEPHYR_BASE -fmacro-prefix-map=/ws=WEST_TOPDIR -ffunction-sections -fdata-sections -m32 -msse2 -mfpmath=sse -fvisibility=hidden -fno-freestanding -fshort-enums -std=c17 -MD -MT modules/ring_power/CMakeFiles/ring_power.dir/src/rpw.c.obj -MF modules/ring_power/CMakeFiles/ring_power.dir/src/rpw.c.obj.d -o modules/ring_power/CMakeFiles/ring_power.dir/src/rpw.c.obj -c /ws/firmware/modules/ring_power/src/rpw.c
+/ws/firmware/modules/ring_power/src/rpw.c: In function ‘do_sample’:
+/ws/firmware/modules/ring_power/src/rpw.c:284:13: error: unused variable ‘a’ [-Werror=unused-variable]
+  284 |         int a;
+      |             ^
+cc1: all warnings being treated as errors
+[107/183] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_image.c.obj
+[108/183] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_usb.c.obj
+[109/183] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/sim_misc.c.obj
+[110/183] Building C object modules/nrf_hw_models/CMakeFiles/..__modules__bsim_hw_models__nrf_hw_models.dir/src/nrfx/drivers/nrfx_common.54LM20.c.obj
+[111/183] Building C object modules/nrf_hw_models/CMakeFiles/..__modules__bsim_hw_models__nrf_hw_models.dir/src/nrfx/hal/nrf_54_aar.c.obj
+[112/183] Building C object modules/nrf_hw_models/CMakeFiles/..__modules__bsim_hw_models__nrf_hw_models.dir/src/nrfx/hal/nrf_54_ecb.c.obj
+[113/183] Building C object modules/nrf_hw_models/CMakeFiles/..__modules__bsim_hw_models__nrf_hw_models.dir/src/nrfx/hal/nrf_54_ccm.c.obj
+ninja: build stopped: subcommand failed.
+
+INFO    - /ws/out/u5-dev3/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/power/ring_power.sim/build.log
+
+INFO    - 1 test scenarios (2 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 2 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 2 errored, with no warnings in 28.10 seconds.
+INFO    - 0 of 64 executed test cases passed (0.00%), 64 blocked on 2 out of total 1514 platforms (0.13%).
+INFO    - 0 test configurations executed on platforms, 2 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/u5-dev3/twister.json
+INFO    - Writing xunit report /ws/out/u5-dev3/twister.xml...
+INFO    - Writing xunit report /ws/out/u5-dev3/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_power.sim on nrf54lm20bsim/nrf54lm20a/cpuapp error (Build failure - error: unused variable a [-Werror=unused-variable])
+INFO    - 2) ring_power.sim on native_sim/native error (Build failure - error: unused variable a [-Werror=unused-variable])
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_power.sim
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/power -T ring_power.sim
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+# finished (Mac clock): 2026-11-13 05:22:16 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step6/20261113-052120-u-power-dev3.log

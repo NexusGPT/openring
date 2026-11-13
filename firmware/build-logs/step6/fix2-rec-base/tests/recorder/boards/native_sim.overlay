@@ -1,0 +1,28 @@
+/* The recorder's suites: the memory display of the screens part (the SDL display of native_sim off), the simulated card and the
+ * simulated microphone input of ring_rhw. No chip pin is named here. */
+/ {
+	chosen {
+		zephyr,display = &ring_display;
+	};
+	ring_display: ring_display {
+		compatible = "ring,mem-display";
+		width = <120>;
+		height = <240>;
+	};
+	ring_sim_disk: ring-sim-disk {
+		compatible = "ring,sim-disk";
+		sector-count = <7812500>;
+	};
+	ring_sim_mic: ring-sim-mic {
+		compatible = "ring,sim-mic";
+		queue-size = <8>;
+	};
+};
+
+&sdl_dc {
+	status = "disabled";
+};
+
+&input_sdl_touch {
+	status = "disabled";
+};

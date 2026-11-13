@@ -1,0 +1,162 @@
+CITE ok   F/modules/ring_recorder/src/rrec.c:268-268 -> firmware/modules/ring_recorder/src/rrec.c | rmo_stop();                              /* no motor while the chip is cut */
+CITE ok   F/modules/ring_core/src/state_actions.c:93-96 -> firmware/modules/ring_core/src/state_actions.c | case 19: /* line 151: save settings and time; M2; ship mode */
+CITE ok   F/modules/ring_motor/src/rmo.c:184-196 -> firmware/modules/ring_motor/src/rmo.c | void rmo_stop(void)
+CITE ok   F/tests/recorder/src/test_actions.c:280-289 -> firmware/tests/recorder/src/test_actions.c | /* the menu's power off: settings and time saved before the ship steps */
+CITE ok   rrec.c:268-268 -> firmware/modules/ring_recorder/src/rrec.c | rmo_stop();                              /* no motor while the chip is cut */
+CITE ok   F/modules/ring_core/src/state_actions.c:93-93 -> firmware/modules/ring_core/src/state_actions.c | case 19: /* line 151: save settings and time; M2; ship mode */
+CITE ok   F/modules/ring_recorder/src/rrec.c:266-281 -> firmware/modules/ring_recorder/src/rrec.c | static void ship_mode(void)
+CITE ok   rrec.c:525-525 -> firmware/modules/ring_recorder/src/rrec.c | return rscr_glue_after(a, last_event, state, t);
+CITE ok   test_actions.c:277-277 -> firmware/tests/recorder/src/test_actions.c | zassert_true(i_mic >= 0 && i_sd > i_mic && i_cfg > i_sd, "VDD_MIC off, VDD_SD off, then SHPHLDCONFIG");
+CITE ok   test_actions.c:277-277 -> firmware/tests/recorder/src/test_actions.c | zassert_true(i_mic >= 0 && i_sd > i_mic && i_cfg > i_sd, "VDD_MIC off, VDD_SD off, then SHPHLDCONFIG");
+CITE ok   F/modules/ring_recorder/src/rrec.c:330-330 -> firmware/modules/ring_recorder/src/rrec.c | (void)rst_unmount();
+CITE ok   F/modules/ring_xfer/include/ring_xfer/rxf.h:80-82 -> firmware/modules/ring_xfer/include/ring_xfer/rxf.h | /* VBUS removed in TRANSFER (FW l.179): abort the command that runs; no response is sent for it. Any thread; d
+CITE ok   rxf_class.c:318-324 -> firmware/modules/ring_xfer/src/rxf_class.c | void rxf_abort(void)
+CITE ok   rst.h:8-11 -> firmware/modules/ring_store/include/ring_store/rst.h | * Threads: the store has one storage thread (made by rst_init). Every call below except rst_put_chunk, rst_log
+CITE ok   rst.c:169-172 -> firmware/modules/ring_store/src/rst.c | static bool op_take(void)
+CITE ok   rst.c:467-467 -> firmware/modules/ring_store/src/rst.c | int rst_unmount(void)
+CITE ok   rrec.c:37-37 -> firmware/modules/ring_recorder/src/rrec.c | #define FINISH_WAIT_MS 5000  /* rxf_finish: the command that runs may take this long (FW l.178 gives no number
+CITE ok   F/tests/recorder/src/test_rows.c:179-187 -> firmware/tests/recorder/src/test_rows.c | zassert_equal(rt_run_row(46), 0, NULL);
+CITE ok   rst.c:171-171 -> firmware/modules/ring_store/src/rst.c | return k_mutex_lock(&op_lock, K_NO_WAIT) == 0;
+CITE ok   rxf.h:80-82 -> firmware/modules/ring_xfer/include/ring_xfer/rxf.h | /* VBUS removed in TRANSFER (FW l.179): abort the command that runs; no response is sent for it. Any thread; d
+CITE ok   F/modules/ring_recorder/src/rrec.c:406-431 -> firmware/modules/ring_recorder/src/rrec.c | bool usb = s == RC_ST_CHARGING || s == RC_ST_TRANSFER || s == RC_ST_FACTORY_TEST;
+CITE ok   rrec_boot.c:70-70 -> firmware/modules/ring_recorder/src/rrec_boot.c | (void)rxf_start(rrec_backend(), rrec_xfer_cb());  /* the stack itself starts on VBUS (FW l.978) */
+CITE ok   step6-plan.md:189-189 -> firmware/docs/step6-plan.md | | P6 | FW 8.2 l.912 to l.920 | rails per state: VDD_MIC only in `RECORDING`; VDD_SD in `BOOT`, `RECOVERY`, `RE
+CITE ok   F/tests/recorder/src/test_rails.c:6-6 -> firmware/tests/recorder/src/test_rails.c | /* FW l.912 to l.920: VDD_SD on in BOOT, RECOVERY, RECORDING, TRANSFER; VDD_MIC only in RECORDING; HFXO on in 
+CITE ok   rrec.c:406-406 -> firmware/modules/ring_recorder/src/rrec.c | bool usb = s == RC_ST_CHARGING || s == RC_ST_TRANSFER || s == RC_ST_FACTORY_TEST;
+CITE ok   F/tests/recorder/src/test_actions.c:48-62 -> firmware/tests/recorder/src/test_actions.c | rt_sleep(1300);   /* the mark falls inside a chunk: a partial chunk exists */
+CITE ok   F/tests/recorder/src/rt.c:303-310 -> firmware/tests/recorder/src/rt.c | void rt_long(void)
+CITE ok   rrec.c:232-232 -> firmware/modules/ring_recorder/src/rrec.c | (void)rst_close(cr.last, &cr.close);     /* partial chunk, CLOSE record, superblock with the flag clear */
+CITE ok   F/tests/recorder/src/rt.c:306-306 -> firmware/tests/recorder/src/rt.c | rt_sleep(1100);
+CITE ok   F/modules/ring_recorder/src/rrec.c:569-637 -> firmware/modules/ring_recorder/src/rrec.c | int rrec_test_recording(uint32_t ms, void (*on_block)(const int16_t *frames, uint32_t n), int64_t *mic_on_ms,
+CITE ok   F/tests/factory/src/common.c:50-92 -> firmware/tests/factory/src/common.c | int fx_test_recording(uint32_t ms, void (*on_block)(const int16_t *frames, uint32_t n), int64_t *mic_on_ms,
+CITE ok   F/tests/recorder/src/test_rows.c:40-53 -> firmware/tests/recorder/src/test_rows.c | if (row == 49 && rt_state() == RC_ST_FACTORY_TEST) {
+CITE ok   F/tests/recorder/src/test_rules.c:109-141 -> firmware/tests/recorder/src/test_rules.c | static const uint8_t subs[] = { RREC_FAC_MIC, RREC_FAC_SKEW_REMOVED, RREC_FAC_SCREEN, RREC_FAC_JOY,
+CITE ok   tests/factory/src/common.c:92-92 -> firmware/tests/factory/src/common.c | rc = rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
+CITE ok   F/tests/recorder/src/test_actions.c:173-173 -> firmware/tests/recorder/src/test_actions.c | rglue_event(RC_EV_BLE_HIGHLIGHT);
+CITE ok   F/modules/ring_recorder/src/rrec_bridge.c:46-49 -> firmware/modules/ring_recorder/src/rrec_bridge.c | r = k_msgq_put(&job_q, &j, K_NO_WAIT);
+CITE ok   rrec_bridge.c:33-33 -> firmware/modules/ring_recorder/src/rrec_bridge.c | K_MSGQ_DEFINE(job_q, sizeof(struct job), 32, 4);
+CITE ok   F/modules/ring_recorder/src/rrec_bridge.c:102-110 -> firmware/modules/ring_recorder/src/rrec_bridge.c | struct rst_mount_info mi;
+CITE ok   F/modules/ring_screens/src/rscr.c:534-534 -> firmware/modules/ring_screens/src/rscr.c | if (atomic_get(&power_off_pending) != 0 && ops->power_off() == 0) {
+CITE ok   rpw.h:74-74 -> firmware/modules/ring_power/include/ring_power/rpw.h | * once (FW l.941). Returns only when the chip did not cut the supply: -ETIMEDOUT after the retry. Join's threa
+CITE ok   rscr_real.c:94-94 -> firmware/modules/ring_screens/src/rscr_real.c | return rglue_event_try(RC_EV_MENU_POWER_OFF);
+CITE ok   rscr.c:534-534 -> firmware/modules/ring_screens/src/rscr.c | if (atomic_get(&power_off_pending) != 0 && ops->power_off() == 0) {
+CITE ok   design/firmware.md:218-218 -> design/firmware.md | - The watchdog (`wdt31`, 8 s) resets the chip when the main loop stops; a reset during a recording leaves the 
+CITE ok   F/app/src/main.c:125-127 -> firmware/app/src/main.c | while (1) {
+CITE ok   F/modules/ring_sys/src/rsy.c:461-461 -> firmware/modules/ring_sys/src/rsy.c | static void wdt_tick(struct k_work *w)
+CITE ok   rsy.c:461-461 -> firmware/modules/ring_sys/src/rsy.c | static void wdt_tick(struct k_work *w)
+CITE ok   F/tests/factory/src/test_screen.c:202-202 -> firmware/tests/factory/src/test_screen.c | zassert_equal(fx_frame_ms[i] - fx_frame_ms[i - 1], 1000, "1 s each (FW l.1025)");
+CITE ok   F/tests/factory/src/common.c:132-132 -> firmware/tests/factory/src/common.c | fx_frame_ms[fx_frames] = rhw_clock()->now_ms();
+CITE ok   F/modules/ring_rhw/src/sim_misc.c:131-134 -> firmware/modules/ring_rhw/src/sim_misc.c | static int64_t c_now_ms(void)
+CITE ok   F/tests/recorder/src/test_screens.c:38-46 -> firmware/tests/recorder/src/test_screens.c | ZTEST(recorder_screens, test_battery_reaches_screens)
+CITE ok   F/modules/ring_audio/src/rau.c:313-320 -> firmware/modules/ring_audio/src/rau.c | static void clear_state(void)
+CITE ok   j-prod1.log:17-17 -> firmware/build-logs/step6/j-prod1.log | /ws/firmware/modules/ring_audio/src/rau.c:313:13: warning: 'clear_state' defined but not used [-Wunused-functi
+CITE ok   rau.c:313-313 -> firmware/modules/ring_audio/src/rau.c | static void clear_state(void)
+CITE ok   F/modules/ring_motor/src/rmo.c:95-95 -> firmware/modules/ring_motor/src/rmo.c | static void reboot_hook(void)
+CITE ok   j-prod1.log:17-19 -> firmware/build-logs/step6/j-prod1.log | /ws/firmware/modules/ring_audio/src/rau.c:313:13: warning: 'clear_state' defined but not used [-Wunused-functi
+CITE ok   F/modules/ring_recorder/src/rrec_int.h:72-72 -> firmware/modules/ring_recorder/src/rrec_int.h | bool test_recording;     /* a factory test recording runs (transfer thread; atomic flag) */
+CITE ok   rscr_real.c:94-94 -> firmware/modules/ring_screens/src/rscr_real.c | return rglue_event_try(RC_EV_MENU_POWER_OFF);
+CITE ok   F/modules/ring_core/src/core.c:177-181 -> firmware/modules/ring_core/src/core.c | if (ev == RC_EV_LONG_PRESS || ev == RC_EV_SHORT_PRESS || ev == RC_EV_DOUBLE_PRESS ||
+CITE ok   rrec.c:577-582 -> firmware/modules/ring_recorder/src/rrec.c | if (rrec_core_state() != RC_ST_FACTORY_TEST) {
+CITE ok   rrec_mics.c:53-53 -> firmware/modules/ring_recorder/src/rrec_mics.c | return rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
+CITE ok   rrec_mics.c:48-52 -> firmware/modules/ring_recorder/src/rrec_mics.c | int r = sign_draw(t);
+CITE ok   rrec.c:231-236 -> firmware/modules/ring_recorder/src/rrec.c | r = rau_cut(mark, &cr);                  /* the frames up to the mark kept; the partial chunk (FW l.448) */
+CITE ok   rglue.c:35-48 -> firmware/modules/ring_glue/src/rglue.c | if (ops.action != NULL) {
+CITE ok   rrec.c:525-525 -> firmware/modules/ring_recorder/src/rrec.c | return rscr_glue_after(a, last_event, state, t);
+CITE ok   rrec.c:245-263 -> firmware/modules/ring_recorder/src/rrec.c | static void stop_after_write_fault(enum rc_action a)
+CITE ok   rsy_logic.c:139-150 -> firmware/modules/ring_sys/src/rsy_logic.c | static bool fresh(int64_t now_ms, int64_t last_ms)
+CITE ok   rrec_spec.h:400-402 -> firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h | #define RREC_WDT_TIMEOUT_MS           8000u       /* FW l.1065 */
+CITE ok   rrec_bridge.c:262-262 -> firmware/modules/ring_recorder/src/rrec_bridge.c | rsy_progress(RSY_THREAD_STORAGE);   /* the storage thread wrote a chunk (FW l.1065) */
+CITE ok   rsy_logic.c:22-22 -> firmware/modules/ring_sys/src/rsy_logic.c | if (image_size == 0u || image_size > RREC_IMAGE_MAX_BYTES) {
+CITE ok   rsy.c:132-132 -> firmware/modules/ring_sys/src/rsy.c | if (rhw_image()->erase_slot1() != 0) {
+CITE ok   rsy_hw_real.c:34-51 -> firmware/modules/ring_sys/src/rsy_hw_real.c | static bool ri_inside(uint32_t offset, size_t len)
+CITE ok   rfa_logic.c:17-19 -> firmware/modules/ring_factory/src/rfa_logic.c | /* "With the flag clear, FACTORY returns NOT_ALLOWED" (FW l.1019): before anything else about the request. */
+CITE ok   rfa_logic.c:71-73 -> firmware/modules/ring_factory/src/rfa_logic.c | bool rfa_clears_flag(uint8_t sub)
+CITE ok   rfa.c:435-436 -> firmware/modules/ring_factory/src/rfa.c | if (rc == 0 && rfa_clears_flag(c.sub)) {
+CITE ok   rrec.c:345-349 -> firmware/modules/ring_recorder/src/rrec.c | case RC_ACT_CLEAR_FACTORY_FLAG:
+CITE ok   rfa.c:436-436 -> firmware/modules/ring_factory/src/rfa.c | rc = ops.flag_set != NULL ? ops.flag_set(false) : -ENOTSUP;
+CITE ok   rrec_backend.c:361-361 -> firmware/modules/ring_recorder/src/rrec_backend.c | int r = rsy_factory_flag_set(on);
+CITE ok   rrec.c:346-346 -> firmware/modules/ring_recorder/src/rrec.c | (void)rsy_factory_flag_set(false);
+CITE ok   test_rows.c:62-62 -> firmware/tests/core/src/test_rows.c | ROW(16, 16, STANDBY, STANDBY, SIGN(REFUSE), th_long(), A(M3), A(LOG_EVENT))
+CITE ok   rmo.h:6-6 -> firmware/modules/ring_motor/include/ring_motor/rmo.h | * pulse) is declared in the unit's own src/ header. No soft start (lead's ruling D3: not built in step 6): one
+CITE ok   rrec_spec.h:349-349 -> firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h | RREC_FAC_EXIT = 0x02,                 /* NOT IN FW: row FW l.201 names "FACTORY_EXIT" but FW 9.3 gives it no
+CITE ok   test_proto.c:673-673 -> firmware/tests/xfer/src/test_proto.c | zassert_equal(fk.last_factory[0], 0x02, "FACTORY_EXIT is sub-command 0x02");
+CITE ok   test_chunk.c:279-279 -> firmware/tests/audio/src/test_chunk.c | zassert_equal(c1->hdr.highlight_frame[0], 8800, "frame number of CENTRE_DOWN, not an offset in the chunk");
+CITE ok   app/prj.conf:89-89 -> firmware/app/prj.conf | # USB identity: the vendor and product id in modules/ring_xfer/src/rxf_hw_real.c (0x2fe3, 0x0100) are the kit'
+CITE ok   F/tests/sys/src/test_update.c:55-55 -> firmware/tests/sys/src/test_update.c | zassert_equal(rsy_fw_begin(999425u, 0u, 1000u, true), 4, "999,425 bytes refused with BAD_ARG");
+CITE ok   F/tests/store/src/test_space.c:48-57 -> firmware/tests/store/src/test_space.c | rst_lay_space(total, 1 + (total - 3517), 1, &sp);
+CITE ok   F/tests/xfer/src/test_proto.c:327-327 -> firmware/tests/xfer/src/test_proto.c | static const uint32_t bad[] = { 0, 257, 258, 1000, 0xFFFFFFFFu };
+CITE ok   F/tests/motor/src/test_charge.c:30-30 -> firmware/tests/motor/src/test_charge.c | { RREC_PAT_M1, "M1", 80, 1, { 8150 }, 8150 },
+CITE ok   rpw.h:50-50 -> firmware/modules/ring_power/include/ring_power/rpw.h | * and cb->vbus(true). Once, at boot, after rpw_boot_causes. Blocks for one sample. */
+CITE ok   rrec_boot.c:53-80 -> firmware/modules/ring_recorder/src/rrec_boot.c | (void)rsy_init(rrec_log);                         /* settings: factory flag, saved time (FW l.1010) */
+CITE ok   rrec_bridge.c:215-241 -> firmware/modules/ring_recorder/src/rrec_bridge.c | static void st_s30(uint32_t free_chunks)
+CITE ok   rmo.c:159-159 -> firmware/modules/ring_motor/src/rmo.c | if (cb.started != NULL) {
+CITE ok   rmo.h:29-29 -> firmware/modules/ring_motor/include/ring_motor/rmo.h | /* A pattern started (FW l.333: the start time is logged), with its id and uptime ms. Caller's context of rmo_
+CITE ok   rau.c:313-320 -> firmware/modules/ring_audio/src/rau.c | static void clear_state(void)
+CITE ok   rau.c:346-348 -> firmware/modules/ring_audio/src/rau.c | #ifdef CONFIG_RING_RHW_SIM
+CITE ok   j-prod1.log:17-17 -> firmware/build-logs/step6/j-prod1.log | /ws/firmware/modules/ring_audio/src/rau.c:313:13: warning: 'clear_state' defined but not used [-Wunused-functi
+CITE ok   F/tests/recorder/src/rt.c:289-289 -> firmware/tests/recorder/src/rt.c | rt_sleep(100);      /* the audio thread leaves a capture the reboot stopped before rau_init runs again (notes,
+CITE ok   rau.c:313-313 -> firmware/modules/ring_audio/src/rau.c | static void clear_state(void)
+CITE ok   rmo.c:95-95 -> firmware/modules/ring_motor/src/rmo.c | static void reboot_hook(void)
+CITE ok   j-prod1.log:17-19 -> firmware/build-logs/step6/j-prod1.log | /ws/firmware/modules/ring_audio/src/rau.c:313:13: warning: 'clear_state' defined but not used [-Wunused-functi
+CITE ok   F/tests/factory/broken_edit.py:36-38 -> firmware/tests/factory/broken_edit.py | "vbat_read_at_0": ("ring_factory", LOGIC, "factory_motor.test_reads_and_timing",
+CITE ok   rfa.c:260-260 -> firmware/modules/ring_factory/src/rfa.c | static size_t run_screen(uint8_t *out)
+CITE ok   u8-full1.console:782-782 -> firmware/build-logs/step6/u8-full1.console | FAIL - test_reads_and_timing in 0.521 seconds
+CITE ok   F/tests/factory/src/test_screen.c:202-202 -> firmware/tests/factory/src/test_screen.c | zassert_equal(fx_frame_ms[i] - fx_frame_ms[i - 1], 1000, "1 s each (FW l.1025)");
+QUOTE ok  rrec.c:268 `rmo_stop();                              /* no motor while the chip is`
+QUOTE ok  F/modules/ring_core/src/state_actions.c:93 `case 19: /* line 151: save settings and time; M2; ship mode */`
+QUOTE ok  rrec.c:525 `return rscr_glue_after(a, last_event, state, t);`
+QUOTE ok  test_actions.c:277 `zassert_true(i_mic >= 0 && i_sd > i_mic && i_cfg > i_sd, "VDD_MIC off,`
+QUOTE ok  rst.c:171 `return k_mutex_lock(&op_lock, K_NO_WAIT) == 0;`
+QUOTE ok  rrec.c:406 `bool usb = s == RC_ST_CHARGING \|\| s == RC_ST_TRANSFER \|\| s == RC_S`
+QUOTE ok  F/tests/recorder/src/rt.c:306 `rt_sleep(1100);`
+QUOTE ok  tests/factory/src/common.c:92 `rc = rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");`
+QUOTE ok  rscr.c:534 `if (atomic_get(&power_off_pending) != 0 && ops->power_off() == 0) {`
+QUOTE ok  rsy.c:461 `static void wdt_tick(struct k_work *w)`
+EVID ok   b1-test-excerpts.txt
+EVID ok   b2-mic-and-misc.txt
+EVID ok   broken-edits-sample.txt
+EVID ok   cite_check.edit.log
+EVID ok   cite_check.out
+EVID ok   cite_check.run1.out
+EVID ok   cited-files-tracked.txt
+EVID ok   core-broken-diffs.txt
+EVID ok   git-status-firmware.txt
+EVID ok   grep-ble-highlight.txt
+EVID ok   grep-partial-chunk-tests.txt
+EVID ok   grep-posts.txt
+EVID ok   grep-start-paths.txt
+EVID ok   pin-diff-code.txt
+EVID ok   pin-log.txt
+EVID ok   plan-rows-per-unit.txt
+EVID ok   r23-names.txt
+EVID ok   rulings-check.txt
+EVID ok   seam-motor-isr.txt
+EVID ok   ship-close-search.txt
+COUNT     10 of 18
+COUNT     10 of 27
+COUNT     10 of 28
+COUNT     17 of 27
+COUNT     18 of 28
+COUNT     2 of 2
+COUNT     26 of 26
+COUNT     28 of 37
+COUNT     3 of 11
+COUNT     4 of 4
+COUNT     44 of 44
+COUNT     6 of 15
+COUNT     6 of 6
+COUNT     64 of 64
+COUNT     8 of 11
+COUNT     8 of 18
+COUNT     9 of 15
+COUNT     9 of 37
+SEVERITY counts from the table: {'blocker': 0, 'major': 6, 'minor': 8, 'note': 3}
+SEV ok    0 blocker
+SEV ok    0 blocker
+SEV ok    6 major
+SEV ok    6 major
+SEV ok    8 minor
+SEV ok    8 minor
+SEV ok    3 notes
+SEV ok    3 notes
+AUDIT: 160 claims checked, 0 without a match

@@ -1,0 +1,27 @@
+# remote.sh run 20261113-090140-j-prod1
+# command: west build -p always -b nrf54lm20bsim/nrf54lm20a/cpuapp --no-sysbuild -d /ws/out/j-prod1-bsim -o=-j8 app -- -DCONFIG_RING_FACTORY=n > /ws/out/j-prod1-bsim.txt 2>&1; echo "bsim build exit $?"; grep -E 'error:|warning:' /ws/out/j-prod1-bsim.txt | head -20; E=/ws/out/j-prod1-bsim/zephyr/zephyr.exe; if [ -x $E ]; then ($E -s=jprod1 -d=0 > /ws/out/j-prod1-run.txt 2>&1 &); (cd $BSIM_OUT_PATH/bin && ./bs_2G4_phy_v1 -s=jprod1 -D=1 -sim_length=2e6 > /ws/out/j-prod1-phy.txt 2>&1); echo "phy exit $?"; sleep 2; grep -E 'ring-os' /ws/out/j-prod1-run.txt | head -20; fi; west build -p always -b nrf54lm20dk/nrf54lm20a/cpuapp --sysbuild -d /ws/out/j-prod1-dk -o=-j8 app -- -Dapp_CONFIG_RING_FACTORY=n > /ws/out/j-prod1-dk.txt 2>&1; echo "dk build exit $?"; grep -E 'error:|warning:|Error' /ws/out/j-prod1-dk.txt | head -30; tail -5 /ws/out/j-prod1-dk.txt
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 09:01:40 CET
+# free on the server's /: 26 GB
+# source firmware copied to /root/ring-os/src-u-join
+# started on the server as 20261113-090140-j-prod1; server log /root/ring-os/logs/20261113-090140-j-prod1.log
+bsim build exit 0
+warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+phy exit 0
+d_00: @00:00:00.000122  ring-os start: app 0.1.0-dev, zephyr 4.4.2, board nrf54lm20bsim/nrf54lm20a/cpuapp
+d_00: @00:00:00.001352  ring-os recorder: boot done, state STANDBY
+dk build exit 0
+warning: BOOT_MAX_IMG_SECTORS (defined at /ws/bootloader/mcuboot/boot/zephyr/Kconfig:974) was
+warning: Deprecated symbol NRF_PLATFORM_LUMOS is enabled.
+warning: Deprecated symbol NRF_PLATFORM_LUMOS is enabled.
+/ws/firmware/modules/ring_audio/src/rau.c:313:13: warning: 'clear_state' defined but not used [-Wunused-function]
+/ws/firmware/modules/ring_audio/src/rau.c:48:13: warning: 'hook_added' defined but not used [-Wunused-variable]
+/ws/firmware/modules/ring_motor/src/rmo.c:95:13: warning: 'reboot_hook' defined but not used [-Wunused-function]
+        IDT_LIST:           0 B        32 KB      0.00%
+Generating files from /ws/out/j-prod1-dk/mcuboot/zephyr/zephyr.elf for board: nrf54lm20dk/nrf54lm20a/cpuapp
+[15/18] Generating ../dfu_application.zip
+[17/18] No install step for 'mcuboot'
+[18/18] Completed 'mcuboot'
+# finished (Mac clock): 2026-11-13 09:03:30 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-090140-j-prod1.log

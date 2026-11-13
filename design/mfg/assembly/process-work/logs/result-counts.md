@@ -1,0 +1,7 @@
+Results (logs in WORK/logs/):
+- check_joints.py before the fill: last line `RESULT FAIL 365` (`WORK/logs/check-before.log`). After the fill: last line `RESULT FAIL 160`, rules R1 0, R2 160, R3 0, R4 0, R5 0 (`WORK/logs/check-final.log`, `WORK/logs/check-final-rules.txt`). A first run after the fill, before the expectation file was written, gave the same `RESULT FAIL 160` (`WORK/logs/check-after1.log`).
+- Rows: 99; passing 32 (the 4 complete before, the 14 J1 contacts, the 10 ends of the case wires, the 2 case cell leads, the 2 thermistor leads); with a gap 67 (`WORK/logs/list-gaps-final.log`: `GAPS 67 of 99 rows`).
+- Each failing row waits for (`WORK/logs/reason-counts.log`): hotbar-joint.md 15; change C1 alone 7 and C1 with C13 12; change C2 alone 7 and C2 with C13 4; change C13 alone 10; change C6 5; change C4 with C14 4; change C4 alone 1; change C3 with C4 1; change C4 with C5 1. Total 67.
+- joint-gaps.md rebuilt by `make_gaps.py`: `gap lines 67 complete 32 unplaced 0 []` (`WORK/logs/make_gaps.log`). Its group headings are the table helper's fixed texts and still describe the gaps as they were before this fill; the line of each joint carries its new gap.
+- The 13 tests of the table helper, run from a copy with the same sha256 (`WORK/logs/tests-sha.log`) so that its kept files land in WORK: last line `TESTS PASS 13 of 13 as expected` (`WORK/logs/tests.log`).
+- Fields filled or rewritten: 517 (`WORK/logs/fill.log`).

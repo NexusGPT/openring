@@ -1,0 +1,226 @@
+#!/usr/bin/env python3
+"""One-page description of the ring for a first contact with a Chinese maker: page 1 English, page 2 Chinese.
+
+Run:  design/.venv/bin/python design/supplier-package/make_one_pager.py <out.pdf> <package folder> [<preview-prefix>]
+<package folder> is the built supplier package (the folder that holds MANIFEST.csv). Every count on the page (files, parts-list
+lines, custom parts, drawing sheets, case size) is read from that folder; the script stops if the package is missing or its
+manifest does not match its files. No drawing and no file of the design is in the PDF.
+"""
+import csv
+import re
+import sys
+import unicodedata
+from pathlib import Path
+
+import matplotlib
+matplotlib.use("Agg")
+from matplotlib import font_manager
+from matplotlib.backends.backend_pdf import PdfPages
+import matplotlib.pyplot as plt
+
+FONT = "/Library/Fonts/Arial Unicode.ttf"
+BOLD = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+REG = font_manager.FontProperties(fname=FONT)
+BLD = font_manager.FontProperties(fname=BOLD)
+
+W, H = 8.27, 11.69            # A4, inches
+LEFT, RIGHT, TOP = 0.085, 0.915, 0.955   # figure fractions
+WIDTH_PT = (RIGHT - LEFT) * W * 72
+
+def facts(pkg):
+    """counts read from the built package folder (never typed)"""
+    pkg = Path(pkg)
+    man = list(csv.DictReader(open(pkg / "MANIFEST.csv", encoding="utf-8")))
+    listed = sorted(r["path"] for r in man) + ["MANIFEST.csv"]
+    onDisk = sorted(f.relative_to(pkg).as_posix() for f in pkg.rglob("*") if f.is_file())
+    if listed != onDisk:
+        raise SystemExit("the package folder does not match its MANIFEST.csv: " + str(len(listed)) + " listed, " + str(len(onDisk)) + " on disk")
+    idx = list(csv.DictReader(open(pkg / "02-3d/maker-files/index.csv", encoding="utf-8")))
+    size = (pkg / "02-3d/case/case_size.txt").read_text(encoding="utf-8")
+    ms = re.search(r"X ([\d.]+) mm x Y ([\d.]+) mm x Z ([\d.]+) mm", size)
+    return {"files": len(onDisk),
+            "bom": len(list(csv.DictReader(open(pkg / "03-parts-lists/ring-parts-list.csv", encoding="utf-8")))),
+            "parts": len({r["part"] for r in idx} - {"ring-assembly"}),
+            "drawings": sum(1 for f in onDisk if f.startswith("05-mechanical/drawings/") and f.endswith(".pdf")),
+            "case": " x ".join(ms.groups()) + " mm"}
+
+
+EN = {
+    "title": "Smart ring voice recorder: manufacturing partner wanted",
+    "sub": "Custom design, owned by the sender. Confidential summary, no drawings attached.",
+    "from": "From: [company, contact person, e-mail]          Date: [date]",
+    "sections": [
+        ("The product", [
+            "A smart ring that records meetings into its own memory. A long press on its one control (a five-way joystick with a round cap) starts and stops a recording. A small AMOLED screen sits on top; it shows that the ring records. There is no recording light.",
+            "Body: titanium grade 5, or stainless steel 316L. Block on top 29.3 x 14.75 x 3.85 mm. Band 8.0 mm wide and 2.6 mm thick. Seven sizes, US 7 to US 13.",
+            "Inside: Nordic nRF54LM20A Bluetooth LE chip, Nordic nPM1304 power chip, 2 MEMS microphones, 4 GB storage, a vibration motor, a five-way joystick, a custom curved lithium polymer cell (4.35 V type, 18 to 32 mAh by ring size).",
+            "The inside of the band is closed by a resin liner cast in place. Four charging pads sit in the liner.",
+            "Charging case, {case}: USB-C, 700 mAh cell, four spring pins in a moulded pin holder. It charges the ring and moves the recordings over USB.",
+        ]),
+        ("What is ready", [
+            "Design state: inside model version 7 and charging case C5d. The full design package holds {files} files.",
+            "3D models (STEP) and files for 3D-printed fit samples (STL): the exterior for each ring size, the complete inside assembly, {parts} custom parts (per ring size where they change by size), the charging case.",
+            "Parts list ({bom} lines), wiring diagram (KiCad and PDF), {drawings} drawing sheets and one specification page per custom part, the assembly order, the software behaviour specification with the factory test list.",
+            "Not ready: the circuit board layout (who routes it is not decided), the software code, a working sample. Not confirmed by a maker: the case's spring pin and the pin holder's 0.79 mm walls.",
+        ]),
+        ("What we look for", [
+            "A factory that builds our design (JDM or contract manufacturing). We do not look for an existing ring with our logo.",
+            "Work wanted: a design-for-manufacturing review; as an option the circuit board layout and the software; prototypes; then series production.",
+            "Quantities: [number] prototypes, then [number] per order. First samples wanted by: [date].",
+        ]),
+        ("Please answer", [
+            "1. Have you built a smart ring from a customer's own design? One with a screen? Please name examples you may share.",
+            "2. Which of these do you do in your own factory: titanium machining or metal injection moulding, curved cover glass, flexible circuits and 0201 assembly, resin potting of rings, waterproof testing?",
+            "3. Can you source a custom curved cell (for example from Grepow) and the Nordic chips?",
+            "4. For a product of this kind: your smallest order, engineering fee, tooling cost and sample lead time.",
+            "5. Your certificates (ISO 9001, ISO 13485, BSCI) and your export experience to the EU (CE, RoHS, UN 38.3).",
+            "6. Will you sign an NNN agreement (no disclosure, no use, no circumvention), in Chinese and English under Chinese law, before we send the files?",
+        ]),
+    ],
+    "next": "Next step: send your answers to [e-mail]. After the signed agreement we send the full design package (3D models, parts lists, wiring diagrams, specifications, assembly order, test list).",
+}
+
+ZH = {
+    "title": "智能戒指录音器：寻找制造合作伙伴",
+    "sub": "发件方自有的定制设计。保密摘要，不含图纸。",
+    "from": "发件方：[公司、联系人、邮箱]          日期：[日期]",
+    "sections": [
+        ("产品简介", [
+            "一款可将会议录音保存到自身存储器的智能戒指。长按唯一的控制键（带圆形键帽的五向摇杆）即可开始和停止录音。顶部带有小型 AMOLED 显示屏，屏幕显示戒指正在录音。没有录音指示灯。",
+            "壳体：5 级钛合金，或 316L 不锈钢。顶部模块 29.3 x 14.75 x 3.85 mm。戒圈宽 8.0 mm、厚 2.6 mm。共 7 个尺码，美码 7 至 13。",
+            "内部：Nordic nRF54LM20A 低功耗蓝牙芯片、Nordic nPM1304 电源管理芯片、2 个 MEMS 麦克风、4 GB 存储、振动马达、五向摇杆、定制弧形锂聚合物电池（4.35 V 型，按尺码 18 至 32 mAh）。",
+            "戒圈内侧由现场灌封的树脂内衬封闭。内衬上有 4 个充电触点。",
+            "充电盒，{case}：USB-C、700 mAh 电池、模塑顶针座内的 4 个弹簧顶针。可为戒指充电，并通过 USB 传输录音。",
+        ]),
+        ("已有资料", [
+            "设计状态：内部模型第 7 版，充电盒 C5d。完整设计资料包共 {files} 个文件。",
+            "3D 模型（STEP）及用于 3D 打印试装样件的文件（STL）：各尺码的外观、完整的内部装配、{parts} 种定制件（随尺码变化的按尺码提供）、充电盒。",
+            "物料清单（{bom} 行）、原理图（KiCad 与 PDF）、{drawings} 张图纸、每个定制件一页规格书、装配工序、包含出厂测试项目的软件行为规格。",
+            "尚未完成：电路板布线（由谁布线尚未决定）、软件代码、可工作的样机。制造商尚未确认：充电盒的弹簧顶针和顶针座 0.79 mm 的壁厚。",
+        ]),
+        ("我们寻找", [
+            "按我方设计生产的工厂（JDM 或代工）。我们不需要在现有戒指上贴牌。",
+            "所需工作：可制造性（DFM）评审；可选的电路板布线与软件开发；样机；之后批量生产。",
+            "数量：样机 [数量] 件，之后每批 [数量] 件。首批样品期望日期：[日期]。",
+        ]),
+        ("请回复", [
+            "1. 贵司是否做过按客户自有设计生产的智能戒指？是否做过带屏幕的戒指？请提供可以公开的案例。",
+            "2. 以下哪些是贵司工厂自有的能力：钛合金 CNC 加工或金属注射成型（MIM）、曲面盖板玻璃、柔性电路板与 0201 贴片、戒指树脂灌封、防水测试？",
+            "3. 贵司能否采购定制弧形电池（例如格瑞普 Grepow）以及 Nordic 芯片？",
+            "4. 对于此类产品：贵司的最小起订量、工程费（NRE）、模具费和打样周期。",
+            "5. 贵司的认证（ISO 9001、ISO 13485、BSCI）以及出口欧盟的经验（CE、RoHS、UN 38.3）。",
+            "6. 在我方发送资料之前，贵司是否愿意签署中英文、适用中国法律的 NNN 协议（保密、不使用、不规避）？",
+        ]),
+    ],
+    "next": "下一步：请将答复发送至 [邮箱]。协议签署后，我方将提供完整的设计资料包（3D 模型、物料清单、原理图、规格书、装配工序、测试清单）。",
+}
+
+
+LATIN = 0.47   # width of a Latin character in em; set per page in page()
+NO_START = "。，、；：？！）》】"   # never at the start of a line
+
+
+def units(ch):
+    return 1.0 if unicodedata.east_asian_width(ch) in ("W", "F") else LATIN
+
+
+def wrap(text, size, indent_pt=0.0):
+    """Greedy wrap by estimated width. Latin words stay whole; wide characters may break anywhere."""
+    limit = (WIDTH_PT - indent_pt) / size
+    lines, cur, cur_w = [], "", 0.0
+    token = ""
+    def flush_token():
+        nonlocal cur, cur_w, token
+        if not token:
+            return
+        tw = sum(units(c) for c in token)
+        if cur and cur_w + tw > limit:
+            lines.append(cur.rstrip()); cur, cur_w = "", 0.0
+            token_l = token.lstrip()
+            tw = sum(units(c) for c in token_l)
+            cur, cur_w = token_l, tw
+        else:
+            cur += token; cur_w += tw
+        token = ""
+    for ch in text:
+        if ch in NO_START:
+            flush_token(); cur += ch; cur_w += units(ch)
+        elif unicodedata.east_asian_width(ch) in ("W", "F"):
+            flush_token(); token = ch; flush_token()
+        elif ch == " ":
+            token += ch; flush_token()
+        else:
+            token += ch
+    flush_token()
+    if cur:
+        lines.append(cur.rstrip())
+    return lines
+
+
+def page(pdf, doc, base, preview=None, latin=0.47):
+    global LATIN
+    LATIN = latin
+    fig = plt.figure(figsize=(W, H))
+    y = TOP
+    def put(text, size, bold=False, x=LEFT, color="#15171b", gap=1.45):
+        nonlocal y
+        fp = (BLD if bold and all(ord(c) < 0x2E80 for c in text) else REG).copy()
+        fp.set_size(size)
+        fig.text(x, y, text, fontproperties=fp, color=color, va="top", ha="left")
+        y -= size * gap / 72 / H
+    put(doc["title"], base + 7.5, bold=True, gap=1.5)
+    put(doc["sub"], base + 0.5, color="#5d636c", gap=1.7)
+    put(doc["from"], base, gap=2.0)
+    line = plt.Line2D([LEFT, RIGHT], [y + 0.004, y + 0.004], transform=fig.transFigure, color="#c9ccd0", lw=0.8)
+    fig.add_artist(line)
+    y -= 0.008
+    for head, items in doc["sections"]:
+        put(head, base + 2.5, bold=True, gap=1.7)
+        for it in items:
+            numbered = it[:2] in ("1.", "2.", "3.", "4.", "5.", "6.")
+            indent = 12.0
+            lines = wrap(it if numbered else it, base, indent_pt=indent)
+            for i, ln in enumerate(lines):
+                if i == 0 and not numbered:
+                    fpb = REG.copy(); fpb.set_size(base)
+                    fig.text(LEFT, y, "•", fontproperties=fpb, va="top", ha="left")
+                put(ln, base, x=LEFT + indent / 72 / W, gap=1.42)
+            y -= 0.0035
+        y -= 0.006
+    line = plt.Line2D([LEFT, RIGHT], [y + 0.004, y + 0.004], transform=fig.transFigure, color="#c9ccd0", lw=0.8)
+    fig.add_artist(line)
+    y -= 0.008
+    for ln in wrap(doc["next"], base):
+        put(ln, base, gap=1.42)
+    fp = REG.copy(); fp.set_size(7.5)
+    fig.text(LEFT, 0.035, "Confidential. For assessment only. Do not copy or pass on.   保密文件，仅供评估，请勿复制或转发。", fontproperties=fp, color="#8a9099", va="bottom")
+    if y < 0.06:
+        raise SystemExit(f"text runs off the page (y={y:.3f}): shorten it or lower the font size")
+    pdf.savefig(fig)
+    if preview:
+        fig.savefig(preview, dpi=110)
+    plt.close(fig)
+    return y
+
+
+def fill(doc, f):
+    d = dict(doc)
+    d["sections"] = [(h, [it.format(**f) for it in items]) for h, items in doc["sections"]]
+    return d
+
+
+def main():
+    if len(sys.argv) < 3:
+        raise SystemExit("usage: make_one_pager.py <out.pdf> <package folder> [<preview-prefix>]")
+    out = Path(sys.argv[1])
+    f = facts(sys.argv[2])
+    prev = sys.argv[3] if len(sys.argv) > 3 else None
+    print("facts from the package:", f)
+    with PdfPages(out) as pdf:
+        y1 = page(pdf, fill(EN, f), 9.8, prev + "-en.png" if prev else None, latin=0.475)
+        y2 = page(pdf, fill(ZH, f), 10.4, prev + "-zh.png" if prev else None, latin=0.60)
+    print(f"written {out}; lowest text line at {y1:.3f} (English) and {y2:.3f} (Chinese) of the page height")
+
+
+if __name__ == "__main__":
+    main()

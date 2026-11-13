@@ -1,0 +1,55 @@
+PASS C open flag set in STANDBY: long press goes to RECOVERY, no OPEN action
+PASS C after scan: STANDBY, flag clear
+PASS C second press records
+PASS C write failure: ERR_STORAGE_FAULT, no CLOSE, flag stays
+PASS C fault, case in/out: STANDBY with flag set
+PASS C that STANDBY long press does not record
+PASS C retry ok with flag: STANDBY, RUN_RECOVERY, flag cleared in facts
+PASS C R4b init done flag set batt=0: RECOVERY (got RECOVERY)
+PASS C R4b init done flag set batt=1: RECOVERY (got RECOVERY)
+PASS C R4b init done flag set batt=2: RECOVERY (got RECOVERY)
+PASS C R4b flag set B5: end of scan -> ERR_BATTERY_LOW with M3
+PASS C R4b init done flag set batt=3: OFF (got OFF)
+PASS C R4 flag set + VBUS: RECOVERY first
+PASS C R4 then CHARGING, charge on
+INFO battery B5 reported in BOOT before init done, flag set: state=ERR_BATTERY_LOW flag=1
+PASS C retry: BOOT init failed -> ERR_STORAGE_FAULT
+PASS C retry: nothing at 59,999 ms after entry
+PASS C retry: RETRY_STORAGE at 60,000 ms after entry
+PASS C retry failed: stays, no action
+PASS C retry: nothing before 120,600
+PASS C retry: second RETRY_STORAGE
+PASS C retry: third RETRY_STORAGE
+PASS C retry ok: STANDBY
+PASS C no retry after leaving the fault state
+PASS C RETRY_OK outside fault state ignored
+PASS C fault -> case -> out lands in STANDBY (storage still faulty, no retry ever asked)
+INFO tick 10 min ahead in fault state: RETRY_STORAGE count=8 next_tick=540000
+PASS C VBUS appears in SHIP: -> BOOT, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in OFF: -> BOOT, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in BOOT: -> BOOT, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in RECOVERY: -> RECOVERY, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in STANDBY: -> CHARGING, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in RECORDING: -> CHARGING, exactly one CHARGE_ON, vbus fact
+PASS C VBUS in RECORDING: CLOSE before M2 before CHARGE_ON
+PASS C VBUS appears in CHARGING: -> CHARGING, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in TRANSFER: -> TRANSFER, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in ERR_STORAGE_FULL: -> CHARGING, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in ERR_BATTERY_LOW: -> CHARGING, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in ERR_STORAGE_FAULT: -> CHARGING, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in ERR_MIC_FAULT: -> CHARGING, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in ERR_CHARGER: -> ERR_CHARGER, exactly one CHARGE_ON, vbus fact
+PASS C VBUS appears in FACTORY_TEST: -> FACTORY_TEST, exactly one CHARGE_ON, vbus fact
+PASS C batt B15 in RECORDING: M3, stays
+PASS C same level twice: no event
+PASS C batt B5 in RECORDING: CLOSE, M3, ERR_BATTERY_LOW
+PASS C battery up: fact only
+PASS C invalid level ignored
+PASS C batt B2 in RECORDING: CLOSE, SHIP_MODE, OFF
+INFO CHARGING, battery to B2, VBUS out: state=ERR_BATTERY_LOW ship_mode=0
+INFO same level reported again: state=ERR_BATTERY_LOW (no event: level unchanged)
+INFO B2 -> B5 reported: state=ERR_BATTERY_LOW
+INFO B5 -> B2 reported again: state=OFF ship=1
+PASS C SFULL in RECORDING: CLOSE, M3, ERR_STORAGE_FULL
+SUMMARY pass=47 fail=0
+exit 0

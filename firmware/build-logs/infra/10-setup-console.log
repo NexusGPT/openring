@@ -1,0 +1,796 @@
+# remote.sh run 20261111-103243-setup
+# command: bash tools/setup_server.sh
+# mode: host
+# started (Mac clock): 2026-11-11 10:32:43 CET
+# source copied to /root/ring-os/src
+# started on the server as 20261111-103243-setup; server log /root/ring-os/logs/20261111-103243-setup.log
+=== setup: 1 pull ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.4.2 (2026-11-11T09:32:47Z)
+free on /: 60 GB
+v3.4.2: Pulling from nrfconnect/sdk-nrf-toolchain
+Digest: sha256:54d1b800cc92602b5206b21a447696982177ac89cdef8c8ca8ef5cab419e0046
+Status: Image is up to date for ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.4.2
+ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.4.2
+=== setup: 2 build ring-os-toolchain:v3.4.2 from /root/ring-os/src/tools/Dockerfile (2026-11-11T09:32:48Z)
+free on /: 60 GB
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  10.75kB
+Step 1/2 : FROM ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.4.2
+ ---> 54d1b800cc92
+Step 2/2 : RUN apt-get update  && apt-get install -y --no-install-recommends make gcc-multilib g++-multilib libc6-dev-i386  && apt-get clean
+ ---> Running in 50cedf55831c
+Get:1 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+Get:2 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Get:5 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+Get:6 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+Get:7 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+Get:8 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1808 kB]
+Get:9 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1429 kB]
+Get:10 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [61.7 kB]
+Get:11 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1785 kB]
+Get:12 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2177 kB]
+Get:13 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [2319 kB]
+Get:14 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.0 kB]
+Get:15 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [669 B]
+Get:16 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [36.0 kB]
+Get:17 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1557 kB]
+Get:18 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [55.6 kB]
+Get:19 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [2141 kB]
+Fetched 33.8 MB in 2s (17.6 MB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+gcc-multilib is already the newest version (4:13.2.0-7ubuntu1).
+libc6-dev-i386 is already the newest version (2.39-0ubuntu8.9).
+libc6-dev-i386 set to manually installed.
+The following additional packages will be installed:
+  g++ g++-13 g++-13-multilib g++-13-x86-64-linux-gnu g++-x86-64-linux-gnu
+  lib32stdc++-13-dev libstdc++-13-dev libx32stdc++-13-dev
+Suggested packages:
+  gcc-13-doc lib32stdc++6-13-dbg libx32stdc++6-13-dbg libstdc++-13-doc
+  make-doc
+The following NEW packages will be installed:
+  g++ g++-13 g++-13-multilib g++-13-x86-64-linux-gnu g++-multilib
+  g++-x86-64-linux-gnu lib32stdc++-13-dev libstdc++-13-dev libx32stdc++-13-dev
+  make
+0 upgraded, 10 newly installed, 0 to remove and 16 not upgraded.
+Need to get 17.0 MB of archives.
+After this operation, 71.6 MB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libstdc++-13-dev amd64 13.3.0-6ubuntu2~24.04.1 [2420 kB]
+Get:2 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 g++-13-x86-64-linux-gnu amd64 13.3.0-6ubuntu2~24.04.1 [12.2 MB]
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 g++-13 amd64 13.3.0-6ubuntu2~24.04.1 [16.0 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble/main amd64 g++-x86-64-linux-gnu amd64 4:13.2.0-7ubuntu1 [964 B]
+Get:5 http://archive.ubuntu.com/ubuntu noble/main amd64 g++ amd64 4:13.2.0-7ubuntu1 [1100 B]
+Get:6 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 lib32stdc++-13-dev amd64 13.3.0-6ubuntu2~24.04.1 [1150 kB]
+Get:7 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libx32stdc++-13-dev amd64 13.3.0-6ubuntu2~24.04.1 [1086 kB]
+Get:8 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 g++-13-multilib amd64 13.3.0-6ubuntu2~24.04.1 [892 B]
+Get:9 http://archive.ubuntu.com/ubuntu noble/main amd64 g++-multilib amd64 4:13.2.0-7ubuntu1 [884 B]
+Get:10 http://archive.ubuntu.com/ubuntu noble/main amd64 make amd64 4.3-4.1build2 [180 kB]
+[91mCwd.c: loadable library and perl binaries are mismatched (got first handshake key 0xcd00080, needed 0xf380080)
+[0mFetched 17.0 MB in 2s (10.6 MB/s)
+Selecting previously unselected package libstdc++-13-dev:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 34746 files and directories currently installed.)
+Preparing to unpack .../0-libstdc++-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking libstdc++-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package g++-13-x86-64-linux-gnu.
+Preparing to unpack .../1-g++-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking g++-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package g++-13.
+Preparing to unpack .../2-g++-13_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking g++-13 (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package g++-x86-64-linux-gnu.
+Preparing to unpack .../3-g++-x86-64-linux-gnu_4%3a13.2.0-7ubuntu1_amd64.deb ...
+Unpacking g++-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+Selecting previously unselected package g++.
+Preparing to unpack .../4-g++_4%3a13.2.0-7ubuntu1_amd64.deb ...
+Unpacking g++ (4:13.2.0-7ubuntu1) ...
+Selecting previously unselected package lib32stdc++-13-dev.
+Preparing to unpack .../5-lib32stdc++-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking lib32stdc++-13-dev (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package libx32stdc++-13-dev.
+Preparing to unpack .../6-libx32stdc++-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking libx32stdc++-13-dev (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package g++-13-multilib.
+Preparing to unpack .../7-g++-13-multilib_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking g++-13-multilib (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package g++-multilib.
+Preparing to unpack .../8-g++-multilib_4%3a13.2.0-7ubuntu1_amd64.deb ...
+Unpacking g++-multilib (4:13.2.0-7ubuntu1) ...
+Selecting previously unselected package make.
+Preparing to unpack .../9-make_4.3-4.1build2_amd64.deb ...
+Unpacking make (4.3-4.1build2) ...
+Setting up make (4.3-4.1build2) ...
+Setting up libstdc++-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+Setting up g++-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+Setting up libx32stdc++-13-dev (13.3.0-6ubuntu2~24.04.1) ...
+Setting up g++-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+Setting up lib32stdc++-13-dev (13.3.0-6ubuntu2~24.04.1) ...
+Setting up g++-13 (13.3.0-6ubuntu2~24.04.1) ...
+Setting up g++-13-multilib (13.3.0-6ubuntu2~24.04.1) ...
+Setting up g++ (4:13.2.0-7ubuntu1) ...
+update-alternatives: using /usr/bin/g++ to provide /usr/bin/c++ (c++) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/c++.1.gz because associated file /usr/share/man/man1/g++.1.gz (of link group c++) doesn't exist
+Setting up g++-multilib (4:13.2.0-7ubuntu1) ...
+ ---> Removed intermediate container 50cedf55831c
+ ---> 39c9d4914d92
+Successfully built 39c9d4914d92
+Successfully tagged ring-os-toolchain:v3.4.2
+=== setup: 3 west workspace in /root/ring-os/ws (2026-11-11T09:33:18Z)
+free on /: 61 GB
+=== Initializing from existing manifest repository firmware
+--- Creating /ws/.west and local configuration file
+=== Initialized. Now run "west update" inside /ws.
+=== updating nrf (nrf):
+--- nrf: initializing
+Initialized empty Git repository in /ws/nrf/.git/
+--- nrf: fetching, need revision v3.4.2
+From https://github.com/nrfconnect/sdk-nrf
+ * tag                 v3.4.2     -> FETCH_HEAD
+HEAD is now at f0b8ad4c manifest: Update revisions for v3.4.2 tag
+HEAD is now at f0b8ad4c manifest: Update revisions for v3.4.2 tag
+=== updating zephyr (zephyr):
+--- zephyr: initializing
+Initialized empty Git repository in /ws/zephyr/.git/
+--- zephyr: fetching, need revision ncs-v3.4.2
+From https://github.com/nrfconnect/sdk-zephyr
+ * tag                 ncs-v3.4.2 -> FETCH_HEAD
+HEAD is now at 9133dab6 [nrf fromtree] drivers: ieee802154: rf2xx: Validate received PHR length
+HEAD is now at 9133dab6 [nrf fromtree] drivers: ieee802154: rf2xx: Validate received PHR length
+=== updating bsim (tools/bsim):
+--- bsim: initializing
+Initialized empty Git repository in /ws/tools/bsim/.git/
+--- bsim: fetching, need revision a88d3353451387ca490a6a7f7c478a90c4ee05b7
+From https://github.com/BabbleSim/bsim_west
+ * branch            a88d3353451387ca490a6a7f7c478a90c4ee05b7 -> FETCH_HEAD
+HEAD is now at a88d335 main manifest: Update to v2.5
+HEAD is now at a88d335 main manifest: Update to v2.5
+=== updating wfa-qt-control-app (modules/lib/wfa-qt-control-app):
+--- wfa-qt-control-app: initializing
+Initialized empty Git repository in /ws/modules/lib/wfa-qt-control-app/.git/
+--- wfa-qt-control-app: fetching, need revision 1f19f0b23e42205bab5f34ace335fffa5e7d32ff
+From https://github.com/nrfconnect/sdk-wi-fiquicktrack-controlappc
+ * branch            1f19f0b23e42205bab5f34ace335fffa5e7d32ff -> FETCH_HEAD
+HEAD is now at 1f19f0b ci: Whitelist Zephyr compliance checks in workflow
+HEAD is now at 1f19f0b ci: Whitelist Zephyr compliance checks in workflow
+=== updating mcuboot (bootloader/mcuboot):
+--- mcuboot: initializing
+Initialized empty Git repository in /ws/bootloader/mcuboot/.git/
+--- mcuboot: fetching, need revision ncs-v3.4.2
+From https://github.com/nrfconnect/sdk-mcuboot
+ * tag               ncs-v3.4.2 -> FETCH_HEAD
+HEAD is now at 5d8736c [nrf noup] bootutil: key revocation: Fix multi-image operation
+HEAD is now at 5d8736c [nrf noup] bootutil: key revocation: Fix multi-image operation
+=== updating qcbor (modules/tee/tf-m/qcbor):
+--- qcbor: initializing
+Initialized empty Git repository in /ws/modules/tee/tf-m/qcbor/.git/
+--- qcbor: fetching, need revision bfe7b348dda29783c960d7a9cac05abecc4a22ed
+From https://github.com/nrfconnect/sdk-qcbor
+ * branch            bfe7b348dda29783c960d7a9cac05abecc4a22ed -> FETCH_HEAD
+HEAD is now at bfe7b34 [nrf noup] zephyr: module: Add module file for qcbor
+HEAD is now at bfe7b34 [nrf noup] zephyr: module: Add module file for qcbor
+=== updating t_cose (modules/tee/tf-m/t_cose):
+--- t_cose: initializing
+Initialized empty Git repository in /ws/modules/tee/tf-m/t_cose/.git/
+--- t_cose: fetching, need revision 024c4298f84a82409e0ac0e1d5c2e8ee22cca901
+From https://github.com/nrfconnect/sdk-t_cose
+ * branch            024c4298f84a82409e0ac0e1d5c2e8ee22cca901 -> FETCH_HEAD
+HEAD is now at 024c429 [nrf noup] zephyr: module: Add module file for t_cose
+HEAD is now at 024c429 [nrf noup] zephyr: module: Add module file for t_cose
+=== updating mbedtls (modules/crypto/mbedtls):
+--- mbedtls: initializing
+Initialized empty Git repository in /ws/modules/crypto/mbedtls/.git/
+--- mbedtls: fetching, need revision ncs-v3.4.2
+From https://github.com/nrfconnect/sdk-mbedtls
+ * tag               ncs-v3.4.2 -> FETCH_HEAD
+HEAD is now at 804249d [nrf toup] x509_crt.c: fix unused variable errors
+HEAD is now at 804249d [nrf toup] x509_crt.c: fix unused variable errors
+=== updating oberon-psa-crypto (modules/crypto/oberon-psa-crypto):
+--- oberon-psa-crypto: initializing
+Initialized empty Git repository in /ws/modules/crypto/oberon-psa-crypto/.git/
+--- oberon-psa-crypto: fetching, need revision ncs-v3.4.2
+From https://github.com/nrfconnect/sdk-oberon-psa-crypto
+ * tag               ncs-v3.4.2 -> FETCH_HEAD
+HEAD is now at e8db62e [nrf toup] core: Add missing return status check in key derivation
+HEAD is now at e8db62e [nrf toup] core: Add missing return status check in key derivation
+=== updating nrfxlib (nrfxlib):
+--- nrfxlib: initializing
+Initialized empty Git repository in /ws/nrfxlib/.git/
+--- nrfxlib: fetching, need revision v3.4.2
+From https://github.com/nrfconnect/sdk-nrfxlib
+ * tag               v3.4.2     -> FETCH_HEAD
+HEAD is now at 43e5c2a softdevice_controller: rev 074851e393ba8f45fe5cb45007a348c49b305088
+HEAD is now at 43e5c2a softdevice_controller: rev 074851e393ba8f45fe5cb45007a348c49b305088
+=== updating trusted-firmware-m (modules/tee/tf-m/trusted-firmware-m):
+--- trusted-firmware-m: initializing
+Initialized empty Git repository in /ws/modules/tee/tf-m/trusted-firmware-m/.git/
+--- trusted-firmware-m: fetching, need revision ncs-v3.4.2
+From https://github.com/nrfconnect/sdk-trusted-firmware-m
+ * tag               ncs-v3.4.2 -> FETCH_HEAD
+HEAD is now at c8e4fc8 nordic_nrf: Add stricter check for the mem_read service
+HEAD is now at c8e4fc8 nordic_nrf: Add stricter check for the mem_read service
+=== updating psa-arch-tests (modules/tee/tf-m/psa-arch-tests):
+--- psa-arch-tests: initializing
+Initialized empty Git repository in /ws/modules/tee/tf-m/psa-arch-tests/.git/
+--- psa-arch-tests: fetching, need revision 2caaea3f7ccd87fad4644bf6e07d197f77257aa7
+From https://github.com/nrfconnect/sdk-psa-arch-tests
+ * branch            2caaea3f7ccd87fad4644bf6e07d197f77257aa7 -> FETCH_HEAD
+HEAD is now at 2caaea3 [nrf noup] nordic: Add target config for nrf54l(cv)10
+HEAD is now at 2caaea3 [nrf noup] nordic: Add target config for nrf54l(cv)10
+=== updating cjson (modules/lib/cjson):
+--- cjson: initializing
+Initialized empty Git repository in /ws/modules/lib/cjson/.git/
+--- cjson: fetching, need revision c6af068b7f05207b28d68880740e4b9ec1e4b50a
+From https://github.com/nrfconnect/sdk-cjson
+ * branch            c6af068b7f05207b28d68880740e4b9ec1e4b50a -> FETCH_HEAD
+HEAD is now at c6af068 [nrf fromtree] fix: potential memory leak in merge_patch() (#611)
+HEAD is now at c6af068 [nrf fromtree] fix: potential memory leak in merge_patch() (#611)
+=== updating azure-sdk-for-c (modules/lib/azure-sdk-for-c):
+--- azure-sdk-for-c: initializing
+Initialized empty Git repository in /ws/modules/lib/azure-sdk-for-c/.git/
+--- azure-sdk-for-c: fetching, need revision 308c171cb4b5eed266649012a68406487ec81fb2
+From https://github.com/nrfconnect/azure-sdk-for-c
+ * branch            308c171cb4b5eed266649012a68406487ec81fb2 -> FETCH_HEAD
+HEAD is now at 308c171 [nrf fromlist] Make repository a Zephyr module
+HEAD is now at 308c171 [nrf fromlist] Make repository a Zephyr module
+=== updating cirrus (modules/hal/cirrus-logic):
+--- cirrus: initializing
+Initialized empty Git repository in /ws/modules/hal/cirrus-logic/.git/
+--- cirrus: fetching, need revision 1c837bcc27de9ccc06b020b9500e1547e559a1df
+From https://github.com/nrfconnect/sdk-mcu-drivers
+ * branch            1c837bcc27de9ccc06b020b9500e1547e559a1df -> FETCH_HEAD
+HEAD is now at 1c837bc sdk-mcu-drivers: Kconfig compliance fix
+HEAD is now at 1c837bc sdk-mcu-drivers: Kconfig compliance fix
+=== updating openthread (modules/lib/openthread):
+--- openthread: initializing
+Initialized empty Git repository in /ws/modules/lib/openthread/.git/
+--- openthread: fetching, need revision 0fe68ff23527e8bb9a9821ca96a255fccfbb44a7
+From https://github.com/nrfconnect/sdk-openthread
+ * branch            0fe68ff23527e8bb9a9821ca96a255fccfbb44a7 -> FETCH_HEAD
+HEAD is now at 0fe68ff [nrf noup] mbedtls: call mbedtls_ssl_set_hostname on setup
+HEAD is now at 0fe68ff [nrf noup] mbedtls: call mbedtls_ssl_set_hostname on setup
+=== updating nrf_wifi (modules/lib/nrf_wifi):
+--- nrf_wifi: initializing
+Initialized empty Git repository in /ws/modules/lib/nrf_wifi/.git/
+--- nrf_wifi: fetching, need revision 5046744cb4c9640eb8b11cb92f1ea0b9554c20cf
+From https://github.com/nrfconnect/nrf_wifi
+ * branch            5046744cb4c9640eb8b11cb92f1ea0b9554c20cf -> FETCH_HEAD
+HEAD is now at 5046744 [nrf fromlist] hal: fw_patch_loader: derive patch chunk size from Kconfig
+HEAD is now at 5046744 [nrf fromlist] hal: fw_patch_loader: derive patch chunk size from Kconfig
+=== updating hal_nordic (modules/hal/nordic):
+--- hal_nordic: initializing
+Initialized empty Git repository in /ws/modules/hal/nordic/.git/
+--- hal_nordic: fetching, need revision 2a63cca4ebae128e77b02d735525645b701b1ebf
+From https://github.com/nrfconnect/sdk-hal_nordic
+ * branch            2a63cca4ebae128e77b02d735525645b701b1ebf -> FETCH_HEAD
+HEAD is now at 2a63cca nrfx: update to version 4.3.2
+HEAD is now at 2a63cca nrfx: update to version 4.3.2
+=== updating cmock (test/cmock):
+--- cmock: initializing
+Initialized empty Git repository in /ws/test/cmock/.git/
+--- cmock: fetching, need revision f65066f15d8248e6dcb778efb8739904a4512087
+From https://github.com/ThrowTheSwitch/cmock
+ * branch            f65066f15d8248e6dcb778efb8739904a4512087 -> FETCH_HEAD
+HEAD is now at f65066f Merge pull request #404 from tz18/patch-1
+HEAD is now at f65066f Merge pull request #404 from tz18/patch-1
+Submodule 'vendor/c_exception' (https://github.com/throwtheswitch/cexception.git) registered for path 'vendor/c_exception'
+Submodule 'vendor/unity' (https://github.com/throwtheswitch/unity.git) registered for path 'vendor/unity'
+Cloning into '/ws/test/cmock/vendor/c_exception'...
+Cloning into '/ws/test/cmock/vendor/unity'...
+Submodule path 'vendor/c_exception': checked out '71b47be7c950f1bf5f7e5303779fa99a16224bb6'
+Submodule path 'vendor/unity': checked out '4389bab82ee8a4b4631a03be2e07dd5c67dab2d4'
+=== updating memfault-firmware-sdk (modules/lib/memfault-firmware-sdk):
+--- memfault-firmware-sdk: initializing
+Initialized empty Git repository in /ws/modules/lib/memfault-firmware-sdk/.git/
+--- memfault-firmware-sdk: fetching, need revision 1.45.0
+From https://github.com/memfault/memfault-firmware-sdk
+ * tag               1.45.0     -> FETCH_HEAD
+HEAD is now at 1cae263 Memfault Firmware SDK 1.45.0 (Build 19795)
+HEAD is now at 1cae263 Memfault Firmware SDK 1.45.0 (Build 19795)
+=== updating coremark (modules/benchmark/coremark):
+--- coremark: initializing
+Initialized empty Git repository in /ws/modules/benchmark/coremark/.git/
+--- coremark: fetching, need revision d5fad6bd094899101a4e5fd53af7298160ced6ab
+From https://github.com/eembc/coremark
+ * branch            d5fad6bd094899101a4e5fd53af7298160ced6ab -> FETCH_HEAD
+HEAD is now at d5fad6b Merge pull request #51 from volodymyr-bondarchuk/zephyr
+HEAD is now at d5fad6b Merge pull request #51 from volodymyr-bondarchuk/zephyr
+=== updating hostap (modules/lib/hostap):
+--- hostap: initializing
+Initialized empty Git repository in /ws/modules/lib/hostap/.git/
+--- hostap: fetching, need revision dc22e8cf8dd03c8ff2bdde68002a4496525f6eb2
+From https://github.com/nrfconnect/sdk-hostap
+ * branch            dc22e8cf8dd03c8ff2bdde68002a4496525f6eb2 -> FETCH_HEAD
+HEAD is now at dc22e8c [noup] wpa_supplicant: Report AP enable failures to wifi mgmt
+HEAD is now at dc22e8c [noup] wpa_supplicant: Report AP enable failures to wifi mgmt
+=== updating canopennode (modules/lib/canopennode):
+--- canopennode: initializing
+Initialized empty Git repository in /ws/modules/lib/canopennode/.git/
+--- canopennode: fetching, need revision dec12fa3f0d790cafa8414a4c2930ea71ab72ffd
+From https://github.com/zephyrproject-rtos/canopennode
+ * branch            dec12fa3f0d790cafa8414a4c2930ea71ab72ffd -> FETCH_HEAD
+HEAD is now at dec12fa stack: map CANopenNode crc16_ccitt() to Zephyr crc16_itu_t()
+HEAD is now at dec12fa stack: map CANopenNode crc16_ccitt() to Zephyr crc16_itu_t()
+=== updating chre (modules/lib/chre):
+--- chre: initializing
+Initialized empty Git repository in /ws/modules/lib/chre/.git/
+--- chre: fetching, need revision c4c2f49fdcaa2fed49eb1db027696a5734a010d2
+From https://github.com/zephyrproject-rtos/chre
+ * branch            c4c2f49fdcaa2fed49eb1db027696a5734a010d2 -> FETCH_HEAD
+HEAD is now at c4c2f49 Merge pull request #10 from aescolar/c++17_deprect
+HEAD is now at c4c2f49 Merge pull request #10 from aescolar/c++17_deprect
+=== updating cmsis (modules/hal/cmsis):
+--- cmsis: initializing
+Initialized empty Git repository in /ws/modules/hal/cmsis/.git/
+--- cmsis: fetching, need revision 512cc7e895e8491696b61f7ba8066b4a182569b8
+From https://github.com/zephyrproject-rtos/cmsis
+ * branch            512cc7e895e8491696b61f7ba8066b4a182569b8 -> FETCH_HEAD
+HEAD is now at 512cc7e cmsis: pac_armv81.h missing
+HEAD is now at 512cc7e cmsis: pac_armv81.h missing
+=== updating cmsis-dsp (modules/lib/cmsis-dsp):
+--- cmsis-dsp: initializing
+Initialized empty Git repository in /ws/modules/lib/cmsis-dsp/.git/
+--- cmsis-dsp: fetching, need revision 97512610ec92058f0119450b9e743eeb7e95b5c8
+From https://github.com/zephyrproject-rtos/cmsis-dsp
+ * branch            97512610ec92058f0119450b9e743eeb7e95b5c8 -> FETCH_HEAD
+HEAD is now at 9751261 arm_biquad_cascade_df1_32x64_q31: asrl(val, -shift) -> lsll(val, shift) (#265)
+=== updating cmsis-nn (modules/lib/cmsis-nn):
+--- cmsis-nn: initializing
+HEAD is now at 9751261 arm_biquad_cascade_df1_32x64_q31: asrl(val, -shift) -> lsll(val, shift) (#265)
+Initialized empty Git repository in /ws/modules/lib/cmsis-nn/.git/
+--- cmsis-nn: fetching, need revision d20117c9e88cf9018d6fa06744dddac700c3e3a1
+From https://github.com/zephyrproject-rtos/cmsis-nn
+ * branch            d20117c9e88cf9018d6fa06744dddac700c3e3a1 -> FETCH_HEAD
+HEAD is now at d20117c Update arm_depthwise_conv_wrapper_s8.c (#163)
+HEAD is now at d20117c Update arm_depthwise_conv_wrapper_s8.c (#163)
+=== updating cmsis_6 (modules/hal/cmsis_6):
+--- cmsis_6: initializing
+Initialized empty Git repository in /ws/modules/hal/cmsis_6/.git/
+--- cmsis_6: fetching, need revision 30a859f44ef8ab4dc8f84b03ed586fd16ccf9d74
+From https://github.com/zephyrproject-rtos/CMSIS_6
+ * branch            30a859f44ef8ab4dc8f84b03ed586fd16ccf9d74 -> FETCH_HEAD
+HEAD is now at 30a859f m-profile/gcc: Support picolibc startup mechanism (#246)
+HEAD is now at 30a859f m-profile/gcc: Support picolibc startup mechanism (#246)
+=== updating dhara (modules/lib/dhara):
+--- dhara: initializing
+Initialized empty Git repository in /ws/modules/lib/dhara/.git/
+--- dhara: fetching, need revision 6f163ca05e174b168b4d148160b50eeaeeb561fc
+From https://github.com/zephyrproject-rtos/dhara
+ * branch            6f163ca05e174b168b4d148160b50eeaeeb561fc -> FETCH_HEAD
+HEAD is now at 6f163ca Remove error correction codes
+HEAD is now at 6f163ca Remove error correction codes
+=== updating edtt (tools/edtt):
+--- edtt: initializing
+Initialized empty Git repository in /ws/tools/edtt/.git/
+--- edtt: fetching, need revision c282625e694f0b53ea53e13231ea6d2f49411768
+From https://github.com/zephyrproject-rtos/edtt
+ * branch            c282625e694f0b53ea53e13231ea6d2f49411768 -> FETCH_HEAD
+HEAD is now at c282625 Fix broken link in Readme.md
+HEAD is now at c282625 Fix broken link in Readme.md
+=== updating fatfs (modules/fs/fatfs):
+--- fatfs: initializing
+Initialized empty Git repository in /ws/modules/fs/fatfs/.git/
+--- fatfs: fetching, need revision f4ead3bf4a6dab3a07d7b5f5315795c073db568d
+From https://github.com/zephyrproject-rtos/fatfs
+ * branch            f4ead3bf4a6dab3a07d7b5f5315795c073db568d -> FETCH_HEAD
+HEAD is now at f4ead3b zephyr: Bring back accidentally removed disk access window alignment
+HEAD is now at f4ead3b zephyr: Bring back accidentally removed disk access window alignment
+=== updating hal_st (modules/hal/st):
+--- hal_st: initializing
+Initialized empty Git repository in /ws/modules/hal/st/.git/
+--- hal_st: fetching, need revision 7a792882847223c72944791e0c48eed6101e6569
+From https://github.com/zephyrproject-rtos/hal_st
+ * branch            7a792882847223c72944791e0c48eed6101e6569 -> FETCH_HEAD
+HEAD is now at 7a79288 CMakelist.txt: fix unconditional directory inclusion
+HEAD is now at 7a79288 CMakelist.txt: fix unconditional directory inclusion
+=== updating hal_tdk (modules/hal/tdk):
+--- hal_tdk: initializing
+Initialized empty Git repository in /ws/modules/hal/tdk/.git/
+--- hal_tdk: fetching, need revision fa54cb65535b0ed69564423c9e0bf4e7ee47dcb1
+From https://github.com/zephyrproject-rtos/hal_tdk
+ * branch            fa54cb65535b0ed69564423c9e0bf4e7ee47dcb1 -> FETCH_HEAD
+HEAD is now at fa54cb6 Add icm45688p (#30)
+HEAD is now at fa54cb6 Add icm45688p (#30)
+=== updating hal_wurthelektronik (modules/hal/wurthelektronik):
+--- hal_wurthelektronik: initializing
+Initialized empty Git repository in /ws/modules/hal/wurthelektronik/.git/
+--- hal_wurthelektronik: fetching, need revision 7c1297ea071d03289112eb24e789c89c7095c0a2
+From https://github.com/zephyrproject-rtos/hal_wurthelektronik
+ * branch            7c1297ea071d03289112eb24e789c89c7095c0a2 -> FETCH_HEAD
+HEAD is now at 7c1297e Remove warnings
+HEAD is now at 7c1297e Remove warnings
+=== updating liblc3 (modules/lib/liblc3):
+--- liblc3: initializing
+Initialized empty Git repository in /ws/modules/lib/liblc3/.git/
+--- liblc3: fetching, need revision 48bbd3eacd36e99a57317a0a4867002e0b09e183
+From https://github.com/zephyrproject-rtos/liblc3
+ * branch            48bbd3eacd36e99a57317a0a4867002e0b09e183 -> FETCH_HEAD
+HEAD is now at 48bbd3e Rename lc3 python package to lc3py, and bump version to 1.1.2
+HEAD is now at 48bbd3e Rename lc3 python package to lc3py, and bump version to 1.1.2
+=== updating libmetal (modules/hal/libmetal):
+--- libmetal: initializing
+Initialized empty Git repository in /ws/modules/hal/libmetal/.git/
+--- libmetal: fetching, need revision 66e084293b2a7ced5a73fbd247deddba8915883a
+From https://github.com/zephyrproject-rtos/libmetal
+ * branch            66e084293b2a7ced5a73fbd247deddba8915883a -> FETCH_HEAD
+HEAD is now at 66e0842 lib: update libmetal to release v2025.10.0
+HEAD is now at 66e0842 lib: update libmetal to release v2025.10.0
+=== updating libsbc (modules/lib/libsbc):
+--- libsbc: initializing
+Initialized empty Git repository in /ws/modules/lib/libsbc/.git/
+--- libsbc: fetching, need revision 8e1beda02acb8972e29e6edbb423f7cafe16e445
+From https://github.com/zephyrproject-rtos/libsbc
+ * branch            8e1beda02acb8972e29e6edbb423f7cafe16e445 -> FETCH_HEAD
+HEAD is now at 8e1beda first version
+HEAD is now at 8e1beda first version
+=== updating littlefs (modules/fs/littlefs):
+--- littlefs: initializing
+Initialized empty Git repository in /ws/modules/fs/littlefs/.git/
+--- littlefs: fetching, need revision 8f5ca347843363882619d8f96c00d8dbd88a8e79
+From https://github.com/zephyrproject-rtos/littlefs
+ * branch            8f5ca347843363882619d8f96c00d8dbd88a8e79 -> FETCH_HEAD
+HEAD is now at 8f5ca34 Merge pull request #19 from mkaranki/update-to-v2.10.2
+HEAD is now at 8f5ca34 Merge pull request #19 from mkaranki/update-to-v2.10.2
+=== updating loramac-node (modules/lib/loramac-node):
+--- loramac-node: initializing
+Initialized empty Git repository in /ws/modules/lib/loramac-node/.git/
+--- loramac-node: fetching, need revision fb00b383072518c918e2258b0916c996f2d4eebe
+From https://github.com/zephyrproject-rtos/loramac-node
+ * branch            fb00b383072518c918e2258b0916c996f2d4eebe -> FETCH_HEAD
+HEAD is now at fb00b38 zephyr: configure FragDecoder using Kconfig
+HEAD is now at fb00b38 zephyr: configure FragDecoder using Kconfig
+=== updating lvgl (modules/lib/gui/lvgl):
+--- lvgl: initializing
+Initialized empty Git repository in /ws/modules/lib/gui/lvgl/.git/
+--- lvgl: fetching, need revision 85aa60d18b3d5e5588d7b247abf90198f07c8a63
+From https://github.com/zephyrproject-rtos/lvgl
+ * branch            85aa60d18b3d5e5588d7b247abf90198f07c8a63 -> FETCH_HEAD
+HEAD is now at 85aa60d chore: release v9.5.0 (#9753)
+HEAD is now at 85aa60d chore: release v9.5.0 (#9753)
+=== updating mipi-sys-t (modules/debug/mipi-sys-t):
+--- mipi-sys-t: initializing
+Initialized empty Git repository in /ws/modules/debug/mipi-sys-t/.git/
+--- mipi-sys-t: fetching, need revision 5a9d6055b62edc54566d6d0034d9daec91749b98
+From https://github.com/zephyrproject-rtos/mipi-sys-t
+ * branch            5a9d6055b62edc54566d6d0034d9daec91749b98 -> FETCH_HEAD
+HEAD is now at 5a9d605 MIPI support for IAR Compilers
+HEAD is now at 5a9d605 MIPI support for IAR Compilers
+=== updating mldsa-native (modules/crypto/mldsa-native):
+--- mldsa-native: initializing
+Initialized empty Git repository in /ws/modules/crypto/mldsa-native/.git/
+--- mldsa-native: fetching, need revision 3fc19982839305d305071f0de0c540bc9c9bea8a
+From https://github.com/zephyrproject-rtos/mldsa-native
+ * branch            3fc19982839305d305071f0de0c540bc9c9bea8a -> FETCH_HEAD
+HEAD is now at 3fc1998 [zep noup] Add module.yml
+HEAD is now at 3fc1998 [zep noup] Add module.yml
+=== updating nanopb (modules/lib/nanopb):
+--- nanopb: initializing
+Initialized empty Git repository in /ws/modules/lib/nanopb/.git/
+--- nanopb: fetching, need revision 5499fd4c9a478f8139eeb07a82c3b4468d6067f7
+From https://github.com/zephyrproject-rtos/nanopb
+ * branch            5499fd4c9a478f8139eeb07a82c3b4468d6067f7 -> FETCH_HEAD
+HEAD is now at 5499fd4 C++ descriptor size needs to be guarded
+HEAD is now at 5499fd4 C++ descriptor size needs to be guarded
+=== updating net-tools (tools/net-tools):
+--- net-tools: initializing
+Initialized empty Git repository in /ws/tools/net-tools/.git/
+--- net-tools: fetching, need revision 64d7acc661ae2772282570f21beab85d02f2f35c
+From https://github.com/zephyrproject-rtos/net-tools
+ * branch            64d7acc661ae2772282570f21beab85d02f2f35c -> FETCH_HEAD
+HEAD is now at 64d7acc net-setup: Remove the -eu option from bash
+HEAD is now at 64d7acc net-setup: Remove the -eu option from bash
+=== updating nrf_hw_models (modules/bsim_hw_models/nrf_hw_models):
+--- nrf_hw_models: initializing
+Initialized empty Git repository in /ws/modules/bsim_hw_models/nrf_hw_models/.git/
+--- nrf_hw_models: fetching, need revision 158b9710d6e10c57b2c623f8f4178f0bbc85c23f
+From https://github.com/zephyrproject-rtos/nrf_hw_models
+ * branch            158b9710d6e10c57b2c623f8f4178f0bbc85c23f -> FETCH_HEAD
+HEAD is now at 158b971 RADIO: Correct TXPOWER mapping for 54 devices
+HEAD is now at 158b971 RADIO: Correct TXPOWER mapping for 54 devices
+=== updating open-amp (modules/lib/open-amp):
+--- open-amp: initializing
+Initialized empty Git repository in /ws/modules/lib/open-amp/.git/
+--- open-amp: fetching, need revision 5efe7974f9546582e99f5a842a816ea4b65f5227
+From https://github.com/zephyrproject-rtos/open-amp
+ * branch            5efe7974f9546582e99f5a842a816ea4b65f5227 -> FETCH_HEAD
+HEAD is now at 5efe797 lib: update open-amp lib to release v2025.10.0
+HEAD is now at 5efe797 lib: update open-amp lib to release v2025.10.0
+=== updating percepio (modules/debug/percepio):
+--- percepio: initializing
+Initialized empty Git repository in /ws/modules/debug/percepio/.git/
+--- percepio: fetching, need revision f9159fe3c79578e8d90c8593e83f9862d9b8962c
+From https://github.com/zephyrproject-rtos/percepio
+ * branch            f9159fe3c79578e8d90c8593e83f9862d9b8962c -> FETCH_HEAD
+HEAD is now at f9159fe Merge pull request #19 from percepio/main
+HEAD is now at f9159fe Merge pull request #19 from percepio/main
+=== updating picolibc (modules/lib/picolibc):
+--- picolibc: initializing
+Initialized empty Git repository in /ws/modules/lib/picolibc/.git/
+--- picolibc: fetching, need revision 01254932e8e81085817ed61fd858648584ffe37c
+From https://github.com/zephyrproject-rtos/picolibc
+ * branch            01254932e8e81085817ed61fd858648584ffe37c -> FETCH_HEAD
+HEAD is now at 0125493 tinystdio: Avoid all use of float/double types in vfprintf
+HEAD is now at 0125493 tinystdio: Avoid all use of float/double types in vfprintf
+=== updating segger (modules/debug/segger):
+--- segger: initializing
+Initialized empty Git repository in /ws/modules/debug/segger/.git/
+--- segger: fetching, need revision 50892fdbcf2f570e67baa72b8894a66b16946f72
+From https://github.com/zephyrproject-rtos/segger
+ * branch            50892fdbcf2f570e67baa72b8894a66b16946f72 -> FETCH_HEAD
+HEAD is now at 50892fd segger: debugmon: Rename DebugMon_Handler to z_arm_debug_monitor
+HEAD is now at 50892fd segger: debugmon: Rename DebugMon_Handler to z_arm_debug_monitor
+=== updating tf-m-tests (modules/tee/tf-m/tf-m-tests):
+--- tf-m-tests: initializing
+Initialized empty Git repository in /ws/modules/tee/tf-m/tf-m-tests/.git/
+--- tf-m-tests: fetching, need revision 46b82fabd35eced75d6efbd219ccb26f1818b4d3
+From https://github.com/zephyrproject-rtos/tf-m-tests
+ * branch            46b82fabd35eced75d6efbd219ccb26f1818b4d3 -> FETCH_HEAD
+HEAD is now at 46b82fa [zep noup] replace upstream readme
+HEAD is now at 46b82fa [zep noup] replace upstream readme
+=== updating tf-psa-crypto (modules/crypto/tf-psa-crypto):
+--- tf-psa-crypto: initializing
+Initialized empty Git repository in /ws/modules/crypto/tf-psa-crypto/.git/
+--- tf-psa-crypto: fetching, need revision fa92349590a54959ee2efc21b668e5afdb144726
+From https://github.com/zephyrproject-rtos/tf-psa-crypto
+ * branch            fa92349590a54959ee2efc21b668e5afdb144726 -> FETCH_HEAD
+HEAD is now at fa92349 [zep noup][tf-m] Fix empty \retval doxygen error in psa_unwrap_key
+HEAD is now at fa92349 [zep noup][tf-m] Fix empty \retval doxygen error in psa_unwrap_key
+=== updating uoscore-uedhoc (modules/lib/uoscore-uedhoc):
+--- uoscore-uedhoc: initializing
+Initialized empty Git repository in /ws/modules/lib/uoscore-uedhoc/.git/
+--- uoscore-uedhoc: fetching, need revision dc0ab6345450668de3f9597320a48c5a2d409bb6
+From https://github.com/zephyrproject-rtos/uoscore-uedhoc
+ * branch            dc0ab6345450668de3f9597320a48c5a2d409bb6 -> FETCH_HEAD
+HEAD is now at dc0ab63 Merge pull request #10 from rlubos/upmerge-03-26
+HEAD is now at dc0ab63 Merge pull request #10 from rlubos/upmerge-03-26
+=== updating zcbor (modules/lib/zcbor):
+--- zcbor: initializing
+Initialized empty Git repository in /ws/modules/lib/zcbor/.git/
+--- zcbor: fetching, need revision 9164bd18dcd88ff9d9ef98279501fc1093571017
+From https://github.com/zephyrproject-rtos/zcbor
+ * branch            9164bd18dcd88ff9d9ef98279501fc1093571017 -> FETCH_HEAD
+HEAD is now at 9164bd1 tests: Format platform in multiline
+HEAD is now at 9164bd1 tests: Format platform in multiline
+=== updating babblesim_base (tools/bsim/components):
+--- babblesim_base: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/.git/
+--- babblesim_base: fetching, need revision 153101c61ce7106f6ba8b108b5c6488efdc1151a
+From https://github.com/BabbleSim/base
+ * branch            153101c61ce7106f6ba8b108b5c6488efdc1151a -> FETCH_HEAD
+HEAD is now at 153101c libRandv2: Update version file to 1.15
+HEAD is now at 153101c libRandv2: Update version file to 1.15
+=== updating babblesim_ext_2G4_channel_NtNcable (tools/bsim/components/ext_2G4_channel_NtNcable):
+--- babblesim_ext_2G4_channel_NtNcable: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/ext_2G4_channel_NtNcable/.git/
+--- babblesim_ext_2G4_channel_NtNcable: fetching, need revision 20a38c997f507b0aa53817aab3d73a462fff7af1
+From https://github.com/BabbleSim/ext_2G4_channel_NtNcable
+ * branch            20a38c997f507b0aa53817aab3d73a462fff7af1 -> FETCH_HEAD
+HEAD is now at 20a38c9 Add version file
+HEAD is now at 20a38c9 Add version file
+=== updating babblesim_ext_2G4_channel_multiatt (tools/bsim/components/ext_2G4_channel_multiatt):
+--- babblesim_ext_2G4_channel_multiatt: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/ext_2G4_channel_multiatt/.git/
+--- babblesim_ext_2G4_channel_multiatt: fetching, need revision bde72a57384dde7a4310bcf3843469401be93074
+From https://github.com/BabbleSim/ext_2G4_channel_multiatt
+ * branch            bde72a57384dde7a4310bcf3843469401be93074 -> FETCH_HEAD
+HEAD is now at bde72a5 doc: Improved README
+HEAD is now at bde72a5 doc: Improved README
+=== updating babblesim_ext_2G4_device_WLAN_actmod (tools/bsim/components/ext_2G4_device_WLAN_actmod):
+--- babblesim_ext_2G4_device_WLAN_actmod: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/ext_2G4_device_WLAN_actmod/.git/
+--- babblesim_ext_2G4_device_WLAN_actmod: fetching, need revision 9cb6d8e72695f6b785e57443f0629a18069d6ce4
+From https://github.com/BabbleSim/ext_2G4_device_WLAN_actmod
+ * branch            9cb6d8e72695f6b785e57443f0629a18069d6ce4 -> FETCH_HEAD
+HEAD is now at 9cb6d8e Add version file
+HEAD is now at 9cb6d8e Add version file
+=== updating babblesim_ext_2G4_device_burst_interferer (tools/bsim/components/ext_2G4_device_burst_interferer):
+--- babblesim_ext_2G4_device_burst_interferer: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/ext_2G4_device_burst_interferer/.git/
+--- babblesim_ext_2G4_device_burst_interferer: fetching, need revision 5b5339351d6e6a2368c686c734dc8b2fc65698fc
+From https://github.com/BabbleSim/ext_2G4_device_burst_interferer
+ * branch            5b5339351d6e6a2368c686c734dc8b2fc65698fc -> FETCH_HEAD
+HEAD is now at 5b53393 Add version file
+HEAD is now at 5b53393 Add version file
+=== updating babblesim_ext_2G4_device_playback (tools/bsim/components/ext_2G4_device_playback):
+--- babblesim_ext_2G4_device_playback: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/ext_2G4_device_playback/.git/
+--- babblesim_ext_2G4_device_playback: fetching, need revision abb48cd71ddd4e2a9022f4bf49b2712524c483e8
+From https://github.com/BabbleSim/ext_2G4_device_playback
+ * branch            abb48cd71ddd4e2a9022f4bf49b2712524c483e8 -> FETCH_HEAD
+HEAD is now at abb48cd README: Mention v2 version of this device
+HEAD is now at abb48cd README: Mention v2 version of this device
+=== updating babblesim_ext_2G4_device_playbackv2 (tools/bsim/components/ext_2G4_device_playbackv2):
+--- babblesim_ext_2G4_device_playbackv2: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/ext_2G4_device_playbackv2/.git/
+--- babblesim_ext_2G4_device_playbackv2: fetching, need revision 0a3c28ecd59b5ee08ed4668446c243d3ffd98b46
+From https://github.com/BabbleSim/ext_2G4_device_playbackv2
+ * branch            0a3c28ecd59b5ee08ed4668446c243d3ffd98b46 -> FETCH_HEAD
+HEAD is now at 0a3c28e Minor: provide minor debug aim on error message
+HEAD is now at 0a3c28e Minor: provide minor debug aim on error message
+=== updating babblesim_ext_2G4_libPhyComv1 (tools/bsim/components/ext_2G4_libPhyComv1):
+--- babblesim_ext_2G4_libPhyComv1: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/ext_2G4_libPhyComv1/.git/
+--- babblesim_ext_2G4_libPhyComv1: fetching, need revision 15ae0f87fa049e04cbec48a866f3bc37d903f950
+From https://github.com/BabbleSim/ext_2G4_libPhyComv1
+ * branch            15ae0f87fa049e04cbec48a866f3bc37d903f950 -> FETCH_HEAD
+HEAD is now at 15ae0f8 version: Bump to 2.4
+HEAD is now at 15ae0f8 version: Bump to 2.4
+=== updating babblesim_ext_2G4_modem_BLE_simple (tools/bsim/components/ext_2G4_modem_BLE_simple):
+--- babblesim_ext_2G4_modem_BLE_simple: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/ext_2G4_modem_BLE_simple/.git/
+--- babblesim_ext_2G4_modem_BLE_simple: fetching, need revision 4d2379de510684cd4b1c3bbbb09bce7b5a20bc1f
+From https://github.com/BabbleSim/ext_2G4_modem_BLE_simple
+ * branch            4d2379de510684cd4b1c3bbbb09bce7b5a20bc1f -> FETCH_HEAD
+HEAD is now at 4d2379d Added notes on BLE CodedPhy digital performance
+HEAD is now at 4d2379d Added notes on BLE CodedPhy digital performance
+=== updating babblesim_ext_2G4_modem_magic (tools/bsim/components/ext_2G4_modem_magic):
+--- babblesim_ext_2G4_modem_magic: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/ext_2G4_modem_magic/.git/
+--- babblesim_ext_2G4_modem_magic: fetching, need revision edfcda2d3937a74be0a59d6cd47e0f50183453da
+From https://github.com/BabbleSim/ext_2G4_modem_magic
+ * branch            edfcda2d3937a74be0a59d6cd47e0f50183453da -> FETCH_HEAD
+HEAD is now at edfcda2 IF: Align with new interface supporting different coding rates
+HEAD is now at edfcda2 IF: Align with new interface supporting different coding rates
+=== updating babblesim_ext_2G4_phy_v1 (tools/bsim/components/ext_2G4_phy_v1):
+--- babblesim_ext_2G4_phy_v1: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/ext_2G4_phy_v1/.git/
+--- babblesim_ext_2G4_phy_v1: fetching, need revision 62e797b2c518e5bb6123a198382ed2b64b8c068e
+From https://github.com/BabbleSim/ext_2G4_phy_v1
+ * branch            62e797b2c518e5bb6123a198382ed2b64b8c068e -> FETCH_HEAD
+HEAD is now at 62e797b version bump to 2.5
+HEAD is now at 62e797b version bump to 2.5
+=== updating babblesim_ext_libCryptov1 (tools/bsim/components/ext_libCryptov1):
+--- babblesim_ext_libCryptov1: initializing
+Initialized empty Git repository in /ws/tools/bsim/components/ext_libCryptov1/.git/
+--- babblesim_ext_libCryptov1: fetching, need revision da246018ebe031e4fe4a8228187fb459e9f3b2fa
+From https://github.com/BabbleSim/ext_libCryptov1
+ * branch            da246018ebe031e4fe4a8228187fb459e9f3b2fa -> FETCH_HEAD
+HEAD is now at da24601 Add new AES-ECB API (and bump version to 1.5)
+HEAD is now at da24601 Add new AES-ECB API (and bump version to 1.5)
+manifest HEAD firmware
+nrf v3.4.2 nrf
+zephyr ncs-v3.4.2 zephyr
+wfa-qt-control-app 1f19f0b23e42205bab5f34ace335fffa5e7d32ff modules/lib/wfa-qt-control-app
+mcuboot ncs-v3.4.2 bootloader/mcuboot
+qcbor bfe7b348dda29783c960d7a9cac05abecc4a22ed modules/tee/tf-m/qcbor
+t_cose 024c4298f84a82409e0ac0e1d5c2e8ee22cca901 modules/tee/tf-m/t_cose
+mbedtls ncs-v3.4.2 modules/crypto/mbedtls
+oberon-psa-crypto ncs-v3.4.2 modules/crypto/oberon-psa-crypto
+nrfxlib v3.4.2 nrfxlib
+trusted-firmware-m ncs-v3.4.2 modules/tee/tf-m/trusted-firmware-m
+psa-arch-tests 2caaea3f7ccd87fad4644bf6e07d197f77257aa7 modules/tee/tf-m/psa-arch-tests
+cjson c6af068b7f05207b28d68880740e4b9ec1e4b50a modules/lib/cjson
+azure-sdk-for-c 308c171cb4b5eed266649012a68406487ec81fb2 modules/lib/azure-sdk-for-c
+cirrus 1c837bcc27de9ccc06b020b9500e1547e559a1df modules/hal/cirrus-logic
+openthread 0fe68ff23527e8bb9a9821ca96a255fccfbb44a7 modules/lib/openthread
+nrf_wifi 5046744cb4c9640eb8b11cb92f1ea0b9554c20cf modules/lib/nrf_wifi
+hal_nordic 2a63cca4ebae128e77b02d735525645b701b1ebf modules/hal/nordic
+cmock f65066f15d8248e6dcb778efb8739904a4512087 test/cmock
+memfault-firmware-sdk 1.45.0 modules/lib/memfault-firmware-sdk
+bsim a88d3353451387ca490a6a7f7c478a90c4ee05b7 tools/bsim
+coremark d5fad6bd094899101a4e5fd53af7298160ced6ab modules/benchmark/coremark
+hostap dc22e8cf8dd03c8ff2bdde68002a4496525f6eb2 modules/lib/hostap
+canopennode dec12fa3f0d790cafa8414a4c2930ea71ab72ffd modules/lib/canopennode
+chre c4c2f49fdcaa2fed49eb1db027696a5734a010d2 modules/lib/chre
+cmsis 512cc7e895e8491696b61f7ba8066b4a182569b8 modules/hal/cmsis
+cmsis-dsp 97512610ec92058f0119450b9e743eeb7e95b5c8 modules/lib/cmsis-dsp
+cmsis-nn d20117c9e88cf9018d6fa06744dddac700c3e3a1 modules/lib/cmsis-nn
+cmsis_6 30a859f44ef8ab4dc8f84b03ed586fd16ccf9d74 modules/hal/cmsis_6
+dhara 6f163ca05e174b168b4d148160b50eeaeeb561fc modules/lib/dhara
+edtt c282625e694f0b53ea53e13231ea6d2f49411768 tools/edtt
+fatfs f4ead3bf4a6dab3a07d7b5f5315795c073db568d modules/fs/fatfs
+hal_st 7a792882847223c72944791e0c48eed6101e6569 modules/hal/st
+hal_tdk fa54cb65535b0ed69564423c9e0bf4e7ee47dcb1 modules/hal/tdk
+hal_wurthelektronik 7c1297ea071d03289112eb24e789c89c7095c0a2 modules/hal/wurthelektronik
+liblc3 48bbd3eacd36e99a57317a0a4867002e0b09e183 modules/lib/liblc3
+libmetal 66e084293b2a7ced5a73fbd247deddba8915883a modules/hal/libmetal
+libsbc 8e1beda02acb8972e29e6edbb423f7cafe16e445 modules/lib/libsbc
+littlefs 8f5ca347843363882619d8f96c00d8dbd88a8e79 modules/fs/littlefs
+loramac-node fb00b383072518c918e2258b0916c996f2d4eebe modules/lib/loramac-node
+lvgl 85aa60d18b3d5e5588d7b247abf90198f07c8a63 modules/lib/gui/lvgl
+mipi-sys-t 5a9d6055b62edc54566d6d0034d9daec91749b98 modules/debug/mipi-sys-t
+mldsa-native 3fc19982839305d305071f0de0c540bc9c9bea8a modules/crypto/mldsa-native
+nanopb 5499fd4c9a478f8139eeb07a82c3b4468d6067f7 modules/lib/nanopb
+net-tools 64d7acc661ae2772282570f21beab85d02f2f35c tools/net-tools
+nrf_hw_models 158b9710d6e10c57b2c623f8f4178f0bbc85c23f modules/bsim_hw_models/nrf_hw_models
+open-amp 5efe7974f9546582e99f5a842a816ea4b65f5227 modules/lib/open-amp
+percepio f9159fe3c79578e8d90c8593e83f9862d9b8962c modules/debug/percepio
+picolibc 01254932e8e81085817ed61fd858648584ffe37c modules/lib/picolibc
+segger 50892fdbcf2f570e67baa72b8894a66b16946f72 modules/debug/segger
+tf-m-tests 46b82fabd35eced75d6efbd219ccb26f1818b4d3 modules/tee/tf-m/tf-m-tests
+tf-psa-crypto fa92349590a54959ee2efc21b668e5afdb144726 modules/crypto/tf-psa-crypto
+uoscore-uedhoc dc0ab6345450668de3f9597320a48c5a2d409bb6 modules/lib/uoscore-uedhoc
+zcbor 9164bd18dcd88ff9d9ef98279501fc1093571017 modules/lib/zcbor
+babblesim_base 153101c61ce7106f6ba8b108b5c6488efdc1151a tools/bsim/components
+babblesim_ext_2G4_channel_NtNcable 20a38c997f507b0aa53817aab3d73a462fff7af1 tools/bsim/components/ext_2G4_channel_NtNcable
+babblesim_ext_2G4_channel_multiatt bde72a57384dde7a4310bcf3843469401be93074 tools/bsim/components/ext_2G4_channel_multiatt
+babblesim_ext_2G4_device_WLAN_actmod 9cb6d8e72695f6b785e57443f0629a18069d6ce4 tools/bsim/components/ext_2G4_device_WLAN_actmod
+babblesim_ext_2G4_device_burst_interferer 5b5339351d6e6a2368c686c734dc8b2fc65698fc tools/bsim/components/ext_2G4_device_burst_interferer
+babblesim_ext_2G4_device_playback abb48cd71ddd4e2a9022f4bf49b2712524c483e8 tools/bsim/components/ext_2G4_device_playback
+babblesim_ext_2G4_device_playbackv2 0a3c28ecd59b5ee08ed4668446c243d3ffd98b46 tools/bsim/components/ext_2G4_device_playbackv2
+babblesim_ext_2G4_libPhyComv1 15ae0f87fa049e04cbec48a866f3bc37d903f950 tools/bsim/components/ext_2G4_libPhyComv1
+babblesim_ext_2G4_modem_BLE_simple 4d2379de510684cd4b1c3bbbb09bce7b5a20bc1f tools/bsim/components/ext_2G4_modem_BLE_simple
+babblesim_ext_2G4_modem_magic edfcda2d3937a74be0a59d6cd47e0f50183453da tools/bsim/components/ext_2G4_modem_magic
+babblesim_ext_2G4_phy_v1 62e797b2c518e5bb6123a198382ed2b64b8c068e tools/bsim/components/ext_2G4_phy_v1
+babblesim_ext_libCryptov1 da246018ebe031e4fe4a8228187fb459e9f3b2fa tools/bsim/components/ext_libCryptov1
+2.3G	/root/ring-os/ws
+=== setup: 4 BabbleSim in /root/ring-os/ws/tools/bsim (2026-11-11T09:36:30Z)
+free on /: 61 GB
+mkdir /ws/tools/bsim/bin/
+make[1]: Entering directory '/ws/tools/bsim/components/libUtilv1'
+make[1]: Entering directory '/ws/tools/bsim/components/ext_libCryptov1'
+make[2]: Entering directory '/ws/tools/bsim/components/ext_libCryptov1'
+Seems this is the first time you compile this BabbleSim with this libCrypto component (or the component has been updated), it will be compiled now (expect 1 minute)
+Unpacking source files...
+make[1]: Leaving directory '/ws/tools/bsim/components/libUtilv1'
+make[1]: Entering directory '/ws/tools/bsim/components/libPhyComv1'
+make[1]: Entering directory '/ws/tools/bsim/components/libRandv2'
+Compiling...
+This is silent on purpose... (if you have some problem compiling it, run these by hand:
+cd /ws/tools/bsim/components/ext_libCryptov1/source-1.0.2g && setarch i386 ./config -m32 -g -fPIC no-idea no-camellia no-seed no-bf no-cast no-rc2 no-rc4 no-rc5 \
+ no-md2 no-md4 no-ripemd no-mdc2 no-dsa no-dh no-ec no-ecdsa no-ecdh no-sock no-ssl2 no-ssl3 no-err no-krb5 no-engine no-hw >& /dev/null \
+ && make MAKEFLAGS= depend &> /dev/null && make MAKEFLAGS= build_libcrypto &> /dev/null
+make[1]: Leaving directory '/ws/tools/bsim/components/libPhyComv1'
+make[1]: Entering directory '/ws/tools/bsim/components/device_empty'
+make[1]: Entering directory '/ws/tools/bsim/components/device_handbrake'
+make[1]: Entering directory '/ws/tools/bsim/components/device_pause_simu'
+make[1]: Entering directory '/ws/tools/bsim/components/device_time_monitor'
+make[1]: Entering directory '/ws/tools/bsim/components/ext_2G4_libPhyComv1'
+make[1]: Leaving directory '/ws/tools/bsim/components/libRandv2'
+make[1]: Leaving directory '/ws/tools/bsim/components/device_pause_simu'
+make[1]: Leaving directory '/ws/tools/bsim/components/device_empty'
+make[1]: Leaving directory '/ws/tools/bsim/components/device_time_monitor'
+make[1]: Leaving directory '/ws/tools/bsim/components/device_handbrake'
+make[1]: Leaving directory '/ws/tools/bsim/components/ext_2G4_libPhyComv1'
+make[1]: Entering directory '/ws/tools/bsim/components/ext_2G4_phy_v1'
+make[1]: Entering directory '/ws/tools/bsim/components/ext_2G4_device_WLAN_actmod'
+make[1]: Entering directory '/ws/tools/bsim/components/ext_2G4_device_burst_interferer'
+make[1]: Entering directory '/ws/tools/bsim/components/ext_2G4_device_playback'
+make[1]: Entering directory '/ws/tools/bsim/components/ext_2G4_device_playbackv2'
+make[1]: Leaving directory '/ws/tools/bsim/components/ext_2G4_device_playback'
+make[1]: Leaving directory '/ws/tools/bsim/components/ext_2G4_device_playbackv2'
+make[1]: Leaving directory '/ws/tools/bsim/components/ext_2G4_device_burst_interferer'
+make[1]: Leaving directory '/ws/tools/bsim/components/ext_2G4_device_WLAN_actmod'
+make[1]: Leaving directory '/ws/tools/bsim/components/ext_2G4_phy_v1'
+make[1]: Entering directory '/ws/tools/bsim/components/ext_2G4_channel_NtNcable'
+make[1]: Entering directory '/ws/tools/bsim/components/ext_2G4_channel_multiatt'
+make[1]: Entering directory '/ws/tools/bsim/components/ext_2G4_modem_BLE_simple'
+make[1]: Entering directory '/ws/tools/bsim/components/ext_2G4_modem_magic'
+make[1]: Leaving directory '/ws/tools/bsim/components/ext_2G4_channel_NtNcable'
+make[1]: Leaving directory '/ws/tools/bsim/components/ext_2G4_modem_magic'
+make[1]: Leaving directory '/ws/tools/bsim/components/ext_2G4_channel_multiatt'
+make[1]: Leaving directory '/ws/tools/bsim/components/ext_2G4_modem_BLE_simple'
+Done with the crypto library.. continuing
+make[2]: Leaving directory '/ws/tools/bsim/components/ext_libCryptov1'
+make[1]: Leaving directory '/ws/tools/bsim/components/ext_libCryptov1'
+bs_2G4_phy_v1
+bs_2G4_phy_v1.Tsymbols
+bs_device_2G4_burst_interf
+bs_device_2G4_burst_interf.Tsymbols
+bs_device_2G4_playback
+bs_device_2G4_playback.Tsymbols
+bs_device_2G4_playbackv2
+bs_device_2G4_playbackv2.Tsymbols
+bs_device_2G4_WLAN_actmod
+bs_device_2G4_WLAN_actmod.Tsymbols
+bs_device_empty
+bs_device_empty.Tsymbols
+bs_device_handbrake
+bs_device_handbrake.Tsymbols
+bs_device_pause_simu
+bs_device_pause_simu.Tsymbols
+bs_device_time_monitor
+bs_device_time_monitor.Tsymbols
+=== setup: done (2026-11-11T09:52:04Z)
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       563G  485G   56G  90% /
+2.4G	/root/ring-os
+ring-os-toolchain:v3.4.2 7.96GB
+ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.4.2 7.77GB
+# finished (Mac clock): 2026-11-11 10:52:14 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261111-103243-setup.log

@@ -1,0 +1,15 @@
+Computed from fabrication files and design documents; nothing measured on hardware. Full report: design/wiring/board-readback.md (proofs in design/wiring/readback-work/).
+
+P1 (Gerber copper + drill read back; IPC-D-356 as well on the ring): 17 boards, shorts 0 and opens 0 on every one. Ring: 84 nets, 359 pads, IPC-D-356 agrees. My frozen strict rule also counted missing pads, so 9 boards FAIL and 8 PASS: ring (BT1, DISP1, RT1 are off-board parts), case_main (BT1), and the 7 flex1 boards (SW1, SW3, SW4, SW5 pins 1 and 2; the footprint has pads 3 and 4 only, band-interface.md line 103).
+P2: cut copy (LCD_SCK, 1.675 mm on In2.Cu): Gerber route shows exactly 1 open on LCD_SCK. Join copy (LCD_SCK to LCD_MOSI): exactly 1 short. IPC-D-356 files of control, cut and join are identical (0 differing lines): that file cannot see a cut or a join. Formal P2 FAIL only because the control inherits the ring's P1 FAIL.
+P3: 12 of 12 judged items PASS. VMOT at 175 mA, ring plus band US 13: 55.33 mV against 264. Ring VBUS 3.09 mV at 15 mA against 970. VDD_1V8 farthest pad (TP17) 55.02 mV against 90; VDD_SD 43.97 mV against 300. Case VRING 2.79 mV against 901. Band US 13 within 10 percent of the stated drops. Ring VBAT at 235 mA, reported (no written limit): 21.66 mV to U11, 68.62 mV to U2.
+P4: antenna Z0 49.31 ohm PASS; L1 clearance 0.125 mm against 0.200 FAIL; L2 ground under the line 96.647 percent against 100 FAIL; USB Zdiff 92.10 / 101.90 / 104.70 ohm at min / median / modal gap against 81 to 99 FAIL (the plan's 0.075 mm gap would give 91.4); mismatch 0.030 mm PASS.
+P5: XC1 4.956 mm, XC2 4.926 mm, match 0.030 mm PASS; XL2 7.391 mm PASS; XL1 9.697 mm against 9.0 FAIL (8.897 mm of track); all four crystal clearances 0.087 to 0.105 mm against 0.20 FAIL (board-file cross-check 0.085 to 0.102 mm).
+Count: 1 of 5 pass lines met (P3), 4 failed; by item 28 met, 18 failed, 25 reported only.
+
+Changes after the freeze (all in the file, section 2): pin-board wire pads paired with the netlist (D1); case copper 35 / 17.5 um from power_width.py because the board files have no stackup block (D2); better rasteriser after the pilot (D3); case files read from commit b9ec3cfa because another agent was editing them (D8). Not run: Route A for case and band (no .ipc356 there), ring GND plane in the VMOT sum, broken copies on other boards. I ran no git write; the freeze was not committed before the first run and needs your commit.
+Open: case_pins VRING mesh 0.44 against track-sum 2.15 mohm, cause not found, verdict unchanged.
+
+questions_for_owner: (1) Do off-board refs and unsoldered switch terminals count as missing in P1 (17 of 17 or 8 of 17)? (2) Which USB gap is the design gap, 0.075 or the drawn 0.14 to 0.175 mm? (3) Is the antenna reference solid (plan d.1) or copper-free (plan R2.0) under the last 0.6 mm? (4) Copper weights ordered for the case boards?
+
+RESULT: done, 1 of 5 pass lines met (P3) and 4 failed (P1, P2, P4, P5); by item 28 met, 18 failed, 25 reported only; no short or open on any of the 17 boards and both planted faults were found by the Gerber route.

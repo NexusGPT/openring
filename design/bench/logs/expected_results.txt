@@ -1,0 +1,10 @@
+Expected before the runs (written before the first run of check_bench.py):
+bench-plan.md (B2): RESULT PASS (rules 4 of 4)
+bench-plan-B1.md: RESULT FAIL (R1 no parts map; R2 NPM1300-EK / IM68D128BV01 / VC0720B088L not in bom.csv; R3 lines 13, 31, 50 name the light; R4 no tests table)
+bench-plan-faulty.md (B2 with the microphone ring part changed to IM68D128BV01): RESULT FAIL (R1 and R2)
+bench-plan-faulty-light.md (B2 with a wiring row for the recording light as current): RESULT FAIL (R3)
+bench-plan-faulty-passline.md (B2 with the pass line of T6 emptied): RESULT FAIL (R4)
+
+Result of check version 1 (logs check_run0_b2_first.log, check_run1_b2.log, check_final_*.log) against these expectations, listed by a script-free reading of the logs:
+- check_run0_b2_first.log: B2 FAIL, expected PASS. Cause: rule R2 matched file names (zephyr_npm1304_ek_overlay.txt, nordic_ug_npm1304_ek_a.html) because the token class included underscores. Fixed in check_bench.py (class limited to letters, digits, hyphen) -> check_run1_b2.log PASS.
+- check_final_bench-plan-B1.log: B1 FAIL as expected, but R3 listed lines 12, 22 and 54 (question id "Q2" of B1's current question) besides the light lines 13, 31, 50, 64. Differs from the expectation (13, 31, 50): lines 12, 22, 54 are false hits of the bare pattern Q2, line 64 is a real light hit ("the light") that was missing from the expectation. Fix: bare Q2 removed from rule R3; Q2 now counts only with transistor, gate, LED or light on the same line. All five runs repeated as check_v2_*.log.

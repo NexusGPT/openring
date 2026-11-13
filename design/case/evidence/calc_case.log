@@ -1,0 +1,28 @@
+== data per recorded hour (architecture.md T1: raw, 16 kHz, 16 bits, 4 channels)
+bytes per second = 16000 x 2 x 4 = 128000
+MB per recorded hour = 128000 x 3600 / 1e6 = 460.8
+== full speed, raw line rate 12 Mbit/s
+12 Mbit/s = 1.500 MB/s; 460.8 MB / 1.500 MB/s = 307.2 s = 5.12 min (bound, never reached)
+== full speed, bulk ceiling 19 packets x 64 bytes per 1 ms frame
+19 x 64 x 1000 = 1216000 B/s = 1.216 MB/s; 460.8 MB / 1.216 MB/s = 378.9 s = 6.32 min per recorded hour
+10-hour day: 63.2 min; 17-hour full ring: 107.4 min
+hours of recording copied inside 90 min: 90 x 60 x 1216000 / 460800000 = 14.25 h
+== high speed (ESP32-P4), limited by the ring's storage read over SPI, 2 MB/s (architecture.md section 8)
+460.8 MB / 2.0 MB/s = 230.4 s = 3.84 min per recorded hour; 10-hour day 38.4 min
+difference full speed minus high speed = 2.48 min per recorded hour
+== case cell sizing
+ring cell energy = 0.135 Ah x 3.85 V = 0.520 Wh
+BOOSTV code 7 = 4.55 + 0.064 x 7 = 4.998 V
+ring linear charger efficiency = 3.85 / 4.998 = 0.770; boost efficiency taken 0.85
+case energy per ring charge = 0.520 / (0.770 x 0.85) = 0.794 Wh; 3 charges = 2.381 Wh
+500 mAh x 3.7 V = 1.85 Wh -> 2.33 ring charges
+700 mAh x 3.7 V = 2.59 Wh -> 3.26 ring charges
+minimum case cell for 3 charges = 644 mAh
+== ring supply current limit, TPS2553 IOSmin = 25230 / RILIM^1.016 (RILIM in kilo-ohm)
+RILIM for 400 mA minimum = 59.1 kOhm; chosen 59.0 kOhm gives IOSmin = 401 mA
+== 3.3 V rail, TPS63802 R1 = R2 x (VOUT/VFB - 1), VFB 0.5 V
+R2 = 100 kOhm -> R1 = 560 kOhm; VOUT with 560/100 = 3.300 V
+== case cell charge, DNK852338 allowed max 0.5C
+0.5C x 700 mAh = 350 mA; time at constant current to full >= 700/350 = 2.0 h
+== pin compression
+free height 5.182 mm, mid stroke 0.7 mm -> board top -4.482 mm below the seat

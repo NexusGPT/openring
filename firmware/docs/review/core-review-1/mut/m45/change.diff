@@ -1,0 +1,6 @@
+111,112c111,112
+< 	CONSIDER(g->pressing && !g->long_fired && mark_live(g, g->down_t + RC_LONG_MS),
+< 		 g->down_t + RC_LONG_MS, DL_LONG);
+---
+> 	CONSIDER(g->pressing && !g->long_fired && mark_live(g, g->down_t + RC_LONG_MS - 1),
+> 		 g->down_t + RC_LONG_MS - 1, DL_LONG);

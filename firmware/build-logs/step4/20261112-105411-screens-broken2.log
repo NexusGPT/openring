@@ -1,0 +1,35 @@
+# remote.sh run 20261112-105411-screens-broken2
+# command: tests/screens/broken_run.sh lock_open
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 10:54:11 CET
+# free on the server's /: 48 GB
+# source firmware copied to /root/ring-os/src-os-screens
+# started on the server as 20261112-105411-screens-broken2; server log /root/ring-os/logs/20261112-105411-screens-broken2.log
+##### broken copy: lock_open
+edited src/rscr_logic.c
+--- /ws/firmware/modules/ring_screens/src/rscr_logic.c	2026-11-12 09:36:30.000000000 +0000
++++ /ws/out/20261112-105411-screens-broken2-screens-broken/lock_open/ring_screens/src/rscr_logic.c	2026-11-12 09:54:20.659719172 +0000
+@@ -79,7 +79,7 @@
+ {
+ 	bool full = s->screen != SCR_OFF && s->screen != SCR_REC_DIM;
+ 
+-	return full || s->session;
++	return (full || s->session) || true;
+ }
+ 
+ bool rscr_has_sign(const struct rscr *s, enum rc_state st)
+TESTSUITE screens_draw succeeded
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_table.c:814: screens_table_test_dim_pairs_with_lowest_lock_state: (rscr_lock_fact(&g.s) is true)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_table.c:480: screens_table_test_lock_first_event_only_wakes: (rscr_lock_fact(&g.s) is true)
+TESTSUITE screens_table failed.
+ - FAIL - [screens_table.test_dim_pairs_with_lowest_lock_state] duration = 0.000 seconds
+ - FAIL - [screens_table.test_lock_first_event_only_wakes] duration = 0.000 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 20.74 seconds.
+INFO    - 28 of 30 executed test cases passed (93.33%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_screens.all on native_sim/native failed (rc=1)
+twister exit code on the broken copy lock_open, native_sim: 1 (log /ws/out/20261112-105411-screens-broken2-screens-broken/lock_open/twister-native_sim.log)
+lock_open on native_sim: the named case failed, as required:  FAIL - test_lock_first_event_only_wakes in 0.000 seconds
+RESULT PASS
+# finished (Mac clock): 2026-11-12 10:54:55 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step4/20261112-105411-screens-broken2.log

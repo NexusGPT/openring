@@ -1,0 +1,21 @@
+C-solder r_in 0.3 t 0.14: lower leg centre 1.870, stiffened end top 2.000, upper leg centre 2.610, panel underside 2.730: block grows 0.880 mm (formula 2 r_in + 2 t = 0.880)
+  upper leg underside over the stiffened end: +0.540 mm free
+  fold 1: ledge centre 3.200; half turn dips to underside 2.390, then an S up 0.150
+  fold 1 ends at s 1.642, X 13.228; fold 2 at X 1.870 (s 13.0); cable end X 7.708; stiffened end on the lands X 4.508..7.708
+  -- C-solder cable: smallest free space, cable run x neighbour (negative = overlap depth), only pairs under 1.0 mm
+     wide  x PANEL_LOWER   -0.013 mm at s 0.07
+     stiff x PCB1          +0.020 mm at s 16.83
+     neck  x PCB1          +0.050 mm at s 14.14
+     neck  x PANEL_LOWER   +0.050 mm at s 12.53
+     wide  x PANEL_UPPER   +0.450 mm at s 4.06
+     neck  x PANEL_UPPER   +0.450 mm at s 12.53
+     wide  x PCB1          +0.640 mm at s 1.19
+     stiff x PANEL_LOWER   +0.760 mm at s 16.83
+  own legs: least free space upper leg x lower leg +0.570 mm (box pieces; the stiffened end is drawn 0.2 thick about the neck's centre line, so its true top is 0.030 higher: analytic line above)
+  antenna zone covered in plan 0.000 mm2; least distance to the zone 10.211 mm
+  fingertip end pocket to X 14.165: metal left to the skin 0.485
+  lands: 15 x (0.15 across x 2.0 along X), pitch 0.30, X 5.408..7.408, pin 1 at Y +2.097, pin 15 at Y -2.103 (pin 1 toward +Y); gap between lands 0.15 (board rule 0.075, ring-board-plan.md line 29)
+  lands to the nearest test pad: 7.858 mm
+  land field centre (6.408, -0.003) to U4 centre 4.94 mm (under face; U1 spans X 2.39..5.61 below it)
+  alternative, a 180 deg twist of the neck: free neck 4.300 mm, edge path 8.687 mm: edge stretch 2.02 times its length (a film does not stretch: not possible)
+RESULT done C-solder r_in=0.3 t=0.14 growth=0.880

@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "files.schema.json",
+  "type": "object",
+  "properties": {
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "$ref": "common.schema.json#/$defs/RelPath"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "area": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/AreaId"
+              },
+              {
+                "const": "other"
+              }
+            ]
+          },
+          "tracked": {
+            "type": "boolean"
+          },
+          "part_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/PartId"
+            },
+            "uniqueItems": true,
+            "description": "Maker files under design/mfg only: the ring parts the file belongs to (from design/mfg/part-map.csv); empty when its name is not in the map."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "drawing",
+              "specification",
+              "step",
+              "stl",
+              "view"
+            ],
+            "description": "Maker files only: drawings/*.pdf drawing, drawings/*.svg view, specs/*.md specification, parts/**/*.step step, *.stl stl."
+          },
+          "ring_size": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Maker files only: the number after -us in the file name, else null."
+          }
+        },
+        "required": [
+          "path",
+          "size_bytes",
+          "modified",
+          "area",
+          "tracked"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bundle": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "file": {
+              "$ref": "common.schema.json#/$defs/RelPath"
+            },
+            "size_bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "contents": {
+              "type": "array",
+              "items": {
+                "$ref": "common.schema.json#/$defs/RelPath"
+              }
+            }
+          },
+          "required": [
+            "file",
+            "size_bytes",
+            "contents"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "left_out": {
+      "type": "array",
+      "description": "A shared copy only (a copy built with EXPLORER_LEFT_OUT): the groups of project files this copy does not carry, so a reader knows what to ask for. Absent on the owner's own machine.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "what": {
+            "type": "string",
+            "minLength": 1
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "what",
+          "count",
+          "why"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "files",
+    "bundle"
+  ],
+  "additionalProperties": false,
+  "title": "Files",
+  "description": "files.json: every project file. /files/<path> serves ONLY paths listed here."
+}

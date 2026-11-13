@@ -1,0 +1,19 @@
+== architecture.md l.303 at c26ae988
+| Case transfer | high-speed USB, 4 minutes per recorded hour | full-speed USB host in the case, REPLACED by `design/firmware.md` line 718 and `design/case/case-architecture.md` line 88 (3.21 minutes per recorded hour, 2 microphones). Do not use: ~~6.3 minutes per recorded hour~~ | case design |
+== case-architecture.md l.88
+- Full-speed bulk ceiling: 19 packets x 64 bytes per 1 ms frame = 1.216 MB/s (USB 2.0 figure, LIST). 234.0 / 1.216 = 192.4 s = **3.21 min per recorded hour. This is the planning figure for the chosen part** (`design/firmware.md` line 718). A 10-hour day: 32.1 min. A full 4 GB card (16.9 hours, `desi
+== H15 lines 23,153,229,300,356,369,433,455,482,515 contain REPLACED or 17.11?
+l.23 yes:             |  6 inputs <---------------------- joystick (5 switches), no record button (17.11)  |
+l.153 yes: | Record button: REPLACED by section 17.11 (the record button is removed; one control, the joystick; a long press of its
+l.229 yes: - REPLACED by section 17.11 (the record button is removed; one control, the joystick; a long press of its centre records
+l.300 yes: | REPLACED by section 17.11 (no record button; one control, the joystick; a long press of its centre records). Do not us
+l.356 yes: | REPLACED by section 17.11 (no record button; one control, the joystick; a long press of its centre records). Do not us
+l.369 yes: - REPLACED by section 17.11 (no record button; one control, the joystick; a long press of its centre records). Do not us
+l.433 yes: | REPLACED by section 17.11 (no record button; one control, the joystick; a long press of its centre records). Do not us
+l.455 yes: | REPLACED by section 17.11 (no record button; one control, the joystick; a long press of its centre records). Do not us
+l.482 yes: - REPLACED by section 17.11 (no record button; one control, the joystick; a long press of its centre records). Do not us
+l.515 yes: | S17 | Openings in the band for the joystick (the record button of this row is removed, 17.11): the parts pass the body
+== wdt work item queue
+86:static void wdt_tick(struct k_work *w);
+95:		k_work_init_delayable(&wdt_work, wdt_tick);
+461:static void wdt_tick(struct k_work *w)

@@ -1,0 +1,238 @@
+# remote.sh run 20261113-052903-u-store
+# command: west twister -T /ws/firmware/tests/store -p native_sim -p nrf54lm20bsim/nrf54lm20a/cpuapp -O /ws/out/u2-short4 -j 8 --inline-logs -v
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:29:03 CET
+# free on the server's /: 26 GB
+# source firmware copied to /root/ring-os/src-u-store
+# started on the server as 20261113-052903-u-store; server log /root/ring-os/logs/20261113-052903-u-store.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/u2-short4/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/2 native_sim/native         ring_store.sim                                     ERROR Build failure (native <host/gnu>)
+INFO    - -----/ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/build.log-----
+ERROR   - Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/tests/store
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: native_sim, qualifiers: native
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/native/native_sim/native_sim.dts
+-- Found devicetree overlay: /ws/firmware/tests/store/app.overlay
+-- Generated zephyr.dts: /ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/zephyr.dts
+-- Generated pickled edt: /ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/devicetree_generated.h
+Parsing /ws/zephyr/Kconfig
+Loaded configuration '/ws/zephyr/boards/native/native_sim/native_sim_defconfig'
+Merged configuration '/ws/firmware/tests/store/prj.conf'
+Merged configuration '/ws/firmware/tests/store/boards/native_sim.conf'
+Merged configuration '/ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/misc/generated/extra_kconfig_options.conf'
+Configuration saved to '/ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/.config'
+Kconfig header saved to '/ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /usr/bin/ld.bfd (found version "2.42")
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/gcc
+CMake Warning at /ws/nrf/cmake/device_support.cmake:34 (message):
+  SoC native is not supported by this release.
+Call Stack (most recent call first):
+  /ws/nrf/CMakeLists.txt:27 (include)
+
+
+-- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+-- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+-- Configuring done (11.0s)
+-- Generating done (0.3s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    TC_NAME
+
+
+-- Build files have been written to: /ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim
+[1/152] Preparing syscall dependency handling
+
+[2/152] Generating ../../zephyr/include/generated/ncs_version.h
+[3/152] Generating ../../zephyr/include/generated/zephyr_commit.h
+[4/152] Generating ../../zephyr/include/generated/ncs_commit.h
+[5/152] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.2 (/ws/zephyr), build: 9133dab6b066
+[6/152] Generating misc/generated/syscalls_subdirs.trigger
+[7/152] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[8/152] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[9/152] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[10/152] Generating include/generated/zephyr/driver-validation.h
+[11/152] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[12/152] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[13/152] Generating ../../include/generated/zephyr/heap_constants.h
+[14/152] Building C object zephyr/CMakeFiles/offsets.dir/arch/posix/core/offsets/offsets.c.obj
+[15/152] Generating include/generated/zephyr/offsets.h
+[16/152] Building C object CMakeFiles/app.dir/src/test_k2.c.obj
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ccache /usr/bin/gcc -DKERNEL -DK_HEAP_MEM_POOL_SIZE=0 -DTC_RUNID=0b32fd1da89dfe26ae3a0fcc73fd9fba -D__ZEPHYR__=1 -I/ws/firmware/tests/store/../../modules/ring_store/src -I/ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr -I/ws/zephyr/include -I/ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated -I/ws/zephyr/soc/native/inf_clock -I/ws/zephyr/boards/native/native_sim -I/ws/zephyr/scripts/native_simulator/common/src/include -I/ws/zephyr/scripts/native_simulator/native/src/include -I/ws/zephyr/subsys/testsuite/include -I/ws/zephyr/subsys/testsuite/coverage -I/ws/zephyr/subsys/testsuite/ztest/include -I/ws/nrf/include -I/ws/nrf/tests/include -I/ws/firmware/modules/ring_rhw/include -I/ws/firmware/modules/ring_store/include -fno-strict-aliasing -Werror -Os -imacros /ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/autoconf.h -fno-common -g -gdwarf-4 -fdiagnostics-color=always -Wall -Wformat -Wformat-security -Wno-format-zero-length -Wdouble-promotion -Wno-pointer-sign -Wpointer-arith -Wexpansion-to-defined -Wno-unused-but-set-variable -Werror=implicit-int -fno-pic -fno-pie -fno-asynchronous-unwind-tables -fno-reorder-functions --param=min-pagesize=0 -fno-defer-pop -fmacro-prefix-map=/ws/firmware/tests/store=CMAKE_SOURCE_DIR -fmacro-prefix-map=/ws/zephyr=ZEPHYR_BASE -fmacro-prefix-map=/ws=WEST_TOPDIR -ffunction-sections -fdata-sections -m32 -msse2 -mfpmath=sse -fvisibility=hidden -fno-freestanding -std=c17 -MD -MT CMakeFiles/app.dir/src/test_k2.c.obj -MF CMakeFiles/app.dir/src/test_k2.c.obj.d -o CMakeFiles/app.dir/src/test_k2.c.obj -c /ws/firmware/tests/store/src/test_k2.c
+/ws/firmware/tests/store/src/test_k2.c: In function ‘store_fmt_test_k2_kit_names_exist’:
+/ws/firmware/tests/store/src/test_k2.c:12:9: error: implicit declaration of function ‘typeof’ [-Werror=implicit-function-declaration]
+   12 |         typeof(disk_access_read) *p1 = NULL;
+      |         ^~~~~~
+/ws/firmware/tests/store/src/test_k2.c:12:35: error: ‘p1’ undeclared (first use in this function)
+   12 |         typeof(disk_access_read) *p1 = NULL;
+      |                                   ^~
+/ws/firmware/tests/store/src/test_k2.c:12:35: note: each undeclared identifier is reported only once for each function it appears in
+/ws/firmware/tests/store/src/test_k2.c:13:36: error: ‘p2’ undeclared (first use in this function)
+   13 |         typeof(disk_access_write) *p2 = NULL;
+      |                                    ^~
+/ws/firmware/tests/store/src/test_k2.c:14:36: error: ‘p3’ undeclared (first use in this function)
+   14 |         typeof(disk_access_ioctl) *p3 = NULL;
+      |                                    ^~
+/ws/firmware/tests/store/src/test_k2.c:15:29: error: ‘p4’ undeclared (first use in this function)
+   15 |         typeof(crc32_ieee) *p4 = NULL;
+      |                             ^~
+/ws/firmware/tests/store/src/test_k2.c:16:36: error: ‘p5’ undeclared (first use in this function)
+   16 |         typeof(crc32_ieee_update) *p5 = NULL;
+      |                                    ^~
+cc1: all warnings being treated as errors
+[17/152] Building C object CMakeFiles/app.dir/src/test_log.c.obj
+[18/152] Building C object CMakeFiles/app.dir/src/test_space.c.obj
+[19/152] Building C object CMakeFiles/app.dir/src/test_layout.c.obj
+[20/152] Building C object CMakeFiles/app.dir/src/tst.c.obj
+[21/152] Building C object CMakeFiles/app.dir/src/test_fmt.c.obj
+[22/152] Building C object CMakeFiles/app.dir/src/test_index.c.obj
+[23/152] Building C object CMakeFiles/app.dir/src/test_recovery.c.obj
+ninja: build stopped: subcommand failed.
+
+INFO    - -----/ws/out/u2-short4/native_sim_native/host_gnu/firmware/tests/store/ring_store.sim/build.log-----
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_store.sim                               ERROR Build failure (native <host/gnu>)
+INFO    - /ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/build.log
+ERROR   - Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/tests/store
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: nrf54lm20bsim, qualifiers: nrf54lm20a/cpuapp
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/native/nrf_bsim/nrf54lm20bsim_nrf54lm20a_cpuapp.dts
+-- Found devicetree overlay: /ws/firmware/tests/store/app.overlay
+-- Generated zephyr.dts: /ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/zephyr.dts
+-- Generated pickled edt: /ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/devicetree_generated.h
+Parsing /ws/zephyr/Kconfig
+Loaded configuration '/ws/zephyr/boards/native/nrf_bsim/nrf54lm20bsim_nrf54lm20a_cpuapp_defconfig'
+Merged configuration '/ws/firmware/tests/store/prj.conf'
+Merged configuration '/ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/misc/generated/extra_kconfig_options.conf'
+Configuration saved to '/ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/.config'
+Kconfig header saved to '/ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /usr/bin/ld.bfd (found version "2.42")
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/gcc
+-- Using BSIM from BSIM_COMPONENTS_PATH=/ws/tools/bsim/components BSIM_OUT_PATH=/ws/tools/bsim
+CMake Warning at /ws/nrf/cmake/device_support.cmake:34 (message):
+  SoC native is not supported by this release.
+Call Stack (most recent call first):
+  /ws/nrf/CMakeLists.txt:27 (include)
+
+
+-- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+-- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+-- Configuring done (11.0s)
+-- Generating done (0.3s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    TC_NAME
+
+
+-- Build files have been written to: /ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim
+[1/195] Preparing syscall dependency handling
+
+[2/195] Generating ../../zephyr/include/generated/ncs_version.h
+[3/195] Generating ../../zephyr/include/generated/zephyr_commit.h
+[4/195] Generating ../../zephyr/include/generated/ncs_commit.h
+[5/195] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.2 (/ws/zephyr), build: 9133dab6b066
+[6/195] Generating misc/generated/syscalls_subdirs.trigger
+[7/195] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[8/195] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[9/195] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[10/195] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[11/195] Generating include/generated/zephyr/driver-validation.h
+[12/195] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[13/195] Generating ../../include/generated/zephyr/heap_constants.h
+[14/195] Building C object zephyr/CMakeFiles/offsets.dir/arch/posix/core/offsets/offsets.c.obj
+[15/195] Generating include/generated/zephyr/offsets.h
+[16/195] Building C object CMakeFiles/app.dir/src/test_log.c.obj
+[17/195] Building C object CMakeFiles/app.dir/src/test_k2.c.obj
+FAILED: [code=1] CMakeFiles/app.dir/src/test_k2.c.obj 
+ccache /usr/bin/gcc -DKERNEL -DK_HEAP_MEM_POOL_SIZE=0 -DNRF54LM20A_XXAA -DNRF54L_CONFIGURATION_56_ENABLE=0 -DNRF_APPLICATION -DTC_RUNID=ce3058b87b3857be489ed9a7d2e86570 -D__ZEPHYR__=1 -I/ws/firmware/tests/store/../../modules/ring_store/src -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/mdk_replacements -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/hal_replacements -I/ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr -I/ws/zephyr/include -I/ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated -I/ws/zephyr/soc/native/inf_clock -I/ws/zephyr/boards/native/nrf_bsim -I/ws/zephyr/boards/native/nrf_bsim/soc -I/ws/zephyr/boards/native/nrf_bsim/common -I/ws/zephyr/boards/native/nrf_bsim/common/cmsis -I/ws/zephyr/scripts/native_simulator/common/src/include -I/ws/zephyr/soc/nordic/common -I/ws/zephyr/subsys/testsuite/include -I/ws/zephyr/subsys/testsuite/coverage -I/ws/zephyr/subsys/testsuite/ztest/include -I/ws/nrf/include -I/ws/nrf/tests/include -I/ws/nrf/modules/hal_nordic/. -I/ws/modules/hal/nordic/nrfx -I/ws/modules/hal/nordic/nrfx/drivers/include -I/ws/modules/hal/nordic/nrfx/bsp/stable -I/ws/modules/hal/nordic/nrfx/bsp/stable/templates -I/ws/zephyr/modules/hal_nordic/nrfx/. -I/ws/firmware/modules/ring_rhw/include -I/ws/firmware/modules/ring_store/include -I/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/nrfx_replacements -fno-strict-aliasing -Werror -O0 -imacros /ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/zephyr/include/generated/zephyr/autoconf.h -fno-common -g -gdwarf-4 -fdiagnostics-color=always -Wall -Wformat -Wformat-security -Wno-format-zero-length -Wdouble-promotion -Wno-pointer-sign -Wpointer-arith -Wexpansion-to-defined -Wno-unused-but-set-variable -Werror=implicit-int -fno-pic -fno-pie -fno-asynchronous-unwind-tables -fno-reorder-functions --param=min-pagesize=0 -fno-defer-pop -fmacro-prefix-map=/ws/firmware/tests/store=CMAKE_SOURCE_DIR -fmacro-prefix-map=/ws/zephyr=ZEPHYR_BASE -fmacro-prefix-map=/ws=WEST_TOPDIR -ffunction-sections -fdata-sections -m32 -msse2 -mfpmath=sse -fvisibility=hidden -fno-freestanding -fshort-enums -std=c17 -MD -MT CMakeFiles/app.dir/src/test_k2.c.obj -MF CMakeFiles/app.dir/src/test_k2.c.obj.d -o CMakeFiles/app.dir/src/test_k2.c.obj -c /ws/firmware/tests/store/src/test_k2.c
+/ws/firmware/tests/store/src/test_k2.c: In function ‘store_fmt_test_k2_kit_names_exist’:
+/ws/firmware/tests/store/src/test_k2.c:12:9: error: implicit declaration of function ‘typeof’ [-Werror=implicit-function-declaration]
+   12 |         typeof(disk_access_read) *p1 = NULL;
+      |         ^~~~~~
+/ws/firmware/tests/store/src/test_k2.c:12:35: error: ‘p1’ undeclared (first use in this function)
+   12 |         typeof(disk_access_read) *p1 = NULL;
+      |                                   ^~
+/ws/firmware/tests/store/src/test_k2.c:12:35: note: each undeclared identifier is reported only once for each function it appears in
+/ws/firmware/tests/store/src/test_k2.c:13:36: error: ‘p2’ undeclared (first use in this function)
+   13 |         typeof(disk_access_write) *p2 = NULL;
+      |                                    ^~
+/ws/firmware/tests/store/src/test_k2.c:14:36: error: ‘p3’ undeclared (first use in this function)
+   14 |         typeof(disk_access_ioctl) *p3 = NULL;
+      |                                    ^~
+/ws/firmware/tests/store/src/test_k2.c:15:29: error: ‘p4’ undeclared (first use in this function)
+   15 |         typeof(crc32_ieee) *p4 = NULL;
+      |                             ^~
+/ws/firmware/tests/store/src/test_k2.c:16:36: error: ‘p5’ undeclared (first use in this function)
+   16 |         typeof(crc32_ieee_update) *p5 = NULL;
+      |                                    ^~
+cc1: all warnings being treated as errors
+[18/195] Building C object CMakeFiles/app.dir/src/test_recovery.c.obj
+[19/195] Building C object CMakeFiles/app.dir/src/test_index.c.obj
+[20/195] Building C object CMakeFiles/app.dir/src/tst.c.obj
+[21/195] Building C object CMakeFiles/app.dir/src/test_layout.c.obj
+[22/195] Building C object CMakeFiles/app.dir/src/test_fmt.c.obj
+[23/195] Building C object CMakeFiles/app.dir/src/test_space.c.obj
+[24/195] Building C object CMakeFiles/app.dir/src/test_delete.c.obj
+ninja: build stopped: subcommand failed.
+
+INFO    - /ws/out/u2-short4/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/store/ring_store.sim/build.log
+
+INFO    - 1 test scenarios (2 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 2 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 2 errored, with no warnings in 17.06 seconds.
+INFO    - 0 of 126 executed test cases passed (0.00%), 126 blocked on 2 out of total 1514 platforms (0.13%).
+INFO    - 0 test configurations executed on platforms, 2 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/u2-short4/twister.json
+INFO    - Writing xunit report /ws/out/u2-short4/twister.xml...
+INFO    - Writing xunit report /ws/out/u2-short4/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_store.sim on nrf54lm20bsim/nrf54lm20a/cpuapp error (Build failure - error: implicit declaration of function typeof [-Werror=implicit-function-declaration])
+INFO    - 2) ring_store.sim on native_sim/native error (Build failure - error: implicit declaration of function typeof [-Werror=implicit-function-declaration])
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_store.sim
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/store -T ring_store.sim
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+# finished (Mac clock): 2026-11-13 05:29:57 CET
+# remote exit code: 1
+# local log: firmware/build-logs/20261113-052903-u-store.log

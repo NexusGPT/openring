@@ -1,0 +1,435 @@
+# remote.sh run 20261111-110533-build-all-broken
+# command: tools/build_all.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 11:05:33 CET
+# source firmware/build-logs/infra/copies/broken copied to /root/ring-os/src-broken
+# started on the server as 20261111-110533-build-all-broken; server log /root/ring-os/logs/20261111-110533-build-all-broken.log
+build_all: firmware /ws/firmware, outputs /ws/out/20261111-110533-build-all-broken, jobs 8
+build_all: ring_core module absent
+=== stage dk start 2026-11-11T10:05:39Z log /ws/out/20261111-110533-build-all-broken/dk.log
+-- west build: generating a build system
+Loading Zephyr module(s) (Zephyr base): sysbuild_default
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: nrf54lm20dk, qualifiers: nrf54lm20a/cpuapp
+Parsing /ws/zephyr/share/sysbuild/Kconfig
+Loaded configuration '/ws/out/20261111-110533-build-all-broken/dk/_sysbuild/empty.conf'
+Merged configuration '/ws/firmware/app/sysbuild.conf'
+Configuration saved to '/ws/out/20261111-110533-build-all-broken/dk/zephyr/.config'
+Kconfig header saved to '/ws/out/20261111-110533-build-all-broken/dk/_sysbuild/autoconf.h'
+-- Sysbuild assigned MCUboot image IDs:
+   * Application: 0
+-- 
+   *****************************
+   * Running CMake for mcuboot *
+   *****************************
+
+Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/bootloader/mcuboot/boot/zephyr
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: nrf54lm20dk, qualifiers: nrf54lm20a/cpuapp
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/nordic/nrf54lm20dk/nrf54lm20dk_nrf54lm20a_cpuapp.dts
+-- Found devicetree overlay: /ws/bootloader/mcuboot/boot/zephyr/app.overlay
+-- Generated zephyr.dts: /ws/out/20261111-110533-build-all-broken/dk/mcuboot/zephyr/zephyr.dts
+-- Generated pickled edt: /ws/out/20261111-110533-build-all-broken/dk/mcuboot/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /ws/out/20261111-110533-build-all-broken/dk/mcuboot/zephyr/include/generated/zephyr/devicetree_generated.h
+
+warning: BOOT_MAX_IMG_SECTORS (defined at /ws/bootloader/mcuboot/boot/zephyr/Kconfig:974) was
+assigned the value '256' but got the value ''. Check these unsatisfied dependencies:
+(!BOOT_MAX_IMG_SECTORS_AUTO) (=n). See
+http://docs.zephyrproject.org/latest/kconfig.html#CONFIG_BOOT_MAX_IMG_SECTORS and/or look up
+BOOT_MAX_IMG_SECTORS in the menuconfig/guiconfig interface. The Application Development Primer,
+Setting Configuration Values, and Kconfig - Tips and Best Practices sections of the manual might be
+helpful too.
+
+
+warning: Deprecated symbol NRF_PLATFORM_LUMOS is enabled.
+
+Parsing /ws/bootloader/mcuboot/boot/zephyr/Kconfig
+Loaded configuration '/ws/zephyr/boards/nordic/nrf54lm20dk/nrf54lm20dk_nrf54lm20a_cpuapp_defconfig'
+Merged configuration '/ws/bootloader/mcuboot/boot/zephyr/prj.conf'
+Merged configuration '/ws/bootloader/mcuboot/boot/zephyr/socs/nrf54lm20a_cpuapp.conf'
+Merged configuration '/ws/out/20261111-110533-build-all-broken/dk/mcuboot/zephyr/.config.sysbuild'
+Configuration saved to '/ws/out/20261111-110533-build-all-broken/dk/mcuboot/zephyr/.config'
+Kconfig header saved to '/ws/out/20261111-110533-build-all-broken/dk/mcuboot/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/arm-zephyr-eabi/bin/ld.bfd (found version "2.43.1")
+-- The C compiler identification is GNU 14.3.0
+-- The CXX compiler identification is GNU 14.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc
+-- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+-- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+MCUBoot bootloader key file: /ws/bootloader/mcuboot/root-ed25519.pem
+CMake Warning at CMakeLists.txt:466 (message):
+  WARNING: Using default MCUboot signing key file, this file is for debug use
+  only and is not secure!
+
+
+Calculated maximum number of sectors: 242
+-- Configuring done (7.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: /ws/out/20261111-110533-build-all-broken/dk/mcuboot
+-- 
+   *************************
+   * Running CMake for app *
+   *************************
+
+-- ring_core module: not present, app builds without it
+Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/app
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: nrf54lm20dk, qualifiers: nrf54lm20a/cpuapp
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/nordic/nrf54lm20dk/nrf54lm20dk_nrf54lm20a_cpuapp.dts
+-- Generated zephyr.dts: /ws/out/20261111-110533-build-all-broken/dk/app/zephyr/zephyr.dts
+-- Generated pickled edt: /ws/out/20261111-110533-build-all-broken/dk/app/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /ws/out/20261111-110533-build-all-broken/dk/app/zephyr/include/generated/zephyr/devicetree_generated.h
+
+warning: UPDATEABLE_IMAGE_NUMBER (defined at
+/ws/nrf/modules/../samples/common/mcumgr_bt_ota_dfu/Kconfig:87, subsys/dfu/Kconfig:97) was assigned
+the value '1' but got the value ''. Check these unsatisfied dependencies:
+(((BOARD_THINGY53_NRF5340_CPUAPP || BOARD_THINGY53_NRF5340_CPUAPP_NS) && SOC_SERIES_NRF53 &&
+NCS_SAMPLE_MCUMGR_BT_OTA_DFU) || (!MCUBOOT && IMG_MANAGER)) (=n). See
+http://docs.zephyrproject.org/latest/kconfig.html#CONFIG_UPDATEABLE_IMAGE_NUMBER and/or look up
+UPDATEABLE_IMAGE_NUMBER in the menuconfig/guiconfig interface. The Application Development Primer,
+Setting Configuration Values, and Kconfig - Tips and Best Practices sections of the manual might be
+helpful too.
+
+
+warning: MCUBOOT_UPDATE_FOOTER_SIZE (defined at subsys/dfu/Kconfig:55) was assigned the value
+'0x4000' but got the value ''. Check these unsatisfied dependencies: MCUBOOT_IMG_MANAGER (=n),
+IMG_MANAGER (=n). See
+http://docs.zephyrproject.org/latest/kconfig.html#CONFIG_MCUBOOT_UPDATE_FOOTER_SIZE and/or look up
+MCUBOOT_UPDATE_FOOTER_SIZE in the menuconfig/guiconfig interface. The Application Development
+Primer, Setting Configuration Values, and Kconfig - Tips and Best Practices sections of the manual
+might be helpful too.
+
+
+warning: Deprecated symbol NRF_PLATFORM_LUMOS is enabled.
+
+Parsing /ws/firmware/app/Kconfig
+Loaded configuration '/ws/zephyr/boards/nordic/nrf54lm20dk/nrf54lm20dk_nrf54lm20a_cpuapp_defconfig'
+Merged configuration '/ws/firmware/app/prj.conf'
+Merged configuration '/ws/out/20261111-110533-build-all-broken/dk/app/zephyr/.config.sysbuild'
+Configuration saved to '/ws/out/20261111-110533-build-all-broken/dk/app/zephyr/.config'
+Kconfig header saved to '/ws/out/20261111-110533-build-all-broken/dk/app/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/arm-zephyr-eabi/bin/ld.bfd (found version "2.43.1")
+-- The C compiler identification is GNU 14.3.0
+-- The CXX compiler identification is GNU 14.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc
+CMake Warning at /ws/nrf/cmake/version_app.cmake:19 (message):
+  APP_VERSION: git rev-parse failed: fatal: not a git repository (or any
+  parent up to mount point /)
+
+  Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+Call Stack (most recent call first):
+  /ws/nrf/CMakeLists.txt:26 (include)
+
+
+-- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+-- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+-- Including signing script: /ws/nrf/cmake/sysbuild/image_signing.cmake
+-- Configuring done (7.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: /ws/out/20261111-110533-build-all-broken/dk/app
+-- Configuring done (17.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: /ws/out/20261111-110533-build-all-broken/dk
+-- west build: building application
+[1/18] Creating directories for 'app'
+[2/18] Creating directories for 'mcuboot'
+[3/18] No download step for 'app'
+[4/18] No download step for 'mcuboot'
+[5/18] No update step for 'app'
+[6/18] No update step for 'mcuboot'
+[7/18] No patch step for 'app'
+[8/18] No patch step for 'mcuboot'
+[9/18] No configure step for 'app'
+[9/18] Performing build step for 'app'
+[1/265] Preparing syscall dependency handling
+
+[2/265] Generating ../../zephyr/include/generated/ncs_commit.h
+[3/265] Generating include/generated/zephyr/app_version.h
+-- git describe failed: fatal: not a git repository (or any parent up to mount point /)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[4/265] Generating ../../zephyr/include/generated/ncs_version.h
+[5/265] Generating ../../zephyr/include/generated/zephyr_commit.h
+[6/265] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.2 (/ws/zephyr), build: 9133dab6b066
+[7/265] Generating misc/generated/syscalls_subdirs.trigger
+[8/265] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[9/265] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[10/265] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[11/265] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[12/265] Generating include/generated/zephyr/driver-validation.h
+[13/265] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[14/265] Generating ../../include/generated/zephyr/heap_constants.h
+[15/265] Building C object zephyr/CMakeFiles/offsets.dir/arch/arm/core/offsets/offsets.c.obj
+[16/265] Generating include/generated/zephyr/offsets.h
+[17/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_mem_helpers.c.obj
+[18/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_mutexes.c.obj
+[19/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_core.c.obj
+[20/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_events.c.obj
+[21/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/cmac.c.obj
+[22/265] Linking C static library modules/nrf/subsys/nrf_security/src/libnrf_security_utils.a
+[23/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/chachapoly.c.obj
+[24/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/keyref.c.obj
+[25/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/blkcipher.c.obj
+[26/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/aead.c.obj
+[27/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/cmdma.c.obj
+[28/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/cmmask.c.obj
+[29/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/hash.c.obj
+[30/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/hmac.c.obj
+[31/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/interface/sxbuf/sxbufops.c.obj
+[32/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/mac.c.obj
+[33/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/blind.c.obj
+[34/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/sha3.c.obj
+[35/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/trng.c.obj
+[36/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/ed448.c.obj
+[37/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/platform/baremetal/cmdma_hw.c.obj
+[38/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/ed25519.c.obj
+[39/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/platform/baremetal/interrupts.c.obj
+[40/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/montgomery.c.obj
+[41/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/ba414_status.c.obj
+[42/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/iomem.c.obj
+[43/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/statuscodes.c.obj
+[44/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/cmddefs_ecjpake.c.obj
+[45/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/cracen_rndinrange.c.obj
+[46/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/ec_helpers.c.obj
+[47/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/baremetal_ba414e_with_ik/pk_baremetal.c.obj
+[48/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/cmddefs_modmath.c.obj
+[49/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/cmddefs_ecc.c.obj
+[50/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/ec_curves.c.obj
+[51/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/pkhardware_ba414e.c.obj
+[52/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa.c.obj
+[53/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/hardware/hardware.c.obj
+[54/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecc_keygen.c.obj
+[55/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/common.c.obj
+[56/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecc_key_management.c.obj
+[57/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_ikg.c.obj
+[58/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_key_management.c.obj
+[59/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/rsa/cracen_rsa_key_management.c.obj
+[60/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/lib_kmu.c.obj
+[61/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/prng_pool.c.obj
+[62/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/pake/cracen_wpa3_key_management.c.obj
+[63/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/pake/cracen_spake2p_key_management.c.obj
+[64/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/pake/cracen_srp_key_management.c.obj
+[65/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecc_helpers.c.obj
+[66/265] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/platform/platform.c.obj
+[67/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracen_sw/src/cracen_sw_cipher.c.obj
+[68/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecdsa.c.obj
+[69/265] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/utilities/constant_time.c.obj
+[70/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_ctr_drbg.c.obj
+[71/265] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto_client.c.obj
+[72/265] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto_storage.c.obj
+[73/265] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/nrf/subsys/nrf_security/src/threading/threading_alt.c.obj
+[74/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracen_sw/src/cracen_sw_common.c.obj
+[75/265] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/platform/platform_util.c.obj
+[76/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/asn1parse.c.obj
+[77/265] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_kmu.c.obj
+[78/265] Linking C static library modules/nrf/subsys/nrf_security/src/drivers/cracen/libcracen_psa_driver.a
+[79/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/asn1write.c.obj
+[80/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/oid.c.obj
+[81/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/base64.c.obj
+[82/265] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto_slot_management.c.obj
+[83/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/pem.c.obj
+[84/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/pkcs5.c.obj
+[85/265] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/nrf/subsys/nrf_security/src/mbedtls_psa_platform.c.obj
+[86/265] Building C object zephyr/arch/common/CMakeFiles/isr_tables.dir/isr_tables.c.obj
+[87/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/bignum.c.obj
+[88/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/bignum_core.c.obj
+[89/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/ecp.c.obj
+[90/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/ecp_curves.c.obj
+[91/265] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/nrf/subsys/nrf_security/src/psa_crypto_driver_wrappers.c.obj
+[92/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/md.c.obj
+[93/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/psa_util_internal.c.obj
+[94/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/nist_kw.c.obj
+[95/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk.c.obj
+[96/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/platform/memory_buffer_alloc.c.obj
+[97/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk_ecc.c.obj
+[98/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk_rsa.c.obj
+[99/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk_wrap.c.obj
+[100/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pkparse.c.obj
+[101/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pkwrite.c.obj
+[102/265] Building C object CMakeFiles/app.dir/src/main.c.obj
+FAILED: [code=1] CMakeFiles/app.dir/src/main.c.obj 
+ccache /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc -DDEVELOP_IN_NRF54LM20B -DKERNEL -DK_HEAP_MEM_POOL_SIZE=0 -DNRF54LM20A_XXAA -DNRF_APPLICATION -DNRF_CONFIG_CPU_FREQ_MHZ=128 -DPICOLIBC_LONG_LONG_PRINTF_SCANF -DTF_PSA_CRYPTO_CONFIG_FILE=\"nrf-psa-crypto-config.h\" -DTF_PSA_CRYPTO_USER_CONFIG_FILE=\"nrf-psa-crypto-user-config.h\" -D_POSIX_THREAD_SAFE_FUNCTIONS=200809L -D__LINUX_ERRNO_EXTENSIONS__ -D__PROGRAM_START -D__ZEPHYR__=1 -I/ws/out/20261111-110533-build-all-broken/dk/app/zephyr/include/generated/zephyr -I/ws/zephyr/include -I/ws/out/20261111-110533-build-all-broken/dk/app/zephyr/include/generated -I/ws/zephyr/soc/nordic -I/ws/zephyr/lib/libc/picolibc/include -I/ws/zephyr/lib/posix/c_lib_ext/getopt -I/ws/zephyr/soc/nordic/nrf54l/. -I/ws/zephyr/soc/nordic/common/. -I/ws/nrf/include -I/ws/nrf/tests/include -I/ws/nrf/modules/hal_nordic/. -I/ws/modules/hal/nordic/nrfx -I/ws/modules/hal/nordic/nrfx/drivers/include -I/ws/modules/hal/nordic/nrfx/bsp/stable -I/ws/modules/hal/nordic/nrfx/bsp/stable/templates -I/ws/zephyr/modules/hal_nordic/nrfx/. -I/ws/modules/hal/cmsis_6/CMSIS/Core/Include -I/ws/zephyr/modules/cmsis_6/. -I/ws/out/20261111-110533-build-all-broken/dk/app/generated/library_nrf_security_psa -I/ws/nrf/subsys/nrf_security/include -I/ws/modules/crypto/oberon-psa-crypto/drivers/oberon -I/ws/nrf/subsys/nrf_security/src/threading/include -I/ws/nrf/subsys/nrf_security/src/utils -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/include -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/target -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/include -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/common/include -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/include -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/cracen_sw/ext -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/cracen_sw/include -I/ws/modules/crypto/oberon-psa-crypto/include -I/ws/modules/crypto/oberon-psa-crypto/core -I/ws/modules/crypto/oberon-psa-crypto/dispatch -I/ws/modules/crypto/oberon-psa-crypto/platform -isystem /ws/zephyr/lib/libc/common/include -fno-strict-aliasing -Os -imacros /ws/out/20261111-110533-build-all-broken/dk/app/zephyr/include/generated/zephyr/autoconf.h -fno-printf-return-value -fno-common -g -gdwarf-4 -fdiagnostics-color=always -mcpu=cortex-m33 -mthumb -mabi=aapcs -mfp16-format=ieee -mtp=soft --sysroot=/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/arm-zephyr-eabi -imacros /ws/zephyr/include/zephyr/toolchain/zephyr_stdint.h -Wall -Wformat -Wformat-security -Wno-format-zero-length -Wdouble-promotion -Wno-pointer-sign -Wpointer-arith -Wexpansion-to-defined -Wno-unused-but-set-variable -Werror=implicit-int -fno-pic -fno-pie -fno-asynchronous-unwind-tables -ftls-model=local-exec -fno-reorder-functions --param=min-pagesize=0 -fno-defer-pop -fmacro-prefix-map=/ws/firmware/app=CMAKE_SOURCE_DIR -fmacro-prefix-map=/ws/zephyr=ZEPHYR_BASE -fmacro-prefix-map=/ws=WEST_TOPDIR -ffunction-sections -fdata-sections -specs=picolibc.specs -std=c17 -MD -MT CMakeFiles/app.dir/src/main.c.obj -MF CMakeFiles/app.dir/src/main.c.obj.d -o CMakeFiles/app.dir/src/main.c.obj -c /ws/firmware/app/src/main.c
+/ws/firmware/app/src/main.c: In function 'main':
+/ws/firmware/app/src/main.c:14:9: error: unknown type name 'this'
+   14 |         this is a deliberate syntax error
+      |         ^~~~
+/ws/firmware/app/src/main.c:14:17: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'a'
+   14 |         this is a deliberate syntax error
+      |                 ^
+[103/265] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_util.c.obj
+[104/265] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/printk.c.obj
+[105/265] Building C object zephyr/CMakeFiles/zephyr.dir/lib/libc/validate_libc.c.obj
+[106/265] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/clock.c.obj
+[107/265] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_packaged.c.obj
+[108/265] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto.c.obj
+[109/265] Building C object zephyr/CMakeFiles/zephyr.dir/lib/heap/heap.c.obj
+ninja: build stopped: subcommand failed.
+[10/18] No configure step for 'mcuboot'
+FAILED: [code=1] _sysbuild/sysbuild/images/app-prefix/src/app-stamp/app-build /ws/out/20261111-110533-build-all-broken/dk/_sysbuild/sysbuild/images/app-prefix/src/app-stamp/app-build 
+cd /ws/out/20261111-110533-build-all-broken/dk/app && /opt/ncs/toolchains/197d1ad490/usr/local/bin/cmake --build .
+ninja: build stopped: subcommand failed.
+FATAL ERROR: command exited with status 1: /opt/ncs/toolchains/197d1ad490/usr/local/bin/cmake --build /ws/out/20261111-110533-build-all-broken/dk --
+=== stage dk end 2026-11-11T10:06:03Z exit 1
+=== stage bsim-build start 2026-11-11T10:06:03Z log /ws/out/20261111-110533-build-all-broken/bsim-build.log
+-- west build: generating a build system
+-- ring_core module: not present, app builds without it
+Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/app
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /opt/.cache/zephyr
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: nrf54lm20bsim, qualifiers: nrf54lm20a/cpuapp
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/native/nrf_bsim/nrf54lm20bsim_nrf54lm20a_cpuapp.dts
+-- Generated zephyr.dts: /ws/out/20261111-110533-build-all-broken/bsim/zephyr/zephyr.dts
+-- Generated pickled edt: /ws/out/20261111-110533-build-all-broken/bsim/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /ws/out/20261111-110533-build-all-broken/bsim/zephyr/include/generated/zephyr/devicetree_generated.h
+Parsing /ws/firmware/app/Kconfig
+Loaded configuration '/ws/zephyr/boards/native/nrf_bsim/nrf54lm20bsim_nrf54lm20a_cpuapp_defconfig'
+Merged configuration '/ws/firmware/app/prj.conf'
+Configuration saved to '/ws/out/20261111-110533-build-all-broken/bsim/zephyr/.config'
+Kconfig header saved to '/ws/out/20261111-110533-build-all-broken/bsim/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /usr/bin/ld.bfd (found version "2.42")
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/gcc
+-- Using BSIM from BSIM_COMPONENTS_PATH=/ws/tools/bsim/components BSIM_OUT_PATH=/ws/tools/bsim
+CMake Warning at /ws/nrf/cmake/version_app.cmake:19 (message):
+  APP_VERSION: git rev-parse failed: fatal: not a git repository (or any
+  parent up to mount point /)
+
+  Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+Call Stack (most recent call first):
+  /ws/nrf/CMakeLists.txt:26 (include)
+
+
+CMake Warning at /ws/nrf/cmake/device_support.cmake:34 (message):
+  SoC native is not supported by this release.
+Call Stack (most recent call first):
+  /ws/nrf/CMakeLists.txt:27 (include)
+
+
+-- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+-- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+-- Configuring done (10.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: /ws/out/20261111-110533-build-all-broken/bsim
+-- west build: building application
+[1/149] Preparing syscall dependency handling
+
+[2/149] Generating ../../zephyr/include/generated/ncs_commit.h
+[3/149] Generating include/generated/zephyr/app_version.h
+-- git describe failed: fatal: not a git repository (or any parent up to mount point /)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[4/149] Generating ../../zephyr/include/generated/zephyr_commit.h
+[5/149] Generating ../../zephyr/include/generated/ncs_version.h
+[6/149] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.2 (/ws/zephyr), build: 9133dab6b066
+[7/149] Generating misc/generated/syscalls_subdirs.trigger
+[8/149] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[9/149] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[10/149] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[11/149] Generating include/generated/zephyr/driver-validation.h
+[12/149] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[13/149] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[14/149] Generating ../../include/generated/zephyr/heap_constants.h
+[15/149] Building C object zephyr/CMakeFiles/offsets.dir/arch/posix/core/offsets/offsets.c.obj
+[16/149] Generating include/generated/zephyr/offsets.h
+[17/149] Building C object CMakeFiles/app.dir/src/main.c.obj
+FAILED: [code=1] CMakeFiles/app.dir/src/main.c.obj 
+ccache /usr/bin/gcc -DKERNEL -DK_HEAP_MEM_POOL_SIZE=0 -DNRF54LM20A_XXAA -DNRF54L_CONFIGURATION_56_ENABLE=0 -DNRF_APPLICATION -D__ZEPHYR__=1 -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/mdk_replacements -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/hal_replacements -I/ws/out/20261111-110533-build-all-broken/bsim/zephyr/include/generated/zephyr -I/ws/zephyr/include -I/ws/out/20261111-110533-build-all-broken/bsim/zephyr/include/generated -I/ws/zephyr/soc/native/inf_clock -I/ws/zephyr/boards/native/nrf_bsim -I/ws/zephyr/boards/native/nrf_bsim/soc -I/ws/zephyr/boards/native/nrf_bsim/common -I/ws/zephyr/boards/native/nrf_bsim/common/cmsis -I/ws/zephyr/scripts/native_simulator/common/src/include -I/ws/zephyr/soc/nordic/common -I/ws/nrf/include -I/ws/nrf/tests/include -I/ws/nrf/modules/hal_nordic/. -I/ws/modules/hal/nordic/nrfx -I/ws/modules/hal/nordic/nrfx/drivers/include -I/ws/modules/hal/nordic/nrfx/bsp/stable -I/ws/modules/hal/nordic/nrfx/bsp/stable/templates -I/ws/zephyr/modules/hal_nordic/nrfx/. -I/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/nrfx_replacements -fno-strict-aliasing -O0 -imacros /ws/out/20261111-110533-build-all-broken/bsim/zephyr/include/generated/zephyr/autoconf.h -fno-common -g -gdwarf-4 -fdiagnostics-color=always -Wall -Wformat -Wformat-security -Wno-format-zero-length -Wdouble-promotion -Wno-pointer-sign -Wpointer-arith -Wexpansion-to-defined -Wno-unused-but-set-variable -Werror=implicit-int -fno-pic -fno-pie -fno-asynchronous-unwind-tables -fno-reorder-functions --param=min-pagesize=0 -fno-defer-pop -fmacro-prefix-map=/ws/firmware/app=CMAKE_SOURCE_DIR -fmacro-prefix-map=/ws/zephyr=ZEPHYR_BASE -fmacro-prefix-map=/ws=WEST_TOPDIR -ffunction-sections -fdata-sections -m32 -msse2 -mfpmath=sse -fvisibility=hidden -fno-freestanding -fshort-enums -std=c17 -MD -MT CMakeFiles/app.dir/src/main.c.obj -MF CMakeFiles/app.dir/src/main.c.obj.d -o CMakeFiles/app.dir/src/main.c.obj -c /ws/firmware/app/src/main.c
+/ws/firmware/app/src/main.c: In function ‘main’:
+/ws/firmware/app/src/main.c:14:9: error: unknown type name ‘this’
+   14 |         this is a deliberate syntax error
+      |         ^~~~
+/ws/firmware/app/src/main.c:14:17: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘a’
+   14 |         this is a deliberate syntax error
+      |                 ^
+[18/149] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/thread_entry.c.obj
+[19/149] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/sem.c.obj
+[20/149] Building C object zephyr/CMakeFiles/zephyr.dir/lib/libc/validate_libc.c.obj
+[21/149] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_packaged.c.obj
+[22/149] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/clock.c.obj
+[23/149] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/printk.c.obj
+[24/149] Building C object zephyr/CMakeFiles/zephyr.dir/lib/heap/heap.c.obj
+ninja: build stopped: subcommand failed.
+FATAL ERROR: command exited with status 1: /opt/ncs/toolchains/197d1ad490/usr/local/bin/cmake --build /ws/out/20261111-110533-build-all-broken/bsim --
+=== stage bsim-build end 2026-11-11T10:06:14Z exit 1
+build_all: test folders found:
+/ws/firmware/tests/smoke/testcase.yaml
+=== stage tests-native_sim start 2026-11-11T10:06:14Z log /ws/out/20261111-110533-build-all-broken/tests-native_sim.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261111-110533-build-all-broken/twister-native_sim/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 native_sim/native         ring.smoke                                         PASSED (native 0.006s <host/gnu>)
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 11.95 seconds.
+INFO    - 2 of 2 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261111-110533-build-all-broken/twister-native_sim/twister.json
+INFO    - Writing xunit report /ws/out/20261111-110533-build-all-broken/twister-native_sim/twister.xml...
+INFO    - Writing xunit report /ws/out/20261111-110533-build-all-broken/twister-native_sim/twister_report.xml...
+INFO    - Run completed
+=== stage tests-native_sim end 2026-11-11T10:06:28Z exit 0
+build_all: bsim test plan: nrf54lm20bsim/nrf54lm20a/cpuapp /ws/firmware/tests/smoke
+=== stage tests-nrf54lm20bsim_nrf54lm20a_cpuapp start 2026-11-11T10:06:28Z log /ws/out/20261111-110533-build-all-broken/tests-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261111-110533-build-all-broken/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring.smoke                                   PASSED (native 0.007s <host/gnu>)
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 15.07 seconds.
+INFO    - 2 of 2 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261111-110533-build-all-broken/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.json
+INFO    - Writing xunit report /ws/out/20261111-110533-build-all-broken/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.xml...
+INFO    - Writing xunit report /ws/out/20261111-110533-build-all-broken/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister_report.xml...
+INFO    - Run completed
+=== stage tests-nrf54lm20bsim_nrf54lm20a_cpuapp end 2026-11-11T10:06:44Z exit 0
+build_all: logs in /ws/out/20261111-110533-build-all-broken
+RESULT FAIL dk-build bsim-build
+# finished (Mac clock): 2026-11-11 11:07:33 CET
+# remote exit code: 1
+# local log: firmware/build-logs/20261111-110533-build-all-broken.log
+remote.sh exit 1

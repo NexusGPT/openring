@@ -1,0 +1,23 @@
+* own model: CS Semiconductor CSNP32GCR01-BOW storage part (ring U3), as a load and a driver with the limits of the maker's datasheet V1.0 (design/datasheets/slim2_cs-sdnand-20230403.pdf, PDF pages of src/slim2_cs-sdnand-20230403.txt).
+* Only the DC data of page 8 is modelled: input leakage IIN 10 uA max (worst case used: current to ground when the pin is high), output high VOH 0.75 VCC at 100 uA and output low VOL 0.125 VCC at 100 uA (so the weakest allowed driver has 0.25 VCC / 100 uA high and 0.125 VCC / 100 uA low output resistance), standby current ISTBY 200 uA max (p4 "Standby Current < 200uA"). The timing and the protocol are not modelled.
+* ports: vcc dat2 dat3 clk cmd dat0 dat1 drv drven     (drv, drven: stimulus for DAT0 as output: drven high = card drives DAT0 to the level of drv: 1 = high, 0 = low)
+* params: iin   input leakage worst case, 10 uA
+.subckt CSNP32GCR01 vcc dat2 dat3 clk cmd dat0 dat1 drv drven params: iin=10u
+Bl2 dat2 0 I = iin * min(max(v(dat2)/max(v(vcc),0.1),0),1)
+Bl3 dat3 0 I = iin * min(max(v(dat3)/max(v(vcc),0.1),0),1)
+Blc clk 0 I = iin * min(max(v(clk)/max(v(vcc),0.1),0),1)
+Blm cmd 0 I = iin * min(max(v(cmd)/max(v(vcc),0.1),0),1)
+Bl1 dat1 0 I = iin * min(max(v(dat1)/max(v(vcc),0.1),0),1)
+* DAT0 driver: high through 0.25 VCC / 100 uA, low through 0.125 VCC / 100 uA (weakest allowed by VOH and VOL)
+Bd0 dat0 0 I = (v(drven) > 0.5) ? ( (v(drv) > 0.5) ? (v(dat0) - v(vcc))/(0.25*v(vcc)/100u) : (v(dat0))/(0.125*v(vcc)/100u) ) : 0
+Bdl0 dat0 0 I = (v(drven) > 0.5) ? 0 : iin * min(max(v(dat0)/max(v(vcc),0.1),0),1)
+* standby supply current 200 uA max
+Bstb vcc 0 I = (v(vcc) > 1) ? 200u : 0
+* numerical only: 1e12 ohm from each signal pin to ground so that an undriven, unpulled pin is not a floating node (1 pA at 1 V, far below the stated 10 uA input leakage)
+Rf2 dat2 0 1e12
+Rf3 dat3 0 1e12
+Rfc clk 0 1e12
+Rfm cmd 0 1e12
+Rf0 dat0 0 1e12
+Rf1 dat1 0 1e12
+.ends CSNP32GCR01

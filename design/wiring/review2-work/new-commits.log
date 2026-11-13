@@ -1,0 +1,1170 @@
+7f9fd031 Decisions: rulings on the four open points of the board read-back test
+c413a849 Board read-back from the fabrication files: no short and no open on any of the 17 boards; planted faults found; 8 controlled-line limits of the plan not met on the ring board
+ design/wiring/board-readback.md                    |   247 +
+ design/wiring/lead-decisions.md                    |     1 +
+ design/wiring/readback-work/CHECKLIST.md           |    26 +
+ design/wiring/readback-work/audit.log              |     8 +
+ design/wiring/readback-work/audit.py               |    80 +
+ .../board-readback_prereg_frozen_copy.md           |    53 +
+ design/wiring/readback-work/compose.py             |    73 +
+ design/wiring/readback-work/dbg_graph.py           |    56 +
+ design/wiring/readback-work/dbg_xl.py              |    35 +
+ design/wiring/readback-work/dbg_xl2.py             |    21 +
+ design/wiring/readback-work/expected_vs_found.py   |    29 +
+ design/wiring/readback-work/final_reply.txt        |    15 +
+ design/wiring/readback-work/hand_check.py          |    24 +
+ design/wiring/readback-work/hand_excerpts.py       |    19 +
+ design/wiring/readback-work/hand_excerpts.py.bak   |    19 +
+ design/wiring/readback-work/hand_labels.csv        |    23 +
+ design/wiring/readback-work/logs/audit_prev.log    |     8 +
+ design/wiring/readback-work/logs/compose.log       |     1 +
+ design/wiring/readback-work/logs/dbg_graph.log     |    25 +
+ design/wiring/readback-work/logs/dbg_xl.log        |    15 +
+ design/wiring/readback-work/logs/dbg_xl2.log       |    16 +
+ .../readback-work/logs/expected_vs_found.log       |    21 +
+ .../wiring/readback-work/logs/git_ignore_check.log |    10 +
+ design/wiring/readback-work/logs/hand_check.log    |    23 +
+ design/wiring/readback-work/logs/hand_excerpts.log |    59 +
+ design/wiring/readback-work/logs/limit_quotes.log  |    51 +
+ design/wiring/readback-work/logs/limit_quotes2.log |    13 +
+ design/wiring/readback-work/logs/make_tables.log   |   119 +
+ design/wiring/readback-work/logs/misc_counts.log   |     4 +
+ design/wiring/readback-work/logs/p1_case_main.log  |     3 +
+ design/wiring/readback-work/logs/p1_case_pins.log  |     3 +
+ design/wiring/readback-work/logs/p1_flex1-us10.log |     3 +
+ design/wiring/readback-work/logs/p1_flex1-us11.log |     3 +
+ design/wiring/readback-work/logs/p1_flex1-us12.log |     3 +
+ design/wiring/readback-work/logs/p1_flex1-us13.log |     3 +
+ design/wiring/readback-work/logs/p1_flex1-us7.log  |     3 +
+ design/wiring/readback-work/logs/p1_flex1-us8.log  |     3 +
+ design/wiring/readback-work/logs/p1_flex1-us9.log  |     3 +
+ design/wiring/readback-work/logs/p1_flex2-us10.log |     3 +
+ design/wiring/readback-work/logs/p1_flex2-us11.log |     3 +
+ design/wiring/readback-work/logs/p1_flex2-us12.log |     3 +
+ design/wiring/readback-work/logs/p1_flex2-us13.log |     3 +
+ design/wiring/readback-work/logs/p1_flex2-us7.log  |     3 +
+ design/wiring/readback-work/logs/p1_flex2-us8.log  |     3 +
+ design/wiring/readback-work/logs/p1_flex2-us9.log  |     3 +
+ design/wiring/readback-work/logs/p1_global.log     |     4 +
+ design/wiring/readback-work/logs/p1_ring.log       |     4 +
+ .../readback-work/logs/p1_ring_p2_control.log      |     4 +
+ .../wiring/readback-work/logs/p1_ring_p2_cut.log   |     4 +
+ .../wiring/readback-work/logs/p1_ring_p2_join.log  |     4 +
+ .../readback-work/logs/p1_ring_p2_resave.log       |     4 +
+ .../readback-work/logs/p2_export_control.log       |    28 +
+ design/wiring/readback-work/logs/p2_export_cut.log |    28 +
+ .../wiring/readback-work/logs/p2_export_join.log   |    28 +
+ .../wiring/readback-work/logs/p2_export_resave.log |    28 +
+ design/wiring/readback-work/logs/p2_ipc_diff.log   |    15 +
+ design/wiring/readback-work/logs/p2_make_cut.log   |     5 +
+ design/wiring/readback-work/logs/p2_make_join.log  |     5 +
+ .../wiring/readback-work/logs/p2_make_resave.log   |     3 +
+ design/wiring/readback-work/logs/p2_probe.log      |     5 +
+ design/wiring/readback-work/logs/p3_band.log       |    44 +
+ design/wiring/readback-work/logs/p3_case.log       |     8 +
+ design/wiring/readback-work/logs/p3_ring.log       |    42 +
+ design/wiring/readback-work/logs/p4p5.log          |    38 +
+ design/wiring/readback-work/logs/patch_p1_a.log    |     1 +
+ design/wiring/readback-work/logs/patch_p1_b.log    |     1 +
+ design/wiring/readback-work/logs/pilot_all.log     |    17 +
+ design/wiring/readback-work/logs/pilot_scorer.log  |     5 +
+ .../readback-work/logs/pilot_scorer_rerun.log      |     5 +
+ design/wiring/readback-work/logs/pilot_solver.log  |     6 +
+ design/wiring/readback-work/logs/process_check.log |     4 +
+ design/wiring/readback-work/logs/t_ring_load.log   |     5 +
+ .../readback-work/logs/v1_chord_R/p3_band.log      |    44 +
+ .../logs/v1_chord_R/p3_band_v2_nodes_stale.log     |    44 +
+ .../v1_chord_R/p3_band_v3_before_flashnodes.log    |    44 +
+ .../v1_chord_R/p3_band_v4_before_overlapdraw.log   |    44 +
+ .../readback-work/logs/v1_chord_R/p3_case.log      |     8 +
+ .../logs/v1_chord_R/p3_case_v2_nodes_stale.log     |     8 +
+ .../v1_chord_R/p3_case_v3_before_flashnodes.log    |     8 +
+ .../v1_chord_R/p3_case_v4_before_overlapdraw.log   |     8 +
+ .../readback-work/logs/v1_chord_R/p3_ring.log      |    42 +
+ .../logs/v1_chord_R/p3_ring_v2_nodes_stale.log     |    42 +
+ .../v1_chord_R/p3_ring_v3_before_flashnodes.log    |    42 +
+ .../v1_chord_R/p3_ring_v4_before_overlapdraw.log   |    42 +
+ .../logs/v1_chord_R/p4p5_v1_nopath.log             |    35 +
+ .../logs/v1_chord_R/p4p5_v2_before_snap.log        |    37 +
+ .../logs/v1_chord_R/p4p5_v3_before_flashjoin.log   |    37 +
+ .../logs/v1_chord_R/p4p5_v4_before_overlap.log     |    37 +
+ .../logs/v1_chord_R/p4p5_v5_before_overlapdraw.log |    37 +
+ .../logs/v1_chord_R/p4p5_v6_usb_dp_only.log        |    37 +
+ .../logs/v1_pil_raster/p1_case_main.log            |     3 +
+ .../logs/v1_pil_raster/p1_case_pins.log            |     3 +
+ .../logs/v1_pil_raster/p1_case_pins_before_D1.log  |     3 +
+ .../logs/v1_pil_raster/p1_flex1-us10.log           |     3 +
+ .../logs/v1_pil_raster/p1_flex1-us11.log           |     3 +
+ .../logs/v1_pil_raster/p1_flex1-us12.log           |     3 +
+ .../logs/v1_pil_raster/p1_flex1-us13.log           |     3 +
+ .../logs/v1_pil_raster/p1_flex1-us7.log            |     3 +
+ .../logs/v1_pil_raster/p1_flex1-us8.log            |     3 +
+ .../logs/v1_pil_raster/p1_flex1-us9.log            |     3 +
+ .../logs/v1_pil_raster/p1_flex2-us10.log           |     3 +
+ .../logs/v1_pil_raster/p1_flex2-us11.log           |     3 +
+ .../logs/v1_pil_raster/p1_flex2-us12.log           |     3 +
+ .../logs/v1_pil_raster/p1_flex2-us13.log           |     3 +
+ .../logs/v1_pil_raster/p1_flex2-us7.log            |     3 +
+ .../logs/v1_pil_raster/p1_flex2-us8.log            |     3 +
+ .../logs/v1_pil_raster/p1_flex2-us9.log            |     3 +
+ .../readback-work/logs/v1_pil_raster/p1_global.log |     4 +
+ .../readback-work/logs/v1_pil_raster/p1_ring.log   |     4 +
+ .../logs/v1_pil_raster/p1_ring_p2_control.log      |     4 +
+ .../logs/v1_pil_raster/p1_ring_p2_cut.log          |     4 +
+ .../logs/v1_pil_raster/p1_ring_p2_join.log         |     4 +
+ .../logs/v1_pil_raster/p1_ring_p2_resave.log       |     4 +
+ .../logs/v1_pil_raster/pilot_scorer_v1.log         |     5 +
+ .../logs/v3_worktree_case/hand_check.log           |    23 +
+ .../logs/v3_worktree_case/hand_excerpts_v1.log     |    59 +
+ .../logs/v3_worktree_case/p1_case_main.log         |     3 +
+ .../logs/v3_worktree_case/p1_case_pins.log         |     3 +
+ .../logs/v3_worktree_case/p1_global.log            |     4 +
+ .../logs/v3_worktree_case/p3_case.log              |     8 +
+ .../logs/v3_worktree_case/pilot_all.log            |    17 +
+ design/wiring/readback-work/logs/version_check.log |    13 +
+ design/wiring/readback-work/logs/xcheck_clear.log  |   466 +
+ design/wiring/readback-work/logs/xcheck_sw.log     |    23 +
+ design/wiring/readback-work/make_tables.py         |   133 +
+ design/wiring/readback-work/p1_global.py           |    23 +
+ .../p2/control/fab/drill/ring-NPTH-drl_map.pdf     |   Bin 0 -> 6593 bytes
+ .../p2/control/fab/drill/ring-NPTH.drl             |    12 +
+ .../p2/control/fab/drill/ring-PTH-drl_map.pdf      |   Bin 0 -> 13510 bytes
+ .../p2/control/fab/drill/ring-PTH.drl              |    85 +
+ .../p2/control/fab/drill/ring-drill-report.txt     |    64 +
+ .../control/fab/drill/ring-front-in1-drl_map.pdf   |   Bin 0 -> 14642 bytes
+ .../p2/control/fab/drill/ring-front-in1.drl        |   138 +
+ .../control/fab/drill/ring-front-in2-drl_map.pdf   |   Bin 0 -> 13460 bytes
+ .../p2/control/fab/drill/ring-front-in2.drl        |    84 +
+ .../p2/control/fab/drill/ring-in1-back-drl_map.pdf |   Bin 0 -> 12731 bytes
+ .../p2/control/fab/drill/ring-in1-back.drl         |    56 +
+ .../p2/control/fab/drill/ring-in1-in2-drl_map.pdf  |   Bin 0 -> 14334 bytes
+ .../p2/control/fab/drill/ring-in1-in2.drl          |   101 +
+ .../p2/control/fab/drill/ring-in2-back-drl_map.pdf |   Bin 0 -> 13845 bytes
+ .../p2/control/fab/drill/ring-in2-back.drl         |    83 +
+ .../p2/control/fab/gerber/ring-B_Cu.gbr            |  6374 ++
+ .../p2/control/fab/gerber/ring-B_Mask.gbr          |   133 +
+ .../p2/control/fab/gerber/ring-B_Paste.gbr         |   133 +
+ .../p2/control/fab/gerber/ring-B_Silkscreen.gbr    |    15 +
+ .../p2/control/fab/gerber/ring-Edge_Cuts.gbr       |    46 +
+ .../p2/control/fab/gerber/ring-F_Cu.gbr            |  9929 +++
+ .../p2/control/fab/gerber/ring-F_Mask.gbr          |   612 +
+ .../p2/control/fab/gerber/ring-F_Paste.gbr         |   574 +
+ .../p2/control/fab/gerber/ring-F_Silkscreen.gbr    |    15 +
+ .../p2/control/fab/gerber/ring-In1_Cu.gbr          |  9644 +++
+ .../p2/control/fab/gerber/ring-In2_Cu.gbr          | 11375 ++++
+ .../p2/control/fab/gerber/ring-job.gbrjob          |   170 +
+ .../readback-work/p2/control/fab/ring.ipc356       |  1127 +
+ .../wiring/readback-work/p2/control/ring.kicad_pcb | 66296 ++++++++++++++++++
+ .../wiring/readback-work/p2/control/ring.kicad_prl |   105 +
+ .../p2/cut/fab/drill/ring-NPTH-drl_map.pdf         |   Bin 0 -> 6593 bytes
+ .../readback-work/p2/cut/fab/drill/ring-NPTH.drl   |    12 +
+ .../p2/cut/fab/drill/ring-PTH-drl_map.pdf          |   Bin 0 -> 13510 bytes
+ .../readback-work/p2/cut/fab/drill/ring-PTH.drl    |    85 +
+ .../p2/cut/fab/drill/ring-drill-report.txt         |    64 +
+ .../p2/cut/fab/drill/ring-front-in1-drl_map.pdf    |   Bin 0 -> 14642 bytes
+ .../p2/cut/fab/drill/ring-front-in1.drl            |   138 +
+ .../p2/cut/fab/drill/ring-front-in2-drl_map.pdf    |   Bin 0 -> 13460 bytes
+ .../p2/cut/fab/drill/ring-front-in2.drl            |    84 +
+ .../p2/cut/fab/drill/ring-in1-back-drl_map.pdf     |   Bin 0 -> 12731 bytes
+ .../p2/cut/fab/drill/ring-in1-back.drl             |    56 +
+ .../p2/cut/fab/drill/ring-in1-in2-drl_map.pdf      |   Bin 0 -> 14334 bytes
+ .../p2/cut/fab/drill/ring-in1-in2.drl              |   101 +
+ .../p2/cut/fab/drill/ring-in2-back-drl_map.pdf     |   Bin 0 -> 13845 bytes
+ .../p2/cut/fab/drill/ring-in2-back.drl             |    83 +
+ .../readback-work/p2/cut/fab/gerber/ring-B_Cu.gbr  |  6374 ++
+ .../p2/cut/fab/gerber/ring-B_Mask.gbr              |   133 +
+ .../p2/cut/fab/gerber/ring-B_Paste.gbr             |   133 +
+ .../p2/cut/fab/gerber/ring-B_Silkscreen.gbr        |    15 +
+ .../p2/cut/fab/gerber/ring-Edge_Cuts.gbr           |    46 +
+ .../readback-work/p2/cut/fab/gerber/ring-F_Cu.gbr  |  9929 +++
+ .../p2/cut/fab/gerber/ring-F_Mask.gbr              |   612 +
+ .../p2/cut/fab/gerber/ring-F_Paste.gbr             |   574 +
+ .../p2/cut/fab/gerber/ring-F_Silkscreen.gbr        |    15 +
+ .../p2/cut/fab/gerber/ring-In1_Cu.gbr              |  9644 +++
+ .../p2/cut/fab/gerber/ring-In2_Cu.gbr              | 11373 ++++
+ .../p2/cut/fab/gerber/ring-job.gbrjob              |   170 +
+ design/wiring/readback-work/p2/cut/fab/ring.ipc356 |  1127 +
+ design/wiring/readback-work/p2/cut/ring.kicad_pcb  | 66288 ++++++++++++++++++
+ design/wiring/readback-work/p2/cut/ring.kicad_prl  |   105 +
+ design/wiring/readback-work/p2/cut/ring.kicad_pro  |   327 +
+ .../p2/join/fab/drill/ring-NPTH-drl_map.pdf        |   Bin 0 -> 6593 bytes
+ .../readback-work/p2/join/fab/drill/ring-NPTH.drl  |    12 +
+ .../p2/join/fab/drill/ring-PTH-drl_map.pdf         |   Bin 0 -> 13510 bytes
+ .../readback-work/p2/join/fab/drill/ring-PTH.drl   |    85 +
+ .../p2/join/fab/drill/ring-drill-report.txt        |    64 +
+ .../p2/join/fab/drill/ring-front-in1-drl_map.pdf   |   Bin 0 -> 14642 bytes
+ .../p2/join/fab/drill/ring-front-in1.drl           |   138 +
+ .../p2/join/fab/drill/ring-front-in2-drl_map.pdf   |   Bin 0 -> 13460 bytes
+ .../p2/join/fab/drill/ring-front-in2.drl           |    84 +
+ .../p2/join/fab/drill/ring-in1-back-drl_map.pdf    |   Bin 0 -> 12731 bytes
+ .../p2/join/fab/drill/ring-in1-back.drl            |    56 +
+ .../p2/join/fab/drill/ring-in1-in2-drl_map.pdf     |   Bin 0 -> 14334 bytes
+ .../p2/join/fab/drill/ring-in1-in2.drl             |   101 +
+ .../p2/join/fab/drill/ring-in2-back-drl_map.pdf    |   Bin 0 -> 13845 bytes
+ .../p2/join/fab/drill/ring-in2-back.drl            |    83 +
+ .../readback-work/p2/join/fab/gerber/ring-B_Cu.gbr |  6374 ++
+ .../p2/join/fab/gerber/ring-B_Mask.gbr             |   133 +
+ .../p2/join/fab/gerber/ring-B_Paste.gbr            |   133 +
+ .../p2/join/fab/gerber/ring-B_Silkscreen.gbr       |    15 +
+ .../p2/join/fab/gerber/ring-Edge_Cuts.gbr          |    46 +
+ .../readback-work/p2/join/fab/gerber/ring-F_Cu.gbr |  9929 +++
+ .../p2/join/fab/gerber/ring-F_Mask.gbr             |   612 +
+ .../p2/join/fab/gerber/ring-F_Paste.gbr            |   574 +
+ .../p2/join/fab/gerber/ring-F_Silkscreen.gbr       |    15 +
+ .../p2/join/fab/gerber/ring-In1_Cu.gbr             |  9646 +++
+ .../p2/join/fab/gerber/ring-In2_Cu.gbr             | 11375 ++++
+ .../p2/join/fab/gerber/ring-job.gbrjob             |   170 +
+ .../wiring/readback-work/p2/join/fab/ring.ipc356   |  1127 +
+ design/wiring/readback-work/p2/join/ring.kicad_pcb | 66304 +++++++++++++++++++
+ design/wiring/readback-work/p2/join/ring.kicad_prl |   105 +
+ design/wiring/readback-work/p2/join/ring.kicad_pro |   327 +
+ .../p2/resave/fab/drill/ring-NPTH-drl_map.pdf      |   Bin 0 -> 6593 bytes
+ .../p2/resave/fab/drill/ring-NPTH.drl              |    12 +
+ .../p2/resave/fab/drill/ring-PTH-drl_map.pdf       |   Bin 0 -> 13510 bytes
+ .../readback-work/p2/resave/fab/drill/ring-PTH.drl |    85 +
+ .../p2/resave/fab/drill/ring-drill-report.txt      |    64 +
+ .../p2/resave/fab/drill/ring-front-in1-drl_map.pdf |   Bin 0 -> 14642 bytes
+ .../p2/resave/fab/drill/ring-front-in1.drl         |   138 +
+ .../p2/resave/fab/drill/ring-front-in2-drl_map.pdf |   Bin 0 -> 13460 bytes
+ .../p2/resave/fab/drill/ring-front-in2.drl         |    84 +
+ .../p2/resave/fab/drill/ring-in1-back-drl_map.pdf  |   Bin 0 -> 12731 bytes
+ .../p2/resave/fab/drill/ring-in1-back.drl          |    56 +
+ .../p2/resave/fab/drill/ring-in1-in2-drl_map.pdf   |   Bin 0 -> 14334 bytes
+ .../p2/resave/fab/drill/ring-in1-in2.drl           |   101 +
+ .../p2/resave/fab/drill/ring-in2-back-drl_map.pdf  |   Bin 0 -> 13845 bytes
+ .../p2/resave/fab/drill/ring-in2-back.drl          |    83 +
+ .../p2/resave/fab/gerber/ring-B_Cu.gbr             |  6374 ++
+ .../p2/resave/fab/gerber/ring-B_Mask.gbr           |   133 +
+ .../p2/resave/fab/gerber/ring-B_Paste.gbr          |   133 +
+ .../p2/resave/fab/gerber/ring-B_Silkscreen.gbr     |    15 +
+ .../p2/resave/fab/gerber/ring-Edge_Cuts.gbr        |    46 +
+ .../p2/resave/fab/gerber/ring-F_Cu.gbr             |  9929 +++
+ .../p2/resave/fab/gerber/ring-F_Mask.gbr           |   612 +
+ .../p2/resave/fab/gerber/ring-F_Paste.gbr          |   574 +
+ .../p2/resave/fab/gerber/ring-F_Silkscreen.gbr     |    15 +
+ .../p2/resave/fab/gerber/ring-In1_Cu.gbr           |  9644 +++
+ .../p2/resave/fab/gerber/ring-In2_Cu.gbr           | 11375 ++++
+ .../p2/resave/fab/gerber/ring-job.gbrjob           |   170 +
+ .../wiring/readback-work/p2/resave/fab/ring.ipc356 |  1127 +
+ .../wiring/readback-work/p2/resave/ring.kicad_pcb  | 66296 ++++++++++++++++++
+ .../wiring/readback-work/p2/resave/ring.kicad_prl  |   105 +
+ .../wiring/readback-work/p2/resave/ring.kicad_pro  |   327 +
+ .../readback-work/p2/ring_orig_copy.kicad_pcb      | 66296 ++++++++++++++++++
+ design/wiring/readback-work/p2_export.sh           |    12 +
+ design/wiring/readback-work/p2_make.py             |    46 +
+ design/wiring/readback-work/p2_probe.py            |     9 +
+ design/wiring/readback-work/p3_band.py             |    22 +
+ design/wiring/readback-work/p3_case.py             |    27 +
+ design/wiring/readback-work/p3_lib.py              |    82 +
+ design/wiring/readback-work/p3_ring.py             |    24 +
+ design/wiring/readback-work/p4p5.py                |   200 +
+ design/wiring/readback-work/pilot_all.py           |    38 +
+ design/wiring/readback-work/pilot_scorer.py        |    44 +
+ design/wiring/readback-work/pilot_solver.py        |    42 +
+ design/wiring/readback-work/prereg_body.md         |    49 +
+ design/wiring/readback-work/rb_lib.py              |   479 +
+ design/wiring/readback-work/rb_res.py              |   300 +
+ .../wiring/readback-work/results/p1_case_main.json |    56 +
+ .../wiring/readback-work/results/p1_case_pins.json |   132 +
+ .../readback-work/results/p1_flex1-us10.json       |    56 +
+ .../readback-work/results/p1_flex1-us11.json       |    56 +
+ .../readback-work/results/p1_flex1-us12.json       |    56 +
+ .../readback-work/results/p1_flex1-us13.json       |    56 +
+ .../wiring/readback-work/results/p1_flex1-us7.json |    56 +
+ .../wiring/readback-work/results/p1_flex1-us8.json |    56 +
+ .../wiring/readback-work/results/p1_flex1-us9.json |    56 +
+ .../readback-work/results/p1_flex2-us10.json       |    47 +
+ .../readback-work/results/p1_flex2-us11.json       |    47 +
+ .../readback-work/results/p1_flex2-us12.json       |    47 +
+ .../readback-work/results/p1_flex2-us13.json       |    47 +
+ .../wiring/readback-work/results/p1_flex2-us7.json |    47 +
+ .../wiring/readback-work/results/p1_flex2-us8.json |    47 +
+ .../wiring/readback-work/results/p1_flex2-us9.json |    47 +
+ design/wiring/readback-work/results/p1_ring.json   |    85 +
+ .../readback-work/results/p1_ring_p2_control.json  |    85 +
+ .../readback-work/results/p1_ring_p2_cut.json      |    89 +
+ .../readback-work/results/p1_ring_p2_join.json     |    90 +
+ .../readback-work/results/p1_ring_p2_resave.json   |    85 +
+ design/wiring/readback-work/results/p3_band.json   |   933 +
+ design/wiring/readback-work/results/p3_case.json   |   108 +
+ design/wiring/readback-work/results/p3_ring.json   |   741 +
+ design/wiring/readback-work/results/p4p5.json      |   200 +
+ design/wiring/readback-work/results/tables.md      |   119 +
+ .../readback-work/results/v1_chord_R/p3_band.json  |   933 +
+ .../readback-work/results/v1_chord_R/p3_case.json  |   108 +
+ .../readback-work/results/v1_chord_R/p3_ring.json  |   704 +
+ .../results/v1_pil_raster/p1_case_main.json        |    56 +
+ .../results/v1_pil_raster/p1_case_pins.json        |   138 +
+ .../results/v1_pil_raster/p1_flex1-us10.json       |    56 +
+ .../results/v1_pil_raster/p1_flex1-us11.json       |    56 +
+ .../results/v1_pil_raster/p1_flex1-us12.json       |    56 +
+ .../results/v1_pil_raster/p1_flex1-us13.json       |    56 +
+ .../results/v1_pil_raster/p1_flex1-us7.json        |    56 +
+ .../results/v1_pil_raster/p1_flex1-us8.json        |    56 +
+ .../results/v1_pil_raster/p1_flex1-us9.json        |    56 +
+ .../results/v1_pil_raster/p1_flex2-us10.json       |    47 +
+ .../results/v1_pil_raster/p1_flex2-us11.json       |    47 +
+ .../results/v1_pil_raster/p1_flex2-us12.json       |    47 +
+ .../results/v1_pil_raster/p1_flex2-us13.json       |    47 +
+ .../results/v1_pil_raster/p1_flex2-us7.json        |    47 +
+ .../results/v1_pil_raster/p1_flex2-us8.json        |    47 +
+ .../results/v1_pil_raster/p1_flex2-us9.json        |    47 +
+ .../results/v1_pil_raster/p1_ring.json             |    85 +
+ .../results/v1_pil_raster/p1_ring_p2_control.json  |    85 +
+ .../results/v1_pil_raster/p1_ring_p2_cut.json      |    89 +
+ .../results/v1_pil_raster/p1_ring_p2_join.json     |    90 +
+ .../results/v1_pil_raster/p1_ring_p2_resave.json   |    85 +
+ .../results/v2_before_D1/p1_case_pins.json         |   138 +
+ .../results/v3_worktree_case/p1_case_main.json     |    56 +
+ .../results/v3_worktree_case/p1_case_pins.json     |   132 +
+ .../results/v3_worktree_case/p3_case.json          |   108 +
+ design/wiring/readback-work/results/verdicts.json  |   601 +
+ design/wiring/readback-work/run_p1.py              |   168 +
+ .../src_b9ec3cfa/design/ecad/case/additions.csv    |    53 +
+ .../design/ecad/case/bom_refs_snapshot.csv         |    90 +
+ .../src_b9ec3cfa/design/ecad/case/case-kicad.xml   |  3230 +
+ .../design/ecad/case/case-schematic.pdf            |   Bin 0 -> 281813 bytes
+ .../src_b9ec3cfa/design/ecad/case/case.kicad_prl   |   105 +
+ .../src_b9ec3cfa/design/ecad/case/case.kicad_pro   |    46 +
+ .../src_b9ec3cfa/design/ecad/case/case.kicad_sch   |    13 +
+ .../src_b9ec3cfa/design/ecad/case/case.kicad_sym   |   183 +
+ .../design/ecad/case/case_main.kicad_sch           |   261 +
+ .../design/ecad/case/case_power.kicad_sch          |   304 +
+ .../design/ecad/case/case_ringlink.kicad_sch       |   152 +
+ .../design/ecad/case/case_storage.kicad_sch        |   100 +
+ .../design/ecad/case/case_test.kicad_sch           |    67 +
+ .../design/ecad/case/case_usbc.kicad_sch           |    80 +
+ .../src_b9ec3cfa/design/ecad/case/check_netlist.py |   205 +
+ .../src_b9ec3cfa/design/ecad/case/closed-pins.csv  |    13 +
+ .../src_b9ec3cfa/design/ecad/case/erc-report.json  |    67 +
+ .../src_b9ec3cfa/design/ecad/case/erc-report.txt   |    24 +
+ .../design/ecad/case/evidence/aptf_circuit.png     |   Bin 0 -> 17472 bytes
+ .../design/ecad/case/evidence/audit.py             |    55 +
+ .../design/ecad/case/evidence/audit_final.log      |    31 +
+ .../ecad/case/evidence/bom_refs_snapshot_C1.csv    |    51 +
+ .../case/evidence/broken/check_pins_P2_swapped.log |    28 +
+ .../case/evidence/broken/check_u1_pin19_moved.log  |    28 +
+ .../case/evidence/broken/erc_probe/case.kicad_prl  |   105 +
+ .../case/evidence/broken/erc_probe/case.kicad_pro  |    46 +
+ .../case/evidence/broken/erc_probe/case.kicad_sch  |    13 +
+ .../case/evidence/broken/erc_probe/case.kicad_sym  |   183 +
+ .../evidence/broken/erc_probe/case_main.kicad_sch  |   261 +
+ .../evidence/broken/erc_probe/case_power.kicad_sch |   294 +
+ .../broken/erc_probe/case_ringlink.kicad_sch       |   152 +
+ .../broken/erc_probe/case_storage.kicad_sch        |    90 +
+ .../evidence/broken/erc_probe/case_test.kicad_sch  |    67 +
+ .../evidence/broken/erc_probe/case_usbc.kicad_sch  |    84 +
+ .../case/evidence/broken/erc_probe/erc-probe.txt   |    30 +
+ .../ecad/case/evidence/broken/erc_probe/erc.log    |    47 +
+ .../case/evidence/broken/erc_probe/sym-lib-table   |     4 +
+ .../design/ecad/case/evidence/broken/exits.txt     |     5 +
+ .../design/ecad/case/evidence/broken/make.log      |     2 +
+ .../ecad/case/evidence/broken/pins_P2_swapped.csv  |   272 +
+ .../ecad/case/evidence/broken/u1_pin19_moved.csv   |   272 +
+ .../evidence/broken_c2/check_divider_r4_to_3v3.log |    45 +
+ .../evidence/broken_c2/check_led_anode_to_gnd.log  |    45 +
+ .../case/evidence/broken_c2/check_r27_to_3v3.log   |    45 +
+ .../evidence/broken_c2/check_r28_dsel_open.log     |    47 +
+ .../broken_c2/check_r29_missing_pullup.log         |    45 +
+ .../case/evidence/broken_c2/check_r30_to_gnd.log   |    45 +
+ .../broken_c2/check_u5_en_fault_swapped.log        |    47 +
+ .../evidence/broken_c2/check_usbc_dp_to_u2.log     |    46 +
+ .../case/evidence/broken_c2/divider_r4_to_3v3.csv  |   280 +
+ .../case/evidence/broken_c2/led_anode_to_gnd.csv   |   280 +
+ .../ecad/case/evidence/broken_c2/r27_to_3v3.csv    |   280 +
+ .../ecad/case/evidence/broken_c2/r28_dsel_open.csv |   280 +
+ .../case/evidence/broken_c2/r29_missing_pullup.csv |   280 +
+ .../ecad/case/evidence/broken_c2/r30_to_gnd.csv    |   280 +
+ .../evidence/broken_c2/u5_en_fault_swapped.csv     |   280 +
+ .../ecad/case/evidence/broken_c2/usbc_dp_to_u2.csv |   280 +
+ .../design/ecad/case/evidence/broken_c2_exits.txt  |     9 +
+ .../design/ecad/case/evidence/check_c1.log         |    28 +
+ .../design/ecad/case/evidence/check_c2.log         |    46 +
+ .../design/ecad/case/evidence/check_netlist_C1.py  |   179 +
+ .../design/ecad/case/evidence/check_w5_base.log    |    47 +
+ .../design/ecad/case/evidence/check_w5_final.log   |    47 +
+ .../design/ecad/case/evidence/check_w5_pins.log    |    47 +
+ .../design/ecad/case/evidence/check_w5_pins2.log   |    47 +
+ .../design/ecad/case/evidence/check_w5_sim.log     |    48 +
+ .../design/ecad/case/evidence/copy_gen.log         |     1 +
+ .../design/ecad/case/evidence/done_when.log        |    47 +
+ .../design/ecad/case/evidence/erc-report_c1.txt    |    24 +
+ .../design/ecad/case/evidence/erc-report_c2.txt    |    24 +
+ .../ecad/case/evidence/erc-report_w5_base.txt      |    24 +
+ .../ecad/case/evidence/erc-report_w5_final.txt     |    24 +
+ .../ecad/case/evidence/erc-report_w5_pins.txt      |    24 +
+ .../ecad/case/evidence/erc-report_w5_pins2.txt     |    24 +
+ .../ecad/case/evidence/erc-report_w5_sim.txt       |    24 +
+ .../design/ecad/case/evidence/erc_c1.log           |    95 +
+ .../design/ecad/case/evidence/erc_c2.log           |    95 +
+ .../design/ecad/case/evidence/erc_w5_base.log      |    95 +
+ .../design/ecad/case/evidence/erc_w5_final.log     |    95 +
+ .../design/ecad/case/evidence/erc_w5_pins.log      |    95 +
+ .../design/ecad/case/evidence/erc_w5_pins2.log     |    95 +
+ .../design/ecad/case/evidence/erc_w5_sim.log       |    95 +
+ .../design/ecad/case/evidence/gen_c1.log           |     2 +
+ .../design/ecad/case/evidence/gen_c2.log           |     2 +
+ .../design/ecad/case/evidence/gen_w5_base.log      |     2 +
+ .../design/ecad/case/evidence/gen_w5_final.log     |     2 +
+ .../design/ecad/case/evidence/gen_w5_pins.log      |     2 +
+ .../design/ecad/case/evidence/gen_w5_pins2.log     |     2 +
+ .../design/ecad/case/evidence/gen_w5_sim.log       |     2 +
+ .../ecad/case/evidence/kicad_netlist_export.log    |    45 +
+ .../design/ecad/case/evidence/make_netlist1.log    |     2 +
+ .../design/ecad/case/evidence/make_netlist_C1.py   |   256 +
+ .../design/ecad/case/evidence/make_netlist_c2.log  |     2 +
+ .../design/ecad/case/evidence/patch_audit_c2.log   |     1 +
+ .../design/ecad/case/evidence/patch_c2.log         |     1 +
+ .../design/ecad/case/evidence/patch_c2_check.log   |     1 +
+ .../design/ecad/case/evidence/patch_notes_c2.log   |     1 +
+ .../design/ecad/case/evidence/pdf_c1.log           |    48 +
+ .../design/ecad/case/evidence/pdf_c1_p1.png        |   Bin 0 -> 60002 bytes
+ .../design/ecad/case/evidence/pdf_c1_p2.png        |   Bin 0 -> 157613 bytes
+ .../design/ecad/case/evidence/pdf_c1_p3.png        |   Bin 0 -> 127110 bytes
+ .../design/ecad/case/evidence/pdf_c1_p4.png        |   Bin 0 -> 65190 bytes
+ .../design/ecad/case/evidence/pdf_c1_p5.png        |   Bin 0 -> 93863 bytes
+ .../design/ecad/case/evidence/pdf_c1_p6.png        |   Bin 0 -> 62398 bytes
+ .../design/ecad/case/evidence/pdf_c1_p7.png        |   Bin 0 -> 58717 bytes
+ .../design/ecad/case/evidence/pdf_c2.log           |    48 +
+ .../design/ecad/case/evidence/pdf_c2_p1.png        |   Bin 0 -> 60055 bytes
+ .../design/ecad/case/evidence/pdf_c2_p2.png        |   Bin 0 -> 157661 bytes
+ .../design/ecad/case/evidence/pdf_c2_p3.png        |   Bin 0 -> 133511 bytes
+ .../design/ecad/case/evidence/pdf_c2_p4.png        |   Bin 0 -> 62578 bytes
+ .../design/ecad/case/evidence/pdf_c2_p5.png        |   Bin 0 -> 93909 bytes
+ .../design/ecad/case/evidence/pdf_c2_p6.png        |   Bin 0 -> 67192 bytes
+ .../design/ecad/case/evidence/pdf_c2_p7.png        |   Bin 0 -> 58760 bytes
+ .../design/ecad/case/evidence/pdf_w5_base.log      |    48 +
+ .../design/ecad/case/evidence/pdf_w5_final.log     |    48 +
+ .../design/ecad/case/evidence/pdf_w5_pins.log      |    48 +
+ .../design/ecad/case/evidence/pdf_w5_pins2.log     |    48 +
+ .../design/ecad/case/evidence/pdf_w5_sim.log       |    48 +
+ .../design/ecad/case/evidence/prove_fail_c2.log    |     9 +
+ .../design/ecad/case/evidence/render_aptf.log      |     2 +
+ .../design/ecad/case/evidence/render_c1.log        |    11 +
+ .../design/ecad/case/evidence/render_c2.log        |    11 +
+ .../design/ecad/case/evidence/sch-notes_C1.md      |    92 +
+ .../design/ecad/case/evidence/snapshot.log         |     1 +
+ .../design/ecad/case/evidence/snapshot_c2.log      |     1 +
+ .../ecad/case/evidence/text_case_bq25895.txt       |  5863 ++
+ .../case/evidence/text_case_cell_dnk852338.txt     |   126 +
+ .../ecad/case/evidence/text_case_esp32s3_mini1.txt |  4790 ++
+ .../ecad/case/evidence/text_case_kb_aptf1616.txt   |   541 +
+ .../ecad/case/evidence/text_case_tpd4e05u06.txt    |  2532 +
+ .../ecad/case/evidence/text_case_tps2553.txt       |  4207 ++
+ .../ecad/case/evidence/text_case_tps63802.txt      |  2710 +
+ .../ecad/case/evidence/text_case_usb4105.txt       |   352 +
+ .../ecad/case/evidence/text_sdnand_zetta.txt       |   796 +
+ .../src_b9ec3cfa/design/ecad/case/gen_sch.py       |   249 +
+ .../src_b9ec3cfa/design/ecad/case/make_netlist.py  |   293 +
+ .../src_b9ec3cfa/design/ecad/case/make_snapshot.py |    23 +
+ .../src_b9ec3cfa/design/ecad/case/netlist.csv      |   280 +
+ .../src_b9ec3cfa/design/ecad/case/open-pins.csv    |     1 +
+ .../src_b9ec3cfa/design/ecad/case/parts.csv        |    90 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/CHECKLIST.md |    44 +
+ .../pcb/OpenRingCase.pretty/CELL_LEADS.kicad_mod   |    66 +
+ .../OpenRingCase.pretty/DFN-10_DLA_2x3.kicad_mod   |   168 +
+ .../OpenRingCase.pretty/ESP32-S3-MINI-1.kicad_mod  |   672 +
+ .../HARWIN_P70_6000045R.kicad_mod                  |    85 +
+ .../pcb/OpenRingCase.pretty/LED_APTF1616.kicad_mod |   120 +
+ .../OpenRingCase.pretty/LGA16_9x10_ZDSD.kicad_mod  |   216 +
+ .../OpenRingCase.pretty/L_XFL40xx_4x4.kicad_mod    |   104 +
+ .../pcb/OpenRingCase.pretty/NTC_wired.kicad_mod    |    82 +
+ .../pcb/OpenRingCase.pretty/SMD_0402.kicad_mod     |    93 +
+ .../pcb/OpenRingCase.pretty/SMD_0603.kicad_mod     |    93 +
+ .../pcb/OpenRingCase.pretty/SMD_0805.kicad_mod     |    93 +
+ .../pcb/OpenRingCase.pretty/SOT-23-6_DBV.kicad_mod |   136 +
+ .../pcb/OpenRingCase.pretty/TESTPAD_1.0.kicad_mod  |    72 +
+ .../OpenRingCase.pretty/TOUCH_E1_front.kicad_mod   |    73 +
+ .../pcb/OpenRingCase.pretty/USB4105-GF-A.kicad_mod |   255 +
+ .../USON-10_DQA_1x2.5.kicad_mod                    |   168 +
+ .../pcb/OpenRingCase.pretty/WIRE_PTH_0.7.kicad_mod |    74 +
+ .../OpenRingCase.pretty/WIRE_SMD_0.9x1.1.kicad_mod |    74 +
+ .../OpenRingCase.pretty/WQFN-24_RTW_4x4.kicad_mod  |   388 +
+ .../design/ecad/case/pcb/add_models.py             |    58 +
+ .../design/ecad/case/pcb/audit_claims.py           |   109 +
+ .../design/ecad/case/pcb/board-notes.md            |   311 +
+ .../ecad/case/pcb/broken/broken_nopart.kicad_pcb   | 18756 ++++++
+ .../ecad/case/pcb/broken/broken_nopart.kicad_prl   |   105 +
+ .../ecad/case/pcb/broken/broken_nopart.kicad_pro   |   428 +
+ .../ecad/case/pcb/broken/broken_notrack.kicad_pcb  | 18854 ++++++
+ .../ecad/case/pcb/broken/broken_notrack.kicad_prl  |   105 +
+ .../ecad/case/pcb/broken/broken_notrack.kicad_pro  |   428 +
+ .../ecad/case/pcb/broken/broken_outside.kicad_pcb  | 18862 ++++++
+ .../ecad/case/pcb/broken/broken_outside.kicad_prl  |   105 +
+ .../ecad/case/pcb/broken/broken_outside.kicad_pro  |   428 +
+ .../ecad/case/pcb/broken/broken_wrongnet.kicad_pcb | 18862 ++++++
+ .../ecad/case/pcb/broken/broken_wrongnet.kicad_prl |   105 +
+ .../ecad/case/pcb/broken/broken_wrongnet.kicad_pro |   428 +
+ .../design/ecad/case/pcb/build_boards.py           |   580 +
+ .../design/ecad/case/pcb/case_main.kicad_pcb       | 18862 ++++++
+ .../ecad/case/pcb/case_main.kicad_pcb.tidy.json    |  1134 +
+ .../case/pcb/case_main.kicad_pcb.tidy.json.log     |     3 +
+ .../design/ecad/case/pcb/case_main.kicad_prl       |   105 +
+ .../design/ecad/case/pcb/case_main.kicad_pro       |   428 +
+ .../design/ecad/case/pcb/case_pins.kicad_pcb       |  1155 +
+ .../design/ecad/case/pcb/case_pins.kicad_prl       |   105 +
+ .../design/ecad/case/pcb/case_pins.kicad_pro       |   372 +
+ .../design/ecad/case/pcb/check_boards.py           |   202 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/declash.py   |    49 +
+ .../design/ecad/case/pcb/drc_summary.py            |    13 +
+ .../design/ecad/case/pcb/eval_placement.sh         |    13 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/eval_r2.sh   |    11 +
+ .../design/ecad/case/pcb/evidence/area_check.py    |    18 +
+ .../design/ecad/case/pcb/evidence/audit_final.log  |   265 +
+ .../design/ecad/case/pcb/evidence/audit_final.out  |   265 +
+ .../ecad/case/pcb/evidence/board_counts_final.log  |    17 +
+ .../design/ecad/case/pcb/evidence/broken_exits.txt |     5 +
+ .../ecad/case/pcb/evidence/broken_nopart.log       |    25 +
+ .../ecad/case/pcb/evidence/broken_notrack.log      |    25 +
+ .../ecad/case/pcb/evidence/broken_outside.log      |    25 +
+ .../ecad/case/pcb/evidence/broken_wrongnet.log     |    25 +
+ .../ecad/case/pcb/evidence/build_pcb2_final.log    |     3 +
+ .../ecad/case/pcb/evidence/build_pcb2_test.log     |     3 +
+ .../ecad/case/pcb/evidence/build_pcb2_test2.log    |     3 +
+ .../design/ecad/case/pcb/evidence/build_test1.log  |     3 +
+ .../design/ecad/case/pcb/evidence/build_test2.log  |     3 +
+ .../design/ecad/case/pcb/evidence/build_test3.log  |     3 +
+ .../ecad/case/pcb/evidence/build_unrouted_a.log    |     3 +
+ .../ecad/case/pcb/evidence/build_unrouted_b.log    |     3 +
+ .../ecad/case/pcb/evidence/build_unrouted_c.log    |     3 +
+ .../ecad/case/pcb/evidence/build_unrouted_d.log    |     3 +
+ .../ecad/case/pcb/evidence/build_unrouted_e.log    |     3 +
+ .../case/pcb/evidence/build_unrouted_w83_final.log |     3 +
+ .../design/ecad/case/pcb/evidence/capab_jlc.html   |   150 +
+ .../ecad/case/pcb/evidence/capab_jlc.html.txt      |     1 +
+ .../ecad/case/pcb/evidence/capab_pcbway.html       |  5156 ++
+ .../ecad/case/pcb/evidence/capab_pcbway.html.txt   |    12 +
+ .../ecad/case/pcb/evidence/check_boards_good.log   |    25 +
+ .../case/pcb/evidence/check_boards_interim.log     |    26 +
+ .../case/pcb/evidence/check_drc_PCB1_18125.json    |   682 +
+ .../pcb/evidence/check_drc_PCB1_18125.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_18259.json    |   752 +
+ .../pcb/evidence/check_drc_PCB1_18259.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_18396.json    |  1414 +
+ .../pcb/evidence/check_drc_PCB1_18396.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_18598.json    |   721 +
+ .../pcb/evidence/check_drc_PCB1_18598.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_18794.json    |   713 +
+ .../pcb/evidence/check_drc_PCB1_18794.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_29986.json    |    37 +
+ .../pcb/evidence/check_drc_PCB1_29986.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_30124.json    |   108 +
+ .../pcb/evidence/check_drc_PCB1_30124.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_30334.json    |   770 +
+ .../pcb/evidence/check_drc_PCB1_30334.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_30522.json    |    77 +
+ .../pcb/evidence/check_drc_PCB1_30522.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_30701.json    |   107 +
+ .../pcb/evidence/check_drc_PCB1_30701.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_43331.json    |   843 +
+ .../pcb/evidence/check_drc_PCB1_43331.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_43525.json    |   843 +
+ .../pcb/evidence/check_drc_PCB1_43525.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_43687.json    |  1438 +
+ .../pcb/evidence/check_drc_PCB1_43687.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_43831.json    |   897 +
+ .../pcb/evidence/check_drc_PCB1_43831.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_43933.json    |   836 +
+ .../pcb/evidence/check_drc_PCB1_43933.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_53126.json    |    37 +
+ .../pcb/evidence/check_drc_PCB1_53126.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB1_78884.json    |   721 +
+ .../pcb/evidence/check_drc_PCB1_78884.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_18125.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_18125.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_18259.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_18259.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_18396.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_18396.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_18598.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_18598.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_18794.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_18794.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_29986.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_29986.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_30124.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_30124.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_30334.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_30334.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_30522.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_30522.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_30701.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_30701.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_43331.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_43331.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_43525.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_43525.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_43687.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_43687.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_43831.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_43831.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_43933.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_43933.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_53126.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_53126.json.log     |     3 +
+ .../case/pcb/evidence/check_drc_PCB2_78884.json    |    37 +
+ .../pcb/evidence/check_drc_PCB2_78884.json.log     |     3 +
+ .../design/ecad/case/pcb/evidence/clang_build1.log |     0
+ .../ecad/case/pcb/evidence/clang_build10.log       |     0
+ .../ecad/case/pcb/evidence/clang_build11.log       |     0
+ .../ecad/case/pcb/evidence/clang_build12.log       |     0
+ .../ecad/case/pcb/evidence/clang_build13.log       |     0
+ .../ecad/case/pcb/evidence/clang_build14.log       |     0
+ .../ecad/case/pcb/evidence/clang_build15.log       |     0
+ .../ecad/case/pcb/evidence/clang_build16.log       |     0
+ .../design/ecad/case/pcb/evidence/clang_build2.log |     0
+ .../design/ecad/case/pcb/evidence/clang_build3.log |     0
+ .../design/ecad/case/pcb/evidence/clang_build4.log |     0
+ .../design/ecad/case/pcb/evidence/clang_build5.log |     0
+ .../design/ecad/case/pcb/evidence/clang_build6.log |     0
+ .../design/ecad/case/pcb/evidence/clang_build7.log |     0
+ .../design/ecad/case/pcb/evidence/clang_build8.log |     0
+ .../design/ecad/case/pcb/evidence/clang_build9.log |     0
+ .../design/ecad/case/pcb/evidence/clang_r2a.log    |     0
+ .../design/ecad/case/pcb/evidence/clang_r2b.log    |     0
+ .../design/ecad/case/pcb/evidence/clang_r2c.log    |     0
+ .../design/ecad/case/pcb/evidence/clang_r2d.log    |     0
+ .../design/ecad/case/pcb/evidence/clang_test.log   |     0
+ .../ecad/case/pcb/evidence/coil_xfl4015_page.html  |     1 +
+ .../design/ecad/case/pcb/evidence/crop.py          |     7 +
+ .../design/ecad/case/pcb/evidence/curl_capab1.log  |     2 +
+ .../design/ecad/case/pcb/evidence/curl_coil.log    |     1 +
+ .../design/ecad/case/pcb/evidence/curl_coil2.log   |     1 +
+ .../design/ecad/case/pcb/evidence/curl_coil3.log   |     1 +
+ .../design/ecad/case/pcb/evidence/curl_ddg1.log    |     1 +
+ .../design/ecad/case/pcb/evidence/curl_murata.log  |     1 +
+ .../design/ecad/case/pcb/evidence/curl_vishay.log  |     1 +
+ .../design/ecad/case/pcb/evidence/curl_yageo.log   |     1 +
+ .../design/ecad/case/pcb/evidence/dbg1.log         |    25 +
+ .../design/ecad/case/pcb/evidence/dbg1.py          |    32 +
+ .../design/ecad/case/pcb/evidence/ddg1.html        |   178 +
+ .../design/ecad/case/pcb/evidence/disk_final.log   |     1 +
+ .../case/pcb/evidence/drc_case_main_final.json     |   682 +
+ .../ecad/case/pcb/evidence/drc_case_main_final.log |     3 +
+ .../ecad/case/pcb/evidence/drc_case_main_final.rpt |    18 +
+ .../ecad/case/pcb/evidence/drc_case_pins_final.log |     3 +
+ .../ecad/case/pcb/evidence/drc_case_pins_final.rpt |    18 +
+ .../design/ecad/case/pcb/evidence/drc_pins_t1.json |   107 +
+ .../design/ecad/case/pcb/evidence/drc_pins_t1.log  |     3 +
+ .../design/ecad/case/pcb/evidence/drc_pins_t2.json |    37 +
+ .../design/ecad/case/pcb/evidence/drc_pins_t2.log  |     3 +
+ .../ecad/case/pcb/evidence/drc_unrouted_a.json     |  5964 ++
+ .../ecad/case/pcb/evidence/drc_unrouted_a.log      |     3 +
+ .../ecad/case/pcb/evidence/drc_unrouted_b.json     |  4959 ++
+ .../ecad/case/pcb/evidence/drc_unrouted_b.log      |     3 +
+ .../ecad/case/pcb/evidence/drc_unrouted_c.json     |  4845 ++
+ .../ecad/case/pcb/evidence/drc_unrouted_c.log      |     3 +
+ .../design/ecad/case/pcb/evidence/dsn_a.log        |     2 +
+ .../design/ecad/case/pcb/evidence/dsn_c.log        |     2 +
+ .../design/ecad/case/pcb/evidence/dsn_d.log        |     2 +
+ .../design/ecad/case/pcb/evidence/dsn_test1.log    |     2 +
+ .../design/ecad/case/pcb/evidence/dsn_test2.log    |     2 +
+ .../design/ecad/case/pcb/evidence/dump_u2.log      |   123 +
+ .../design/ecad/case/pcb/evidence/esp_pads.py      |    12 +
+ .../design/ecad/case/pcb/evidence/esp_pads2.py     |     7 +
+ .../design/ecad/case/pcb/evidence/eval_t51n.out    |     1 +
+ .../ecad/case/pcb/evidence/eval_t51n_build.log     |     3 +
+ .../ecad/case/pcb/evidence/eval_t51n_export.log    |     6 +
+ .../ecad/case/pcb/evidence/eval_t51n_router.log    |    36 +
+ .../design/ecad/case/pcb/evidence/eval_t51r.out    |     2 +
+ .../ecad/case/pcb/evidence/eval_t51r_build.log     |     3 +
+ .../ecad/case/pcb/evidence/eval_t51r_export.log    |     6 +
+ .../ecad/case/pcb/evidence/eval_t51r_router.log    |   289 +
+ .../design/ecad/case/pcb/evidence/eval_t53r.out    |     1 +
+ .../ecad/case/pcb/evidence/eval_t53r_build.log     |     3 +
+ .../ecad/case/pcb/evidence/eval_t53r_export.log    |     6 +
+ .../ecad/case/pcb/evidence/eval_t53r_router.log    |   182 +
+ .../design/ecad/case/pcb/evidence/eval_t54r.out    |     5 +
+ .../ecad/case/pcb/evidence/eval_t54r_build.log     |     3 +
+ .../ecad/case/pcb/evidence/eval_t54r_export.log    |     6 +
+ .../ecad/case/pcb/evidence/eval_t54r_router.log    |   105 +
+ .../design/ecad/case/pcb/evidence/eval_t55n.out    |     3 +
+ .../ecad/case/pcb/evidence/eval_t55n_build.log     |     3 +
+ .../ecad/case/pcb/evidence/eval_t55n_export.log    |     6 +
+ .../ecad/case/pcb/evidence/eval_t55n_router.log    |    34 +
+ .../design/ecad/case/pcb/evidence/eval_t55r.out    |     4 +
+ .../ecad/case/pcb/evidence/eval_t55r_build.log     |     3 +
+ .../ecad/case/pcb/evidence/eval_t55r_export.log    |     6 +
+ .../ecad/case/pcb/evidence/eval_t55r_router.log    |    66 +
+ .../design/ecad/case/pcb/evidence/eval_u51.out     |     1 +
+ .../ecad/case/pcb/evidence/eval_u51_build.log      |     3 +
+ .../ecad/case/pcb/evidence/eval_u51_export.log     |     6 +
+ .../ecad/case/pcb/evidence/eval_u51_router.log     |   166 +
+ .../design/ecad/case/pcb/evidence/eval_u52.out     |     6 +
+ .../ecad/case/pcb/evidence/eval_u52_build.log      |     3 +
+ .../ecad/case/pcb/evidence/eval_u52_export.log     |     6 +
+ .../ecad/case/pcb/evidence/eval_u52_router.log     |    81 +
+ .../design/ecad/case/pcb/evidence/eval_u53.out     |     2 +
+ .../ecad/case/pcb/evidence/eval_u53_build.log      |     3 +
+ .../ecad/case/pcb/evidence/eval_u53_export.log     |     6 +
+ .../ecad/case/pcb/evidence/eval_u53_router.log     |    90 +
+ .../design/ecad/case/pcb/evidence/eval_u54.out     |     3 +
+ .../ecad/case/pcb/evidence/eval_u54_build.log      |     3 +
+ .../ecad/case/pcb/evidence/eval_u54_export.log     |     6 +
+ .../ecad/case/pcb/evidence/eval_u54_router.log     |   104 +
+ .../design/ecad/case/pcb/evidence/eval_w81.out     |     4 +
+ .../ecad/case/pcb/evidence/eval_w81_build.log      |     3 +
+ .../ecad/case/pcb/evidence/eval_w81_export.log     |     6 +
+ .../ecad/case/pcb/evidence/eval_w81_router.log     |   140 +
+ .../design/ecad/case/pcb/evidence/eval_w82.out     |     3 +
+ .../ecad/case/pcb/evidence/eval_w82_build.log      |     3 +
+ .../ecad/case/pcb/evidence/eval_w82_export.log     |     6 +
+ .../ecad/case/pcb/evidence/eval_w82_router.log     |   116 +
+ .../design/ecad/case/pcb/evidence/eval_w83.out     |     3 +
+ .../ecad/case/pcb/evidence/eval_w83_build.log      |     3 +
+ .../ecad/case/pcb/evidence/eval_w83_export.log     |     6 +
+ .../ecad/case/pcb/evidence/eval_w83_router.log     |   178 +
+ .../design/ecad/case/pcb/evidence/eval_w85.out     |     3 +
+ .../ecad/case/pcb/evidence/eval_w85_build.log      |     3 +
+ .../ecad/case/pcb/evidence/eval_w85_export.log     |     6 +
+ .../ecad/case/pcb/evidence/eval_w85_router.log     |   121 +
+ .../design/ecad/case/pcb/evidence/eval_x93.out     |     2 +
+ .../ecad/case/pcb/evidence/eval_x93_build.log      |     3 +
+ .../ecad/case/pcb/evidence/eval_x93_export.log     |     6 +
+ .../ecad/case/pcb/evidence/eval_x93_router.log     |    92 +
+ .../design/ecad/case/pcb/evidence/eval_x95.out     |     2 +
+ .../ecad/case/pcb/evidence/eval_x95_build.log      |     3 +
+ .../ecad/case/pcb/evidence/eval_x95_export.log     |     6 +
+ .../ecad/case/pcb/evidence/eval_x95_router.log     |   169 +
+ .../design/ecad/case/pcb/evidence/eval_x96.out     |     1 +
+ .../ecad/case/pcb/evidence/eval_x96_build.log      |     3 +
+ .../ecad/case/pcb/evidence/eval_x96_export.log     |     6 +
+ .../ecad/case/pcb/evidence/eval_x96_router.log     |   133 +
+ .../case/pcb/evidence/export_fab_main_final.log    |     8 +
+ .../case/pcb/evidence/export_fab_main_final2.log   |     8 +
+ .../case/pcb/evidence/export_fab_main_test.log     |     8 +
+ .../case/pcb/evidence/export_fab_pins_final.log    |     6 +
+ .../case/pcb/evidence/export_fab_pins_test.log     |     6 +
+ .../ecad/case/pcb/evidence/export_t51n_skip.log    |     6 +
+ .../design/ecad/case/pcb/evidence/final_reply.md   |    22 +
+ .../design/ecad/case/pcb/evidence/findpages.py     |     8 +
+ .../case/pcb/evidence/finish2_b116_declash.log     |    15 +
+ .../ecad/case/pcb/evidence/finish2_b116_gnd.log    |    15 +
+ .../ecad/case/pcb/evidence/finish2_b116_import.log |     2 +
+ .../ecad/case/pcb/evidence/finish2_c1_declash.log  |    15 +
+ .../ecad/case/pcb/evidence/finish2_c1_gnd.log      |    15 +
+ .../ecad/case/pcb/evidence/finish2_c1_import.log   |     2 +
+ .../design/ecad/case/pcb/evidence/finish2_w83.out  |     7 +
+ .../ecad/case/pcb/evidence/finish2_w83_declash.log |   132 +
+ .../ecad/case/pcb/evidence/finish2_w83_gnd.log     |    98 +
+ .../ecad/case/pcb/evidence/finish2_w83_import.log  |     4 +
+ .../case/pcb/evidence/finish2_w83s_declash.log     |    85 +
+ .../ecad/case/pcb/evidence/finish2_w83s_gnd.log    |    98 +
+ .../ecad/case/pcb/evidence/finish2_w83s_import.log |     4 +
+ .../design/ecad/case/pcb/evidence/finish2_x95.out  |     0
+ .../ecad/case/pcb/evidence/finish2_x95_declash.log |  1110 +
+ .../ecad/case/pcb/evidence/finish2_x95_import.log  |     3 +
+ .../design/ecad/case/pcb/evidence/finish2_x96.out  |     0
+ .../ecad/case/pcb/evidence/finish2_x96_declash.log |  4542 ++
+ .../ecad/case/pcb/evidence/finish2_x96_import.log  |     2 +
+ .../ecad/case/pcb/evidence/finish_runB2_test.log   |    26 +
+ .../ecad/case/pcb/evidence/finish_u53_gnd.log      |    98 +
+ .../ecad/case/pcb/evidence/finish_u53_import.log   |     3 +
+ .../ecad/case/pcb/evidence/finish_u53_run1.log     |     0
+ .../ecad/case/pcb/evidence/finish_u53_usb.log      |    21 +
+ .../design/ecad/case/pcb/evidence/geom_final.log   |    24 +
+ .../design/ecad/case/pcb/evidence/geom_run1.log    |    24 +
+ .../ecad/case/pcb/evidence/gnd_phase_u53.log       |    98 +
+ .../ecad/case/pcb/evidence/gnd_phase_w83.log       |    98 +
+ .../case/pcb/evidence/grep_mounting_case_py.log    |     7 +
+ .../design/ecad/case/pcb/evidence/grepdoc.py       |     8 +
+ .../ecad/case/pcb/evidence/grid_router_round1.cpp  |   406 +
+ .../ecad/case/pcb/evidence/grid_router_run1.log    |    44 +
+ .../ecad/case/pcb/evidence/grid_router_run2.log    |    22 +
+ .../ecad/case/pcb/evidence/grid_router_run3.log    |    21 +
+ .../ecad/case/pcb/evidence/grid_router_run4.log    |    50 +
+ .../ecad/case/pcb/evidence/grid_router_run5.log    |    49 +
+ .../ecad/case/pcb/evidence/grid_router_t51n_b.log  |    82 +
+ .../ecad/case/pcb/evidence/grid_router_t51n_c.log  |    82 +
+ .../case/pcb/evidence/grid_router_t51n_skip.log    |    82 +
+ .../case/pcb/evidence/grid_router_t51n_skip2.log   |    91 +
+ .../case/pcb/evidence/grid_router_t51n_skip3.log   |   302 +
+ .../case/pcb/evidence/grid_router_t51n_skip4.log   |    38 +
+ .../ecad/case/pcb/evidence/grid_router_u51_s2.log  |   140 +
+ .../ecad/case/pcb/evidence/grid_router_u51_s3.log  |   176 +
+ .../case/pcb/evidence/grid_router_u51_v800.log     |   146 +
+ .../case/pcb/evidence/grid_router_u52_v800.log     |   109 +
+ .../ecad/case/pcb/evidence/grid_router_u53_s2.log  |   144 +
+ .../ecad/case/pcb/evidence/grid_router_u53_s3.log  |   149 +
+ .../ecad/case/pcb/evidence/grid_router_u53_s4.log  |   141 +
+ .../case/pcb/evidence/grid_router_u53_v1000.log    |   668 +
+ .../case/pcb/evidence/grid_router_u53_v1500.log    |    93 +
+ .../case/pcb/evidence/grid_router_u53_v600.log     |   194 +
+ .../case/pcb/evidence/grid_router_u53_v800.log     |   324 +
+ .../case/pcb/evidence/grid_router_u54_v800.log     |   145 +
+ .../design/ecad/case/pcb/evidence/hello            |   Bin 0 -> 33432 bytes
+ .../design/ecad/case/pcb/evidence/hello.cpp        |     2 +
+ .../design/ecad/case/pcb/evidence/imp_t51n.log     |     2 +
+ .../ecad/case/pcb/evidence/imp_t51n_skip.log       |     2 +
+ .../design/ecad/case/pcb/evidence/imp_u53.log      |     3 +
+ .../design/ecad/case/pcb/evidence/imp_w83.log      |     4 +
+ .../ecad/case/pcb/evidence/kept/c2_out_s1.txt      | 18822 ++++++
+ .../case/pcb/evidence/kept/case_main.route.log     |   123 +
+ .../pcb/evidence/kept/placement_pcb1_s116e.json    |   500 +
+ .../pcb/evidence/kept/placement_pcb1_s83t.json     |   500 +
+ .../ecad/case/pcb/evidence/kept/runB.route.log     |   130 +
+ .../ecad/case/pcb/evidence/kept/runB2.route.log    |   107 +
+ .../ecad/case/pcb/evidence/kept/runB3.route.log    |    95 +
+ .../ecad/case/pcb/evidence/kept/runC.route.log     |    51 +
+ .../design/ecad/case/pcb/evidence/kipy_probe.log   |     4 +
+ .../ecad/case/pcb/evidence/make_bom_final.log      |     2 +
+ .../ecad/case/pcb/evidence/make_bom_test.log       |     2 +
+ .../ecad/case/pcb/evidence/make_box_models.log     |     1 +
+ .../design/ecad/case/pcb/evidence/make_broken.log  |    44 +
+ .../case/pcb/evidence/make_footprints_final.log    |    22 +
+ .../case/pcb/evidence/make_footprints_final2.log   |    22 +
+ .../case/pcb/evidence/make_footprints_run1.log     |     3 +
+ .../case/pcb/evidence/make_footprints_run2.log     |     3 +
+ .../case/pcb/evidence/make_footprints_run3.log     |     3 +
+ .../case/pcb/evidence/make_footprints_run4.log     |     3 +
+ .../case/pcb/evidence/make_footprints_run5.log     |    23 +
+ .../case/pcb/evidence/make_footprints_run6.log     |    22 +
+ .../case/pcb/evidence/make_footprints_run7.log     |    22 +
+ .../case/pcb/evidence/make_netlist_before_w5.py    |   263 +
+ .../ecad/case/pcb/evidence/make_netlist_sim.log    |     2 +
+ .../ecad/case/pcb/evidence/make_netlist_w5.log     |     2 +
+ .../ecad/case/pcb/evidence/make_netlist_w5b.log    |     2 +
+ .../ecad/case/pcb/evidence/models_step_test.log    |     4 +
+ .../design/ecad/case/pcb/evidence/models_test.log  |     4 +
+ .../ecad/case/pcb/evidence/netlist_before_w5.csv   |   280 +
+ .../ecad/case/pcb/evidence/open-pins_before_w5.csv |    13 +
+ .../case/pcb/evidence/pages/case_bq25895_p61.png   |   Bin 0 -> 219197 bytes
+ .../case/pcb/evidence/pages/case_bq25895_p62.png   |   Bin 0 -> 67974 bytes
+ .../case/pcb/evidence/pages/case_bq25895_p63.png   |   Bin 0 -> 97983 bytes
+ .../case/pcb/evidence/pages/case_bq25895_p64.png   |   Bin 0 -> 139943 bytes
+ .../pcb/evidence/pages/case_cell_dnk852338_p1.png  |   Bin 0 -> 483875 bytes
+ .../pcb/evidence/pages/case_esp32s3_mini1_p10.png  |   Bin 0 -> 126281 bytes
+ .../pcb/evidence/pages/case_esp32s3_mini1_p11.png  |   Bin 0 -> 169556 bytes
+ .../pcb/evidence/pages/case_esp32s3_mini1_p12.png  |   Bin 0 -> 56551 bytes
+ .../pcb/evidence/pages/case_esp32s3_mini1_p13.png  |   Bin 0 -> 136919 bytes
+ .../pcb/evidence/pages/case_esp32s3_mini1_p42.png  |   Bin 0 -> 121268 bytes
+ .../pcb/evidence/pages/case_esp32s3_mini1_p43.png  |   Bin 0 -> 126261 bytes
+ .../pcb/evidence/pages/case_esp32s3_mini1_p45.png  |   Bin 0 -> 107566 bytes
+ .../pcb/evidence/pages/case_esp32s3_mini1_p46.png  |   Bin 0 -> 82567 bytes
+ .../pcb/evidence/pages/case_esp32s3_mini1_p47.png  |   Bin 0 -> 123154 bytes
+ .../pcb/evidence/pages/case_esp32s3_mini1_p8.png   |   Bin 0 -> 57956 bytes
+ .../pcb/evidence/pages/case_esp32s3_mini1_p9.png   |   Bin 0 -> 75702 bytes
+ .../pcb/evidence/pages/case_kb_aptf1616_p1.png     |   Bin 0 -> 254520 bytes
+ .../pcb/evidence/pages/case_kb_aptf1616_p3.png     |   Bin 0 -> 209755 bytes
+ .../pcb/evidence/pages/case_tpd4e05u06_p28.png     |   Bin 0 -> 76977 bytes
+ .../pcb/evidence/pages/case_tpd4e05u06_p29.png     |   Bin 0 -> 70876 bytes
+ .../pcb/evidence/pages/case_tpd4e05u06_p31.png     |   Bin 0 -> 75447 bytes
+ .../pcb/evidence/pages/case_tpd4e05u06_p32.png     |   Bin 0 -> 74903 bytes
+ .../case/pcb/evidence/pages/case_tps2553_p43.png   |   Bin 0 -> 80946 bytes
+ .../case/pcb/evidence/pages/case_tps2553_p44.png   |   Bin 0 -> 67551 bytes
+ .../case/pcb/evidence/pages/case_tps63802_p35.png  |   Bin 0 -> 64491 bytes
+ .../case/pcb/evidence/pages/case_tps63802_p36.png  |   Bin 0 -> 81564 bytes
+ .../case/pcb/evidence/pages/case_usb4105_p1.png    |   Bin 0 -> 309732 bytes
+ .../case/pcb/evidence/pages/case_usb4105_p2.png    |   Bin 0 -> 225971 bytes
+ .../evidence/pages/p3_harwin_p70_chipdip_p1.png    |   Bin 0 -> 281916 bytes
+ .../pages/sdnand_zetta_family_atta_p15.png         |   Bin 0 -> 126015 bytes
+ .../pages/sdnand_zetta_family_atta_p16.png         |   Bin 0 -> 77626 bytes
+ .../evidence/pages/sdnand_zetta_family_atta_p4.png |   Bin 0 -> 217404 bytes
+ .../ecad/case/pcb/evidence/pages/usb_land.png      |   Bin 0 -> 119488 bytes
+ .../ecad/case/pcb/evidence/pages/xfl4015_p2.png    |   Bin 0 -> 163303 bytes
+ .../ecad/case/pcb/evidence/pages/xfl4020_p2.png    |   Bin 0 -> 169483 bytes
+ .../ecad/case/pcb/evidence/pages/xfl4020_p3.png    |   Bin 0 -> 124351 bytes
+ .../ecad/case/pcb/evidence/pages/zetta_bottom.png  |   Bin 0 -> 95606 bytes
+ .../ecad/case/pcb/evidence/parts_before_w5.csv     |    90 +
+ .../design/ecad/case/pcb/evidence/pcb2_front.pdf   |   Bin 0 -> 11993 bytes
+ .../design/ecad/case/pcb/evidence/pcb2_front.png   |   Bin 0 -> 11036 bytes
+ .../ecad/case/pcb/evidence/pcb2_front.png.log      |     2 +
+ .../design/ecad/case/pcb/evidence/ph3_declash.log  |    90 +
+ .../design/ecad/case/pcb/evidence/ph3_export.log   |    95 +
+ .../design/ecad/case/pcb/evidence/ph3_gnd.log      |    98 +
+ .../design/ecad/case/pcb/evidence/ph3_import.log   |     5 +
+ .../design/ecad/case/pcb/evidence/ph3_router.log   |   215 +
+ .../design/ecad/case/pcb/evidence/ph3_router2.log  |    80 +
+ .../design/ecad/case/pcb/evidence/ph3_router3.log  |   103 +
+ .../design/ecad/case/pcb/evidence/pipetest_dsn.log |     2 +
+ .../ecad/case/pcb/evidence/pipetest_route.log      |     6 +
+ .../design/ecad/case/pcb/evidence/place_seed1.log  |    31 +
+ .../design/ecad/case/pcb/evidence/place_seed11.log |    31 +
+ .../design/ecad/case/pcb/evidence/place_seed12.log |    32 +
+ .../design/ecad/case/pcb/evidence/place_seed13.log |    30 +
+ .../design/ecad/case/pcb/evidence/place_seed14.log |    30 +
+ .../design/ecad/case/pcb/evidence/place_seed21.log |    30 +
+ .../design/ecad/case/pcb/evidence/place_seed22.log |    32 +
+ .../ecad/case/pcb/evidence/place_seed22r.log       |    16 +
+ .../design/ecad/case/pcb/evidence/place_seed23.log |    29 +
+ .../design/ecad/case/pcb/evidence/place_seed24.log |    32 +
+ .../ecad/case/pcb/evidence/place_seed24r.log       |    15 +
+ .../design/ecad/case/pcb/evidence/place_seed25.log |    31 +
+ .../ecad/case/pcb/evidence/place_seed25r.log       |    16 +
+ .../design/ecad/case/pcb/evidence/place_seed26.log |    31 +
+ .../ecad/case/pcb/evidence/place_seed31x.log       |    23 +
+ .../ecad/case/pcb/evidence/place_seed32x.log       |    25 +
+ .../ecad/case/pcb/evidence/place_seed33x.log       |    26 +
+ .../ecad/case/pcb/evidence/place_seed34x.log       |    23 +
+ .../ecad/case/pcb/evidence/place_seed41m.log       |    26 +
+ .../ecad/case/pcb/evidence/place_seed42m.log       |    24 +
+ .../ecad/case/pcb/evidence/place_seed43m.log       |    26 +
+ .../ecad/case/pcb/evidence/place_seed44m.log       |    24 +
+ .../ecad/case/pcb/evidence/place_seed45m.log       |    23 +
+ .../ecad/case/pcb/evidence/place_seed46m.log       |    24 +
+ .../ecad/case/pcb/evidence/place_seed51n.log       |    22 +
+ .../ecad/case/pcb/evidence/place_seed51nr.log      |    16 +
+ .../ecad/case/pcb/evidence/place_seed52n.log       |    20 +
+ .../ecad/case/pcb/evidence/place_seed53n.log       |    21 +
+ .../ecad/case/pcb/evidence/place_seed53nr.log      |    16 +
+ .../ecad/case/pcb/evidence/place_seed53q.log       |    11 +
+ .../ecad/case/pcb/evidence/place_seed54n.log       |    21 +
+ .../ecad/case/pcb/evidence/place_seed54nr.log      |    16 +
+ .../ecad/case/pcb/evidence/place_seed55n.log       |    22 +
+ .../ecad/case/pcb/evidence/place_seed55nr.log      |    15 +
+ .../ecad/case/pcb/evidence/place_seed56n.log       |    21 +
+ .../ecad/case/pcb/evidence/place_seed61p.log       |    19 +
+ .../ecad/case/pcb/evidence/place_seed62p.log       |    20 +
+ .../ecad/case/pcb/evidence/place_seed63p.log       |    20 +
+ .../ecad/case/pcb/evidence/place_seed64p.log       |    19 +
+ .../ecad/case/pcb/evidence/place_seed71s.log       |    14 +
+ .../ecad/case/pcb/evidence/place_seed72s.log       |    14 +
+ .../ecad/case/pcb/evidence/place_seed73s.log       |    13 +
+ .../ecad/case/pcb/evidence/place_seed74s.log       |    14 +
+ .../ecad/case/pcb/evidence/place_seed81t.log       |    16 +
+ .../ecad/case/pcb/evidence/place_seed82t.log       |    18 +
+ .../ecad/case/pcb/evidence/place_seed83t.log       |    17 +
+ .../ecad/case/pcb/evidence/place_seed84t.log       |    18 +
+ .../ecad/case/pcb/evidence/place_seed85t.log       |    17 +
+ .../ecad/case/pcb/evidence/place_seed86t.log       |    18 +
+ .../ecad/case/pcb/evidence/place_seed91w.log       |    15 +
+ .../ecad/case/pcb/evidence/place_seed92w.log       |    16 +
+ .../ecad/case/pcb/evidence/place_seed93w.log       |    16 +
+ .../ecad/case/pcb/evidence/place_seed94w.log       |    14 +
+ .../ecad/case/pcb/evidence/place_seed95w.log       |    16 +
+ .../ecad/case/pcb/evidence/place_seed96w.log       |    15 +
+ .../design/ecad/case/pcb/evidence/place_test1.log  |     3 +
+ .../design/ecad/case/pcb/evidence/place_test2.log  |     6 +
+ .../design/ecad/case/pcb/evidence/power_width.log  |     9 +
+ .../design/ecad/case/pcb/evidence/py.sh            |     2 +
+ .../design/ecad/case/pcb/evidence/r2_bom.log       |     2 +
+ .../design/ecad/case/pcb/evidence/r2_c1_build.log  |     3 +
+ .../design/ecad/case/pcb/evidence/r2_c1_export.log |     6 +
+ .../design/ecad/case/pcb/evidence/r2_c1_router.log |   725 +
+ .../ecad/case/pcb/evidence/r2_c1_router_s1.log     |   728 +
+ .../ecad/case/pcb/evidence/r2_c1_router_s3.log     |   540 +
+ .../ecad/case/pcb/evidence/r2_c1_router_s4.log     |   376 +
+ .../ecad/case/pcb/evidence/r2_c1_router_s5.log     |   362 +
+ .../ecad/case/pcb/evidence/r2_c1_router_s6.log     |   844 +
+ .../ecad/case/pcb/evidence/r2_c2_router_s1.log     |    25 +
+ .../ecad/case/pcb/evidence/r2_c2_router_s2.log     |   518 +
+ .../ecad/case/pcb/evidence/r2_c2_router_s3.log     |   447 +
+ .../ecad/case/pcb/evidence/r2_c2_router_s4.log     |   456 +
+ .../ecad/case/pcb/evidence/r2_drc_unrouted.json    |  4737 ++
+ .../ecad/case/pcb/evidence/r2_drc_unrouted.log     |     3 +
+ .../design/ecad/case/pcb/evidence/r2_export.log    |     6 +
+ .../design/ecad/case/pcb/evidence/r2_fab_main.log  |     8 +
+ .../design/ecad/case/pcb/evidence/r2_fab_pins.log  |     6 +
+ .../ecad/case/pcb/evidence/r2_finish_b116.out      |     6 +
+ .../design/ecad/case/pcb/evidence/r2_finish_c1.out |     6 +
+ .../ecad/case/pcb/evidence/r2_models_main.log      |     2 +
+ .../ecad/case/pcb/evidence/r2_models_pins.log      |     2 +
+ .../design/ecad/case/pcb/evidence/r2_place_101.log |    12 +
+ .../design/ecad/case/pcb/evidence/r2_place_102.log |    11 +
+ .../design/ecad/case/pcb/evidence/r2_place_103.log |    12 +
+ .../design/ecad/case/pcb/evidence/r2_place_104.log |    12 +
+ .../design/ecad/case/pcb/evidence/r2_place_111.log |    18 +
+ .../design/ecad/case/pcb/evidence/r2_place_112.log |    17 +
+ .../design/ecad/case/pcb/evidence/r2_place_113.log |    17 +
+ .../design/ecad/case/pcb/evidence/r2_place_114.log |    15 +
+ .../design/ecad/case/pcb/evidence/r2_place_115.log |    15 +
+ .../design/ecad/case/pcb/evidence/r2_place_116.log |    17 +
+ .../design/ecad/case/pcb/evidence/r2_router1.log   |   636 +
+ .../design/ecad/case/pcb/evidence/r2_router_s1.log |   222 +
+ .../design/ecad/case/pcb/evidence/r2_router_s2.log |   318 +
+ .../design/ecad/case/pcb/evidence/r2_router_s3.log |   229 +
+ .../ecad/case/pcb/evidence/r2_router_v1000.log     |   216 +
+ .../design/ecad/case/pcb/evidence/r2_tune.log      |   160 +
+ .../design/ecad/case/pcb/evidence/r2_unrouted.log  |     3 +
+ .../design/ecad/case/pcb/evidence/r2e_a102.out     |     1 +
+ .../ecad/case/pcb/evidence/r2e_a102_build.log      |     3 +
+ .../ecad/case/pcb/evidence/r2e_a102_export.log     |     6 +
+ .../ecad/case/pcb/evidence/r2e_a102_router.log     |   533 +
+ .../design/ecad/case/pcb/evidence/r2e_a103.out     |     1 +
+ .../ecad/case/pcb/evidence/r2e_a103_build.log      |     3 +
+ .../ecad/case/pcb/evidence/r2e_a103_export.log     |     6 +
+ .../ecad/case/pcb/evidence/r2e_a103_router.log     |   845 +
+ .../design/ecad/case/pcb/evidence/r2e_a104.out     |     1 +
+ .../ecad/case/pcb/evidence/r2e_a104_build.log      |     3 +
+ .../ecad/case/pcb/evidence/r2e_a104_export.log     |     6 +
+ .../ecad/case/pcb/evidence/r2e_a104_router.log     |   387 +
+ .../design/ecad/case/pcb/evidence/r2e_b113.out     |     1 +
+ .../ecad/case/pcb/evidence/r2e_b113_build.log      |     3 +
+ .../ecad/case/pcb/evidence/r2e_b113_export.log     |     6 +
+ .../ecad/case/pcb/evidence/r2e_b113_router.log     |   786 +
+ .../design/ecad/case/pcb/evidence/r2e_b114.out     |     1 +
+ .../ecad/case/pcb/evidence/r2e_b114_build.log      |     3 +
+ .../ecad/case/pcb/evidence/r2e_b114_export.log     |     6 +
+ .../ecad/case/pcb/evidence/r2e_b114_router.log     |   332 +
+ .../design/ecad/case/pcb/evidence/r2e_b115.out     |     1 +
+ .../ecad/case/pcb/evidence/r2e_b115_build.log      |     3 +
+ .../ecad/case/pcb/evidence/r2e_b115_export.log     |     6 +
+ .../ecad/case/pcb/evidence/r2e_b115_router.log     |   724 +
+ .../design/ecad/case/pcb/evidence/r2e_b116.out     |     1 +
+ .../ecad/case/pcb/evidence/r2e_b116_build.log      |     3 +
+ .../ecad/case/pcb/evidence/r2e_b116_export.log     |     6 +
+ .../ecad/case/pcb/evidence/r2e_b116_router.log     |    19 +
+ .../design/ecad/case/pcb/evidence/render1.log      |     4 +
+ .../design/ecad/case/pcb/evidence/render_pages.py  |     8 +
+ .../ecad/case/pcb/evidence/route_io_export1.log    |     6 +
+ .../ecad/case/pcb/evidence/route_io_export2.log    |     6 +
+ .../ecad/case/pcb/evidence/route_io_import1.log    |    10 +
+ .../design/ecad/case/pcb/evidence/route_run1.log   |     6 +
+ .../design/ecad/case/pcb/evidence/route_runB.log   |     6 +
+ .../design/ecad/case/pcb/evidence/route_runB2.log  |     6 +
+ .../design/ecad/case/pcb/evidence/route_runB3.log  |     6 +
+ .../design/ecad/case/pcb/evidence/route_runC.log   |     8 +
+ .../design/ecad/case/pcb/evidence/runB_front.pdf   |   Bin 0 -> 81033 bytes
+ .../design/ecad/case/pcb/evidence/runB_front.png   |   Bin 0 -> 88401 bytes
+ .../ecad/case/pcb/evidence/runB_front.png.log      |     2 +
+ .../ecad/case/pcb/evidence/run_all_w5_base.out     |     4 +
+ .../ecad/case/pcb/evidence/run_all_w5_final.out    |     4 +
+ .../ecad/case/pcb/evidence/run_all_w5_pins.out     |     4 +
+ .../ecad/case/pcb/evidence/run_all_w5_pins2.out    |     4 +
+ .../ecad/case/pcb/evidence/run_all_w5_sim.out      |     4 +
+ .../ecad/case/pcb/evidence/run_broken_tests.out    |     5 +
+ .../design/ecad/case/pcb/evidence/secret_scan.log  |     0
+ .../case/pcb/evidence/server_cleanup_after.log     |     2 +
+ .../case/pcb/evidence/server_cleanup_before.log    |    32 +
+ .../ecad/case/pcb/evidence/server_cleanup_rm.log   |     1 +
+ .../ecad/case/pcb/evidence/server_setup1.log       |     7 +
+ .../ecad/case/pcb/evidence/server_setup2.log       |     3 +
+ .../design/ecad/case/pcb/evidence/sim_bom.log      |     2 +
+ .../design/ecad/case/pcb/evidence/sim_export.log   |     6 +
+ .../design/ecad/case/pcb/evidence/sim_fab_main.log |     8 +
+ .../design/ecad/case/pcb/evidence/sim_fab_pins.log |     6 +
+ .../design/ecad/case/pcb/evidence/sim_finish2.out  |     7 +
+ .../design/ecad/case/pcb/evidence/sim_pcb2.log     |     3 +
+ .../design/ecad/case/pcb/evidence/sim_router.log   |   126 +
+ .../design/ecad/case/pcb/evidence/sim_unrouted.log |     3 +
+ .../design/ecad/case/pcb/evidence/t51n_zoom.pdf    |   Bin 0 -> 95350 bytes
+ .../design/ecad/case/pcb/evidence/t51n_zoom.png    |   Bin 0 -> 60454 bytes
+ .../ecad/case/pcb/evidence/t51n_zoom.png.log       |     2 +
+ .../design/ecad/case/pcb/evidence/th1_pads.log     |     2 +
+ .../pcb/evidence/trial/T.pretty/TRIAL.kicad_mod    |    72 +
+ .../design/ecad/case/pcb/evidence/trial_fp.log     |     2 +
+ .../design/ecad/case/pcb/evidence/trial_fp.py      |    16 +
+ .../design/ecad/case/pcb/evidence/tune_dbg.py      |     9 +
+ .../design/ecad/case/pcb/evidence/tune_final.log   |   552 +
+ .../design/ecad/case/pcb/evidence/tune_test1.log   |   293 +
+ .../design/ecad/case/pcb/evidence/tune_test2.log   |   293 +
+ .../design/ecad/case/pcb/evidence/tune_test3.log   |   299 +
+ .../design/ecad/case/pcb/evidence/tune_test4.log   |    30 +
+ .../case/pcb/evidence/unconnected_breakdown.log    |     2 +
+ .../ecad/case/pcb/evidence/w5_try_murata_c02e.pdf  |   716 +
+ .../ecad/case/pcb/evidence/w5_try_xfl4015.pdf      |   Bin 0 -> 199218 bytes
+ .../ecad/case/pcb/evidence/w5_try_xfl4020.pdf      |   Bin 0 -> 232753 bytes
+ .../ecad/case/pcb/evidence/w5_try_yageo_rc.pdf     |     1 +
+ .../ecad/case/pcb/evidence/w5_vishay_crcw_e3.pdf   |   Bin 0 -> 150402 bytes
+ .../design/ecad/case/pcb/evidence/who_is_at.py     |     8 +
+ .../design/ecad/case/pcb/evidence/wire_table.csv   |     8 +
+ .../design/ecad/case/pcb/evidence/wire_table.log   |    20 +
+ .../design/ecad/case/pcb/export_dsn.py             |     4 +
+ .../design/ecad/case/pcb/export_fab.sh             |    20 +
+ .../ecad/case/pcb/fab/case_main/case_main.step     | 44335 +++++++++++++
+ .../case/pcb/fab/case_main/case_main_position.csv  |    84 +
+ .../design/ecad/case/pcb/fab/case_main/drill.log   |     5 +
+ .../design/ecad/case/pcb/fab/case_main/export.log  |     8 +
+ .../pcb/fab/case_main/gerber/case_main-B_Cu.gbr    |  2189 +
+ .../pcb/fab/case_main/gerber/case_main-B_Mask.gbr  |  1231 +
+ .../pcb/fab/case_main/gerber/case_main-B_Paste.gbr |    15 +
+ .../case_main/gerber/case_main-B_Silkscreen.gbr    |  1233 +
+ .../fab/case_main/gerber/case_main-Edge_Cuts.gbr   |    34 +
+ .../pcb/fab/case_main/gerber/case_main-F_Cu.gbr    |  4528 ++
+ .../pcb/fab/case_main/gerber/case_main-F_Mask.gbr  |  6871 ++
+ .../pcb/fab/case_main/gerber/case_main-F_Paste.gbr |   534 +
+ .../case_main/gerber/case_main-F_Silkscreen.gbr    |  6887 ++
+ .../pcb/fab/case_main/gerber/case_main-In1_Cu.gbr  |  3598 +
+ .../pcb/fab/case_main/gerber/case_main-In2_Cu.gbr  |  4468 ++
+ .../case_main/gerber/case_main-NPTH-drl_map.gbr    |   977 +
+ .../pcb/fab/case_main/gerber/case_main-NPTH.drl    |    17 +
+ .../fab/case_main/gerber/case_main-PTH-drl_map.gbr |  3305 +
+ .../pcb/fab/case_main/gerber/case_main-PTH.drl     |   171 +
+ .../pcb/fab/case_main/gerber/case_main-job.gbrjob  |   169 +
+ .../design/ecad/case/pcb/fab/case_main/gerbers.log |    11 +
+ .../ecad/case/pcb/fab/case_main/pdf/B_Cu.log       |     2 +
+ .../ecad/case/pcb/fab/case_main/pdf/F_Cu.log       |     2 +
+ .../ecad/case/pcb/fab/case_main/pdf/In1_Cu.log     |     2 +
+ .../ecad/case/pcb/fab/case_main/pdf/In2_Cu.log     |     2 +
+ .../case/pcb/fab/case_main/pdf/case_main_B_Cu.pdf  |   Bin 0 -> 43496 bytes
+ .../case/pcb/fab/case_main/pdf/case_main_F_Cu.pdf  |   Bin 0 -> 98358 bytes
+ .../pcb/fab/case_main/pdf/case_main_In1_Cu.pdf     |   Bin 0 -> 44152 bytes
+ .../pcb/fab/case_main/pdf/case_main_In2_Cu.pdf     |   Bin 0 -> 49182 bytes
+ .../design/ecad/case/pcb/fab/case_main/pos.log     |     1 +
+ .../design/ecad/case/pcb/fab/case_main/step.log    |     4 +
+ .../design/ecad/case/pcb/fab/case_main_parts.csv   |    41 +
+ .../ecad/case/pcb/fab/case_pins/case_pins.step     |   909 +
+ .../case/pcb/fab/case_pins/case_pins_position.csv  |    11 +
+ .../design/ecad/case/pcb/fab/case_pins/drill.log   |     5 +
+ .../design/ecad/case/pcb/fab/case_pins/export.log  |     6 +
+ .../pcb/fab/case_pins/gerber/case_pins-B_Cu.gbr    |   148 +
+ .../pcb/fab/case_pins/gerber/case_pins-B_Mask.gbr  |   159 +
+ .../pcb/fab/case_pins/gerber/case_pins-B_Paste.gbr |    15 +
+ .../case_pins/gerber/case_pins-B_Silkscreen.gbr    |   161 +
+ .../fab/case_pins/gerber/case_pins-Edge_Cuts.gbr   |    42 +
+ .../pcb/fab/case_pins/gerber/case_pins-F_Cu.gbr    |   128 +
+ .../pcb/fab/case_pins/gerber/case_pins-F_Mask.gbr  |   543 +
+ .../pcb/fab/case_pins/gerber/case_pins-F_Paste.gbr |    15 +
+ .../case_pins/gerber/case_pins-F_Silkscreen.gbr    |   545 +
+ .../case_pins/gerber/case_pins-NPTH-drl_map.gbr    |   181 +
+ .../pcb/fab/case_pins/gerber/case_pins-NPTH.drl    |    12 +
+ .../fab/case_pins/gerber/case_pins-PTH-drl_map.gbr |  1279 +
+ .../pcb/fab/case_pins/gerber/case_pins-PTH.drl     |    24 +
+ .../pcb/fab/case_pins/gerber/case_pins-job.gbrjob  |   127 +
+ .../design/ecad/case/pcb/fab/case_pins/gerbers.log |     9 +
+ .../ecad/case/pcb/fab/case_pins/pdf/B_Cu.log       |     2 +
+ .../ecad/case/pcb/fab/case_pins/pdf/F_Cu.log       |     2 +
+ .../case/pcb/fab/case_pins/pdf/case_pins_B_Cu.pdf  |   Bin 0 -> 5956 bytes
+ .../case/pcb/fab/case_pins/pdf/case_pins_F_Cu.pdf  |   Bin 0 -> 9130 bytes
+ .../design/ecad/case/pcb/fab/case_pins/pos.log     |     1 +
+ .../design/ecad/case/pcb/fab/case_pins/step.log    |     4 +
+ .../design/ecad/case/pcb/fab/case_pins_parts.csv   |     4 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/finish2.sh   |    14 +
+ .../design/ecad/case/pcb/finish_main.sh            |    15 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/geom.py      |    97 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/gnd_phase.py |    50 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/grid_router  |   Bin 0 -> 111240 bytes
+ .../design/ecad/case/pcb/grid_router.cpp           |   412 +
+ .../design/ecad/case/pcb/import_ses.py             |     8 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/make_bom.py  |    67 +
+ .../design/ecad/case/pcb/make_box_models.py        |    14 +
+ .../design/ecad/case/pcb/make_broken.py            |    53 +
+ .../design/ecad/case/pcb/make_footprints.py        |   401 +
+ .../design/ecad/case/pcb/models/box_dfn10.step     |   415 +
+ .../ecad/case/pcb/models/box_esp32s3_mini1.step    |   415 +
+ .../design/ecad/case/pcb/models/box_led1616.step   |   415 +
+ .../design/ecad/case/pcb/models/box_lga16.step     |   415 +
+ .../design/ecad/case/pcb/models/box_uson10.step    |   415 +
+ .../design/ecad/case/pcb/models/box_xfl4015.step   |   415 +
+ .../design/ecad/case/pcb/models/box_xfl4020.step   |   415 +
+ .../design/ecad/case/pcb/models/cyl_harwin.step    |   147 +
+ .../design/ecad/case/pcb/place_pcb1.py             |   367 +
+ .../design/ecad/case/pcb/place_report.py           |    21 +
+ .../design/ecad/case/pcb/placement_pcb1.json       |   500 +
+ .../design/ecad/case/pcb/power_width.py            |    20 +
+ .../design/ecad/case/pcb/route_cont.sh             |    17 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/route_io.py  |   181 +
+ .../design/ecad/case/pcb/route_loop.sh             |    22 +
+ .../design/ecad/case/pcb/route_main.sh             |    16 +
+ .../design/ecad/case/pcb/run_boards.sh             |    27 +
+ .../design/ecad/case/pcb/run_broken_tests.sh       |    14 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/srv.sh       |    15 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/tune_usb.py  |    62 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/view.py      |    20 +
+ .../src_b9ec3cfa/design/ecad/case/pcb/view.sh      |    14 +
+ .../design/ecad/case/pcb/wire_table.py             |    45 +
+ .../src_b9ec3cfa/design/ecad/case/prove_fail.sh    |    45 +
+ .../src_b9ec3cfa/design/ecad/case/prove_fail_c2.py |    41 +
+ .../src_b9ec3cfa/design/ecad/case/render_pdf.py    |    26 +
+ .../src_b9ec3cfa/design/ecad/case/run_all.sh       |    16 +
+ .../src_b9ec3cfa/design/ecad/case/sch-notes.md     |   121 +
+ .../src_b9ec3cfa/design/ecad/case/sym-lib-table    |     4 +
+ .../src_b9ec3cfa/design/ecad/case/symbols.csv      |   157 +
+ design/wiring/readback-work/synthetic/empty.drl    |     5 +
+ design/wiring/readback-work/synthetic/s1.gbr       |    19 +
+ design/wiring/readback-work/synthetic/s2.gbr       |    19 +
+ design/wiring/readback-work/synthetic/s3.gbr       |    22 +
+ design/wiring/readback-work/t_ring_load.py         |    15 +
+ design/wiring/readback-work/xcheck_clear.py        |    61 +
+ design/wiring/readback-work/xcheck_sw.py           |     6 +
+ 1167 files changed, 826560 insertions(+)

@@ -1,0 +1,36 @@
+config RING_RHW
+	bool "Ring recorder driver interfaces (rhw)"
+	help
+	  The driver interfaces of the recorder parts (software step 6): one struct of function pointers per kind
+	  of driver, the active instance of each, the specification numbers (rrec_spec.h) and the real clock.
+
+config RING_RHW_SIM
+	bool "Simulated drivers of the recorder parts (tests and simulated boards only)"
+	depends on RING_RHW
+	help
+	  Every driver kind runs on a simulated driver written for this project (card, microphone input, power
+	  chip, gauge, HFXO, motor pin, storage bus, USB transport, image store, settings, retained memory,
+	  watchdog, clock, beacon), with one ordered event log and the faults of rhw_sim.h. Never set in the
+	  development kit build.
+
+if RING_RHW_SIM
+
+config RING_RHW_SIM_DISK_POOL
+	int "Sectors the simulated card can hold"
+	default 4096
+	help
+	  Written sectors take memory (512 bytes each); unwritten ones read as zero.
+
+config RING_RHW_SIM_LOG_SIZE
+	int "Entries of the simulated drivers' event log"
+	default 4096
+
+config RING_RHW_SIM_REBOOT_HOOKS
+	int "Reboot hooks the units can register"
+	default 32
+
+config RING_RHW_SIM_USB_HOST_BYTES
+	int "Bytes the simulated USB host buffers before it stops taking packets"
+	default 70000
+
+endif

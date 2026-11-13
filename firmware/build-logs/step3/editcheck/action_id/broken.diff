@@ -1,0 +1,13 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -970,8 +970,8 @@
+ 	}
+ 	k_mutex_unlock(&lk);
+ 	err = bt_ancs_notification_action(&ancs_c, uid,
+-					  action == RIP_ACTION_POSITIVE ? BT_ANCS_ACTION_ID_POSITIVE
+-									: BT_ANCS_ACTION_ID_NEGATIVE,
++					  action == RIP_ACTION_POSITIVE ? BT_ANCS_ACTION_ID_NEGATIVE
++									: BT_ANCS_ACTION_ID_POSITIVE,
+ 					  action_write_cb);
+ 	k_mutex_lock(&lk, K_FOREVER);
+ 	if (err == 0) {

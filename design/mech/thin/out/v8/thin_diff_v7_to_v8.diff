@@ -1,0 +1,131 @@
+6a7,10
+> v8 (2026-11-13, design/mech/thin/band-fit-notes.md): the two band flexible circuits as drawn in design/ecad/band: neck 1.8 wide centred in the floor slot (slot 2.1), a 90 degree fold
+> (inner radius 0.70) and a flat 2.5 wide foot under the board, polyimide stiffener 0.10, flex 0.11 thick outside the liner (0.15 allowance kept for the embedded trunk), FLEX2
+> pad strip X -3.4 to 0.25.
+> 
+52c56
+<     liner_t=0.30, flex_t=0.15, sw_t=0.53, plate_t=0.40, shell_t=0.50, shell_edge=0.60, travel=0.15,
+---
+>     liner_t=0.30, flex_t=0.15, sw_t=0.53, plate_t=0.40, shell_t=0.50, shell_edge=0.50, travel=0.15,       # v8: shell_edge 0.50 (v7: 0.60), channel 7.0 wide (v7: 6.8): the 1.8 neck at X -3.4 touched the channel wall (out/v8/dev1_nopairs_us9.log), now 0.10 clear as in v7
+64c68
+<     roof_gap=0.05, stiff=(6.4, 6.4), stiff_t=0.075,      # v6: channel roof 0.05 over the flange (K12); stiffener under the head (K13)
+---
+>     roof_gap=0.05, stiff=(6.4, 6.4), stiff_t=0.10,       # v6: channel roof 0.05 over the flange (K12); stiffener under the head (K13); v8: 0.10, the offered polyimide stiffener (band-interface.md section 1)
+66c70,75
+<     tail_w=1.4, tail_x=-2.6, tail_y=5.9, slot_x=-2.5, slot_w=2.0,   # v6.2: slots X -3.5 to -1.5: the ruling X -1.3 plus the allowed extra 0.20 (US 12, out/v6/probe_extra_cut.log)
+---
+>     tail_w=1.8, tail_x=-2.5, tail_y=5.9, slot_x=-2.5, slot_w=2.1,   # v6.2: slots X -3.5 to -1.5: the ruling X -1.3 plus the allowed extra 0.20 (US 12, out/v6/probe_extra_cut.log)
+>     # v8 (design/ecad/band/band-interface.md sections 2, 3, 9): the band circuits as drawn. Neck 1.8 wide centred in the slot (X -3.4 to -1.6; v7: 1.4 at X -3.3 to -1.9);
+>     # slot_w 2.1 (X -3.55 to -1.45) keeps the 0.15 end clearance rule of check_thin.py for the 1.8 neck. flex_fin = finished thickness of the flat parts (v7 drew 0.15
+>     # everywhere); the embedded trunk keeps the 0.15 allowance (resin 0.075 each side). Fold: inner radius 0.70 at the board end, flat foot under the board with its
+>     # top face joint (0.03) under the land faces (board underside minus pad_t), foot X foot_x, flat from foot_y1 (inboard end) to the fold; stiffener PI under the foot.
+>     flex_fin=0.11, fold_r_in=0.70, joint=0.03, foot_x=(-3.5, -1.0), foot_y1=3.4, foot_stiff_x=(-3.45, -0.95), foot_stiff_y=(3.45, 5.05), fold_steps=9,
+95,102c104,111
+<     #       bore     joy_deg motor_angle pcm_a0 slot_z0 motor_window   (joystick per size: 17.25; window: 17.27)
+<     7:  (17.3196, -84.0, -47.0, 43.8, -0.20, 1),
+<     8:  (18.1324, -81.0, -45.5, 41.5, -0.20, 1),
+<     9:  (18.9452, -78.0, -44.0, 39.5, -0.23, 1),
+<     10: (19.7580, -78.0, -45.0, 39.5, -0.63, 0),
+<     11: (20.5708, -78.0, -43.5, 39.5, -1.04, 0),
+<     12: (21.3836, -78.0, -42.5, 39.5, -1.45, 0),
+<     13: (22.1964, -78.0, -42.5, 39.5, -1.85, 0),   # v6.2: -42.5 for 0.30 to the -Y slot (out/v6/probe_us13_angles.log)
+---
+>     #       bore     joy_deg motor_angle pcm_a0 slot_z0 motor_window motor_x  (joystick per size: 17.25; window: 17.27; motor_x: v8)
+>     7:  (17.3196, -84.0, -47.0, 43.8, -0.20, 1, 0.8),    # v8: motor_x 0.8 (v7 0.7): the 1.8 neck came to 0.0246 of the motor at 0.7 (out/v8/v8_us7.log), 0.1099 at 0.8 (out/v8/gap_probe_grid.log)
+>     8:  (18.1324, -81.0, -45.5, 41.5, -0.20, 1, 0.7),
+>     9:  (18.9452, -78.0, -44.0, 39.5, -0.23, 1, 0.7),
+>     10: (19.7580, -78.0, -45.0, 39.5, -0.63, 0, 0.7),
+>     11: (20.5708, -78.0, -43.5, 39.5, -1.04, 0, 0.7),
+>     12: (21.3836, -78.0, -42.5, 39.5, -1.45, 0, 0.7),
+>     13: (22.1964, -78.0, -42.5, 39.5, -1.85, 0, 0.7),   # v6.2: -42.5 for 0.30 to the -Y slot (out/v6/probe_us13_angles.log)
+107c116
+< for _k, _v in zip(("joy_deg", "motor_angle", "pcm_a0", "slot_z0", "motor_window"), SIZE_TABLE[US_SIZE][1:]):
+---
+> for _k, _v in zip(("joy_deg", "motor_angle", "pcm_a0", "slot_z0", "motor_window", "motor_x"), SIZE_TABLE[US_SIZE][1:]):
+563a573,596
+>     # v8: the board end of each tail as drawn (band-interface.md section 3). Vertical neck in the slot up to the fold, a 90 degree fold (inner radius fold_r_in,
+>     # centre line radius RC_F), the flat foot under the board. The foot's top (land) face is Z_TAIL_TOP, the joint under the land faces of the board.
+>     t_fin = P["flex_fin"]
+>     RC_F = P["fold_r_in"] + t_fin / 2
+>     Z_TAIL_TOP = Z_BD0 - P["pad_t"] - P["joint"]
+>     Z_ARC0 = Z_TAIL_TOP - t_fin / 2 - RC_F                    # where the fold starts on the vertical neck
+>     Y_ARC = P["tail_y"] - RC_F                                # |Y| where the fold ends and the flat foot starts
+>     LF_FOOT = Y_ARC - P["foot_y1"]                            # flat run of the foot (1.745)
+>     ctx["fold"] = dict(rc=round(RC_F, 4), z_arc0=round(Z_ARC0, 4), y_arc=round(Y_ARC, 4), foot_len=round(LF_FOOT, 4), top=round(Z_TAIL_TOP, 4),
+>                        arc_len=round(math.pi / 2 * RC_F, 4))
+> 
+>     def fold_piece(sg, x_neck, x_foot):
+>         """The fold: a loft of fold_steps + 1 rectangular sections (each square to the centre line) along the true arc, the width going linearly with the arc
+>         from the neck (X x_neck) at the vertical end to the foot (X x_foot). Smooth (not ruled) loft: volume equals the analytic integral to 1e-7 (out/v8)."""
+>         n = P["fold_steps"]
+>         secs = []
+>         for i in range(n + 1):
+>             th = math.pi / 2 * i / n
+>             f = i / n
+>             xa, xb = x_neck[0] + (x_foot[0] - x_neck[0]) * f, x_neck[1] + (x_foot[1] - x_neck[1]) * f
+>             def pt(x, off):
+>                 return Vector(x, sg * (Y_ARC + (RC_F + off) * math.cos(th)), Z_ARC0 + (RC_F + off) * math.sin(th))
+>             secs.append(Wire.make_polygon([pt(xa, -t_fin / 2), pt(xb, -t_fin / 2), pt(xb, t_fin / 2), pt(xa, t_fin / 2)], close=True))
+>         return Solid.make_loft(secs, False)
+564a598,610
+>     def tail_end(sg):
+>         """vertical neck, fold, flat foot and foot stiffener of the tail on the side sg (solids of the tail's flex and its stiffener)"""
+>         x_neck = (tx - tw_ / 2, tx + tw_ / 2)
+>         neck = box(tw_, t_fin, Z_ARC0 - z_in, tx, sg * P["tail_y"], (z_in + Z_ARC0) / 2)
+>         fold = fold_piece(sg, x_neck, P["foot_x"])
+>         fx0, fx1 = P["foot_x"]
+>         foot = box(fx1 - fx0, LF_FOOT, t_fin, (fx0 + fx1) / 2, sg * (Y_ARC + P["foot_y1"]) / 2, Z_TAIL_TOP - t_fin / 2)
+>         sx0, sx1 = P["foot_stiff_x"]
+>         sy0, sy1 = P["foot_stiff_y"]
+>         stiff = box(sx1 - sx0, sy1 - sy0, P["stiff_t"], (sx0 + sx1) / 2, sg * (sy0 + sy1) / 2, Z_TAIL_TOP - t_fin - P["stiff_t"] / 2)
+>         return neck, fold, foot, stiff
+>     tails = {key: tail_end(sg) for key, sg in sgn_y.items()}
+> 
+584,586c630,634
+<     stf_t = P["liner_t"] - P["flex_t"] - (P["liner_t"] - P["flex_t"]) / 2
+<     assert abs(stf_t - P["stiff_t"]) < 1e-9
+<     ZH1, ZH0 = R_SW0, R_SW0 - P["flex_t"]
+---
+>     # v8: the drawn flex is P["flex_fin"] (0.11) thick and its stiffener P["stiff_t"] (0.10): head stack 0.21 under the switch bases (v7: 0.15 + 0.075 = 0.225), so
+>     # the resin under the stiffener is liner 0.30 - 0.21 = 0.09 at its middle (v7: 0.075); nothing above the head moves (its top face is still R_SW0).
+>     stf_t = P["stiff_t"]
+>     assert P["liner_t"] - P["flex_fin"] - stf_t >= (P["liner_t"] - P["flex_t"]) / 2 - 1e-9      # at least the 0.075 of resin under every embedded ribbon
+>     ZH1, ZH0 = R_SW0, R_SW0 - P["flex_fin"]
+588c636
+<     head_flat = lplace(ja, Box(2 * P["head_x"], 2 * P["head_t"], P["flex_t"]), r=(ZH0 + ZH1) / 2)
+---
+>     head_flat = lplace(ja, Box(2 * P["head_x"], 2 * P["head_t"], P["flex_fin"]), r=(ZH0 + ZH1) / 2)
+607,609c655,656
+<     ribbon["away"].append((R_F0, R_F1, a_in, pa_lo + 4.0, tx - tw_ / 2, tx + tw_ / 2))           # trunk from the slot to the pads
+<     ribbon["away"].append((R_F0, R_F1, pa_lo, pa_lo + 5.0, tx - tw_ / 2, px1))                   # jog to the pad strip
+<     ribbon["away"].append((R_F0, R_F1, pa_lo, pa_hi, px0, px1))                                  # pad strip
+---
+>     ribbon["away"].append((R_F0, R_F1, a_in, pa_lo, tx - tw_ / 2, tx + tw_ / 2))                 # trunk from the slot to the pad strip
+>     ribbon["away"].append((R_F0, R_F1, pa_lo, pa_hi, tx - tw_ / 2, px1))                         # v8: pad strip X -3.4 to 0.25 (band-notes.md: the jog and the strip of v7 in one)
+622c669
+<         voids.append(box(tw_, 0.15, z_top - z_in, tx, sg * P["tail_y"], (z_in + z_top) / 2))
+---
+>         voids.append(tails[key][0])                                                   # v8: the vertical neck (0.11 thick) up to the fold
+709c756
+<                   "Jinlong W0525AB001D coin 5.0 x 2.5 (design/parts/slim-2.md 1.4; lead wires, generic shape) at %.1f deg on the joystick side, %.1f off the band centre so the 1.4 wide ribbon passes beside it; pigtail lands on the ribbon" % (mA, mX))
+---
+>                   "Jinlong W0525AB001D coin 5.0 x 2.5 (design/parts/slim-2.md 1.4; lead wires, generic shape) at %.1f deg on the joystick side, %.1f off the band centre so the ribbon (neck %.1f wide) passes beside it; pigtail lands on the ribbon" % (mA, mX, tw_))
+753,755c800,807
+<         pf = newp(nm, ref, "band", (tx, sg * P["tail_y"], (z_in + z_top) / 2), (tw_, 0.15, z_top - z_in), None, False,
+<                   note + "; leaves the board underside through the floor slot")
+<         pf.add("flex", box(tw_, 0.15, z_top - z_in, tx, sg * P["tail_y"], (z_in + z_top) / 2))
+---
+>         neck_, fold_, foot_, fstiff_ = tails[key]
+>         pf = newp(nm, ref, "band", (tx, sg * P["tail_y"], (z_in + Z_ARC0) / 2), (tw_, t_fin, Z_ARC0 - z_in), None, False,
+>                   note + "; leaves the board underside through the floor slot; v8: vertical neck %.1f wide, 90 degree fold (inner radius %.2f), flat foot X %.1f to %.1f "
+>                   "under the board (top face Z %.3f) on a polyimide stiffener %.2f thick" % (tw_, P["fold_r_in"], P["foot_x"][0], P["foot_x"][1], Z_TAIL_TOP, P["stiff_t"]))
+>         pf.add("flex", neck_)
+>         pf.add("flex", fold_)
+>         pf.add("flex", foot_)
+>         pf.add("polymer", fstiff_)
+762,763c814,815
+<             pf.note += (f"; v6: flat head 6.4 x 6.4 x 0.15 under the five switches on a flat stiffener 6.4 x 6.4 x {stf_t:.3f} "
+<                         f"(stainless or polyimide, drawn as metal), the liner fills under it; a bend joins the head's edge to the embedded trunk")
+---
+>             pf.note += (f"; v6: flat head 6.4 x 6.4 x {t_fin} (v8: the drawn flex, v7 0.15) under the five switches on a flat stiffener 6.4 x 6.4 x {stf_t:.3f} "
+>                         f"(v8: 0.10, polyimide, drawn as metal), the liner fills under it; a bend joins the head's edge to the embedded trunk")

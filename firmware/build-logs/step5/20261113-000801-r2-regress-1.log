@@ -1,0 +1,48 @@
+# remote.sh run 20261113-000801-r2-regress-1
+# command: mkdir -p /ws/out/r2-c && for t in iphone screens control; do RING_OUT=/ws/out/r2-c/bsim-$t bash tests/bsim/$t/run.sh > /ws/out/r2-c/bsim-$t.log 2>&1; echo "bsim-$t exit $?"; tail -1 /ws/out/r2-c/bsim-$t.log; done; west twister -T tests -p native_sim -O /ws/out/r2-c/tw -j 8 --inline-logs -v > /ws/out/r2-c/tw.log 2>&1; echo "twister native_sim exit $?"; grep -E "executed test (cases|configurations)" /ws/out/r2-c/tw.log; FW=/ws/firmware; OUT=/ws/out/r2-c/st; JOBS=8; DK_BOARD=nrf54lm20dk/nrf54lm20a/cpuapp; BSIM_BOARD=nrf54lm20bsim/nrf54lm20a/cpuapp; mkdir -p $OUT/bsim-iphone $OUT/bsim-relay; west build -p always -b $DK_BOARD --sysbuild -d $OUT/dk -o=-j8 $FW/app > $OUT/dk.log 2>&1; echo "dk build exit $?"; west build -p always -b $BSIM_BOARD --no-sysbuild -d $OUT/bsim -o=-j8 $FW/app > $OUT/bsim.log 2>&1; echo "bsim build exit $?"; west build -p always -b $BSIM_BOARD --no-sysbuild -d $OUT/bsim-iphone/ring -o=-j8 $FW/tests/bsim/iphone/ring_app > $OUT/b-iph.log 2>&1; echo "iphone ring build exit $?"; west build -p always -b $BSIM_BOARD --no-sysbuild -d $OUT/bsim-relay/ring -o=-j8 $FW/tests/bsim/relay/ring_app > $OUT/b-rel.log 2>&1; echo "relay ring build exit $?"; source <(sed -n "/^size_report()/,/^}/p" $FW/tools/build_all.sh); size_report $OUT/dk.log; source <(sed -n "/^link_settings()/,/^}/p" $FW/tools/build_all.sh); link_settings > $OUT/ls.log 2>&1; echo "link_settings exit $?"; grep -a "TEST_HOOKS\|self test ok\|DIFFERENT" $OUT/ls.log | cut -c1-170; source <(sed -n "/^relay_no_core()/,/^}/p" $FW/tools/build_all.sh); relay_no_core; echo "relay_no_core exit $?"
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 00:08:01 CET
+# free on the server's /: 47 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261113-000801-r2-regress-1; server log /root/ring-os/logs/20261113-000801-r2-regress-1.log
+bsim-iphone exit 0
+RESULT PASS
+bsim-screens exit 0
+RESULT PASS
+bsim-control exit 0
+RESULT PASS
+twister native_sim exit 0
+INFO    - 9 of 9 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 51.87 seconds.
+INFO    - 346 of 346 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+dk build exit 0
+bsim build exit 0
+iphone ring build exit 0
+relay ring build exit 0
+image mcuboot (/ws/out/r2-c/st/dk/mcuboot/zephyr/zephyr.elf)
+Memory region         Used Size  Region Size  %age Used
+           FLASH:       45656 B        62 KB     71.91%
+             RAM:       21968 B       511 KB      4.20%
+        IDT_LIST:           0 B        32 KB      0.00%
+image app (/ws/out/r2-c/st/dk/app/zephyr/zephyr.elf)
+Memory region         Used Size  Region Size  %age Used
+           FLASH:      522212 B     974704 B     53.58%
+             RAM:      183080 B       511 KB     34.99%
+        IDT_LIST:           0 B        32 KB      0.00%
+link_settings exit 0
+link-settings: DIFFERENT CONFIG_BT_L2CAP_TX_MTU (self-test-tampered 23, test ring 247)
+link-settings: DIFFERENT CONFIG_BT_L2CAP_TX_MTU below 247 in /ws/out/r2-c/st/ring-config-tampered (23; design/firmware.md 7.1 asks for 247)
+link-settings: self test ok: the changed MTU was refused
+link-settings: DIFFERENT CONFIG_BT_L2CAP_TX_MTU below 247 in /ws/out/r2-c/st/ring-config-both-23 (23; design/firmware.md 7.1 asks for 247)
+link-settings: DIFFERENT CONFIG_BT_L2CAP_TX_MTU below 247 in /ws/out/r2-c/st/ring-config-both-23 (23; design/firmware.md 7.1 asks for 247)
+link-settings: self test ok: two equal MTU values of 23 were refused
+link-settings: DIFFERENT CONFIG_BT_L2CAP_TX_MTU (self-test-relay-tampered 23, test ring 247)
+link-settings: DIFFERENT CONFIG_BT_L2CAP_TX_MTU below 247 in /ws/out/r2-c/st/relay-config-tampered (23; design/firmware.md 7.1 asks for 247)
+link-settings: self test ok: a relay test ring with a changed MTU was refused
+link-settings: dk-product CONFIG_RING_RELAY_TEST_HOOKS is off (the test ring has it: 1)
+link-settings: bsim-product CONFIG_RING_RELAY_TEST_HOOKS is off (the test ring has it: 1)
+relay-no-core: hits in /ws/firmware/modules/ring_relay/src and /ws/firmware/modules/ring_relay/include for /ring_(core|glue|devices|control|screens)|rglue_|rdev_|rctl_|rscr_|rc_core|rc_ev/: 0
+relay-no-core: self test ok: a copy with a glue include is found by the same search
+relay_no_core exit 0
+# finished (Mac clock): 2026-11-13 00:16:15 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step5/20261113-000801-r2-regress-1.log

@@ -1,0 +1,10 @@
+import sys, os, re
+import ngrun
+deck, wave = sys.argv[1], sys.argv[2]
+text = open(deck).read().replace("@WAVE@", wave)
+tmp = deck + ".run"
+open(tmp, "w").write(text)
+lines = ngrun.run(tmp, tmp + ".out")
+for l in lines:
+    if "RESULT" in l or "rror" in l or "fail" in l.lower() or "Warning" in l or "no such" in l:
+        print(l)

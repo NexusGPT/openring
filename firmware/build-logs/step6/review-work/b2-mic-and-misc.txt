@@ -1,0 +1,29 @@
+== rail_set with RHW_RAIL_MIC in modules and app (all forms)
+firmware/modules/ring_recorder/include/ring_recorder/rrec.h:29: * answer of 0, rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on"). Returns the sign's answer (0 = drawn and
+firmware/modules/ring_recorder/include/ring_recorder/rrec.h:31: * file may call rail_set(RHW_RAIL_MIC, true, ...) (full-run stage recorder-one-mic-path). */
+firmware/modules/ring_recorder/src/rrec.c:416:	if (s != RC_ST_RECORDING && !rrec_st.test_recording && rhw_pmic()->rail_get(RHW_RAIL_MIC)) {
+firmware/modules/ring_recorder/src/rrec_mics.c:3: * hook (decision D1). No other source of the recorder parts switches RHW_RAIL_MIC on (full-run stage
+firmware/modules/ring_recorder/src/rrec_mics.c:53:	return rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
+firmware/modules/ring_recorder/src/rrec_mics.c:58:	return rhw_pmic()->rail_set(RHW_RAIL_MIC, false, "rec_mics_off");
+firmware/modules/ring_power/src/rpw_hw_real.c:100:	d = r == RHW_RAIL_MIC ? ldsw_mic : ldsw_sd;
+firmware/modules/ring_rhw/src/sim_pmic.c:129:		int32_t ua = (int32_t)(base_ua + (rail[RHW_RAIL_MIC] ? mic_ua : 0) + (rail[RHW_RAIL_SD] ? sd_ua : 0));
+== battery threshold logging
+firmware/modules/ring_store/src/rst_log.c:294:	if (b->n == RREC_LOG_BUFFER_RECORDS) {
+firmware/modules/ring_store/src/rst_log.c:295:		b->first = (b->first + 1) % RREC_LOG_BUFFER_RECORDS;      /* the oldest unwritten is dropped */
+firmware/modules/ring_store/src/rst_log.c:299:	b->r[(b->first + b->n) % RREC_LOG_BUFFER_RECORDS] = *r;
+firmware/modules/ring_store/src/rst_log.c:315:		b->first = (b->first + 1) % RREC_LOG_BUFFER_RECORDS;
+firmware/modules/ring_power/src/rpw.c:200:	log_rec(RREC_LOG_BATTERY, a, sizeof(a));
+== FW 912-920
+### 8.2 What is on in each state
+
+| State | VDD_1V8 | VDD_3V0 | VDD_MIC | VDD_SD | Screen supply (OLED_PWR_EN) | HFXO | Radio | Wake sources |
+|---|---|---|---|---|---|---|---|---|
+| `SHIP`, `OFF` | off | off | off | off | off | off | off | VBUS only (section 8.4) |
+| `BOOT`, `RECOVERY` | on | on | off | on | on in `RECOVERY` | on | off | runs to completion |
+| `STANDBY` | on | on | off | off | when the screen is on | when the radio runs | advertising | the 4 direction inputs (JOY_UP, JOY_DOWN, JOY_LEFT, JOY_RIGHT) and BTN_REC when `CENTRE_SOURCE` is `SW2`, PMIC_INT, GRTC timer, radio |
+| `RECORDING` | on | on | on | on | on for the whole recording (rule R-SIGN, section 3.2) | on | advertising | PDM blocks every 16 ms, as `STANDBY` |
+| `CHARGING` | on | on | off | off | when the screen is on | when USB runs | off | PMIC_INT (VBUS removed, charge events), USB, inputs |
+| `TRANSFER` | on | on | off | on | when the screen is on | on | off | USB, PMIC_INT, inputs |
+| error states | on | on | off | off | when the screen is on | when the radio runs | per section 7.3 | as `STANDBY` |
+
+Between events the application core sleeps in System ON idle (Zephyr idle thread); System OFF is not used, because the GRTC time and Bluetooth must keep running. The motor supply VMOT (U11) is on only while MOTOR is high, in any state; U11 stays on the cell and draws at most 1 µA when off, ship mode included (motor-drive.md section 2.7).

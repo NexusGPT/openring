@@ -1,0 +1,256 @@
+# The hot-bar joint of the two band ribbons to the main board (J_BAND_A, J_BAND_B)
+
+Written 2026-11-13 from 12:58 by the hot-bar helper (clock times from `date`). Project root ROOT = .. Version read: the working tree at commit 0f3fcd0e; of the files used here, only `design/firmware.md`, `design/mfg/specs/main-board.md`, `design/wiring/lead-decisions.md` and `design/ecad/ring/pcb/provisional-footprints.json` differ from 8a54884d, the version of the brief (`hotbar-work/logs/version-diff.log`), and every line cited below was read at 0f3fcd0e. Work folder: `design/mfg/assembly/hotbar-work/` (WORK below): scripts, the board copies they read, logs, `CHECKLIST.md`. I changed no existing file and ran no git write, no `check_band.py`, no model build, no browser, no web request.
+
+It answers G1 and G3 of `design/wiring/wiring-review-3.md` (lines 38 and 40) and the five questions of the brief. Every number has its file and line, a log of WORK, or arithmetic shown here. A value that no file gives is marked **[START]** (starting value, lead's to confirm); they are listed in section 6.
+
+## 0. Answer in short
+
+1. **Solder (Q1).** The 15 board lands get SAC305 paste in the parts face pass of step 2 (pass 2), through new openings of the parts face stencil, one per land. No hand tinning. After reflow each land carries a solder layer of about 0.03 mm, the joint height of the model (`design/mech/thin/thin.py` line 81, `joint=0.03`). The stencil thickness of step 2 is not set in any file: the aperture is given per stencil thickness in section 1.
+2. **Orientation and access (Q2).** With today's files **no arrangement works**. (a) The ribbon foot is 2.500 mm wide and the floor slot 2.100 mm: the board end cannot be passed up through the slot at step 14, at any of the 7 sizes. (b) Each ribbon's flat length equals its finished path (free length 0.0000 mm at all 14 ribbons): the board cannot be lifted or tilted at all. (c) In the finished place the foot's stiffener faces the block floor across 0.790 mm: no hot bar can reach it. (d) Without a 180 degree twist the board can only turn about an axis along the finger (X); turned parts face up, J_BAND_B lies over the FLEX1 slot (the swap). Section 2 gives the numbers and four design options (A, B, C, and D added at the lead's request), each with what it changes. I do not choose.
+3. **Alignment (Q3).** A fixture, drawn in `design/mfg/assembly/hotbar-fixture.svg`, carries the board parts face up on two ledges that are the anvil under both joints, with J1 hanging free in a relief channel. The foot is aligned by eye to the board's own lands under a 20 times microscope. Copper alignment marks were tried and do not fit: there is no free place beside 3 of the 4 foot edges (`WORK/logs/scan_bars.log`).
+4. **Process (Q4).** Section 4 gives the numbered sub-steps for a joint made with the board parts face up on the fixture, the hot-bar values of `design/ecad/band/band-interface.md` line 137 as starting values (with the blade made 2.5 mm wide instead of 3 mm, because a 3 mm blade lands on R61), the land table and the meter check of all 15 lands.
+5. **Reflow count (Q5).** The paste of Q1 adds no oven pass. But J1 already uses both of its 2 reflow cycles in step 2, and J1's body lies 0.510 mm (plan) from land 2 of J_BAND_A, on the other face. The hot bar heats that spot. No file gives J1's temperature during the press: the first press must measure it, and above 217 C at J1's leads the process breaks J1's limit. 31 parts lie within 3 mm of the lands (section 5).
+
+## 1. Q1: where the solder of the 15 joints comes from
+
+What the files say:
+- The design asks for solder on the board lands: "Pre-tin each land with a thin solder layer (stencil paste 0.05 mm or a tinned land)" (`design/ecad/band/band-interface.md` line 55) and "Board lands pre-tinned (SAC305 stencil 0.05 mm)" (line 137).
+- The guide gives none: step 2 "J_BAND_A and J_BAND_B are copper on the parts face and get no paste" (`design/mfg/assembly/assembly.md` line 96), step 4 cleans them to "bare copper" (line 112), step 16 joins them because "the lands got no paste in step 2" (line 210).
+- The board finish is ENEPIG (`design/ecad/ring/pcb/fab/stackup.txt` line 20), the tail lands are "bare ENIG" (`band-interface.md` line 91): neither face brings solder.
+- The 15 J_BAND pads of the board have layers F.Cu and F.Mask only (`WORK/logs/geom_check.log`, line "J_BAND lands read: 15; layers of each: ['F.Cu|F.Mask']"), and the delivered parts face stencil file has no opening at any of them: `WORK/logs/paste_at_lands.log` ends `RESULT lands with a paste opening: 0 of 15` (control in the same log: C83 pad 1 has its opening).
+
+**Way fixed: paste openings on the 15 lands in the parts face stencil, printed and reflowed in pass 2 of step 2 with the other 72 parts.** No hand tinning (a hand-tinned layer at 0.51 mm pitch cannot be made even by a first-time builder). Why pass 2: the lands are on the parts face (`band-interface.md` line 55; `assembly.md` line 21), so they reflow with that face and add no oven pass (section 5).
+
+Stencil thickness: **not set in any file.** Searched: `grep -rn -i stencil` over `design/` (md, txt, csv) for lines with "thick" (`WORK/logs/stencil-search.log`: only makers' sheets of single parts and the switch paste of the band) and `grep -n -i 'stencil|paste'` in `design/mfg/specs/main-board.md`, `fab/stackup.txt`, `design/wiring/ring-board-plan.md` (`WORK/logs/stencil-ringfiles.log`: no hit). The "0.05 mm" of `band-interface.md` lines 55 and 137 is the band designer's value for these lands only; one stencil serves all 72 parts of the face, so its thickness is set by the fine parts, not by these lands.
+
+Arithmetic (`WORK/q1_paste.py`, log `WORK/logs/q1_paste.log`). Land 0.30 x 0.55 = 0.165 mm2 (`band-interface.md` line 23). Target solder height after reflow h = 0.03 mm (`thin.py` line 81, `joint=0.03`). The paste shrinks to f = 0.50 of its printed volume as metal [START: no file gives the paste's metal share by volume]. Height on the land = f x t x (aperture area) / (land area). For h = 0.03 the aperture length along the board's Y is 0.55 x 0.03 / (0.50 x t). Area ratio = area / (perimeter x t), at least 0.66 for a clean print [START].
+
+| Stencil t, mm | Full land aperture 0.30 x 0.55 leaves | Aperture for h 0.03 (X x Y), mm | h, mm | Area ratio |
+|---|---|---|---|---|
+| 0.05 | 0.025 | 0.30 x 0.550 | 0.0250 | 1.94 |
+| 0.08 | 0.040 | 0.30 x 0.413 | 0.0300 | 1.09 |
+| 0.10 | 0.050 | 0.30 x 0.330 | 0.0300 | 0.79 |
+| 0.12 | 0.060 | 0.30 x 0.275 | 0.0300 | 0.60, below 0.66: use 0.30 x 0.30 and accept h 0.033 |
+
+Each aperture is centred on its land (centres in `band-interface.md` lines 32 to 52). The lead sets t for the whole face and the row above gives the 15 apertures. A thicker layer than 0.03 is not wrong for the joint; it raises the foot by the difference and squeezes more solder sideways toward the 0.21 mm gaps between lands (0.51 pitch minus 0.30 land, `band-interface.md` line 137).
+
+Files that change (list for the board helper, section 7): the 15 pads of the footprints J_BAND_A_BOARD and J_BAND_B_BOARD get an F.Paste rectangle of the size of the row chosen above; `fab/gerber/ring-F_Paste.gbr` is written again (302 flashes today, `WORK/logs/paste_at_lands.log`, 317 after). The reason given in step 2 for no paste ("a solder bump on a land spoils the hot-bar joint", `design/mfg/assembly/assembly.md` line 96) is reversed by `band-interface.md` lines 55 and 137: the bump IS the joint's solder; the hot bar flattens it.
+
+Side effect on step 5: the jig's spring pins on lands 1 to 7 of J_BAND_B (`assembly.md` line 120) touch solder domes instead of flat gold. Nothing is lost electrically; a pin mark on a dome is flattened by the hot bar [START: the lead confirms with the jig maker].
+
+## 2. Q2: orientation and access at the moment of the joint
+
+### 2.1 What the model fixes (all numbers: `WORK/logs/geom_check.log`, script `WORK/geom_check.py`)
+
+- Faces: the board's parts face (F.Cu) carries J_BAND_A and J_BAND_B and faces the block floor in the finished ring (`assembly.md` line 21; `design/ecad/ring/pcb/placement-final.csv` lines 79 and 80, side F, at X -2.250, Y -4.325 and +4.325).
+- Each ribbon stands up in its floor slot at |Y| 5.9, turns toward the board middle in one 90 degree fold and lies flat under the board, lands (F.Cu) up (`band-interface.md` line 94; `thin.py` line 76 `tail_y=5.9`).
+- Heights: floor top Z 0.400, board land face Z 1.430, foot top Z 1.400, fold starts Z 0.590 (log line "heights"; `thin.py` lines 61, 81, 334 to 336; board underside 1.45 from `design/ecad/band/band_geom.py` line 33).
+- Fold: centre radius 0.755, arc 1.186, flat foot 1.745. Ribbon above the floor top in the finished ring: 0.190 + 1.186 + 1.745 = 3.121 mm, the same at every size (log line "fold").
+- Clearances: land face to floor 1.030; foot back (stiffener) to floor 0.790; a 180 degree loop at the fold radius needs 2 x 0.70 + 2 x 0.11 = 1.620, so no loop of spare ribbon fits under the board (log line "CLEARANCE").
+- Slot 2.100 wide (`thin.py` line 76 `slot_w=2.1`; `design/wiring/lead-decisions.md` line 37). Foot 2.500 wide, neck 1.800, foot stiffener 2.400 x 1.600 between its drawn centre lines, read from the outline of each of the 14 band boards (copies in WORK/copies, dumped by `WORK/dump_boards.py`).
+
+### 2.2 Which turns of the board avoid a twist and a swap
+
+In the slot each neck is flat with its 1.8 mm width along X (`band-interface.md` line 97). A flat ribbon bends only about an axis across its width. Turning about its own length is a twist (excluded by the brief); turning in its own plane would stretch one edge. So, without a twist, every bend of a tail is about an axis parallel to X, and the foot's width stays along X. The foot must lie on its lands with its width along the board's X. So at the moment of the joint the board can only be turned about an axis parallel to X, and moved in Y and Z, not in X. Then:
+- Turned 0 degrees (parts face down, as in the ring): the foot lies under the board, lands up; the hot bar has to press UP onto the stiffener from the floor side. In place there is 0.790 mm under the stiffener. Lifting the board needs ribbon length (2.3).
+- Turned 180 degrees (parts face up, the normal hot-bar posture): board +Y goes to -Y, so J_BAND_B comes over the FLEX1 slot and J_BAND_A over the FLEX2 slot. Each tail would have to cross the full board width to its own lands, and the two tails, both at X -3.5 to -1.0, would cross each other. This is the swap of `design/wiring/review3-work/hand-derivations.txt` item 5 (lines 39 to 44).
+- Turned 90 degrees on the FLEX1 edge: FLEX1 rises straight and needs no extra length (board bottom edge at Z 0.621 over the floor at 0.400), but the board's screen face is then 0.145 mm from the cavity wall (|Y| 6.305 against 6.450), and the J_BAND_B foot stands at Z 10.321 to 12.066: FLEX2 would need at least 11.666 mm of rise plus the crossing of the board, against a free length of 0 (log line "POSE 90 deg"). The mirror pose fails the same way for FLEX1.
+
+So the only twist-free, swap-free posture is the finished one, parts face down, and the press must come from below.
+
+### 2.3 Free ribbon length per size (flat length of the band board minus the finished path)
+
+Finished path = the band designer's formula (`band_geom.py` lines 42 to 45, 82, 89, 92, 93), loaded read-only by `geom_check.py`. Flat length = the outline length of each band board along the ribbon (copies of `design/ecad/band/flex1-us7.kicad_pcb` to `flex2-us13.kicad_pcb`).
+
+| US | FLEX1 flat, mm | FLEX1 free, mm | FLEX2 flat, mm | FLEX2 free, mm | Foot / slot, mm | Lift allowed | Tilt allowed |
+|---|---|---|---|---|---|---|---|
+| 7 | 16.1150 | +0.0000 | 32.1844 | -0.0000 | 2.500 / 2.100 | 0.000 mm | 0.00 deg |
+| 8 | 16.1357 | -0.0000 | 33.3880 | -0.0000 | 2.500 / 2.100 | 0.000 mm | 0.00 deg |
+| 9 | 16.1218 | -0.0000 | 34.5978 | -0.0000 | 2.500 / 2.100 | 0.000 mm | 0.00 deg |
+| 10 | 16.5974 | +0.0000 | 35.8130 | +0.0000 | 2.500 / 2.100 | 0.000 mm | 0.00 deg |
+| 11 | 17.0789 | -0.0000 | 37.0328 | -0.0000 | 2.500 / 2.100 | 0.000 mm | 0.00 deg |
+| 12 | 17.5658 | -0.0000 | 38.2568 | -0.0000 | 2.500 / 2.100 | 0.000 mm | 0.00 deg |
+| 13 | 18.0575 | +0.0000 | 39.4845 | -0.0000 | 2.500 / 2.100 | 0.000 mm | 0.00 deg |
+
+Arithmetic of the last two columns (US 7, the shortest, and US 13 the same): a straight lift H needs H more ribbon on each tail, so H = free length = 0.000 mm. A tilt by an angle a about the other tail's fold line raises this foot's outer edge by 2 x 5.145 x sin a = 10.290 x sin a, so sin a = 0.000 / 10.290 and a = 0.00 degrees. The flat length is set equal to the finished path on purpose: `design/ecad/band/band-notes.md` line 61, "Length rule: within 0.05 mm of the model path". `WORK/logs/geom_check.log` ends `RESULT geometry: tails checked 14; foot passes slot 0 of 14; lift possible 0 of 14; parts within 3 mm 31`.
+
+Control of the check (bar 2): a copy of `flex1-us7.kicad_pcb` with its head end moved 5 mm (`WORK/planted/plant.diff`) gives `free length +5.0000`, `allowed lift 5.000 mm` and `RESULT geometry: tails checked 14; foot passes slot 0 of 14; lift possible 1 of 14; parts within 3 mm 31` (`WORK/planted/geom_check-planted.log`): the planted length changes the verdict.
+
+### 2.4 Verdict
+
+No arrangement works with today's ribbon lengths and slot. Three facts, each enough on its own:
+1. The board end cannot reach the block: foot 2.500 against slot 2.100, at 14 of 14 ribbons. The band ends are wider still (FLEX1 head 6.4 x 6.4, `band-interface.md` line 103), so neither end passes. Step 14 (`assembly.md` line 194, "Each ribbon's board end is passed up through its floor slot") cannot be done.
+2. No lift and no tilt: free length 0.000 at every size.
+3. In place, the stiffener faces the floor across 0.790 mm; a 180 degree loop of spare ribbon needs 1.620 under a gap of 1.030.
+
+### 2.5 Options that make one arrangement work (for the lead; not a decision)
+
+Every option must also solve fact 1 (the foot through the floor).
+
+**Option A. Joint made before threading, with open-ended slots.** The joint is made on the bench, board parts face up on the fixture of section 3, foot on top, lands down, hot bar from above: the usual hot-bar posture, everything in view. Then the board is turned over (about X: no twist) and each neck goes into its slot sideways. What changes: the body only. Each floor slot becomes a slit open to the outside through the block's side wall, at least 2.1 mm wide along X (the neck is 1.8, `band-interface.md` line 97) and from the floor down to the channel and up to the rim, so the neck can slide in along Y; the slit is filled with the slot sealant of step 19 (DP420 Black, `assembly.md` line 234). It touches the look of the block, its water path (`assembly.md` section 4) and the body drawing; it needs a model run (not done here). Guide: step 16 moves before step 14; step 15 (screen) after step 16. No ribbon and no board outline change. Hot-bar heat at J1: as section 5.
+
+**Option B. Joint made in place, heat from the screen face.** The board sits in its final place; a thermode presses the board's screen face behind each J_BAND row and the heat passes through the 0.30 mm board; the foot is backed by a support of 0.790 mm under its stiffener (a floor boss or a bonded insulating shim). What changes: the foot must pass the slot, either a slot at least 2.5 + 2 x 0.15 = 2.8 mm wide (the 0.15 is the end clearance rule of `lead-decisions.md` line 37) or a foot no wider than 1.8 mm (new land pattern on the board and on 14 band boards); the slot was narrowed from 2.6 to 2.0 because of the 0.30 mm metal rule between the motor pocket and the -Y slot at US 12 and 13 (`design/mech/thin/thin-notes.md` lines 368 to 379), so a 2.8 slot needs the model. The body gets the support. Risks no file answers: the lands are hidden during placing (blind alignment at 0.51 pitch), the heat source is on J1's own face (J1 0.510 mm from the lands in plan), and U3 is 0.460 mm from the lands (section 5). Guide: step 15 after step 16.
+
+**Option C. Longer free length.** Each ribbon gets extra length S so the board can be lifted parts face down over the block and a side-entry (cranked) thermode pushes up under each foot. What changes: 14 band boards (S added at the board end), the foot or slot as in option B, a place in the finished ring for S (today none: a loop needs 1.620 under a gap of 1.030, so the floor beside each slot would have to drop by at least 1.620 - 1.030 = 0.590 mm, a body and model change), and a thermode no file describes. S is set by that thermode's height [START], so no number is given here.
+
+**Option D. Joint on the board's SCREEN face, made in place from above** (added at the lead's request, 2026-11-13; all numbers: `WORK/logs/geom_check.log`, lines starting with D, script `WORK/geom_check.py`, its section OPTION D; copper at the notches: `WORK/logs/check_notch.log`; paste: `WORK/logs/q1_paste_D.log`). The foot is narrowed so it passes the slot from below at step 14; each tail rises past the seated board through a notch in the board edge, folds toward the middle and lies on TOP of the board, lands down, on 15 lands moved to the screen face (B.Cu); the hot bar presses from straight above with the board seated, before the screen goes on.
+
+D1. Does a 1.8 foot pass the slot and the notch? Widest foot through the slot with 0.15 at each end (the rule of `lead-decisions.md` line 37): 2.10 - 2 x 0.15 = 1.800. A stiffened foot 1.800 x 0.21 (flex 0.11 + stiffener 0.10) passes the 2.1 x 0.6 cross-section: yes, 0.15 each side in X, 0.39 spare in Y. Not checked: the turn of the rigid stiffened foot from the band channel into the slot at step 14 (no model of that move exists). Land grids that fit 1.800 with the band board rules (copper to edge 0.30, land to land 0.15, `band-interface.md` line 15; tail land 0.30, line 91) and the flat run on top of the board (fold ends at |Y| 5.145, J1 reaches |Y| 3.093, foot end 0.10 clear of J1 [START] at |Y| 3.193: 1.952 available):
+- 3 columns at the present 0.51 pitch: foot width 2 x 0.51 + 0.30 + 2 x 0.30 = 1.920: **FAILS 1.800 by 0.120**, whatever the rows.
+- 3 columns at 0.45 x 3 rows at 0.45: width 1.800, length 1.500: fits (9 places for 8 and 7 lands). Also fits: 3 at 0.45 x 3 rows at 0.51 (length 1.620), 3 at 0.45 x 4 rows at 0.45 (1.950), 2 columns at 0.51 x 4 rows at 0.45 (width 1.410, length 1.950, 0.002 to spare). 4 of the 15 grids tried fit.
+- Every fitting grid has a 0.45 pitch in one direction: gap 0.15 between lands, against 0.21 today (`band-interface.md` line 137), and it sits exactly at the edge rule (3 x 3: width 1.800 = 1.800). On the board side a 0.45 pitch leaves at most 0.45 - 0.075 = 0.375 of land length (design gap 0.075, `design/ecad/ring/pcb/fab/stackup.txt` line 19), so the 0.55 board land of today (its Y margin over the 0.30 tail land) is lost.
+- For the numbers below: the 3 x 3 grid at 0.45, centred on the neck (X -2.950, -2.500, -2.050; |Y| 3.643, 4.093, 4.543), lands 0.30 x 0.30.
+Notch: inside the board's thickness (Z 1.450 to 1.750) the folding ribbon occupies |Y| 5.405 to 5.955; with 0.10 clear [START] each notch runs from the edge |Y| 6.30 in to |Y| 5.305 (0.995 deep), X -3.55 to -1.45 (2.10, as the slot). The fold's outer face stays 0.495 inside the cavity wall (|Y| 5.955 against 6.450). The foot passes the notch: it is 1.800 wide in a 2.10 notch.
+
+D2. Extra ribbon length per tail: the foot's centre line rises from Z 1.345 (under the board) to 1.855 (on top): 0.300 (board) + 2 x (0.02 land + 0.03 joint) + 0.11 (flex) = **0.510 mm**, the same at every size; fold (radius 0.755, arc 1.186) and flat foot length are kept, the fold centre stays at |Y| 5.145 and moves from Z 0.590 to 1.100. None of the 14 boards has it (log lines "D FLEX": "BOARD MUST GROW by 0.510" at 14 of 14). The generator takes the LENGTH as one constant: `build_band.py` adds `G.FOOT_EXTRA` (its line 391; `band_geom.py` line 45) to every board, and FOOT_EXTRA comes from Z_LAND, JOINT and RC (`band_geom.py` lines 34 to 45). It does NOT take the rest as a parameter: the tail land footprint (line 160), the stiffener on the back face (lines 199 to 201), the lanes into the far row (line 213 on, `V1_B`, `V2_B` lines 30 and 33) are drawn for today's 2 x 4 grid on F.Cu; and `check_band.py` compares each board with the model's STEP length, so the model must change first.
+Planted control: in the copy with FLEX1 US 7 5 mm longer, that ribbon reads "length enough as drawn" and the last line becomes `RESULT option D: ... tails long enough as drawn 1 of 14 ...` (`WORK/planted/geom_check-planted.log`), against 0 of 14 on the real boards.
+
+D3. Room above the two land places (block 4.17 mm, `lead-decisions.md` line 65; layout C, `design/wiring/screen-cable-study.md` lines 166 to 220). The foot stack on the board is 0.02 + 0.03 + 0.11 + 0.10 = 0.260. The panel's underside is 1.070 above the board (`assembly.md` line 219): 0.810 clear. The cable's plane is 0.400 above the board (`screen-cable-study.md` line 172): 0.140 clear in height, but the cable is not over the land places in plan: its flat run ends at X -4.833 (line 178) and is the 4.805 neck (|Y| up to 2.402, line 43) back to X 2.670 and the 12.401 wide part (|Y| up to 6.204, line 42) only from X 3.170 toward the fingertip (X = -4.833 + (20 - s), from the cable's own s values). The neck is 0.791 clear of the foot in Y, the wide part 4.770 clear in X. The fold's top is Z 1.910 (0.160 above the board). J1 (0.9 high, on the same face) is 0.100 from the foot outline and 0.417 from the nearest new land in plan; a blade over the land field plus 0.15 (X -3.40 to -1.60, |Y| 3.343 to 4.843) passes 0.250 (FLEX2 side 0.256) from J1's body in plan, so any blade holder wider than the blade on the J1 side meets J1. The cable is not yet in J1 at the joint (step 15 after step 16), so it cannot collide with the press.
+
+D4. Screen face parts within 3 mm of the new lands: J1 0.417; TP1, TP6, TP14 0.953; TP15, TP21 1.318; TP3, TP5, TP12 2.003; TP17, TP19 2.200 (11 parts; the test pads are bare copper). The eight 0201 parts of the screen face are farther than 3 mm. Under the board at the land places (parts face): no part; U3 0.203 and R61 0.310 from the land field plus 0.15; the floor is 1.050 below the board's underside (`thin.py` lines 61, 334 to 336). Support needed: a post 1.050 high under each land field (X -3.40 to -1.60, |Y| 3.343 to 4.843), carrying the 20 N of the press (`band-interface.md` line 137): a boss of the body or a bonded insulating block, with a polyimide pad on top [START: material and pad]; without it the 0.30 board bends under the blade. Today that place is the ribbon fold volume (`thin-notes.md` line 134), which D no longer needs.
+
+D5. What changes (lists):
+- Ring board: (a) remove the 15 F.Cu pads of J_BAND_A and J_BAND_B; (b) 15 new B.Cu pads, 0.30 x 0.30 (up to 0.30 x 0.375), 3 x 3 grids at the places of D1, 8 of 9 places on the -Y side, 7 of 9 on the +Y side, with B.Mask openings and B.Paste (pass 1 stencil `ring-B_Paste.gbr`; aperture 0.26 x 0.26 at t 0.08 for h 0.030, or the full 0.30 land at t 0.05 and 0.10 giving h 0.025 and 0.050; at t 0.12 even the full land is under the 0.66 area ratio, 0.62); (c) the 15 nets end on B.Cu through stacked microvias (`design/ecad/ring/pcb/fab/stackup.txt` line 16); the B.Cu ground fill is cleared there; today the -Y field holds vias of GND, JOY_DOWN and JOY_LEFT (`WORK/logs/check_notch.log`); (d) two Edge.Cuts notches X -3.55 to -1.45, |Y| 5.305 to 6.30; copper whose box meets them today: +Y notch USB_DN and USB_DP (F.Cu), MOT_EN, VDD_SD (In1), VBAT, VMOT (In2), GND fill (B.Cu); -Y notch BTN_REC and GND (F.Cu), MIC_A_DATA, VDD_MIC (In1), ELVDD, SD_CS, SD_MOSI (In2), a BTN_REC via, GND fills (F.Cu, B.Cu): all rerouted; (e) the board outline rule "the board has no notch" (`design/mfg/specs/main-board.md` line 21) changes; (f) rules check, check_board.py, every fabrication file again; (g) the jig of step 5 then finds VBAT, NTC and USB on the screen face.
+- Band boards (14): foot 1.800 wide with no taper (X -3.40 to -1.60); 3 x 3 lands at 0.45 on the inner face (B.Cu) with vias in the lands; stiffener moved to the outer face (F.Cu) of the foot; lanes rerouted into the grid (8 lines on FLEX1, 7 on FLEX2, in a 1.8 neck that today carries 5 lines on B.Cu and 2 on F.Cu, `band-interface.md` line 145: not proven); flat length + 0.510; new tail footprints and a new mating check in `check_band.py`; fab files and drawings; `design/mfg/specs/band-flex-tails.md`.
+- Model: board notches; tail end (neck up to Z 1.100, fold through the notch, foot on top, stiffener up); the two support posts; the fold volume under the board freed; the fit check rerun (with the taller block, v10).
+- Guide: step 2 (paste on the B.Cu lands in pass 1), step 4, step 5 (jig), step 14 (feet up through the slots from below), step 17 before step 16 (board seated first, tails standing up through the notches), step 16 in place from above, step 15 after step 16.
+
+D6. What D does NOT solve: (1) J1's heat: the lands are on J1's own face, 0.417 from J1 (option A: 0.510 through the board); J1's 2 cycles stay used by step 2, so the press must still be measured below 217 C at J1. (2) The finer grid: 0.15 gaps instead of 0.21, the foot exactly at the edge rule, no Y margin on the board lands: more risk of bridges and of misses. (3) Routing 8 lines into a 3 x 3 grid in a 1.8 neck is not shown. (4) The rigid foot's turn from the channel into the slot is not modelled. (5) It needs a large board change (two notches through copper on four layers, 15 nets moved) and 14 longer ribbons: no ribbon is long enough today. (6) Lands A6 and A8 still cannot be told apart by a meter. (7) The live cell is still on FLEX2 at its joint. (8) The support posts are a body change. No number of D fails outright except "3 columns at 0.51" (1.920 against 1.800); everything else fits only at the rule minimums.
+
+Smallest change in number of files: option A (body only); option D changes the most (ring board, 14 band boards, body and model) but keeps the outside and puts the joint in view. Option A changes the outside of the block; that is the owner's call (questions_for_owner).
+
+## 3. Q3: alignment of the foot and the fixture
+
+Why not a fixture that holds the foot: the board outline is held to ISO 2768-m (`design/mfg/specs/main-board.md` line 21; for 6 to 30 mm that standard allows +-0.2 mm [START: my reading of the standard, not a project file]) and the foot outline to +-0.10 of its copper (`band-interface.md` line 137, "FPC Outline"). Registering both by their outlines leaves up to 0.3 mm between the copper of the two faces, against 0.21 mm between lands. The alignment has to be copper to copper.
+
+Why not marks on the board: I looked for a free place for a 0.10 x 0.60 copper bar 0.05 to 0.25 mm outside each X edge of each foot, at least 0.10 mm from any F.Cu track, via or pad (`WORK/scan_bars.py`). Result `WORK/logs/scan_bars.log`: J_BAND_B left edge "NO free 0.10 x 0.60 place", J_BAND_B right edge "NO free", J_BAND_A left edge "NO free", J_BAND_A right edge free at X -0.95 to -0.85. One mark per foot cannot set its X, so no mark is asked for. (The land traces fan out round the keep-out of `band-interface.md` line 57, which keeps parts and holes out, not copper.)
+
+**Method: the foot is aligned to the board's own lands, under a stereo microscope at 20 times [START], with the board parts face up in the fixture.**
+- Before the foot touches: hold the foot by its neck with tweezers, tilted, its end edge (u 0) down first, 0.20 mm inside the inner ends of the inner row of lands (foot end at |Y| 3.40, lands start at |Y| 3.60, `band-interface.md` lines 26 and 91). Look along the foot's two long edges: each edge must stand the same distance, 0.335 mm, outside the outer edge of the outer land column (foot X -3.50 and -1.00; outer land edges X -3.165 and -1.335). Then lay the foot flat.
+- After it lies flat: look through the foot. The tail lands are 0.30 x 0.30 and the board lands 0.30 x 0.55 (`band-interface.md` lines 23 and 91), so a well placed foot shows each board land sticking out by 0.125 mm at both ends of its tail land and by nothing at the sides. [START: no file says that the stiffener and coverlay let the lands be seen; confirm on the first ribbon; if they do not, the first check alone is used and the meter check of section 4 finds a bad placing.]
+
+**Fixture (drawing `design/mfg/assembly/hotbar-fixture.svg`, values with their sources in `WORK/logs/fixture-values.log`, drawing written by `WORK/make_fixture_svg.py`).**
+- Base 40.0 x 26.0 x 5.0 mm [START], of a glass-fibre composite plate sold for soldering pallets, rated for 260 C or more [START: no file names a material; it must not pull the heat out of the joint and must not melt under the 260 C blade].
+- Board pocket 27.30 x 12.70 (board 27.2 x 12.6, `main-board.md` lines 27 and 28, plus 0.05 per side [START]), corners R0.85 (board corner 0.8, `thin.py` line 473, plus 0.05), 0.30 deep (board 0.30, `design/ecad/ring/pcb/fab/stackup.txt` line 15), so the parts face lies flush with the base top.
+- Relief channel along the whole pocket, 6.60 wide (|Y| up to 3.30) and 1.30 deeper than the pocket floor. Every screen face part lies within |Y| 3.093 (`WORK/logs/screen-face-parts.log`, J1 X -6.648 to -3.218, Y -3.093 to 3.087), and J1 is 0.9 high (`design/wiring/screen-cable-study.md` line 59); 1.30 = 0.9 + 0.40 [START].
+- The two ledges |Y| 3.30 to 6.35 carry the board along its whole length and are the anvil: the lands (|Y| 3.60 to 5.05) and the feet (|Y| 3.40 to 5.145) lie wholly on them.
+- Tweezer notches 3.0 wide, 1.5 long at both X ends of the pocket [START].
+- Engraved: "PARTS FACE UP", "A FLEX1" beside the upper joint, "B FLEX2" beside the lower joint, "+X fingertip" arrow. Seen from above, +X is to the right and +Y down the page, as the board file seen from the parts face; J_BAND_A is then the upper row and J_BAND_B the lower, both left of the centre (X -2.25).
+- The hot bar reaches the foot from straight above: nothing on the fixture stands above the board's parts face. The ribbon leaves the foot outward over the board edge and lies flat on the base top, where it is held with polyimide tape [START].
+- Use: options A and C (board parts face up). Option B needs a different support, not drawn.
+
+## 4. Q4: the joint, step by step (board parts face up on the fixture)
+
+Land map (from `band-interface.md` lines 67 to 83, wiring lines of `design/wiring/product-wiring.csv`). Row "inner" = |Y| 3.875, nearer the board middle and the foot's end; row "outer" = |Y| 4.775, nearer the board edge and the fold. Column 1 to 4 = X -3.015, -2.505, -1.995, -1.485, counted from the hand end (-X). Band end and board end = where the meter touches after the joint (board pads from `WORK/dumps/probe-pads.csv` and `WORK/dumps/netpads.csv`).
+
+| Land | Net | On the foot (row, column) | csv line | Band end probe | Board end probe | Expected |
+|---|---|---|---|---|---|---|
+| A1 UP | JOY_UP | inner, 4 | 2 (W001) | SW1 terminal 3 | C28 pad 2 (GND) | diode drop, not OL, not 0 |
+| A2 DOWN | JOY_DOWN | inner, 1 | 3 (W002) | SW3 terminal 3 | C28 pad 2 (GND) | diode drop |
+| A3 LEFT | JOY_LEFT | inner, 2 | 4 (W003) | SW4 terminal 3 | C28 pad 2 (GND) | diode drop |
+| A4 RIGHT | JOY_RIGHT | outer, 4 | 5 (W004) | SW5 terminal 3 | C28 pad 2 (GND) | diode drop |
+| A5 CENTRE | BTN_REC | outer, 1 | 6 (W005) | SW2 terminal 1 | C28 pad 2 (GND) | diode drop |
+| A6 MOT- | GND | inner, 3 | 22 (W021) | SW1 terminal 4 | C28 pad 2 | beep, with A8 |
+| A7 MOT+ | VMOT | outer, 2 | 23 (W022) | M1 land 1 (red lead) | C84 pad 1 (VMOT) | beep |
+| A8 GND | GND | outer, 3 | 12 (W011) | SW1 terminal 4 | C28 pad 2 | beep, with A6 |
+| B1 CELL+ | VBAT | inner, 1 | 26 (W025) | (cell) | C83 pad 1 + to C83 pad 2 - | cell voltage |
+| B2 CELL- | GND | inner, 3 | 27 (W026) | (cell) | as B1 | as B1 |
+| B3 NTC | NTC | inner, 2 | 28 (W027) | none | none | T-CHARGE passes |
+| B4 VBUS | VBUS | outer, 3 | 30 (W029) | disc CP1 | C71 pad 1 (VBUS) | beep; USB enumerates |
+| B5 D- | USB_DN | outer, 2 | 31 (W030) | none | none | USB enumerates |
+| B6 D+ | USB_DP | outer, 1 | 32 (W031) | none | none | USB enumerates |
+| B7 GND | GND | inner, 4 | 33 (W032) | disc CP4 | C83 pad 2 (GND) | beep |
+
+Why some lands have no board probe: JOY_UP, JOY_DOWN, JOY_LEFT, JOY_RIGHT and BTN_REC reach only balls of U1, NTC only ball D3 of U2, USB_DN and USB_DP only U1 balls and U9's leadless pads (`WORK/dumps/netpads.csv`). For the five switch lines the meter in diode mode, red probe on board ground, black on the switch terminal, reads the protection diode of U1's pin: a drop means the joint is made, OL means open, 0 means a short to ground [START: the drop value; record the readings of the first good board as the reference]. Order matters: FLEX1 is joined and measured first, while the board has no power; once FLEX2 is joined the cell feeds the board (`assembly.md` line 213) and diode readings are no longer valid.
+
+Hot-bar values (`band-interface.md` line 137): "Hot bar blade 3 mm wide ... covering the whole foot, 260 C for 4 s at 20 N [my starting values: the Alps and the polyimide's limits are 260 C 3 s; the polyimide film is rated far above it]". Status: starting values of the band designer, never pressed on a part (`design/mech/thin/thin-notes.md` line 485 lists among the things not proven "hot bar settings, the foot joint (bench)"). One change: a 3.0 mm blade centred on the foot (X -3.75 to -0.75) overlaps R61 by 0.040 x 0.290 mm (`WORK/logs/geom_check.log`, line "BLADE 3.0 x stiffener"); a 2.5 x 1.6 blade on the stiffener (X -3.50 to -1.00, |Y| 3.45 to 5.05, `thin.py` line 81 `foot_stiff_x`, `foot_stiff_y`) clears every part, R61 by 0.210 (line "BLADE 2.5 x stiffener") [START].
+
+Sub-steps (FLEX1 first, then FLEX2):
+1. Put the board in the fixture, parts face up, J1 down in the channel, J_BAND_A at the upper left (engraving "A FLEX1"). The board lies flat and flush; it does not rock.
+2. Look at the 15 lands at 10 times: each carries a smooth, bright solder dome (from step 2), no solder between two lands. A land with no dome or a bridge: stop, the board goes back to the lead.
+3. Wipe the foot lands of FLEX1 with isopropyl alcohol on a lint-free swab and let them dry [START].
+4. Brush a thin coat of liquid no-clean flux on the 8 lands of J_BAND_A only [START: no file names a flux, `WORK/logs/flux-search.log` and `design/mfg/assembly/joint-table-notes.md` line 40; type ROL0 of J-STD-004].
+5. Place the FLEX1 foot, lands down, its neck leaving over the upper board edge, aligned as section 3 says (edges 0.335 mm outside the outer lands, end 0.20 mm inside the inner lands). Tape the neck to the base top beyond the board edge. Check the look-through of section 3.
+6. Press: blade 2.5 x 1.6 on the stiffener, 260 C, 4 s, 20 N, then hold the pressure until the blade has cooled below 150 C before lifting [START: the cooling rule; band-interface.md gives the other three values].
+7. Look at 10 times: the foot lies flat (no lifted corner), it has not moved against the lands, no solder ball beside it.
+8. Meter, board still without power: the 8 rows A1 to A8 of the table. Also no short between neighbours, by pairs of band-end probes: SW3 t3 to SW4 t3 (A2 to A3), SW2 t1 to M1 land 1 (A5 to A7), and across the rows SW3 t3 to SW2 t1 (A2 to A5), SW4 t3 to M1 land 1 (A3 to A7), SW1 t3 to SW5 t3 (A1 to A4): no beep. M1 land 1 to C28 pad 2 reads the motor, not 0 ohm [START: the motor's own reading, taken in step 7 before the joint].
+9. Remove the insulating tape of step 9 from the FLEX2 foot (`assembly.md` line 157), wipe its lands, flux the 7 lands of J_BAND_B, place the foot (neck over the lower board edge), check, press as in 6, look as in 7.
+10. Meter, board now powered by the cell: C83 pad 1 to C83 pad 2 reads the cell voltage recorded at step 9 (`assembly.md` line 155) within 0.05 V [START] (proves B1 and B2); disc CP4 to C83 pad 2 beeps (B7); disc CP1 to C71 pad 1 beeps (B4).
+11. Functional check, as step 16 has it (`assembly.md` line 213): USB through CP1 to CP4 enumerates and GET_INFO answers (B4 to B7). Then, while the joints can still be reached, FACTORY ENTER and T-JOY, T-CENTRE, T-MOTOR, T-CHARGE (`design/firmware.md` lines 1026, 1027, 1028, 1032) [START: today these run at step 18]. B3 (NTC): an open NTC land reads as a very high resistance, which the power chip treats as below its cold limit, and "Charging does not happen below TCOLD" (`design/datasheets/npm1304_datasheet_v1_0.txt` lines 1472 and 1479, the sentence runs over a page break), so T-CHARGE fails with the state off (my reading of that page; the first board confirms). A bridge between neighbours of J_BAND_B also shows here: D+ to D- or VBUS to D- stops USB, NTC to ground or to VBAT moves the read temperature out of the charging range (my reading, same page).
+
+When one land reads open: (a) note which land (table above); (b) brush flux along the foot edge nearest that land and press once more with the same values; (c) measure again; (d) if still open after this second press, stop. Do not press a third time: each press heats J1 again (section 5), and two presses per foot is the limit here [START]. The lead decides the repair; no file gives a way to lift a foot and make it again. A short between two lands is treated the same way, never with an iron between the lands.
+
+What the meter cannot see: lands A6 and A8 are joined on the ribbon by a strap (`band-notes.md` line 71) and both go to the board's ground plane (`band-interface.md` line 56), so one open of the two reads as good. The same holds for B2 and B7 only if FLEX2 joins them; the wiring list gives them separate lines (csv lines 27 and 33), and then step 10 tests each. An X-ray of the joint, as step 2 does for U1 (`assembly.md` line 99), is the only check of A6 and A8 [START: the lead decides whether it is asked].
+
+## 5. Q5: reflow count and the parts near the lands
+
+Hirose, `design/datasheets/w1_hirose_fh35c-15s-0.3shw50_drawing.pdf` page 6 (an image page, read by me, notes in `WORK/logs/hirose-p6-reading.txt`): "-Number of reflow cycles:2 cycles MAX." and "The temperatures mentioned below refer to the PCB surface temperature near the connector contact leads." Peak 250 C.
+
+- The paste of section 1 goes through pass 2 with the parts face: no new oven pass. Step 2 already gives J1 two cycles (pass 1 its own face, pass 2 hanging face down, `assembly.md` line 96), which is Hirose's maximum (G6 of `wiring-review-3.md` line 43).
+- The hot bar is a third heating of the board near J1: J1's body is 0.510 mm in plan from land 2 of J_BAND_A, on the other face, 0.30 mm of board between (`WORK/logs/geom_check.log` line "NEAR J1"); the same J1 box ends at Y +3.087 against J_BAND_B's lands from Y +3.60, about 0.51 mm too. No file gives J1's temperature during a press. If J1's leads pass the melting of SAC305, 217 to 220 C (`assembly.md` line 145), that is a third reflow and beyond J1's limit. **Required on the first board** [START: the method]: a fine thermocouple fixed on the screen face at J1's corner nearest each joint (X -3.22, Y -3.09 and +3.09) during each press; pass when its peak stays below 217 C. If it does not, stop; the lead chooses (a lower blade temperature with a longer time, a heat sink clamped on J1 in the relief channel, or the board helper moves J1 or the lands).
+- The cell: on FLEX2 the first PRT1 tab land is 4.762 mm (US 9) to 5.567 mm (US 13) from the blade edge along the ribbon (`WORK/logs/prt1_distance.log`, from `band-interface.md` line 116 and `band_geom.py`). The cell maker's heat limit is open item S12 (`band-interface.md` line 117): a thermocouple on that tab during the first FLEX2 press [START].
+
+Parts within 3 mm (plan, body box to the nearest land) of the J_BAND lands, from the board file (`WORK/logs/geom_check.log`, "NEAR" lines; places agree with `placement-final.csv`, for example U3 line 56, J1 line 78, U11 line 81, R61 line 84):
+
+| Face | Parts, distance in mm |
+|---|---|
+| parts face (F.Cu) | U3 0.460, R61 0.545, U10 0.745, U11 0.795, C28 0.845, C29 0.871, C25 1.208, R62 1.245, C83 1.285, C26 1.745, C22 1.758, C60 2.145, C12 2.203, R63 2.295, C84 2.336, C81 2.346, R2 2.560, C23 2.645, C27 2.645, C3 2.974 |
+| screen face (B.Cu) | J1 0.510, TP1 1.060, TP14 1.060, TP6 1.060, TP15 1.115, TP21 1.115, TP12 2.110, TP3 2.110, TP5 2.110, TP17 2.138, TP19 2.138 |
+
+The test pads are bare copper with no solder (`assembly.md` line 96): no limit applies. The parts face parts have had one reflow (pass 2); their makers' cycle limits are not in any file I read: unverified. The heat reaching U3 (0.460 mm) and R61 (0.545 mm) may remelt their joints under a still board; the press must not move the board while the blade is hot (sub-step 6).
+
+## 6. Values no file gives (starting values, lead's to confirm)
+
+1. Paste metal share by volume after reflow f = 0.50 (section 1).
+2. Area ratio of at least 0.66 for the paste print (section 1).
+3. The stencil thickness itself: not set in any file (section 1).
+4. Spring pin on a solder dome at step 5 is harmless (section 1).
+5. Thermode for option C and its height, which sets S (section 2.5).
+6. ISO 2768-m gives +-0.2 mm for 6 to 30 mm (section 3, my reading of the standard).
+7. Microscope at 20 times for placing (section 3).
+8. The stiffener and coverlay let the board lands be seen (section 3).
+9. Fixture base 40.0 x 26.0 x 5.0, glass-fibre composite pallet material rated 260 C or more, pocket clearance 0.05 per side, channel clearance 0.40, tweezer notches 3.0 x 1.5, polyimide tape (section 3).
+10. Isopropyl alcohol wipe of the foot lands (sub-step 3).
+11. Flux: liquid no-clean, J-STD-004 type ROL0 (sub-step 4).
+12. Blade 2.5 x 1.6 instead of 3 mm (section 4); 260 C, 4 s, 20 N stay the band designer's starting values of `band-interface.md` line 137.
+13. Hold pressure until the blade is below 150 C (sub-step 6).
+14. Diode-mode reading of a made switch line; the reference readings of the first good board (section 4).
+15. The motor's own meter reading as the no-short reference (sub-step 8).
+16. Cell voltage agreement within 0.05 V (sub-step 10).
+17. Running T-JOY, T-CENTRE, T-MOTOR, T-CHARGE right after the joint (sub-step 11).
+18. Two presses per foot at most (section 4).
+19. X-ray for lands A6 and A8 (section 4).
+20. J1 temperature check by thermocouple, pass below 217 C (section 5); thermocouple on the PRT1 tab (section 5).
+
+## 7. Changes for the board helper (ring board; I edited none)
+
+1. Footprints J_BAND_A_BOARD and J_BAND_B_BOARD (`design/ecad/band/OpenRingBand.pretty`, placed as J_BAND_A and J_BAND_B on `design/ecad/ring/pcb/ring.kicad_pcb`): add F.Paste to each of the 15 pads (J_BAND_A pads 1 to 8, J_BAND_B pads 1 to 7). Aperture per pad, centred on the pad: 0.30 (X) x the Y length of section 1 for the stencil thickness the lead sets (t 0.08: 0.413; t 0.10: 0.330; t 0.05: 0.550; t 0.12: 0.30, below the area ratio otherwise). No other pad changes.
+2. Regenerate `design/ecad/ring/pcb/fab/gerber/ring-F_Paste.gbr`: 15 new rectangular flashes at the land centres of `band-interface.md` lines 32 to 52 (302 flashes today, 317 after; check with `WORK/paste_at_lands.py`, which must then print `RESULT lands with a paste opening: 15 of 15`).
+3. No change to F.Cu, F.Mask (openings 0.40 x 0.65 stay, `band-interface.md` line 55), silkscreen or outline. No alignment mark (section 3: no free place beside 3 of 4 foot edges).
+4. Only if option B is chosen with a 1.8 mm foot: new J_BAND land pattern (a separate task, not specified here).
+
+## 8. Changes for the guide (`design/mfg/assembly/assembly.md`; text as I would have it say)
+
+The step 16 text below is the bench joint of option A (or C). Until the lead picks an option, step 16 cannot be done (section 2.4), and the guide should say so.
+
+**Step 2, the sentence on the ribbon lands (replaces "The two ribbon land rows J_BAND_A and J_BAND_B are copper on the parts face and get no paste [PROPOSED: ...]"):**
+> The two ribbon land rows J_BAND_A (8 lands) and J_BAND_B (7 lands) get paste in PASS 2, one opening per land, so each land leaves the oven with a solder layer of about 0.03 mm: this is the solder of the hot-bar joint of step 16 (`design/ecad/band/band-interface.md:55`, `design/ecad/band/band-interface.md:137`; height `design/mech/thin/thin.py:81`; aperture per stencil thickness in `design/mfg/assembly/hotbar-joint.md`, section 1). The board finish ENEPIG brings no solder of its own (`design/ecad/ring/pcb/fab/stackup.txt:20`). Check after PASS 2 adds: each of the 15 lands carries a smooth solder dome and no solder joins two lands, at 10 times. The paste of these lands adds no oven pass; J1 still sees two reflows, which is Hirose's maximum ("Number of reflow cycles:2 cycles MAX.", `design/datasheets/w1_hirose_fh35c-15s-0.3shw50_drawing.pdf` page 6).
+
+**Step 4, the Join and Check fields:**
+> - **Join:** nothing is joined. Both faces of PCB1 are cleaned of flux residue, then dried: the SCREEN FACE round the 12 test pads, the PARTS FACE round the ribbon lands J_BAND_A and J_BAND_B [PROPOSED: reason, the spring pins of step 5 need clean pads and the hot-bar joints of step 16 need clean solder domes; the paste and flux of step 2 are not named by any file]. The solder domes on the 15 ribbon lands stay: they are the solder of step 16 (`design/mfg/assembly/hotbar-joint.md`, section 1).
+> - **Check:** under a microscope at 10 times, no residue on any of the 12 test pads or on any ribbon land; each of the 15 ribbon lands still carries its solder dome, none flattened or scraped [PROPOSED]; the gasket choice of step 3 is still recorded against the board's serial number.
+
+**Step 16 (whole step):**
+> ### Step 16. Solder the ribbon ends to the board by hot bar (the cell connects here)
+> - **Join:** the foot of FLEX1 to J_BAND_A and the foot of FLEX2 to J_BAND_B, on the board's parts face, by hot bar, on the solder layer that step 2 put on the 15 lands (`design/ecad/band/band-interface.md:137`). FLEX1 first, then FLEX2. Sub-steps 1 to 11 of `design/mfg/assembly/hotbar-joint.md` section 4, with the board PARTS FACE UP in the fixture `design/mfg/assembly/hotbar-fixture.svg`, J1 down in the fixture's channel, each foot lands DOWN, its ribbon leaving over the board edge. Press: blade 2.5 x 1.6 mm on the foot's stiffener, 260 C, 4 s, 20 N, held until the blade is below 150 C [PROPOSED: starting values of `design/ecad/band/band-interface.md:137`, never pressed; blade narrowed from 3 mm because a 3 mm blade lands on R61, `design/mfg/assembly/hotbar-work/logs/geom_check.log`]. Flux: liquid no-clean on the lands of the joint being made [PROPOSED: no file names one].
+> - **Locate:** each foot on its 8 or 7 lands by eye at 20 times: the foot's long edges 0.335 mm outside the outer land columns, its end 0.20 mm inside the inner row (`design/ecad/band/band-interface.md:26`, `design/ecad/band/band-interface.md:91`); the board in the fixture pocket.
+> - **Before:** steps 6 to 9 passed; the cell voltage of step 9 is recorded. The posture of this step exists only once the lead has chosen how the ribbons reach the block (`design/mfg/assembly/hotbar-joint.md` section 2.5): with today's slot (2.1 mm) and ribbon lengths (no free length) no posture works. FIRST BOARD ONLY: a thermocouple at J1's corner nearest each joint; its peak must stay below 217 C, or J1 gets a third reflow beyond Hirose's 2 cycles (`design/datasheets/w1_hirose_fh35c-15s-0.3shw50_drawing.pdf` page 6). The insulating tape of step 9 is removed from the FLEX2 foot just before its joint.
+> - **Check:** after FLEX1, board without power: the meter table of `design/mfg/assembly/hotbar-joint.md` section 4, rows A1 to A8 (diode drop on the five switch lines, beep on VMOT and ground, no short between neighbours). After FLEX2: the cell voltage between C83 pad 1 and pad 2, beep from CP4 to C83 pad 2 and from CP1 to C71 pad 1; USB through CP1 to CP4 enumerates and GET_INFO answers (`design/firmware.md section 6.3, name GET_INFO`); T-JOY, T-CENTRE, T-MOTOR and T-CHARGE pass [PROPOSED: run here while the joints can be reached]. One open land: flux, one more press, measure; still open, stop and call the lead (never a third press).
+> - **After:** the ring runs on its own cell. It draws about 0.03 mA in STANDBY [ESTIMATE of `design/firmware.md section 8.5, name 0.03 mA`]. The joints cannot be reached after step 17.
+
+## questions_for_owner
+
+1. Option A of section 2.5 cuts each floor slot open through the block's side wall (a slit at least 2.1 mm wide, filled with black DP420 after the joint). Is a filled slit on each side of the block acceptable on the finished ring? (The lead weighs it against options B and C, which change the ribbons or the body inside instead.)
+
+RESULT: done, no arrangement works with today's files (foot 2.500 mm against slot 2.100 mm, free ribbon length 0.000 mm at all 7 sizes, stiffener 0.790 mm above the floor in place); four options are given (A joint before threading with slots opened through the block side wall, B in place heated from the screen face, C longer ribbons, D joint on the screen face through board notches with a 1.8 mm foot), the smallest change in files is A, and the lead and owner decide.

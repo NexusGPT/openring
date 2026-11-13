@@ -1,0 +1,10 @@
+--- a/ring_control/src/rctl_logic.c
++++ b/ring_control/src/rctl_logic.c
+@@ -142,6 +142,7 @@
+ bool rctl_from_core(uint8_t rc_action, enum rctl_action *out)
+ {
+ 	switch (rc_action) {
++	case RC_ACT_OPEN:
+ 	case RC_ACT_SCREEN_CENTRE:
+ 		*out = RCTL_CENTRE;
+ 		return true;

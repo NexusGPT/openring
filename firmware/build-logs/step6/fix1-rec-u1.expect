@@ -1,0 +1,8 @@
+Expected before run fix1-rec-u1 (the full unit run; written before its result was read):
+- tests-native_sim and tests-nrf54lm20bsim parts exit 0; recorder 52 cases per board, the six other folders 221 cases per board
+- broken-recorder ends RESULT PASS: each of the 18 copies fails its named case on both boards, among them the six new ones
+  ship_cuts_m2, ship_screen_on, unmount_result_dropped, no_hfxo_in_boot, close_drops_partial, test_recording_wrong_type
+- broken-store, broken-xfer, broken-audio, broken-motor, broken-devices, broken-factory end RESULT PASS as before this round
+- broken-factory vbat_read_at_0: factory_motor.test_reads_and_timing fails; factory_screen.test_frame_sequence no longer fails
+  with it (R6-13)
+- last line UNIT PASS tests/recorder tests/store tests/xfer tests/audio tests/motor tests/devices tests/factory

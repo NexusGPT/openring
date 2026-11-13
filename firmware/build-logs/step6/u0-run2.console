@@ -1,0 +1,1052 @@
+# remote.sh run 20261113-043605-u-rhw
+# command: bash tools/unit_run.sh tests/rhw
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 04:36:05 CET
+# free on the server's /: 29 GB
+# source firmware copied to /root/ring-os/src-u-rhw
+# started on the server as 20261113-043605-u-rhw; server log /root/ring-os/logs/20261113-043605-u-rhw.log
+=== part tests-native_sim start 2026-11-13T03:36:13Z log /ws/out/20261113-043605-u-rhw-unit/tests-native_sim.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-043605-u-rhw-unit/twister-native_sim/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 native_sim/native         ring_rhw.sim                                       FAILED rc=1 (native 0.069s <host/gnu>)
+INFO    - /ws/out/20261113-043605-u-rhw-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/rhw/ring_rhw.sim/handler.log
+ERROR   - *** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+*** Using Zephyr OS v4.4.2-9133dab6b066 ***
+Running TESTSUITE rhw_sim
+===================================================================
+START - test_beacon_recorded
+ PASS - test_beacon_recorded in 0.000 seconds
+===================================================================
+START - test_clock_cycle_rate
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:829: rhw_sim_test_clock_cycle_rate: ((int64_t)(c1 - c0) not within 32768 +/- 40)
+one second = 33095 cycles
+ FAIL - test_clock_cycle_rate in 1.010 seconds
+===================================================================
+START - test_disk_cut_after_sector
+ PASS - test_disk_cut_after_sector in 0.000 seconds
+===================================================================
+START - test_disk_init_fails_n
+ PASS - test_disk_init_fails_n in 0.000 seconds
+===================================================================
+START - test_disk_read_error_at_lba
+ PASS - test_disk_read_error_at_lba in 0.000 seconds
+===================================================================
+START - test_disk_refused_rail_off
+ PASS - test_disk_refused_rail_off in 0.000 seconds
+===================================================================
+START - test_disk_sector_count
+ PASS - test_disk_sector_count in 0.000 seconds
+===================================================================
+START - test_disk_stall_per_write
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:159: rhw_sim_test_disk_stall_per_write: (dt >= 80 && dt <= 90 is false)
+two writes of a 40 ms stall took 100 ms
+ FAIL - test_disk_stall_per_write in 0.100 seconds
+===================================================================
+START - test_disk_write_fault_at_n
+ PASS - test_disk_write_fault_at_n in 0.000 seconds
+===================================================================
+START - test_event_log_order_and_time
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:929: rhw_sim_test_event_log_order_and_time: (e.t_us - t0 not within at_us[i] +/- 200)
+entry 1 at 20000 us
+ FAIL - test_event_log_order_and_time in 0.040 seconds
+===================================================================
+START - test_gauge_start_soc_and_error
+ PASS - test_gauge_start_soc_and_error in 0.000 seconds
+===================================================================
+START - test_headers_compiled
+ PASS - test_headers_compiled in 0.000 seconds
+===================================================================
+START - test_hfxo_delay
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:655: rhw_sim_test_hfxo_delay: hfxo_cb_ms - t0 not within 5 +/- 1
+
+ FAIL - test_hfxo_delay in 0.020 seconds
+===================================================================
+START - test_hfxo_never
+ PASS - test_hfxo_never in 0.510 seconds
+===================================================================
+START - test_image_confirmed_flag
+ PASS - test_image_confirmed_flag in 0.000 seconds
+===================================================================
+START - test_image_write_error
+ PASS - test_image_write_error in 0.000 seconds
+===================================================================
+START - test_k14_real_clock
+K14: sys_clock_hw_cycles_per_sec 1000000; k_cycle_get_32 advanced 110000 in 100 ms; rhw cycles advanced 110000; ms 110
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:1066: rhw_sim_test_k14_real_clock: mb - ma not within 100 +/- 1
+
+ FAIL - test_k14_real_clock in 0.110 seconds
+===================================================================
+START - test_k15_ram
+K15: pool 4096 sectors (2097152 bytes) and 3 x 33280 chunk bytes held on this target
+ PASS - test_k15_ram in 0.000 seconds
+===================================================================
+START - test_mic_clipped
+ PASS - test_mic_clipped in 0.050 seconds
+===================================================================
+START - test_mic_counter_and_timing
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:224: rhw_sim_test_mic_counter_and_timing: (k_uptime_get() - t0 not within 16 * (i + 1) +/- 1)
+block 0 at 16 ms
+ FAIL - test_mic_counter_and_timing in 0.030 seconds
+===================================================================
+START - test_mic_drop_block
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:342: rhw_sim_test_mic_drop_block: (k_uptime_get() - t0 not within 48 +/- 1)
+at its own time
+ FAIL - test_mic_drop_block in 0.060 seconds
+===================================================================
+START - test_mic_read_error
+ PASS - test_mic_read_error in 0.050 seconds
+===================================================================
+START - test_mic_sine_level
+ PASS - test_mic_sine_level in 0.030 seconds
+===================================================================
+START - test_mic_stop_and_slab
+ PASS - test_mic_stop_and_slab in 0.210 seconds
+===================================================================
+START - test_mic_stop_delivering
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:319: rhw_sim_test_mic_stop_delivering: (k_uptime_get() - t0 not within 100 +/- 1)
+the read waited its whole timeout
+ FAIL - test_mic_stop_delivering in 0.160 seconds
+===================================================================
+START - test_mic_stuck_channel
+ PASS - test_mic_stuck_channel in 0.030 seconds
+===================================================================
+START - test_motor_and_sdbus_recorded
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:895: rhw_sim_test_motor_and_sdbus_recorded: (e.t_us - t_on not within 80000 +/- 200)
+MOTOR high for 80 ms
+ FAIL - test_motor_and_sdbus_recorded in 0.090 seconds
+===================================================================
+START - test_persist_start_values
+ PASS - test_persist_start_values in 0.000 seconds
+===================================================================
+START - test_pmic_charge_error
+ PASS - test_pmic_charge_error in 0.000 seconds
+===================================================================
+START - test_pmic_ilim_at_sample
+ PASS - test_pmic_ilim_at_sample in 0.000 seconds
+===================================================================
+START - test_pmic_motor_dip
+ PASS - test_pmic_motor_dip in 0.000 seconds
+===================================================================
+START - test_pmic_rails_and_charger
+ PASS - test_pmic_rails_and_charger in 0.000 seconds
+===================================================================
+START - test_pmic_reset_causes
+ PASS - test_pmic_reset_causes in 0.000 seconds
+===================================================================
+START - test_pmic_script_and_cell
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:557: rhw_sim_test_pmic_script_and_cell: s.mv not equal to 3824
+
+ FAIL - test_pmic_script_and_cell in 36.010 seconds
+===================================================================
+START - test_pmic_ship_refuses_later_calls
+ PASS - test_pmic_ship_refuses_later_calls in 0.000 seconds
+===================================================================
+START - test_pmic_vbus_now_and_at
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:449: rhw_sim_test_pmic_vbus_now_and_at: (rhw_pmic()->vbus_present() is false)
+not before its time
+ FAIL - test_pmic_vbus_now_and_at in 0.260 seconds
+===================================================================
+START - test_reboot_keeps_card_settings_retained
+ PASS - test_reboot_keeps_card_settings_retained in 0.030 seconds
+===================================================================
+START - test_registration_refused_in_sim
+ PASS - test_registration_refused_in_sim in 0.000 seconds
+===================================================================
+START - test_retained_valid_or_corrupt
+ PASS - test_retained_valid_or_corrupt in 0.000 seconds
+===================================================================
+START - test_usb_host_stops_reading
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:728: rhw_sim_test_usb_host_stops_reading: (k_uptime_get() - t0 not within 30 +/- 1)
+waited its timeout
+ FAIL - test_usb_host_stops_reading in 0.040 seconds
+===================================================================
+START - test_usb_speed_packets
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:714: rhw_sim_test_usb_speed_packets: rhw_sim_usb_host_read(back, sizeof(back)) not equal to 128 + 1100
+
+ FAIL - test_usb_speed_packets in 0.000 seconds
+===================================================================
+START - test_wdt_would_reset
+ PASS - test_wdt_would_reset in 17.110 seconds
+===================================================================
+TESTSUITE rhw_sim failed.
+
+------ TESTSUITE SUMMARY START ------
+
+SUITE FAIL -  69.05% [rhw_sim]: pass = 29, fail = 13, skip = 0, total = 42 duration = 55.950 seconds
+ - PASS - [rhw_sim.test_beacon_recorded] duration = 0.000 seconds
+ - FAIL - [rhw_sim.test_clock_cycle_rate] duration = 1.010 seconds
+ - PASS - [rhw_sim.test_disk_cut_after_sector] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_disk_init_fails_n] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_disk_read_error_at_lba] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_disk_refused_rail_off] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_disk_sector_count] duration = 0.000 seconds
+ - FAIL - [rhw_sim.test_disk_stall_per_write] duration = 0.100 seconds
+ - PASS - [rhw_sim.test_disk_write_fault_at_n] duration = 0.000 seconds
+ - FAIL - [rhw_sim.test_event_log_order_and_time] duration = 0.040 seconds
+ - PASS - [rhw_sim.test_gauge_start_soc_and_error] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_headers_compiled] duration = 0.000 seconds
+ - FAIL - [rhw_sim.test_hfxo_delay] duration = 0.020 seconds
+ - PASS - [rhw_sim.test_hfxo_never] duration = 0.510 seconds
+ - PASS - [rhw_sim.test_image_confirmed_flag] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_image_write_error] duration = 0.000 seconds
+ - FAIL - [rhw_sim.test_k14_real_clock] duration = 0.110 seconds
+ - PASS - [rhw_sim.test_k15_ram] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_mic_clipped] duration = 0.050 seconds
+ - FAIL - [rhw_sim.test_mic_counter_and_timing] duration = 0.030 seconds
+ - FAIL - [rhw_sim.test_mic_drop_block] duration = 0.060 seconds
+ - PASS - [rhw_sim.test_mic_read_error] duration = 0.050 seconds
+ - PASS - [rhw_sim.test_mic_sine_level] duration = 0.030 seconds
+ - PASS - [rhw_sim.test_mic_stop_and_slab] duration = 0.210 seconds
+ - FAIL - [rhw_sim.test_mic_stop_delivering] duration = 0.160 seconds
+ - PASS - [rhw_sim.test_mic_stuck_channel] duration = 0.030 seconds
+ - FAIL - [rhw_sim.test_motor_and_sdbus_recorded] duration = 0.090 seconds
+ - PASS - [rhw_sim.test_persist_start_values] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_pmic_charge_error] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_pmic_ilim_at_sample] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_pmic_motor_dip] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_pmic_rails_and_charger] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_pmic_reset_causes] duration = 0.000 seconds
+ - FAIL - [rhw_sim.test_pmic_script_and_cell] duration = 36.010 seconds
+ - PASS - [rhw_sim.test_pmic_ship_refuses_later_calls] duration = 0.000 seconds
+ - FAIL - [rhw_sim.test_pmic_vbus_now_and_at] duration = 0.260 seconds
+ - PASS - [rhw_sim.test_reboot_keeps_card_settings_retained] duration = 0.030 seconds
+ - PASS - [rhw_sim.test_registration_refused_in_sim] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_retained_valid_or_corrupt] duration = 0.000 seconds
+ - FAIL - [rhw_sim.test_usb_host_stops_reading] duration = 0.040 seconds
+ - FAIL - [rhw_sim.test_usb_speed_packets] duration = 0.000 seconds
+ - PASS - [rhw_sim.test_wdt_would_reset] duration = 17.110 seconds
+
+------ TESTSUITE SUMMARY END ------
+
+===================================================================
+RunID: ee1db6a7eed7af37b84b34e96f6db915
+PROJECT EXECUTION FAILED
+
+INFO    - /ws/out/20261113-043605-u-rhw-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/rhw/ring_rhw.sim/handler.log
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 21.96 seconds.
+INFO    - 29 of 42 executed test cases passed (69.05%), 13 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-043605-u-rhw-unit/twister-native_sim/twister.json
+INFO    - Writing xunit report /ws/out/20261113-043605-u-rhw-unit/twister-native_sim/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-043605-u-rhw-unit/twister-native_sim/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_rhw.sim on native_sim/native failed (rc=1)
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_rhw.sim
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/rhw -T ring_rhw.sim
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+=== part tests-native_sim end 2026-11-13T03:36:39Z exit 1
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp start 2026-11-13T03:36:39Z log /ws/out/20261113-043605-u-rhw-unit/tests-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-043605-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_rhw.sim                                 FAILED rc=1 (native 0.051s <host/gnu>)
+INFO    - /ws/out/20261113-043605-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/rhw/ring_rhw.sim/handler.log
+ERROR   - d_00: @00:00:00.000093  *** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+d_00: @00:00:00.000093  *** Using Zephyr OS v4.4.2-9133dab6b066 ***
+d_00: @00:00:00.000093  Running TESTSUITE rhw_sim
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_beacon_recorded
+d_00: @00:00:00.000093   PASS - test_beacon_recorded in 0.000 seconds
+d_00: @00:00:00.000093  ===================================================================
+d_00: @00:00:00.000093  START - test_clock_cycle_rate
+d_00: @00:00:01.000193   PASS - test_clock_cycle_rate in 1.001 seconds
+d_00: @00:00:01.000193  ===================================================================
+d_00: @00:00:01.000193  START - test_disk_cut_after_sector
+d_00: @00:00:01.000193   PASS - test_disk_cut_after_sector in 0.000 seconds
+d_00: @00:00:01.000193  ===================================================================
+d_00: @00:00:01.000193  START - test_disk_init_fails_n
+d_00: @00:00:01.000193   PASS - test_disk_init_fails_n in 0.000 seconds
+d_00: @00:00:01.000193  ===================================================================
+d_00: @00:00:01.000193  START - test_disk_read_error_at_lba
+d_00: @00:00:01.000193   PASS - test_disk_read_error_at_lba in 0.000 seconds
+d_00: @00:00:01.000193  ===================================================================
+d_00: @00:00:01.000193  START - test_disk_refused_rail_off
+d_00: @00:00:01.000193   PASS - test_disk_refused_rail_off in 0.000 seconds
+d_00: @00:00:01.000193  ===================================================================
+d_00: @00:00:01.000193  START - test_disk_sector_count
+d_00: @00:00:01.000193   PASS - test_disk_sector_count in 0.000 seconds
+d_00: @00:00:01.000193  ===================================================================
+d_00: @00:00:01.000193  START - test_disk_stall_per_write
+d_00: @00:00:01.080393   PASS - test_disk_stall_per_write in 0.081 seconds
+d_00: @00:00:01.080393  ===================================================================
+d_00: @00:00:01.080393  START - test_disk_write_fault_at_n
+d_00: @00:00:01.080393   PASS - test_disk_write_fault_at_n in 0.000 seconds
+d_00: @00:00:01.080393  ===================================================================
+d_00: @00:00:01.080393  START - test_event_log_order_and_time
+d_00: @00:00:01.086593   PASS - test_event_log_order_and_time in 0.007 seconds
+d_00: @00:00:01.086593  ===================================================================
+d_00: @00:00:01.086593  START - test_gauge_start_soc_and_error
+d_00: @00:00:01.086593   PASS - test_gauge_start_soc_and_error in 0.000 seconds
+d_00: @00:00:01.086593  ===================================================================
+d_00: @00:00:01.086593  START - test_headers_compiled
+d_00: @00:00:01.086593   PASS - test_headers_compiled in 0.000 seconds
+d_00: @00:00:01.086593  ===================================================================
+d_00: @00:00:01.086593  START - test_hfxo_delay
+d_00: @00:00:01.096693   PASS - test_hfxo_delay in 0.011 seconds
+d_00: @00:00:01.096693  ===================================================================
+d_00: @00:00:01.096693  START - test_hfxo_never
+d_00: @00:00:01.596793   PASS - test_hfxo_never in 0.501 seconds
+d_00: @00:00:01.596793  ===================================================================
+d_00: @00:00:01.596793  START - test_image_confirmed_flag
+d_00: @00:00:01.596793   PASS - test_image_confirmed_flag in 0.000 seconds
+d_00: @00:00:01.596793  ===================================================================
+d_00: @00:00:01.596793  START - test_image_write_error
+d_00: @00:00:01.596793   PASS - test_image_write_error in 0.000 seconds
+d_00: @00:00:01.596793  ===================================================================
+d_00: @00:00:01.596793  START - test_k14_real_clock
+d_00: @00:00:01.696893  K14: sys_clock_hw_cycles_per_sec 1000000; k_cycle_get_32 advanced 100100 in 100 ms; rhw cycles advanced 100100; ms 100
+d_00: @00:00:01.696893   PASS - test_k14_real_clock in 0.101 seconds
+d_00: @00:00:01.696893  ===================================================================
+d_00: @00:00:01.696893  START - test_k15_ram
+d_00: @00:00:01.696893  K15: pool 4096 sectors (2097152 bytes) and 3 x 33280 chunk bytes held on this target
+d_00: @00:00:01.696893   PASS - test_k15_ram in 0.000 seconds
+d_00: @00:00:01.696893  ===================================================================
+d_00: @00:00:01.696893  START - test_mic_clipped
+d_00: @00:00:01.729093   PASS - test_mic_clipped in 0.033 seconds
+d_00: @00:00:01.729093  ===================================================================
+d_00: @00:00:01.729093  START - test_mic_counter_and_timing
+d_00: @00:00:01.777393   PASS - test_mic_counter_and_timing in 0.049 seconds
+d_00: @00:00:01.777393  ===================================================================
+d_00: @00:00:01.777393  START - test_mic_drop_block
+d_00: @00:00:01.825593   PASS - test_mic_drop_block in 0.049 seconds
+d_00: @00:00:01.825593  ===================================================================
+d_00: @00:00:01.825593  START - test_mic_read_error
+d_00: @00:00:01.857793   PASS - test_mic_read_error in 0.033 seconds
+d_00: @00:00:01.857793  ===================================================================
+d_00: @00:00:01.857793  START - test_mic_sine_level
+d_00: @00:00:01.873893   PASS - test_mic_sine_level in 0.017 seconds
+d_00: @00:00:01.873893  ===================================================================
+d_00: @00:00:01.873893  START - test_mic_stop_and_slab
+d_00: @00:00:02.057893   PASS - test_mic_stop_and_slab in 0.184 seconds
+d_00: @00:00:02.057893  ===================================================================
+d_00: @00:00:02.057893  START - test_mic_stop_delivering
+d_00: @00:00:02.290293   PASS - test_mic_stop_delivering in 0.233 seconds
+d_00: @00:00:02.290293  ===================================================================
+d_00: @00:00:02.290293  START - test_mic_stuck_channel
+d_00: @00:00:02.306393   PASS - test_mic_stuck_channel in 0.017 seconds
+d_00: @00:00:02.306393  ===================================================================
+d_00: @00:00:02.306393  START - test_motor_and_sdbus_recorded
+d_00: @00:00:02.386493   PASS - test_motor_and_sdbus_recorded in 0.081 seconds
+d_00: @00:00:02.386493  ===================================================================
+d_00: @00:00:02.386493  START - test_persist_start_values
+d_00: @00:00:02.386493   PASS - test_persist_start_values in 0.000 seconds
+d_00: @00:00:02.386493  ===================================================================
+d_00: @00:00:02.386493  START - test_pmic_charge_error
+d_00: @00:00:02.386493   PASS - test_pmic_charge_error in 0.000 seconds
+d_00: @00:00:02.386493  ===================================================================
+d_00: @00:00:02.386493  START - test_pmic_ilim_at_sample
+d_00: @00:00:02.386493   PASS - test_pmic_ilim_at_sample in 0.000 seconds
+d_00: @00:00:02.386493  ===================================================================
+d_00: @00:00:02.386493  START - test_pmic_motor_dip
+d_00: @00:00:02.386493   PASS - test_pmic_motor_dip in 0.000 seconds
+d_00: @00:00:02.386493  ===================================================================
+d_00: @00:00:02.386493  START - test_pmic_rails_and_charger
+d_00: @00:00:02.386493   PASS - test_pmic_rails_and_charger in 0.000 seconds
+d_00: @00:00:02.386493  ===================================================================
+d_00: @00:00:02.386493  START - test_pmic_reset_causes
+d_00: @00:00:02.386493   PASS - test_pmic_reset_causes in 0.000 seconds
+d_00: @00:00:02.386493  ===================================================================
+d_00: @00:00:02.386493  START - test_pmic_script_and_cell
+d_00: @00:00:38.386593  
+d_00: @00:00:38.386593      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:557: rhw_sim_test_pmic_script_and_cell: s.mv not equal to 3824
+d_00: @00:00:38.386593  
+d_00: @00:00:38.386593   FAIL - test_pmic_script_and_cell in 36.001 seconds
+d_00: @00:00:38.386593  ===================================================================
+d_00: @00:00:38.386593  START - test_pmic_ship_refuses_later_calls
+d_00: @00:00:38.386593   PASS - test_pmic_ship_refuses_later_calls in 0.000 seconds
+d_00: @00:00:38.386593  ===================================================================
+d_00: @00:00:38.386593  START - test_pmic_vbus_now_and_at
+d_00: @00:00:38.637793   PASS - test_pmic_vbus_now_and_at in 0.252 seconds
+d_00: @00:00:38.637793  ===================================================================
+d_00: @00:00:38.637793  START - test_reboot_keeps_card_settings_retained
+d_00: @00:00:38.653893   PASS - test_reboot_keeps_card_settings_retained in 0.017 seconds
+d_00: @00:00:38.653893  ===================================================================
+d_00: @00:00:38.653893  START - test_registration_refused_in_sim
+d_00: @00:00:38.653893   PASS - test_registration_refused_in_sim in 0.000 seconds
+d_00: @00:00:38.653893  ===================================================================
+d_00: @00:00:38.653893  START - test_retained_valid_or_corrupt
+d_00: @00:00:38.653893   PASS - test_retained_valid_or_corrupt in 0.000 seconds
+d_00: @00:00:38.653893  ===================================================================
+d_00: @00:00:38.653893  START - test_usb_host_stops_reading
+d_00: @00:00:38.683993   PASS - test_usb_host_stops_reading in 0.031 seconds
+d_00: @00:00:38.683993  ===================================================================
+d_00: @00:00:38.683993  START - test_usb_speed_packets
+d_00: @00:00:38.683993  
+d_00: @00:00:38.683993      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:714: rhw_sim_test_usb_speed_packets: rhw_sim_usb_host_read(back, sizeof(back)) not equal to 128 + 1100
+d_00: @00:00:38.683993  
+d_00: @00:00:38.683993   FAIL - test_usb_speed_packets in 0.000 seconds
+d_00: @00:00:38.683993  ===================================================================
+d_00: @00:00:38.683993  START - test_wdt_would_reset
+d_00: @00:00:55.685993   PASS - test_wdt_would_reset in 17.002 seconds
+d_00: @00:00:55.685993  ===================================================================
+d_00: @00:00:55.685993  TESTSUITE rhw_sim failed.
+d_00: @00:00:55.685993  
+d_00: @00:00:55.685993  ------ TESTSUITE SUMMARY START ------
+d_00: @00:00:55.685993  
+d_00: @00:00:55.685993  SUITE FAIL -  95.24% [rhw_sim]: pass = 40, fail = 2, skip = 0, total = 42 duration = 55.701 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_beacon_recorded] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_clock_cycle_rate] duration = 1.001 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_cut_after_sector] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_init_fails_n] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_read_error_at_lba] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_refused_rail_off] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_sector_count] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_stall_per_write] duration = 0.081 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_write_fault_at_n] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_event_log_order_and_time] duration = 0.007 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_gauge_start_soc_and_error] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_headers_compiled] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_hfxo_delay] duration = 0.011 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_hfxo_never] duration = 0.501 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_image_confirmed_flag] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_image_write_error] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_k14_real_clock] duration = 0.101 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_k15_ram] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_mic_clipped] duration = 0.033 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_mic_counter_and_timing] duration = 0.049 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_mic_drop_block] duration = 0.049 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_mic_read_error] duration = 0.033 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_mic_sine_level] duration = 0.017 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_mic_stop_and_slab] duration = 0.184 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_mic_stop_delivering] duration = 0.233 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_mic_stuck_channel] duration = 0.017 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_motor_and_sdbus_recorded] duration = 0.081 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_persist_start_values] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_pmic_charge_error] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_pmic_ilim_at_sample] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_pmic_motor_dip] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_pmic_rails_and_charger] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_pmic_reset_causes] duration = 0.000 seconds
+d_00: @00:00:55.685993   - FAIL - [rhw_sim.test_pmic_script_and_cell] duration = 36.001 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_pmic_ship_refuses_later_calls] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_pmic_vbus_now_and_at] duration = 0.252 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_reboot_keeps_card_settings_retained] duration = 0.017 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_registration_refused_in_sim] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_retained_valid_or_corrupt] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_usb_host_stops_reading] duration = 0.031 seconds
+d_00: @00:00:55.685993   - FAIL - [rhw_sim.test_usb_speed_packets] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_wdt_would_reset] duration = 17.002 seconds
+d_00: @00:00:55.685993  
+d_00: @00:00:55.685993  ------ TESTSUITE SUMMARY END ------
+d_00: @00:00:55.685993  
+d_00: @00:00:55.685993  ===================================================================
+d_00: @00:00:55.685993  RunID: 771ed28762817c4eda309f687ef6d208
+d_00: @00:00:55.685993  PROJECT EXECUTION FAILED
+
+INFO    - /ws/out/20261113-043605-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/rhw/ring_rhw.sim/handler.log
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 32.55 seconds.
+INFO    - 40 of 42 executed test cases passed (95.24%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-043605-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.json
+INFO    - Writing xunit report /ws/out/20261113-043605-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-043605-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_rhw.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p nrf54lm20bsim/nrf54lm20a/cpuapp -s ring_rhw.sim
+INFO    - or with west:
+INFO    - west build -p -b nrf54lm20bsim/nrf54lm20a/cpuapp tests/rhw -T ring_rhw.sim
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp end 2026-11-13T03:37:12Z exit 1
+=== part broken-rhw start 2026-11-13T03:37:12Z log /ws/out/20261113-043605-u-rhw-unit/broken-rhw.log
+##### broken copy: disk_fault_late
+diff -u -r /ws/firmware/modules/ring_rhw/src/sim_disk.c /ws/out/20261113-043605-u-rhw-unit/broken-rhw/broken_ring_rhw_disk_fault_late/src/sim_disk.c
+--- /ws/firmware/modules/ring_rhw/src/sim_disk.c	2026-11-13 03:23:06.000000000 +0000
++++ /ws/out/20261113-043605-u-rhw-unit/broken-rhw/broken_ring_rhw_disk_fault_late/src/sim_disk.c	2026-11-13 03:37:12.971963132 +0000
+@@ -192,7 +192,7 @@
+ 		keep = 0;
+ 	} else if (cut_done) {
+ 		keep = 0;                 /* lost after the cut; the call "succeeds" */
+-	} else if (fail_k > 0 && call - fail_base >= fail_from && call - fail_base < fail_from + fail_k) {
++	} else if (fail_k > 0 && call - fail_base >= fail_from + 1 && call - fail_base < fail_from + 1 + fail_k) {
+ 		r = -EIO;
+ 		keep = 0;
+ 	} else if (cut_n > 0 && call - cut_base == cut_n) {
+INFO    - 1/1 native_sim/native         ring_rhw.sim                                       FAILED rc=1 (native 0.048s <host/gnu>)
+ PASS - test_beacon_recorded in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:829: rhw_sim_test_clock_cycle_rate: ((int64_t)(c1 - c0) not within 32768 +/- 40)
+ FAIL - test_clock_cycle_rate in 1.010 seconds
+ PASS - test_disk_cut_after_sector in 0.000 seconds
+ PASS - test_disk_init_fails_n in 0.000 seconds
+ PASS - test_disk_read_error_at_lba in 0.000 seconds
+ PASS - test_disk_refused_rail_off in 0.000 seconds
+ PASS - test_disk_sector_count in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:159: rhw_sim_test_disk_stall_per_write: (dt >= 80 && dt <= 90 is false)
+ FAIL - test_disk_stall_per_write in 0.100 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:95: rhw_sim_test_disk_write_fault_at_n: (rhw_disk()->write(103, buf, 1) not equal to -EIO)
+ FAIL - test_disk_write_fault_at_n in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:929: rhw_sim_test_event_log_order_and_time: (e.t_us - t0 not within at_us[i] +/- 200)
+ FAIL - test_event_log_order_and_time in 0.040 seconds
+ PASS - test_gauge_start_soc_and_error in 0.000 seconds
+ PASS - test_headers_compiled in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:655: rhw_sim_test_hfxo_delay: hfxo_cb_ms - t0 not within 5 +/- 1
+ FAIL - test_hfxo_delay in 0.020 seconds
+ PASS - test_hfxo_never in 0.510 seconds
+ PASS - test_image_confirmed_flag in 0.000 seconds
+ PASS - test_image_write_error in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:1066: rhw_sim_test_k14_real_clock: mb - ma not within 100 +/- 1
+ FAIL - test_k14_real_clock in 0.110 seconds
+ PASS - test_k15_ram in 0.000 seconds
+ PASS - test_mic_clipped in 0.050 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:224: rhw_sim_test_mic_counter_and_timing: (k_uptime_get() - t0 not within 16 * (i + 1) +/- 1)
+ FAIL - test_mic_counter_and_timing in 0.030 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:342: rhw_sim_test_mic_drop_block: (k_uptime_get() - t0 not within 48 +/- 1)
+ FAIL - test_mic_drop_block in 0.060 seconds
+ PASS - test_mic_read_error in 0.050 seconds
+ PASS - test_mic_sine_level in 0.030 seconds
+ PASS - test_mic_stop_and_slab in 0.210 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:319: rhw_sim_test_mic_stop_delivering: (k_uptime_get() - t0 not within 100 +/- 1)
+ FAIL - test_mic_stop_delivering in 0.160 seconds
+ PASS - test_mic_stuck_channel in 0.030 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:895: rhw_sim_test_motor_and_sdbus_recorded: (e.t_us - t_on not within 80000 +/- 200)
+ FAIL - test_motor_and_sdbus_recorded in 0.090 seconds
+ PASS - test_persist_start_values in 0.000 seconds
+ PASS - test_pmic_charge_error in 0.000 seconds
+ PASS - test_pmic_ilim_at_sample in 0.000 seconds
+ PASS - test_pmic_motor_dip in 0.000 seconds
+ PASS - test_pmic_rails_and_charger in 0.000 seconds
+ PASS - test_pmic_reset_causes in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:557: rhw_sim_test_pmic_script_and_cell: s.mv not equal to 3824
+ FAIL - test_pmic_script_and_cell in 36.010 seconds
+ PASS - test_pmic_ship_refuses_later_calls in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:449: rhw_sim_test_pmic_vbus_now_and_at: (rhw_pmic()->vbus_present() is false)
+ FAIL - test_pmic_vbus_now_and_at in 0.260 seconds
+ PASS - test_reboot_keeps_card_settings_retained in 0.030 seconds
+ PASS - test_registration_refused_in_sim in 0.000 seconds
+ PASS - test_retained_valid_or_corrupt in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:728: rhw_sim_test_usb_host_stops_reading: (k_uptime_get() - t0 not within 30 +/- 1)
+ FAIL - test_usb_host_stops_reading in 0.040 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:714: rhw_sim_test_usb_speed_packets: rhw_sim_usb_host_read(back, sizeof(back)) not equal to 128 + 1100
+ FAIL - test_usb_speed_packets in 0.000 seconds
+ PASS - test_wdt_would_reset in 17.110 seconds
+TESTSUITE rhw_sim failed.
+SUITE FAIL -  66.67% [rhw_sim]: pass = 28, fail = 14, skip = 0, total = 42 duration = 55.950 seconds
+ - PASS - [rhw_sim.test_beacon_recorded] duration = 0.000 seconds
+twister exit code on the broken copy disk_fault_late, native_sim: 1 (log /ws/out/20261113-043605-u-rhw-unit/broken-rhw/twister-disk_fault_late-native_sim.log)
+disk_fault_late on native_sim: the named case failed, as required:  - FAIL - [rhw_sim.test_disk_write_fault_at_n] duration = 0.000 seconds (failed cases listed: 14)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_rhw.sim                                 FAILED rc=1 (native 0.079s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_beacon_recorded in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_clock_cycle_rate in 1.001 seconds
+d_00: @00:00:01.000193   PASS - test_disk_cut_after_sector in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_init_fails_n in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_read_error_at_lba in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_refused_rail_off in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_sector_count in 0.000 seconds
+d_00: @00:00:01.080393   PASS - test_disk_stall_per_write in 0.081 seconds
+d_00: @00:00:01.080393      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:95: rhw_sim_test_disk_write_fault_at_n: (rhw_disk()->write(103, buf, 1) not equal to -EIO)
+d_00: @00:00:01.080393   FAIL - test_disk_write_fault_at_n in 0.000 seconds
+d_00: @00:00:01.086593   PASS - test_event_log_order_and_time in 0.007 seconds
+d_00: @00:00:01.086593   PASS - test_gauge_start_soc_and_error in 0.000 seconds
+d_00: @00:00:01.086593   PASS - test_headers_compiled in 0.000 seconds
+d_00: @00:00:01.096693   PASS - test_hfxo_delay in 0.011 seconds
+d_00: @00:00:01.596793   PASS - test_hfxo_never in 0.501 seconds
+d_00: @00:00:01.596793   PASS - test_image_confirmed_flag in 0.000 seconds
+d_00: @00:00:01.596793   PASS - test_image_write_error in 0.000 seconds
+d_00: @00:00:01.696893   PASS - test_k14_real_clock in 0.101 seconds
+d_00: @00:00:01.696893   PASS - test_k15_ram in 0.000 seconds
+d_00: @00:00:01.729093   PASS - test_mic_clipped in 0.033 seconds
+d_00: @00:00:01.777393   PASS - test_mic_counter_and_timing in 0.049 seconds
+d_00: @00:00:01.825593   PASS - test_mic_drop_block in 0.049 seconds
+d_00: @00:00:01.857793   PASS - test_mic_read_error in 0.033 seconds
+d_00: @00:00:01.873893   PASS - test_mic_sine_level in 0.017 seconds
+d_00: @00:00:02.057893   PASS - test_mic_stop_and_slab in 0.184 seconds
+d_00: @00:00:02.290293   PASS - test_mic_stop_delivering in 0.233 seconds
+d_00: @00:00:02.306393   PASS - test_mic_stuck_channel in 0.017 seconds
+d_00: @00:00:02.386493   PASS - test_motor_and_sdbus_recorded in 0.081 seconds
+d_00: @00:00:02.386493   PASS - test_persist_start_values in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_charge_error in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_ilim_at_sample in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_motor_dip in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_rails_and_charger in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_reset_causes in 0.000 seconds
+d_00: @00:00:38.386593      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:557: rhw_sim_test_pmic_script_and_cell: s.mv not equal to 3824
+d_00: @00:00:38.386593   FAIL - test_pmic_script_and_cell in 36.001 seconds
+d_00: @00:00:38.386593   PASS - test_pmic_ship_refuses_later_calls in 0.000 seconds
+d_00: @00:00:38.637793   PASS - test_pmic_vbus_now_and_at in 0.252 seconds
+d_00: @00:00:38.653893   PASS - test_reboot_keeps_card_settings_retained in 0.017 seconds
+d_00: @00:00:38.653893   PASS - test_registration_refused_in_sim in 0.000 seconds
+d_00: @00:00:38.653893   PASS - test_retained_valid_or_corrupt in 0.000 seconds
+d_00: @00:00:38.683993   PASS - test_usb_host_stops_reading in 0.031 seconds
+d_00: @00:00:38.683993      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:714: rhw_sim_test_usb_speed_packets: rhw_sim_usb_host_read(back, sizeof(back)) not equal to 128 + 1100
+d_00: @00:00:38.683993   FAIL - test_usb_speed_packets in 0.000 seconds
+d_00: @00:00:55.685993   PASS - test_wdt_would_reset in 17.002 seconds
+d_00: @00:00:55.685993  TESTSUITE rhw_sim failed.
+d_00: @00:00:55.685993  SUITE FAIL -  92.86% [rhw_sim]: pass = 39, fail = 3, skip = 0, total = 42 duration = 55.701 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_beacon_recorded] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_clock_cycle_rate] duration = 1.001 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_cut_after_sector] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_init_fails_n] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_read_error_at_lba] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_refused_rail_off] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_sector_count] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_stall_per_write] duration = 0.081 seconds
+d_00: @00:00:55.685993   - FAIL - [rhw_sim.test_disk_write_fault_at_n] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_event_log_order_and_time] duration = 0.007 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_gauge_start_soc_and_error] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_headers_compiled] duration = 0.000 seconds
+twister exit code on the broken copy disk_fault_late, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-043605-u-rhw-unit/broken-rhw/twister-disk_fault_late-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+disk_fault_late on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:55.685993   - FAIL - [rhw_sim.test_disk_write_fault_at_n] duration = 0.000 seconds (failed cases listed: 3)
+##### broken copy: cut_keeps_tail
+diff -u -r /ws/firmware/modules/ring_rhw/src/sim_disk.c /ws/out/20261113-043605-u-rhw-unit/broken-rhw/broken_ring_rhw_cut_keeps_tail/src/sim_disk.c
+--- /ws/firmware/modules/ring_rhw/src/sim_disk.c	2026-11-13 03:23:06.000000000 +0000
++++ /ws/out/20261113-043605-u-rhw-unit/broken-rhw/broken_ring_rhw_cut_keeps_tail/src/sim_disk.c	2026-11-13 03:38:04.425832629 +0000
+@@ -196,7 +196,7 @@
+ 		r = -EIO;
+ 		keep = 0;
+ 	} else if (cut_n > 0 && call - cut_base == cut_n) {
+-		keep = cut_k < count ? cut_k : count;
++		keep = count;
+ 		cut_done = true;
+ 		sim_log(RHW_EV_DISK_CUT, lba, keep, 0, 0, NULL);
+ 	}
+INFO    - 1/1 native_sim/native         ring_rhw.sim                                       FAILED rc=1 (native 0.093s <host/gnu>)
+ PASS - test_beacon_recorded in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:829: rhw_sim_test_clock_cycle_rate: ((int64_t)(c1 - c0) not within 32768 +/- 40)
+ FAIL - test_clock_cycle_rate in 1.010 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:132: rhw_sim_test_disk_cut_after_sector: (all_zero(rd, 512) is false)
+ FAIL - test_disk_cut_after_sector in 0.000 seconds
+ PASS - test_disk_init_fails_n in 0.000 seconds
+ PASS - test_disk_read_error_at_lba in 0.000 seconds
+ PASS - test_disk_refused_rail_off in 0.000 seconds
+ PASS - test_disk_sector_count in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:159: rhw_sim_test_disk_stall_per_write: (dt >= 80 && dt <= 90 is false)
+ FAIL - test_disk_stall_per_write in 0.100 seconds
+ PASS - test_disk_write_fault_at_n in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:929: rhw_sim_test_event_log_order_and_time: (e.t_us - t0 not within at_us[i] +/- 200)
+ FAIL - test_event_log_order_and_time in 0.040 seconds
+ PASS - test_gauge_start_soc_and_error in 0.000 seconds
+ PASS - test_headers_compiled in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:655: rhw_sim_test_hfxo_delay: hfxo_cb_ms - t0 not within 5 +/- 1
+ FAIL - test_hfxo_delay in 0.020 seconds
+ PASS - test_hfxo_never in 0.510 seconds
+ PASS - test_image_confirmed_flag in 0.000 seconds
+ PASS - test_image_write_error in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:1066: rhw_sim_test_k14_real_clock: mb - ma not within 100 +/- 1
+ FAIL - test_k14_real_clock in 0.110 seconds
+ PASS - test_k15_ram in 0.000 seconds
+ PASS - test_mic_clipped in 0.050 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:224: rhw_sim_test_mic_counter_and_timing: (k_uptime_get() - t0 not within 16 * (i + 1) +/- 1)
+ FAIL - test_mic_counter_and_timing in 0.030 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:342: rhw_sim_test_mic_drop_block: (k_uptime_get() - t0 not within 48 +/- 1)
+ FAIL - test_mic_drop_block in 0.060 seconds
+ PASS - test_mic_read_error in 0.050 seconds
+ PASS - test_mic_sine_level in 0.030 seconds
+ PASS - test_mic_stop_and_slab in 0.210 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:319: rhw_sim_test_mic_stop_delivering: (k_uptime_get() - t0 not within 100 +/- 1)
+ FAIL - test_mic_stop_delivering in 0.160 seconds
+ PASS - test_mic_stuck_channel in 0.030 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:895: rhw_sim_test_motor_and_sdbus_recorded: (e.t_us - t_on not within 80000 +/- 200)
+ FAIL - test_motor_and_sdbus_recorded in 0.090 seconds
+ PASS - test_persist_start_values in 0.000 seconds
+ PASS - test_pmic_charge_error in 0.000 seconds
+ PASS - test_pmic_ilim_at_sample in 0.000 seconds
+ PASS - test_pmic_motor_dip in 0.000 seconds
+ PASS - test_pmic_rails_and_charger in 0.000 seconds
+ PASS - test_pmic_reset_causes in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:557: rhw_sim_test_pmic_script_and_cell: s.mv not equal to 3824
+ FAIL - test_pmic_script_and_cell in 36.010 seconds
+ PASS - test_pmic_ship_refuses_later_calls in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:449: rhw_sim_test_pmic_vbus_now_and_at: (rhw_pmic()->vbus_present() is false)
+ FAIL - test_pmic_vbus_now_and_at in 0.260 seconds
+ PASS - test_reboot_keeps_card_settings_retained in 0.030 seconds
+ PASS - test_registration_refused_in_sim in 0.000 seconds
+ PASS - test_retained_valid_or_corrupt in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:728: rhw_sim_test_usb_host_stops_reading: (k_uptime_get() - t0 not within 30 +/- 1)
+ FAIL - test_usb_host_stops_reading in 0.040 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:714: rhw_sim_test_usb_speed_packets: rhw_sim_usb_host_read(back, sizeof(back)) not equal to 128 + 1100
+ FAIL - test_usb_speed_packets in 0.000 seconds
+ PASS - test_wdt_would_reset in 17.110 seconds
+TESTSUITE rhw_sim failed.
+SUITE FAIL -  66.67% [rhw_sim]: pass = 28, fail = 14, skip = 0, total = 42 duration = 55.950 seconds
+ - PASS - [rhw_sim.test_beacon_recorded] duration = 0.000 seconds
+twister exit code on the broken copy cut_keeps_tail, native_sim: 1 (log /ws/out/20261113-043605-u-rhw-unit/broken-rhw/twister-cut_keeps_tail-native_sim.log)
+cut_keeps_tail on native_sim: the named case failed, as required:  - FAIL - [rhw_sim.test_disk_cut_after_sector] duration = 0.000 seconds (failed cases listed: 14)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_rhw.sim                                 FAILED rc=1 (native 0.102s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_beacon_recorded in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_clock_cycle_rate in 1.001 seconds
+d_00: @00:00:01.000193      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:132: rhw_sim_test_disk_cut_after_sector: (all_zero(rd, 512) is false)
+d_00: @00:00:01.000193   FAIL - test_disk_cut_after_sector in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_init_fails_n in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_read_error_at_lba in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_refused_rail_off in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_sector_count in 0.000 seconds
+d_00: @00:00:01.080393   PASS - test_disk_stall_per_write in 0.081 seconds
+d_00: @00:00:01.080393   PASS - test_disk_write_fault_at_n in 0.000 seconds
+d_00: @00:00:01.086593   PASS - test_event_log_order_and_time in 0.007 seconds
+d_00: @00:00:01.086593   PASS - test_gauge_start_soc_and_error in 0.000 seconds
+d_00: @00:00:01.086593   PASS - test_headers_compiled in 0.000 seconds
+d_00: @00:00:01.096693   PASS - test_hfxo_delay in 0.011 seconds
+d_00: @00:00:01.596793   PASS - test_hfxo_never in 0.501 seconds
+d_00: @00:00:01.596793   PASS - test_image_confirmed_flag in 0.000 seconds
+d_00: @00:00:01.596793   PASS - test_image_write_error in 0.000 seconds
+d_00: @00:00:01.696893   PASS - test_k14_real_clock in 0.101 seconds
+d_00: @00:00:01.696893   PASS - test_k15_ram in 0.000 seconds
+d_00: @00:00:01.729093   PASS - test_mic_clipped in 0.033 seconds
+d_00: @00:00:01.777393   PASS - test_mic_counter_and_timing in 0.049 seconds
+d_00: @00:00:01.825593   PASS - test_mic_drop_block in 0.049 seconds
+d_00: @00:00:01.857793   PASS - test_mic_read_error in 0.033 seconds
+d_00: @00:00:01.873893   PASS - test_mic_sine_level in 0.017 seconds
+d_00: @00:00:02.057893   PASS - test_mic_stop_and_slab in 0.184 seconds
+d_00: @00:00:02.290293   PASS - test_mic_stop_delivering in 0.233 seconds
+d_00: @00:00:02.306393   PASS - test_mic_stuck_channel in 0.017 seconds
+d_00: @00:00:02.386493   PASS - test_motor_and_sdbus_recorded in 0.081 seconds
+d_00: @00:00:02.386493   PASS - test_persist_start_values in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_charge_error in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_ilim_at_sample in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_motor_dip in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_rails_and_charger in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_reset_causes in 0.000 seconds
+d_00: @00:00:38.386593      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:557: rhw_sim_test_pmic_script_and_cell: s.mv not equal to 3824
+d_00: @00:00:38.386593   FAIL - test_pmic_script_and_cell in 36.001 seconds
+d_00: @00:00:38.386593   PASS - test_pmic_ship_refuses_later_calls in 0.000 seconds
+d_00: @00:00:38.637793   PASS - test_pmic_vbus_now_and_at in 0.252 seconds
+d_00: @00:00:38.653893   PASS - test_reboot_keeps_card_settings_retained in 0.017 seconds
+d_00: @00:00:38.653893   PASS - test_registration_refused_in_sim in 0.000 seconds
+d_00: @00:00:38.653893   PASS - test_retained_valid_or_corrupt in 0.000 seconds
+d_00: @00:00:38.683993   PASS - test_usb_host_stops_reading in 0.031 seconds
+d_00: @00:00:38.683993      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:714: rhw_sim_test_usb_speed_packets: rhw_sim_usb_host_read(back, sizeof(back)) not equal to 128 + 1100
+d_00: @00:00:38.683993   FAIL - test_usb_speed_packets in 0.000 seconds
+d_00: @00:00:55.685993   PASS - test_wdt_would_reset in 17.002 seconds
+d_00: @00:00:55.685993  TESTSUITE rhw_sim failed.
+d_00: @00:00:55.685993  SUITE FAIL -  92.86% [rhw_sim]: pass = 39, fail = 3, skip = 0, total = 42 duration = 55.701 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_beacon_recorded] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_clock_cycle_rate] duration = 1.001 seconds
+d_00: @00:00:55.685993   - FAIL - [rhw_sim.test_disk_cut_after_sector] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_init_fails_n] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_read_error_at_lba] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_refused_rail_off] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_sector_count] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_stall_per_write] duration = 0.081 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_write_fault_at_n] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_event_log_order_and_time] duration = 0.007 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_gauge_start_soc_and_error] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_headers_compiled] duration = 0.000 seconds
+twister exit code on the broken copy cut_keeps_tail, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-043605-u-rhw-unit/broken-rhw/twister-cut_keeps_tail-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+cut_keeps_tail on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:55.685993   - FAIL - [rhw_sim.test_disk_cut_after_sector] duration = 0.000 seconds (failed cases listed: 3)
+##### broken copy: reboot_wipes_card
+diff -u -r /ws/firmware/modules/ring_rhw/src/sim_disk.c /ws/out/20261113-043605-u-rhw-unit/broken-rhw/broken_ring_rhw_reboot_wipes_card/src/sim_disk.c
+--- /ws/firmware/modules/ring_rhw/src/sim_disk.c	2026-11-13 03:23:06.000000000 +0000
++++ /ws/out/20261113-043605-u-rhw-unit/broken-rhw/broken_ring_rhw_reboot_wipes_card/src/sim_disk.c	2026-11-13 03:38:57.815659767 +0000
+@@ -234,9 +234,9 @@
+ 	inited = false;
+ 	cut_done = false;
+ 	cut_n = 0;
++	memset(key_of, 0, sizeof(key_of));
++	used = 0;
+ 	if (full) {
+-		memset(key_of, 0, sizeof(key_of));
+-		used = 0;
+ 		sectors = DEFAULT_SECTORS;
+ 		fail_init_n = 0;
+ 		wr_calls = 0;
+INFO    - 1/1 native_sim/native         ring_rhw.sim                                       FAILED rc=1 (native 0.095s <host/gnu>)
+ PASS - test_beacon_recorded in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:829: rhw_sim_test_clock_cycle_rate: ((int64_t)(c1 - c0) not within 32768 +/- 40)
+ FAIL - test_clock_cycle_rate in 1.010 seconds
+ PASS - test_disk_cut_after_sector in 0.000 seconds
+ PASS - test_disk_init_fails_n in 0.000 seconds
+ PASS - test_disk_read_error_at_lba in 0.000 seconds
+ PASS - test_disk_refused_rail_off in 0.000 seconds
+ PASS - test_disk_sector_count in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:159: rhw_sim_test_disk_stall_per_write: (dt >= 80 && dt <= 90 is false)
+ FAIL - test_disk_stall_per_write in 0.100 seconds
+ PASS - test_disk_write_fault_at_n in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:929: rhw_sim_test_event_log_order_and_time: (e.t_us - t0 not within at_us[i] +/- 200)
+ FAIL - test_event_log_order_and_time in 0.040 seconds
+ PASS - test_gauge_start_soc_and_error in 0.000 seconds
+ PASS - test_headers_compiled in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:655: rhw_sim_test_hfxo_delay: hfxo_cb_ms - t0 not within 5 +/- 1
+ FAIL - test_hfxo_delay in 0.020 seconds
+ PASS - test_hfxo_never in 0.510 seconds
+ PASS - test_image_confirmed_flag in 0.000 seconds
+ PASS - test_image_write_error in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:1066: rhw_sim_test_k14_real_clock: mb - ma not within 100 +/- 1
+ FAIL - test_k14_real_clock in 0.110 seconds
+ PASS - test_k15_ram in 0.000 seconds
+ PASS - test_mic_clipped in 0.050 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:224: rhw_sim_test_mic_counter_and_timing: (k_uptime_get() - t0 not within 16 * (i + 1) +/- 1)
+ FAIL - test_mic_counter_and_timing in 0.030 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:342: rhw_sim_test_mic_drop_block: (k_uptime_get() - t0 not within 48 +/- 1)
+ FAIL - test_mic_drop_block in 0.060 seconds
+ PASS - test_mic_read_error in 0.050 seconds
+ PASS - test_mic_sine_level in 0.030 seconds
+ PASS - test_mic_stop_and_slab in 0.210 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:319: rhw_sim_test_mic_stop_delivering: (k_uptime_get() - t0 not within 100 +/- 1)
+ FAIL - test_mic_stop_delivering in 0.160 seconds
+ PASS - test_mic_stuck_channel in 0.030 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:895: rhw_sim_test_motor_and_sdbus_recorded: (e.t_us - t_on not within 80000 +/- 200)
+ FAIL - test_motor_and_sdbus_recorded in 0.090 seconds
+ PASS - test_persist_start_values in 0.000 seconds
+ PASS - test_pmic_charge_error in 0.000 seconds
+ PASS - test_pmic_ilim_at_sample in 0.000 seconds
+ PASS - test_pmic_motor_dip in 0.000 seconds
+ PASS - test_pmic_rails_and_charger in 0.000 seconds
+ PASS - test_pmic_reset_causes in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:557: rhw_sim_test_pmic_script_and_cell: s.mv not equal to 3824
+ FAIL - test_pmic_script_and_cell in 36.010 seconds
+ PASS - test_pmic_ship_refuses_later_calls in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:449: rhw_sim_test_pmic_vbus_now_and_at: (rhw_pmic()->vbus_present() is false)
+ FAIL - test_pmic_vbus_now_and_at in 0.260 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:994: rhw_sim_test_reboot_keeps_card_settings_retained: (rd not equal to buf)
+ FAIL - test_reboot_keeps_card_settings_retained in 0.030 seconds
+ PASS - test_registration_refused_in_sim in 0.000 seconds
+ PASS - test_retained_valid_or_corrupt in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:728: rhw_sim_test_usb_host_stops_reading: (k_uptime_get() - t0 not within 30 +/- 1)
+ FAIL - test_usb_host_stops_reading in 0.040 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:714: rhw_sim_test_usb_speed_packets: rhw_sim_usb_host_read(back, sizeof(back)) not equal to 128 + 1100
+ FAIL - test_usb_speed_packets in 0.000 seconds
+ PASS - test_wdt_would_reset in 17.110 seconds
+TESTSUITE rhw_sim failed.
+SUITE FAIL -  66.67% [rhw_sim]: pass = 28, fail = 14, skip = 0, total = 42 duration = 55.950 seconds
+ - PASS - [rhw_sim.test_beacon_recorded] duration = 0.000 seconds
+twister exit code on the broken copy reboot_wipes_card, native_sim: 1 (log /ws/out/20261113-043605-u-rhw-unit/broken-rhw/twister-reboot_wipes_card-native_sim.log)
+reboot_wipes_card on native_sim: the named case failed, as required:  - FAIL - [rhw_sim.test_reboot_keeps_card_settings_retained] duration = 0.030 seconds (failed cases listed: 14)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_rhw.sim                                 FAILED rc=1 (native 0.100s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_beacon_recorded in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_clock_cycle_rate in 1.001 seconds
+d_00: @00:00:01.000193   PASS - test_disk_cut_after_sector in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_init_fails_n in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_read_error_at_lba in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_refused_rail_off in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_sector_count in 0.000 seconds
+d_00: @00:00:01.080393   PASS - test_disk_stall_per_write in 0.081 seconds
+d_00: @00:00:01.080393   PASS - test_disk_write_fault_at_n in 0.000 seconds
+d_00: @00:00:01.086593   PASS - test_event_log_order_and_time in 0.007 seconds
+d_00: @00:00:01.086593   PASS - test_gauge_start_soc_and_error in 0.000 seconds
+d_00: @00:00:01.086593   PASS - test_headers_compiled in 0.000 seconds
+d_00: @00:00:01.096693   PASS - test_hfxo_delay in 0.011 seconds
+d_00: @00:00:01.596793   PASS - test_hfxo_never in 0.501 seconds
+d_00: @00:00:01.596793   PASS - test_image_confirmed_flag in 0.000 seconds
+d_00: @00:00:01.596793   PASS - test_image_write_error in 0.000 seconds
+d_00: @00:00:01.696893   PASS - test_k14_real_clock in 0.101 seconds
+d_00: @00:00:01.696893   PASS - test_k15_ram in 0.000 seconds
+d_00: @00:00:01.729093   PASS - test_mic_clipped in 0.033 seconds
+d_00: @00:00:01.777393   PASS - test_mic_counter_and_timing in 0.049 seconds
+d_00: @00:00:01.825593   PASS - test_mic_drop_block in 0.049 seconds
+d_00: @00:00:01.857793   PASS - test_mic_read_error in 0.033 seconds
+d_00: @00:00:01.873893   PASS - test_mic_sine_level in 0.017 seconds
+d_00: @00:00:02.057893   PASS - test_mic_stop_and_slab in 0.184 seconds
+d_00: @00:00:02.290293   PASS - test_mic_stop_delivering in 0.233 seconds
+d_00: @00:00:02.306393   PASS - test_mic_stuck_channel in 0.017 seconds
+d_00: @00:00:02.386493   PASS - test_motor_and_sdbus_recorded in 0.081 seconds
+d_00: @00:00:02.386493   PASS - test_persist_start_values in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_charge_error in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_ilim_at_sample in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_motor_dip in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_rails_and_charger in 0.000 seconds
+d_00: @00:00:02.386493   PASS - test_pmic_reset_causes in 0.000 seconds
+d_00: @00:00:38.386593      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:557: rhw_sim_test_pmic_script_and_cell: s.mv not equal to 3824
+d_00: @00:00:38.386593   FAIL - test_pmic_script_and_cell in 36.001 seconds
+d_00: @00:00:38.386593   PASS - test_pmic_ship_refuses_later_calls in 0.000 seconds
+d_00: @00:00:38.637793   PASS - test_pmic_vbus_now_and_at in 0.252 seconds
+d_00: @00:00:38.653893      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:994: rhw_sim_test_reboot_keeps_card_settings_retained: (rd not equal to buf)
+d_00: @00:00:38.653893   FAIL - test_reboot_keeps_card_settings_retained in 0.017 seconds
+d_00: @00:00:38.653893   PASS - test_registration_refused_in_sim in 0.000 seconds
+d_00: @00:00:38.653893   PASS - test_retained_valid_or_corrupt in 0.000 seconds
+d_00: @00:00:38.683993   PASS - test_usb_host_stops_reading in 0.031 seconds
+d_00: @00:00:38.683993      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:714: rhw_sim_test_usb_speed_packets: rhw_sim_usb_host_read(back, sizeof(back)) not equal to 128 + 1100
+d_00: @00:00:38.683993   FAIL - test_usb_speed_packets in 0.000 seconds
+d_00: @00:00:55.685993   PASS - test_wdt_would_reset in 17.002 seconds
+d_00: @00:00:55.685993  TESTSUITE rhw_sim failed.
+d_00: @00:00:55.685993  SUITE FAIL -  92.86% [rhw_sim]: pass = 39, fail = 3, skip = 0, total = 42 duration = 55.701 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_beacon_recorded] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_clock_cycle_rate] duration = 1.001 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_cut_after_sector] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_init_fails_n] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_read_error_at_lba] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_refused_rail_off] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_sector_count] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_stall_per_write] duration = 0.081 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_disk_write_fault_at_n] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_event_log_order_and_time] duration = 0.007 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_gauge_start_soc_and_error] duration = 0.000 seconds
+d_00: @00:00:55.685993   - PASS - [rhw_sim.test_headers_compiled] duration = 0.000 seconds
+twister exit code on the broken copy reboot_wipes_card, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-043605-u-rhw-unit/broken-rhw/twister-reboot_wipes_card-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+reboot_wipes_card on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:55.685993   - FAIL - [rhw_sim.test_reboot_keeps_card_settings_retained] duration = 0.017 seconds (failed cases listed: 3)
+##### broken copy: mic_no_block_ignored
+diff -u -r /ws/firmware/modules/ring_rhw/src/sim_mic.c /ws/out/20261113-043605-u-rhw-unit/broken-rhw/broken_ring_rhw_mic_no_block_ignored/src/sim_mic.c
+--- /ws/firmware/modules/ring_rhw/src/sim_mic.c	2026-11-13 03:23:38.000000000 +0000
++++ /ws/out/20261113-043605-u-rhw-unit/broken-rhw/broken_ring_rhw_mic_no_block_ignored/src/sim_mic.c	2026-11-13 03:39:49.866516473 +0000
+@@ -145,7 +145,7 @@
+ 		sim_log(RHW_EV_MIC_READ, -1, timeout_ms, 0, -EIO, NULL);
+ 		return -EIO;
+ 	}
+-	if (stop_after >= 0 && delivered >= (uint32_t)stop_after) {
++	if (stop_after < -1 && delivered >= (uint32_t)stop_after) {
+ 		k_sleep(K_MSEC(timeout_ms));
+ 		sim_log(RHW_EV_MIC_READ, -1, timeout_ms, 0, -EAGAIN, NULL);
+ 		return -EAGAIN;
+INFO    - 1/1 native_sim/native         ring_rhw.sim                                       FAILED rc=1 (native 0.105s <host/gnu>)
+ PASS - test_beacon_recorded in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:829: rhw_sim_test_clock_cycle_rate: ((int64_t)(c1 - c0) not within 32768 +/- 40)
+ FAIL - test_clock_cycle_rate in 1.010 seconds
+ PASS - test_disk_cut_after_sector in 0.000 seconds
+ PASS - test_disk_init_fails_n in 0.000 seconds
+ PASS - test_disk_read_error_at_lba in 0.000 seconds
+ PASS - test_disk_refused_rail_off in 0.000 seconds
+ PASS - test_disk_sector_count in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:159: rhw_sim_test_disk_stall_per_write: (dt >= 80 && dt <= 90 is false)
+ FAIL - test_disk_stall_per_write in 0.100 seconds
+ PASS - test_disk_write_fault_at_n in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:929: rhw_sim_test_event_log_order_and_time: (e.t_us - t0 not within at_us[i] +/- 200)
+ FAIL - test_event_log_order_and_time in 0.040 seconds
+ PASS - test_gauge_start_soc_and_error in 0.000 seconds
+ PASS - test_headers_compiled in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:655: rhw_sim_test_hfxo_delay: hfxo_cb_ms - t0 not within 5 +/- 1
+ FAIL - test_hfxo_delay in 0.020 seconds
+ PASS - test_hfxo_never in 0.510 seconds
+ PASS - test_image_confirmed_flag in 0.000 seconds
+ PASS - test_image_write_error in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:1066: rhw_sim_test_k14_real_clock: mb - ma not within 100 +/- 1
+ FAIL - test_k14_real_clock in 0.110 seconds
+ PASS - test_k15_ram in 0.000 seconds
+ PASS - test_mic_clipped in 0.050 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:224: rhw_sim_test_mic_counter_and_timing: (k_uptime_get() - t0 not within 16 * (i + 1) +/- 1)
+ FAIL - test_mic_counter_and_timing in 0.030 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:342: rhw_sim_test_mic_drop_block: (k_uptime_get() - t0 not within 48 +/- 1)
+ FAIL - test_mic_drop_block in 0.060 seconds
+ PASS - test_mic_read_error in 0.050 seconds
+ PASS - test_mic_sine_level in 0.030 seconds
+ PASS - test_mic_stop_and_slab in 0.210 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:318: rhw_sim_test_mic_stop_delivering: (res not equal to -EAGAIN)
+ FAIL - test_mic_stop_delivering in 0.050 seconds
+ PASS - test_mic_stuck_channel in 0.030 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:895: rhw_sim_test_motor_and_sdbus_recorded: (e.t_us - t_on not within 80000 +/- 200)
+ FAIL - test_motor_and_sdbus_recorded in 0.090 seconds
+ PASS - test_persist_start_values in 0.000 seconds
+ PASS - test_pmic_charge_error in 0.000 seconds
+ PASS - test_pmic_ilim_at_sample in 0.000 seconds
+ PASS - test_pmic_motor_dip in 0.000 seconds
+ PASS - test_pmic_rails_and_charger in 0.000 seconds
+ PASS - test_pmic_reset_causes in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:557: rhw_sim_test_pmic_script_and_cell: s.mv not equal to 3824
+ FAIL - test_pmic_script_and_cell in 36.010 seconds
+ PASS - test_pmic_ship_refuses_later_calls in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:449: rhw_sim_test_pmic_vbus_now_and_at: (rhw_pmic()->vbus_present() is false)
+ FAIL - test_pmic_vbus_now_and_at in 0.260 seconds
+ PASS - test_reboot_keeps_card_settings_retained in 0.030 seconds
+ PASS - test_registration_refused_in_sim in 0.000 seconds
+ PASS - test_retained_valid_or_corrupt in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:728: rhw_sim_test_usb_host_stops_reading: (k_uptime_get() - t0 not within 30 +/- 1)
+ FAIL - test_usb_host_stops_reading in 0.040 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:714: rhw_sim_test_usb_speed_packets: rhw_sim_usb_host_read(back, sizeof(back)) not equal to 128 + 1100
+ FAIL - test_usb_speed_packets in 0.000 seconds
+ PASS - test_wdt_would_reset in 17.110 seconds
+TESTSUITE rhw_sim failed.
+SUITE FAIL -  69.05% [rhw_sim]: pass = 29, fail = 13, skip = 0, total = 42 duration = 55.840 seconds
+ - PASS - [rhw_sim.test_beacon_recorded] duration = 0.000 seconds
+ - FAIL - [rhw_sim.test_clock_cycle_rate] duration = 1.010 seconds
+twister exit code on the broken copy mic_no_block_ignored, native_sim: 1 (log /ws/out/20261113-043605-u-rhw-unit/broken-rhw/twister-mic_no_block_ignored-native_sim.log)
+mic_no_block_ignored on native_sim: the named case failed, as required:  - FAIL - [rhw_sim.test_mic_stop_delivering] duration = 0.050 seconds (failed cases listed: 13)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_rhw.sim                                 FAILED rc=1 (native 0.163s <host/gnu>)
+d_00: @00:00:00.000093   PASS - test_beacon_recorded in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_clock_cycle_rate in 1.001 seconds
+d_00: @00:00:01.000193   PASS - test_disk_cut_after_sector in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_init_fails_n in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_read_error_at_lba in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_refused_rail_off in 0.000 seconds
+d_00: @00:00:01.000193   PASS - test_disk_sector_count in 0.000 seconds
+d_00: @00:00:01.080393   PASS - test_disk_stall_per_write in 0.081 seconds
+d_00: @00:00:01.080393   PASS - test_disk_write_fault_at_n in 0.000 seconds
+d_00: @00:00:01.086593   PASS - test_event_log_order_and_time in 0.007 seconds
+d_00: @00:00:01.086593   PASS - test_gauge_start_soc_and_error in 0.000 seconds
+d_00: @00:00:01.086593   PASS - test_headers_compiled in 0.000 seconds
+d_00: @00:00:01.096693   PASS - test_hfxo_delay in 0.011 seconds
+d_00: @00:00:01.596793   PASS - test_hfxo_never in 0.501 seconds
+d_00: @00:00:01.596793   PASS - test_image_confirmed_flag in 0.000 seconds
+d_00: @00:00:01.596793   PASS - test_image_write_error in 0.000 seconds
+d_00: @00:00:01.696893   PASS - test_k14_real_clock in 0.101 seconds
+d_00: @00:00:01.696893   PASS - test_k15_ram in 0.000 seconds
+d_00: @00:00:01.729093   PASS - test_mic_clipped in 0.033 seconds
+d_00: @00:00:01.777393   PASS - test_mic_counter_and_timing in 0.049 seconds
+d_00: @00:00:01.825593   PASS - test_mic_drop_block in 0.049 seconds
+d_00: @00:00:01.857793   PASS - test_mic_read_error in 0.033 seconds
+d_00: @00:00:01.873893   PASS - test_mic_sine_level in 0.017 seconds
+d_00: @00:00:02.057893   PASS - test_mic_stop_and_slab in 0.184 seconds
+d_00: @00:00:02.105193      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:318: rhw_sim_test_mic_stop_delivering: (res not equal to -EAGAIN)
+d_00: @00:00:02.105193   FAIL - test_mic_stop_delivering in 0.048 seconds
+d_00: @00:00:02.121293   PASS - test_mic_stuck_channel in 0.017 seconds
+d_00: @00:00:02.201393   PASS - test_motor_and_sdbus_recorded in 0.081 seconds
+d_00: @00:00:02.201393   PASS - test_persist_start_values in 0.000 seconds
+d_00: @00:00:02.201393   PASS - test_pmic_charge_error in 0.000 seconds
+d_00: @00:00:02.201393   PASS - test_pmic_ilim_at_sample in 0.000 seconds
+d_00: @00:00:02.201393   PASS - test_pmic_motor_dip in 0.000 seconds
+d_00: @00:00:02.201393   PASS - test_pmic_rails_and_charger in 0.000 seconds
+d_00: @00:00:02.201393   PASS - test_pmic_reset_causes in 0.000 seconds
+d_00: @00:00:38.201493      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:557: rhw_sim_test_pmic_script_and_cell: s.mv not equal to 3824
+d_00: @00:00:38.201493   FAIL - test_pmic_script_and_cell in 36.001 seconds
+d_00: @00:00:38.201493   PASS - test_pmic_ship_refuses_later_calls in 0.000 seconds
+d_00: @00:00:38.452693   PASS - test_pmic_vbus_now_and_at in 0.252 seconds
+d_00: @00:00:38.468793   PASS - test_reboot_keeps_card_settings_retained in 0.017 seconds
+d_00: @00:00:38.468793   PASS - test_registration_refused_in_sim in 0.000 seconds
+d_00: @00:00:38.468793   PASS - test_retained_valid_or_corrupt in 0.000 seconds
+d_00: @00:00:38.498893   PASS - test_usb_host_stops_reading in 0.031 seconds
+d_00: @00:00:38.498893      Assertion failed at WEST_TOPDIR/firmware/tests/rhw/src/test_rhw.c:714: rhw_sim_test_usb_speed_packets: rhw_sim_usb_host_read(back, sizeof(back)) not equal to 128 + 1100
+d_00: @00:00:38.498893   FAIL - test_usb_speed_packets in 0.000 seconds
+d_00: @00:00:55.500893   PASS - test_wdt_would_reset in 17.002 seconds
+d_00: @00:00:55.500893  TESTSUITE rhw_sim failed.
+d_00: @00:00:55.500893  SUITE FAIL -  92.86% [rhw_sim]: pass = 39, fail = 3, skip = 0, total = 42 duration = 55.516 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_beacon_recorded] duration = 0.000 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_clock_cycle_rate] duration = 1.001 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_disk_cut_after_sector] duration = 0.000 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_disk_init_fails_n] duration = 0.000 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_disk_read_error_at_lba] duration = 0.000 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_disk_refused_rail_off] duration = 0.000 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_disk_sector_count] duration = 0.000 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_disk_stall_per_write] duration = 0.081 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_disk_write_fault_at_n] duration = 0.000 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_event_log_order_and_time] duration = 0.007 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_gauge_start_soc_and_error] duration = 0.000 seconds
+d_00: @00:00:55.500893   - PASS - [rhw_sim.test_headers_compiled] duration = 0.000 seconds
+twister exit code on the broken copy mic_no_block_ignored, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-043605-u-rhw-unit/broken-rhw/twister-mic_no_block_ignored-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+mic_no_block_ignored on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:55.500893   - FAIL - [rhw_sim.test_mic_stop_delivering] duration = 0.048 seconds (failed cases listed: 3)
+RESULT PASS
+=== part broken-rhw end 2026-11-13T03:40:42Z exit 0
+UNIT FAIL tests/rhw tests-native_sim tests-nrf54lm20bsim_nrf54lm20a_cpuapp
+# finished (Mac clock): 2026-11-13 04:40:50 CET
+# remote exit code: 1
+# local log: firmware/build-logs/20261113-043605-u-rhw.log

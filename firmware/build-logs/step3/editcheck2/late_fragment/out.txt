@@ -1,0 +1,45 @@
+--- a/ring_iphone/src/ripl.c
++++ b/ring_iphone/src/ripl.c
+@@ -96,7 +96,7 @@
+ 				d->uid_seen = 0;
+ 				d->state = DS_UID;
+ 			} else {
+-				d->skipped++;
++				d->state = DS_ERR;
+ 			}
+ 			break;
+ 		case DS_UID:
+--- a/ring_iphone/src/ripl.c
++++ b/ring_iphone/src/ripl.c
+@@ -96,7 +96,7 @@
+ 				d->uid_seen = 0;
+ 				d->state = DS_UID;
+ 			} else {
+-				d->skipped++;
++				d->state = DS_ERR;
+ 			}
+ 			break;
+ 		case DS_UID:
+@@ -116,7 +116,7 @@
+ 					memcpy(again, d->hdr, 4);
+ 					d->skipped += 1;
+ 					d->state = DS_CMD;
+-					(void)ripl_ds_feed(d, again, 4);
++					d->state = DS_ERR;
+ 				}
+ 			}
+ 			break;
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -125,7 +125,7 @@
+ static void fetch_failed_locked(void)
+ {
+ 	fetch_busy = false;
+-	if (cur_try == 0 && !fq_has(cur_uid) && fq_n < FETCH_Q && rinbox_find(&inbox, cur_uid) >= 0) {
++	if (false && !fq_has(cur_uid) && fq_n < FETCH_Q && rinbox_find(&inbox, cur_uid) >= 0) {
+ 		fq_head = (uint8_t)((fq_head + FETCH_Q - 1) % FETCH_Q);
+ 		fq[fq_head] = cur_uid;
+ 		fq_try[fq_head] = 1;
+MODULE=ring_iphone
+SCEN=L
+EXPECT=RING CHECK L: the four notifications all get their text, although the answer for the first is late FAIL

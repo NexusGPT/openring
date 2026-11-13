@@ -1,0 +1,599 @@
+# remote.sh run 20261111-211817-r2-ctl1
+# command: bash tests/bsim/control/run.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 21:18:17 CET
+# free on the server's /: 47 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-211817-r2-ctl1; server log /root/ring-os/logs/20261111-211817-r2-ctl1.log
+bsim-control: firmware /ws/firmware/tests/bsim/control, outputs /ws/out/20261111-211817-r2-ctl1-bsim-control, scenarios A B C D F, broken 0
+=== build host for nrf52_bsim/native, log /ws/out/20261111-211817-r2-ctl1-bsim-control/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== build ring for nrf52_bsim/native, log /ws/out/20261111-211817-r2-ctl1-bsim-control/build-ring.log
+      1 /ws/firmware/modules/ring_control/src/rctl.c:79:31: warning: assignment to ‘bt_hids_conn_cp_evt_handler_t’ {aka ‘void (*)(enum bt_hids_cp_evt,  struct bt_conn *)’} from incompatible pointer type ‘void (*)(struct bt_conn *, enum bt_hids_cp_evt)’ [-Wincompatible-pointer-types]
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring ok
+=== test A (ok): ring + 1 host(s), 75 simulated seconds, 2026-11-11T20:19:23Z
+exit codes: phy 0, ring 0, hosts 0
+--- ring /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-A-ring.log
+d_00: @00:00:00.000000  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.001718  RING CHECK Bluetooth up, devices ready PASS (t=1)
+d_00: @00:00:00.001718  RING CHECK pairing window opens PASS (t=1)
+d_00: @00:00:00.996054  RING PASSKEY slot 0 836849
+d_00: @00:00:05.596109  RING EVENT paired slot 0
+d_00: @00:00:05.596109  RING EVENT active slot 0
+d_00: @00:00:05.596109  RING EVENT link slot 0 up
+d_00: @00:00:10.304413  RING CHECK host pairs and its link is ready PASS (t=10304)
+d_00: @00:00:10.304413  RING CHECK passkey was shown once, six digits PASS (t=10304)
+d_00: @00:00:10.304413  RING CHECK paired callback once PASS (t=10304)
+d_00: @00:00:10.304413  RING CHECK slot 0 is active PASS (t=10304)
+d_00: @00:00:10.304413  RING CHECK control starts not active PASS (t=10304)
+d_00: @00:00:11.004487  RING CHECK control inactive: direction sends no report PASS (t=11004)
+d_00: @00:00:11.704560  RING CHECK media.centre sends 2 report(s) PASS (t=11704)
+d_00: @00:00:12.404633  RING CHECK media.up sends 2 report(s) PASS (t=12404)
+d_00: @00:00:13.104706  RING CHECK media.down sends 2 report(s) PASS (t=13104)
+d_00: @00:00:13.804780  RING CHECK media.left sends 2 report(s) PASS (t=13804)
+d_00: @00:00:14.504853  RING CHECK media.right sends 2 report(s) PASS (t=14504)
+d_00: @00:00:15.204926  RING CHECK presenter.centre sends 0 report(s) PASS (t=15204)
+d_00: @00:00:15.904999  RING CHECK presenter.up sends 2 report(s) PASS (t=15904)
+d_00: @00:00:16.605073  RING CHECK presenter.down sends 2 report(s) PASS (t=16605)
+d_00: @00:00:17.305146  RING CHECK presenter.left sends 2 report(s) PASS (t=17305)
+d_00: @00:00:18.005219  RING CHECK presenter.right sends 2 report(s) PASS (t=18005)
+d_00: @00:00:18.705292  RING CHECK pages presenter.centre sends 0 report(s) PASS (t=18705)
+d_00: @00:00:19.405365  RING CHECK pages presenter.up sends 2 report(s) PASS (t=19405)
+d_00: @00:00:20.105439  RING CHECK pages presenter.down sends 2 report(s) PASS (t=20105)
+d_00: @00:00:20.805512  RING CHECK pages presenter.left sends 2 report(s) PASS (t=20805)
+d_00: @00:00:21.505585  RING CHECK pages presenter.right sends 2 report(s) PASS (t=21505)
+d_00: @00:00:22.205658  RING CHECK pointer.centre sends 2 report(s) PASS (t=22205)
+d_00: @00:00:22.905732  RING CHECK pointer.up sends 1 report(s) PASS (t=22905)
+d_00: @00:00:23.605805  RING CHECK pointer.down sends 1 report(s) PASS (t=23605)
+d_00: @00:00:24.305878  RING CHECK pointer.left sends 1 report(s) PASS (t=24305)
+d_00: @00:00:25.005951  RING CHECK pointer.right sends 1 report(s) PASS (t=25005)
+d_00: @00:00:25.706025  RING CHECK agent.centre sends 2 report(s) PASS (t=25706)
+d_00: @00:00:26.406098  RING CHECK agent.up sends 2 report(s) PASS (t=26406)
+d_00: @00:00:27.106171  RING CHECK agent.down sends 2 report(s) PASS (t=27106)
+d_00: @00:00:27.806244  RING CHECK agent.left sends 2 report(s) PASS (t=27806)
+d_00: @00:00:28.506318  RING CHECK agent.right sends 2 report(s) PASS (t=28506)
+d_00: @00:00:30.206391  RING INFO held right 1100 ms sent 6 reports
+d_00: @00:00:30.206391  RING CHECK pointer held right repeats (at least 4 reports) PASS (t=30206)
+d_00: @00:00:30.206391  RING CHECK pointer held right repeats (at most 8 reports) PASS (t=30206)
+d_00: @00:00:30.906464  RING CHECK screen off: a direction sends no report PASS (t=30906)
+d_00: @00:00:32.016663  RING CHECK centre double press sends no report PASS (t=32016)
+d_00: @00:00:32.016663  RING CHECK no action was dropped PASS (t=32016)
+d_00: @00:00:40.096113  RING EVENT link slot 0 down
+d_00: @00:00:40.873125  RING EVENT link slot 0 up
+d_00: @00:00:41.000702  RING CHECK the drop was seen (link down) PASS (t=41000)
+d_00: @00:00:44.000733  RING CHECK reconnect after the drop, link ready PASS (t=44000)
+d_00: @00:00:44.700806  RING CHECK after the drop agent.centre sends 2 report(s) PASS (t=44700)
+d_00: @00:00:44.700806  RING SCRIPT DONE t=44700 checks=42 fails=0
+d_00: @00:00:44.700806  RING RESULT PASS
+--- host 1 /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-A-host1.log
+d_01: @00:00:00.000998  HOST H1 CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.644599  HOST H1 connected (t=644), bonded=0
+d_01: @00:00:01.146285  HOST H1 passkey entry asked, read ok (t=1146)
+d_01: @00:00:01.146285  HOST H1 CHECK passkey read from the ring's display PASS (t=1146)
+d_01: @00:00:05.596108  HOST H1 CHECK pairing with the passkey completed and bonded PASS (t=5596)
+d_01: @00:00:05.596108  HOST H1 security level 4 (t=5596)
+d_01: @00:00:05.596108  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=5596)
+d_01: @00:00:07.046133  HOST H1 INFO subscribed to 3 input reports (t=7046)
+d_01: @00:00:11.546141  HOST H1 REPORT t=11546 id=2 len=2 data=cd00
+d_01: @00:00:11.546581  HOST H1 REPORT t=11546 id=2 len=2 data=0000
+d_01: @00:00:11.746140  HOST H1 REPORT t=11746 id=2 len=2 data=e900
+d_01: @00:00:11.746580  HOST H1 REPORT t=11746 id=2 len=2 data=0000
+d_01: @00:00:12.446140  HOST H1 REPORT t=12446 id=2 len=2 data=ea00
+d_01: @00:00:12.446580  HOST H1 REPORT t=12446 id=2 len=2 data=0000
+d_01: @00:00:13.146141  HOST H1 REPORT t=13146 id=2 len=2 data=b600
+d_01: @00:00:13.146581  HOST H1 REPORT t=13146 id=2 len=2 data=0000
+d_01: @00:00:13.846140  HOST H1 REPORT t=13846 id=2 len=2 data=b500
+d_01: @00:00:13.846580  HOST H1 REPORT t=13846 id=2 len=2 data=0000
+d_01: @00:00:15.246164  HOST H1 REPORT t=15246 id=1 len=8 data=0000500000000000
+d_01: @00:00:15.246628  HOST H1 REPORT t=15246 id=1 len=8 data=0000000000000000
+d_01: @00:00:15.946164  HOST H1 REPORT t=15946 id=1 len=8 data=00004f0000000000
+d_01: @00:00:15.946628  HOST H1 REPORT t=15946 id=1 len=8 data=0000000000000000
+d_01: @00:00:16.646165  HOST H1 REPORT t=16646 id=1 len=8 data=0000500000000000
+d_01: @00:00:16.646629  HOST H1 REPORT t=16646 id=1 len=8 data=0000000000000000
+d_01: @00:00:17.346164  HOST H1 REPORT t=17346 id=1 len=8 data=00004f0000000000
+d_01: @00:00:17.346628  HOST H1 REPORT t=17346 id=1 len=8 data=0000000000000000
+d_01: @00:00:18.746164  HOST H1 REPORT t=18746 id=1 len=8 data=00004b0000000000
+d_01: @00:00:18.746628  HOST H1 REPORT t=18746 id=1 len=8 data=0000000000000000
+d_01: @00:00:19.446164  HOST H1 REPORT t=19446 id=1 len=8 data=00004e0000000000
+d_01: @00:00:19.446628  HOST H1 REPORT t=19446 id=1 len=8 data=0000000000000000
+d_01: @00:00:20.146165  HOST H1 REPORT t=20146 id=1 len=8 data=00004b0000000000
+d_01: @00:00:20.146629  HOST H1 REPORT t=20146 id=1 len=8 data=0000000000000000
+d_01: @00:00:20.846164  HOST H1 REPORT t=20846 id=1 len=8 data=00004e0000000000
+d_01: @00:00:20.846628  HOST H1 REPORT t=20846 id=1 len=8 data=0000000000000000
+d_01: @00:00:22.046145  HOST H1 REPORT t=22046 id=3 len=3 data=010000
+d_01: @00:00:22.046589  HOST H1 REPORT t=22046 id=3 len=3 data=000000
+d_01: @00:00:22.246144  HOST H1 REPORT t=22246 id=3 len=3 data=0000f0
+d_01: @00:00:22.946144  HOST H1 REPORT t=22946 id=3 len=3 data=000010
+d_01: @00:00:23.646145  HOST H1 REPORT t=23646 id=3 len=3 data=00f000
+d_01: @00:00:24.396145  HOST H1 REPORT t=24396 id=3 len=3 data=001000
+d_01: @00:00:25.546165  HOST H1 REPORT t=25546 id=1 len=8 data=0000280000000000
+d_01: @00:00:25.546629  HOST H1 REPORT t=25546 id=1 len=8 data=0000000000000000
+d_01: @00:00:25.796165  HOST H1 REPORT t=25796 id=1 len=8 data=0000520000000000
+d_01: @00:00:25.796629  HOST H1 REPORT t=25796 id=1 len=8 data=0000000000000000
+d_01: @00:00:26.496164  HOST H1 REPORT t=26496 id=1 len=8 data=0000510000000000
+d_01: @00:00:26.496628  HOST H1 REPORT t=26496 id=1 len=8 data=0000000000000000
+d_01: @00:00:27.196164  HOST H1 REPORT t=27196 id=1 len=8 data=0000290000000000
+d_01: @00:00:27.196628  HOST H1 REPORT t=27196 id=1 len=8 data=0000000000000000
+d_01: @00:00:27.896165  HOST H1 REPORT t=27896 id=1 len=8 data=0000280000000000
+d_01: @00:00:27.896629  HOST H1 REPORT t=27896 id=1 len=8 data=0000000000000000
+d_01: @00:00:28.596144  HOST H1 REPORT t=28596 id=3 len=3 data=001000
+d_01: @00:00:29.046145  HOST H1 REPORT t=29046 id=3 len=3 data=001000
+d_01: @00:00:29.196144  HOST H1 REPORT t=29196 id=3 len=3 data=001000
+d_01: @00:00:29.346144  HOST H1 REPORT t=29346 id=3 len=3 data=001000
+d_01: @00:00:29.496144  HOST H1 REPORT t=29496 id=3 len=3 data=001000
+d_01: @00:00:29.646145  HOST H1 REPORT t=29646 id=3 len=3 data=001000
+d_01: @00:00:40.096112  HOST H1 disconnected reason 0x16 (t=40096)
+d_01: @00:00:40.521522  HOST H1 connected (t=40521), bonded=1
+d_01: @00:00:40.873128  HOST H1 security level 4 (t=40873)
+d_01: @00:00:40.873128  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=40873)
+d_01: @00:00:42.423055  HOST H1 INFO subscribed to 3 input reports (t=42423)
+d_01: @00:00:44.523088  HOST H1 REPORT t=44523 id=1 len=8 data=0000280000000000
+d_01: @00:00:44.523552  HOST H1 REPORT t=44523 id=1 len=8 data=0000000000000000
+d_01: @00:01:10.000092  HOST H1 EVAL t=70000
+d_01: @00:01:10.000092  HOST H1 CHECK media.centre play/pause PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK media.up volume up PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK media.down volume down PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK media.left previous PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK media.right next PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK presenter.centre nothing PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK presenter.up previous slide (Left Arrow) PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK presenter.down next slide (Right Arrow) PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK presenter.left previous slide (Left Arrow) PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK presenter.right next slide (Right Arrow) PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK presenter pages.centre nothing PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK presenter pages.up (Page Up) PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK presenter pages.down (Page Down) PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK presenter pages.left (Page Up) PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK presenter pages.right (Page Down) PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK pointer.centre click PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK pointer.up PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK pointer.down PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK pointer.left PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK pointer.right PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK agent.centre Return PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK agent.up Up Arrow PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK agent.down Down Arrow PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK agent.left Escape PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK agent.right Return PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 INFO pointer held right: 6 reports
+d_01: @00:01:10.000092  HOST H1 CHECK pointer held right repeats (at least 4 reports) PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK pointer held right repeats (at most 8 reports) PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK after a drop and reconnect: agent.centre Return PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK no other report received PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 INFO 50 report(s) received in total
+d_01: @00:01:10.000092  HOST H1 RESULT PASS checks=34 fails=0
+ring script done at 44700 ms, host 1 evaluated at 70000 ms
+TEST A RESULT PASS (76 checks passed)
+=== test B (ok): ring + 2 host(s), 75 simulated seconds, 2026-11-11T20:19:25Z
+exit codes: phy 0, ring 0, hosts 0 0
+--- ring /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-B-ring.log
+d_00: @00:00:00.000000  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.001718  RING CHECK Bluetooth up, devices ready PASS (t=1)
+d_00: @00:00:00.001718  RING CHECK pairing window opens for slot 0 PASS (t=1)
+d_00: @00:00:00.996054  RING PASSKEY slot 0 836849
+d_00: @00:00:05.596109  RING EVENT paired slot 0
+d_00: @00:00:05.596109  RING EVENT active slot 0
+d_00: @00:00:05.596109  RING EVENT link slot 0 up
+d_00: @00:00:10.304413  RING CHECK host 1 pairs, link ready PASS (t=10304)
+d_00: @00:00:10.304413  RING CHECK slot 0 active PASS (t=10304)
+d_00: @00:00:11.004487  RING CHECK P1 media.centre sends 2 report(s) PASS (t=11004)
+d_00: @00:00:11.704560  RING CHECK P1 media.right sends 2 report(s) PASS (t=11704)
+d_00: @00:00:30.000611  RING CHECK pairing window opens for slot 1 PASS (t=30000)
+d_00: @00:00:30.095894  RING EVENT link slot 0 down
+d_00: @00:00:30.556301  RING PASSKEY slot 1 325288
+d_00: @00:00:35.156356  RING EVENT paired slot 1
+d_00: @00:00:35.156356  RING EVENT active slot 1
+d_00: @00:00:35.156356  RING EVENT link slot 1 up
+d_00: @00:00:39.903168  RING CHECK host 2 pairs, link ready PASS (t=39903)
+d_00: @00:00:39.903168  RING CHECK slot 1 active after its pairing PASS (t=39903)
+d_00: @00:00:40.603241  RING CHECK P2 media.centre sends 2 report(s) PASS (t=40603)
+d_00: @00:00:41.303315  RING CHECK P2 media.left sends 2 report(s) PASS (t=41303)
+d_00: @00:00:41.303315  RING EVENT link slot 1 down
+d_00: @00:00:41.303315  RING EVENT active slot 0
+d_00: @00:00:41.303315  RING CHECK switch to slot 0 PASS (t=41303)
+d_00: @00:00:41.823070  RING EVENT link slot 0 up
+d_00: @00:00:44.903565  RING CHECK host 1 reconnects, link ready PASS (t=44903)
+d_00: @00:00:44.903565  RING CHECK slot 0 active PASS (t=44903)
+d_00: @00:00:45.603638  RING CHECK P3 media.up sends 2 report(s) PASS (t=45603)
+d_00: @00:00:46.303711  RING CHECK P3 media.down sends 2 report(s) PASS (t=46303)
+d_00: @00:00:46.303711  RING EVENT link slot 0 down
+d_00: @00:00:46.303711  RING EVENT active slot 1
+d_00: @00:00:46.303711  RING CHECK switch to slot 1 PASS (t=46303)
+d_00: @00:00:46.303711  RING CHECK key in the switch window is not sent PASS (t=46303)
+d_00: @00:00:46.841752  RING EVENT link slot 1 up
+d_00: @00:00:49.903962  RING CHECK host 2 reconnects, link ready PASS (t=49903)
+d_00: @00:00:50.604035  RING CHECK P4 media.right sends 2 report(s) PASS (t=50604)
+d_00: @00:00:50.604035  RING CHECK switch to an empty slot is refused PASS (t=50604)
+d_00: @00:00:50.604035  RING CHECK switch to the active slot changes nothing PASS (t=50604)
+d_00: @00:00:50.604035  RING CHECK three distinct local identities PASS (t=50604)
+d_00: @00:00:50.604035  RING CHECK two paired callbacks PASS (t=50604)
+d_00: @00:00:50.604035  RING SCRIPT DONE t=50604 checks=25 fails=0
+d_00: @00:00:50.604035  RING RESULT PASS
+--- host 1 /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-B-host1.log
+d_01: @00:00:00.000998  HOST H1 CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.644599  HOST H1 connected (t=644), bonded=0
+d_01: @00:00:01.146285  HOST H1 passkey entry asked, read ok (t=1146)
+d_01: @00:00:01.146285  HOST H1 CHECK passkey read from the ring's display PASS (t=1146)
+d_01: @00:00:05.596108  HOST H1 CHECK pairing with the passkey completed and bonded PASS (t=5596)
+d_01: @00:00:05.596108  HOST H1 security level 4 (t=5596)
+d_01: @00:00:05.596108  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=5596)
+d_01: @00:00:07.046133  HOST H1 INFO subscribed to 3 input reports (t=7046)
+d_01: @00:00:10.846140  HOST H1 REPORT t=10846 id=2 len=2 data=cd00
+d_01: @00:00:10.846580  HOST H1 REPORT t=10846 id=2 len=2 data=0000
+d_01: @00:00:11.046141  HOST H1 REPORT t=11046 id=2 len=2 data=b500
+d_01: @00:00:11.046581  HOST H1 REPORT t=11046 id=2 len=2 data=0000
+d_01: @00:00:30.095895  HOST H1 disconnected reason 0x13 (t=30095)
+d_01: @00:00:41.471468  HOST H1 connected (t=41471), bonded=1
+d_01: @00:00:41.823073  HOST H1 security level 4 (t=41823)
+d_01: @00:00:41.823073  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=41823)
+d_01: @00:00:43.373001  HOST H1 INFO subscribed to 3 input reports (t=43372)
+d_01: @00:00:44.973009  HOST H1 REPORT t=44972 id=2 len=2 data=e900
+d_01: @00:00:44.973449  HOST H1 REPORT t=44973 id=2 len=2 data=0000
+d_01: @00:00:45.673009  HOST H1 REPORT t=45673 id=2 len=2 data=ea00
+d_01: @00:00:45.673449  HOST H1 REPORT t=45673 id=2 len=2 data=0000
+d_01: @00:00:46.372764  HOST H1 disconnected reason 0x13 (t=46372)
+d_01: @00:01:10.000062  HOST H1 EVAL t=70000
+d_01: @00:01:10.000062  HOST H1 CHECK P1 media.centre PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK P1 media.right PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK P3 media.up (after the switch back) PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK P3 media.down PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK no other report received PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 INFO 8 report(s) received in total
+d_01: @00:01:10.000062  HOST H1 RESULT PASS checks=10 fails=0
+--- host 2 /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-B-host2.log
+d_02: @00:00:00.000998  HOST H2 CHECK Bluetooth up PASS (t=0)
+d_02: @00:00:30.204846  HOST H2 connected (t=30204), bonded=0
+d_02: @00:00:30.706531  HOST H2 passkey entry asked, read ok (t=30706)
+d_02: @00:00:30.706531  HOST H2 CHECK passkey read from the ring's display PASS (t=30706)
+d_02: @00:00:35.156355  HOST H2 CHECK pairing with the passkey completed and bonded PASS (t=35156)
+d_02: @00:00:35.156355  HOST H2 security level 4 (t=35156)
+d_02: @00:00:35.156355  HOST H2 CHECK link encrypted and authenticated (security level 4) PASS (t=35156)
+d_02: @00:00:36.606378  HOST H2 INFO subscribed to 3 input reports (t=36606)
+d_02: @00:00:40.406387  HOST H2 REPORT t=40406 id=2 len=2 data=cd00
+d_02: @00:00:40.406827  HOST H2 REPORT t=40406 id=2 len=2 data=0000
+d_02: @00:00:40.656387  HOST H2 REPORT t=40656 id=2 len=2 data=b600
+d_02: @00:00:40.656827  HOST H2 REPORT t=40656 id=2 len=2 data=0000
+d_02: @00:00:41.356141  HOST H2 disconnected reason 0x13 (t=41356)
+d_02: @00:00:46.490150  HOST H2 connected (t=46490), bonded=1
+d_02: @00:00:46.841755  HOST H2 security level 4 (t=46841)
+d_02: @00:00:46.841755  HOST H2 CHECK link encrypted and authenticated (security level 4) PASS (t=46841)
+d_02: @00:00:48.391682  HOST H2 INFO subscribed to 3 input reports (t=48391)
+d_02: @00:00:49.991690  HOST H2 REPORT t=49991 id=2 len=2 data=b500
+d_02: @00:00:49.992130  HOST H2 REPORT t=49992 id=2 len=2 data=0000
+d_02: @00:01:10.000062  HOST H2 EVAL t=70000
+d_02: @00:01:10.000062  HOST H2 CHECK P2 media.centre PASS (t=70000)
+d_02: @00:01:10.000062  HOST H2 CHECK P2 media.left PASS (t=70000)
+d_02: @00:01:10.000062  HOST H2 CHECK P4 media.right (after the second switch) PASS (t=70000)
+d_02: @00:01:10.000062  HOST H2 CHECK no other report received PASS (t=70000)
+d_02: @00:01:10.000062  HOST H2 INFO 6 report(s) received in total
+d_02: @00:01:10.000062  HOST H2 RESULT PASS checks=9 fails=0
+ring script done at 50604 ms, host 1 evaluated at 70000 ms
+TEST B RESULT PASS (44 checks passed)
+=== test C (ok): ring + 1 host(s), 75 simulated seconds, 2026-11-11T20:19:29Z
+exit codes: phy 0, ring 0, hosts 0
+--- ring /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-C-ring.log
+d_00: @00:00:00.000000  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.001718  RING CHECK Bluetooth up, devices ready PASS (t=1)
+d_00: @00:00:00.001718  RING CHECK pairing window opens PASS (t=1)
+d_00: @00:00:00.996054  RING PASSKEY slot 0 836849
+d_00: @00:00:05.596109  RING EVENT paired slot 0
+d_00: @00:00:05.596109  RING EVENT active slot 0
+d_00: @00:00:05.596109  RING EVENT link slot 0 up
+d_00: @00:00:10.304413  RING CHECK host pairs, link ready PASS (t=10304)
+d_00: @00:00:11.004487  RING CHECK before removal media.centre sends 2 report(s) PASS (t=11004)
+d_00: @00:00:11.004487  RING CHECK bond exists before removal PASS (t=11004)
+d_00: @00:00:11.004487  RING EVENT link slot 0 down
+d_00: @00:00:11.004487  RING EVENT removed slot 0
+d_00: @00:00:11.004487  RING EVENT active slot 255
+d_00: @00:00:11.004487  RING CHECK pairing removed PASS (t=11004)
+d_00: @00:00:11.004487  RING CHECK bond deleted PASS (t=11004)
+d_00: @00:00:11.004487  RING CHECK no active device and no link PASS (t=11004)
+d_00: @00:00:11.004487  RING CHECK removing again reports no pairing PASS (t=11004)
+d_00: @00:00:14.004517  RING CHECK pairing window opens again PASS (t=14004)
+d_00: @00:00:22.004548  RING CHECK no key goes out while the host is not paired PASS (t=22004)
+d_00: @00:00:25.239344  RING PASSKEY slot 0 291481
+d_00: @00:00:29.839399  RING EVENT paired slot 0
+d_00: @00:00:29.839399  RING EVENT active slot 0
+d_00: @00:00:29.839399  RING EVENT link slot 0 up
+d_00: @00:00:34.608094  RING CHECK host pairs again, link ready PASS (t=34608)
+d_00: @00:00:34.608094  RING CHECK two pairings in total PASS (t=34608)
+d_00: @00:00:35.308167  RING CHECK after new pairing media.centre sends 2 report(s) PASS (t=35308)
+d_00: @00:00:35.308167  RING SCRIPT DONE t=35308 checks=15 fails=0
+d_00: @00:00:35.308167  RING RESULT PASS
+--- host 1 /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-C-host1.log
+d_01: @00:00:00.000998  HOST H1 CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.644599  HOST H1 connected (t=644), bonded=0
+d_01: @00:00:01.146285  HOST H1 passkey entry asked, read ok (t=1146)
+d_01: @00:00:01.146285  HOST H1 CHECK passkey read from the ring's display PASS (t=1146)
+d_01: @00:00:05.596108  HOST H1 CHECK pairing with the passkey completed and bonded PASS (t=5596)
+d_01: @00:00:05.596108  HOST H1 security level 4 (t=5596)
+d_01: @00:00:05.596108  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=5596)
+d_01: @00:00:07.046133  HOST H1 INFO subscribed to 3 input reports (t=7046)
+d_01: @00:00:10.846140  HOST H1 REPORT t=10846 id=2 len=2 data=cd00
+d_01: @00:00:10.846580  HOST H1 REPORT t=10846 id=2 len=2 data=0000
+d_01: @00:00:11.095895  HOST H1 disconnected reason 0x13 (t=11095)
+d_01: @00:00:14.113476  HOST H1 connected (t=14113), bonded=1
+d_01: @00:00:14.365058  HOST H1 security failed err 2  (t=14365)
+d_01: @00:00:14.365058  HOST H1 CHECK old keys refused by the ring after removal (pin or key missing) PASS (t=14365)
+d_01: @00:00:14.465129  HOST H1 disconnected reason 0x16 (t=14465)
+d_01: @00:00:24.887890  HOST H1 connected (t=24887), bonded=0
+d_01: @00:00:25.389574  HOST H1 passkey entry asked, read ok (t=25389)
+d_01: @00:00:25.389574  HOST H1 CHECK passkey read from the ring's display PASS (t=25389)
+d_01: @00:00:29.839398  HOST H1 CHECK pairing with the passkey completed and bonded PASS (t=29839)
+d_01: @00:00:29.839398  HOST H1 security level 4 (t=29839)
+d_01: @00:00:29.839398  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=29839)
+d_01: @00:00:31.289422  HOST H1 INFO subscribed to 3 input reports (t=31289)
+d_01: @00:00:35.139430  HOST H1 REPORT t=35139 id=2 len=2 data=cd00
+d_01: @00:00:35.139870  HOST H1 REPORT t=35139 id=2 len=2 data=0000
+d_01: @00:01:10.000062  HOST H1 EVAL t=70000
+d_01: @00:01:10.000062  HOST H1 CHECK old keys were refused after the removal PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK paired twice (before the removal and again) PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK before removal media.centre PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK after new pairing media.centre PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 CHECK no other report received PASS (t=70000)
+d_01: @00:01:10.000062  HOST H1 INFO 4 report(s) received in total
+d_01: @00:01:10.000062  HOST H1 RESULT PASS checks=13 fails=0
+ring script done at 35308 ms, host 1 evaluated at 70000 ms
+TEST C RESULT PASS (28 checks passed)
+=== test D (ok): ring + 1 host(s), 75 simulated seconds, 2026-11-11T20:19:31Z
+exit codes: phy 0, ring 0, hosts 0
+--- ring /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-D-ring.log
+d_00: @00:00:00.000000  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.001718  RING CHECK Bluetooth up, devices ready PASS (t=1)
+d_00: @00:00:00.001718  RING CHECK pairing window opens PASS (t=1)
+d_00: @00:00:00.996054  RING PASSKEY slot 0 836849
+d_00: @00:00:05.596109  RING EVENT paired slot 0
+d_00: @00:00:05.596109  RING EVENT active slot 0
+d_00: @00:00:05.596109  RING EVENT link slot 0 up
+d_00: @00:00:10.304413  RING CHECK host pairs and its link is ready PASS (t=10304)
+d_00: @00:00:11.304474  RING EVENT recording start (t=11304)
+d_00: @00:00:12.104493  RING CHECK media: centre hold starts a recording PASS (t=12104)
+d_00: @00:00:12.104493  RING CHECK media: centre hold sends no report PASS (t=12104)
+d_00: @00:00:13.104554  RING EVENT recording stop (t=13104)
+d_00: @00:00:13.904572  RING CHECK media: second centre hold stops the recording PASS (t=13904)
+d_00: @00:00:13.904572  RING CHECK media: second centre hold sends no report PASS (t=13904)
+d_00: @00:00:14.904633  RING EVENT recording start (t=14904)
+d_00: @00:00:15.704651  RING CHECK presenter: centre hold starts a recording PASS (t=15704)
+d_00: @00:00:15.704651  RING CHECK presenter: centre hold sends no report PASS (t=15704)
+d_00: @00:00:16.704712  RING EVENT recording stop (t=16704)
+d_00: @00:00:17.504731  RING CHECK presenter: second centre hold stops the recording PASS (t=17504)
+d_00: @00:00:17.504731  RING CHECK presenter: second centre hold sends no report PASS (t=17504)
+d_00: @00:00:18.504792  RING EVENT recording start (t=18504)
+d_00: @00:00:19.304810  RING CHECK pointer: centre hold starts a recording PASS (t=19304)
+d_00: @00:00:19.304810  RING CHECK pointer: centre hold sends no report PASS (t=19304)
+d_00: @00:00:20.304871  RING EVENT recording stop (t=20304)
+d_00: @00:00:21.104889  RING CHECK pointer: second centre hold stops the recording PASS (t=21104)
+d_00: @00:00:21.104889  RING CHECK pointer: second centre hold sends no report PASS (t=21104)
+d_00: @00:00:22.104950  RING EVENT recording start (t=22104)
+d_00: @00:00:22.904969  RING CHECK agent: centre hold starts a recording PASS (t=22904)
+d_00: @00:00:22.904969  RING CHECK agent: centre hold sends no report PASS (t=22904)
+d_00: @00:00:23.905030  RING EVENT recording stop (t=23905)
+d_00: @00:00:24.705048  RING CHECK agent: second centre hold stops the recording PASS (t=24705)
+d_00: @00:00:24.705048  RING CHECK agent: second centre hold sends no report PASS (t=24705)
+d_00: @00:00:25.405121  RING CHECK failed release is sent later PASS (t=25405)
+d_00: @00:00:50.000153  RING CHECK host control point writes arrived PASS (t=50000)
+d_00: @00:00:50.000153  RING CHECK host writes start no recording PASS (t=50000)
+d_00: @00:00:50.000153  RING CHECK host writes send no report PASS (t=50000)
+d_00: @00:00:50.000153  RING SCRIPT DONE t=50000 checks=24 fails=0
+d_00: @00:00:50.000153  RING RESULT PASS
+--- host 1 /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-D-host1.log
+d_01: @00:00:00.000998  HOST H1 CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.644599  HOST H1 connected (t=644), bonded=0
+d_01: @00:00:01.146285  HOST H1 passkey entry asked, read ok (t=1146)
+d_01: @00:00:01.146285  HOST H1 CHECK passkey read from the ring's display PASS (t=1146)
+d_01: @00:00:05.596108  HOST H1 CHECK pairing with the passkey completed and bonded PASS (t=5596)
+d_01: @00:00:05.596108  HOST H1 security level 4 (t=5596)
+d_01: @00:00:05.596108  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=5596)
+d_01: @00:00:07.046133  HOST H1 INFO subscribed to 3 input reports (t=7046)
+d_01: @00:00:25.246164  HOST H1 REPORT t=25246 id=1 len=8 data=0000280000000000
+d_01: @00:00:25.296165  HOST H1 REPORT t=25296 id=1 len=8 data=0000000000000000
+d_01: @00:00:45.000062  HOST H1 INFO host writes sent: suspend 0, exit suspend 0, protocol mode -95 (t=45000)
+d_01: @00:00:45.000062  HOST H1 CHECK host writes were sent PASS (t=45000)
+d_01: @00:01:10.000092  HOST H1 EVAL t=70000
+d_01: @00:01:10.000092  HOST H1 CHECK failed release sent later: agent.centre Return PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK no other report received PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 INFO 2 report(s) received in total
+d_01: @00:01:10.000092  HOST H1 RESULT PASS checks=7 fails=0
+ring script done at 50000 ms, host 1 evaluated at 70000 ms
+TEST D RESULT PASS (31 checks passed)
+=== test F (ok): ring + 2 host(s), 75 simulated seconds, 2026-11-11T20:19:34Z
+exit codes: phy 0, ring 0, hosts 0 0
+--- ring /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-F-ring.log
+d_00: @00:00:00.000000  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.001718  RING CHECK Bluetooth up, devices ready PASS (t=1)
+d_00: @00:00:00.001718  RING CHECK pairing window opens PASS (t=1)
+d_00: @00:00:00.996054  RING PASSKEY slot 0 836849
+d_00: @00:00:05.596109  RING EVENT paired slot 0
+d_00: @00:00:05.596109  RING EVENT active slot 0
+d_00: @00:00:05.596109  RING EVENT link slot 0 up
+d_00: @00:00:10.304413  RING CHECK host 1 pairs, link ready PASS (t=10304)
+d_00: @00:00:11.004487  RING CHECK before the drop media.centre sends 2 report(s) PASS (t=11004)
+d_00: @00:00:11.004487  RING CHECK pairing window is closed PASS (t=11004)
+d_00: @00:00:12.096113  RING EVENT link slot 0 down
+d_00: @00:00:30.000519  RING CHECK no new pairing outside the window (one bond) PASS (t=30000)
+d_00: @00:00:32.863114  RING EVENT link slot 0 up
+d_00: @00:00:35.901612  RING CHECK host 1 returns, link ready PASS (t=35901)
+d_00: @00:00:36.601685  RING CHECK after host 2 tried media.centre sends 2 report(s) PASS (t=36601)
+d_00: @00:00:36.601685  RING CHECK still one bond PASS (t=36601)
+d_00: @00:00:36.601685  RING SCRIPT DONE t=36601 checks=10 fails=0
+d_00: @00:00:36.601685  RING RESULT PASS
+--- host 1 /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-F-host1.log
+d_01: @00:00:00.000998  HOST H1 CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.644599  HOST H1 connected (t=644), bonded=0
+d_01: @00:00:01.146285  HOST H1 passkey entry asked, read ok (t=1146)
+d_01: @00:00:01.146285  HOST H1 CHECK passkey read from the ring's display PASS (t=1146)
+d_01: @00:00:05.596108  HOST H1 CHECK pairing with the passkey completed and bonded PASS (t=5596)
+d_01: @00:00:05.596108  HOST H1 security level 4 (t=5596)
+d_01: @00:00:05.596108  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=5596)
+d_01: @00:00:07.046133  HOST H1 INFO subscribed to 3 input reports (t=7046)
+d_01: @00:00:10.846140  HOST H1 REPORT t=10846 id=2 len=2 data=cd00
+d_01: @00:00:10.846580  HOST H1 REPORT t=10846 id=2 len=2 data=0000
+d_01: @00:00:12.096112  HOST H1 disconnected reason 0x16 (t=12096)
+d_01: @00:00:32.511512  HOST H1 connected (t=32511), bonded=1
+d_01: @00:00:32.863117  HOST H1 security level 4 (t=32863)
+d_01: @00:00:32.863117  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=32863)
+d_01: @00:00:34.413045  HOST H1 INFO subscribed to 3 input reports (t=34413)
+d_01: @00:00:36.413053  HOST H1 REPORT t=36413 id=2 len=2 data=cd00
+d_01: @00:00:36.413493  HOST H1 REPORT t=36413 id=2 len=2 data=0000
+d_01: @00:01:10.000092  HOST H1 EVAL t=70000
+d_01: @00:01:10.000092  HOST H1 CHECK before the drop media.centre PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK after host 2 tried media.centre PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 CHECK no other report received PASS (t=70000)
+d_01: @00:01:10.000092  HOST H1 INFO 4 report(s) received in total
+d_01: @00:01:10.000092  HOST H1 RESULT PASS checks=8 fails=0
+--- host 2 /ws/out/20261111-211817-r2-ctl1-bsim-control/run-ok-F-host2.log
+d_02: @00:00:00.000998  HOST H2 CHECK Bluetooth up PASS (t=0)
+d_02: @00:00:14.112825  HOST H2 connected (t=14112), bonded=0
+d_02: @00:00:14.214156  HOST H2 security failed err 9  (t=14214)
+d_02: @00:00:14.214156  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=14214)
+d_02: @00:00:14.214156  HOST H2 disconnected reason 0x13 (t=14214)
+d_02: @00:00:14.640906  HOST H2 connected (t=14640), bonded=0
+d_02: @00:00:14.742237  HOST H2 security failed err 9  (t=14742)
+d_02: @00:00:14.742237  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=14742)
+d_02: @00:00:14.742237  HOST H2 disconnected reason 0x13 (t=14742)
+d_02: @00:00:15.179303  HOST H2 connected (t=15179), bonded=0
+d_02: @00:00:15.280635  HOST H2 security failed err 9  (t=15280)
+d_02: @00:00:15.280635  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=15280)
+d_02: @00:00:15.280635  HOST H2 disconnected reason 0x13 (t=15280)
+d_02: @00:00:15.712495  HOST H2 connected (t=15712), bonded=0
+d_02: @00:00:15.813827  HOST H2 security failed err 9  (t=15813)
+d_02: @00:00:15.813827  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=15813)
+d_02: @00:00:15.813827  HOST H2 disconnected reason 0x13 (t=15813)
+d_02: @00:00:16.257728  HOST H2 connected (t=16257), bonded=0
+d_02: @00:00:16.359061  HOST H2 security failed err 9  (t=16359)
+d_02: @00:00:16.359061  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=16359)
+d_02: @00:00:16.359061  HOST H2 disconnected reason 0x13 (t=16359)
+d_02: @00:00:16.770484  HOST H2 connected (t=16770), bonded=0
+d_02: @00:00:16.871815  HOST H2 security failed err 9  (t=16871)
+d_02: @00:00:16.871815  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=16871)
+d_02: @00:00:16.871815  HOST H2 disconnected reason 0x13 (t=16871)
+d_02: @00:00:17.311535  HOST H2 connected (t=17311), bonded=0
+d_02: @00:00:17.412866  HOST H2 security failed err 9  (t=17412)
+d_02: @00:00:17.412866  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=17412)
+d_02: @00:00:17.412866  HOST H2 disconnected reason 0x13 (t=17412)
+d_02: @00:00:17.833081  HOST H2 connected (t=17833), bonded=0
+d_02: @00:00:17.934413  HOST H2 security failed err 9  (t=17934)
+d_02: @00:00:17.934413  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=17934)
+d_02: @00:00:17.934413  HOST H2 disconnected reason 0x13 (t=17934)
+d_02: @00:00:18.369722  HOST H2 connected (t=18369), bonded=0
+d_02: @00:00:18.471054  HOST H2 security failed err 9  (t=18471)
+d_02: @00:00:18.471054  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=18471)
+d_02: @00:00:18.471054  HOST H2 disconnected reason 0x13 (t=18471)
+d_02: @00:00:18.888551  HOST H2 connected (t=18888), bonded=0
+d_02: @00:00:18.989883  HOST H2 security failed err 9  (t=18989)
+d_02: @00:00:18.989883  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=18989)
+d_02: @00:00:18.989883  HOST H2 disconnected reason 0x13 (t=18989)
+d_02: @00:00:19.413703  HOST H2 connected (t=19413), bonded=0
+d_02: @00:00:19.515035  HOST H2 security failed err 9  (t=19515)
+d_02: @00:00:19.515035  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=19515)
+d_02: @00:00:19.515035  HOST H2 disconnected reason 0x13 (t=19515)
+d_02: @00:00:19.939252  HOST H2 connected (t=19939), bonded=0
+d_02: @00:00:20.040583  HOST H2 security failed err 9  (t=20040)
+d_02: @00:00:20.040583  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=20040)
+d_02: @00:00:20.040583  HOST H2 disconnected reason 0x13 (t=20040)
+d_02: @00:00:20.483888  HOST H2 connected (t=20483), bonded=0
+d_02: @00:00:20.585219  HOST H2 security failed err 9  (t=20585)
+d_02: @00:00:20.585219  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=20585)
+d_02: @00:00:20.585219  HOST H2 disconnected reason 0x13 (t=20585)
+d_02: @00:00:21.018348  HOST H2 connected (t=21018), bonded=0
+d_02: @00:00:21.119680  HOST H2 security failed err 9  (t=21119)
+d_02: @00:00:21.119680  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=21119)
+d_02: @00:00:21.119680  HOST H2 disconnected reason 0x13 (t=21119)
+d_02: @00:00:21.544196  HOST H2 connected (t=21544), bonded=0
+d_02: @00:00:21.645527  HOST H2 security failed err 9  (t=21645)
+d_02: @00:00:21.645527  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=21645)
+d_02: @00:00:21.645527  HOST H2 disconnected reason 0x13 (t=21645)
+d_02: @00:00:22.069373  HOST H2 connected (t=22069), bonded=0
+d_02: @00:00:22.170705  HOST H2 security failed err 9  (t=22170)
+d_02: @00:00:22.170705  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=22170)
+d_02: @00:00:22.170705  HOST H2 disconnected reason 0x13 (t=22170)
+d_02: @00:00:22.599499  HOST H2 connected (t=22599), bonded=0
+d_02: @00:00:22.700830  HOST H2 security failed err 9  (t=22700)
+d_02: @00:00:22.700830  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=22700)
+d_02: @00:00:22.700830  HOST H2 disconnected reason 0x13 (t=22700)
+d_02: @00:00:23.136476  HOST H2 connected (t=23136), bonded=0
+d_02: @00:00:23.237807  HOST H2 security failed err 9  (t=23237)
+d_02: @00:00:23.237807  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=23237)
+d_02: @00:00:23.237807  HOST H2 disconnected reason 0x13 (t=23237)
+d_02: @00:00:23.658174  HOST H2 connected (t=23658), bonded=0
+d_02: @00:00:23.759505  HOST H2 security failed err 9  (t=23759)
+d_02: @00:00:23.759505  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=23759)
+d_02: @00:00:23.759505  HOST H2 disconnected reason 0x13 (t=23759)
+d_02: @00:00:24.185432  HOST H2 connected (t=24185), bonded=0
+d_02: @00:00:24.286764  HOST H2 security failed err 9  (t=24286)
+d_02: @00:00:24.286764  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=24286)
+d_02: @00:00:24.286764  HOST H2 disconnected reason 0x13 (t=24286)
+d_02: @00:00:24.701026  HOST H2 connected (t=24701), bonded=0
+d_02: @00:00:24.802358  HOST H2 security failed err 9  (t=24802)
+d_02: @00:00:24.802358  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=24802)
+d_02: @00:00:24.802358  HOST H2 disconnected reason 0x13 (t=24802)
+d_02: @00:00:25.228497  HOST H2 connected (t=25228), bonded=0
+d_02: @00:00:25.329829  HOST H2 security failed err 9  (t=25329)
+d_02: @00:00:25.329829  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=25329)
+d_02: @00:00:25.329829  HOST H2 disconnected reason 0x13 (t=25329)
+d_02: @00:00:25.763521  HOST H2 connected (t=25763), bonded=0
+d_02: @00:00:25.864852  HOST H2 security failed err 9  (t=25864)
+d_02: @00:00:25.864852  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=25864)
+d_02: @00:00:25.864852  HOST H2 disconnected reason 0x13 (t=25864)
+d_02: @00:00:26.290351  HOST H2 connected (t=26290), bonded=0
+d_02: @00:00:26.391683  HOST H2 security failed err 9  (t=26391)
+d_02: @00:00:26.391683  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=26391)
+d_02: @00:00:26.391683  HOST H2 disconnected reason 0x13 (t=26391)
+d_02: @00:00:26.814887  HOST H2 connected (t=26814), bonded=0
+d_02: @00:00:26.916218  HOST H2 security failed err 9  (t=26916)
+d_02: @00:00:26.916218  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=26916)
+d_02: @00:00:26.916218  HOST H2 disconnected reason 0x13 (t=26916)
+d_02: @00:00:27.342994  HOST H2 connected (t=27342), bonded=0
+d_02: @00:00:27.444327  HOST H2 security failed err 9  (t=27444)
+d_02: @00:00:27.444327  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=27444)
+d_02: @00:00:27.444327  HOST H2 disconnected reason 0x13 (t=27444)
+d_02: @00:00:27.870124  HOST H2 connected (t=27870), bonded=0
+d_02: @00:00:27.971456  HOST H2 security failed err 9  (t=27971)
+d_02: @00:00:27.971456  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=27971)
+d_02: @00:00:27.971456  HOST H2 disconnected reason 0x13 (t=27971)
+d_02: @00:00:28.407940  HOST H2 connected (t=28407), bonded=0
+d_02: @00:00:28.509271  HOST H2 security failed err 9  (t=28509)
+d_02: @00:00:28.509271  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=28509)
+d_02: @00:00:28.509271  HOST H2 disconnected reason 0x13 (t=28509)
+d_02: @00:00:28.933331  HOST H2 connected (t=28933), bonded=0
+d_02: @00:00:29.034664  HOST H2 security failed err 9  (t=29034)
+d_02: @00:00:29.034664  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=29034)
+d_02: @00:00:29.034664  HOST H2 disconnected reason 0x13 (t=29034)
+d_02: @00:00:29.460370  HOST H2 connected (t=29460), bonded=0
+d_02: @00:00:29.561702  HOST H2 security failed err 9  (t=29561)
+d_02: @00:00:29.561702  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=29561)
+d_02: @00:00:29.561702  HOST H2 disconnected reason 0x13 (t=29561)
+d_02: @00:00:29.980878  HOST H2 connected (t=29980), bonded=0
+d_02: @00:00:30.082210  HOST H2 security failed err 9  (t=30082)
+d_02: @00:00:30.082210  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=30082)
+d_02: @00:00:30.082210  HOST H2 disconnected reason 0x13 (t=30082)
+d_02: @00:00:30.507947  HOST H2 connected (t=30507), bonded=0
+d_02: @00:00:30.609279  HOST H2 security failed err 9  (t=30609)
+d_02: @00:00:30.609279  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=30609)
+d_02: @00:00:30.609279  HOST H2 disconnected reason 0x13 (t=30609)
+d_02: @00:00:31.036562  HOST H2 connected (t=31036), bonded=0
+d_02: @00:00:31.137894  HOST H2 security failed err 9  (t=31137)
+d_02: @00:00:31.137894  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=31137)
+d_02: @00:00:31.137894  HOST H2 disconnected reason 0x13 (t=31137)
+d_02: @00:00:31.560701  HOST H2 connected (t=31560), bonded=0
+d_02: @00:00:31.662032  HOST H2 security failed err 9  (t=31662)
+d_02: @00:00:31.662032  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=31662)
+d_02: @00:00:31.662032  HOST H2 disconnected reason 0x13 (t=31662)
+d_02: @00:00:32.091041  HOST H2 connected (t=32091), bonded=0
+d_02: @00:00:32.192373  HOST H2 security failed err 9  (t=32192)
+d_02: @00:00:32.192373  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=32192)
+d_02: @00:00:32.192373  HOST H2 disconnected reason 0x13 (t=32192)
+d_02: @00:01:10.000062  HOST H2 EVAL t=70000
+d_02: @00:01:10.000062  HOST H2 CHECK host 2 tried to pair outside the window PASS (t=70000)
+d_02: @00:01:10.000062  HOST H2 CHECK pairing outside the window is refused PASS (t=70000)
+d_02: @00:01:10.000062  HOST H2 CHECK no other report received PASS (t=70000)
+d_02: @00:01:10.000062  HOST H2 INFO 0 report(s) received in total
+d_02: @00:01:10.000062  HOST H2 RESULT FAIL checks=39 fails=35
+ring script done at 36601 ms, host 1 evaluated at 70000 ms
+TEST F RESULT FAIL (22 checks passed; infra: none; checks: host2-result 35-failed-checks)
+RESULT FAIL F
+# finished (Mac clock): 2026-11-11 21:21:52 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step2/20261111-211817-r2-ctl1.log

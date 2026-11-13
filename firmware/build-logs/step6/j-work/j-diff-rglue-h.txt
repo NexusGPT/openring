@@ -1,0 +1,21 @@
+38,39c38,39
+< 	 * thread or in the caller of rglue_input(); do not block. The recorder acts on
+< 	 * RC_ACT_OPEN and RC_ACT_CLOSE here. Optional. */
+---
+> 	 * thread or in the caller of rglue_input(). Step 6: the recorder (rrec_action) carries out every action here and
+> 	 * may block for the card and the sign (rrec.h). Optional. */
+47a48,57
+> 	/* Step 6 (decision D1): the core's sign hook. rglue_init() passes it to rc_core_set_sign_hook(); the core calls it
+> 	 * under the glue's lock once per long press in STANDBY when the other guards of row 12 hold (0 = the recording sign
+> 	 * is drawn). The product sets rrec_sign_hook. Optional: NULL leaves the core without a hook (the sign counts as
+> 	 * drawn, the test applications of steps 2 to 5). */
+> 	int (*sign_start)(void *ctx, rc_ms_t t);
+> 	/* Step 6 (lead's ruling 5 on the factory unit's gaps): while the core is in FACTORY_TEST the joystick edges go to
+> 	 * the core's own gesture recogniser (no second one) and each gesture event (direction, centre down and up, MW,
+> 	 * long, short, double) is handed here, under the glue's lock, for the factory tests T-JOY and T-CENTRE; the core
+> 	 * has no press row in FACTORY_TEST. Optional: NULL leaves FACTORY_TEST input to the core as before. */
+> 	void (*factory_gesture)(const struct rc_gev *e);
+67a78,80
+> /* Step 6: the battery level (enum rc_batt) from the power part: takes the lock, runs rc_core_battery() (the only way
+>  * the level enters the core; rc_core_event refuses battery events) and carries out the actions like rglue_event(). */
+> void rglue_battery(enum rc_batt level);

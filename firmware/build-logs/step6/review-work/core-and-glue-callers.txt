@@ -1,0 +1,157 @@
+== rglue_ calls outside glue/app
+modules/ring_screens/src/rscr_real.c:94:	return rglue_event_try(RC_EV_MENU_POWER_OFF);
+modules/ring_screens/src/rscr_real.c:99:	rglue_set_vibration(on);
+modules/ring_recorder/src/rrec.c:530:	struct rc_core *c = rglue_core();   /* under the glue's lock: this runs right before the core call */
+modules/ring_recorder/src/rrec_boot.c:86:		rglue_battery((enum rc_batt)v.level);     /* in BOOT the level is kept; "init done" decides (R12) */
+modules/ring_recorder/src/rrec_boot.c:89:		rglue_event(RC_EV_VBUS_IN);               /* the fact (and charge on, R8) */
+modules/ring_recorder/src/rrec_boot.c:94:		rglue_event(RC_EV_STORAGE_INIT_FAILED);  /* row FW l.138 */
+modules/ring_recorder/src/rrec_boot.c:110:		rglue_event(RC_EV_STORAGE_SFULL);         /* the fact: R-STB sends STANDBY to ERR_STORAGE_FULL */
+modules/ring_recorder/src/rrec_boot.c:112:	rglue_event(RC_EV_INIT_DONE);                     /* rows FW l.135 to l.140 */
+modules/ring_recorder/src/rrec_bridge.c:79:			rglue_event(RC_EV_SCAN_READ_ERROR);
+modules/ring_recorder/src/rrec_bridge.c:90:		rglue_event(RC_EV_SCAN_DONE);
+modules/ring_recorder/src/rrec_bridge.c:95:		rglue_event(RC_EV_SCAN_READ_ERROR);
+modules/ring_recorder/src/rrec_bridge.c:113:	rglue_event(r == 0 ? RC_EV_STORAGE_RETRY_OK : RC_EV_STORAGE_RETRY_FAILED);
+modules/ring_recorder/src/rrec_bridge.c:129:			rglue_event((enum rc_event)j.arg);
+modules/ring_recorder/src/rrec_bridge.c:132:			rglue_battery((enum rc_batt)j.arg);
+== core.c 120-260
+		break;
+	}
+	/* ruling R16: when VBUS goes at B2, the state's "battery reaches B2" row comes before its own
+	 * "VBUS removed" row (a state with no B2 row keeps its own row; R15 then checks the entry) */
+	if (ev == RC_EV_VBUS_OUT && c->facts.batt == RC_BATT_B2 &&
+	    rc_sm_find(&c->sm, RC_EV_BATT_B2, &c->facts) != NULL) {
+		ev = RC_EV_BATT_B2;
+	}
+	/* rulings R4, R5 and correction R4b: at "init done", B2 first (no recovery), then an
+	 * unfinished recording (RECOVERY, row 4), then B5 */
+	if (ev == RC_EV_INIT_DONE && from == RC_ST_BOOT && !c->facts.vbus) {
+		if (c->facts.batt == RC_BATT_B2) {
+			ev = RC_EV_BATT_B2;
+		} else if (!c->facts.open_flag && c->facts.batt >= RC_BATT_B5) {
+			ev = RC_EV_BATT_B5;
+		}
+	}
+	/* rule R-SIGN (FW 3.2, row 16): a long press in STANDBY whose other row 12 guards hold asks the sign hook once,
+	 * before the row is chosen; a refusal makes row 12 not match and row 16 match. The fact lives for this press only. */
+	if (ev == RC_EV_LONG_PRESS && from == RC_ST_STANDBY && c->sign_fn != NULL && !c->facts.open_flag &&
+	    c->facts.batt < RC_BATT_B5 && !c->facts.storage_full) {
+		c->facts.sign_not_drawn = (c->sign_fn(c->sign_ctx, t) != 0);
+	}
+	step(c, ev, t, out);
+	c->facts.sign_not_drawn = false;
+	/* ruling R15: with no VBUS, B2 always ends in OFF. On entry into STANDBY or an error state
+	 * (also from BOOT after "init done" or a failed storage init) the core checks it first and
+	 * takes that state's "battery reaches B2" row. RECOVERY is the R4b exception. */
+	if (c->sm.state != from && c->facts.batt == RC_BATT_B2 && !c->facts.vbus &&
+	    (c->sm.state == RC_ST_STANDBY || c->sm.state == RC_ST_ERR_STORAGE_FAULT ||
+	     c->sm.state == RC_ST_ERR_STORAGE_FULL || c->sm.state == RC_ST_ERR_BATTERY_LOW ||
+	     c->sm.state == RC_ST_ERR_MIC_FAULT || c->sm.state == RC_ST_ERR_CHARGER)) {
+		step(c, RC_EV_BATT_B2, t, out);
+	}
+	/* rule R-STB (rulings R1, R11, R15): every entry into STANDBY from another state checks the facts:
+	 * B2 (above), then the storage fault, then B5, then SFULL */
+	if (c->sm.state == RC_ST_STANDBY && from != RC_ST_STANDBY) {
+		if (c->facts.storage_fault) {
+			step(c, RC_EV_STORAGE_FAULT_SET, t, out);
+		} else if (c->facts.batt >= RC_BATT_B5) {
+			step(c, RC_EV_BATT_B5, t, out);
+		} else if (c->facts.storage_full) {
+			step(c, RC_EV_STORAGE_SFULL, t, out);
+		}
+	}
+	/* ruling R8: charge on at every appearance of VBUS, in every state */
+	if (ev == RC_EV_VBUS_IN && !has_from(out, first, RC_ACT_CHARGE_ON)) {
+		rc_actions_push(out, RC_ACT_CHARGE_ON);
+	}
+}
+
+void rc_core_event(struct rc_core *c, enum rc_event ev, rc_ms_t t, struct rc_actions *out)
+{
+	/* Owner's rule (FW 1.2): only a long press of the centre starts or stops a
+	 * recording. The press events come only from the switch input path
+	 * (rc_core_input), the timers only from rc_core_tick, the battery
+	 * thresholds only from rc_core_battery; a caller cannot inject them here. */
+	if (ev == RC_EV_LONG_PRESS || ev == RC_EV_SHORT_PRESS || ev == RC_EV_DOUBLE_PRESS ||
+	    ev == RC_EV_TIMER_5S || ev == RC_EV_TIMER_60S || ev == RC_EV_BATT_B15 ||
+	    ev == RC_EV_BATT_B5 || ev == RC_EV_BATT_B2 || ev == RC_EV_STORAGE_FAULT_SET ||
+	    (unsigned)ev >= RC_EV_COUNT) {
+		return;
+	}
+	sm_event(c, ev, t, out);
+}
+
+void rc_core_battery(struct rc_core *c, enum rc_batt level, rc_ms_t t, struct rc_actions *out)
+{
+	static const uint8_t ev_of[] = { 0, RC_EV_BATT_B15, RC_EV_BATT_B5, RC_EV_BATT_B2 };
+	uint8_t old = c->facts.batt;
+
+	if ((unsigned)level > RC_BATT_B2) {
+		return;
+	}
+	c->facts.batt = (uint8_t)level;
+	if (c->sm.state == RC_ST_BOOT) {
+		return;  /* ruling R12: kept; the order at "init done" decides */
+	}
+	if (level > old) {
+		/* a downward crossing: the row of the threshold reached */
+		sm_event(c, (enum rc_event)ev_of[level], t, out);
+	}
+	/* an upward crossing (after a charge) only updates the fact */
+}
+
+static void screen_input(struct rc_core *c, enum rc_action screen_act, struct rc_actions *out)
+{
+	/* FW 2.2 lock: with the screen off the first event only turns the screen on */
+	if (!c->facts.screen_on) {
+		rc_actions_push(out, RC_ACT_SCREEN_ON);
+		return;
+	}
+	rc_actions_push(out, screen_act);
+	if (c->facts.vibration_on) {
+		rc_actions_push(out, RC_ACT_MT);  /* FW 3.1: joystick move or select, screen on */
+	}
+}
+
+static void dispatch_gestures(struct rc_core *c, const struct rc_gev_list *gl, struct rc_actions *out)
+{
+	for (uint8_t i = 0; i < gl->n; i++) {
+		const struct rc_gev *e = &gl->e[i];
+		uint8_t st = c->sm.state;
+
+		switch (e->type) {
+		case RC_GEV_DIR: {
+			static const uint8_t map[RC_SW_COUNT] = {
+				RC_ACT_SCREEN_UP, RC_ACT_NONE, RC_ACT_SCREEN_DOWN, RC_ACT_SCREEN_LEFT, RC_ACT_SCREEN_RIGHT,
+			};
+			screen_input(c, (enum rc_action)map[e->dir], out);
+			break;
+		}
+		case RC_GEV_WARN:
+			/* FW 2.1 line 223: MW in STANDBY and RECORDING; the Vibration setting never turns it off */
+			if (st == RC_ST_STANDBY || st == RC_ST_RECORDING) {
+				rc_actions_push(out, RC_ACT_MW);
+			}
+			break;
+		case RC_GEV_LONG:
+			sm_event(c, RC_EV_LONG_PRESS, e->t, out);
+			break;
+		case RC_GEV_SHORT:
+			if (rc_sm_find(&c->sm, RC_EV_SHORT_PRESS, &c->facts) != NULL) {
+				sm_event(c, RC_EV_SHORT_PRESS, e->t, out);
+				if (st == RC_ST_RECORDING) {
+					out->highlight_ms = e->t_down;  /* line 226: the time of CENTRE_DOWN */
+				}
+			} else {
+				/* FW 2.1 table, "every other state" */
+				screen_input(c, RC_ACT_SCREEN_CENTRE, out);
+			}
+			break;
+		case RC_GEV_DOUBLE:
+			sm_event(c, RC_EV_DOUBLE_PRESS, e->t, out);
+			break;
+		default:
+			break;
+		}
+	}
+}
+

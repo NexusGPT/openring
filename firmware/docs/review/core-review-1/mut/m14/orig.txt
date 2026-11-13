@@ -1,0 +1,204 @@
+/*
+ * Ring core: dispatcher. Gestures and system events in, actions out.
+ */
+#include <string.h>
+#include "ring_core/rc_core.h"
+
+void rc_core_init(struct rc_core *c, enum rc_centre_source src, enum rc_state start, rc_ms_t now)
+{
+	memset(c, 0, sizeof(*c));
+	rc_sm_init(&c->sm, start);
+	rc_gesture_init(&c->g, src);
+	c->facts.vibration_on = true;
+	c->facts.batt = RC_BATT_OK;
+	c->entered_ms = now;
+	c->mic_rail = (start == RC_ST_RECORDING);
+}
+
+enum rc_state rc_core_state(const struct rc_core *c)
+{
+	return (enum rc_state)c->sm.state;
+}
+
+struct rc_facts *rc_core_facts(struct rc_core *c)
+{
+	return &c->facts;
+}
+
+bool rc_core_mic_rail(const struct rc_core *c)
+{
+	return c->mic_rail;
+}
+
+static void track(struct rc_core *c, uint8_t from, uint8_t first, const struct rc_actions *out, rc_ms_t t)
+{
+	for (uint8_t i = first; i < out->n; i++) {
+		if (out->a[i] == RC_ACT_OPEN) {
+			c->mic_rail = true;
+		} else if (out->a[i] == RC_ACT_CLOSE || out->a[i] == RC_ACT_MIC_OFF) {
+			c->mic_rail = false;
+		}
+	}
+	if (c->sm.state != from) {
+		c->entered_ms = t;
+		c->timer_fired = false;
+		if (c->sm.state == RC_ST_BOOT) {
+			c->mic_rail = false;  /* a reboot or power loss: the chip restarts with every rail off */
+		}
+	}
+}
+
+static void sm_event(struct rc_core *c, enum rc_event ev, rc_ms_t t, struct rc_actions *out)
+{
+	uint8_t from = c->sm.state;
+	uint8_t first = out->n;
+
+	/* facts carried by the event itself */
+	switch (ev) {
+	case RC_EV_VBUS_IN:
+		c->facts.vbus = true;
+		c->sm.b15_warned = false;   /* a new discharge starts after a charge (reading, notes U4) */
+		break;
+	case RC_EV_VBUS_OUT:
+		c->facts.vbus = false;
+		break;
+	case RC_EV_BATT_B15:
+		if (c->facts.batt < RC_BATT_B15) {
+			c->facts.batt = RC_BATT_B15;
+		}
+		break;
+	case RC_EV_BATT_B5:
+		if (c->facts.batt < RC_BATT_B5) {
+			c->facts.batt = RC_BATT_B5;
+		}
+		break;
+	case RC_EV_BATT_B2:
+		c->facts.batt = RC_BATT_B2;
+		break;
+	case RC_EV_STORAGE_SFULL:
+		c->facts.storage_full = true;
+		break;
+	default:
+		break;
+	}
+	rc_sm_handle(&c->sm, ev, &c->facts, out);
+	track(c, from, first, out, t);
+}
+
+void rc_core_event(struct rc_core *c, enum rc_event ev, rc_ms_t t, struct rc_actions *out)
+{
+	/* Owner's rule (FW 1.2 line 198): only a long press of the centre starts or
+	 * stops a recording. The press events come only from the switch input path
+	 * (rc_core_input); a caller cannot inject them. The timers come only from rc_core_tick. */
+	if (ev == RC_EV_LONG_PRESS || ev == RC_EV_SHORT_PRESS || ev == RC_EV_DOUBLE_PRESS ||
+	    ev == RC_EV_TIMER_5S || ev == RC_EV_TIMER_60S || (unsigned)ev >= RC_EV_COUNT) {
+		return;
+	}
+	sm_event(c, ev, t, out);
+}
+
+static void screen_input(struct rc_core *c, enum rc_action screen_act, struct rc_actions *out)
+{
+	/* FW 2.2 lock: with the screen off the first event only turns the screen on */
+	if (!c->facts.screen_on) {
+		rc_actions_push(out, RC_ACT_SCREEN_ON);
+		return;
+	}
+	rc_actions_push(out, screen_act);
+	if (c->facts.vibration_on) {
+		rc_actions_push(out, RC_ACT_MT);  /* FW 3.1: joystick move or select, screen on */
+	}
+}
+
+static void dispatch_gestures(struct rc_core *c, const struct rc_gev_list *gl, struct rc_actions *out)
+{
+	for (uint8_t i = 0; i < gl->n; i++) {
+		const struct rc_gev *e = &gl->e[i];
+		uint8_t st = c->sm.state;
+
+		switch (e->type) {
+		case RC_GEV_DIR: {
+			static const uint8_t map[RC_SW_COUNT] = {
+				RC_ACT_SCREEN_UP, RC_ACT_NONE, RC_ACT_SCREEN_DOWN, RC_ACT_SCREEN_LEFT, RC_ACT_SCREEN_RIGHT,
+			};
+			screen_input(c, (enum rc_action)map[e->dir], out);
+			break;
+		}
+		case RC_GEV_WARN:
+			/* FW 2.1 line 223: MW in STANDBY and RECORDING; the Vibration setting never turns it off */
+			if (st == RC_ST_STANDBY || st == RC_ST_RECORDING) {
+				rc_actions_push(out, RC_ACT_MW);
+			}
+			break;
+		case RC_GEV_LONG:
+			sm_event(c, RC_EV_LONG_PRESS, e->t, out);
+			break;
+		case RC_GEV_SHORT:
+			if (rc_sm_find(&c->sm, RC_EV_SHORT_PRESS, &c->facts) != NULL) {
+				sm_event(c, RC_EV_SHORT_PRESS, e->t, out);
+				if (st == RC_ST_RECORDING) {
+					out->highlight_ms = e->t_down;  /* line 226: the time of CENTRE_DOWN */
+				}
+			} else {
+				/* FW 2.1 table, "every other state" */
+				screen_input(c, RC_ACT_SCREEN_CENTRE, out);
+			}
+			break;
+		case RC_GEV_DOUBLE:
+			sm_event(c, RC_EV_DOUBLE_PRESS, e->t, out);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void rc_core_input(struct rc_core *c, enum rc_switch sw, bool pressed, rc_ms_t t, struct rc_actions *out)
+{
+	struct rc_gev_list gl;
+
+	gl.n = 0;
+	rc_core_tick(c, t, out);
+	rc_gesture_input(&c->g, sw, pressed, t, &gl);
+	dispatch_gestures(c, &gl, out);
+}
+
+static rc_ms_t state_timer(const struct rc_core *c, enum rc_event *ev)
+{
+	if (c->timer_fired) {
+		return RC_NO_TICK;
+	}
+	if (c->sm.state == RC_ST_ERR_MIC_FAULT) {
+		*ev = RC_EV_TIMER_5S;
+		return c->entered_ms + RC_MIC_FAULT_MS;
+	}
+	if (c->sm.state == RC_ST_ERR_STORAGE_FAULT) {
+		*ev = RC_EV_TIMER_60S;
+		return c->entered_ms + RC_STORAGE_RETRY_MS;
+	}
+	return RC_NO_TICK;
+}
+
+void rc_core_tick(struct rc_core *c, rc_ms_t now, struct rc_actions *out)
+{
+	struct rc_gev_list gl;
+	enum rc_event ev = RC_EV_TIMER_5S;
+	rc_ms_t when = state_timer(c, &ev);
+
+	gl.n = 0;
+	rc_gesture_tick(&c->g, now, &gl);
+	dispatch_gestures(c, &gl, out);
+	if (when != RC_NO_TICK && now >= when) {
+		c->timer_fired = true;
+		sm_event(c, ev, when, out);
+	}
+}
+
+rc_ms_t rc_core_next_tick(const struct rc_core *c)
+{
+	enum rc_event ev;
+	rc_ms_t a = rc_gesture_next_tick(&c->g);
+	rc_ms_t b = state_timer(c, &ev);
+
+	return a < b ? a : b;
+}

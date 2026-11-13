@@ -1,0 +1,20 @@
+42:static atomic_t capturing, halting, cut_req, cut_now, cut_done, b15_now, lost_chunks;
+53:static K_SEM_DEFINE(halt_sem, 0, 1);
+112:		if (atomic_get(&halting) || atomic_get(&cut_now)) {
+132:		if (rc == -ENOBUFS && !atomic_get(&halting) && !atomic_get(&cut_now)) {
+227:		bool halt = atomic_get(&halting) != 0;
+248:		if (atomic_get(&halting)) {
+272:			if (!atomic_get(&halting)) {
+305:		/* k_sem_reset() elsewhere would wake this wait with an error: only a real start runs a capture */
+310:		k_sem_give(&halt_sem);
+323:		atomic_set(&halting, 1);
+324:		(void)k_sem_take(&halt_sem, K_MSEC(RREC_BLOCK_COUNT * RREC_BLOCK_MS));
+343:	k_sem_reset(&free_sem);
+344:	atomic_set(&halting, 0);
+370:	k_sem_reset(&hfxo_sem);
+422:	k_sem_reset(&halt_sem);
+423:	k_sem_reset(&cut_sem);
+424:	atomic_set(&halting, 0);
+456:	if (!atomic_get(&capturing) || atomic_get(&halting)) {
+482:		atomic_set(&halting, 1);
+486:		if (k_sem_take(&halt_sem, K_MSEC(RREC_BLOCK_COUNT * RREC_BLOCK_MS)) != 0) {

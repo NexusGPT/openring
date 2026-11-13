@@ -1,0 +1,221 @@
+56a57,270
+> def _extent(sol, fixed, axis, lo, hi, step=0.05):
+>     """(a, b) of the first contiguous inside run of `sol` along `axis` (0 X, 1 Y, 2 Z) with the other two coordinates in `fixed`, edges by bisection (1e-4); None if empty."""
+>     def pt(t):
+>         c = list(fixed)
+>         c[axis] = t
+>         return Vector(*c)
+>     n = int(round((hi - lo) / step))
+>     ts = [lo + k * (hi - lo) / n for k in range(n + 1)]
+>     ins = [sol.is_inside(pt(t)) for t in ts]
+>     if True not in ins:
+>         return None
+>     i0 = ins.index(True)
+>     i1 = i0
+>     while i1 + 1 <= n and ins[i1 + 1]:
+>         i1 += 1
+>     def edge(out_t, in_t):
+>         for _ in range(16):
+>             mid = (out_t + in_t) / 2
+>             if sol.is_inside(pt(mid)):
+>                 in_t = mid
+>             else:
+>                 out_t = mid
+>         return (out_t + in_t) / 2
+>     a = ts[i0] if i0 == 0 else edge(ts[i0 - 1], ts[i0])
+>     b = ts[i1] if i1 == n else edge(ts[i1 + 1], ts[i1])
+>     return a, b
+> 
+> 
+> def check_band_circuits(thin, m, P, by, solids, ctx):
+>     """13. the band circuits as drawn. Returns the findings (a list of strings); prints one line per measurement."""
+>     out = []
+>     TOL = 0.005
+>     EXP = dict(neck_w=1.8, neck_x=(-3.4, -1.6), foot_x=(-3.5, -1.0), foot_top=1.40, flex_t=0.11, foot_y=(3.4, 5.145), fold_in=0.70, fold_out=0.81,
+>                fold_centre=(5.145, 0.59), stiff_t=0.10, stiff_x=(-3.45, -0.95), stiff_y=(3.45, 5.05), strip_x=(-3.4, 0.25), land_z_gap=0.03, land_t=0.02)
+>     # the circuits' own geometry file: neck width, fold radius, flat run, flex thickness, joint (read only, no bytecode written into design/ecad)
+>     gfile = Path("design/ecad/band/band_geom.py")
+>     G = None
+>     if gfile.exists():
+>         import importlib.util
+>         sys.dont_write_bytecode = True
+>         spec = importlib.util.spec_from_file_location("band_geom_v8", str(gfile))
+>         G = importlib.util.module_from_spec(spec)
+>         spec.loader.exec_module(G)
+>         for lab, got, exp in (("TAIL_W", G.TAIL_W, EXP["neck_w"]), ("TAIL_X", G.TAIL_X, -2.5), ("R_FOLD_IN", G.R_FOLD_IN, EXP["fold_in"]), ("T_FLEX", G.T_FLEX, EXP["flex_t"]),
+>                               ("JOINT", G.JOINT, EXP["land_z_gap"]), ("LF", G.LF, EXP["foot_y"][1] - EXP["foot_y"][0])):
+>             if abs(got - exp) > 1e-3:
+>                 out.append(f"BAND circuits: band_geom.{lab} = {got} differs from this check's expected {exp}")
+>         print(f"band circuits (band_geom.py): neck {G.TAIL_W} at X centre {G.TAIL_X}, fold inner radius {G.R_FOLD_IN}, flex {G.T_FLEX}, joint {G.JOINT}, flat foot {G.LF:.4f}, fold arc {G.LARC:.4f}")
+>     else:
+>         out.append(f"BAND circuits: {gfile} not found")
+>     ZC, R_FM = thin.ZC, (thin.R_F0 + thin.R_F1) / 2
+>     a_in = math.degrees(math.asin(5.9 / R_FM))
+>     ja = thin.P["joy_deg"]
+>     a_tr = ja + math.degrees(math.asin(3.6 / R_FM))
+>     sample = {"band_flex_thumb": (-1, 0.5 * (a_tr - a_in), None), "band_flex_away": (1, 90.0, 180.0)}      # side, trunk angle, strip angle
+>     body = solids["outer_body"]["metal"]
+>     def ext_msg(name, tag, ex, want):
+>         got = "none" if ex is None else f"{ex[0]:.4f} to {ex[1]:.4f}"
+>         ok = ex is not None and abs(ex[0] - want[0]) <= TOL and abs(ex[1] - want[1]) <= TOL
+>         print(f"band circuit {name} {tag}: X {got} (drawn {want[0]} to {want[1]}, width {want[1] - want[0]:.2f}){'' if ok else '  FAIL'}")
+>         if not ok:
+>             out.append(f"BAND circuit {name} {tag}: X {got}, drawn {want[0]} to {want[1]}")
+>         return ok
+>     for name, (sg, a_trunk, a_strip) in sample.items():
+>         fl = solids[name]["flex"]
+>         # neck in the slot: between the floor top and the start of the fold
+>         ex = _extent(fl, (0.0, sg * 5.9, 0.50), 0, -6.0, 2.0)
+>         ext_msg(name, "neck in the slot (Z 0.50)", ex, EXP["neck_x"])
+>         if ex is not None:
+>             slot = _extent(body, (0.0, sg * 5.9, ctx["Z_FLOOR"] - 0.05), 0, -6.0, 2.0)     # the slot's air gap at the same Y, just under the floor top: first inside run is metal, so look for the air run
+>             # the slot is the air run between two metal runs: scan the metal state and take the air interval that contains the neck centre
+>             c = (ex[0] + ex[1]) / 2
+>             lo_ = hi_ = c
+>             for _ in range(2000):
+>                 if body.is_inside(Vector(lo_, sg * 5.9, ctx["Z_FLOOR"] - 0.05)):
+>                     break
+>                 lo_ -= 0.005
+>             for _ in range(2000):
+>                 if body.is_inside(Vector(hi_, sg * 5.9, ctx["Z_FLOOR"] - 0.05)):
+>                     break
+>                 hi_ += 0.005
+>             print(f"band circuit {name} slot X {lo_:.3f} to {hi_:.3f} (centre {(lo_ + hi_) / 2:.3f}); neck centre {c:.3f}: off-centre {abs((lo_ + hi_) / 2 - c):.3f}, free to the ends {ex[0] - lo_:.3f} / {hi_ - ex[1]:.3f} (rule 0.15; centred within 0.01)")
+>             if abs((lo_ + hi_) / 2 - c) > 0.01:
+>                 out.append(f"BAND circuit {name}: neck centre {c:.3f} is not the slot centre {(lo_ + hi_) / 2:.3f}")
+>         # trunk (embedded layer, mid radius)
+>         ra = math.radians(a_trunk)
+>         ex = _extent(fl, (0.0, R_FM * math.sin(ra), ZC + R_FM * math.cos(ra)), 0, -6.0, 3.0)
+>         ext_msg(name, f"trunk at {a_trunk:.1f} deg", ex, EXP["neck_x"])
+>         if a_strip is not None:
+>             rs = math.radians(a_strip)
+>             ex = _extent(fl, (0.0, R_FM * math.sin(rs), ZC + R_FM * math.cos(rs)), 0, -6.0, 3.0)
+>             ext_msg(name, f"pad strip at {a_strip:.1f} deg", ex, EXP["strip_x"])
+>         # foot: X at Z 1.35, |Y| run at X -2.25, top and bottom faces
+>         ex = _extent(fl, (0.0, sg * 4.3, 1.35), 0, -6.0, 2.0)
+>         ext_msg(name, "foot (Z 1.35, |Y| 4.3)", ex, EXP["foot_x"])
+>         ey = _extent(fl, (-2.25, 0.0, 1.35), 1, sg * 3.0 if sg > 0 else -6.0, 6.0 if sg > 0 else -3.0)
+>         gy = None if ey is None else (min(abs(ey[0]), abs(ey[1])), max(abs(ey[0]), abs(ey[1])))
+>         okf = gy is not None and abs(gy[0] - EXP["foot_y"][0]) <= TOL      # the inboard end of the foot; the other end runs on into the fold at this height
+>         print(f"band circuit {name} foot inboard end |Y| {'none' if gy is None else f'{gy[0]:.4f}'} (drawn {EXP['foot_y'][0]}; run at Z 1.35 to |Y| {'none' if gy is None else f'{gy[1]:.4f}'} including the fold's outer face){'' if okf else '  FAIL'}")
+>         if not okf:
+>             out.append(f"BAND circuit {name}: foot inboard end |Y| {gy}, drawn {EXP['foot_y'][0]}")
+>         ez = _extent(fl, (-2.25, sg * 4.3, 0.0), 2, 1.0, 1.6, step=0.01)
+>         okz = ez is not None and abs(ez[1] - EXP["foot_top"]) <= TOL and abs((ez[1] - ez[0]) - EXP["flex_t"]) <= TOL
+>         print(f"band circuit {name} foot Z {'none' if ez is None else f'{ez[0]:.4f} to {ez[1]:.4f} (thick {ez[1] - ez[0]:.4f})'} (drawn top {EXP['foot_top']}, thick {EXP['flex_t']}){'' if okz else '  FAIL'}")
+>         if not okz:
+>             out.append(f"BAND circuit {name}: foot Z {ez}, drawn top {EXP['foot_top']} thick {EXP['flex_t']}")
+>         # fold: inner and outer radius about the arc centre, at two angles; width at 45 degrees
+>         yc, zc = EXP["fold_centre"]
+>         for th in (30.0, 60.0):
+>             t_ = math.radians(th)
+>             lo, hi = None, None
+>             pr = lambda r_: Vector(-2.25, sg * (yc + r_ * math.cos(t_)), zc + r_ * math.sin(t_))
+>             for k in range(0, 1001):                    # inner face: first inside point going outward from r 0.5; outer face: first inside point going inward from r 1.0
+>                 if fl.is_inside(pr(0.5 + k * 0.0005)):
+>                     lo = 0.5 + k * 0.0005
+>                     break
+>             for k in range(0, 1001):
+>                 if fl.is_inside(pr(1.0 - k * 0.0005)):
+>                     hi = 1.0 - k * 0.0005
+>                     break
+>             if hi is None:
+>                 lo = None
+>             okr = lo is not None and abs(lo - EXP["fold_in"]) <= TOL and abs(hi - EXP["fold_out"]) <= TOL
+>             print(f"band circuit {name} fold at {th:.0f} deg: radius {'none' if lo is None else f'{lo:.4f} to {hi:.4f}'} (drawn inner {EXP['fold_in']}, outer {EXP['fold_out']}){'' if okr else '  FAIL'}")
+>             if not okr:
+>                 out.append(f"BAND circuit {name}: fold radius at {th:.0f} deg {lo} to {hi}, drawn {EXP['fold_in']} to {EXP['fold_out']}")
+>         t_ = math.radians(45.0)
+>         zz = zc + 0.755 * math.sin(t_)
+>         yy = sg * (yc + 0.755 * math.cos(t_))
+>         ew = _extent(fl, (0.0, yy, zz), 0, -6.0, 2.0)
+>         wmid = None if ew is None else ew[1] - ew[0]
+>         okw = wmid is not None and abs(wmid - (EXP["neck_w"] + (2.5 - EXP["neck_w"]) / 2)) <= 0.02
+>         print(f"band circuit {name} fold width at 45 deg: {'none' if wmid is None else f'{wmid:.4f}'} (taper from 1.8 to 2.5: 2.15){'' if okw else '  FAIL'}")
+>         if not okw:
+>             out.append(f"BAND circuit {name}: fold width at 45 deg {wmid}, drawn 2.15")
+>         # foot stiffener (polyimide, class polymer in the ribbon part)
+>         sp = by[name].subs.get("polymer", [])
+>         if len(sp) != 1:
+>             out.append(f"BAND circuit {name}: {len(sp)} foot stiffener solids, expected 1")
+>         else:
+>             bb = sp[0].bounding_box()
+>             okS = (abs(bb.min.X - EXP["stiff_x"][0]) <= TOL and abs(bb.max.X - EXP["stiff_x"][1]) <= TOL and abs(abs(bb.min.Y if sg > 0 else bb.max.Y) - EXP["stiff_y"][0]) <= TOL
+>                    and abs(abs(bb.max.Y if sg > 0 else bb.min.Y) - EXP["stiff_y"][1]) <= TOL and abs((bb.max.Z - bb.min.Z) - EXP["stiff_t"]) <= TOL
+>                    and abs(bb.max.Z - (EXP["foot_top"] - EXP["flex_t"])) <= TOL)
+>             print(f"band circuit {name} foot stiffener: X {bb.min.X:.4f} to {bb.max.X:.4f}, |Y| {min(abs(bb.min.Y), abs(bb.max.Y)):.4f} to {max(abs(bb.min.Y), abs(bb.max.Y)):.4f}, Z {bb.min.Z:.4f} to {bb.max.Z:.4f} "
+>                   f"(thick {bb.max.Z - bb.min.Z:.4f}; drawn thick {EXP['stiff_t']}, X {EXP['stiff_x']}, |Y| {EXP['stiff_y']}, under the foot){'' if okS else '  FAIL'}")
+>             if not okS:
+>                 out.append(f"BAND circuit {name}: foot stiffener differs from the drawn one")
+>     # head stiffener (FLEX1): volume / (6.4 x 6.4) is its thickness
+>     hs = solids["band_flex_thumb"]["metal"]
+>     t_head = hs.volume / (6.4 * 6.4)
+>     print(f"band circuit band_flex_thumb head stiffener: volume {hs.volume:.4f} mm3 / (6.4 x 6.4) = thick {t_head:.4f} (drawn {EXP['stiff_t']})")
+>     if abs(t_head - EXP["stiff_t"]) > 0.001:
+>         out.append(f"BAND circuit head stiffener thick {t_head:.4f}, drawn {EXP['stiff_t']}")
+>     # the lands of the main board (band-interface.md section 2) lie inside each foot and the foot top is the joint under their faces
+>     bz = min(s_.bounding_box().min.Z for s_ in by["main_board"].subs["gold"])
+>     LANDS_X = (-3.015, -2.505, -1.995, -1.485)
+>     for name, sg in (("band_flex_thumb", -1), ("band_flex_away", 1)):
+>         fl = solids[name]["flex"]
+>         gap = bz - EXP["foot_top"]
+>         okj = abs(gap - EXP["land_z_gap"]) <= TOL and abs(bz - (ctx["Z_BD0"] - EXP["land_t"])) <= TOL
+>         print(f"band circuit {name}: board land faces at Z {bz:.4f}; foot top Z {EXP['foot_top']}: joint space {gap:.4f} (drawn {EXP['land_z_gap']}){'' if okj else '  FAIL'}")
+>         if not okj:
+>             out.append(f"BAND circuit {name}: joint space {gap:.4f}, drawn {EXP['land_z_gap']}")
+>         worst = 9.0
+>         for ly in (3.875, 4.775):
+>             for lx in LANDS_X:
+>                 # the land's footprint must lie over the foot: probe its four corners at the foot's top face
+>                 for dx in (-0.15, 0.15):
+>                     for dy in (-0.275, 0.275):
+>                         if not fl.is_inside(Vector(lx + dx, sg * ly + dy, EXP["foot_top"] - 0.01)):
+>                             worst = -1.0
+>         dmin = min((Pos(lx, sg * ly, bz + EXP["land_t"] / 2) * Box(0.30, 0.55, EXP["land_t"])).distance_to(fl) for ly in (3.875, 4.775) for lx in LANDS_X)
+>         print(f"band circuit {name}: 8 board lands (X {LANDS_X[0]} to {LANDS_X[-1]}, |Y| 3.875 and 4.775) over the foot: corners over the foot {'all' if worst > 0 else 'NOT all'}; least land to foot {dmin:.4f} mm")
+>         if worst < 0:
+>             out.append(f"BAND circuit {name}: a board land is not over the foot")
+>         if abs(dmin - EXP["land_z_gap"]) > TOL:
+>             out.append(f"BAND circuit {name}: land to foot {dmin:.4f}, drawn joint space {EXP['land_z_gap']}")
+>     return out
+> 
+> 
+> def report_ribbon_clearances(by, solids):
+>     """Reported only (a collision is found by the pair test of 1.): the least free space from each part of each ribbon to the parts round it.
+>     Groups: FLEX1 'foot' (vertical neck, fold, flat foot, foot stiffener), 'trunk', 'head' (flat head, bend, head stiffener); FLEX2 'foot', 'trunk', 'strip'."""
+>     groups = {}
+>     for name in ("band_flex_thumb", "band_flex_away"):
+>         fl = by[name].subs["flex"]
+>         stf = by[name].subs.get("polymer", [])
+>         if name == "band_flex_thumb":
+>             groups[name] = {"foot": fl[0:3] + stf, "trunk": fl[3:4], "head": fl[4:6] + by[name].subs.get("metal", [])}
+>         else:
+>             groups[name] = {"foot": fl[0:3] + stf, "trunk": fl[3:4], "strip": fl[4:5]}
+>     partners = ["vibration_motor", "cell", "cell_protection", "outer_body", "joystick_frame", "joystick_cap", "joy_sw_fingertip", "joy_sw_hand", "joy_sw_up",
+>                 "joy_sw_down", "joy_sw_centre", "joystick_dam", "main_board", "band_flex_thumb", "band_flex_away", "motor_regulator", "motor_cap_in", "motor_cap_out", "storage"]
+>     out = []
+>     WALL_MIN_RIBBON = 0.10          # v8: the flex outline tolerance is +-0.10 (JLCPCB flex page, band-notes.md), so no part of a ribbon may touch the body (the channel wall or the slot wall)
+>     for name, grp in groups.items():
+>         for gname, gs in grp.items():
+>             for pn in partners:
+>                 if pn == name:
+>                     continue
+>                 best = None
+>                 for pcls, psolids in by[pn].subs.items():
+>                     for ps in psolids:
+>                         for g in gs:
+>                             d = g.distance_to(ps)
+>                             if best is None or d < best:
+>                                 best = d
+>                 print(f"RIBBON-CLEARANCE {name} {gname} to {pn}: {best:.4f} mm")
+>                 if pn == "outer_body" and best < WALL_MIN_RIBBON - 1e-6:
+>                     out.append(f"RIBBON {name} {gname} is {best:.4f} from the body, under {WALL_MIN_RIBBON}")
+>     return out
+> 
+> 
+568a783,787
+>     # 13. (v8) the two band circuits as drawn in design/ecad/band (band-interface.md sections 2, 3, 9; band-notes.md "Changes other files need").
+>     # Every expected value is written here (or read from design/ecad/band/band_geom.py, the circuits' own geometry file, read only), never from thin.P, and every
+>     # value is measured on the solids. A model whose tail width goes back to 1.4 in ONE place (neck, trunk, strip, fold) fails by its own line.
+>     findings.extend(check_band_circuits(thin, m, P, by, solids, ctx))
+>     findings.extend(report_ribbon_clearances(by, solids))

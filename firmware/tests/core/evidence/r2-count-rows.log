@@ -1,0 +1,73 @@
+rows in section 1.2 of design/firmware.md: 65 (the document states 65)
+row tests in tests/core/src/test_rows.c: 65
+
+| Row | Line | From | Event | To | Test |
+|---|---|---|---|---|---|
+| 1 | 133 | SHIP | VBUS appears (case contact) | BOOT | rc_rows.test_row_01 |
+| 2 | 134 | OFF | VBUS appears | BOOT | rc_rows.test_row_02 |
+| 3 | 135 | BOOT | init done, superblock open flag clear, no VBUS, battery above B5 | STANDBY | rc_rows.test_row_03 |
+| 4 | 136 | BOOT | init done, superblock open flag set | RECOVERY | rc_rows.test_row_04 |
+| 5 | 137 | BOOT | init done, VBUS present | CHARGING | rc_rows.test_row_05 |
+| 6 | 138 | BOOT | storage init fails 3 times, 200 ms apart | ERR_STORAGE_FAULT | rc_rows.test_row_06 |
+| 7 | 139 | BOOT | battery at B2 and no VBUS | OFF | rc_rows.test_row_07 |
+| 8 | 140 | BOOT | battery at B5 and no VBUS | ERR_BATTERY_LOW | rc_rows.test_row_08 |
+| 9 | 141 | RECOVERY | scan done, no VBUS | STANDBY | rc_rows.test_row_09 |
+| 10 | 142 | RECOVERY | scan done, VBUS present | CHARGING | rc_rows.test_row_10 |
+| 11 | 143 | RECOVERY | read error during scan | ERR_STORAGE_FAULT | rc_rows.test_row_11 |
+| 12 | 144 | STANDBY | long press of the joystick centre | RECORDING | rc_rows.test_row_12 |
+| 13 | 145 | STANDBY | long press of the joystick centre, battery at B5 | STANDBY | rc_rows.test_row_13 |
+| 14 | 146 | STANDBY | long press of the joystick centre, free space at SFULL | STANDBY | rc_rows.test_row_14 |
+| 15 | 147 | STANDBY | short press of the joystick centre | STANDBY | rc_rows.test_row_15 |
+| 16 | 148 | STANDBY | double press of the joystick centre | STANDBY | rc_rows.test_row_16 |
+| 17 | 149 | STANDBY | menu "Power off" confirmed | OFF | rc_rows.test_row_17 |
+| 18 | 150 | STANDBY | VBUS appears | CHARGING | rc_rows.test_row_18 |
+| 19 | 151 | STANDBY | battery reaches B15 | STANDBY | rc_rows.test_row_19 |
+| 20 | 152 | STANDBY | battery reaches B5 | ERR_BATTERY_LOW | rc_rows.test_row_20 |
+| 21 | 153 | STANDBY | battery reaches B2 | OFF | rc_rows.test_row_21 |
+| 22 | 154 | STANDBY | free space at SFULL | ERR_STORAGE_FULL | rc_rows.test_row_22 |
+| 23 | 155 | RECORDING | long press of the joystick centre | STANDBY | rc_rows.test_row_23 |
+| 24 | 156 | RECORDING | short press of the joystick centre | RECORDING | rc_rows.test_row_24 |
+| 25 | 157 | RECORDING | double press of the joystick centre | RECORDING | rc_rows.test_row_25 |
+| 26 | 158 | RECORDING | BLE control "highlight" from a bonded phone | RECORDING | rc_rows.test_row_26 |
+| 27 | 159 | RECORDING | VBUS appears (case insertion during a recording) | CHARGING | rc_rows.test_row_27 |
+| 28 | 160 | RECORDING | battery reaches B15 | RECORDING | rc_rows.test_row_28 |
+| 29 | 161 | RECORDING | battery reaches B5 | ERR_BATTERY_LOW | rc_rows.test_row_29 |
+| 30 | 162 | RECORDING | battery reaches B2 | OFF | rc_rows.test_row_30 |
+| 31 | 163 | RECORDING | free space reaches S30 | RECORDING | rc_rows.test_row_31 |
+| 32 | 164 | RECORDING | free space at SFULL | ERR_STORAGE_FULL | rc_rows.test_row_32 |
+| 33 | 165 | RECORDING | chunk write fails 3 times | ERR_STORAGE_FAULT | rc_rows.test_row_33 |
+| 34 | 166 | RECORDING | the PDM instance gives no block for 100 ms | ERR_MIC_FAULT | rc_rows.test_row_34 |
+| 35 | 167 | RECORDING | sudden power loss (cell cut, short, brown-out) during a write | BOOT | rc_rows.test_row_35 |
+| 36 | 168 | CHARGING | USB configured by the case (`USBD_MSG_CONFIGURATION`) | TRANSFER | rc_rows.test_row_36 |
+| 37 | 169 | CHARGING | VBUS removed, free space above SFULL, battery above B5 | STANDBY | rc_rows.test_row_37 |
+| 38 | 170 | CHARGING | VBUS removed, free space at SFULL, battery above B5 | ERR_STORAGE_FULL | rc_rows.test_row_38 |
+| 39 | 171 | CHARGING | VBUS removed, battery at B5 | ERR_BATTERY_LOW | rc_rows.test_row_39 |
+| 40 | 172 | CHARGING | nPM1304 event charge error | ERR_CHARGER | rc_rows.test_row_40 |
+| 41 | 173 | CHARGING | long press | CHARGING | rc_rows.test_row_41 |
+| 42 | 174 | TRANSFER | USB suspended or unconfigured by the case | CHARGING | rc_rows.test_row_42 |
+| 43 | 175 | TRANSFER | VBUS removed | STANDBY | rc_rows.test_row_43 |
+| 44 | 176 | TRANSFER | command FW_END accepted | BOOT | rc_rows.test_row_44 |
+| 45 | 177 | TRANSFER | command FACTORY_ENTER with the factory flag set | FACTORY_TEST | rc_rows.test_row_45 |
+| 46 | 178 | TRANSFER | long press | TRANSFER | rc_rows.test_row_46 |
+| 47 | 179 | ERR_STORAGE_FULL | VBUS appears | CHARGING | rc_rows.test_row_47 |
+| 48 | 180 | ERR_STORAGE_FULL | long press | ERR_STORAGE_FULL | rc_rows.test_row_48 |
+| 49 | 181 | ERR_STORAGE_FULL | battery reaches B5 | ERR_BATTERY_LOW | rc_rows.test_row_49 |
+| 50 | 182 | ERR_STORAGE_FULL | battery reaches B2 | OFF | rc_rows.test_row_50 |
+| 51 | 183 | ERR_BATTERY_LOW | VBUS appears | CHARGING | rc_rows.test_row_51 |
+| 52 | 184 | ERR_BATTERY_LOW | long press | ERR_BATTERY_LOW | rc_rows.test_row_52 |
+| 53 | 185 | ERR_BATTERY_LOW | battery reaches B2 | OFF | rc_rows.test_row_53 |
+| 54 | 186 | ERR_STORAGE_FAULT | VBUS appears | CHARGING | rc_rows.test_row_54 |
+| 55 | 187 | ERR_STORAGE_FAULT | 60 s elapsed | ERR_STORAGE_FAULT | rc_rows.test_row_55 |
+| 56 | 188 | ERR_STORAGE_FAULT | storage retry succeeds | STANDBY | rc_rows.test_row_56 |
+| 57 | 189 | ERR_STORAGE_FAULT | storage retry fails | ERR_STORAGE_FAULT | rc_rows.test_row_57 |
+| 58 | 190 | ERR_STORAGE_FAULT | battery reaches B2 | OFF | rc_rows.test_row_58 |
+| 59 | 191 | ERR_MIC_FAULT | 5 s elapsed | STANDBY | rc_rows.test_row_59 |
+| 60 | 192 | ERR_MIC_FAULT | VBUS appears | CHARGING | rc_rows.test_row_60 |
+| 61 | 193 | ERR_CHARGER | VBUS removed | STANDBY | rc_rows.test_row_61 |
+| 62 | 194 | FACTORY_TEST | command FACTORY_EXIT | BOOT | rc_rows.test_row_62 |
+| 63 | 195 | FACTORY_TEST | command SHIP_ENTER | SHIP | rc_rows.test_row_63 |
+| 64 | 196 | FACTORY_TEST | command SHIP_SAMPLE (sample rings only) | SHIP | rc_rows.test_row_64 |
+| 65 | 197 | FACTORY_TEST | VBUS removed, no ship command accepted | BOOT | rc_rows.test_row_65 |
+
+action cases in src/state_actions.c: 65, each with the document line of its row: yes
+COUNT MATCH

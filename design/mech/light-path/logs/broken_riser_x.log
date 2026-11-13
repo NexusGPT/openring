@@ -1,0 +1,48 @@
+read design/mech/thin/placement.csv: 38 rows; design/mech/thin/layers.json: 38 parts in 5 layers
+stack: board Z 1.450..1.750, foam top 1.850, screen Z 1.850..2.650, ledge top 2.250, adhesive bottom 2.650, floor top 0.400
+screen drawing: ledge X -13.675..-10.724; bond fingers X -13.574..-12.775, Y -5.805..5.805; FPC on the glass X -13.675..-12.775, Y -6.198..6.204
+LED1 X -11.450..-10.450 Y -3.450..-2.950 Z 1.230..1.430; guide bar X -12.965..-10.610 Y -3.5..-2.9 Z 0.450..1.130; riser dia 0.5 at X -12.625 Y -3.2 Z 1.130..1.750; board hole dia 0.7; LP1 Z 2.250..2.650; print window dia 0.5
+PASS LED1 body clear of every part (gap >= 0.1): nearest mic_1 at 0.350 mm, common volume 0.0000 mm3 (limit 0.001)
+PASS LED1 pad 1 clear of every part (gap >= 0.1): nearest mic_1 at 0.350 mm, common volume 0.0000 mm3 (limit 0.001)
+PASS LED1 pad 2 clear of every part (gap >= 0.1): nearest mic_1 at 0.350 mm, common volume 0.0000 mm3 (limit 0.001)
+PASS guide LG1 bar clear of every part (gap >= 0.1): nearest mic_1 at 0.300 mm, common volume 0.0000 mm3 (limit 0.001)
+PASS guide LG1 riser clear of every part (gap >= 0.1): nearest mic_1 at 0.350 mm, common volume 0.0000 mm3 (limit 0.001)
+PASS LP1 clear of every part (gap >= 0.1): nearest screen_tail at 0.807 mm, common volume 0.0000 mm3 (limit 0.001)
+PASS LED1 seated on the under face: LED top Z 1.430 = board under face 1.450 - pad 0.02
+PASS guide bar below the LED's emitting face: gap 0.100 mm
+PASS no new part below the floor top: lowest Z 0.450, floor top 0.400 (gap 0.050)
+PASS parts height under the board <= 1.00: 1.000 mm
+PASS LED1 inside the panel pocket: X -11.450..-10.450 Y -3.450..-2.950 in +-13.725 x +-6.450
+PASS guide bar inside the panel pocket: X -12.965..-10.610 Y -3.500..-2.900 in +-13.725 x +-6.450
+PASS riser inside the panel pocket: X -12.875..-12.375 Y -3.450..-2.950 in +-13.725 x +-6.450
+PASS LP1 inside the panel pocket: X -12.875..-12.375 Y -3.450..-2.950 in +-13.725 x +-6.450
+PASS board hole inside the board outline: least board material to the edge 0.625 mm
+PASS board hole clear of every board part footprint (gap >= 0.1): nearest mic_1 at 0.250 mm
+PASS board hole to LED1 pads >= 0.2 [ESTIMATE rule]: 0.425 mm
+PASS riser in the board hole with radial gap >= 0.1: 0.100 mm (filled with clear UV glue)
+PASS light parts outside the antenna keep-out 4.2 x 4.7 (main-board.md open point 6), either orientation: least gap 4.950 mm
+PASS foam window leaves foam on the board-edge side: 0.625 mm of foam outside the window
+PASS riser top below the screen's lower glass: 0.100 mm
+PASS LP1 stands on the ledge top and meets the adhesive: Z 2.250..2.650
+PASS LP1 before the upper glass (maker drawing): 1.651 mm to X -10.724
+PASS LP1 before the upper glass (inside model): 3.500 mm to X -8.875
+FAIL LP1 clear of the FPC bond (maker drawing): gap 0.000 mm
+PASS LP1 clear of the driver IC (inside model, ASSUMED IC): gap 0.300 mm
+FAIL light column clear of the bond fingers (maker drawing): gap 0.000 mm
+NOT CHECKED ledge glass clear (no metal, no fan-out) at the light column: X -12.875..-12.375 Y -3.450..-2.950: the drawing shows none; only the screen maker can confirm
+NOT CHECKED drawing tolerance: TOH095XVT-01 p5 note 9 'UNMARKED TOLERANCE: +-0.2' covers the bond end; the 0.10 gaps above hold only at nominal
+PASS print window outside the lit area: 3.055 mm to the lit area edge X -9.320
+FAIL print window on the flat glass bottom (glass_probe.log): glass bottom Z 2.750, top Z 3.684, thickness 0.934
+PASS print window not on the glass end roll (starts X -13.45, thin-notes.md line 86): window edge X -12.875
+PASS print window no larger than LP1: window dia 0.5, LP1 side 0.50
+INFO v4 window X -13.25 Y -4.7 over the FPC bond of the maker drawing: yes (bond X -13.675..-12.775, Y -6.198..6.204)
+PASS R41 gives 1.5 +- 0.1 mA at the curve's Vf: Vf 1.767 V at 1.5 mA (KPG p3 curve); ideal 821 ohm; E24 820 ohm gives 1.502 mA; the present 680 ohm gives 1.811 mA
+INFO R41 820 ohm with Vf -0.1 V (datasheet p2 note 2, +-0.1 V): 1.624 mA
+INFO R41 820 ohm with Vf +0.1 V (datasheet p2 note 2, +-0.1 V): 1.381 mA
+PASS layers.json: recording_led in layer board, light_pipe in layer screen: recording_led board, light_pipe screen
+INFO layers.json: light_guide: listed: False (to add to layer board: change list)
+INFO placement.csv row recording_led today: X -13.250 Y -4.700 Z 1.180 size 0.500 x 1.000 x 0.780 (moves: change list)
+INFO placement.csv row light_pipe today: X -13.250 Y -4.700 Z 2.450 size 0.600 x 0.600 x 0.400 (moves: change list)
+checks: 33, failed: 3
+RESULT FAIL LP1 clear of the FPC bond (maker drawing); light column clear of the bond fingers (maker drawing); print window on the flat glass bottom (glass_probe.log)
+exit 1

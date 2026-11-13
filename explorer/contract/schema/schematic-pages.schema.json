@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schematic-pages.schema.json",
+  "type": "object",
+  "properties": {
+    "exporter": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "tool",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "number": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "svg": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/RelPath"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pdf": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/RelPath"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "part_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/PartId"
+            }
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "number",
+          "svg",
+          "pdf",
+          "part_ids",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "exporter",
+    "pages"
+  ],
+  "additionalProperties": false,
+  "title": "SchematicPages",
+  "description": "schematic/index.json; a page with no svg falls back to its pdf link."
+}

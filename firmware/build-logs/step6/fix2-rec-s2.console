@@ -1,0 +1,37 @@
+# remote.sh run 20261113-171331-fix2-rec-s2
+# command: rm -rf /ws/out/fix2rec-s1 && RING_OUT=/ws/out/fix2rec-s2 bash tests/recorder/short_run.sh; rc=$?; grep -rh --include=handler.log -E 'retry:|episode end|one wait each|ship storage|stuck screens|latched VBUS|T-SIGN|unmount: row' /ws/out/fix2rec-s2/twister-*/ | cut -c1-220; exit $rc
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 17:13:31 CET
+# free on the server's /: 35 GB
+# source firmware copied to /root/ring-os/src-u-fix6
+# started on the server as 20261113-171331-fix2-rec-s2; server log /root/ring-os/logs/20261113-171331-fix2-rec-s2.log
+twister exit code on native_sim: 0 (log /ws/out/fix2rec-s2/twister-native_sim.log)
+INFO    - 1/1 native_sim/native         ring_recorder.sim                                  PASSED (native 6.155s <host/gnu>)
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 35.42 seconds.
+INFO    - 59 of 59 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+twister exit code on nrf54lm20bsim/nrf54lm20a/cpuapp: 0 (log /ws/out/fix2rec-s2/twister-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_recorder.sim                            PASSED (native 7.627s <host/gnu>)
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 40.92 seconds.
+INFO    - 59 of 59 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+SHORT RUN exit 0
+latched VBUS: VBUS in posted -42, row 40 seen 0, state CHARGING, VBUS present 1
+T-SIGN: reported on 235840 off 236913 on 237914 off 238987 ms; rail on 235840 off 236913 on 237914 off 238987 ms
+ship storage: step 1 ended 1, USB disable at 2258326 ms, second try's record at 2263326 ms, SHPHLDCONFIG 32
+stuck screens: SHPHLDCONFIG 7, 1281 ms after the power off
+episode end: records 0x0290 2: (-16, TRANSFER), (-16, TRANSFER), store busy 1
+one wait each: the step of row 46 held the glue's lock 10000 ms
+retry: state RECORDING, VDD_SD 1, records 0x0290 2: (-16, try 1), (0, try 3)
+unmount: row 46 step at 4051960 ms, VDD_SD off at 4051960300 us, steps 2, VDD_SD now 0
+unmount: row 47 step at 4058444 ms, VDD_SD off at 4058444100 us, steps 2, VDD_SD now 0
+d_00: @00:00:15.102222  latched VBUS: VBUS in posted -42, row 40 seen 0, state CHARGING, VBUS present 1
+d_00: @00:03:59.070322  T-SIGN: reported on 235838 off 236911 on 237912 off 238985 ms; rail on 235838 off 236911 on 237912 off 238985 ms
+d_00: @00:37:43.346622  ship storage: step 1 ended 1, USB disable at 2258326 ms, second try's record at 2263327 ms, SHPHLDCONFIG 32
+d_00: @00:37:53.339722  stuck screens: SHPHLDCONFIG 7, 1281 ms after the power off
+d_00: @01:05:21.485322  episode end: records 0x0290 2: (-16, TRANSFER), (-16, TRANSFER), store busy 1
+d_00: @01:06:22.237922  one wait each: the step of row 46 held the glue's lock 10000 ms
+d_00: @01:07:10.823022  retry: state RECORDING, VDD_SD 1, records 0x0290 2: (-16, try 1), (0, try 3)
+d_00: @01:07:32.022722  unmount: row 46 step at 4051962 ms, VDD_SD off at 4051962400 us, steps 2, VDD_SD now 0
+d_00: @01:07:38.505222  unmount: row 47 step at 4058446 ms, VDD_SD off at 4058446200 us, steps 2, VDD_SD now 0
+# finished (Mac clock): 2026-11-13 17:15:07 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-171331-fix2-rec-s2.log

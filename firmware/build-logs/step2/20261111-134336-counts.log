@@ -1,0 +1,28 @@
+# remote.sh run 20261111-134336-counts
+# command: python3 -c "
+import json,glob
+for f in sorted(glob.glob(\"/root/ring-os/ws/out/20261111-133920-step2-all-final/twister-*/twister.json\")):
+    d=json.load(open(f))
+    print(f)
+    for ts in d[\"testsuites\"]:
+        c=ts.get(\"testcases\",[])
+        st={}
+        for t in c: st[t[\"status\"]]=st.get(t[\"status\"],0)+1
+        print(\"  \",ts[\"name\"],ts.get(\"platform\"),len(c),st)
+"
+# mode: host
+# started (Mac clock): 2026-11-11 13:43:36 CET
+# free on the server's /: 81 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-134336-counts; server log /root/ring-os/logs/20261111-134336-counts.log
+/root/ring-os/ws/out/20261111-133920-step2-all-final/twister-native_sim/twister.json
+   ring_core.logic native_sim/native 216 {'passed': 216}
+   ring.smoke native_sim/native 2 {'passed': 2}
+   ring_devices.logic native_sim/native 7 {'passed': 7}
+   ring_control.logic native_sim/native 7 {'passed': 7}
+/root/ring-os/ws/out/20261111-133920-step2-all-final/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.json
+   ring_core.logic nrf54lm20bsim/nrf54lm20a/cpuapp 216 {'passed': 216}
+   ring.smoke nrf54lm20bsim/nrf54lm20a/cpuapp 2 {'passed': 2}
+# finished (Mac clock): 2026-11-11 13:43:41 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-134336-counts.log

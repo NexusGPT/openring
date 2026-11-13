@@ -1,0 +1,5 @@
+file src/core.c
+--- old
+if (ev == RC_EV_VBUS_IN && !has_from(out, first, RC_ACT_CHARGE_ON)) {
++++ new
+if (ev == RC_EV_VBUS_IN && (has_from(out, first, RC_ACT_CHARGE_ON) || 1)) {

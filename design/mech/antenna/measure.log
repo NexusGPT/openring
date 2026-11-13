@@ -1,0 +1,159 @@
+inputs: design/mech/thin/placement.csv (38 rows), design/mech/thin/layers.json (38 parts in layers), design/mech/thin/out/thin-inside.step
+antenna row (placement.csv line 13): ANT1 centre (-12.7, 4.4, 1.05) size 1.6 x 3.2 x 1.2
+antenna box: X -13.500 to -11.900, Y 2.800 to 6.000, Z 0.450 to 1.650
+axes (layers.json): X along the finger (+X fingertip, -X hand end), Y across (+Y thumb), Z up (+Z the glass)
+STEP: 71 labelled shapes
+STEP antenna box: X -13.500 to -11.900, Y 2.800 to 6.000, Z 0.450 to 1.650; same as placement.csv: True
+
+== 1. Each direction: first metal of the body, its thickness, then what is beyond it
+   (5 x 5 = 25 rays per antenna face, straight out along the face normal; distances in mm from the antenna face)
+   hand-end wall (-X): body metal at 0.225 to 0.225 from the antenna face; metal thickness on these rays 0.602 to 0.925; rays that hit the body 25 of 25; beyond the metal (next 3 mm): ['air']
+      first thing met on 25 of 25 rays: outer_body__metal (part metal flag True) at 0.225 to 0.225
+   thumb-side wall (+Y): body metal at 0.450 to 0.450 from the antenna face; metal thickness on these rays 0.418 to 0.925; rays that hit the body 25 of 25; beyond the metal (next 3 mm): ['air']
+      first thing met on 25 of 25 rays: outer_body__metal (part metal flag True) at 0.450 to 0.450
+   side wall away from the thumb (-Y): body metal at 9.250 to 9.250 from the antenna face; metal thickness on these rays 0.418 to 0.925; rays that hit the body 25 of 25; beyond the metal (next 3 mm): ['air']
+      first thing met on 5 of 25 rays: main_board__pcb (part metal flag False) at 0.100 to 0.100
+      first thing met on 20 of 25 rays: screen_connector__polymer (part metal flag True) at 0.200 to 0.200
+   floor (-Z): body metal at 0.050 to 0.050 from the antenna face; metal thickness on these rays 0.392 to 0.400; rays that hit the body 25 of 25; beyond the metal (next 3 mm): ['air']
+      first thing met on 25 of 25 rays: outer_body__metal (part metal flag True) at 0.050 to 0.050
+   toward the fingertip (+X): body metal at 25.625 to 25.625 from the antenna face; metal thickness on these rays 0.602 to 0.925; rays that hit the body 25 of 25; beyond the metal (next 3 mm): ['air']
+      first thing met on 5 of 25 rays: main_board__pcb (part metal flag False) at 0.100 to 0.100
+      first thing met on 2 of 25 rays: crystal_32M__ceramic (part metal flag True) at 13.900 to 13.900
+      first thing met on 1 of 25 rays: crystal_32M__metal (part metal flag True) at 13.950 to 13.950
+      first thing met on 5 of 25 rays: power_coil_1__metal (part metal flag True) at 19.400 to 19.400
+      first thing met on 12 of 25 rays: outer_body__metal (part metal flag True) at 25.625 to 25.625
+
+== 2. Straight up from the antenna's top face to the outside air (every solid crossed, in order)
+   stack on 5 of 25 rays (ray X in [-13.34, -13.02, -12.7, -12.38, -12.06], Y in [5.68]), antenna top at Z 1.650:
+      Z 1.650 to 1.750: open space 0.100
+      Z 1.750 to 1.850: foam__foam (layer screen, part metal flag False) 0.100
+      Z 1.850 to 2.250: screen__screen (layer screen, part metal flag True) 0.400
+      Z 2.250 to 2.650: open space 0.400
+      Z 2.650 to 2.750: clear_adhesive__polymer (layer glass, part metal flag False) 0.100
+      Z 2.750 to 3.320: cover_glass__glass (layer glass, part metal flag False) 0.570
+      above Z 3.320: outside air
+   stack on 3 of 25 rays (ray X in [-13.34, -13.02, -12.7], Y in [3.12]), antenna top at Z 1.650:
+      Z 1.650 to 1.750: open space 0.100
+      Z 1.750 to 1.850: foam__foam (layer screen, part metal flag False) 0.100
+      Z 1.850 to 2.250: screen__screen (layer screen, part metal flag True) 0.400
+      Z 2.250 to 2.650: open space 0.400
+      Z 2.650 to 2.750: clear_adhesive__polymer (layer glass, part metal flag False) 0.100
+      Z 2.750 to 3.691: cover_glass__glass (layer glass, part metal flag False) 0.941
+      above Z 3.691: outside air
+   stack on 3 of 25 rays (ray X in [-13.34, -13.02, -12.7], Y in [3.76]), antenna top at Z 1.650:
+      Z 1.650 to 1.750: open space 0.100
+      Z 1.750 to 1.850: foam__foam (layer screen, part metal flag False) 0.100
+      Z 1.850 to 2.250: screen__screen (layer screen, part metal flag True) 0.400
+      Z 2.250 to 2.650: open space 0.400
+      Z 2.650 to 2.750: clear_adhesive__polymer (layer glass, part metal flag False) 0.100
+      Z 2.750 to 3.619: cover_glass__glass (layer glass, part metal flag False) 0.869
+      above Z 3.619: outside air
+   stack on 3 of 25 rays (ray X in [-13.34, -13.02, -12.7], Y in [4.4]), antenna top at Z 1.650:
+      Z 1.650 to 1.750: open space 0.100
+      Z 1.750 to 1.850: foam__foam (layer screen, part metal flag False) 0.100
+      Z 1.850 to 2.250: screen__screen (layer screen, part metal flag True) 0.400
+      Z 2.250 to 2.650: open space 0.400
+      Z 2.650 to 2.750: clear_adhesive__polymer (layer glass, part metal flag False) 0.100
+      Z 2.750 to 3.533: cover_glass__glass (layer glass, part metal flag False) 0.783
+      above Z 3.533: outside air
+   stack on 3 of 25 rays (ray X in [-13.34, -13.02, -12.7], Y in [5.04]), antenna top at Z 1.650:
+      Z 1.650 to 1.750: open space 0.100
+      Z 1.750 to 1.850: foam__foam (layer screen, part metal flag False) 0.100
+      Z 1.850 to 2.250: screen__screen (layer screen, part metal flag True) 0.400
+      Z 2.250 to 2.650: open space 0.400
+      Z 2.650 to 2.750: clear_adhesive__polymer (layer glass, part metal flag False) 0.100
+      Z 2.750 to 3.433: cover_glass__glass (layer glass, part metal flag False) 0.683
+      above Z 3.433: outside air
+   stack on 2 of 25 rays (ray X in [-12.38, -12.06], Y in [4.4]), antenna top at Z 1.650:
+      Z 1.650 to 1.850: open space 0.200
+      Z 1.850 to 2.250: screen__screen (layer screen, part metal flag True) 0.400
+      Z 2.250 to 2.650: open space 0.400
+      Z 2.650 to 2.750: clear_adhesive__polymer (layer glass, part metal flag False) 0.100
+      Z 2.750 to 3.533: cover_glass__glass (layer glass, part metal flag False) 0.783
+      above Z 3.533: outside air
+   stack on 2 of 25 rays (ray X in [-12.38, -12.06], Y in [5.04]), antenna top at Z 1.650:
+      Z 1.650 to 1.850: open space 0.200
+      Z 1.850 to 2.250: screen__screen (layer screen, part metal flag True) 0.400
+      Z 2.250 to 2.650: open space 0.400
+      Z 2.650 to 2.750: clear_adhesive__polymer (layer glass, part metal flag False) 0.100
+      Z 2.750 to 3.433: cover_glass__glass (layer glass, part metal flag False) 0.683
+      above Z 3.433: outside air
+   stack on 1 of 25 rays (ray X in [-12.38], Y in [3.12]), antenna top at Z 1.650:
+      Z 1.650 to 1.850: open space 0.200
+      Z 1.850 to 2.250: screen__screen (layer screen, part metal flag True) 0.400
+      Z 2.250 to 2.650: open space 0.400
+      Z 2.650 to 2.750: clear_adhesive__polymer (layer glass, part metal flag False) 0.100
+      Z 2.750 to 3.691: cover_glass__glass (layer glass, part metal flag False) 0.941
+      above Z 3.691: outside air
+   stack on 1 of 25 rays (ray X in [-12.38], Y in [3.76]), antenna top at Z 1.650:
+      Z 1.650 to 1.850: open space 0.200
+      Z 1.850 to 2.250: screen__screen (layer screen, part metal flag True) 0.400
+      Z 2.250 to 2.650: open space 0.400
+      Z 2.650 to 2.750: clear_adhesive__polymer (layer glass, part metal flag False) 0.100
+      Z 2.750 to 3.619: cover_glass__glass (layer glass, part metal flag False) 0.869
+      above Z 3.619: outside air
+   stack on 1 of 25 rays (ray X in [-12.06], Y in [3.12]), antenna top at Z 1.650:
+      Z 1.650 to 1.850: open space 0.200
+      Z 1.850 to 2.250: screen__screen (layer screen, part metal flag True) 0.400
+      Z 2.250 to 2.550: screen__chip (layer screen, part metal flag True) 0.300
+      Z 2.550 to 2.650: open space 0.100
+      Z 2.650 to 2.750: clear_adhesive__polymer (layer glass, part metal flag False) 0.100
+      Z 2.750 to 3.691: cover_glass__glass (layer glass, part metal flag False) 0.941
+      above Z 3.691: outside air
+   stack on 1 of 25 rays (ray X in [-12.06], Y in [3.76]), antenna top at Z 1.650:
+      Z 1.650 to 1.850: open space 0.200
+      Z 1.850 to 2.250: screen__screen (layer screen, part metal flag True) 0.400
+      Z 2.250 to 2.550: screen__chip (layer screen, part metal flag True) 0.300
+      Z 2.550 to 2.650: open space 0.100
+      Z 2.650 to 2.750: clear_adhesive__polymer (layer glass, part metal flag False) 0.100
+      Z 2.750 to 3.619: cover_glass__glass (layer glass, part metal flag False) 0.869
+      above Z 3.619: outside air
+
+== 3. Does the screen panel cover the antenna? (plan view, X-Y footprints from the STEP bounding boxes)
+   screen__screen: footprint X -13.675 to 13.675, Y -6.400 to 6.400, Z 1.850 to 2.650; bounding-box overlap with the antenna footprint 5.120 of 5.120 mm2
+   screen__chip: footprint X -12.075 to -10.475, Y -4.000 to 4.000, Z 2.250 to 2.550; bounding-box overlap with the antenna footprint 0.210 of 5.120 mm2
+   screen__mark: footprint X -9.320 to 12.280, Y -5.400 to 5.400, Z 2.640 to 2.650; bounding-box overlap with the antenna footprint 0.000 of 5.120 mm2
+   screen_tail__flex: footprint X -13.975 to -13.675, Y -2.500 to 2.500, Z 1.230 to 2.150; bounding-box overlap with the antenna footprint 0.000 of 5.120 mm2
+   foam__foam: footprint X -13.600 to 13.600, Y -6.300 to 6.300, Z 1.750 to 1.850; bounding-box overlap with the antenna footprint 5.120 of 5.120 mm2
+   main_board__pcb: footprint X -13.600 to 13.600, Y -6.300 to 6.300, Z 1.470 to 1.750; bounding-box overlap with the antenna footprint 5.120 of 5.120 mm2
+   clear_adhesive__polymer: footprint X -13.675 to 13.675, Y -6.400 to 6.400, Z 2.650 to 2.750; bounding-box overlap with the antenna footprint 5.120 of 5.120 mm2
+   cover_glass__glass: footprint X -14.646 to 14.650, Y -7.181 to 7.248, Z 2.750 to 3.850; bounding-box overlap with the antenna footprint 5.120 of 5.120 mm2
+   screen_connector__polymer: footprint X -13.600 to -10.400, Y -2.600 to 2.600, Z 0.530 to 1.430; bounding-box overlap with the antenna footprint 0.000 of 5.120 mm2
+   screen_connector__gold: footprint X -13.100 to -12.900, Y -2.180 to 2.180, Z 0.880 to 1.080; bounding-box overlap with the antenna footprint 0.000 of 5.120 mm2
+   note: screen__mark is the lit (active) area drawn on the panel top; screen__chip is the driver IC on the ledge
+
+== 4. Least 3D distance from the antenna (ceramic and terminations) to every metal solid within 3 mm
+   outer_body__metal (layer body, metal flag True): 0.050
+   screen_connector__polymer (layer board, metal flag True): 0.200
+   screen__screen (layer screen, metal flag True): 0.200
+   screen_tail__flex (layer screen, metal flag True): 0.347
+   screen__chip (layer screen, metal flag True): 0.600
+   main_board__gold (layer board, metal flag False): 0.620
+   screen_connector__gold (layer board, metal flag True): 0.620
+   screen_connector__metal (layer board, metal flag True): 0.806
+   screen__mark (layer screen, metal flag True): 2.763
+   storage__chip (layer board, metal flag True): 2.900
+
+== 5. The design's keep-out 4.2 x 4.7 mm (architecture.md line 156) centred on the antenna
+   keep-out reaches X -14.800 to -10.600, Y 2.050 to 6.750 (orientation as the BOM row does not say which side is 4.2; the other way round it reaches X -15.050 to -10.350, Y 2.300 to 6.500)
+   inside the keep-out column (bounding box, any Z): screen_connector__polymer (metal flag True) overlap 1.650 mm2
+   inside the keep-out column (bounding box, any Z): screen_connector__metal (metal flag True) overlap 0.140 mm2
+   inside the keep-out column (bounding box, any Z): screen_connector__gold (metal flag True) overlap 0.026 mm2
+   inside the keep-out column (bounding box, any Z): main_board__pcb (metal flag False) overlap 12.750 mm2
+   inside the keep-out column (bounding box, any Z): main_board__resin (metal flag False) overlap 12.750 mm2
+   inside the keep-out column (bounding box, any Z): main_board__gold (metal flag False) overlap 5.191 mm2
+   inside the keep-out column (bounding box, any Z): foam__foam (metal flag False) overlap 12.750 mm2
+   inside the keep-out column (bounding box, any Z): screen__screen (metal flag True) overlap 13.376 mm2
+   inside the keep-out column (bounding box, any Z): screen__chip (metal flag True) overlap 2.876 mm2
+   inside the keep-out column (bounding box, any Z): screen_tail__flex (metal flag True) overlap 0.135 mm2
+   inside the keep-out column (bounding box, any Z): clear_adhesive__polymer (metal flag False) overlap 13.376 mm2
+   inside the keep-out column (bounding box, any Z): cover_glass__glass (metal flag False) overlap 19.015 mm2
+   inside the keep-out column (bounding box, any Z): outer_body__metal (metal flag True) overlap 19.035 mm2
+   body metal inside the keep-out: True
+
+== 6. Summary
+   hand-end wall (-X): gap 0.225 mm, metal 0.602 mm
+   thumb-side wall (+Y): gap 0.450 mm, metal 0.418 mm
+   side wall away from the thumb (-Y): gap 9.250 mm, metal 0.418 mm
+   floor (-Z): gap 0.050 mm, metal 0.392 mm
+RESULT measured

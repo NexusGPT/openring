@@ -1,0 +1,104 @@
+# remote.sh run 20261113-155709-fix1-rec-c2
+# command: rm -rf /ws/out/fix1rec-c1 && RING_OUT=/ws/out/fix1rec-c2 bash tests/bsim/control/run.sh --broken radio_not_stopped
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 15:57:09 CET
+# free on the server's /: 39 GB
+# source firmware copied to /root/ring-os/src-u-fix6
+# started on the server as 20261113-155709-fix1-rec-c2; server log /root/ring-os/logs/20261113-155709-fix1-rec-c2.log
+bsim-control: firmware /ws/firmware/tests/bsim/control, outputs /ws/out/fix1rec-c2, scenarios , broken 1
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/fix1rec-c2/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+##### broken copy: radio_not_stopped
+--- a/ring_devices/src/rdev.c
++++ b/ring_devices/src/rdev.c
+@@ -503,7 +503,6 @@
+ 	int err = 0;
+ 
+ 	k_mutex_lock(&lk, K_FOREVER);
+-	stopped = true;
+ 	adv_stop();
+ 	if (cur_conn != NULL && !disconnecting) {
+ 		err = bt_conn_disconnect(cur_conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
+=== build ring-radio_not_stopped for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/fix1rec-c2/build-ring-radio_not_stopped.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring-radio_not_stopped ok
+=== test C (broken-radio_not_stopped): ring + 1 host(s), 75 simulated seconds, 2026-11-13T14:58:33Z
+exit codes: phy 0, ring 0, hosts 0
+--- ring /ws/out/fix1rec-c2/run-broken-radio_not_stopped-C-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT paired slot 0
+d_00: @00:00:05.594822  RING EVENT active slot 0
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:10.307600  RING CHECK host pairs, link ready PASS (t=10307)
+d_00: @00:00:11.007800  RING CHECK before removal media.centre sends 2 report(s) PASS (t=11007)
+d_00: @00:00:11.007800  RING CHECK bond exists before removal PASS (t=11007)
+d_00: @00:00:11.007800  RING EVENT link slot 0 down
+d_00: @00:00:11.007800  RING EVENT removed slot 0
+d_00: @00:00:11.007800  RING EVENT active slot 255
+d_00: @00:00:11.007800  RING CHECK pairing removed PASS (t=11007)
+d_00: @00:00:11.007800  RING CHECK bond deleted PASS (t=11007)
+d_00: @00:00:11.007800  RING CHECK no active device and no link PASS (t=11007)
+d_00: @00:00:11.007800  RING CHECK removing again reports no pairing PASS (t=11007)
+d_00: @00:00:14.007900  RING CHECK pairing window opens again PASS (t=14007)
+d_00: @00:00:22.008084  RING CHECK no key goes out while the host is not paired PASS (t=22008)
+d_00: @00:00:25.254726  RING PASSKEY slot 0 513570
+d_00: @00:00:29.854755  RING EVENT paired slot 0
+d_00: @00:00:29.854755  RING EVENT active slot 0
+d_00: @00:00:29.854755  RING EVENT link slot 0 up
+d_00: @00:00:34.617726  RING CHECK host pairs again, link ready PASS (t=34617)
+d_00: @00:00:34.617726  RING CHECK two pairings in total PASS (t=34617)
+d_00: @00:00:35.317926  RING CHECK after new pairing media.centre sends 2 report(s) PASS (t=35317)
+d_00: @00:00:55.001026  RING INFO ship close: rdev_stop at t=55001
+d_00: @00:00:55.001026  RING CHECK C: ship close stops the radio (rdev_stop answers 0) PASS (t=55001)
+d_00: @00:00:55.001026  RING SCRIPT DONE t=55001 checks=16 fails=0
+d_00: @00:00:55.001026  RING RESULT PASS
+d_00: @00:00:55.054540  RING EVENT link slot 0 down
+--- host 1 /ws/out/fix1rec-c2/run-broken-radio_not_stopped-C-host1.log
+d_01: @00:00:00.000174  HOST H1 CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.643312  HOST H1 connected (t=643), bonded=0
+d_01: @00:00:01.144997  HOST H1 passkey entry asked, read ok (t=1144)
+d_01: @00:00:01.144997  HOST H1 CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  HOST H1 CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  HOST H1 security level 4 (t=5594)
+d_01: @00:00:05.594821  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:07.044845  HOST H1 INFO subscribed to 3 input reports (t=7044)
+d_01: @00:00:10.844853  HOST H1 REPORT t=10844 id=2 len=2 data=cd00
+d_01: @00:00:10.845293  HOST H1 REPORT t=10845 id=2 len=2 data=0000
+d_01: @00:00:11.094608  HOST H1 disconnected reason 0x13 (t=11094)
+d_01: @00:00:14.114934  HOST H1 connected (t=14114), bonded=1
+d_01: @00:00:14.366515  HOST H1 security failed err 2  (t=14366)
+d_01: @00:00:14.366515  HOST H1 CHECK old keys refused by the ring after removal (pin or key missing) PASS (t=14366)
+d_01: @00:00:14.466587  HOST H1 disconnected reason 0x16 (t=14466)
+d_01: @00:00:24.903245  HOST H1 connected (t=24903), bonded=0
+d_01: @00:00:25.404930  HOST H1 passkey entry asked, read ok (t=25404)
+d_01: @00:00:25.404930  HOST H1 CHECK passkey read from the ring's display PASS (t=25404)
+d_01: @00:00:29.854754  HOST H1 CHECK pairing with the passkey completed and bonded PASS (t=29854)
+d_01: @00:00:29.854754  HOST H1 security level 4 (t=29854)
+d_01: @00:00:29.854754  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=29854)
+d_01: @00:00:31.304778  HOST H1 INFO subscribed to 3 input reports (t=31304)
+d_01: @00:00:35.154786  HOST H1 REPORT t=35154 id=2 len=2 data=cd00
+d_01: @00:00:35.155226  HOST H1 REPORT t=35155 id=2 len=2 data=0000
+d_01: @00:00:55.054541  HOST H1 disconnected reason 0x13 (t=55054)
+d_01: @00:00:56.022620  HOST H1 INFO advertising seen after the ship close (t=56022)
+d_01: @00:01:10.000541  HOST H1 EVAL t=70000
+d_01: @00:01:10.000541  HOST H1 CHECK old keys were refused after the removal PASS (t=70000)
+d_01: @00:01:10.000541  HOST H1 CHECK paired twice (before the removal and again) PASS (t=70000)
+d_01: @00:01:10.000541  HOST H1 CHECK C: the link ended after the ship close PASS (t=70000)
+d_01: @00:01:10.000541  HOST H1 INFO advertising reports after the ship close: 131
+d_01: @00:01:10.000541  HOST H1 CHECK C: no advertising after ship close FAIL (t=70000)
+d_01: @00:01:10.000541  HOST H1 CHECK before removal media.centre PASS (t=70000)
+d_01: @00:01:10.000541  HOST H1 CHECK after new pairing media.centre PASS (t=70000)
+d_01: @00:01:10.000541  HOST H1 CHECK no other report received PASS (t=70000)
+d_01: @00:01:10.000541  HOST H1 INFO 4 report(s) received in total
+d_01: @00:01:10.000541  HOST H1 RESULT FAIL checks=15 fails=1
+ring script done at 55001 ms, host 1 evaluated at 70000 ms
+TEST C RESULT FAIL (30 checks passed; infra: none; checks: host1-result 1-failed-checks)
+broken radio_not_stopped: test C failed on its named check, as required: d_01: @00:01:10.000541  HOST H1 CHECK C: no advertising after ship close FAIL (t=70000)
+RESULT PASS
+# finished (Mac clock): 2026-11-13 15:58:45 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-155709-fix1-rec-c2.log

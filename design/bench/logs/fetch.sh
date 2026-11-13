@@ -1,0 +1,8 @@
+#!/bin/zsh
+export REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/../../.." && pwd)"  # the repository root, found from this script
+# usage: fetch.sh name url ; read-only GET, default curl user agent, no cookies, saves body to sources/name and one status line to logs/fetch_all.log
+D=$REPO_ROOT/design/bench
+name=$1; url=$2
+code=$(curl -sS --http1.1 -L -m 45 -o "$D/sources/$name" -w "%{http_code} %{size_download}" "$url" 2>>"$D/logs/fetch_all.log")
+echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $name $code $url" >> "$D/logs/fetch_all.log"
+echo "$name $code"

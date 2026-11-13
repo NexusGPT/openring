@@ -1,0 +1,11 @@
+config RING_TIME_LOGIC
+	bool "Ring time logic: the clock record and civil time conversion (pure)"
+	help
+	  No kernel, driver or Bluetooth call.
+
+config RING_TIME
+	bool "Ring time: the ring's clock (UTC in ms and a time-is-set flag)"
+	select RING_TIME_LOGIC
+	help
+	  UTC milliseconds from the kernel uptime plus an offset that is set from outside
+	  (the iPhone's Current Time Service, later USB SET_TIME). design/firmware.md section 9.1.

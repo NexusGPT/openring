@@ -1,0 +1,77 @@
+recorder mic_before_sign: exit 0 MATCHED ONCE recorder_sign.test_start_draws_sign_before_mic test_sign 
+recorder mic_on_refused_sign: exit 0 MATCHED ONCE recorder_sign.test_sign_refused_no_mic_m3_log test_sign 
+recorder screen_leaves_before_mic_off: exit 0 MATCHED ONCE recorder_sign.test_close_mic_off_before_screen_leaves test_sign 
+recorder dim_dark: exit 0 MATCHED ONCE recorder_sign1.test_sign1_every_row test_sign1 
+recorder m2_before_mic_off: exit 0 MATCHED ONCE recorder_actions.test_stop_m2_after_mic_off test_actions 
+recorder sd_off_before_mic_off: exit 0 MATCHED ONCE recorder_actions.test_close_order test_actions 
+recorder charge_after_mount: exit 0 MATCHED ONCE recorder_boot.test_vbus_boot_charges_before_mount test_boot 
+recorder retry_not_reported: exit 0 MATCHED ONCE recorder_actions.test_retry_storage_reports_result test_actions 
+recorder mic_in_factory_idle: exit 0 MATCHED ONCE recorder_rows.test_mic_rail_only_in_recording test_rows 
+recorder usb_long_press: exit 0 MATCHED ONCE recorder_rules.test_no_command_starts_or_stops test_rules 
+recorder no_log_on_state_change: exit 0 MATCHED ONCE recorder_log.test_each_kind_logged test_log 
+recorder sd_on_in_standby: exit 0 MATCHED ONCE recorder_rails.test_rails_per_state test_rails 
+recorder ship_cuts_m2: exit 0 MATCHED ONCE recorder_ship.test_ship_feels_whole_m2 test_ship 
+recorder ship_screen_on: exit 0 MATCHED ONCE recorder_ship.test_ship_closes_each_part_first test_ship 
+recorder unmount_result_dropped: exit 0 MATCHED ONCE recorder_unmount.test_unconfigured_finish_times_out test_unmount 
+recorder no_hfxo_in_boot: exit 0 MATCHED ONCE recorder_rails.test_hfxo_in_boot_and_recovery test_rails 
+recorder close_drops_partial: exit 0 MATCHED ONCE recorder_actions.test_close_order test_actions 
+recorder test_recording_wrong_type: exit 0 MATCHED ONCE recorder_factory.test_tmic_records_type_2_for_2s test_factory 
+store hdr_crc_512: exit 0 MATCHED ONCE store_fmt.test_chunk_header_bytes
+- 
+store digest_big_endian: exit 0 MATCHED ONCE store_fmt.test_digest
+store_delete.test_confirm_match_and_mismatch store_delete.test_delete_needs_confirm store_delete.test_delete_refused_while_open store_delete.test_no_erase store_delete.test_read_chunk_deleted_not_found store_delete.test_tail_moves_over_leading_only store_fmt.test_digest_stream_equals_oneshot store_recovery.test_cut_inside_chunk_write store_recovery.test_recovered_close_record store_recovery.test_scan_summary store_svc.test_chunks_wrap_on_small_card store_svc.test_full_cycle_with_partial_last_chunk 
+store sb_older_wins: exit 0 MATCHED ONCE store_log.test_mount_picks_newer_valid_copy
+store_delete.test_confirm_match_and_mismatch store_delete.test_tail_moves_over_leading_only store_index.test_list_beyond_cache_reads_index store_recovery.test_cut_inside_chunk_write store_recovery.test_loss_bound_with_stalled_card store_recovery.test_read_error_reports store_recovery.test_recovered_close_record store_svc.test_boot_count store_svc.test_mount_uses_the_valid_copy store_svc.test_one_open_recording store_svc.test_three_tries_then_fault_open_flag_kept 
+store lba_no_wrap: exit 0 MATCHED ONCE store_layout.test_chunk_lba_wraps
+store_svc.test_chunks_wrap_on_small_card 
+store scan_accepts_gap: exit 0 MATCHED ONCE store_recovery.test_stop_on_each_mismatch
+- 
+store sfull_17: exit 0 MATCHED ONCE store_space.test_s30_sfull_edges
+store_space.test_callbacks_once_per_crossing 
+store delete_frees_middle: exit 0 MATCHED ONCE store_delete.test_tail_moves_over_leading_only
+store_delete.test_factory_recordings_deleted store_index.test_list_beyond_cache_reads_index 
+store delete_without_confirm: exit 0 MATCHED ONCE store_delete.test_delete_needs_confirm
+store_index.test_list_beyond_cache_reads_index 
+store two_tries: exit 0 MATCHED ONCE store_svc.test_three_tries_then_fault_open_flag_kept
+- 
+store init_before_rail: exit 0 MATCHED ONCE store_svc.test_rail_sequence
+- 
+store log_drops_newest: exit 0 MATCHED ONCE store_evlog.test_buffer_of_8_drops_oldest
+store_evlog.test_written_when_rail_on 
+xfer tag_not_echoed: exit 0 MATCHED ONCE xfer_proto.test_tag_echoed
+xfer_proto.test_bad_crc xfer_proto.test_bad_magic xfer_proto.test_busy_while_running xfer_proto.test_confirm_delete_args xfer_proto.test_factory_not_allowed xfer_proto.test_fw_args xfer_proto.test_get_info_layout xfer_proto.test_get_log_args xfer_proto.test_header_bytes xfer_proto.test_list_args xfer_proto.test_read_range_args xfer_proto.test_read_range_failures xfer_proto.test_read_range_stream xfer_proto.test_unknown_opcodes xfer_store.test_case_digest_matches_close xfer_store.test_confirm_then_delete xfer_store.test_get_info_from_store xfer_store.test_get_log_records xfer_store.test_list_entries xfer_store.test_read_range_bytes_equal_disk xfer_store.test_read_range_deleted_not_found xfer_store.test_resume_from_any_chunk xfer_store.test_set_time_and_factory_over_usb xfer_svc.test_bad_magic_and_resync xfer_svc.test_busy_over_transport xfer_svc.test_request_in_pieces 
+xfer crc_on_empty: exit 0 MATCHED ONCE xfer_proto.test_crc_zero_for_empty
+xfer_proto.test_header_bytes xfer_store.test_case_digest_matches_close xfer_store.test_confirm_then_delete xfer_store.test_read_range_bytes_equal_disk xfer_store.test_read_range_deleted_not_found xfer_store.test_set_time_and_factory_over_usb 
+xfer bad_crc_payload: exit 0 MATCHED ONCE xfer_proto.test_bad_crc
+- 
+xfer list_max_65: exit 0 MATCHED ONCE xfer_proto.test_list_args
+xfer_store.test_list_entries 
+xfer range_257: exit 0 MATCHED ONCE xfer_proto.test_read_range_args
+- 
+xfer no_busy: exit 0 MATCHED ONCE xfer_proto.test_busy_while_running
+- 
+xfer factory_flag_ignored: exit 0 MATCHED ONCE xfer_proto.test_factory_not_allowed
+xfer_store.test_set_time_and_factory_over_usb 
+xfer hs_packet_64: exit 0 MATCHED ONCE xfer_desc.test_descriptor_bytes_fs_hs
+- 
+xfer usb_on_without_vbus: exit 0 MATCHED ONCE xfer_svc.test_stack_follows_vbus
+- 
+xfer read_deleted: exit 0 MATCHED ONCE xfer_store.test_read_range_deleted_not_found
+xfer_proto.test_read_range_args 
+audio discard_0: exit 0 MATCHED ONCE audio_chunk.test_discard_800_frames 
+audio dropout_skips: exit 0 MATCHED ONCE audio_chunk.test_dropout_zero_fill 
+audio clip_high_only: exit 0 MATCHED ONCE audio_chunk.test_flags_each_bit 
+audio highlight_release_time: exit 0 MATCHED ONCE audio_chunk.test_highlight_frame_from_down_time 
+audio motor_no_tail: exit 0 MATCHED ONCE audio_motor.test_interval_frames 
+audio no_split: exit 0 MATCHED ONCE audio_motor.test_span_two_chunks 
+audio fifth_dropped: exit 0 MATCHED ONCE audio_motor.test_fifth_merged_into_fourth 
+audio hfxo_after_trigger: exit 0 MATCHED ONCE audio_svc.test_hfxo_before_trigger 
+audio no_block_150ms: exit 0 MATCHED ONCE audio_svc.test_no_block_100ms_reports 
+audio ring_two: exit 0 MATCHED ONCE BUILD:the chunk ring must never be below the specified count 
+motor mh_cuts_m1: exit 0 MATCHED ONCE motor_player.test_replace_rules 
+motor vibration_mutes_mw: exit 0 MATCHED ONCE motor_player.test_vibration_off_keeps_the_others 
+motor m2_gap_100: exit 0 MATCHED ONCE motor_player.test_every_pattern_pin_times 
+motor edge_late: exit 0 MATCHED ONCE motor_player.test_edge_times_reported 
+motor allowance_5ms: exit 0 MATCHED ONCE motor_charge.test_charge_per_pattern 
+devices sed pattern 'return RDEV_SWITCH_REFUSE_EMPTY;' occurrences: 1
+EDITCHECK 55 variants, 0 not matching

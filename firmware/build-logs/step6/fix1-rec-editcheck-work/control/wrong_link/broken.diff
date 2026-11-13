@@ -1,0 +1,11 @@
+--- a/ring_control/src/rctl.c
++++ b/ring_control/src/rctl.c
+@@ -146,7 +146,7 @@
+ 	ARG_UNUSED(is_release);
+ #endif
+ 	stats.wire_sends++;
+-	return bt_hids_inp_rep_send(&hids_obj, conn, r->index, r->data, r->len, NULL);
++	return bt_hids_inp_rep_send(&hids_obj, NULL, r->index, r->data, r->len, NULL);
+ }
+ 
+ /* Try to send the waiting releases to the active device, in order. Called with send_lock held. */

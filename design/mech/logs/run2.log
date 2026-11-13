@@ -1,0 +1,43 @@
+15:21:24
+Traceback (most recent call last):
+  File "design/mech/ring.py", line 692, in <module>
+    main()
+  File "design/mech/ring.py", line 683, in main
+    model = build(size=None)
+            ^^^^^^^^^^^^^^^^
+  File "design/mech/ring.py", line 450, in build
+    bases = {s: build_base(s, P) for s in ([size] if size else SIZES)}
+                ^^^^^^^^^^^^^^^^
+  File "design/mech/ring.py", line 437, in build_base
+    face = offset(offset(prof.faces()[0], d["blend_r"], kind=Kind.ARC), -d["blend_r"], kind=Kind.ARC).faces()[0]
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "design/.venv/lib/python3.12/site-packages/build123d/operations_generic.py", line 634, in offset
+    outer_wire = face.outer_wire().offset_2d(amount, kind=kind)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "design/.venv/lib/python3.12/site-packages/build123d/topology/one_d.py", line 1282, in offset_2d
+    raise RuntimeError(f"2D offset failed with distance {distance}")
+RuntimeError: 2D offset failed with distance 1.5
+ring exit 1
+Traceback (most recent call last):
+  File "design/mech/check_fit.py", line 115, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "design/mech/check_fit.py", line 47, in main
+    m = ring.build(size=None)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "design/mech/ring.py", line 450, in build
+    bases = {s: build_base(s, P) for s in ([size] if size else SIZES)}
+                ^^^^^^^^^^^^^^^^
+  File "design/mech/ring.py", line 437, in build_base
+    face = offset(offset(prof.faces()[0], d["blend_r"], kind=Kind.ARC), -d["blend_r"], kind=Kind.ARC).faces()[0]
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "design/.venv/lib/python3.12/site-packages/build123d/operations_generic.py", line 634, in offset
+    outer_wire = face.outer_wire().offset_2d(amount, kind=kind)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "design/.venv/lib/python3.12/site-packages/build123d/topology/one_d.py", line 1282, in offset_2d
+    raise RuntimeError(f"2D offset failed with distance {distance}")
+RuntimeError: 2D offset failed with distance 1.5
+check exit 1
+base9 bbox Vector: (X=-15, Y=-10, Z=-10.0832) Vector: (X=15, Y=10, Z=2.7) vol 663.12 solids 1
+shell bbox Vector: (X=-15, Y=-10, Z=0.8) Vector: (X=15, Y=10, Z=9.5) vol 911.18 solids 1
+15:21:48

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "key-numbers.schema.json",
+  "type": "object",
+  "properties": {
+    "design_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Fact"
+      }
+    }
+  },
+  "required": [
+    "design_version",
+    "facts"
+  ],
+  "additionalProperties": false,
+  "title": "KeyNumbers",
+  "description": "facts.json: the 5 key numbers (size, weight, battery, hours, storage), each with unit and source."
+}

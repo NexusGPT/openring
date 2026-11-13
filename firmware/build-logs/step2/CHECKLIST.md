@@ -1,0 +1,30 @@
+# Step 2 checklist (devices and control). Output folder: firmware/build-logs/step2/ (files below are in it)
+
+- [x] 1. ring_devices: pairing with a passkey the ring displays (six digits through a callback) evidence: 20261111-133920-step2-all-final.log (test A "RING PASSKEY slot 0", host "passkey read from the ring's display PASS"), console-final-raw.txt
+- [x] 2. ring_devices: bonds per device, up to three paired devices, one local identity per device evidence: test B "three distinct local identities PASS" in 20261111-133920-step2-all-final.log; logic suite ring_devices.logic test_three_slots
+- [x] 3. ring_devices: one active device; switching evidence: test B "switch to slot 0", "switch to slot 1" PASS, host totals PASS (20261111-133920-step2-all-final.log)
+- [x] 4. ring_devices: reconnect after a drop evidence: test A "the drop was seen (link down)", "reconnect after the drop, link ready", "after the drop agent.centre sends 2 report(s)" and host "after a drop and reconnect: agent.centre Return" PASS (20261111-133920-step2-all-final.log)
+- [x] 5. ring_devices: removal of a pairing (both key sets deleted) evidence: test C "pairing removed", "bond deleted" PASS and host "old keys refused by the ring after removal (pin or key missing) PASS" (security failed err 2); interpretation of "both key sets" in notes section 3 item 9
+- [x] 6. advertising carries the HID service; two devices at once is out evidence: rdev.c ad[] (UUID16 0x1812); not built: holding two (one link only, BT_MAX_CONN=1); the host finds the ring by that UUID in every test
+- [x] 7. ring_control: HID report map and reports (keyboard, consumer, pointer) evidence: ring_control.logic test_report_map_matches_builder PASS; test A host reports ids 1, 2, 3 in console-final-raw.txt
+- [x] 8. media mode evidence: test A host "media.centre play/pause" ... "media.right next" PASS
+- [x] 9. presenter mode and Page keys option evidence: test A host "presenter.*" and "presenter pages.*" PASS
+- [x] 10. pointer mode (repeat, click) evidence: test A host "pointer.*" PASS, "pointer held right repeats" PASS (count in console-final-raw.txt "INFO pointer held right repeats")
+- [x] 11. agent mode evidence: test A host "agent.*" PASS
+- [x] 12. four mode tables in one header evidence: modules/ring_control/include/ring_control/rctl_modes.h; notes section 2
+- [x] 13. key only for a real joystick action; press followed by release evidence: ring_control.logic test_only_joystick_actions_map, test_press_then_release; test A "screen off: a direction sends no report PASS", "centre double press sends no report PASS"
+- [x] 14. no mode uses the centre long press; nothing starts or stops a recording evidence: test_only_joystick_actions_map (RC_ACT_OPEN, RC_ACT_CLOSE return false); no call to rc_core_event in the modules (grep saved in console-audit.txt)
+- [x] 15. pure logic as ztest suites on native_sim evidence: console-counts.txt (ring_devices.logic 7, ring_control.logic 7 passed)
+- [x] 16. test A evidence: "TEST A RESULT PASS (72 checks passed)" in 20261111-133920-step2-all-final.log
+- [x] 17. test B evidence: "TEST B RESULT PASS (43 checks passed)"
+- [x] 18. test C evidence: "TEST C RESULT PASS (28 checks passed)"
+- [x] 19. PASS/FAIL per check, one RESULT line per device evidence: console-final-raw.txt
+- [x] 20. broken copy fails test A evidence: "TEST A RESULT FAIL (71 checks passed; host1-result 1-failed-checks)" in 20261111-133920-step2-all-final.log (stage bsim-control-broken), broken.diff in console-final-raw.txt
+- [x] 21. wired into tools/build_all.sh evidence: stage bsim-control and bsim-control-broken in the final log; change listed in notes section 7
+- [x] 22. kit build with the modules; flash and RAM evidence: 20261111-133920-step2-all-final.log lines 851-857 (FLASH 159460 B, RAM 34452 B)
+- [x] 23. build_all RESULT PASS with my tests in it evidence: 20261111-133920-step2-all-final.log (last build_all line RESULT PASS, remote exit code 0)
+- [-] 24. tests A, B, C RESULT PASS on nrf54lm20bsim/nrf54lm20a/cpuapp: not done: measured limit: the first encrypted packet fails on that chip (disconnect reason 0x3d) in every run (20261111-131049-bsimA.log, console-peek.txt, 20261111-131822-peek5.log); sister chip nrf54l15bsim same pairing failure (20261111-131503-bsimA4.log); with the Zephyr link layer reason 0x3d again (console-peek11.txt, 20261111-133601-bsimExp3.log); the tests pass on nrf52_bsim/native (final log). Reported, owner named in notes 6.1
+- [x] 25. the core's tests still pass evidence: console-counts.txt (ring_core.logic 216 passed on native_sim and on nrf54lm20bsim; the brief said 214)
+- [x] 26. docs/devices-control-notes.md evidence: the file; last line RESULT
+- [x] 27. logic suites can fail evidence: 20261111-133801-mut.log (RESULT PASS twice: broken copies fail test_mode_tables and test_switch_decision)
+- [x] 28. cleanup evidence: console-cleanup2.txt, console-cleanup3.txt (server copy and build outputs removed, no simulator process left); the remote.sh run logs and run scripts in /root/ring-os/logs and /root/ring-os/runs stay (written by remote.sh)

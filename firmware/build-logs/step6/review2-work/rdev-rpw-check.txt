@@ -1,0 +1,19 @@
+== rdev adv start paths
+12: * record; update_fn() runs the plan. State changes happen under one mutex.
+46:static bool stopped;   /* rdev_stop() (ship mode step 1): no advertising and no link from now on */
+151:static void adv_stop(void)
+163:static void adv_start(uint8_t slot, bool open)
+171:	err = bt_le_adv_start(&prm, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
+187:static void update_fn(struct k_work *w)
+194:	if (stopped) {
+219:			adv_start(p.slot, p.open);
+311:		/* the flag is set only when the call worked, so update_fn tries again after a failure */
+499: * is ended, and nothing advertises again (update_fn returns at once). Advertising of another part (the factory ship
+506:	stopped = true;
+527:	k_work_init_delayable(&update_work, update_fn);
+== rdev_init resets stopped?
+(no hit = rdev_init does not clear stopped)
+== rpw_ship on which thread in rpw.c (k_sleep / waits)
+7:605-	(void)atomic_set(&shipping, 1);             /* "doing nothing else": no sampling while this runs */
+21:619-			(void)k_sem_take(&vbus_gone, K_MSEC(50));
+32:630-			k_sleep(K_MSEC(RREC_SHIP_RETRY_MS));

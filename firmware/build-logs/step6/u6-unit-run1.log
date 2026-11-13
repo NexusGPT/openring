@@ -1,0 +1,525 @@
+# remote.sh run 20261113-055544-u-motor
+# command: bash tools/unit_run.sh tests/motor
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:55:44 CET
+# free on the server's /: 53 GB
+# source firmware copied to /root/ring-os/src-u-motor
+# started on the server as 20261113-055544-u-motor; server log /root/ring-os/logs/20261113-055544-u-motor.log
+=== part tests-native_sim start 2026-11-13T04:55:52Z log /ws/out/20261113-055544-u-motor-unit/tests-native_sim.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-055544-u-motor-unit/twister-native_sim/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 native_sim/native         ring_motor.sim                                     PASSED (native 0.076s <host/gnu>)
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 22.67 seconds.
+INFO    - 14 of 14 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-055544-u-motor-unit/twister-native_sim/twister.json
+INFO    - Writing xunit report /ws/out/20261113-055544-u-motor-unit/twister-native_sim/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-055544-u-motor-unit/twister-native_sim/twister_report.xml...
+INFO    - Run completed
+=== part tests-native_sim end 2026-11-13T04:56:18Z exit 0
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp start 2026-11-13T04:56:18Z log /ws/out/20261113-055544-u-motor-unit/tests-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-055544-u-motor-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_motor.sim                               PASSED (native 0.060s <host/gnu>)
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 1 of 1 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 32.55 seconds.
+INFO    - 14 of 14 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-055544-u-motor-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.json
+INFO    - Writing xunit report /ws/out/20261113-055544-u-motor-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-055544-u-motor-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister_report.xml...
+INFO    - Run completed
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp end 2026-11-13T04:56:52Z exit 0
+=== part broken-motor start 2026-11-13T04:56:52Z log /ws/out/20261113-055544-u-motor-unit/broken-motor.log
+##### broken copy: mh_cuts_m1
+diff -u -r /ws/firmware/modules/ring_motor/src/rmo_logic.c /ws/out/20261113-055544-u-motor-unit/broken-motor/broken_ring_motor_mh_cuts_m1/src/rmo_logic.c
+--- /ws/firmware/modules/ring_motor/src/rmo_logic.c	2026-11-13 04:51:12.000000000 +0000
++++ /ws/out/20261113-055544-u-motor-unit/broken-motor/broken_ring_motor_mh_cuts_m1/src/rmo_logic.c	2026-11-13 04:56:52.753702051 +0000
+@@ -69,7 +69,7 @@
+ 	if (playing == 0u) {
+ 		return true;
+ 	}
+-	if ((incoming == RREC_PAT_MH || incoming == RREC_PAT_MT) && is_never_cut(playing)) {
++	if ((incoming == RREC_PAT_MH || incoming == RREC_PAT_MT) && is_never_cut(playing) && playing != RREC_PAT_M1) {
+ 		return false;
+ 	}
+ 	return true;
+INFO    - 1/1 native_sim/native         ring_motor.sim                                     FAILED rc=1 (native 0.052s <host/gnu>)
+ PASS - test_charge_per_pattern in 2.466 seconds
+ PASS - test_cut_pulse_charge in 1.151 seconds
+ PASS - test_no_charge_without_a_pulse in 1.041 seconds
+ PASS - test_edge_times_reported in 2.466 seconds
+ PASS - test_every_pattern_pin_times in 2.466 seconds
+ PASS - test_one_high_per_on_segment in 2.616 seconds
+ PASS - test_pattern_table in 0.000 seconds
+ PASS - test_pin_low_between_patterns in 1.841 seconds
+ PASS - test_replace_in_gap in 0.601 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_player.c:146: motor_player_test_replace_rules: (r not equal to expect_ret[a][b])
+ FAIL - test_replace_rules in 3.041 seconds
+ PASS - test_same_pattern_restarts in 1.101 seconds
+ PASS - test_stop_pin_low_at_once in 1.601 seconds
+ PASS - test_unknown_id in 0.101 seconds
+ PASS - test_vibration_off_keeps_the_others in 2.701 seconds
+TESTSUITE motor_player failed.
+SUITE PASS - 100.00% [motor_charge]: pass = 3, fail = 0, skip = 0, total = 3 duration = 4.658 seconds
+ - PASS - [motor_charge.test_charge_per_pattern] duration = 2.466 seconds
+ - PASS - [motor_charge.test_cut_pulse_charge] duration = 1.151 seconds
+ - PASS - [motor_charge.test_no_charge_without_a_pulse] duration = 1.041 seconds
+SUITE FAIL -  90.91% [motor_player]: pass = 10, fail = 1, skip = 0, total = 11 duration = 18.535 seconds
+ - PASS - [motor_player.test_edge_times_reported] duration = 2.466 seconds
+ - PASS - [motor_player.test_every_pattern_pin_times] duration = 2.466 seconds
+ - PASS - [motor_player.test_one_high_per_on_segment] duration = 2.616 seconds
+ - PASS - [motor_player.test_pattern_table] duration = 0.000 seconds
+ - PASS - [motor_player.test_pin_low_between_patterns] duration = 1.841 seconds
+ - PASS - [motor_player.test_replace_in_gap] duration = 0.601 seconds
+ - FAIL - [motor_player.test_replace_rules] duration = 3.041 seconds
+ - PASS - [motor_player.test_same_pattern_restarts] duration = 1.101 seconds
+ - PASS - [motor_player.test_stop_pin_low_at_once] duration = 1.601 seconds
+ - PASS - [motor_player.test_unknown_id] duration = 0.101 seconds
+ - PASS - [motor_player.test_vibration_off_keeps_the_others] duration = 2.701 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 21.55 seconds.
+INFO    - 13 of 14 executed test cases passed (92.86%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_motor.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy mh_cuts_m1, native_sim: 1 (log /ws/out/20261113-055544-u-motor-unit/broken-motor/twister-mh_cuts_m1-native_sim.log)
+mh_cuts_m1 on native_sim: the named case failed, as required:  - FAIL - [motor_player.test_replace_rules] duration = 3.041 seconds (failed cases listed: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_motor.sim                               FAILED rc=1 (native 0.047s <host/gnu>)
+d_00: @00:00:02.465793   PASS - test_charge_per_pattern in 2.466 seconds
+d_00: @00:00:03.616193   PASS - test_cut_pulse_charge in 1.151 seconds
+d_00: @00:00:04.656393   PASS - test_no_charge_without_a_pulse in 1.041 seconds
+d_00: @00:00:07.122093   PASS - test_edge_times_reported in 2.466 seconds
+d_00: @00:00:09.587793   PASS - test_every_pattern_pin_times in 2.466 seconds
+d_00: @00:00:12.203593   PASS - test_one_high_per_on_segment in 2.616 seconds
+d_00: @00:00:12.203593   PASS - test_pattern_table in 0.000 seconds
+d_00: @00:00:14.044493   PASS - test_pin_low_between_patterns in 1.841 seconds
+d_00: @00:00:14.644693   PASS - test_replace_in_gap in 0.601 seconds
+d_00: @00:00:17.685393      Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_player.c:146: motor_player_test_replace_rules: (r not equal to expect_ret[a][b])
+d_00: @00:00:17.685393   FAIL - test_replace_rules in 3.041 seconds
+d_00: @00:00:18.785593   PASS - test_same_pattern_restarts in 1.101 seconds
+d_00: @00:00:20.385793   PASS - test_stop_pin_low_at_once in 1.601 seconds
+d_00: @00:00:20.485893   PASS - test_unknown_id in 0.101 seconds
+d_00: @00:00:23.186693   PASS - test_vibration_off_keeps_the_others in 2.701 seconds
+d_00: @00:00:23.186693  TESTSUITE motor_player failed.
+d_00: @00:00:23.186693  SUITE PASS - 100.00% [motor_charge]: pass = 3, fail = 0, skip = 0, total = 3 duration = 4.658 seconds
+d_00: @00:00:23.186693   - PASS - [motor_charge.test_charge_per_pattern] duration = 2.466 seconds
+d_00: @00:00:23.186693   - PASS - [motor_charge.test_cut_pulse_charge] duration = 1.151 seconds
+d_00: @00:00:23.186693   - PASS - [motor_charge.test_no_charge_without_a_pulse] duration = 1.041 seconds
+d_00: @00:00:23.186693  SUITE FAIL -  90.91% [motor_player]: pass = 10, fail = 1, skip = 0, total = 11 duration = 18.535 seconds
+d_00: @00:00:23.186693   - PASS - [motor_player.test_edge_times_reported] duration = 2.466 seconds
+d_00: @00:00:23.186693   - PASS - [motor_player.test_every_pattern_pin_times] duration = 2.466 seconds
+d_00: @00:00:23.186693   - PASS - [motor_player.test_one_high_per_on_segment] duration = 2.616 seconds
+d_00: @00:00:23.186693   - PASS - [motor_player.test_pattern_table] duration = 0.000 seconds
+d_00: @00:00:23.186693   - PASS - [motor_player.test_pin_low_between_patterns] duration = 1.841 seconds
+d_00: @00:00:23.186693   - PASS - [motor_player.test_replace_in_gap] duration = 0.601 seconds
+d_00: @00:00:23.186693   - FAIL - [motor_player.test_replace_rules] duration = 3.041 seconds
+d_00: @00:00:23.186693   - PASS - [motor_player.test_same_pattern_restarts] duration = 1.101 seconds
+d_00: @00:00:23.186693   - PASS - [motor_player.test_stop_pin_low_at_once] duration = 1.601 seconds
+d_00: @00:00:23.186693   - PASS - [motor_player.test_unknown_id] duration = 0.101 seconds
+d_00: @00:00:23.186693   - PASS - [motor_player.test_vibration_off_keeps_the_others] duration = 2.701 seconds
+d_00: @00:00:23.186693  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.75 seconds.
+INFO    - 13 of 14 executed test cases passed (92.86%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_motor.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy mh_cuts_m1, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-055544-u-motor-unit/broken-motor/twister-mh_cuts_m1-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+mh_cuts_m1 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:23.186693   - FAIL - [motor_player.test_replace_rules] duration = 3.041 seconds (failed cases listed: 1)
+##### broken copy: vibration_mutes_mw
+diff -u -r /ws/firmware/modules/ring_motor/src/rmo_logic.c /ws/out/20261113-055544-u-motor-unit/broken-motor/broken_ring_motor_vibration_mutes_mw/src/rmo_logic.c
+--- /ws/firmware/modules/ring_motor/src/rmo_logic.c	2026-11-13 04:51:12.000000000 +0000
++++ /ws/out/20261113-055544-u-motor-unit/broken-motor/broken_ring_motor_vibration_mutes_mw/src/rmo_logic.c	2026-11-13 04:57:44.722559056 +0000
+@@ -80,7 +80,7 @@
+ 	if (vibration_on) {
+ 		return true;
+ 	}
+-	return !(id == RREC_PAT_MH || id == RREC_PAT_MT);
++	return !(id == RREC_PAT_MH || id == RREC_PAT_MT || id == RREC_PAT_MW);
+ }
+ 
+ uint32_t rml_pulse_uas(uint32_t t_on_ms)
+INFO    - 1/1 native_sim/native         ring_motor.sim                                     FAILED rc=1 (native 0.045s <host/gnu>)
+ PASS - test_charge_per_pattern in 2.466 seconds
+ PASS - test_cut_pulse_charge in 1.151 seconds
+ PASS - test_no_charge_without_a_pulse in 1.041 seconds
+ PASS - test_edge_times_reported in 2.466 seconds
+ PASS - test_every_pattern_pin_times in 2.466 seconds
+ PASS - test_one_high_per_on_segment in 2.616 seconds
+ PASS - test_pattern_table in 0.000 seconds
+ PASS - test_pin_low_between_patterns in 1.841 seconds
+ PASS - test_replace_in_gap in 0.601 seconds
+ PASS - test_replace_rules in 49.500 seconds
+ PASS - test_same_pattern_restarts in 1.101 seconds
+ PASS - test_stop_pin_low_at_once in 1.601 seconds
+ PASS - test_unknown_id in 0.101 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_player.c:235: motor_player_test_vibration_off_keeps_the_others: (rmo_play(spec[i].id) not equal to 0)
+ FAIL - test_vibration_off_keeps_the_others in 1.341 seconds
+TESTSUITE motor_player failed.
+SUITE PASS - 100.00% [motor_charge]: pass = 3, fail = 0, skip = 0, total = 3 duration = 4.658 seconds
+ - PASS - [motor_charge.test_charge_per_pattern] duration = 2.466 seconds
+ - PASS - [motor_charge.test_cut_pulse_charge] duration = 1.151 seconds
+ - PASS - [motor_charge.test_no_charge_without_a_pulse] duration = 1.041 seconds
+SUITE FAIL -  90.91% [motor_player]: pass = 10, fail = 1, skip = 0, total = 11 duration = 63.634 seconds
+ - PASS - [motor_player.test_edge_times_reported] duration = 2.466 seconds
+ - PASS - [motor_player.test_every_pattern_pin_times] duration = 2.466 seconds
+ - PASS - [motor_player.test_one_high_per_on_segment] duration = 2.616 seconds
+ - PASS - [motor_player.test_pattern_table] duration = 0.000 seconds
+ - PASS - [motor_player.test_pin_low_between_patterns] duration = 1.841 seconds
+ - PASS - [motor_player.test_replace_in_gap] duration = 0.601 seconds
+ - PASS - [motor_player.test_replace_rules] duration = 49.500 seconds
+ - PASS - [motor_player.test_same_pattern_restarts] duration = 1.101 seconds
+ - PASS - [motor_player.test_stop_pin_low_at_once] duration = 1.601 seconds
+ - PASS - [motor_player.test_unknown_id] duration = 0.101 seconds
+ - FAIL - [motor_player.test_vibration_off_keeps_the_others] duration = 1.341 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 22.10 seconds.
+INFO    - 13 of 14 executed test cases passed (92.86%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_motor.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy vibration_mutes_mw, native_sim: 1 (log /ws/out/20261113-055544-u-motor-unit/broken-motor/twister-vibration_mutes_mw-native_sim.log)
+vibration_mutes_mw on native_sim: the named case failed, as required:  - FAIL - [motor_player.test_vibration_off_keeps_the_others] duration = 1.341 seconds (failed cases listed: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_motor.sim                               FAILED rc=1 (native 0.073s <host/gnu>)
+d_00: @00:00:02.465793   PASS - test_charge_per_pattern in 2.466 seconds
+d_00: @00:00:03.616193   PASS - test_cut_pulse_charge in 1.151 seconds
+d_00: @00:00:04.656393   PASS - test_no_charge_without_a_pulse in 1.041 seconds
+d_00: @00:00:07.122093   PASS - test_edge_times_reported in 2.466 seconds
+d_00: @00:00:09.587793   PASS - test_every_pattern_pin_times in 2.466 seconds
+d_00: @00:00:12.203593   PASS - test_one_high_per_on_segment in 2.616 seconds
+d_00: @00:00:12.203593   PASS - test_pattern_table in 0.000 seconds
+d_00: @00:00:14.044493   PASS - test_pin_low_between_patterns in 1.841 seconds
+d_00: @00:00:14.644693   PASS - test_replace_in_gap in 0.601 seconds
+d_00: @00:01:04.144493   PASS - test_replace_rules in 49.500 seconds
+d_00: @00:01:05.244693   PASS - test_same_pattern_restarts in 1.101 seconds
+d_00: @00:01:06.844893   PASS - test_stop_pin_low_at_once in 1.601 seconds
+d_00: @00:01:06.944993   PASS - test_unknown_id in 0.101 seconds
+d_00: @00:01:08.285393      Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_player.c:235: motor_player_test_vibration_off_keeps_the_others: (rmo_play(spec[i].id) not equal to 0)
+d_00: @00:01:08.285393   FAIL - test_vibration_off_keeps_the_others in 1.341 seconds
+d_00: @00:01:08.285393  TESTSUITE motor_player failed.
+d_00: @00:01:08.285393  SUITE PASS - 100.00% [motor_charge]: pass = 3, fail = 0, skip = 0, total = 3 duration = 4.658 seconds
+d_00: @00:01:08.285393   - PASS - [motor_charge.test_charge_per_pattern] duration = 2.466 seconds
+d_00: @00:01:08.285393   - PASS - [motor_charge.test_cut_pulse_charge] duration = 1.151 seconds
+d_00: @00:01:08.285393   - PASS - [motor_charge.test_no_charge_without_a_pulse] duration = 1.041 seconds
+d_00: @00:01:08.285393  SUITE FAIL -  90.91% [motor_player]: pass = 10, fail = 1, skip = 0, total = 11 duration = 63.634 seconds
+d_00: @00:01:08.285393   - PASS - [motor_player.test_edge_times_reported] duration = 2.466 seconds
+d_00: @00:01:08.285393   - PASS - [motor_player.test_every_pattern_pin_times] duration = 2.466 seconds
+d_00: @00:01:08.285393   - PASS - [motor_player.test_one_high_per_on_segment] duration = 2.616 seconds
+d_00: @00:01:08.285393   - PASS - [motor_player.test_pattern_table] duration = 0.000 seconds
+d_00: @00:01:08.285393   - PASS - [motor_player.test_pin_low_between_patterns] duration = 1.841 seconds
+d_00: @00:01:08.285393   - PASS - [motor_player.test_replace_in_gap] duration = 0.601 seconds
+d_00: @00:01:08.285393   - PASS - [motor_player.test_replace_rules] duration = 49.500 seconds
+d_00: @00:01:08.285393   - PASS - [motor_player.test_same_pattern_restarts] duration = 1.101 seconds
+d_00: @00:01:08.285393   - PASS - [motor_player.test_stop_pin_low_at_once] duration = 1.601 seconds
+d_00: @00:01:08.285393   - PASS - [motor_player.test_unknown_id] duration = 0.101 seconds
+d_00: @00:01:08.285393   - FAIL - [motor_player.test_vibration_off_keeps_the_others] duration = 1.341 seconds
+d_00: @00:01:08.285393  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.41 seconds.
+INFO    - 13 of 14 executed test cases passed (92.86%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_motor.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy vibration_mutes_mw, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-055544-u-motor-unit/broken-motor/twister-vibration_mutes_mw-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+vibration_mutes_mw on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:01:08.285393   - FAIL - [motor_player.test_vibration_off_keeps_the_others] duration = 1.341 seconds (failed cases listed: 1)
+##### broken copy: m2_gap_100
+diff -u -r /ws/firmware/modules/ring_motor/src/rmo_logic.c /ws/out/20261113-055544-u-motor-unit/broken-motor/broken_ring_motor_m2_gap_100/src/rmo_logic.c
+--- /ws/firmware/modules/ring_motor/src/rmo_logic.c	2026-11-13 04:51:12.000000000 +0000
++++ /ws/out/20261113-055544-u-motor-unit/broken-motor/broken_ring_motor_m2_gap_100/src/rmo_logic.c	2026-11-13 04:58:36.845412680 +0000
+@@ -6,7 +6,7 @@
+ 
+ /* FW l.320 to l.328: on / off times in ms, MOTOR-pin times (FW l.315). rrec_spec.h holds the ids, not the times. */
+ static const struct rml_pattern pat_m1 = { 1, { 80 } };
+-static const struct rml_pattern pat_m2 = { 3, { 80, 120, 80 } };
++static const struct rml_pattern pat_m2 = { 3, { 80, 100, 80 } };
+ static const struct rml_pattern pat_m3 = { 5, { 80, 120, 80, 120, 80 } };
+ static const struct rml_pattern pat_mh = { 1, { 40 } };
+ static const struct rml_pattern pat_mt = { 1, { 25 } };
+INFO    - 1/1 native_sim/native         ring_motor.sim                                     FAILED rc=1 (native 0.059s <host/gnu>)
+ PASS - test_charge_per_pattern in 2.466 seconds
+ PASS - test_cut_pulse_charge in 1.151 seconds
+ PASS - test_no_charge_without_a_pulse in 1.041 seconds
+ PASS - test_edge_times_reported in 2.466 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/common.c:114: t_check_edges: (d >= (int64_t)exp_ms[i] * 1000 - 1 && d < (int64_t)exp_ms[i] * 1000 + 1000 is false)
+ FAIL - test_every_pattern_pin_times in 0.561 seconds
+ PASS - test_one_high_per_on_segment in 2.616 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_player.c:69: motor_player_test_pattern_table: (rml_total_ms(spec[i].id) not equal to spec[i].total_ms)
+ FAIL - test_pattern_table in 0.000 seconds
+ PASS - test_pin_low_between_patterns in 1.841 seconds
+ PASS - test_replace_in_gap in 0.601 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_player.c:179: motor_player_test_replace_rules: (d >= e - 1 && d < e + 1000 is false)
+ FAIL - test_replace_rules in 2.021 seconds
+ PASS - test_same_pattern_restarts in 1.101 seconds
+ PASS - test_stop_pin_low_at_once in 1.601 seconds
+ PASS - test_unknown_id in 0.101 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/common.c:114: t_check_edges: (d >= (int64_t)exp_ms[i] * 1000 - 1 && d < (int64_t)exp_ms[i] * 1000 + 1000 is false)
+ FAIL - test_vibration_off_keeps_the_others in 0.761 seconds
+TESTSUITE motor_player failed.
+SUITE PASS - 100.00% [motor_charge]: pass = 3, fail = 0, skip = 0, total = 3 duration = 4.658 seconds
+ - PASS - [motor_charge.test_charge_per_pattern] duration = 2.466 seconds
+ - PASS - [motor_charge.test_cut_pulse_charge] duration = 1.151 seconds
+ - PASS - [motor_charge.test_no_charge_without_a_pulse] duration = 1.041 seconds
+SUITE FAIL -  63.64% [motor_player]: pass = 7, fail = 4, skip = 0, total = 11 duration = 13.670 seconds
+ - PASS - [motor_player.test_edge_times_reported] duration = 2.466 seconds
+ - FAIL - [motor_player.test_every_pattern_pin_times] duration = 0.561 seconds
+ - PASS - [motor_player.test_one_high_per_on_segment] duration = 2.616 seconds
+ - FAIL - [motor_player.test_pattern_table] duration = 0.000 seconds
+ - PASS - [motor_player.test_pin_low_between_patterns] duration = 1.841 seconds
+ - PASS - [motor_player.test_replace_in_gap] duration = 0.601 seconds
+ - FAIL - [motor_player.test_replace_rules] duration = 2.021 seconds
+ - PASS - [motor_player.test_same_pattern_restarts] duration = 1.101 seconds
+ - PASS - [motor_player.test_stop_pin_low_at_once] duration = 1.601 seconds
+ - PASS - [motor_player.test_unknown_id] duration = 0.101 seconds
+ - FAIL - [motor_player.test_vibration_off_keeps_the_others] duration = 0.761 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 21.32 seconds.
+INFO    - 10 of 14 executed test cases passed (71.43%), 4 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_motor.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy m2_gap_100, native_sim: 1 (log /ws/out/20261113-055544-u-motor-unit/broken-motor/twister-m2_gap_100-native_sim.log)
+m2_gap_100 on native_sim: the named case failed, as required:  - FAIL - [motor_player.test_every_pattern_pin_times] duration = 0.561 seconds (failed cases listed: 4)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_motor.sim                               FAILED rc=1 (native 0.044s <host/gnu>)
+d_00: @00:00:02.465793   PASS - test_charge_per_pattern in 2.466 seconds
+d_00: @00:00:03.616193   PASS - test_cut_pulse_charge in 1.151 seconds
+d_00: @00:00:04.656393   PASS - test_no_charge_without_a_pulse in 1.041 seconds
+d_00: @00:00:07.122093   PASS - test_edge_times_reported in 2.466 seconds
+d_00: @00:00:07.682293      Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/common.c:114: t_check_edges: (d >= (int64_t)exp_ms[i] * 1000 - 1 && d < (int64_t)exp_ms[i] * 1000 + 1000 is false)
+d_00: @00:00:07.682293   FAIL - test_every_pattern_pin_times in 0.561 seconds
+d_00: @00:00:10.298093   PASS - test_one_high_per_on_segment in 2.616 seconds
+d_00: @00:00:10.298093      Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_player.c:69: motor_player_test_pattern_table: (rml_total_ms(spec[i].id) not equal to spec[i].total_ms)
+d_00: @00:00:10.298093   FAIL - test_pattern_table in 0.000 seconds
+d_00: @00:00:12.138993   PASS - test_pin_low_between_patterns in 1.841 seconds
+d_00: @00:00:12.739193   PASS - test_replace_in_gap in 0.601 seconds
+d_00: @00:00:14.759593      Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_player.c:179: motor_player_test_replace_rules: (d >= e - 1 && d < e + 1000 is false)
+d_00: @00:00:14.759593   FAIL - test_replace_rules in 2.021 seconds
+d_00: @00:00:15.859793   PASS - test_same_pattern_restarts in 1.101 seconds
+d_00: @00:00:17.459993   PASS - test_stop_pin_low_at_once in 1.601 seconds
+d_00: @00:00:17.560093   PASS - test_unknown_id in 0.101 seconds
+d_00: @00:00:18.320393      Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/common.c:114: t_check_edges: (d >= (int64_t)exp_ms[i] * 1000 - 1 && d < (int64_t)exp_ms[i] * 1000 + 1000 is false)
+d_00: @00:00:18.320393   FAIL - test_vibration_off_keeps_the_others in 0.761 seconds
+d_00: @00:00:18.320393  TESTSUITE motor_player failed.
+d_00: @00:00:18.320393  SUITE PASS - 100.00% [motor_charge]: pass = 3, fail = 0, skip = 0, total = 3 duration = 4.658 seconds
+d_00: @00:00:18.320393   - PASS - [motor_charge.test_charge_per_pattern] duration = 2.466 seconds
+d_00: @00:00:18.320393   - PASS - [motor_charge.test_cut_pulse_charge] duration = 1.151 seconds
+d_00: @00:00:18.320393   - PASS - [motor_charge.test_no_charge_without_a_pulse] duration = 1.041 seconds
+d_00: @00:00:18.320393  SUITE FAIL -  63.64% [motor_player]: pass = 7, fail = 4, skip = 0, total = 11 duration = 13.670 seconds
+d_00: @00:00:18.320393   - PASS - [motor_player.test_edge_times_reported] duration = 2.466 seconds
+d_00: @00:00:18.320393   - FAIL - [motor_player.test_every_pattern_pin_times] duration = 0.561 seconds
+d_00: @00:00:18.320393   - PASS - [motor_player.test_one_high_per_on_segment] duration = 2.616 seconds
+d_00: @00:00:18.320393   - FAIL - [motor_player.test_pattern_table] duration = 0.000 seconds
+d_00: @00:00:18.320393   - PASS - [motor_player.test_pin_low_between_patterns] duration = 1.841 seconds
+d_00: @00:00:18.320393   - PASS - [motor_player.test_replace_in_gap] duration = 0.601 seconds
+d_00: @00:00:18.320393   - FAIL - [motor_player.test_replace_rules] duration = 2.021 seconds
+d_00: @00:00:18.320393   - PASS - [motor_player.test_same_pattern_restarts] duration = 1.101 seconds
+d_00: @00:00:18.320393   - PASS - [motor_player.test_stop_pin_low_at_once] duration = 1.601 seconds
+d_00: @00:00:18.320393   - PASS - [motor_player.test_unknown_id] duration = 0.101 seconds
+d_00: @00:00:18.320393   - FAIL - [motor_player.test_vibration_off_keeps_the_others] duration = 0.761 seconds
+d_00: @00:00:18.320393  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 28.11 seconds.
+INFO    - 10 of 14 executed test cases passed (71.43%), 4 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_motor.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy m2_gap_100, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-055544-u-motor-unit/broken-motor/twister-m2_gap_100-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+m2_gap_100 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:18.320393   - FAIL - [motor_player.test_every_pattern_pin_times] duration = 0.561 seconds (failed cases listed: 4)
+##### broken copy: edge_late
+diff -u -r /ws/firmware/modules/ring_motor/src/rmo.c /ws/out/20261113-055544-u-motor-unit/broken-motor/broken_ring_motor_edge_late/src/rmo.c
+--- /ws/firmware/modules/ring_motor/src/rmo.c	2026-11-13 04:51:49.000000000 +0000
++++ /ws/out/20261113-055544-u-motor-unit/broken-motor/broken_ring_motor_edge_late/src/rmo.c	2026-11-13 04:59:28.912267542 +0000
+@@ -37,7 +37,7 @@
+ 	(void)rhw_motor()->set(high);
+ 	pin_high = high;
+ 	if (cb.edge != NULL) {
+-		cb.edge(high, rhw_clock()->cycles());
++		cb.edge(high, rhw_clock()->cycles() + rhw_clock()->cycles_per_sec() / 100u);
+ 	}
+ 	if (high) {
+ 		pulse_ticks = k_uptime_ticks();
+INFO    - 1/1 native_sim/native         ring_motor.sim                                     FAILED rc=1 (native 0.059s <host/gnu>)
+    Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_charge.c:64: motor_charge_test_charge_per_pattern: (t_charge(lows)->cycles not equal to t_edge(k)->cycles)
+ FAIL - test_charge_per_pattern in 0.181 seconds
+ PASS - test_cut_pulse_charge in 1.151 seconds
+ PASS - test_no_charge_without_a_pulse in 1.041 seconds
+TESTSUITE motor_charge failed.
+    Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_player.c:287: motor_player_test_edge_times_reported: ((int64_t)t_edge(k)->cycles not equal to ev[k].t_us)
+ FAIL - test_edge_times_reported in 0.181 seconds
+ PASS - test_every_pattern_pin_times in 2.466 seconds
+ PASS - test_one_high_per_on_segment in 2.616 seconds
+ PASS - test_pattern_table in 0.000 seconds
+ PASS - test_pin_low_between_patterns in 1.841 seconds
+ PASS - test_replace_in_gap in 0.601 seconds
+ PASS - test_replace_rules in 49.500 seconds
+ PASS - test_same_pattern_restarts in 1.101 seconds
+ PASS - test_stop_pin_low_at_once in 1.601 seconds
+ PASS - test_unknown_id in 0.101 seconds
+ PASS - test_vibration_off_keeps_the_others in 2.701 seconds
+TESTSUITE motor_player failed.
+SUITE FAIL -  66.67% [motor_charge]: pass = 2, fail = 1, skip = 0, total = 3 duration = 2.373 seconds
+ - FAIL - [motor_charge.test_charge_per_pattern] duration = 0.181 seconds
+ - PASS - [motor_charge.test_cut_pulse_charge] duration = 1.151 seconds
+ - PASS - [motor_charge.test_no_charge_without_a_pulse] duration = 1.041 seconds
+SUITE FAIL -  90.91% [motor_player]: pass = 10, fail = 1, skip = 0, total = 11 duration = 62.709 seconds
+ - FAIL - [motor_player.test_edge_times_reported] duration = 0.181 seconds
+ - PASS - [motor_player.test_every_pattern_pin_times] duration = 2.466 seconds
+ - PASS - [motor_player.test_one_high_per_on_segment] duration = 2.616 seconds
+ - PASS - [motor_player.test_pattern_table] duration = 0.000 seconds
+ - PASS - [motor_player.test_pin_low_between_patterns] duration = 1.841 seconds
+ - PASS - [motor_player.test_replace_in_gap] duration = 0.601 seconds
+ - PASS - [motor_player.test_replace_rules] duration = 49.500 seconds
+ - PASS - [motor_player.test_same_pattern_restarts] duration = 1.101 seconds
+ - PASS - [motor_player.test_stop_pin_low_at_once] duration = 1.601 seconds
+ - PASS - [motor_player.test_unknown_id] duration = 0.101 seconds
+ - PASS - [motor_player.test_vibration_off_keeps_the_others] duration = 2.701 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 22.22 seconds.
+INFO    - 12 of 14 executed test cases passed (85.71%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_motor.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy edge_late, native_sim: 1 (log /ws/out/20261113-055544-u-motor-unit/broken-motor/twister-edge_late-native_sim.log)
+edge_late on native_sim: the named case failed, as required:  - FAIL - [motor_player.test_edge_times_reported] duration = 0.181 seconds (failed cases listed: 2)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_motor.sim                               FAILED rc=1 (native 0.060s <host/gnu>)
+d_00: @00:00:00.180193      Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_charge.c:64: motor_charge_test_charge_per_pattern: (t_charge(lows)->cycles not equal to t_edge(k)->cycles)
+d_00: @00:00:00.180193   FAIL - test_charge_per_pattern in 0.181 seconds
+d_00: @00:00:01.330593   PASS - test_cut_pulse_charge in 1.151 seconds
+d_00: @00:00:02.370793   PASS - test_no_charge_without_a_pulse in 1.041 seconds
+d_00: @00:00:02.370793  TESTSUITE motor_charge failed.
+d_00: @00:00:02.550893      Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_player.c:287: motor_player_test_edge_times_reported: ((int64_t)t_edge(k)->cycles not equal to ev[k].t_us)
+d_00: @00:00:02.550893   FAIL - test_edge_times_reported in 0.181 seconds
+d_00: @00:00:05.016593   PASS - test_every_pattern_pin_times in 2.466 seconds
+d_00: @00:00:07.632393   PASS - test_one_high_per_on_segment in 2.616 seconds
+d_00: @00:00:07.632393   PASS - test_pattern_table in 0.000 seconds
+d_00: @00:00:09.473293   PASS - test_pin_low_between_patterns in 1.841 seconds
+d_00: @00:00:10.073493   PASS - test_replace_in_gap in 0.601 seconds
+d_00: @00:00:59.573293   PASS - test_replace_rules in 49.500 seconds
+d_00: @00:01:00.673493   PASS - test_same_pattern_restarts in 1.101 seconds
+d_00: @00:01:02.273693   PASS - test_stop_pin_low_at_once in 1.601 seconds
+d_00: @00:01:02.373793   PASS - test_unknown_id in 0.101 seconds
+d_00: @00:01:05.074593   PASS - test_vibration_off_keeps_the_others in 2.701 seconds
+d_00: @00:01:05.074593  TESTSUITE motor_player failed.
+d_00: @00:01:05.074593  SUITE FAIL -  66.67% [motor_charge]: pass = 2, fail = 1, skip = 0, total = 3 duration = 2.373 seconds
+d_00: @00:01:05.074593   - FAIL - [motor_charge.test_charge_per_pattern] duration = 0.181 seconds
+d_00: @00:01:05.074593   - PASS - [motor_charge.test_cut_pulse_charge] duration = 1.151 seconds
+d_00: @00:01:05.074593   - PASS - [motor_charge.test_no_charge_without_a_pulse] duration = 1.041 seconds
+d_00: @00:01:05.074593  SUITE FAIL -  90.91% [motor_player]: pass = 10, fail = 1, skip = 0, total = 11 duration = 62.709 seconds
+d_00: @00:01:05.074593   - FAIL - [motor_player.test_edge_times_reported] duration = 0.181 seconds
+d_00: @00:01:05.074593   - PASS - [motor_player.test_every_pattern_pin_times] duration = 2.466 seconds
+d_00: @00:01:05.074593   - PASS - [motor_player.test_one_high_per_on_segment] duration = 2.616 seconds
+d_00: @00:01:05.074593   - PASS - [motor_player.test_pattern_table] duration = 0.000 seconds
+d_00: @00:01:05.074593   - PASS - [motor_player.test_pin_low_between_patterns] duration = 1.841 seconds
+d_00: @00:01:05.074593   - PASS - [motor_player.test_replace_in_gap] duration = 0.601 seconds
+d_00: @00:01:05.074593   - PASS - [motor_player.test_replace_rules] duration = 49.500 seconds
+d_00: @00:01:05.074593   - PASS - [motor_player.test_same_pattern_restarts] duration = 1.101 seconds
+d_00: @00:01:05.074593   - PASS - [motor_player.test_stop_pin_low_at_once] duration = 1.601 seconds
+d_00: @00:01:05.074593   - PASS - [motor_player.test_unknown_id] duration = 0.101 seconds
+d_00: @00:01:05.074593   - PASS - [motor_player.test_vibration_off_keeps_the_others] duration = 2.701 seconds
+d_00: @00:01:05.074593  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.19 seconds.
+INFO    - 12 of 14 executed test cases passed (85.71%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_motor.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy edge_late, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-055544-u-motor-unit/broken-motor/twister-edge_late-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+edge_late on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:01:05.074593   - FAIL - [motor_player.test_edge_times_reported] duration = 0.181 seconds (failed cases listed: 2)
+##### broken copy: allowance_5ms
+diff -u -r /ws/firmware/modules/ring_motor/src/rmo_logic.c /ws/out/20261113-055544-u-motor-unit/broken-motor/broken_ring_motor_allowance_5ms/src/rmo_logic.c
+--- /ws/firmware/modules/ring_motor/src/rmo_logic.c	2026-11-13 04:51:12.000000000 +0000
++++ /ws/out/20261113-055544-u-motor-unit/broken-motor/broken_ring_motor_allowance_5ms/src/rmo_logic.c	2026-11-13 05:00:21.057120695 +0000
+@@ -85,7 +85,7 @@
+ 
+ uint32_t rml_pulse_uas(uint32_t t_on_ms)
+ {
+-	return t_on_ms * RREC_MOTOR_RUN_MA + RREC_MOTOR_START_MS * RREC_MOTOR_START_MA;
++	return t_on_ms * RREC_MOTOR_RUN_MA + 5u * RREC_MOTOR_START_MA;
+ }
+ 
+ uint32_t rml_pattern_uas(uint8_t id)
+INFO    - 1/1 native_sim/native         ring_motor.sim                                     FAILED rc=1 (native 0.093s <host/gnu>)
+    Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_charge.c:53: motor_charge_test_charge_per_pattern: (t_charge(k)->uas not equal to q[i].pulse_uas[k])
+ FAIL - test_charge_per_pattern in 0.181 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_charge.c:106: motor_charge_test_cut_pulse_charge: (t_charge(0)->uas not equal to (uint32_t)(el_ms * 80 + 1750))
+ FAIL - test_cut_pulse_charge in 0.051 seconds
+ PASS - test_no_charge_without_a_pulse in 1.041 seconds
+TESTSUITE motor_charge failed.
+ PASS - test_edge_times_reported in 2.466 seconds
+ PASS - test_every_pattern_pin_times in 2.466 seconds
+ PASS - test_one_high_per_on_segment in 2.616 seconds
+ PASS - test_pattern_table in 0.000 seconds
+ PASS - test_pin_low_between_patterns in 1.841 seconds
+ PASS - test_replace_in_gap in 0.601 seconds
+ PASS - test_replace_rules in 49.500 seconds
+ PASS - test_same_pattern_restarts in 1.101 seconds
+ PASS - test_stop_pin_low_at_once in 1.601 seconds
+ PASS - test_unknown_id in 0.101 seconds
+ PASS - test_vibration_off_keeps_the_others in 2.701 seconds
+SUITE FAIL -  33.33% [motor_charge]: pass = 1, fail = 2, skip = 0, total = 3 duration = 1.273 seconds
+ - FAIL - [motor_charge.test_charge_per_pattern] duration = 0.181 seconds
+ - FAIL - [motor_charge.test_cut_pulse_charge] duration = 0.051 seconds
+ - PASS - [motor_charge.test_no_charge_without_a_pulse] duration = 1.041 seconds
+SUITE PASS - 100.00% [motor_player]: pass = 11, fail = 0, skip = 0, total = 11 duration = 64.994 seconds
+ - PASS - [motor_player.test_edge_times_reported] duration = 2.466 seconds
+ - PASS - [motor_player.test_every_pattern_pin_times] duration = 2.466 seconds
+ - PASS - [motor_player.test_one_high_per_on_segment] duration = 2.616 seconds
+ - PASS - [motor_player.test_pattern_table] duration = 0.000 seconds
+ - PASS - [motor_player.test_pin_low_between_patterns] duration = 1.841 seconds
+ - PASS - [motor_player.test_replace_in_gap] duration = 0.601 seconds
+ - PASS - [motor_player.test_replace_rules] duration = 49.500 seconds
+ - PASS - [motor_player.test_same_pattern_restarts] duration = 1.101 seconds
+ - PASS - [motor_player.test_stop_pin_low_at_once] duration = 1.601 seconds
+ - PASS - [motor_player.test_unknown_id] duration = 0.101 seconds
+ - PASS - [motor_player.test_vibration_off_keeps_the_others] duration = 2.701 seconds
+PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 22.09 seconds.
+INFO    - 12 of 14 executed test cases passed (85.71%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_motor.sim on native_sim/native failed (rc=1)
+twister exit code on the broken copy allowance_5ms, native_sim: 1 (log /ws/out/20261113-055544-u-motor-unit/broken-motor/twister-allowance_5ms-native_sim.log)
+allowance_5ms on native_sim: the named case failed, as required:  - FAIL - [motor_charge.test_charge_per_pattern] duration = 0.181 seconds (failed cases listed: 2)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_motor.sim                               FAILED rc=1 (native 0.032s <host/gnu>)
+d_00: @00:00:00.180193      Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_charge.c:53: motor_charge_test_charge_per_pattern: (t_charge(k)->uas not equal to q[i].pulse_uas[k])
+d_00: @00:00:00.180193   FAIL - test_charge_per_pattern in 0.181 seconds
+d_00: @00:00:00.230293      Assertion failed at WEST_TOPDIR/firmware/tests/motor/src/test_charge.c:106: motor_charge_test_cut_pulse_charge: (t_charge(0)->uas not equal to (uint32_t)(el_ms * 80 + 1750))
+d_00: @00:00:00.230293   FAIL - test_cut_pulse_charge in 0.051 seconds
+d_00: @00:00:01.270493   PASS - test_no_charge_without_a_pulse in 1.041 seconds
+d_00: @00:00:01.270493  TESTSUITE motor_charge failed.
+d_00: @00:00:03.736193   PASS - test_edge_times_reported in 2.466 seconds
+d_00: @00:00:06.201893   PASS - test_every_pattern_pin_times in 2.466 seconds
+d_00: @00:00:08.817693   PASS - test_one_high_per_on_segment in 2.616 seconds
+d_00: @00:00:08.817693   PASS - test_pattern_table in 0.000 seconds
+d_00: @00:00:10.658593   PASS - test_pin_low_between_patterns in 1.841 seconds
+d_00: @00:00:11.258793   PASS - test_replace_in_gap in 0.601 seconds
+d_00: @00:01:00.758593   PASS - test_replace_rules in 49.500 seconds
+d_00: @00:01:01.858793   PASS - test_same_pattern_restarts in 1.101 seconds
+d_00: @00:01:03.458993   PASS - test_stop_pin_low_at_once in 1.601 seconds
+d_00: @00:01:03.559093   PASS - test_unknown_id in 0.101 seconds
+d_00: @00:01:06.259893   PASS - test_vibration_off_keeps_the_others in 2.701 seconds
+d_00: @00:01:06.259893  SUITE FAIL -  33.33% [motor_charge]: pass = 1, fail = 2, skip = 0, total = 3 duration = 1.273 seconds
+d_00: @00:01:06.259893   - FAIL - [motor_charge.test_charge_per_pattern] duration = 0.181 seconds
+d_00: @00:01:06.259893   - FAIL - [motor_charge.test_cut_pulse_charge] duration = 0.051 seconds
+d_00: @00:01:06.259893   - PASS - [motor_charge.test_no_charge_without_a_pulse] duration = 1.041 seconds
+d_00: @00:01:06.259893  SUITE PASS - 100.00% [motor_player]: pass = 11, fail = 0, skip = 0, total = 11 duration = 64.994 seconds
+d_00: @00:01:06.259893   - PASS - [motor_player.test_edge_times_reported] duration = 2.466 seconds
+d_00: @00:01:06.259893   - PASS - [motor_player.test_every_pattern_pin_times] duration = 2.466 seconds
+d_00: @00:01:06.259893   - PASS - [motor_player.test_one_high_per_on_segment] duration = 2.616 seconds
+d_00: @00:01:06.259893   - PASS - [motor_player.test_pattern_table] duration = 0.000 seconds
+d_00: @00:01:06.259893   - PASS - [motor_player.test_pin_low_between_patterns] duration = 1.841 seconds
+d_00: @00:01:06.259893   - PASS - [motor_player.test_replace_in_gap] duration = 0.601 seconds
+d_00: @00:01:06.259893   - PASS - [motor_player.test_replace_rules] duration = 49.500 seconds
+d_00: @00:01:06.259893   - PASS - [motor_player.test_same_pattern_restarts] duration = 1.101 seconds
+d_00: @00:01:06.259893   - PASS - [motor_player.test_stop_pin_low_at_once] duration = 1.601 seconds
+d_00: @00:01:06.259893   - PASS - [motor_player.test_unknown_id] duration = 0.101 seconds
+d_00: @00:01:06.259893   - PASS - [motor_player.test_vibration_off_keeps_the_others] duration = 2.701 seconds
+d_00: @00:01:06.259893  PROJECT EXECUTION FAILED
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 27.02 seconds.
+INFO    - 12 of 14 executed test cases passed (85.71%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_motor.sim on nrf54lm20bsim/nrf54lm20a/cpuapp failed (rc=1)
+twister exit code on the broken copy allowance_5ms, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-055544-u-motor-unit/broken-motor/twister-allowance_5ms-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+allowance_5ms on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:01:06.259893   - FAIL - [motor_charge.test_charge_per_pattern] duration = 0.181 seconds (failed cases listed: 2)
+RESULT PASS
+=== part broken-motor end 2026-11-13T05:01:12Z exit 0
+UNIT PASS tests/motor
+# finished (Mac clock): 2026-11-13 06:01:15 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-055544-u-motor.log

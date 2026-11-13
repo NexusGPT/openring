@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Charging case options</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --ink:#15171b; --mute:#5d636c; --line:#dfe2e7; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; }
+  body { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; color:var(--ink);
+         background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 55%, #e6e8ec 100%); }
+  header { padding:14px 22px; border-bottom:1px solid var(--line); background:rgba(255,255,255,.85); display:flex; flex-wrap:wrap; gap:6px 24px; align-items:baseline; }
+  header h1 { font-size:14px; font-weight:600; letter-spacing:.04em; margin:0; text-transform:uppercase; }
+  header span { font-size:12.5px; color:var(--mute); }
+  #panels { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); }
+  .panel { display:flex; flex-direction:column; min-width:0; border-right:1px solid var(--line); }
+  .panel:last-child { border-right:0; }
+  .stage { position:relative; height:52vh; min-height:340px; }
+  .stage canvas { position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:none; cursor:grab; }
+  .stage canvas:active { cursor:grabbing; }
+  .msg { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px; color:var(--mute); font-size:14px; pointer-events:none; }
+  .ctl { display:flex; flex-wrap:wrap; gap:8px 14px; justify-content:center; padding:8px 12px; }
+  .seg { display:flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#fff; }
+  .seg button { font:inherit; font-size:12.5px; padding:6px 12px; border:0; background:#fff; color:var(--ink); cursor:pointer; border-right:1px solid var(--line); }
+  .seg button:last-child { border-right:0; }
+  .seg button:hover { background:#f1f2f4; }
+  .seg button.on { background:var(--ink); color:#fff; }
+  .info { padding:6px 20px 20px; }
+  .info .t { display:flex; align-items:center; gap:10px; }
+  .badge { font-weight:700; font-size:20px; width:32px; height:32px; border-radius:50%; background:var(--ink); color:#fff; display:inline-flex; align-items:center; justify-content:center; flex:none; }
+  .info h2 { font-size:17px; margin:0; font-weight:600; }
+  .info p { margin:10px 0 0; font-size:13px; line-height:1.5; }
+  .info dl { margin:12px 0 0; font-size:12.5px; line-height:1.45; display:grid; grid-template-columns:max-content 1fr; gap:4px 14px; }
+  .info dt { color:var(--mute); }
+  .info dd { margin:0; }
+  .info .worse { margin-top:12px; padding:8px 10px; background:#fff; border:1px solid var(--line); border-radius:8px; font-size:12.5px; line-height:1.45; }
+  .pics { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; padding:0 20px 28px; }
+  .pics a { display:block; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#fff; text-decoration:none; color:var(--mute); font-size:11.5px; }
+  .pics img { display:block; width:100%; height:auto; }
+  .pics span { display:block; padding:5px 8px; }
+  .wide { padding:0 20px 36px; }
+  .wide h3 { font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--mute); margin:18px 0 8px; font-weight:600; }
+  .wide img { display:block; max-width:100%; border:1px solid var(--line); border-radius:8px; background:#fff; }
+  .wide p { font-size:13px; line-height:1.5; max-width:900px; }
+  @media (max-width: 900px) { #panels { grid-template-columns:1fr; } .panel { border-right:0; border-bottom:1px solid var(--line); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Charging case: two options</h1>
+  <span>Drag to turn, scroll or pinch to zoom, right-drag to move. Both hold ring sizes US 7 to 13. Ring shown: US 9. The colours and the metal are a viewer look, not a measured finish.</span>
+</header>
+<div id="panels"></div>
+<div class="wide">
+  <h3>Both at one scale</h3>
+  <img src="../c6/look/case-compare-c5b-c6.png" alt="Option 1 on the left and option 2 on the right, at one scale with a 20 mm bar">
+  <p>Neither option is a flat pebble. The ring lies round the centre post with its screen block standing 29.3 mm tall, so a case of this kind is about 40 mm high.</p>
+</div>
+<script type="importmap">
+{ "imports": {
+  "three": "../concepts/lib/three/build/three.module.js",
+  "three/addons/": "../concepts/lib/three/examples/jsm/"
+} }
+</script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

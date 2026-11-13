@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ring sizes to scale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text&family=Geist:wght@400;500;600&family=Geist+Mono&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; color:#111214; font:15px/1.45 "Geist", -apple-system, Arial, sans-serif; }
+  header { padding:28px 36px 4px; max-width:1100px; }
+  h1 { font-family:"Libre Caslon Text", Georgia, serif; font-weight:400; font-size:30px; margin:0 0 8px; }
+  header p { margin:0 0 6px; color:#33373d; }
+  .grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:0; margin:18px 36px 36px; border-top:1px solid #e7e8ea; }
+  .opt { padding:18px 22px 22px; border-right:1px solid #eeeff1; }
+  .opt:last-child { border-right:0; }
+  .lab { font-family:"Geist Mono", monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#8a9099; }
+  h2 { font-family:"Libre Caslon Text", Georgia, serif; font-weight:400; font-size:23px; margin:2px 0 2px; }
+  .size { font-weight:600; margin-bottom:8px; }
+  svg { display:block; width:100%; height:auto; margin:6px 0 2px; }
+  dl { display:grid; grid-template-columns: 96px 1fr; row-gap:6px; column-gap:10px; margin:10px 0 0; font-size:14px; }
+  dt { color:#8a9099; } dd { margin:0; }
+  .no { color:#c24e00; }
+  footer { padding:0 36px 36px; color:#6a6f78; font-size:13px; max-width:1100px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Three ring sizes, drawn to the same scale</h1>
+  <p>Each drawing shows the ring from above on a finger 18 mm wide, then from the fingertip. The bright rectangle is the lit part of the screen. One square of the grey grid is 5 mm.</p>
+  <p>Why not 22 x 15 mm: no colour screen on sale is that small. The reference ring's own screen is 0.9 inch, so its lit area alone is about 19 x 13 mm. The two slim options below use the two smallest colour screens on sale.</p>
+</header>
+<div class="grid" id="root"></div>
+<footer>Battery and hour figures are estimates until a prototype is measured. Hours are given at the power draw of a Plaud recorder (13 mA), then at my lower estimate for this design.</footer>
+<script>
+const K = 11; // px per mm
+const O = [
+ {id:"OLD", tag:"Rejected", name:"The three you rejected", x:33, y:22, z:10.4, scr:[21.6,10.8], scrOff:[0,-2.5],
+  rows:[["Screen","0.95 inch, 120 x 240, long"],["Battery","135 mAh"],["Recording","about 10 h, up to 27 h"],["Microphones","4"]]},
+ {id:"W", tag:"Option W · wide", name:"Slim and wide", x:24, y:20, z:6.5, scr:[20.03,13.36], scrOff:[0,-2.3],
+  rows:[["Screen","0.95 inch, 180 x 120, the format of your reference ring"],["Battery","about 57 to 74 mAh"],["Recording","about 4 to 6 h, up to 11 to 15 h"],["Microphones","2"],["Across the finger","20 mm, as wide as the finger"],["Open point","one seller lists this screen at 19 dollars; another list marks it end of production"]]},
+ {id:"L", tag:"Option L · long", name:"Slim and narrow", x:29, y:14.4, z:6.5, scr:[21.6,10.8], scrOff:[-1.9,0],
+  rows:[["Screen","0.95 inch, 120 x 240, the screen already in the design"],["Battery","about 48 to 62 mAh"],["Recording","about 4 to 5 h, up to 10 to 13 h"],["Microphones","2"],["Across the finger","14.4 mm, narrower than the finger"],["Open point","the tightest circuit board of the three"]]}
+];
+function draw(o){
+  const W = 40*K, H1 = 26*K, H2 = 34*K, cx = W/2;
+  let s = `<svg viewBox="0 0 ${W} ${H1+H2}" xmlns="http://www.w3.org/2000/svg">`;
+  s += `<defs><pattern id="g${o.id}" width="${5*K}" height="${5*K}" patternUnits="userSpaceOnUse"><path d="M ${5*K} 0 L 0 0 0 ${5*K}" fill="none" stroke="#eef0f2" stroke-width="1"/></pattern></defs>`;
+  s += `<rect width="${W}" height="${H1+H2}" fill="url(#g${o.id})"/>`;
+  const cy = H1/2;
+  s += `<rect x="0" y="${cy-9*K}" width="${W}" height="${18*K}" fill="#f1e4d8"/>`;
+  s += `<rect x="${cx-3*K}" y="${cy-9.8*K}" width="${6*K}" height="${19.6*K}" rx="${0.8*K}" fill="#2a2b2e"/>`;
+  s += `<rect x="${cx-o.x/2*K}" y="${cy-o.y/2*K}" width="${o.x*K}" height="${o.y*K}" rx="${2.6*K}" fill="#0b0b0d"/>`;
+  s += `<rect x="${cx+(o.scrOff[0]-o.scr[0]/2)*K}" y="${cy+(o.scrOff[1]-o.scr[1]/2)*K}" width="${o.scr[0]*K}" height="${o.scr[1]*K}" rx="${0.8*K}" fill="#3a3f48"/>`;
+  s += `<text x="${cx}" y="${cy-Math.max(o.y/2,9.8)*K-8}" text-anchor="middle" font-family="Geist Mono, monospace" font-size="12" fill="#6a6f78">${o.x} mm along the finger</text>`;
+  const fy = H1 + 21*K, R = 9*K;
+  s += `<circle cx="${cx}" cy="${fy}" r="${R+1.6*K}" fill="#2a2b2e"/>`;
+  s += `<circle cx="${cx}" cy="${fy}" r="${R}" fill="#f1e4d8"/>`;
+  const top = fy - R - 0.4*K - o.z*K;
+  s += `<rect x="${cx-o.y/2*K}" y="${top}" width="${o.y*K}" height="${o.z*K+1.2*K}" rx="${1.6*K}" fill="#0b0b0d"/>`;
+  s += `<text x="${cx}" y="${top-8}" text-anchor="middle" font-family="Geist Mono, monospace" font-size="12" fill="#6a6f78">${o.y} mm across, ${o.z} mm tall</text>`;
+  s += `</svg>`;
+  return s;
+}
+const root = document.getElementById('root');
+for (const o of O) {
+  const d = document.createElement('section'); d.className = 'opt'; d.id = o.id;
+  d.innerHTML = `<div class="lab ${o.id==='OLD'?'no':''}">${o.tag}</div><h2>${o.name}</h2><div class="size">${o.x} x ${o.y} x ${o.z} mm</div>${draw(o)}<dl>${o.rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl>`;
+  root.appendChild(d);
+}
+document.fonts.ready.then(()=>{ window.__ready = true; });
+</script>
+</body>
+</html>

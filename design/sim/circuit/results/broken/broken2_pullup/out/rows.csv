@@ -1,0 +1,11 @@
+id,qty,op,limit,unit,value,ok,why,source,kind
+R5.1,shifter.ab_high_at_card_min,>=,0.625*3.0,V,2.99943,PASS,,"CS CSNP32GCR01-BOW p8 VIH minimum 0.625 Vcc at Vcc 3.0 V (SCK, MOSI, CS lines B side; A side driven high at the main chip's 1.8 V)",
+R5.2,shifter.ab_low_at_card_max,<=,0.25*3.0,V,0.0036332,PASS,,CS p8 VIL maximum 0.25 Vcc,
+R5.3,shifter.ba_high_at_chip_min,>=,0.7*1.8,V,1.8,PASS,,"main chip input high 0.7 x VDD: Nordic nRF54LM20A limit NOT FOUND on disk; stand-in = nRF54L15 datasheet of another maker (IndieSemiC ISC-nRF54L15-A p15, Table 3), sibling chip",
+R5.4,shifter.ba_low_at_chip_max,<=,0.3*1.8,V,0,PASS,,"same stand-in, input low 0.3 x VDD",
+R5.5,shifter.idle_high_at_chip_min,>=,0.7*1.8,V,1.8,PASS,,"card lines released (card outputs Hi-Z), pull-ups R60 R63 R64 R65 to VDD_SD, shifter B to A: same stand-in",
+R5.6,shifter.pullup_high_at_card_min,>=,0.625*3.0,V,0,FAIL,,"pulled-up card inputs (DAT1, DAT2) with the card's worst input leakage 10 uA (CS p8 IIN): level must stay above VIH",
+R5.7,shifter.vcc_isolation_leak_max,<=,0.1,V,0,PASS,,"SN74AXC4T774 datasheet SCES898C (design/datasheets/w1_ti_sn74axc4t774.pdf) p6 and sch-notes.md 11.3: with VDD_SD off, B-port nodes must not be driven above 100 mV isolation level by the A side",
+R5.8,shifter.idle_high_at_shifter_min,>=,2.0,V,2.34009,PASS,,"SN74AXC4T774 datasheet SCES898C p5 Table 5.3: data input VIH 2.0 V for VCCI 3 V to 3.6 V; card lines released (card outputs Hi-Z) with the card's worst leakage 10 uA (CS p8 IIN) and the shifter input leakage 8 uA (SCES898C p6 II, data inputs, -40 to 125 C) on the 47 kohm pull-ups",
+R5.9,shifter.card_low_at_shifter_max,<=,0.8,V,0.219641,PASS,,"SN74AXC4T774 datasheet SCES898C p5 Table 5.3: data input VIL 0.8 V for VCCI 3 V to 3.6 V; card drives DAT0 low through its weakest allowed output (VOL 0.125 VCC at 100 uA, CS p8) against the 47 kohm pull-up R60",
+R5.10,shifter.card_high_at_shifter_min,>=,2.0,V,2.94913,PASS,,"same file p5, VIH 2.0 V; card drives DAT0 high through its weakest allowed output (VOH 0.75 VCC at 100 uA, CS p8) with the shifter input leakage 8 uA (SCES898C p6)",

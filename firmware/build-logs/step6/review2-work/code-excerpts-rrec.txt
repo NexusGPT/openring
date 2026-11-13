@@ -1,0 +1,172 @@
+141: static int mount_now(void)
+142: {
+143: 	struct rst_mount_info mi;
+144: 	int r;
+145: 
+146: 	if (rst_mounted()) {
+147: 		return 0;
+148: 	}
+149: 	r = rst_mount(false, &mi);   /* VDD_SD on, mount (FW l.126, l.506) */
+150: 	if (r == 0) {
+151: 		rrec_st.card_sectors = mi.card_sectors;
+152: 	}
+153: 	return r;
+154: }
+155: 
+156: /* ------------------------------------------------------------------ open (FW l.126, l.455 to l.460) */
+157: static void open_recording(rc_ms_t t)
+158: {
+159: 	struct rau_start_args sa;
+160: 	uint32_t id = 0;
+229: int rrec_close(rc_ms_t mark)
+230: {
+231: 	struct rau_cut_result cr;
+232: 	int r;
+233: 
+234: 	if (!rrec_st.recording) {
+235: 		return 0;
+236: 	}
+237: 	memset(&cr, 0, sizeof(cr));
+238: 	r = rau_cut(mark, &cr);                  /* the frames up to the mark kept; the partial chunk (FW l.448) */
+239: 	(void)rst_close(cr.last, &cr.close);     /* partial chunk, CLOSE record, superblock with the flag clear */
+240: 	(void)rau_halt();                        /* stop PDM, blocks released, clocks low (FW l.463) */
+241: 	(void)rec_mics_off();                    /* VDD_MIC off */
+242: 	(void)rau_release();                     /* HFXO after VDD_MIC (FW l.463) */
+243: 	(void)rst_unmount();                     /* VDD_SD off */
+244: 	rrec_st.recording = false;
+245: 	last_closed_id = rrec_st.rec_id;
+344: 	return radio_stop_rc;
+345: }
+346: #endif
+347: 
+348: /* The recorder's thread, after the step that asked for ship mode ended (RREC_JOB_SHIP): the screens were told the new
+349:  * state (SHIP or OFF) in that step, the menu's power off no longer holds the screens thread (R6-10). */
+350: void rrec_ship_now(void)
+351: {
+352: 	int64_t end = rhw_clock()->now_ms() + RREC_PAT_M2_MS + SHIP_M2_MARGIN_MS;
+353: 	int r;
+354: 
+355: 	/* the M2 of FW l.151 is felt whole (R6-01), then no motor while the chip is cut */
+356: 	while (rmo_playing() && rhw_clock()->now_ms() < end) {
+357: 		k_sleep(K_MSEC(5));
+358: 	}
+359: 	rmo_stop();
+360: 	/* step 1 (FW l.937, R6-02): close everything: recording, storage, USB, radio, screen */
+361: 	if (rrec_st.recording) {
+362: 		(void)rrec_close(rhw_clock()->now_ms());   /* the rows close it before; kept as the last guard */
+363: 	}
+364: 	(void)unmount_now();                     /* storage closed (the queued log records are written first) */
+365: 	(void)rxf_stop(FINISH_WAIT_MS);          /* USB: the command aborted, the stack disabled */
+366: 	if (rrec_st.usb_hfxo) {
+367: 		(void)rhw_hfxo()->release();
+368: 		rrec_st.usb_hfxo = false;
+369: 	}
+370: #if defined(CONFIG_RING_DEVICES)
+371: 	r = rdev_stop();                         /* radio: this part's advertising and link; the ship beacon (R20) stays */
+372: #else
+373: 	r = 0;
+374: #endif
+375: #if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
+376: 	radio_stops++;
+377: 	radio_stop_rc = r;
+378: #else
+379: 	ARG_UNUSED(r);
+380: #endif
+381: 	rscr_sync();                             /* screen: the screens thread drew SCR_OFF (panel off) for SHIP or OFF */
+382: #if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
+383: 	if (ship_hook != NULL) {
+384: 		ship_hook();
+385: 	}
+386: #endif
+387: #if defined(CONFIG_RING_FACTORY)
+388: 	(void)rpw_ship(rfa_beacon_stop);         /* steps 2 to 5; the beacon stops right before the ship task (R20) */
+389: #else
+390: 	(void)rpw_ship(NULL);
+391: #endif
+392: }
+393: 
+394: /* the recorder's thread: a failed unmount tried again (RREC_JOB_UNMOUNT) while the state still wants VDD_SD off */
+395: void rrec_unmount_retry(void)
+396: {
+397: 	enum rc_state s = rrec_core_state();
+398: 
+399: 	if (s == RC_ST_RECOVERY || s == RC_ST_RECORDING || s == RC_ST_TRANSFER || s == RC_ST_BOOT ||
+400: 	    s == RC_ST_FACTORY_TEST) {
+401: 		/* the state wants the card (or runs its own sequence): the tries end with the last errno */
+402: 		unmount_tries_end(unmount_last_err);
+403: 		return;
+404: 	}
+405: 	unmount_last_err = unmount_now();
+406: }
+407: 
+408: static void play(enum rrec_pattern p)
+409: {
+410: 	(void)rmo_play(p);
+411: }
+412: 
+500: 		/* the time of CENTRE_DOWN is in the action list: rrec_glue_after() passes it to the audio part */
+501: 		break;
+502: 	case RC_ACT_FINISH_COMMAND:
+503: 		(void)rxf_finish(FINISH_WAIT_MS);
+504: 		break;
+505: 	case RC_ACT_ABORT_COMMAND:
+506: 		/* FW l.179: abort the command, then wait for it to end (bounded as rxf_finish) so that VDD_SD goes off in this
+507: 		 * step (R6-03) */
+508: 		rxf_abort();
+509: 		(void)rxf_finish(FINISH_WAIT_MS);
+510: 		break;
+511: 	default:
+512: 		/* the screen actions: the screens part reads them in rrec_glue_after() */
+513: 		break;
+514: 	}
+515: }
+516: 
+517: /* ------------------------------------------------------------------ after every core step */
+518: /* VDD_SD per state (FW l.912 to l.920): on in RECOVERY, RECORDING, TRANSFER; BOOT runs its own sequence and
+519:  * FACTORY_TEST is "per test" (the factory tests mount and unmount themselves). */
+520: static bool sd_wanted(enum rc_state s)
+521: {
+522: 	return s == RC_ST_RECOVERY || s == RC_ST_RECORDING || s == RC_ST_TRANSFER;
+523: }
+524: 
+525: static void usb_hfxo_running(void)
+526: {
+527: 	/* the USB part does not wait for the crystal: nothing to do when it runs */
+528: }
+529: 
+530: /* HFXO held by the join per FW 8.2 (review finding R6-04): on in BOOT and RECOVERY (l.915), CHARGING "when USB runs"
+531:  * (l.918: VBUS is present in CHARGING), TRANSFER (l.919), FACTORY_TEST (driven over USB); RECORDING's is the audio
+532:  * part's (rau_prepare); STANDBY and the error states "when the radio runs" (the radio's own request) */
+640: 	}
+641: 	if (prev == RC_ST_RECORDING && state != RC_ST_RECORDING && last_event == RC_EV_LONG_PRESS && last_closed_valid) {
+642: 		uint8_t args[12];
+643: 
+644: 		/* FW l.448: the press start time of a stop is written to the event log (the long press fires 1,000 ms
+645: 		 * after CENTRE_DOWN) */
+646: 		sys_put_le32(last_closed_id, args);
+647: 		sys_put_le64((uint64_t)(t - RREC_LONG_PRESS_MS), &args[4]);
+648: 		rrec_log(RREC_LOG_REC_STOP_PRESS, args, sizeof(args));
+649: 	}
+650: 	for (uint8_t i = 0; i < a->n; i++) {
+651: 		if (a->a[i] == RC_ACT_HIGHLIGHT) {
+652: 			rau_highlight(a->highlight_ms >= 0 ? a->highlight_ms : t);   /* the time of CENTRE_DOWN (FW l.159) */
+653: 		}
+654: 	}
+655: 	rpw_state(atomic_get(&rrec_st.test_recording) != 0 ? RC_ST_RECORDING : state);   /* ruling 8 of the root unit's notes */
+656: 	rails_follow_state(state);
+657: 	if (state == RC_ST_RECOVERY && prev != RC_ST_RECOVERY) {
+658: 		(void)rrec_post(RREC_JOB_RECOVER, 0);
+659: 	}
+660: 	if (rrec_st.reboot_pending) {
+661: 		rrec_st.reboot_pending = false;
+662: 		(void)rhw_image()->reboot(reboot_reason(last_event));
+663: 	}
+664: 	on = rscr_glue_after(a, last_event, state, t);
+665: 	if (rrec_st.ship_pending) {
+666: 		/* ship mode after the screens learned SHIP or OFF (the screen closes, R6-02), on the recorder's thread (R6-10) */
+667: 		rrec_st.ship_pending = false;
+668: 		(void)rrec_post(RREC_JOB_SHIP, 0);
+669: 	}
+670: 	return on;
+671: }
+672: 

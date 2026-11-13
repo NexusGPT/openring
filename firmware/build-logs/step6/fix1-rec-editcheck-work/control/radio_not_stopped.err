@@ -1,0 +1,10 @@
+--- a/ring_devices/src/rdev.c
++++ b/ring_devices/src/rdev.c
+@@ -503,7 +503,6 @@
+ 	int err = 0;
+ 
+ 	k_mutex_lock(&lk, K_FOREVER);
+-	stopped = true;
+ 	adv_stop();
+ 	if (cur_conn != NULL && !disconnecting) {
+ 		err = bt_conn_disconnect(cur_conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);

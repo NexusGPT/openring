@@ -1,0 +1,15 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -480,8 +480,7 @@
+ static void cts_notify_cb(struct bt_cts_client *c, struct bt_cts_current_time *t)
+ {
+ 	ARG_UNUSED(c);
+-	cts_apply(t);
+-	lti_refresh();
++	ARG_UNUSED(t);
+ }
+ 
+ /* ---------------------------------------------------------------- discovery */
+MODULE=ring_iphone
+SCEN=N
+EXPECT=RING CHECK g: the ring's clock follows the iPhone's time change \(two hours\) FAIL

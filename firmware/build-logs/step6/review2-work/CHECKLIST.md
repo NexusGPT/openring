@@ -1,0 +1,29 @@
+# Checklist (review 2 of step 6, commit c26ae988)
+
+- [x] 1. Pin: SRC equals c26ae988. evidence: pin-check.txt (38 EQUAL, diff identical)
+- [x] 2. A R6-01. evidence: code-excerpts-rrec.txt, copycheck.out, u3 l.589/599
+- [x] 3. A R6-02. evidence: code-excerpts-rrec.txt, code-excerpts1.txt, bsim-lines.txt, u3 l.624/635
+- [x] 4. A R6-03, 0x0290 row. evidence: lines-index2.txt, fw-lines.txt, u3-unmount-copy.txt
+- [x] 5. A R6-04. evidence: lines-index.txt, u3 l.696/705/716
+- [x] 6. A R6-05. evidence: fix-round.diff l.1251-1340, u3 l.748/767
+- [x] 7. A R6-06. evidence: lines-index.txt, r617-r612-check.txt (rfa.c uses), u3 l.790/800
+- [x] 8. B R6-07. evidence: recorder-notes.md l.368
+- [x] 9. B R6-08. evidence: lines-index.txt
+- [x] 10. B R6-09. evidence: citecheck.out c19
+- [x] 11. B R6-10. evidence: code-excerpts-rrec.txt
+- [x] 12. B R6-11. evidence: rsy-wdt.txt, spec-greps.txt
+- [x] 13. B R6-12. evidence: r617-r612-check.txt
+- [x] 14. B R6-13. evidence: citecheck.out c35, l30
+- [x] 15. B R6-14. evidence: code-excerpts2.txt
+- [x] 16. B R6-15 (F1). evidence: rau-halt.txt
+- [x] 17. B R6-16 (F2). evidence: citecheck.out l15, c32
+- [x] 18. B R6-17. evidence: r617-r612-check.txt
+- [x] 19. C every hunk of fix-round.diff read (37 files, 2,174 lines). evidence: fix-round.diff read in 5 parts
+- [x] 20. C B2 six rules. evidence: b2-check.txt
+- [x] 21. C seams. evidence: seam-greps1.txt, seam-greps2.txt, seam-rglue-callers.txt, rdev-rpw-check.txt
+- [x] 22. D spec hunks. evidence: spec-greps.txt, spec-d-check.txt
+- [x] 23. E 66 citations, 65 of 66. evidence: citecheck.out (earlier look citecheck.run1.out)
+- [x] 24. Fakes per new case (too little, too much). evidence: review R2-07, R2-08; reasoning in review bar A
+- [x] 25. Output file sections. evidence: audit.run3.out
+- [x] 26. No build, no test, no server command, no git write, no browser: only read-only git show/log/diff/cat-file/ls-tree used
+- [x] 27. Final audit. evidence: audit.run3.out (earlier looks audit.run1.out, audit.run2.out)

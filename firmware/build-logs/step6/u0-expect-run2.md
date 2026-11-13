@@ -1,0 +1,1 @@
+Expected result of run 2 (written before it ended): the devicetree error of run 1 gone (vendor-prefixes.txt); then the same as run 1 expectations (42 cases PASS on both boards, 4 broken copies fail their named case on both, UNIT PASS tests/rhw). Run 2 copies the sources at its start (04:36); header comment edits made after that start are not in it, so a final run follows.

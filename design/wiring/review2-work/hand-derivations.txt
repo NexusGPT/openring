@@ -1,0 +1,14 @@
+Hand derivations of review 2 (my reasoning on saved data; not a script result)
+
+1. J1 contact 1 side with the screen turned 180 degrees.
+Data: maker drawing page 5 (png/disp200-05.png): front view, cable down, contact numbers "15 ... 1" left to right; back view "1 ... 15"; side view marks "Contact Side" on the back of the cable. Pin table on the drawing: 3 MTP (the text table in display.txt line 193 prints "4 MTP", a typo; the drawing table says 3).
+Ring frame used by the guide: X = KiCad x - 100, Y = KiCad y - 100 (check_guide_facts.log: test pads, J1 centre and ANT1 Y +5.25 all match the guide). The screen face (B.Cu) faces +Z; KiCad's y-down frame seen from the B.Cu side with x to the right has y pointing up, so (X, Y, Z up) is right-handed.
+Panel seen from +Z, turned so the cable leaves toward +X (fingertip): the view's "down" (-y_view) maps to +X, so the view's right (+x_view, where contact 1 is) maps to +Y. Contacts are on the back face (toward -Z). The fold down at +X and back toward -X under the panel turns about an axis along Y: Y is kept, the contact face turns to +Z (up, away from the board). Result: contact 1 at +Y, contacts up. Board: J1 pad 1 at Y +2.097, pad 15 at Y -2.103, falling monotonically (check_guide_facts.log). Agrees with step 15 and with product-wiring.csv "contact k on position k".
+Not derived by me: that J1's opening (cable entry) is the +X side of the footprint; the study says so (screen-cable-study.md line 176); I read no Hirose catalogue page.
+
+2. J_BAND land mating (from pads/ring.csv and pads/flex1-us9.csv, pads/flex2-us9.csv).
+J_BAND_A ring: row y 96.125 lands 2,3,6,1 at x 96.985, 97.495, 98.005, 98.515; row y 95.225 lands 5,7,8,4. Tail: column x 50.475 lands 1,6,3,2 at y 78.985 .. 80.515; column x 51.375 lands 4,8,7,5. Map: ring_x = c1 - tail_y, ring_y = c2 - tail_x (matrix [[0,-1],[-1,0]], determinant -1: a mirror, which face-to-face mating needs).
+J_BAND_B ring: row y 103.875 lands 1,3,2,7 at x 96.985 .. 98.515; row y 104.775 lands 6,5,4. Tail: column x 50.475 lands 1,3,2,7 at y 79.485 .. 81.015; column 51.375 lands 6,5,4. Map: ring_x = tail_y + c1, ring_y = tail_x + c2 (matrix [[0,1],[1,0]], determinant -1: mirror). Each land number meets the same number; nets equal (check_lines.log, all 7 sizes).
+
+3. PRT1 lands on FLEX2 (pads/flex2-us9.csv): pad 1 VBAT x 56.4117, pad 3 NTC x 56.8417, pad 2 GND x 57.2717; J_BAND_B (slot end) at x 50.9. From the slot: 1, 3, 2 = P+, NTC, P-, as band-interface.md line 115 says.
+4. Motor lands on FLEX1 (pads/flex1-us9.csv): M1 pad 1 VMOT x 57.1508, pad 2 GND x 58.1508; slot end x 50.9: pad 1 (red, +) is nearer the slot, as band-interface.md line 123 says. FLEX1 and FLEX2 carry 0 silkscreen items (pads/dumps.log).

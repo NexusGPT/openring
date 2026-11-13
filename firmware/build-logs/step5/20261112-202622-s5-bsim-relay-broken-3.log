@@ -1,0 +1,69 @@
+# remote.sh run 20261112-202622-s5-bsim-relay-broken-3
+# command: tests/bsim/relay/run.sh --broken source_not_fixed
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 20:26:22 CET
+# free on the server's /: 46 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261112-202622-s5-bsim-relay-broken-3; server log /root/ring-os/logs/20261112-202622-s5-bsim-relay-broken-3.log
+bsim-relay: firmware /ws/firmware/tests/bsim/relay, outputs /ws/out/20261112-202622-s5-bsim-relay-broken-3-bsim-relay, scenarios , broken 1
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-202622-s5-bsim-relay-broken-3-bsim-relay/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+##### broken copy: source_not_fixed
+edited ring_iphone src/rip.c
+=== build ring-source_not_fixed for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-202622-s5-bsim-relay-broken-3-bsim-relay/build-ring-source_not_fixed.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring-source_not_fixed ok
+=== test B (broken-source_not_fixed): ring + stand-in, 120 simulated seconds, 2026-11-12T19:27:50Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-202622-s5-bsim-relay-broken-3-bsim-relay/run-broken-source_not_fixed-B-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK screens started (LVGL on the memory display) PASS (t=0)
+d_00: @00:00:01.780500  RING CHECK B: the first joystick event turns the screen on: SCR_STATUS PASS (t=1780)
+d_00: @00:00:02.560700  RING CHECK B: Right opens the menu PASS (t=2560)
+d_00: @00:00:05.681500  RING CHECK B: Pair device opens SCR_PAIR and the pairing window PASS (t=5681)
+d_00: @00:00:06.306516  RING PASSKEY slot 0 925850
+d_00: @00:00:06.324700  RING CHECK B: the passkey arrives from the pairing PASS (t=6324)
+d_00: @00:00:10.806429  RING EVENT paired slot 0
+d_00: @00:00:10.806429  RING EVENT link slot 0 up
+d_00: @00:00:10.807000  RING CHECK B: the stand-in paired and is the active device (slot 0) PASS (t=10807)
+d_00: @00:00:11.307102  RING CHECK B: after the pairing the screen shows SCR_DEVICES PASS (t=11307)
+d_00: @00:00:12.867570  RING CHECK B: back on the status screen PASS (t=12867)
+d_00: @00:00:12.867570  RING CHECK B: HELLO was accepted PASS (t=12867)
+d_00: @00:00:52.886676  RING CHECK B: the relay's notification 401 is in the store FAIL (t=52886)
+d_00: @00:01:00.886776  RING CHECK B: Apple's notification service was found on the relay's link and was not used (relay_blocked 1, not subscribed) FAIL (t=60886)
+d_00: @00:01:00.886776  RING CHECK B: the relay's notification is still the only entry, exactly as sent FAIL (t=60886)
+d_00: @00:01:00.886776  RING CHECK B: a dismiss goes to the helper (the source of the entry), not to Apple's service FAIL (t=60886)
+d_00: @00:01:00.886776  RING INFO stage 20 (t=60886)
+d_00: @00:01:01.886876  RING SCRIPT DONE t=61886 checks=15 fails=4
+d_00: @00:01:01.886876  RING RESULT FAIL
+--- stand-in /ws/out/20261112-202622-s5-bsim-relay-broken-3-bsim-relay/run-broken-source_not_fixed-B-helper.log
+d_01: @00:00:00.000122  HELPER START scenario B
+d_01: @00:00:00.000174  HELPER CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.000174  HELPER CHECK the iPhone's notification service is registered PASS (t=0)
+d_01: @00:00:05.054919  HELPER CHECK B: connected to the ring PASS (t=5054)
+d_01: @00:00:06.156444  HELPER CHECK B: the relay service is found before the link is secure PASS (t=6156)
+d_01: @00:00:06.356684  HELPER CHECK passkey read from the ring's display PASS (t=6356)
+d_01: @00:00:10.806428  HELPER CHECK pairing with the passkey completed and bonded PASS (t=10806)
+d_01: @00:00:10.806428  HELPER CHECK B: pairing with the passkey reaches security level 4 PASS (t=10806)
+d_01: @00:00:10.906496  HELPER CHECK B: Out notifications are on PASS (t=10906)
+d_01: @00:00:11.006532  HELPER CHECK B: HELLO right after security level 4: accepted PASS (t=11006)
+d_01: @00:00:11.006976  HELPER OUT t=11006 op=0x81 len=3 01 10 00 00 00 00
+d_01: @00:00:11.026632  HELPER CHECK B: HELLO right after security level 4: READY (version 1, store size 16) notified PASS (t=11026)
+d_01: @00:00:11.506556  HELPER CHECK B: PUT 401 accepted PASS (t=11506)
+d_01: @00:00:12.556460  HELPER INFO Notification Source subscribed (t=12556)
+d_01: @00:00:12.556460  HELPER CHECK B: the ring did not subscribe to the notification service within 8 s (the link's source is the relay) FAIL (t=12556)
+d_01: @00:00:42.565760  HELPER CHECK B: ACTION arrived: id 401, negative (1) FAIL (t=42565)
+d_01: @00:01:00.917060  HELPER INFO ring stage 20 seen (t=60917)
+d_01: @00:01:00.917060  HELPER CHECK B: the ring finished (stage 20) PASS (t=60917)
+d_01: @00:01:03.917160  HELPER EVAL t=63917
+d_01: @00:01:03.917160  HELPER CHECK every frame on Out was looked at PASS (t=63917)
+d_01: @00:01:03.917160  HELPER RESULT FAIL checks=15 fails=2
+ring script done at 61886 ms, stand-in evaluated at 63917 ms
+TEST B RESULT FAIL (24 checks passed; infra: none; checks: ring-result helper-result 6-failed-checks)
+broken source_not_fixed: test B failed on its named check, as required: d_00: @00:01:00.886776  RING CHECK B: Apple's notification service was found on the relay's link and was not used (relay_blocked 1, not subscribed) FAIL (t=60886)
+RESULT PASS
+# finished (Mac clock): 2026-11-12 20:28:03 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step5/20261112-202622-s5-bsim-relay-broken-3.log

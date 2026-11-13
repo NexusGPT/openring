@@ -1,0 +1,24 @@
+# U3 audio checklist (opened 2026-11-13 04:50 CET; closed items name their evidence file under firmware/build-logs/step6/)
+
+- [x] 1. Suites audio_cfg, audio_chunk, audio_motor, audio_svc on native_sim: all cases pass | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 2. Same four suites on nrf54lm20bsim/nrf54lm20a/cpuapp: all cases pass | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 3. Broken copy discard_0 fails audio_chunk.test_discard_800_frames on both targets | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 4. Broken copy dropout_skips fails audio_chunk.test_dropout_zero_fill on both targets | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 5. Broken copy clip_high_only fails audio_chunk.test_flags_each_bit on both targets | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 6. Broken copy highlight_release_time fails audio_chunk.test_highlight_frame_from_down_time on both targets | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 7. Broken copy motor_no_tail fails audio_motor.test_interval_frames on both targets | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 8. Broken copy no_split fails audio_motor.test_span_two_chunks on both targets | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 9. Broken copy fifth_dropped fails audio_motor.test_fifth_merged_into_fourth on both targets | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 10. Broken copy hfxo_after_trigger fails audio_svc.test_hfxo_before_trigger on both targets | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 11. Broken copy no_block_150ms fails audio_svc.test_no_block_100ms_reports on both targets | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 12. Broken copy ring_two fails the BUILD with the ring-size assertion's message on both targets | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 13. Each broken copy fails only for its reason (other failed cases listed and explained) | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 14. Targeted run ends `UNIT PASS tests/audio` | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 15. Rows A1..A18 each mapped to case + log line (or NP with reason) in audio-notes.md | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 16. Rows S9..S13 and C13 mapped; C15 and C33 U3 parts mapped | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 17. K1, K7, K8 answered (counts / file listing only; no kit lines printed) | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 18. Standing rules: pure part no kernel call (search saved); rau.c only through rhw.h (search saved); no pin by number (search saved); no number typed twice (search saved) | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 19. Nothing outside Owns changed (listing saved); server folder src-u-audio only; no browser; no git | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 20. audio-notes.md ends with RESULT line and questions_for_owner list | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 21. Final reply under 3,500 chars; quotes last line of the cited run log | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md
+- [x] 22. Report every look at results before the final one (dev runs listed in notes) | evidence: u3-run1-final.log, u3-green-cases.console, u3-rule-searches.log, docs/audio-notes.md

@@ -1,0 +1,172 @@
+/*
+ * Ring core: the generated FW 1.2 table and the table-driven state machine.
+ */
+#include <string.h>
+#include "ring_core/rc_sm.h"
+
+#define RC_ROW(n, line, from, ev, guard, to, text) \
+	{ (n), (line), RC_ST_##from, RC_EV_##ev, RC_G_##guard, RC_ST_##to, text },
+
+const struct rc_row rc_table[] = {
+#include "state_table.inc"
+};
+
+const uint16_t rc_table_rows = RC_TABLE_ROWS;
+const uint32_t rc_table_fnv1a = RC_TABLE_FNV1A;
+
+_Static_assert(sizeof(rc_table) / sizeof(rc_table[0]) == RC_TABLE_ROWS, "row count");
+
+static const char *const state_names[RC_ST_COUNT] = {
+	"SHIP", "OFF", "BOOT", "RECOVERY", "STANDBY", "RECORDING", "CHARGING", "TRANSFER",
+	"ERR_STORAGE_FULL", "ERR_BATTERY_LOW", "ERR_STORAGE_FAULT", "ERR_MIC_FAULT",
+	"ERR_CHARGER", "FACTORY_TEST",
+};
+
+static const char *const event_names[RC_EV_COUNT] = {
+	"VBUS_IN", "VBUS_OUT", "INIT_DONE", "STORAGE_INIT_FAILED", "BATT_B15", "BATT_B5",
+	"BATT_B2", "SCAN_DONE", "SCAN_READ_ERROR", "LONG_PRESS", "SHORT_PRESS",
+	"DOUBLE_PRESS", "MENU_POWER_OFF", "STORAGE_SFULL", "STORAGE_S30", "BLE_HIGHLIGHT",
+	"CHUNK_WRITE_FAILED", "MIC_NO_BLOCK", "POWER_LOSS", "USB_CONFIGURED",
+	"USB_UNCONFIGURED", "CHARGE_ERROR", "FW_END", "FACTORY_ENTER", "TIMER_60S",
+	"TIMER_5S", "FACTORY_EXIT", "SHIP_ENTER", "SHIP_SAMPLE",
+};
+
+static const char *const action_names[RC_ACT_COUNT] = {
+	"NONE", "OPEN", "CLOSE", "CHARGE_ON", "CHARGE_OFF", "M1", "M2", "M3", "MH", "MT",
+	"MF", "MW", "SD_ON", "SD_OFF", "MOUNT", "STOP_PDM", "CLOCKS_LOW", "MIC_OFF",
+	"SHIP_MODE", "SAVE_SETTINGS_TIME", "CLEAR_FACTORY_FLAG", "REQUEST_UPGRADE_TEST",
+	"REBOOT", "FACTORY_MODE", "RUN_RECOVERY", "LOG_EVENT", "LOG_CHARGE_ERROR",
+	"WRITE_CLOSE_RECOVERED", "CLEAR_OPEN_FLAG", "HIGHLIGHT", "FINISH_COMMAND",
+	"ABORT_COMMAND", "SCREEN_ON", "SCR_STATUS_5S", "SCR_RECORDING_3S",
+	"SCR_MSG_30MIN_3S", "SCR_MSG_IN_CASE_3S", "SCR_MSG_STORAGE_FULL_3S",
+	"SCR_MSG_BATTERY_LOW_3S", "SCREEN_CENTRE", "SCREEN_UP", "SCREEN_DOWN",
+	"SCREEN_LEFT", "SCREEN_RIGHT",
+};
+
+const char *rc_state_name(enum rc_state s)
+{
+	return ((unsigned)s < RC_ST_COUNT) ? state_names[s] : "?";
+}
+
+const char *rc_event_name(enum rc_event e)
+{
+	return ((unsigned)e < RC_EV_COUNT) ? event_names[e] : "?";
+}
+
+const char *rc_action_name(enum rc_action a)
+{
+	return ((unsigned)a < RC_ACT_COUNT) ? action_names[a] : "?";
+}
+
+void rc_actions_clear(struct rc_actions *out)
+{
+	memset(out, 0, sizeof(*out));
+	out->last_row = -1;
+	out->highlight_ms = -1;
+}
+
+void rc_actions_push(struct rc_actions *out, enum rc_action a)
+{
+	if (out->n < RC_MAX_ACTIONS) {
+		out->a[out->n++] = (uint8_t)a;
+	}
+}
+
+void rc_sm_init(struct rc_sm *sm, enum rc_state start)
+{
+	memset(sm, 0, sizeof(*sm));
+	sm->state = (uint8_t)start;
+}
+
+bool rc_guard_holds(enum rc_guard g, const struct rc_facts *f)
+{
+	switch (g) {
+	case RC_G_NONE:
+		return true;
+	case RC_G_OPEN_CLEAR_NO_VBUS_ABOVE_B5:
+		return !f->open_flag && !f->vbus && f->batt < RC_BATT_B5;
+	case RC_G_OPEN_SET:
+		return f->open_flag;
+	case RC_G_VBUS:
+		return f->vbus;
+	case RC_G_NO_VBUS:
+		return !f->vbus;
+	case RC_G_ABOVE_SFULL_ABOVE_B5:
+		return !f->storage_full && f->batt < RC_BATT_B5;
+	case RC_G_SFULL:
+		return f->storage_full;
+	case RC_G_AT_B5:
+		return f->batt >= RC_BATT_B5;
+	case RC_G_FACTORY_FLAG:
+		return f->factory_flag;
+	case RC_G_STORAGE_INIT_OK:
+		return f->storage_init_ok;
+	default:
+		return false;
+	}
+}
+
+const struct rc_row *rc_sm_find(const struct rc_sm *sm, enum rc_event ev, const struct rc_facts *f)
+{
+	for (uint16_t i = 0; i < rc_table_rows; i++) {
+		const struct rc_row *r = &rc_table[i];
+
+		if (r->from == sm->state && r->event == ev && rc_guard_holds((enum rc_guard)r->guard, f)) {
+			return r;
+		}
+	}
+	return NULL;
+}
+
+int rc_sm_handle(struct rc_sm *sm, enum rc_event ev, const struct rc_facts *f, struct rc_actions *out)
+{
+	const struct rc_row *r = rc_sm_find(sm, ev, f);
+
+	if (r == NULL) {
+		return 0;
+	}
+	rc_row_actions(sm, r->row, f, out);
+	sm->state = r->to;
+	out->last_row = r->row;
+	return r->row;
+}
+
+static uint32_t fnv_str(uint32_t h, const char *s)
+{
+	while (*s) {
+		h ^= (uint8_t)*s++;
+		h *= 0x01000193u;
+	}
+	return h;
+}
+
+uint32_t rc_table_checksum(void)
+{
+	uint32_t h = 0x811C9DC5u;
+	char num[8];
+
+	for (uint16_t i = 0; i < rc_table_rows; i++) {
+		const struct rc_row *r = &rc_table[i];
+		unsigned v = r->row;
+		int k = 0;
+		char tmp[8];
+
+		do {
+			tmp[k++] = (char)('0' + v % 10);
+			v /= 10;
+		} while (v && k < 7);
+		for (int j = 0; j < k; j++) {
+			num[j] = tmp[k - 1 - j];
+		}
+		num[k] = '\0';
+		h = fnv_str(h, num);
+		h = fnv_str(h, "|");
+		h = fnv_str(h, rc_state_name((enum rc_state)r->from));
+		h = fnv_str(h, "|");
+		h = fnv_str(h, r->event_text);
+		h = fnv_str(h, "|");
+		h = fnv_str(h, rc_state_name((enum rc_state)r->to));
+		h = fnv_str(h, "\n");
+	}
+	return h;
+}

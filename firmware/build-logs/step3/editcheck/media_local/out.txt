@@ -1,0 +1,15 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -1032,6 +1032,9 @@
+ 	k_mutex_lock(&lk, K_FOREVER);
+ 	if (err == 0) {
+ 		st.media_sent++;
++		if (cmd == RIP_MEDIA_PAUSE) {
++			media.state = RIPL_PLAYER_PAUSED;
++		}
+ 	} else {
+ 		st.media_errors++;
+ 	}
+MODULE=ring_iphone
+SCEN=N
+EXPECT=RING CHECK f: the stored state did not change on the commands alone \(pause was sent, the state is still playing\) FAIL

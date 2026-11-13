@@ -1,0 +1,19 @@
+== soft start
+firmware/modules/ring_motor/include/ring_motor/rmo.h:2: * rmo.h: the motor part (software step 6, unit U6 builds it; U0 wrote this header, frozen: changes only through the
+firmware/modules/ring_motor/include/ring_motor/rmo.h:6: * pulse) is declared in the unit's own src/ header. No soft start (lead's ruling D3: not built in step 6): one MOTOR
+firmware/modules/ring_motor/src/rmo_hw_real.c:2: * rmo_hw_real.c: the real MOTOR output of the motor unit (software step 6, unit U6). Development kit build only
+firmware/modules/ring_motor/src/rmo.c:2: * rmo.c: the thin part of the motor unit (software step 6, unit U6): a k_timer plays one pattern on the MOTOR pin
+firmware/modules/ring_motor/src/rmo_logic.h:2: * rmo_logic.h: the pure part of the motor unit (software step 6, unit U6): no kernel call. Not a public header.
+== VID/PID
+firmware/app/prj.conf:89:# USB identity: the vendor and product id in modules/ring_xfer/src/rxf_hw_real.c (0x2fe3, 0x0100) are the kit's test pair,
+firmware/app/prj.conf:90:# NOT FOR SHIPPING; the owner chooses the product's pair (questions_for_owner in docs/recorder-notes.md).
+firmware/modules/ring_xfer/src/rxf_hw_real.c:31:#define RXF_VID 0x2fe3
+firmware/modules/ring_xfer/src/rxf_hw_real.c:32:#define RXF_PID 0x0100
+== FACTORY_EXIT
+348:	RREC_FAC_ENTER = 0x01,                /* FW l.1019 */
+349:	RREC_FAC_EXIT = 0x02,                 /* NOT IN FW: row FW l.201 names "FACTORY_EXIT" but FW 9.3 gives it no
+362:	RREC_FAC_SHIP_SAMPLE = 0x7E,
+363:	RREC_FAC_SHIP_ENTER = 0x7F,
+== event codes in FW vs spec header
+1062:- Event log (both builds): each state change, fault, battery threshold and transfer command becomes a 512-byte record: magic 0x474C5252 ("RRLG") u32, record seq u32, uptime_ns u64, utc_ms i64, code u16, state u8, reserved u8, 16 bytes of arguments, crash block (below, zero when not a crash), CRC-32 in the last 4 bytes. Records wait in the 4 KB RAM log buffer (8 records) and are written to the log area (LBA 2 to 2,047) at the next time VDD_SD is on; when the buffer is full, the oldest unwritten record is dropped and a "dropped" count is kept. The codes are listed in the section "Event log codes" near the end of this document (ruling R23).
+1202:## Event log codes (ruling R23, software step 6)

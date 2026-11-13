@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AI ring meeting recorder: design package for supplier assessment</title>
+<style>
+  body { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; color:#15171b; max-width:900px; margin:32px auto; padding:0 20px; line-height:1.5; font-size:15px; }
+  h1 { font-size:24px; margin:0 0 4px; }
+  h2 { font-size:17px; margin:28px 0 8px; border-bottom:1px solid #dfe2e7; padding-bottom:4px; }
+  table { border-collapse:collapse; width:100%; margin:8px 0 14px; font-size:14px; }
+  th, td { border:1px solid #dfe2e7; padding:6px 9px; text-align:left; vertical-align:top; }
+  th { background:#f3f4f6; }
+  .meta { color:#5d636c; font-size:13px; }
+  .box { border:1px solid #dfe2e7; background:#fafafa; padding:10px 14px; border-radius:6px; }
+  code { background:#f3f4f6; padding:1px 4px; border-radius:3px; font-size:13px; }
+  .final { color:#1a7f37; font-weight:600; } .draft { color:#9a6700; font-weight:600; } .missing { color:#cf222e; font-weight:600; }
+</style>
+</head>
+<body>
+<h1>AI ring meeting recorder: design package for supplier assessment</h1>
+<p class="meta">Package version 3, built {{DATE}}, design commit {{COMMIT}}, {{FILES}} files (listed with checksums in <code>MANIFEST.csv</code>). Confidential. Sent for assessment and quotation only. Do not copy or pass on.</p>
+{{TRIAL}}
+<p class="box"><b>What this package is for:</b> a supplier's assessment and quotation. It is the complete design as it stands: 3D files of every part, a drawing sheet and a specification page per custom part, files a 3D printer can print for fit samples, the parts lists, the wiring, the assembly order. It is not yet a release for production: section 3 says what is decided and what is open.<br>
+<b>Design state:</b> inside model <b>version 7</b> (round joystick cap, no recording light; the screen is the recording sign) and charging case <b>C5d</b> (soft cube with a designed pin holder; its fit check: {{CASE_CHECK}}).</p>
+<p class="box"><b>Sender:</b> [to fill in: name, company, e-mail]<br><b>Quantities asked:</b> [to fill in: number of prototypes, number per series, ring sizes wanted first]<br><b>Answer wanted by:</b> [to fill in]</p>
+
+<h2>1. What the product is</h2>
+<ul>
+  <li>A smart ring that records meetings. Recording starts only on a long press (1.0 s) of its one control, a five-way joystick with a round cap on the side of the band. The ring has no recording light: the lit screen shows that it records.</li>
+  <li>A flat block on top holds a small screen under a formed cover glass (black print, no opening), the main circuit board, two microphones and the storage.</li>
+  <li>The band holds a curved battery, a vibration motor, the joystick's switches and four charging pads on its inside face, under a resin liner cast in place.</li>
+  <li>The ring charges and moves its recordings over USB through the four pads, in a charging case.</li>
+  <li>Seven ring sizes, US 7 to US 13. The block and everything in it are the same at every size; the band, the battery length and four positions change by size.</li>
+</ul>
+<table>
+  <tr><th>Fact</th><th>Value</th><th>Where to read more</th></tr>
+  <tr><td>Block on top</td><td>29.3 x 14.75 x 3.85 mm</td><td>design record, "Key numbers"</td></tr>
+  <tr><td>Band</td><td>8.0 mm wide, 2.6 mm thick; inner diameter 17.32 mm (US 7) to 22.20 mm (US 13)</td><td>3D exterior per size</td></tr>
+  <tr><td>Joystick</td><td>round opening 5.60 mm; titanium frame FRM1 (outer 5.40, bore 4.80, bonded); polycarbonate cap CAP1 (round 4.40 with flange 6.90 x 6.40 x 0.40, dish and three ridges); five switches under it</td><td>specification "joystick cap and frame"; drawings joystick-cap and joystick-frame</td></tr>
+  <tr><td>Body material</td><td>titanium grade 5 machined from bar (default, to confirm with the maker); alternative stainless steel 316L. Finish: one dark glossy finish on the whole ring, no bare metal: polished, then a gloss black coating (PVD or DLC, the maker names the process)</td><td>specification "body"</td></tr>
+  <tr><td>Battery</td><td>custom curved lithium polymer cell, 1.6 x 6.0 mm section, 33.9 mm (US 7) to 46.1 mm (US 13) long, 4.35 V type; 17.6 to 23.5 mAh on US 7, 23.9 to 31.9 mAh on US 13 (calculated)</td><td>specification "cell"; design record 17.26</td></tr>
+  <tr><td>Main chip and power chip</td><td>Nordic nRF54LM20A; Nordic nPM1304</td><td>parts list</td></tr>
+  <tr><td>Screen</td><td>Tailor Pixels TOH095XVT-01</td><td>parts list</td></tr>
+  <tr><td>Microphones</td><td>2 x Knowles SPK0641HT4H-1, hearing through two 1.0 mm holes in the block's underside</td><td>study "microphone path"</td></tr>
+  <tr><td>Vibration motor</td><td>Jinlong W0525AB001D, 5.0 x 2.5 mm</td><td>study "motor drive"</td></tr>
+  <tr><td>Storage</td><td>4 GB</td><td>parts list</td></tr>
+  <tr><td>Recording time</td><td>4.3 to 7.8 hours by ring size, calculated before the recording light was removed; not recalculated for version 7 and not measured</td><td>design record 17.26</td></tr>
+  <tr><td>Charging case</td><td>{{CASE_SIZE}}, 700 mAh cell, USB-C, four spring pins in a moulded pin holder on a centre post</td><td>case files</td></tr>
+</table>
+
+<h2>2. What we ask you to assess</h2>
+<table>
+  <tr><th>If you are</th><th>Please tell us</th></tr>
+  <tr><td>A maker of the whole ring</td><td>Can you build this design as it is, or which changes do you need? Engineering fee, tooling cost, smallest order, unit price at the quantities above, time to first samples. Which parts you would source and which you want supplied.</td></tr>
+  <tr><td>A maker of the metal body</td><td>Process (machining, metal injection moulding), smallest wall you accept (the design has 0.40 mm walls, one 0.20 mm ring under each microphone membrane seat and a window on three sizes), tolerance you hold, finish, price per size.</td></tr>
+  <tr><td>A cell maker</td><td>Whether this curved cell can be built at 4.35 V, its real capacity per size, the charge current you allow (the design uses 15 mA), the peak discharge (up to 228 mA for the instant of a motor start), the protection circuit, test reports, smallest order.</td></tr>
+  <tr><td>A board assembler</td><td>Whether you place 0201 parts and chip-scale packages on a six-layer board of 27.2 x 12.6 mm, 0.3 mm thick, with parts on one side only, and solder two flexible cables to it. Smallest order, price, time.</td></tr>
+  <tr><td>A maker of the case</td><td>Moulding or machining of the shell and lid, the metal-look finish, assembly, price.</td></tr>
+</table>
+
+<h2>3. State of the design, said plainly</h2>
+<table>
+  <tr><th>Area</th><th>State</th><th>Detail</th></tr>
+  <tr><td>Exterior shape, 7 sizes</td><td class="final">3D final for assessment</td><td>One STEP file per size (exterior version merged32h, round joystick). Thinnest metal round the joystick opening 1.067 mm on the two sides along the band.</td></tr>
+  <tr><td>Inside of the ring (model v7)</td><td class="draft">draft: fit check passes at 7 sizes, 2 parts do not fit as drawn</td><td>One whole-ring assembly STEP per size with every part placed; the collision check of model v7 passes at all 7 sizes (see <code>02-3d/ring-inside-us9/model-v7-handover.md</code>). Two parts do not fit as drawn. The screen's cable is 12.4 mm wide at its fold against 5.4 mm of room (open item S27). The antenna's four solder pads are off the board (open item S15). The metal body with every inside pocket cut exists per size as STEP and STL.</td></tr>
+  <tr><td>Maker files</td><td class="final">{{CUSTOM_PARTS}} custom parts, {{MAKER_FILES}} STEP and STL files</td><td>One file per part and ring size, listed in <code>02-3d/maker-files/index.csv</code> with size and volume; <code>part-map.csv</code> links each part to its parts-list reference. STL files (closed, checked) are for 3D-printed fit samples. The build stops if a part of that list has no file in this package.</td></tr>
+  <tr><td>Parts list</td><td class="draft">draft</td><td>{{BOM_LINES}} lines for the ring and {{CASE_BOM_LINES}} for the case. Custom parts, bare pads and parts whose order code a supplier must give carry no order code.</td></tr>
+  <tr><td>Wiring diagram</td><td class="draft">draft: passes its rules check, not complete</td><td>Passes its electrical rules check. Pin numbers wait for the makers' datasheets in part. The place of temperature sensor RT1, on the cell or on the main board, is open. PDF and KiCad files.</td></tr>
+  <tr><td>Circuit board layout</td><td class="missing">not routed; who routes it is not decided</td><td>Outline, thickness and part positions are specified. The tracks are not laid; no fabrication files exist and none are in this package. The circuit board work files of the project still hold three parts removed in version 7 (R41, LED1 and Q2, the recording light and its driver); they are not in this package and must be cleaned before any board is made.</td></tr>
+  <tr><td>Part specifications</td><td class="draft">draft</td><td>One page per custom part with dimensions, tolerances and open points. The page "joystick cap and frame" covers CAP1 and FRM1.</td></tr>
+  <tr><td>Drawings</td><td class="draft">overview sheets</td><td>{{DRAWINGS}} sheets (PDF): three views with the overall dimensions, and for the body a table of every pocket at that size; the joystick cap and the joystick frame have their own sheets. They are not full tolerance drawings yet: read them with the 3D files and the specification pages.</td></tr>
+  <tr><td>Assembly order</td><td class="draft">draft</td><td>The ordered steps with what is joined, how it is located, the check and what cannot be undone. Not tried on hardware. Tolerances under 0.5 mm in the joystick page and two clean-and-inspect steps are proposals.</td></tr>
+  <tr><td>Software</td><td class="missing">specified, not written</td><td>The behaviour specification, the factory test list and the programming steps exist. No code exists.</td></tr>
+  <tr><td>Charging case C5d</td><td class="draft">draft, fit check passes</td><td>{{CASE_PARTS}} part files (STEP), printable STL files of the shell, lid, base plate, post, pin holder, pin board and pivot, the assembly, the parts list. Fit check of the case against all 7 ring sizes: {{CASE_CHECK}}. Open: the spring pin (Harwin P70-6000045R) is proposed and not confirmed; the pin holder is black LCP with 0.79 mm walls between its bores, and no moulder has confirmed that wall.</td></tr>
+  <tr><td>Water and dust protection</td><td class="missing">not proven</td><td>Seals are designed; no rating can be claimed before bench tests. The sealing of the round joystick opening is a bench item.</td></tr>
+  <tr><td>Hardware</td><td class="missing">none built</td><td>Nothing in this package is measured on a bench. Calculated values are marked in the files. Cap feel, tilt clearance in motion and the bond of the frame on the coating are bench items.</td></tr>
+</table>
+
+<h2>4. Contents</h2>
+<table>
+  <tr><th>Folder</th><th>What it holds</th></tr>
+  <tr><td><code>01-product/</code></td><td>The requirements, the full design record (a working document: where two sections disagree, the later one wins) and {{PICTURES_NOTE}}</td></tr>
+  <tr><td><code>02-3d/ring-exterior/</code></td><td>One STEP file per ring size (body, glass, screen, joystick as separate solids), the measured figures of each as JSON, one GLB for a quick 3D view.</td></tr>
+  <tr><td><code>02-3d/ring-inside-us9/</code></td><td>The whole ring at US 9 with every part placed (STEP and GLB), the table of parts with positions, the model notes with the values per ring size, and the version 7 handover.</td></tr>
+  <tr><td><code>02-3d/maker-files/</code></td><td>One folder per custom part: STEP for each, and a closed STL where a 3D printer can make a fit sample (body, band liner, joystick cap, joystick frame). Per ring size where the part changes by size; one file where it does not. <code>assembly/</code> holds the whole ring per size. <code>index.csv</code> lists every file with its size and volume.</td></tr>
+  <tr><td><code>02-3d/case/</code></td><td>The case assembly (STEP, GLB), one STEP per part, printable STL files, the case description, the C5d handover and the fit check log.</td></tr>
+  <tr><td><code>03-parts-lists/</code></td><td>Parts list of the ring and of the case (CSV), with notes.</td></tr>
+  <tr><td><code>04-electronics/</code></td><td>Wiring diagram of the ring and of the case (PDF and KiCad), net list, pin list, notes.</td></tr>
+  <tr><td><code>05-mechanical/</code></td><td>Specification pages of the custom parts, the drawing sheets (PDF), the assembly order, and three studies: microphone path, antenna, motor drive.</td></tr>
+  <tr><td><code>06-software/</code></td><td>The behaviour specification with the factory test list, how the software is put on the ring, and what a factory software package holds.</td></tr>
+  <tr><td><code>MANIFEST.csv</code></td><td>Every file with its size and SHA-256 checksum.</td></tr>
+</table>
+<p>Text files ending in <code>.md</code> are plain text and open in any editor. File paths written inside the documents (for example <code>design/mech/thin/...</code>) are the design project's own folders; the table above says where each kind of file sits in this package. Some older history sections in the design record and the model notes name the recording light and the rectangular joystick; they are marked as removed in version 7 and nothing is to be made from them.</p>
+
+<h2>5. What is not in the package</h2>
+<ul>
+  <li>Datasheets of bought parts. They belong to their makers; the parts list names each part and its maker.</li>
+  <li>Circuit board fabrication files (they do not exist yet), the circuit board work files (they still hold R41, LED1 and Q2), and software code.</li>
+  <li>Full tolerance drawings: the sheets inside are overview sheets (section 3).</li>
+  <li>The recording light, its light guide and light plug, and the rectangular joystick nub: removed in version 7; their old files are not included.</li>
+  <li>The phone application and its link to the ring: not part of this request.</li>
+</ul>
+
+<h2>6. Open points a supplier must know, and can help close</h2>
+<ul>
+  <li><b>Circuit board:</b> who routes the board is not decided (a supplier may be asked to, as an option). The board work files still hold three removed parts (R41, LED1, Q2).</li>
+  <li><b>Case spring pin:</b> the Harwin P70-6000045R is proposed, not confirmed (its stroke is not in the files read; the contact window 2.15 to 2.65 mm is an assumption).</li>
+  <li><b>Pin holder:</b> 0.79 mm walls between the four bores, in black LCP (Vectra E130i); no moulder has confirmed them. The two heat stakes are untested, and the touch electrode reads through a 1.97 mm LCP wall (bench item).</li>
+  <li><b>Cell:</b> real capacity, charge and discharge limits, protection circuit, bend radius per size.</li>
+  <li><b>Finish:</b> which gloss black coating holds on a ring that is worn every day, its thickness and gloss; whether the frame bond (3M Scotch-Weld DP420 Black) holds on the coating.</li>
+  <li><b>Body:</b> the thinnest walls and the two 0.20 mm rings under the microphone seats; the window between the motor pocket and the block on sizes US 7, 8 and 9; the antenna sits under metal, and a resin corner is one proposed answer.</li>
+  <li><b>Recording sign:</b> the screen shows that the ring records; the power of that always-lit sign has no number yet, so the recording time is not final.</li>
+  <li><b>Thin-border screen:</b> version 1 uses the 0.95 inch part and hides its dark border under black glass. For a later version we ask screen makers for a flexible version of this panel with the drive electronics folded behind it, or a custom panel: lit area as close as possible to 27.9 x 13.4 mm, border about 1 mm, 0.8 mm thick or less, 4-wire SPI. Please state engineering fee, minimum order and lead time.</li>
+  <li><b>Screen cable:</b> the screen maker's cable is 12.4 mm wide where it folds; the body has 5.4 mm for it. A narrowed cable is asked for (item S27).</li>
+  <li><b>Antenna mount:</b> in the inside model the antenna stands in the board's corner notch, so its four solder pads are off the board and it cannot be soldered as drawn (item S15). The mount and the no-copper area need a decision before the board is routed.</li>
+  <li><b>Liner:</b> a 0.3 mm resin skin cast in place over the battery and the cables, with the cables embedded; casting in two shots is proposed.</li>
+  <li><b>Seals:</b> glass to body, cable slots, motor window, joystick; materials and method.</li>
+  <li><b>Microphone parts:</b> a membrane of at most 0.10 mm and a foam gasket in three thicknesses.</li>
+  {{KNOWN_OPEN}}
+</ul>
+
+<h2>7. How to read the 3D files</h2>
+<ul>
+  <li>Units are millimetres. X runs along the finger, Y across it, Z up through the screen. The joystick is on the minus Y side.</li>
+  <li>Angles round the band are counted from the top of the ring; the joystick sits 78 degrees round on US 9 to US 13, 81 degrees on US 8 and 84 degrees on US 7.</li>
+  <li>The whole ring exists per size in <code>02-3d/maker-files/assembly/</code>. The values that change by size are also listed in the model notes, section "Model v7".</li>
+  <li>The joystick cap and the joystick frame are one file each, placed at the US 9 position (minus 78 degrees); the same shape serves all sizes.</li>
+</ul>
+</body>
+</html>

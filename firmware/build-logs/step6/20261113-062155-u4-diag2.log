@@ -1,0 +1,20 @@
+# remote.sh run 20261113-062155-u4-diag2
+# command: for f in /ws/out/20261113-062023-u4-short4-xfer-short/twister-*.log; do echo FILE $f; grep -n 'Assertion\|Test .* failed\|expected' $f | cut -c1-330 | head -30; done
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 06:21:55 CET
+# free on the server's /: 49 GB
+# source firmware copied to /root/ring-os/src-u-xfer
+# started on the server as 20261113-062155-u4-diag2; server log /root/ring-os/logs/20261113-062155-u4-diag2.log
+FILE /ws/out/20261113-062023-u4-short4-xfer-short/twister-native_sim.log
+27:    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:808: xfer_proto_test_abort_stops_stream: fk.after_calls not equal to 0u
+120:    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:215: xfer_store_test_list_entries: (xt_le(e + 8, 4) not equal to firsts[i])
+126:    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:276: xfer_store_test_read_range_bytes_equal_disk: (big + 16 + k * 33280 + s * 512 not equal to sec)
+132:    Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:459: xfer_store_test_read_range_deleted_not_found: (any is false)
+FILE /ws/out/20261113-062023-u4-short4-xfer-short/twister-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+27:d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_proto.c:808: xfer_proto_test_abort_stops_stream: fk.after_calls not equal to 0u
+120:d_00: @00:00:00.120693      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:215: xfer_store_test_list_entries: (xt_le(e + 8, 4) not equal to firsts[i])
+126:d_00: @00:00:00.135693      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:276: xfer_store_test_read_range_bytes_equal_disk: (big + 16 + k * 33280 + s * 512 not equal to sec)
+132:d_00: @00:00:00.150893      Assertion failed at WEST_TOPDIR/firmware/tests/xfer/src/test_store.c:459: xfer_store_test_read_range_deleted_not_found: (any is false)
+# finished (Mac clock): 2026-11-13 06:22:13 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step6/20261113-062155-u4-diag2.log

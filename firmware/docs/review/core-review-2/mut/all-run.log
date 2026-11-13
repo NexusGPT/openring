@@ -1,0 +1,44 @@
+exists, skipping copy m01_row12_no_battery_guard
+m01_row12_no_battery_guard host_fail 2 | RESULT FAIL | {'pA_standby_entry': 'caught (exit 1)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'caught (exit 1)'}
+m02_row12_no_storage_guard host_fail 2 | RESULT FAIL | {'pA_standby_entry': 'caught (exit 1)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'caught (exit 1)'}
+m03_row12_no_openflag_guard host_fail 3 | RESULT FAIL | {'pA_standby_entry': 'caught (exit 1)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'caught (exit 1)'}
+m04_row12_b5_allowed host_fail 2 | RESULT FAIL | {'pA_standby_entry': 'caught (exit 1)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'caught (exit 1)'}
+BAD PATTERN m05_rstb_no_storage_check 0
+m06_rstb_storage_before_battery host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m07_rstb_b5_not_checked host_fail 3 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m08_rstb_skips_mic_fault_entry host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m09_rstb_skips_transfer_entry host_fail 2 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m10_rstb_b2_not_checked host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m11_no_hold_cancel host_fail 2 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'caught (exit 1)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m12_hold_cancel_not_into_standby host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'caught (exit 1)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m13_hold_cancel_flag_unused host_fail 2 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'caught (exit 1)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m14_hold_cancel_not_warn host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m15_retry_one_shot host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m16_retry_period_30s host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m17_retry_never_armed host_fail 3 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m19_open_not_set_by_OPEN host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m20_open_not_cleared_by_CLOSE host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'caught (exit 1)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m21_open_not_cleared_by_RUN_RECOVERY host_fail 0 | RESULT PASS tests=181 | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m22_open_not_cleared_by_CLEAR_OPEN_FLAG host_fail 2 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m23_initdone_b5_before_recovery host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m24_initdone_b2_needs_open_clear host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m25_initdone_no_battery_read host_fail 2 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m26_charge_on_r8_removed host_fail 0 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m27_charge_on_duplicated host_fail 0 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m28_charge_on_not_in_boot host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m29_charge_on_not_in_recovery host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m30_charge_on_not_in_error_states host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m31_batt_repeat_event_on_equal host_fail 0 | RESULT PASS tests=181 | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'caught (exit 1)'}
+m32_batt_upward_fires host_fail 3 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'caught (exit 1)'}
+m33_batt_fact_after_event host_fail 0 | RESULT PASS tests=181 | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m34_batt_fact_never_lowered_only_raised host_fail 4 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m35_batt_invalid_level_accepted host_fail 0 | RESULT PASS tests=181 | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m36_long_press_injectable host_fail 2 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'caught (exit 1)'}
+m37_row14_at_b5_only_exact host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m38_row39_no_battery_guard host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m39_row3_open_clear_dropped host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m40_sfull_event_not_a_fact host_fail 0 | RESULT PASS tests=181 | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m41_cancel_clears_only_when_not_long_fired host_fail 0 | RESULT PASS tests=181 | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m42_row57_always_run_recovery host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}
+m43_row57_never_run_recovery host_fail 1 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'caught (exit 1)', 'pD_fuzz': 'passed (exit 0)'}
+m44_row12_open_before_m1_swapped host_fail 4 | RESULT FAIL | {'pA_standby_entry': 'passed (exit 0)', 'pB_hold': 'passed (exit 0)', 'pC_scen': 'passed (exit 0)', 'pD_fuzz': 'passed (exit 0)'}

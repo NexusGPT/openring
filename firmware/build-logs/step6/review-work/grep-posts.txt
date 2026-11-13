@@ -1,0 +1,30 @@
+modules/ring_recorder/src/rrec_int.h:47:int rrec_post(enum rrec_job job, uint32_t arg);
+modules/ring_recorder/src/rrec.c:167:		(void)rrec_post(RREC_JOB_EVENT, RC_EV_CHUNK_WRITE_FAILED);
+modules/ring_recorder/src/rrec.c:197:		(void)rrec_post(RREC_JOB_EVENT, RC_EV_MIC_NO_BLOCK);
+modules/ring_recorder/src/rrec.c:217:		(void)rrec_post(RREC_JOB_EVENT, RC_EV_MIC_NO_BLOCK);
+modules/ring_recorder/src/rrec.c:360:		(void)rrec_post(RREC_JOB_RETRY, 0);   /* ruling R3: the result comes back as an event */
+modules/ring_recorder/src/rrec.c:519:		(void)rrec_post(RREC_JOB_RECOVER, 0);
+modules/ring_recorder/src/rrec_backend.c:254:		(void)rrec_post(RREC_JOB_EVENT, RC_EV_FW_END);   /* row FW l.180: request done, reboot after the OK */
+modules/ring_recorder/src/rrec_backend.c:265:			(void)rrec_post(RREC_JOB_EVENT, RC_EV_FACTORY_ENTER);
+modules/ring_recorder/src/rrec_backend.c:268:			(void)rrec_post(RREC_JOB_EVENT, RC_EV_FACTORY_EXIT);
+modules/ring_recorder/src/rrec_backend.c:271:			(void)rrec_post(RREC_JOB_EVENT, RC_EV_SHIP_ENTER);
+modules/ring_recorder/src/rrec_backend.c:274:			(void)rrec_post(RREC_JOB_EVENT, RC_EV_SHIP_SAMPLE);
+modules/ring_recorder/src/rrec_bridge.c:40:int rrec_post(enum rrec_job kind, uint32_t arg)
+modules/ring_recorder/src/rrec_bridge.c:177:	(void)rrec_post(RREC_JOB_BATTERY, level);             /* rc_core_battery through rglue_battery (P11) */
+modules/ring_recorder/src/rrec_bridge.c:182:	(void)rrec_post(RREC_JOB_EVENT, present ? RC_EV_VBUS_IN : RC_EV_VBUS_OUT);
+modules/ring_recorder/src/rrec_bridge.c:189:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_CHARGE_ERROR);
+modules/ring_recorder/src/rrec_bridge.c:221:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_STORAGE_S30);
+modules/ring_recorder/src/rrec_bridge.c:230:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_STORAGE_SFULL);
+modules/ring_recorder/src/rrec_bridge.c:240:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_CHUNK_WRITE_FAILED);
+modules/ring_recorder/src/rrec_bridge.c:284:		(void)rrec_post(RREC_JOB_EVENT, RC_EV_MIC_NO_BLOCK);   /* FW l.169 */
+modules/ring_recorder/src/rrec_bridge.c:341:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_USB_CONFIGURED);
+modules/ring_recorder/src/rrec_bridge.c:346:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_USB_UNCONFIGURED);
+---
+139:	if (ev == RC_EV_LONG_PRESS && from == RC_ST_STANDBY && c->sign_fn != NULL && !c->facts.open_flag &&
+171:void rc_core_event(struct rc_core *c, enum rc_event ev, rc_ms_t t, struct rc_actions *out)
+177:	if (ev == RC_EV_LONG_PRESS || ev == RC_EV_SHORT_PRESS || ev == RC_EV_DOUBLE_PRESS ||
+181:		return;
+192:		return;
+196:		return;  /* ruling R12: kept; the order at "init done" decides */
+210:		return;
+239:			sm_event(c, RC_EV_LONG_PRESS, e->t, out);

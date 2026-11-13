@@ -1,0 +1,41 @@
+SOURCES
+  design/ecad/case/netlist.csv:96: GND,RT2,2,~,passive
+  design/ecad/case/netlist.csv:97: GND,TH1,2,~,passive
+  design/ecad/case/netlist.csv:163: REGN,C8,1,~,passive
+  design/ecad/case/netlist.csv:164: REGN,RT1,1,~,passive
+  design/ecad/case/netlist.csv:165: REGN,U2,22,REGN,power_out
+  design/ecad/case/netlist.csv:224: TS,RT1,2,~,passive
+  design/ecad/case/netlist.csv:225: TS,RT2,1,~,passive
+  design/ecad/case/netlist.csv:226: TS,TH1,1,~,passive
+  design/ecad/case/netlist.csv:227: TS,U2,11,TS,input
+  design/ecad/case/parts.csv:26: C8,C,4.7uF 10V,GRM188R61A475KE15D,OpenRingCase:SMD_0603,power,no
+  design/ecad/case/parts.csv:29: RT1,R,5.23k,RC0402FR-075K23L,OpenRingCase:SMD_0402,power,no
+  design/ecad/case/parts.csv:30: RT2,R,30.1k,RC0402FR-0730K1L,OpenRingCase:SMD_0402,power,no
+  design/ecad/case/parts.csv:31: TH1,NTC,10k 103AT,103AT-2,OpenRingCase:NTC_wired,power,no
+  design/datasheets/w16_semitec_P12-13-AT-Thermistor.txt:105: 103AT-2、3                       10.0 ｋΩ                                     3435 Ｋ ± 1％                                                                         
+  design/datasheets/w16_semitec_P12-13-AT-Thermistor.txt:182: 10            1.684              3.454                        8.840              17.96                 39.71                                                    
+  design/datasheets/w16_semitec_P12-13-AT-Thermistor.txt:183: 20            1.184              2.387                        6.013              12.09                 24.96
+  design/datasheets/w16_semitec_P12-13-AT-Thermistor.txt:184: 25            1.000              2.000                        5.000              10.00                 20.00
+  design/datasheets/w16_semitec_P12-13-AT-Thermistor.txt:185: 30            0.8486             1.684                        4.179               8.313                16.12                                             2N
+TH1 ALONE, kohm (table, log-linear between points; B-value formula for comparison)
+  15 C: table 14.736  B-formula 14.916
+  20 C: table 12.090  B-formula 12.171
+  25 C: table 10.000  B-formula 10.000
+  30 C: table 8.313  B-formula 8.269
+  range 15 to 30 C with 1 % on R25: 8.19 to 15.06 kohm
+BEFORE TH1 (R0), between the TS pad of RT2 and TP16
+  steady, RT1 branch open: RT2 = 30.10 kohm (29.80 to 30.40)
+  first instant, C8 empty (REGN at 0 V): RT2 || RT1 = 4.456 kohm, then it climbs
+AFTER TH1 (R1), same two points, steady, RT1 branch open
+  15 C: RT2 || TH1 = 9.893 kohm
+  20 C: RT2 || TH1 = 8.625 kohm
+  25 C: RT2 || TH1 = 7.506 kohm
+  30 C: RT2 || TH1 = 6.514 kohm
+  range 15 to 30 C with tolerances: 6.42 to 10.07 kohm
+FAULTS
+  one lead joint open: R1 = R0 (no drop), about 30.1 kohm
+  the two leads touching each other or a ground point: R1 near 0 ohm
+DIFFERENCE METHOD (cancels any steady branch in parallel)
+  example R0 30.100, R1 7.506: R0*R1/(R0-R1) = 10.000 kohm
+  example R0 25.000, R1 7.143: R0*R1/(R0-R1) = 10.000 kohm
+RESULT TH1 alone 8.19 to 15.06 kohm; R0 about 30.1 kohm; R1 6.42 to 10.07 kohm (25 C: 7.51)

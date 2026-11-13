@@ -1,0 +1,40 @@
+# remote.sh run 20261113-055319-u7-kfacts
+# command: bash tests/sys/kfacts.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:53:19 CET
+# free on the server's /: 53 GB
+# source firmware copied to /root/ring-os/src-u-sys
+# started on the server as 20261113-055319-u7-kfacts; server log /root/ring-os/logs/20261113-055319-u7-kfacts.log
+== K9 names in dfu headers (count of lines mentioning each name; 0 = absent)
+mcuboot.h boot_request_upgrade 2
+mcuboot.h boot_is_img_confirmed 1
+mcuboot.h boot_write_img_confirmed 3
+mcuboot.h BOOT_UPGRADE_TEST 3
+flash_img.h flash_img_init_id 1
+flash_img.h flash_img_buffered_write 1
+flash_img.h flash_img_check 3
+flash_img.h flash_img_init 2
+flash_img.h flash_img_bytes_written 1
+== K10 settings back ends (counts in the settings Kconfig; files holding retained / settings nodes)
+subsys/settings/Kconfig* SETTINGS_NVS 5
+subsys/settings/Kconfig* SETTINGS_ZMS 10
+subsys/settings/Kconfig* SETTINGS_FILE 3
+subsys/settings/Kconfig* SETTINGS_FCB 3
+settings_save_one declared: 1
+settings_load_subtree declared: 4
+nrf54l dts files naming storage_partition: 1
+== K11 handler and retained memory
+fatal.h names k_sys_fatal_error_handler: 2
+kernel/fatal.c defines it weak (count of lines with both words): 1
+retained_mem bindings:
+nordic,nrf-gpregret.yaml
+sifli,sf32lb-rtc-backup.yaml
+silabs,buram.yaml
+zephyr,retained-ram.yaml
+zephyr,retained-reg.yaml
+retained_mem_zephyr_ram driver present: 1
+retained_mem API header names retained_mem_read/write/clear: 18
+# finished (Mac clock): 2026-11-13 05:53:53 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-055319-u7-kfacts.log
+exit 0

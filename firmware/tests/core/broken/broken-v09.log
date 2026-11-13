@@ -1,0 +1,12 @@
+broken copy run 2026-11-13 04:15:35 CET, mutation v09
+change applied (diff of the copy against its original):
+124c124
+< 	if (ev == RC_EV_VBUS_OUT && c->facts.batt == RC_BATT_B2 &&
+---
+> 	if (ev == RC_EV_VBUS_OUT && from != RC_ST_BOOT && c->facts.batt == RC_BATT_B2 &&
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_round4.c:159: out.last_row == 7 (left -1, right 7)
+FAIL rc_round4.test_t2_r16_boot_vbus_out_at_b2_takes_row_7_before_init_done
+suites=13 tests=221 pass=220 fail=1
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation v09, named case rc_round4.test_t2_r16_boot_vbus_out_at_b2_takes_row_7_before_init_done failed

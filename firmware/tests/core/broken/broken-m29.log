@@ -1,0 +1,12 @@
+broken copy run 2026-11-13 04:15:23 CET, mutation m29
+change applied (diff of the copy against its original):
+101c101
+< 		return !f->open_flag && !f->vbus && f->batt < RC_BATT_B5;
+---
+> 		return !f->open_flag && !f->vbus;
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_round2.c:348: (rc_sm_find(&sm, RC_EV_INIT_DONE, &f)) == NULL (left 0, right 0)
+FAIL rc_round2.test_code_c2_row3_guard_refuses_b5
+suites=13 tests=221 pass=220 fail=1
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation m29, named case rc_round2.test_code_c2_row3_guard_refuses_b5 failed

@@ -1,0 +1,12 @@
+broken copy run 2026-11-13 04:15:32 CET, mutation r21
+change applied (diff of the copy against its original):
+179c179
+< 	    ev == RC_EV_BATT_B5 || ev == RC_EV_BATT_B2 || ev == RC_EV_STORAGE_FAULT_SET ||
+---
+> 	    ev == RC_EV_BATT_B5 || ev == RC_EV_BATT_B2 ||
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_round4.c:172: out.last_row == -1 (left 25, right -1)
+FAIL rc_round4.test_c10_refuses_storage_fault_set
+suites=13 tests=221 pass=220 fail=1
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation r21, named case rc_round4.test_c10_refuses_storage_fault_set failed

@@ -1,0 +1,8 @@
+design/ecad/ring/sch-notes.md:216:| 7 | D4 | The LOADSW chapter (6.4, pages 67 to 71) gives no output capacitor rule; its only figure is tSS measured with 10 uF (Table 20, page 69). Nordic's configuration 2, which runs one LOADSW in load switch mode, puts C14 1.0 uF X5R 10 V on LSOUT1 (Figure 59 page 158, rendered to `evidence/a7/npm1304_p158_config2.png`; Table 38 page 159). Applied to both outputs: C86 on VDD_MIC at ball A4, C87 on VDD_SD at ball A5 | make_netlist.py, additions.csv, bom.csv (new line C86,C87) | A7-4 |
+design/ecad/ring/make_netlist.py:39:            'PVSS2': 'power_in', 'LSIN1/VINLDO1': 'power_in', 'LSIN2/VINLDO2': 'power_in',
+design/ecad/ring/make_netlist.py:40:            'LSOUT1/VOUTLDO1': 'power_out', 'LSOUT2/VOUTLDO2': 'power_out', 'AVSS': 'power_in'}
+design/ecad/ring/make_netlist.py:277:           'LSIN1/VINLDO1': 'VDD_1V8', 'LSIN2/VINLDO2': 'VDD_3V0',
+design/ecad/ring/make_netlist.py:278:           'LSOUT1/VOUTLDO1': 'VDD_MIC', 'LSOUT2/VOUTLDO2': 'VDD_SD', 'AVSS': 'GND'}
+design/ecad/ring/make_netlist.py:288:# A7 D4: load switch mode outputs: Nordic configuration 2 (one LOADSW in load switch mode) puts C14 1.0 uF on LSOUT1
+design/ecad/ring/make_netlist.py:432:    ('C86', 'A7 D4: U2 LSOUT1 (VDD_MIC) 1.0 uF at ball A4 (nPM1304 spec configuration 2, C14, pages 158 and 159)'),
+design/ecad/ring/make_netlist.py:433:    ('C87', 'A7 D4: U2 LSOUT2 (VDD_SD) 1.0 uF at ball A5 (nPM1304 spec configuration 2, C14, pages 158 and 159)'),

@@ -1,0 +1,46 @@
+# remote.sh run 20261111-131444-peek2
+# command: O=/root/ring-os/ws/out/20261111-131307-bsimA3-bsim-control; grep -n "BT_LL_SW_SPLIT" -B2 -A12 $O/build-ring.log | head -60; grep -E "CONFIG_BT_LL|CONFIG_BT_CTLR_ECDH|CONFIG_BT_HCI_VS|CONFIG_BT_ECC|CONFIG_BT_SMP_SC|CONFIG_BT_CRACEN|CONFIG_BT_LL_SOFT|CONFIG_NRF_SECURITY|CONFIG_BT_LONG_WQ|CONFIG_CRACEN|CONFIG_BT_SMP_USB|TINYCRYPT" $O/ring/zephyr/.config | head -40; grep -n "ll_softdevice\|libsoftdevice\|sdc" $O/build-ring.log | head -10
+# mode: host
+# started (Mac clock): 2026-11-11 13:14:44 CET
+# free on the server's /: 62 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-131444-peek2; server log /root/ring-os/logs/20261111-131444-peek2.log
+16--- Generated devicetree_generated.h: /ws/out/20261111-131307-bsimA3-bsim-control/ring/zephyr/include/generated/zephyr/devicetree_generated.h
+17-
+18:warning: BT_LL_SW_SPLIT (defined at subsys/bluetooth/controller/Kconfig:143) was assigned the value
+19-'y' but got the value 'n'. Check these unsatisfied dependencies:
+20-DT_HAS_ZEPHYR_BT_HCI_LL_SW_SPLIT_ENABLED (=n). See
+21:http://docs.zephyrproject.org/latest/kconfig.html#CONFIG_BT_LL_SW_SPLIT and/or look up
+22:BT_LL_SW_SPLIT in the menuconfig/guiconfig interface. The Application Development Primer, Setting
+23-Configuration Values, and Kconfig - Tips and Best Practices sections of the manual might be helpful
+24-too.
+25-
+26-
+27-warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+28-
+29-Parsing /ws/zephyr/Kconfig
+30-Loaded configuration '/ws/zephyr/boards/native/nrf_bsim/nrf54lm20bsim_nrf54lm20a_cpuapp_defconfig'
+31-Merged configuration '/ws/firmware/tests/bsim/control/ring_app/prj.conf'
+32-Merged configuration '/ws/firmware/tests/bsim/control/ll_sw_split.conf'
+33-Configuration saved to '/ws/out/20261111-131307-bsimA3-bsim-control/ring/zephyr/.config'
+34-Kconfig header saved to '/ws/out/20261111-131307-bsimA3-bsim-control/ring/zephyr/include/generated/zephyr/autoconf.h'
+CONFIG_BT_LONG_WQ_STACK_SIZE=1800
+CONFIG_BT_HCI_VS=y
+CONFIG_NRF_SECURITY_ENABLER=y
+CONFIG_BT_LL_SOFTDEVICE_HEADERS_INCLUDE=y
+CONFIG_BT_LL_SOFTDEVICE=y
+CONFIG_BT_LL_SOFTDEVICE_BUILD_TYPE_LIB=y
+CONFIG_BT_LL_SOFTDEVICE_PERIPHERAL=y
+# CONFIG_BT_LL_SOFTDEVICE_MULTIROLE is not set
+CONFIG_BT_LL_SOFTDEVICE_INIT_PRIORITY=40
+CONFIG_BT_LONG_WQ=y
+CONFIG_BT_LONG_WQ_PRIO=10
+CONFIG_BT_LONG_WQ_INIT_PRIO=50
+CONFIG_BT_SMP_SC_PAIR_ONLY=y
+CONFIG_BT_SMP_SC_ONLY=y
+CONFIG_BT_ECC=y
+# CONFIG_BT_HCI_VS_EVT_USER is not set
+203:[146/330] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/hci_vs_sdc.c.obj
+# finished (Mac clock): 2026-11-11 13:14:50 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-131444-peek2.log

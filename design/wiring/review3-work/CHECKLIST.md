@@ -1,0 +1,34 @@
+# Review 3 checklist (pinned 5573835e)
+
+- [x] 1. Version pinned, judged files unchanged. evidence: 00-head.txt, 00-judged-status.txt (empty), assembly-at-5573835e.md equals the working copy (hotbar-solder.log last line)
+- [x] 2. Brief holds no author verdict on the fixed version (it names earlier reviews only). evidence: brief text
+- [x] 3. Part 1 F1 (step 8 discs, how, check). evidence: quotes.log assembly.md:144, 145, 148; land-order.log; check_all.log
+- [x] 4. Part 1 F2. evidence: quotes.log assembly.md:136, 138, 139; land-order.log
+- [x] 5. Part 1 F3. evidence: quotes.log assembly.md:153, 156; land-order.log
+- [x] 6. Part 1 F4. evidence: assembly-at-5573835e.md lines 90, 130, 147
+- [x] 7. Part 1 F5. evidence: pads/case_main-silk.csv; gerb/silk-diff2.log (first 390 lines equal; delivered file adds mask clipping)
+- [x] 8. Part 1 F6. evidence: csv-compact.log L64 to L68
+- [x] 9. Part 1 F7. evidence: quotes.log assembly.md:131; hand-derivations.txt item 4
+- [x] 10. Part 1 N1. evidence: png/pw-1.png, pw-text.txt
+- [x] 11. Part 1 N2. evidence: quotes.log case-architecture.md:151
+- [x] 12. Part 1 N3. evidence: quotes.log board-notes.md:296
+- [x] 13. Part 1 N6. evidence: assembly-at-5573835e.md line 120; pads/ring-pads.csv
+- [x] 14. Part 1 m3. evidence: csv-compact.log L64 to L68; quotes.log board-notes.md:297
+- [x] 15. Fixers' notes read only after my view. evidence: order of commands (notes read after check_all, fakes, land-order)
+- [x] 16. DRC 17 of 17 boards, each in its folder. evidence: drc/run.log, drc/*.rpt (17 with 0 violations, 17 with 0 unconnected)
+- [x] 17. DRC honest control fault. evidence: broken/broken.rpt "Found 1 unconnected pads"
+- [x] 18. DRC changed no design file. evidence: drc/gitstatus-before.log vs gitstatus-after.log (only ring-lines logs of another helper)
+- [x] 19. Pad nets and silk read with KiCad's Python, 17 boards. evidence: pads/*.csv, pads/dump.log
+- [x] 20. B1 every line, both ends, carrier, join, marking, cuts; once only; coverage. evidence: check_all.log
+- [x] 21. B2 nets at ends, tail lands, pairing 28 rows. evidence: check_all.log
+- [x] 22. B3 parity of pad nets with netlists. evidence: check_all.log "parity pads checked 852"
+- [x] 23. B5 J_BAND mating 14 boards, J1 against maker page 5, case wire pads. evidence: check_all.log; hand-derivations.txt items 1 to 3
+- [x] 24. Fakes through the checker entry point (control, wrong pin, wrong signal, duplicate, missing line, missing cut, missing mark, wrong face, wrong tail land, flood of 200, case wire swap, empty, wrong pad net, tail swap, ring land gone, height high, P1/P4 swap). evidence: fakes-run.log "RESULT fakes=17 as_expected=17 differs=0"
+- [x] 25. Drawing against csv, with a fake. evidence: check_pdf.log, fakes/check_pdf-fake.log
+- [x] 26. Assembly sections 0 to 2 read in full, steps 1 to 28. evidence: quotes.log; this review's part 2 table
+- [x] 27. Case numbered procedure and wiring table read. evidence: quotes.log board-notes.md lines
+- [x] 28. Review 2 "could not check": J1 entry side, Alps terminals. evidence: hand-derivations.txt items 2 and 4
+- [-] 29. Review 2 "could not check": gauge values 1.170 and 1.021 mm and contact heights re-derived. not done: they come from the case model run (r4/pin_gauge.log), which I did not re-run; checked only against the maker range (check_all.log pairing)
+- [-] 30. A built part. not done: no hardware exists (brief)
+- [x] 31. Known and decided items: do they make a wrong connection. evidence: review part 2 note on them
+- [x] 32. Final audit of the review. evidence: audit.log

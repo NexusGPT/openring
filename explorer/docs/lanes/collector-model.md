@@ -1,0 +1,7 @@
+# Lane collector-model
+
+Files: `collector/extract/placements.py` (record part-placements), `collector/extract/ring_model.py` (record ring-model, internals.glb, exterior.glb), `collector/extract/screens.py` (helper: screen rect, band, screen states), `collector/cad/glb.py` (GLB read/write, Y-up conversion, meshopt call), `collector/cad/step_to_glb.py` (STEP to GLB for the case extractor; proven on design/mech/thin/out/thin-inside.step), tests in `collector/tests/collector-model/test_model.py` (22).
+
+For the stage: record numbers are in design coordinates (Z up); both GLBs are already glTF Y-up (map (x, y, z) to (x, z, -y)). Layers are ordered bottom to top; `explode` is a vector or `radial`. The exterior is `not-picked` with a file while a look is only in design: show it labelled "in design, not approved". `nodes[].kind` is from the model's data (metal flag, blend material, the row with the lit-area note), `part_ids` only for references present in design/bom.csv.
+
+Departures: (1) sources are design/mech/thin/, not design/mech/ (lead's fact 1); (2) layers come from layers.json, not an architecture stack table, and the brief's "ordered top to bottom" gives way to the schema's "bottom to top"; (3) no 'thumb-side strip' zone: `zone` is null; (4) the optional `explode` field was added to contract/schema/part-placements.schema.json and src/contract/records.ts (regenerated with npm run gen:types).

@@ -1,0 +1,61 @@
+17.17 rows read: 7
+smallest cell 18.2 mAh, largest 32.9 mAh
+recording current = 4.0 + 2 x (0.63 - 0.58) = 4.10 mA
+
+Per size: battery, recording hours at 4.1 mA, charge time at 15 mA (constant-current bound), C-rate of 15 mA
+US 7: 18.2 to 24.3 mAh; record 4.44 to 5.93 h (17.17 at 4.0 mA: 4.5 to 6.1); charge 1.21 to 1.62 h; 15 mA = 0.62 to 0.82 C
+US 8: 19.3 to 25.7 mAh; record 4.71 to 6.27 h (17.17 at 4.0 mA: 4.8 to 6.4); charge 1.29 to 1.71 h; 15 mA = 0.58 to 0.78 C
+US 9: 20.4 to 27.2 mAh; record 4.98 to 6.63 h (17.17 at 4.0 mA: 5.1 to 6.8); charge 1.36 to 1.81 h; 15 mA = 0.55 to 0.74 C
+US 10: 21.5 to 28.6 mAh; record 5.24 to 6.98 h (17.17 at 4.0 mA: 5.4 to 7.2); charge 1.43 to 1.91 h; 15 mA = 0.52 to 0.70 C
+US 11: 22.6 to 30.1 mAh; record 5.51 to 7.34 h (17.17 at 4.0 mA: 5.6 to 7.5); charge 1.51 to 2.01 h; 15 mA = 0.50 to 0.66 C
+US 12: 23.6 to 31.5 mAh; record 5.76 to 7.68 h (17.17 at 4.0 mA: 5.9 to 7.9); charge 1.57 to 2.10 h; 15 mA = 0.48 to 0.64 C
+US 13: 24.7 to 32.9 mAh; record 6.02 to 8.02 h (17.17 at 4.0 mA: 6.2 to 8.2); charge 1.65 to 2.19 h; 15 mA = 0.46 to 0.61 C
+
+Thresholds (state of charge share x capacity / 4.1 mA x 60)
+B15 on 18.2 mAh: 15 % x 18.2 = 2.730 mAh; 2.730 / 4.1 x 60 = 40.0 min
+B15 on 32.9 mAh: 15 % x 32.9 = 4.935 mAh; 4.935 / 4.1 x 60 = 72.2 min
+B5 on 18.2 mAh: 5 % x 18.2 = 0.910 mAh; 0.910 / 4.1 x 60 = 13.3 min
+B5 on 32.9 mAh: 5 % x 32.9 = 1.645 mAh; 1.645 / 4.1 x 60 = 24.1 min
+B2 on 18.2 mAh: 2 % x 18.2 = 0.364 mAh; 0.364 / 4.1 x 60 = 5.3 min
+B2 on 32.9 mAh: 2 % x 32.9 = 0.658 mAh; 0.658 / 4.1 x 60 = 9.6 min
+
+Hours
+recording: 18.2 / 4.1 = 4.44 h; 32.9 / 4.1 = 8.02 h
+standby: 18.2 / 0.03 = 606.7 h = 25.3 days; 32.9 / 0.03 = 1096.7 h = 45.7 days
+Plaud 13 mA: 18.2 / 13 = 1.40 h; 32.9 / 13 = 2.53 h
+first charge to 50 % from empty: 0.5 x 18.2 / 15 = 0.61 h; 0.5 x 32.9 / 15 = 1.10 h
+
+C-rates
+motor running 80 mA: 80 / 18.2 = 4.40 C; 80 / 32.9 = 2.43 C
+motor start 175 mA: 175 / 18.2 = 9.62 C; 175 / 32.9 = 5.32 C
+charge 15 mA: 15 / 18.2 = 0.82 C; 15 / 32.9 = 0.46 C
+charge limit 1 C of the smallest cell = 18.2 mA = 18200 uA
+termination current 10 % of 15 mA = 1.5 mA; cool region 50 % = 7.5 mA
+charge current accuracy +-10 %: 13.5 to 16.5 mA
+
+Motor charge per pattern: sum over pulses of (t_on x 80 mA + 10 ms x 175 mA)
+M1: pulses [80] ms: 8.15 mA.s = 0.00226 mAh
+M2: pulses [80, 80] ms: 16.30 mA.s = 0.00453 mAh
+M3: pulses [80, 80, 80] ms: 24.45 mA.s = 0.00679 mAh
+MH: pulses [40] ms: 4.95 mA.s = 0.00138 mAh
+MT: pulses [25] ms: 3.75 mA.s = 0.00104 mAh
+MW: pulses [60] ms: 6.55 mA.s = 0.00182 mAh
+MF: pulses [300, 300] ms: 51.50 mA.s = 0.01431 mAh
+start delay 0.55 ms as a share of MT 25 ms: 2.2 %
+
+Light
+R41 820 ohm: (3.0 - 1.767) / (820 + 0.7) = 1.502 mA
+R41 680 ohm: (3.0 - 1.767) / (680 + 0.7) = 1.811 mA
+from the cell: 1.50 x 3.0 / (3.8 x 0.9) = 1.316 mA
+
+Microphone levels
+sensitivity change: -26 - (-37) = 11 dB; gain_db = -11; register 2 x (-11) + 0x28 = 18 = 0x12
+94 dB SPL at gain -11: -26 - 11 = -37 dBFS (F4 old part at 0 dB: -37 dBFS)
+full scale reached at 94 + 37 = 131 dB SPL; microphone AOP 120 dB SPL is stored at 120 - 94 - 37 = -11 dBFS
+at gain 0 dB (not chosen): full scale at 94 + 26 = 120 dB SPL
+microphone noise: -26 - 64.5 = -90.5 dBFS(A) at 0 dB; -101.5 dBFS(A) at -11 dB
+16-bit quantization noise against a full-scale sine: -(6.02 x 16 + 1.76) = -98.1 dBFS
+noise sum at 0 dB: -89.8 dBFS, SNR at 94 dB SPL 63.8 dB; at -11 dB: -96.5 dBFS, SNR 59.5 dB [CALC, assumes 16-bit truncation after the gain, not A-weighted]
+
+VDD_MIC rise
+C31 + C32 + C35 + C36 + C86 = 1.0 + 1.0 + 0.1 + 0.1 + 1.0 = 3.2 uF; 3.2 uF x 1.8 V / 25 mA = 0.230 ms

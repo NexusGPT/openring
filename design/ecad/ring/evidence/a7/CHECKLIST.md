@@ -1,0 +1,27 @@
+# A7 checklist (wiring diagram and parts list)
+
+- [x] 1. U2 real ball numbers, no P1 to P33, U2 rows leave open-pins.csv. evidence: evidence/check_a7_final.log (A7-1), evidence/a7/counts.log (U2 rows 34 to 0)
+- [x] 2. GPIO4 removed. evidence: evidence/check_a7_final.log (A7-1)
+- [x] 3. U2 order code nPM1304-CAAA-R7. evidence: evidence/check_a7_final.log (A7-1)
+- [x] 4. D1 C71 1.0 uF 25 V. evidence: evidence/check_a7_final.log (A7-4)
+- [x] 5. D2 2.2 uF at VBAT (C85). evidence: evidence/check_a7_final.log (A7-4)
+- [x] 6. D3 third 10 uF on VSYS (C88). evidence: evidence/check_a7_final.log (A7-4)
+- [x] 7. D4 LOADSW capacitor rule read and applied (C86, C87). evidence: evidence/a7/npm1304_p158_config2.png, evidence/check_a7_final.log (A7-4)
+- [x] 8. D5 GPIO4. evidence: as item 2
+- [x] 9. D6, D7 as board notes. evidence: sch-notes.md 12.3 items 2 and 3
+- [x] 10. Motor W1 to W12. evidence: evidence/check_a7_final.log (A7-2, A6-9), evidence/a7/before/make_netlist.py against make_netlist.py
+- [x] 11. Motor B1 to B6. evidence: evidence/a7/patch_bom.log
+- [x] 12. Microphones 8 pins, nets unchanged, datasheet read for pin table and bypass rule. evidence: evidence/check_a7_final.log (A7-3)
+- [x] 13. mic-path items 14 to 17, 18, 19, 20, 26 to 30. evidence: evidence/a7/patch_bom.log, evidence/a7/patch_notes1.log, evidence/a7/patch_check.log
+- [x] 14. R41 820 ohm, LED pad 1 cathode, LED1 line text and place, LG1, LP1. evidence: evidence/check_a7_final.log (A7-5), evidence/a7/patch_bom.log
+- [x] 15. Re-check one control, cable split 8 and 7 with MOT- on ground, U10 C81 C82, BT1 cell line. evidence: evidence/check_a7_final.log (A5-5, A6-2, A6-7, A6-9, A7-8)
+- [x] 16. run_all.sh rebuilds; check_netlist.py RESULT PASS; ERC 0 violations, report saved. evidence: evidence/a7/run_all_a7_final.log, evidence/check_a7_final.log, evidence/erc-report_a7_final.txt
+- [x] 17. Extended check proven to fail once. evidence: evidence/a7/broken/check_broken.log, evidence/a7/broken/expected.txt
+- [x] 18. check_bom.py: only section-2 part failures from the microphone and motor changes, rows listed in sch-notes.md. evidence: evidence/a7/check_bom.log, sch-notes.md 12.4
+- [x] 19. sch-notes.md "A7 changes": applied, refused, for the board. evidence: sch-notes.md section 12
+- [x] 20. open-pins.csv regenerated, rows before and after stated. evidence: evidence/a7/counts.log
+- [x] 21. No absolute path in a new or changed bom.csv cell. evidence: evidence/a7/abs_paths.log
+- [x] 22. bom-notes.md dated note appended. evidence: design/bom-notes.md last note
+- [x] 23. Nothing touched in pcb/, architecture.md, firmware.md, mech, look, case, protocol, mfg, explorer; no git command. evidence: evidence/a7/untouched.log
+- [x] 24. One heavy command at a time with nice -n 19; df -h before the builds. evidence: evidence/a7/df_1.log, evidence/a7/df_2.log, evidence/a7/step.sh
+- [x] 25. End line RESULT. evidence: tail of sch-notes.md

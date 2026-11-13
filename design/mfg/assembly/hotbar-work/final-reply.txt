@@ -1,0 +1,33 @@
+Study written. Verdict: no arrangement works with today's files; three design options given, none chosen.
+
+Main findings (design/mfg/assembly/hotbar-joint.md):
+1. Q2: The foot is 2.500 mm wide and the floor slot 2.100 mm. All 14 ribbons: step 14 cannot pass the board end up the slot. Each ribbon's flat length equals its finished path: free length is 0.0000 mm for all 14 (`design/ecad/band/band-notes.md` line 61). Lift 0.000 mm, tilt 0.00 deg at US 7 and US 13. In its final place the stiffener sits 0.790 mm above the floor, and a loop of spare ribbon would need 1.620 mm under a 1.030 mm gap. Without a twist the board can only turn about X. At 180 degrees the ribbons swap sides. At 90 degrees FLEX2 is 11.666 mm short.
+2. Options, not decided:
+   - A: make the joint before threading, through open-ended slots. Only the body changes, but it cuts the block's side wall (owner question).
+   - B: make the joint in place with heat from the screen face. Needs a slot of at least 2.8 mm or a 1.8 mm foot, plus a backing. The foot is placed blind, and the heat comes from J1's own face.
+   - C: longer ribbons. Changes 14 band boards, needs room to store the slack, and the foot or slot change.
+3. Q1: Paste goes on the 15 lands in pass 2. No file sets the stencil thickness. For 0.03 mm of solder the aperture is 0.30 x 0.413 at a 0.08 stencil, or 0.30 x 0.330 at 0.10. Today 0 of 15 lands have a paste opening.
+4. Q3: Fixture drawn: pocket 27.30 x 12.70 x 0.30, a 6.60 x 1.30 channel for J1, and ledges that act as the anvil. The foot is aligned by eye to the lands. No copper alignment mark fits: 3 of the 4 foot edges have no free place.
+5. Q4: The file gives the sub-steps, the land table and a meter check of all 15 lands, with at most two presses per foot. The 3 mm blade of band-interface.md line 137 lands on R61 (0.040 mm overlap), so 2.5 x 1.6 is used as a starting value.
+6. Q5: Hirose page 6 says "Number of reflow cycles:2 cycles MAX." Step 2 already uses both cycles. J1 sits 0.510 mm from land 2 of J_BAND_A, on the other face. The first press must measure J1 below 217 C. 31 parts lie within 3 mm of the lands.
+
+Files:
+- design/mfg/assembly/hotbar-joint.md
+- design/mfg/assembly/hotbar-fixture.svg
+- design/mfg/assembly/hotbar-work/
+
+Proof (last lines, verbatim):
+- logs/geom_check.log: `RESULT geometry: tails checked 14; foot passes slot 0 of 14; lift possible 0 of 14; parts within 3 mm 31`, then `exit 0`.
+- planted/geom_check-planted.log (FLEX1 US 7 made 5 mm longer): `RESULT geometry: tails checked 14; foot passes slot 0 of 14; lift possible 1 of 14; parts within 3 mm 31`, then `exit 0`.
+- logs/paste_at_lands.log: `RESULT lands with a paste opening: 0 of 15`, then `exit 0`.
+- logs/audit-final.log: see its last two lines.
+
+Limits:
+- 20 values are starting values for you to confirm (list in section 6).
+- No model run.
+- I read thin.py and thin-notes.md only in the parts the brief names.
+- The audit checks only that each number appears in a log or cited file.
+- Sources unchanged at fc100fd2 (logs/version-diff-after.log shows no file).
+- No existing file changed; no git, check_band.py or browser.
+
+RESULT: done, no arrangement works with today's files; the smallest change in files is option A (joint before threading, slots opened through the block side wall), for the lead and owner to decide.

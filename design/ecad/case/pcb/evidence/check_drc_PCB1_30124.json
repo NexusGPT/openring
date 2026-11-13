@@ -1,0 +1,108 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-13T04:03:46",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.8",
+    "schematic_parity": [],
+    "source": "broken_wrongnet.kicad_pcb",
+    "unconnected_items": [
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Track [GND] on F.Cu, length 0.2500 mm",
+                    "pos": {
+                        "x": 112.85,
+                        "y": 98.7
+                    },
+                    "uuid": "23db85f6-b760-40be-aed1-2ee1ee85be3a"
+                },
+                {
+                    "description": "Track [GND] on F.Cu, length 2.4000 mm",
+                    "pos": {
+                        "x": 113.75,
+                        "y": 96.8
+                    },
+                    "uuid": "65232f0c-9df1-4651-95b4-fb302cb2120c"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        }
+    ],
+    "violations": [
+        {
+            "description": "Clearance violation (zone clearance 0.5000 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 112.5,
+                        "y": 98.95
+                    },
+                    "uuid": "517ea4a9-2457-4f93-8dce-7b35f45dfad3"
+                },
+                {
+                    "description": "Zone 'V33_In2' [3V3] on In2.Cu, priority 0",
+                    "pos": {
+                        "x": 100.2,
+                        "y": 80.0
+                    },
+                    "uuid": "6fdcb3df-864c-4c7f-ab09-36f7ef5b88e5"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.1000 mm; actual 0.0125 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 112.5,
+                        "y": 98.95
+                    },
+                    "uuid": "517ea4a9-2457-4f93-8dce-7b35f45dfad3"
+                },
+                {
+                    "description": "Zone 'V33_In2' [3V3] on In2.Cu, priority 0",
+                    "pos": {
+                        "x": 100.2,
+                        "y": 80.0
+                    },
+                    "uuid": "6fdcb3df-864c-4c7f-ab09-36f7ef5b88e5"
+                }
+            ],
+            "severity": "error",
+            "type": "hole_clearance"
+        }
+    ]
+}

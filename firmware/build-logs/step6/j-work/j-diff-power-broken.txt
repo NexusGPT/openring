@@ -1,0 +1,5 @@
+41a42,45
+>     # step 6, the join's addition: the read now is made on the caller's thread, not the power thread
+>     "read_on_caller_thread": ("src/rpw.c", "CASE power_read.test_sample_now_from_power_thread",
+>         "\tif (k_msgq_put(&ev_q, &e, K_NO_WAIT) != 0) {\n\t\tr = -EBUSY;",
+>         "\t(void)e;\n\tdo_read();\n\tif (false) {\n\t\tr = -EBUSY;"),

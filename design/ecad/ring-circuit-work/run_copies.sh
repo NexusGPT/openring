@@ -1,0 +1,9 @@
+#!/bin/bash
+export REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/../../.." && pwd)"  # the repository root, found from this script
+cd $REPO_ROOT/design/ecad/ring-circuit-work/base2/design/ecad/ring && PYTHONDONTWRITEBYTECODE=1 nice -n 19 $REPO_ROOT/design/.venv/bin/python -B make_netlist.py > $REPO_ROOT/design/ecad/ring-circuit-work/logs/base2_make_netlist.log 2>&1
+for f in netlist.csv parts.csv additions.csv symbols.csv open-pins.csv; do cmp $REPO_ROOT/design/ecad/ring/$f $REPO_ROOT/design/ecad/ring-circuit-work/base2/design/ecad/ring/$f && echo "$f identical"; done > $REPO_ROOT/design/ecad/ring-circuit-work/logs/base2_source_proof.txt 2>&1
+bash $REPO_ROOT/design/ecad/ring-circuit-work/mirror_chain.sh $REPO_ROOT/design/ecad/ring-circuit-work/base2/design/ecad/ring base2
+bash $REPO_ROOT/design/ecad/ring-circuit-work/mirror_chain.sh $REPO_ROOT/design/ecad/ring-circuit-work/patched3/design/ecad/ring patched3
+cd $REPO_ROOT/design/sim/circuit && PYTHONDONTWRITEBYTECODE=1 nice -n 19 $REPO_ROOT/design/.venv/bin/python -B run_tests.py --ring-dir $REPO_ROOT/design/ecad/ring-circuit-work/base2/design/ecad/ring --out $REPO_ROOT/design/ecad/ring-circuit-work/bench_base2 > $REPO_ROOT/design/ecad/ring-circuit-work/logs/bench_base2.log 2>&1; echo $? > $REPO_ROOT/design/ecad/ring-circuit-work/logs/bench_base2.exit
+cd $REPO_ROOT/design/sim/circuit && PYTHONDONTWRITEBYTECODE=1 nice -n 19 $REPO_ROOT/design/.venv/bin/python -B run_tests.py --ring-dir $REPO_ROOT/design/ecad/ring-circuit-work/patched3/design/ecad/ring --out $REPO_ROOT/design/ecad/ring-circuit-work/bench_patched3 > $REPO_ROOT/design/ecad/ring-circuit-work/logs/bench_patched3.log 2>&1; echo $? > $REPO_ROOT/design/ecad/ring-circuit-work/logs/bench_patched3.exit
+date > $REPO_ROOT/design/ecad/ring-circuit-work/logs/run_copies.end

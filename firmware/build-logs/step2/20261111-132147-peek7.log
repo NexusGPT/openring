@@ -1,0 +1,63 @@
+# remote.sh run 20261111-132147-peek7
+# command: O=$(ls -dt /root/ring-os/ws/out/*bsimBC1-bsim-control | head -1); grep -E "rdev:|RING EVENT|RING PASSKEY" $O/run-B-ring.log | sed -n "1,60p"; echo ===H2; grep -E "HOST H2" $O/run-B-host2.log | head -30; echo ===H1; grep -E "HOST H1 (conn|disc|sec|pair)" $O/run-B-host1.log | head
+# mode: host
+# started (Mac clock): 2026-11-11 13:21:47 CET
+# free on the server's /: 58 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-132147-peek7; server log /root/ring-os/logs/20261111-132147-peek7.log
+d_00: @00:00:00.001718  rdev: ready, paired mask 0x00, active 255
+d_00: @00:00:00.001718  rdev: pairing window open for slot 0, 60000 ms
+d_00: @00:00:00.001718  rdev: advertising slot 0 open (pairing), interval 100 ms
+d_00: @00:00:00.644602  rdev: connected on slot 0
+d_00: @00:00:00.646421  rdev: pairing request accepted
+d_00: @00:00:00.996054  rdev: passkey for slot 0 shown: 836849
+d_00: @00:00:00.996054  RING PASSKEY slot 0 836849
+d_00: @00:00:05.596109  rdev: pairing complete bonded=1 slot 0 paired, active
+d_00: @00:00:05.596109  RING EVENT paired slot 0
+d_00: @00:00:05.596109  RING EVENT active slot 0
+d_00: @00:00:05.596109  rdev: security slot 0 level 4 err 0
+d_00: @00:00:05.596109  RING EVENT link slot 0 up
+d_00: @00:00:30.000763  rdev: pairing window open for slot 1, 60000 ms
+d_00: @00:00:30.000763  rdev: disconnect link of slot 0 (0)
+d_00: @00:00:30.095894  rdev: disconnected slot 0, reason 0x16
+d_00: @00:00:30.095894  RING EVENT link slot 0 down
+d_00: @00:00:30.095894  rdev: advertising slot 1 open (pairing), interval 100 ms
+d_00: @00:00:30.204849  rdev: connected on slot 1
+d_00: @00:00:30.206667  rdev: pairing request accepted
+d_00: @00:00:30.556301  rdev: passkey for slot 1 shown: 325288
+d_00: @00:00:30.556301  RING PASSKEY slot 1 325288
+d_00: @00:00:31.901093  rdev: switch to slot 0 from 0: no change
+d_00: @00:00:31.901093  rdev: disconnect link of slot 1 (0)
+d_00: @00:00:32.006141  rdev: security slot 1 level 1 err 9
+d_00: @00:00:32.006141  rdev: pairing failed slot 1 reason 9
+d_00: @00:00:32.006141  rdev: disconnected slot 1, reason 0x16
+d_00: @00:00:32.006141  rdev: advertising slot 0 to the bonded device, interval 100 ms
+d_00: @00:00:32.121495  rdev: connected on slot 0
+d_00: @00:00:32.473093  rdev: security slot 0 level 4 err 0
+d_00: @00:00:32.473093  RING EVENT link slot 0 up
+===H2
+d_02: @00:00:00.000000  HOST H2 START scenario B
+d_02: @00:00:00.000998  HOST H2 CHECK Bluetooth up PASS (t=0)
+d_02: @00:00:30.204846  HOST H2 connected (t=30204), bonded=0
+d_02: @00:00:30.706531  HOST H2 passkey entry asked, read ok (t=30706)
+d_02: @00:00:30.706531  HOST H2 CHECK passkey read from the ring's display PASS (t=30706)
+d_02: @00:00:32.006142  HOST H2 security failed err 9  (t=32006)
+d_02: @00:00:32.006142  HOST H2 pairing failed 9 
+d_02: @00:00:32.006142  HOST H2 CHECK pairing with the passkey completed and bonded FAIL (t=32006)
+d_02: @00:00:32.006142  HOST H2 disconnected reason 0x13 (t=32006)
+d_02: @00:01:10.000062  HOST H2 EVAL t=70000
+d_02: @00:01:10.000062  HOST H2 CHECK P2 media.centre FAIL (t=70000)
+d_02: @00:01:10.000062  HOST H2 CHECK P2 media.left FAIL (t=70000)
+d_02: @00:01:10.000062  HOST H2 CHECK P4 media.right (after the second switch) FAIL (t=70000)
+d_02: @00:01:10.000062  HOST H2 CHECK no other report received FAIL (t=70000)
+d_02: @00:01:10.000062  HOST H2 INFO 0 report(s) received in total
+d_02: @00:01:10.000062  HOST H2 RESULT FAIL checks=7 fails=5
+===H1
+d_01: @00:00:00.644599  HOST H1 connected (t=644), bonded=0
+d_01: @00:00:05.596108  HOST H1 security level 4 (t=5596)
+d_01: @00:00:30.095895  HOST H1 disconnected reason 0x13 (t=30095)
+d_01: @00:00:32.121492  HOST H1 connected (t=32121), bonded=1
+d_01: @00:00:32.473096  HOST H1 security level 4 (t=32473)
+# finished (Mac clock): 2026-11-11 13:21:53 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-132147-peek7.log

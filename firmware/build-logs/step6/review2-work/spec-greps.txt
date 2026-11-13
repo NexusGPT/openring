@@ -1,0 +1,35 @@
+== main loop
+1065:- Watchdog: `wdt31`, 8 s timeout, fed every 1 s by a work item on the system work queue (the product has no main loop). While a recording runs it is fed only when the audio and storage threads have both reported progress in the last 2 s; with no recording it is fed at every turn. A stalled system work queue, or a recording thread without progress, ends in a reset after 8 s.
+== SHIP_ENTER
+202:| `FACTORY_TEST` | command SHIP_ENTER | `SHIP` | clear the factory flag; ship mode (waits for VBUS removal, section 8.4) |
+936:Entry, in this order, for `SHIP` (FACTORY sub-commands SHIP_ENTER and SHIP_SAMPLE, section 9.3) and for `OFF` (menu "Power off", or B2):
+937:1. Close everything (recording, storage, USB, radio, screen); save the settings and the time in RRAM. SHIP_ENTER first clears the factory flag; SHIP_SAMPLE keeps it at 1.
+1019:- Entry: USB FACTORY sub-command 0x01 (ENTER) while the factory flag in settings is 1. The flag is written when the factory first programs the ring (assembly step 5), and cleared only by SHIP_ENTER (sub-command 0x7F). SHIP_SAMPLE (0x7E) enters ship mode and keeps the flag, for sample rings only, so a ring woken for a sample check can be tested again (assembly conflict K-A7). With the flag cle
+1035:| 0x7F | SHIP_ENTER | | clear the factory flag; start the ship beacon (ruling R20 below); ship mode: the ring waits for VBUS removal, then writes TASKENTERSHIPMODE (section 8.4) | before VBUS is removed the jig receives the ship beacon; after VBUS is removed the beacon stops within 1 s and stays off for 60 s (assembly step 27) |
+1051:| 27 | ship | VBUS on the pads, then removed | SHIP_ENTER, then the jig removes VBUS; sample rings get SHIP_SAMPLE instead | |
+1056:- Ship of step 27: SHIP_ENTER, then VBUS removed; the ring writes TASKENTERSHIPMODE only after the event EVENTVBUSREMOVED (section 8.4). The jig checks the ship beacon of ruling R20.
+1057:- **R20 (ship beacon, the lead's ruling after design review 3):** a ring that leaves the factory has no paired device, and such a ring does not advertise in `STANDBY` (section 7.3), so "no advertising for 60 s" would be true with or without ship mode. From the moment SHIP_ENTER or SHIP_SAMPLE is accepted until the ring writes TASKENTERSHIPMODE, the ring sends a ship beacon: advertising that c
+== 26 codes / code count
+1062:- Event log (both builds): each state change, fault, battery threshold and transfer command becomes a 512-byte record: magic 0x474C5252 ("RRLG") u32, record seq u32, uptime_ns u64, utc_ms i64, code u16, state u8, reserved u8, 16 bytes of arguments, crash block (below, zero when not a crash), CR
+1204:The event log record of section 9.4 carries one of these codes (u16) and up to 16 bytes of arguments (little-endian, unused bytes 0). The list is the one of `firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h` (`enum rrec_log_code`); that file and this table hold the same 26 codes. "FW l.N"
+1234:| 0x0290 | `RREC_LOG_UNMOUNT_FAILED` | storage could not be unmounted when a row asked for VDD_SD off (FW l.178, l.179); written at the first failed try of a step and once more when the retries of that step end, never once per try (rulings of 2026-11-13 after review finding R6-03: 27 codes) | e
+1241:RESULT: done, F5 follows architecture 17.11 to 17.23, wiring A7 and the assembly order; the check runs and their exit codes are listed in design/firmware-f5-notes.md.
+== section 9.4 heading
+1059:### 9.4 Logging and crash capture
+1067:## 10. Work breakdown
+1069:### 10.1 What exists in the SDK
+1085:### 10.2 What must be written
+1105:### 10.3 Order of work
+1109:### 10.4 Sources read for this document
+1134:### 10.5 Facts not verified from a primary source
+1172:### 10.6 What `firmware-check.py` checks
+1176:## Hardware issues found
+1202:## Event log codes (ruling R23, software step 6)
+== wdt / watchdog
+89:| Watchdog | `wdt31` | none | [SRC 1] |
+218:- The watchdog (`wdt31`, 8 s) resets the chip when the system work queue that feeds it stops (section 9.4); a reset during a recording leaves the open flag set, so `BOOT` goes to `RECOVERY`.
+996:- **Reset causes.** `BOOT` reads the nPM1304 register RSTCAUSE [NPM p146] (bits SHIPMODEEXIT, BOOTMONITORTIMEOUT, WATCHDOGTIMEOUT, LONGPRESSTIMEOUT, THERMALSHUTDOWN, VSYSLOW, SWRESET) and the charger error log CHARGERERRREASON and CHARGERERRSENSOR [NPM p146], writes them into the event log besid
+1065:- Watchdog: `wdt31`, 8 s timeout, fed every 1 s by a work item on the system work queue (the product has no main loop). While a recording runs it is fed only when the audio and storage threads have both reported progress in the last 2 s; with no recording it is fed at every turn. A stalled syst
+1113:| SRC 1 | Zephyr `dts/vendor/nordic/nrf54lm20_a_b.dtsi`, main branch: `pdm20` 0xd0000, `pdm21` 0xd1000, `spi00` 32 MHz, `spi21`/`i2c21` both 0xc7000, `usbhs` "nordic,nrf-usbhs-nrf54l", `grtc`, `tdm`, `wdt30`/`wdt31`, `gpregret1`/`gpregret2`, `cpuapp_sram` 511 KB, `cpuapp_rram` 2,036 KB |
+== unmount
+1234:| 0x0290 | `RREC_LOG_UNMOUNT_FAILED` | storage could not be unmounted when a row asked for VDD_SD off (FW l.178, l.179); written at the first failed try of a step and once more when the retries of that step end, never once per try (rulings of 2026-11-13 after review finding R6-03: 27 codes) | e

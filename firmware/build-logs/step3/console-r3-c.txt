@@ -1,0 +1,114 @@
+# remote.sh run 20261112-083945-r3-c
+# command: tests/bsim/iphone/run.sh --broken zone_not_reread; tests/bsim/iphone/run.sh --broken no_lti_known
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 08:39:45 CET
+# free on the server's /: 54 GB
+# source firmware copied to /root/ring-os/src-step3r3c
+# started on the server as 20261112-083945-r3-c; server log /root/ring-os/logs/20261112-083945-r3-c.log
+bsim-iphone: firmware /ws/firmware/tests/bsim/iphone, outputs /ws/out/20261112-083945-r3-c-bsim-iphone, scenarios , broken 1
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-083945-r3-c-bsim-iphone/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+##### broken copy: zone_not_reread
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -487,7 +487,6 @@
+ {
+ 	ARG_UNUSED(c);
+ 	cts_apply(t, k_uptime_get());
+-	lti_refresh();
+ }
+ 
+ /* ---------------------------------------------------------------- discovery */
+=== build ring-zone_not_reread for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-083945-r3-c-bsim-iphone/build-ring-zone_not_reread.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring-zone_not_reread ok
+=== test Z (broken-zone_not_reread): ring + stand-in iPhone, 70 simulated seconds, 2026-11-12T07:40:58Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-083945-r3-c-bsim-iphone/run-broken-zone_not_reread-Z-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:07.164500  RING CHECK the iPhone pairs; the notification service is found and subscribed PASS (t=7164)
+d_00: @00:00:09.168527  RING CHECK Z: zone +60 minutes: the clock shows UTC (within 100 ms) PASS (t=9168)
+d_00: @00:00:23.672627  RING CHECK Z: the zone changed to +180 minutes while linked and the local time moved by 2 h: the clock still shows the same UTC (within 100 ms) and the new zone FAIL (t=23672)
+d_00: @00:00:23.672627  RING CHECK Z: the zone was read again FAIL (t=23672)
+d_00: @00:00:23.672627  RING SCRIPT DONE t=23672 checks=7 fails=2
+d_00: @00:00:23.672627  RING RESULT FAIL
+--- stand-in iPhone /ws/out/20261112-083945-r3-c-bsim-iphone/run-broken-zone_not_reread-Z-phone.log
+d_01: @00:00:00.000122  PHONE START scenario Z
+d_01: @00:00:00.000174  PHONE CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.000174  PHONE CHECK the three Apple services are registered PASS (t=0)
+d_01: @00:00:00.645537  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:01.144997  PHONE CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  PHONE CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:06.444957  PHONE INFO HID client subscribed to 3 input reports (t=6444)
+d_01: @00:00:07.294853  PHONE INFO Notification Source subscribed (#1, security level 4, t=7294)
+d_01: @00:00:08.434953  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:08.584957  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:08.584957  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:37.294157  PHONE EVAL t=37294
+d_01: @00:00:37.294157  PHONE CHECK the ring read Local Time Information at the start and again after the zone change FAIL (t=37294)
+d_01: @00:00:37.294157  PHONE RESULT FAIL checks=6 fails=1
+ring script done at 23672 ms, stand-in evaluated at 37294 ms
+TEST Z RESULT FAIL (10 checks passed; infra: none; checks: ring-result phone-result 3-failed-checks)
+broken zone_not_reread: test Z failed on its named check, as required: d_00: @00:00:23.672627  RING CHECK Z: the zone changed to +180 minutes while linked and the local time moved by 2 h: the clock still shows the same UTC (within 100 ms) and the new zone FAIL (t=23672)
+RESULT PASS
+bsim-iphone: firmware /ws/firmware/tests/bsim/iphone, outputs /ws/out/20261112-083945-r3-c-bsim-iphone, scenarios , broken 1
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-083945-r3-c-bsim-iphone/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+##### broken copy: no_lti_known
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -645,6 +645,7 @@
+ 		k_mutex_lock(&lk, K_FOREVER);
+ 		lti_handle = lti;
+ 		ripl_clock_init(&clk);
++		ripl_clock_zone(&clk, true, true, 0, 0);
+ 		lti_busy = false;
+ 		cts_ready = true; /* before the reads: lti_refresh() needs it */
+ 		k_mutex_unlock(&lk);
+=== build ring-no_lti_known for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-083945-r3-c-bsim-iphone/build-ring-no_lti_known.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring-no_lti_known ok
+=== test W (broken-no_lti_known): ring + stand-in iPhone, 70 simulated seconds, 2026-11-12T07:41:36Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-083945-r3-c-bsim-iphone/run-broken-no_lti_known-W-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:07.164500  RING CHECK the iPhone pairs; the notification service is found and subscribed PASS (t=7164)
+d_00: @00:00:09.068395  RING CHECK W: no Local Time Information: the clock holds the iPhone's local time (within 100 ms) and says the zone is not known FAIL (t=9068)
+d_00: @00:00:15.664495  RING CHECK W: the local time moved by 1 h: the clock follows (within 100 ms), the zone is still not known FAIL (t=15664)
+d_00: @00:00:15.664495  RING CHECK W: no zone was read and no error was counted PASS (t=15664)
+d_00: @00:00:15.664495  RING SCRIPT DONE t=15664 checks=7 fails=2
+d_00: @00:00:15.664495  RING RESULT FAIL
+--- stand-in iPhone /ws/out/20261112-083945-r3-c-bsim-iphone/run-broken-no_lti_known-W-phone.log
+d_01: @00:00:00.000122  PHONE START scenario W
+d_01: @00:00:00.000174  PHONE CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.000174  PHONE CHECK the three Apple services are registered PASS (t=0)
+d_01: @00:00:00.645537  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:01.144997  PHONE CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  PHONE CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:06.444957  PHONE INFO HID client subscribed to 3 input reports (t=6444)
+d_01: @00:00:07.294853  PHONE INFO Notification Source subscribed (#1, security level 4, t=7294)
+d_01: @00:00:08.434953  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:08.584957  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:08.584957  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:37.294157  PHONE EVAL t=37294
+d_01: @00:00:37.294157  PHONE CHECK the ring subscribed to Current Time and never read Local Time Information (there is none) PASS (t=37294)
+d_01: @00:00:37.294157  PHONE RESULT PASS checks=6 fails=0
+ring script done at 15664 ms, stand-in evaluated at 37294 ms
+TEST W RESULT FAIL (11 checks passed; infra: none; checks: ring-result 2-failed-checks)
+broken no_lti_known: test W failed on its named check, as required: d_00: @00:00:09.068395  RING CHECK W: no Local Time Information: the clock holds the iPhone's local time (within 100 ms) and says the zone is not known FAIL (t=9068)
+RESULT PASS
+# finished (Mac clock): 2026-11-12 08:41:49 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step3/20261112-083945-r3-c.log

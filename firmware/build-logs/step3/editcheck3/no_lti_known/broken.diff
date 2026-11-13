@@ -1,0 +1,10 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -645,6 +645,7 @@
+ 		k_mutex_lock(&lk, K_FOREVER);
+ 		lti_handle = lti;
+ 		ripl_clock_init(&clk);
++		ripl_clock_zone(&clk, true, true, 0, 0);
+ 		lti_busy = false;
+ 		cts_ready = true; /* before the reads: lti_refresh() needs it */
+ 		k_mutex_unlock(&lk);

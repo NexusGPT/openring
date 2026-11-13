@@ -1,0 +1,15 @@
+import sys, time, glob
+sys.path.insert(0, (__import__("pathlib").Path(__file__).resolve().parents[3].as_posix() + "/design/wiring/readback-work"))
+import rb_lib as R
+F = (__import__("pathlib").Path(__file__).resolve().parents[3].as_posix() + "/design/ecad/ring/pcb/fab")
+t = time.time()
+lp = R.find_board_files(F + '/gerber', 'ring')
+dr = sorted(glob.glob(F + '/drill/*.drl'))
+b = R.Board('ring', lp, dr, res=0.005)
+print('size', b.W, b.H, 'load s', round(time.time() - t, 1))
+print([ (L.name, len(L.draws), len(L.flashes), len(L.regions)) for L in b.layers])
+print([ (d['func'], len(d['holes'])) for d in b.drills])
+t = time.time(); print(b.connectivity(), round(time.time() - t, 1))
+nl = R.read_netlist((__import__("pathlib").Path(__file__).resolve().parents[3].as_posix() + "/design/ecad/ring/netlist.csv"))
+c = R.compare(b, nl)
+print({k: v for k, v in c.items() if k not in ('net_groups', 'grp_nets')})

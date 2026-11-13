@@ -1,0 +1,110 @@
+# remote.sh run 20261113-052705-u3-failed-lists
+# command: cd /ws/out/20261113-051524-u-audio-unit/broken-audio && for f in twister-*.log; do echo "== $f"; grep -h -o -E "^ - FAIL - \[[a-z_]+\.[a-z_0-9]+\]|^d_00: @[0-9:.]+ +- FAIL - \[[a-z_]+\.[a-z_0-9]+\]" $f | sed -E "s/^d_00: @[0-9:.]+ +//" | sort -u; done
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:27:05 CET
+# free on the server's /: 26 GB
+# source firmware copied to /root/ring-os/src-u-audio
+# started on the server as 20261113-052705-u3-failed-lists; server log /root/ring-os/logs/20261113-052705-u3-failed-lists.log
+== twister-clip_high_only-native_sim.log
+ - FAIL - [audio_chunk.test_flags_each_bit]
+== twister-clip_high_only-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+- FAIL - [audio_chunk.test_flags_each_bit]
+== twister-discard_0-native_sim.log
+ - FAIL - [audio_chunk.test_32_blocks_per_chunk]
+ - FAIL - [audio_chunk.test_discard_800_frames]
+ - FAIL - [audio_chunk.test_dropout_zero_fill]
+ - FAIL - [audio_chunk.test_flags_each_bit]
+ - FAIL - [audio_chunk.test_highlights_in_header]
+ - FAIL - [audio_chunk.test_interleave_order]
+ - FAIL - [audio_chunk.test_partial_last_chunk]
+ - FAIL - [audio_chunk.test_payload_equals_blocks]
+ - FAIL - [audio_motor.test_interval_frames]
+ - FAIL - [audio_svc.test_cut_after_no_block]
+ - FAIL - [audio_svc.test_dropout_logged]
+ - FAIL - [audio_svc.test_dropout_on_read_error]
+ - FAIL - [audio_svc.test_highlight_marks_down_time]
+ - FAIL - [audio_svc.test_late_thread_is_not_a_dropout]
+ - FAIL - [audio_svc.test_motor_edges_marked]
+ - FAIL - [audio_svc.test_no_read_outside_recording]
+ - FAIL - [audio_svc.test_put_waits_on_enobufs]
+ - FAIL - [audio_svc.test_ring_of_three]
+ - FAIL - [audio_svc.test_stop_keeps_frames_to_mark]
+== twister-discard_0-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+- FAIL - [audio_chunk.test_32_blocks_per_chunk]
+- FAIL - [audio_chunk.test_discard_800_frames]
+- FAIL - [audio_chunk.test_dropout_zero_fill]
+- FAIL - [audio_chunk.test_flags_each_bit]
+- FAIL - [audio_chunk.test_highlights_in_header]
+- FAIL - [audio_chunk.test_interleave_order]
+- FAIL - [audio_chunk.test_partial_last_chunk]
+- FAIL - [audio_chunk.test_payload_equals_blocks]
+- FAIL - [audio_motor.test_interval_frames]
+- FAIL - [audio_svc.test_cut_after_no_block]
+- FAIL - [audio_svc.test_dropout_logged]
+- FAIL - [audio_svc.test_dropout_on_read_error]
+- FAIL - [audio_svc.test_highlight_marks_down_time]
+- FAIL - [audio_svc.test_late_thread_is_not_a_dropout]
+- FAIL - [audio_svc.test_motor_edges_marked]
+- FAIL - [audio_svc.test_no_read_outside_recording]
+- FAIL - [audio_svc.test_put_waits_on_enobufs]
+- FAIL - [audio_svc.test_ring_of_three]
+- FAIL - [audio_svc.test_stop_keeps_frames_to_mark]
+== twister-dropout_skips-native_sim.log
+ - FAIL - [audio_chunk.test_dropout_zero_fill]
+ - FAIL - [audio_chunk.test_flags_each_bit]
+ - FAIL - [audio_svc.test_dropout_logged]
+ - FAIL - [audio_svc.test_dropout_on_read_error]
+== twister-dropout_skips-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+- FAIL - [audio_chunk.test_dropout_zero_fill]
+- FAIL - [audio_chunk.test_flags_each_bit]
+- FAIL - [audio_svc.test_dropout_logged]
+- FAIL - [audio_svc.test_dropout_on_read_error]
+== twister-fifth_dropped-native_sim.log
+ - FAIL - [audio_motor.test_fifth_merged_into_fourth]
+== twister-fifth_dropped-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+- FAIL - [audio_motor.test_fifth_merged_into_fourth]
+== twister-hfxo_after_trigger-native_sim.log
+ - FAIL - [audio_svc.test_hfxo_before_trigger]
+ - FAIL - [audio_svc.test_hfxo_prepare_timeout]
+== twister-hfxo_after_trigger-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+- FAIL - [audio_svc.test_hfxo_before_trigger]
+- FAIL - [audio_svc.test_hfxo_prepare_timeout]
+== twister-highlight_release_time-native_sim.log
+ - FAIL - [audio_chunk.test_highlight_frame_from_down_time]
+ - FAIL - [audio_chunk.test_highlights_in_header]
+ - FAIL - [audio_chunk.test_late_highlight_close_only]
+ - FAIL - [audio_svc.test_highlight_marks_down_time]
+ - FAIL - [audio_svc.test_late_highlight_close_only]
+== twister-highlight_release_time-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+- FAIL - [audio_chunk.test_highlight_frame_from_down_time]
+- FAIL - [audio_chunk.test_highlights_in_header]
+- FAIL - [audio_chunk.test_late_highlight_close_only]
+- FAIL - [audio_svc.test_highlight_marks_down_time]
+- FAIL - [audio_svc.test_late_highlight_close_only]
+== twister-motor_no_tail-native_sim.log
+ - FAIL - [audio_motor.test_fifth_merged_into_fourth]
+ - FAIL - [audio_motor.test_interval_frames]
+ - FAIL - [audio_motor.test_m1_rest_marked_in_first_chunk]
+ - FAIL - [audio_motor.test_span_open_interval]
+ - FAIL - [audio_motor.test_span_two_chunks]
+ - FAIL - [audio_svc.test_motor_edges_marked]
+== twister-motor_no_tail-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+- FAIL - [audio_motor.test_fifth_merged_into_fourth]
+- FAIL - [audio_motor.test_interval_frames]
+- FAIL - [audio_motor.test_m1_rest_marked_in_first_chunk]
+- FAIL - [audio_motor.test_span_open_interval]
+- FAIL - [audio_motor.test_span_two_chunks]
+- FAIL - [audio_svc.test_motor_edges_marked]
+== twister-no_block_150ms-native_sim.log
+ - FAIL - [audio_svc.test_no_block_100ms_reports]
+== twister-no_block_150ms-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+- FAIL - [audio_svc.test_no_block_100ms_reports]
+== twister-no_split-native_sim.log
+ - FAIL - [audio_motor.test_span_two_chunks]
+== twister-no_split-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+- FAIL - [audio_motor.test_span_two_chunks]
+== twister-ring_two-native_sim.log
+== twister-ring_two-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+# finished (Mac clock): 2026-11-13 05:27:25 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-052705-u3-failed-lists.log

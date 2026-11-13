@@ -1,0 +1,20 @@
+# A5 checklist (ring schematic)
+
+- [ ] 1. Mics: 2 IM68D128B (U5 SELECT to GND, U6 SELECT to VDD_MIC) on MIC_A_CLK F1 / MIC_A_DATA F2; pin names Clock, VDD, Ground, Data, Select; numbers provisional in open-pins.csv
+- [ ] 2. Second mic pair and its decoupling removed (U7 U8 R33 R34 C33 C34 C37 C38); MIC_B_CLK E6 and MIC_B_DATA D7 to test pads only
+- [ ] 3. Joystick: 5-way part removed; 4 x SKTAAAE010 each line to ground on JOY_UP/DOWN/LEFT/RIGHT; same pull-ups and protection as old lines (old: none)
+- [ ] 4. JOY_CENTER H4 to a test pad only
+- [ ] 5. Record button: one SKTAAAE010 on BTN_REC H2, EVPAVAA1A removed
+- [ ] 6. Motor M1 = VC0720B088L, W6 circuit unchanged
+- [ ] 7. Storage = CSNP32GCR01-BOW, 8 pads, W3 wiring
+- [ ] 8. Screen connector J1 15 positions FH35C-15S-0.3SHW(50), mapped to the 15 pins of slim.md 1.3 table in printed order; pin 4 printed twice listed provisional
+- [ ] 9. J_BAND_A (5 switch lines + ground) and J_BAND_B (motor 2, cell 2, temp 1, pads 4); old contact board and joystick board connections removed
+- [ ] 10. Done-when 1: check_netlist.py exit 0, last line RESULT PASS
+- [ ] 11. Done-when 2: kicad-cli erc exit 0, 0 violations
+- [ ] 12. Done-when 3: title block A5 on every PDF page; each changed page opened
+- [ ] 13. Done-when 4: each change has its own check + one broken copy exit 1, listed in sch-notes.md
+- [ ] 14. Done-when 5: sch-notes.md section "A5 changes", ends with RESULT line
+- [ ] 15. Standing rule: no invented pin number; conflicts reported with both lines (W13 RT1 vs 17.3; W7 contact board vs 17; section 7 table vs 16.6; slim.md 5.1 is IM68D121J)
+- [ ] 16. Keep every existing check that still applies; removed checks named with reason
+- [ ] 17. Full-run base comparison saved (evidence/a5/base_check.log)
+- [ ] 18. Final audit script output saved

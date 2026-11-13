@@ -1,0 +1,58 @@
+# rst.c: hardware calls (rhw_ or disk/pmic direct)
+9: * io_lock serialises every use of the card between the caller's operation and the storage thread; st_lock (spin) guards
+12:#include <errno.h>
+13:#include <string.h>
+15:#include <zephyr/kernel.h>
+17:#include <ring_rhw/rhw.h>
+19:#include <ring_rhw/rhw_sim.h>
+21:#include <ring_store/rst.h>
+23:#include "rst_fmt.h"
+24:#include "rst_layout.h"
+25:#include "rst_log.h"
+47:static struct k_spinlock st_lock;
+80:	return rhw_disk()->read(lba, buf, count);
+89:		r = rhw_disk()->write(lba, buf, count);
+99:	k_spinlock_key_t k = k_spin_lock(&st_lock);
+103:	k_spin_unlock(&st_lock, k);
+137:		k_spinlock_key_t k = k_spin_lock(&st_lock);
+140:		k_spin_unlock(&st_lock, k);
+154:		k = k_spin_lock(&st_lock);
+156:		k_spin_unlock(&st_lock, k);
+163:		(void)rhw_disk()->deinit();
+165:	(void)rhw_sdbus()->suspend();
+166:	(void)rhw_pmic()->rail_set(RHW_RAIL_SD, false, caller);
+177:		k_spinlock_key_t k = k_spin_lock(&st_lock);
+180:		k_spin_unlock(&st_lock, k);
+193:	k_spinlock_key_t k = k_spin_lock(&st_lock);
+203:	k_spin_unlock(&st_lock, k);
+226:	k_spinlock_key_t k = k_spin_lock(&st_lock);
+239:	k_spin_unlock(&st_lock, k);
+258:	k = k_spin_lock(&st_lock);
+260:	k_spin_unlock(&st_lock, k);
+272:			k_spinlock_key_t k = k_spin_lock(&st_lock);
+276:			k_spin_unlock(&st_lock, k);
+314:	(void)rhw_sdbus()->suspend();                 /* FW l.506: the sleep state at boot, before any SPI use */
+345:	if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+349:	(void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+351:		r = rhw_disk()->init();
+374:	if (rhw_disk()->sector_count(&sectors) != 0) {                                   /* FW l.507 */
+483:	if (rhw_disk()->deinit() != 0) {                                                 /* FW l.506: deinit, */
+486:	(void)rhw_sdbus()->suspend();                                                    /* then suspend, */
+487:	if (rhw_pmic()->rail_set(RHW_RAIL_SD, false, "rst_unmount") != 0) {              /* then rail off */
+535:			k_spinlock_key_t k = k_spin_lock(&st_lock);
+547:			k_spin_unlock(&st_lock, k);
+559:	k_spinlock_key_t k = k_spin_lock(&st_lock);
+576:	k_spin_unlock(&st_lock, k);
+593:	k_spinlock_key_t k = k_spin_lock(&st_lock);
+599:	k_spin_unlock(&st_lock, k);
+653:		k = k_spin_lock(&st_lock);
+656:		k_spin_unlock(&st_lock, k);
+750:	k_spinlock_key_t k = k_spin_lock(&st_lock);
+756:	k_spin_unlock(&st_lock, k);
+1021:	k_spinlock_key_t k = k_spin_lock(&st_lock);
+1024:	k_spin_unlock(&st_lock, k);
+1030:	k_spinlock_key_t k = k_spin_lock(&st_lock);
+1033:	k_spin_unlock(&st_lock, k);
+1082:	const struct rhw_clock_api *ck = rhw_clock();
+1098:		r = rhw_disk()->write(RREC_LBA_FACTORY_FIRST, scratch, RREC_FACTORY_SECTORS);
+1102:			r = rhw_disk()->read(RREC_LBA_FACTORY_FIRST, scratch2, RREC_FACTORY_SECTORS);

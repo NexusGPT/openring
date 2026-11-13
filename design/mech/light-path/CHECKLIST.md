@@ -1,0 +1,37 @@
+# Checklist, light path study (brief from the lead, design commit 33475e6, start 2026-11-11 00:18:58)
+
+- [x] 1. Read in full: research-reverse-led.md, thin-notes.md (Model v4, Conflicts at v4), placement.csv, layers.json, review F01, architecture section 9, W5, 17.14, 17.15, screen datasheet text for the driver ledge. evidence: logs/display_TOH095XVT-01.txt, logs/screen_ledge.log, logs/cite_lines.log
+- [x] 2. ONE recommended light path, complete. evidence: light-path.md sections 2 and 4, check.log
+- [x] 3. Exact LED: Kingbright KPG-1005SURC-TT. evidence: logs/light_kb_KPG-1005SURC-TT_rs-copy.txt p1. Orderability not verified (DigiKey 403 bot check, logs/dk_check.log): stated in light-path.md section 3.
+- [x] 4. Body size from the maker datasheet. evidence: img/kpg_p1.png, logs/light_kb_KPG-1005SURC-TT_rs-copy.txt p1
+- [x] 5. Emitting direction. evidence: img/kpg_p1.png (side view), p1 note 4
+- [x] 6. Emitting area. evidence: img/kpg_p1.png ("0.6[0.024]")
+- [x] 7. Wavelength. evidence: logs/light_kb_KPG-1005SURC-TT_rs-copy.txt p2
+- [x] 8. Forward voltage at low current. evidence: logs/kpg_vf_curve.log
+- [x] 9. Luminous intensity. evidence: logs/light_kb_KPG-1005SURC-TT_rs-copy.txt p2, logs/kpg_iv_curve.log
+- [x] 10. Option (a) reverse-mount. evidence: logs/light_kb_APTR3216SURCK.txt, img/aptr3216_p1.png, logs/derived2.log
+- [x] 11. Option (b) side-view. evidence: logs/apa1606_existing.txt, logs/derived2.log
+- [x] 12. Option (c) thin top-view. evidence: logs/light_kb_APHS1005SURCK.txt, logs/light_kb_APHHS1005SURCK.txt, logs/derived2.log, logs/search_s1.txt
+- [x] 13. Option (d) flex tails. evidence: logs/screen_ledge.log, img/display_p5.png
+- [x] 14. Option (e) others (e1 to e4). evidence: light-path.md section 7, check.log INFO lines, logs/check_run1.log
+- [x] 15. LED position X, Y, Z, face, direction. evidence: check.log scenario lines, logs/derived2.log
+- [x] 16. Light guide shape and size. evidence: logs/derived2.log, check.log
+- [x] 17. Every hole or window (board, foam, glass print). evidence: check.log
+- [x] 18. Wiring and resistor recomputed (820 ohm, 1.502 mA). evidence: check.log "R41" line
+- [x] 19. Fit script check_light_path.py reads placement.csv and layers.json, rules quoted, one line per check, last line RESULT. evidence: check.log
+- [x] 20. check.log saved, last line RESULT PASS. evidence: check.log, logs/check_final_exit.log
+- [x] 21. Broken copies fail. evidence: logs/broken2_led_y.log, logs/broken2_riser_x.log (first layout: logs/broken_led_y.log, logs/broken_riser_x.log)
+- [x] 22. Visibility claims and bench test. evidence: logs/visibility_calc2.log, light-path.md section 8
+- [x] 23. Change list with present text. evidence: light-path.md section 10, logs/ecad_present_text.log, logs/cite_lines2.log, logs/sch_680R.log
+- [x] 24. Every number sourced or tagged. evidence: logs/audit_final.log (unmatched items listed in the final reply)
+- [x] 25. Rejected options table covers (a) to (d). evidence: light-path.md section 7
+- [x] 26. Window: moved, said in the first line of light-path.md and of the report. evidence: check.log INFO "over the FPC bond ...: yes"
+- [x] 27. No thicker or wider block proposed. evidence: light-path.md (all parts inside the pocket, check.log "inside the panel pocket" lines)
+- [x] 28. Light on by hardware via VDD_MIC gate; no chip pin; screen not used as the light. evidence: light-path.md section 6
+- [x] 29. Writes only in design/mech/light-path/ and design/datasheets/light_*; no git, no install, no browser, no folder deleted. evidence: logs/thin_pycache_ls.log (thin pyc older than my run). Note: 6 light_kb_*.pdf files are HTML error pages (logs/fetch_kb1.log, fetch_kb2.log), kept, not deleted.
+- [x] 30. Heavy commands one at a time with nice -n 19 (glass probe, check runs). evidence: commands in this session
+- [x] 31. No owner, company or project name in web requests; bot checks recorded. evidence: logs/search_s1.txt, logs/dk_check.log
+- [x] 32. Plain English, no em dashes. evidence: logs/audit_final.log (STYLE lines)
+- [x] 33. Last line of light-path.md is RESULT. evidence: light-path.md
+- [x] 34. Final reply under 3,500 characters, audited. evidence: logs/final_reply.txt, logs/audit_final.log
+- [x] 35. Time limit: finished before 01:26 (3/4 of 90 minutes). evidence: date lines in this session

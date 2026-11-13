@@ -1,0 +1,5 @@
+637c637,638
+<     pins = sorted({r["pin_number"] for r in rn if r["reference"] == "J1" and r["net"]}, key=lambda x: int(x))
+---
+>     # the cable contacts 1 to 15 only; J1's MP (the two fitting tabs, on GND since board round 4) is no cable contact
+>     pins = sorted({r["pin_number"] for r in rn if r["reference"] == "J1" and r["net"] and r["pin_number"].isdigit()}, key=lambda x: int(x))

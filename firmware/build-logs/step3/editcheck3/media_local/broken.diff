@@ -1,0 +1,12 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -1207,6 +1207,9 @@
+ 	k_mutex_lock(&lk, K_FOREVER);
+ 	if (err == 0) {
+ 		st.media_sent++;
++		if (cmd == RIP_MEDIA_PAUSE) {
++			media.state = RIPL_PLAYER_PAUSED;
++		}
+ 	} else {
+ 		st.media_errors++;
+ 	}

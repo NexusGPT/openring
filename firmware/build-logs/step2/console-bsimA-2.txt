@@ -1,0 +1,26 @@
+# remote.sh run 20261111-131049-bsimA
+# command: tests/bsim/control/run.sh A
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 13:10:49 CET
+# free on the server's /: 65 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-131049-bsimA; server log /root/ring-os/logs/20261111-131049-bsimA.log
+bsim-control: firmware /ws/firmware/tests/bsim/control, outputs /ws/out/20261111-131049-bsimA-bsim-control, scenarios A, broken 0
+=== build ring for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261111-131049-bsimA-bsim-control/build-ring.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring ok
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261111-131049-bsimA-bsim-control/build-host.log
+      1 warning: BT_GATT_CHRC_POOL_SIZE (defined at /ws/nrf/modules/../subsys/bluetooth/Kconfig.pool:35) was
+      1 warning: BT_GATT_UUID16_POOL_SIZE (defined at /ws/nrf/modules/../subsys/bluetooth/Kconfig.pool:14)
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== test A: ring + 1 host(s), 75 simulated seconds, 2026-11-11T12:11:50Z
+exit codes: phy 0, ring 0, hosts 0
+--- ring /ws/out/20261111-131049-bsimA-bsim-control/run-A-ring.log
+--- host 1 /ws/out/20261111-131049-bsimA-bsim-control/run-A-host1.log
+ring script done at 61055 ms, host 1 evaluated at 70000 ms
+TEST A RESULT FAIL (0 checks passed; ring-result host1-result)
+RESULT FAIL A
+# finished (Mac clock): 2026-11-11 13:12:03 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step2/20261111-131049-bsimA.log

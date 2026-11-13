@@ -1,0 +1,33 @@
+firmware: design/firmware.md
+architecture: design/architecture.md
+check 1 sections: found [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], missing []
+check 2 states: 14 listed, 61 transitions, 14 states used
+check 3 pins: 29 pins, 30 signal names, 40 signal-pin pairs checked against 37 architecture signals
+check 4 RAM: 14 lines sum 305408, stated total 305408, limit 524288
+check 7 charger: 4350000 uV against the cell type 4.35 V; current marked BLOCKED on S12: False
+check 8 PDM: 1 clock lines checked
+check 9-11 rules: 5 stated rules checked
+check 12 thermistor: 10000 ohm, limits [0, 10000, 40000, 45000] m°C
+check 13 removed names: 24 names, 0 uses outside the change list
+check 14 microphone rail: on in 1.1 for ['RECORDING'], in 8.2 for ['`RECORDING`']
+check 15 long press: 1 transitions into the recording state checked
+check 16 F3 rules: 12 rule groups checked
+check 17 F4 rules: 6 rule groups checked, 61 transition rows read
+check 5 end: questions_for_owner and RESULT line
+FAIL signal LED_A is not in architecture section 7
+FAIL signal LED_K is not in architecture section 7
+FAIL signal MOTOR_DRV is not in architecture section 7
+FAIL signal MOTOR_G is not in architecture section 7
+FAIL current-microamp is not marked BLOCKED on S12 (a number must not be invented)
+FAIL T-CHARGE (section 9.3) is not marked BLOCKED
+FAIL header does not say Version F4
+FAIL header does not say it follows architecture sections 17.11 and 17.12
+FAIL section 3.1 lacks 'full duty'
+FAIL section 3.1 lacks 'VDD_3V0'
+FAIL section 3.1 lacks 'Q1'
+FAIL battery recomputation lines not found (architecture 17.10 capacity line of 17.10, firmware 1.1 minutes line, three percentages)
+FAIL `current-microamp` row lacks 'at most 1 C'
+FAIL `current-microamp` row lacks '15 to 20 mA'
+FAIL `current-microamp` row lacks '32 mA'
+15 failures
+exit 1

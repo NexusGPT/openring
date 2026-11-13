@@ -1,0 +1,39 @@
+# remote.sh run 20261111-130556-explore9
+# command: W=/root/ring-os/ws; grep -rln "nsi_host_getenv" $W/zephyr --include=*.c --include=*.h --include=*.txt --include=*.cmake | head; grep -rn "nsi_host_open\|nsi_host_write\|nsi_host_read\|nsi_host_getenv\|nsi_host_close" $W/zephyr/scripts/native_simulator/common/src/include/nsi_host_trampolines.h $W/zephyr/boards/native/common/ -r | head -20; grep -n "struct rc_actions\b" -A3 $W/../src-step2/modules/ring_core/include/ring_core/rc_sm.h | head; grep -rn "rc_actions_push\|rc_actions_clear\|rc_actions_init" $W/../src-step2/modules/ring_core/include | head; grep -n "RC_NO_TICK" $W/../src-step2/modules/ring_core/include/ring_core/rc_types.h; grep -rn "central_hids\|hogp" $W/nrf/subsys/bluetooth/services/Kconfig.hogp | head -5; cat $W/zephyr/boards/native/nrf_bsim/nrf54lm20bsim_nrf54lm20a_cpuapp_defconfig
+# mode: host
+# started (Mac clock): 2026-11-11 13:05:56 CET
+# free on the server's /: 69 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-130556-explore9; server log /root/ring-os/logs/20261111-130556-explore9.log
+/root/ring-os/ws/zephyr/drivers/hwinfo/hwinfo_native.c
+/root/ring-os/ws/zephyr/scripts/native_simulator/common/src/include/nsi_host_trampolines.h
+/root/ring-os/ws/zephyr/scripts/native_simulator/common/src/nsi_host_trampolines.c
+/root/ring-os/ws/zephyr/scripts/native_simulator/common/src/include/nsi_host_trampolines.h:26:int nsi_host_close(int fd);
+/root/ring-os/ws/zephyr/scripts/native_simulator/common/src/include/nsi_host_trampolines.h:30:char *nsi_host_getenv(const char *name);
+/root/ring-os/ws/zephyr/scripts/native_simulator/common/src/include/nsi_host_trampolines.h:33:int nsi_host_open(const char *pathname, int flags);
+/root/ring-os/ws/zephyr/scripts/native_simulator/common/src/include/nsi_host_trampolines.h:36:long nsi_host_read(int fd, void *buffer, unsigned long size);
+/root/ring-os/ws/zephyr/scripts/native_simulator/common/src/include/nsi_host_trampolines.h:41:long nsi_host_write(int fd, const void *buffer, unsigned long size);
+42:int rc_sm_handle(struct rc_sm *sm, enum rc_event ev, const struct rc_facts *f, struct rc_actions *out);
+43-
+44-/* The hand-written actions of one row (src/state_actions.c). */
+45:void rc_row_actions(struct rc_sm *sm, uint8_t row, const struct rc_facts *f, struct rc_actions *out);
+46-
+47:void rc_actions_clear(struct rc_actions *out);
+48:void rc_actions_push(struct rc_actions *out, enum rc_action a);
+49-/* FNV-1a 32 over "row|FROM|event text|TO\n" of every row, as tools/gen_table.py computes it. */
+50-uint32_t rc_table_checksum(void);
+51-
+/root/ring-os/ws/../src-step2/modules/ring_core/include/ring_core/rc_sm.h:47:void rc_actions_clear(struct rc_actions *out);
+/root/ring-os/ws/../src-step2/modules/ring_core/include/ring_core/rc_sm.h:48:void rc_actions_push(struct rc_actions *out, enum rc_action a);
+17:#define RC_NO_TICK INT64_MAX
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2023 Nordic Semiconductor ASA
+
+CONFIG_CONSOLE=y
+CONFIG_NO_OPTIMIZATIONS=y
+
+# Start SYSCOUNTER on driver init
+CONFIG_NRF_GRTC_START_SYSCOUNTER=y
+# finished (Mac clock): 2026-11-11 13:06:13 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-130556-explore9.log

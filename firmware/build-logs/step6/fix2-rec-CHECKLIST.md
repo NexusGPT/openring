@@ -1,0 +1,16 @@
+# fix2 (recorder) checklist. Started 2026-11-13 17:04:51 CET (`date`), budget 3 hours.
+- [x] 1. R2-01 change, case, copy retry_outside_lock fails on both targets evidence: fix2-rec-u1.log l.871, l.887
+- [x] 2. R2-02 change, case, copy end_errno_stale evidence: fix2-rec-u1.log l.920, l.941
+- [x] 3. R2-03 change, case, copy rails_tries_again; worst-case lock time in notes evidence: fix2-rec-u1.log l.970, l.986; notes FR2.1
+- [x] 4. R2-04 change, case, copy ship_storage_before_usb evidence: fix2-rec-u1.log l.1014, l.1027
+- [x] 5. R2-05 change (RREC_SHIP_SCREEN_WAIT_MS addition), case, copy screen_wait_forever evidence: fix2-rec-u1.log l.1052, l.1064
+- [x] 6. R2-06 change, case, copy latched_vbus_stale evidence: fix2-rec-u1.log l.1097, l.1117
+- [x] 7. R2-07 upper bound, copy tsign_2s evidence: fix2-rec-u1.log l.1141, l.1152
+- [x] 8. R2-08 own copy abort_no_wait failing that case alone evidence: fix2-rec-u1.log l.1181, l.1197 (no other case failed)
+- [x] 9. R2-10 citation evidence: notes FR1.1 row R6-03
+- [x] 10. R2-11 comment evidence: rrec.c:416 to 417
+- [x] 11. unit_run on every touched test folder (tests/recorder only) UNIT PASS evidence: fix2-rec-u1.log l.1201
+- [x] 12. two-device check only if rdev or the ship radio part changed: not changed, not run evidence: fix2-rec-diffs.txt (no rdev, no control file)
+- [x] 13. no existing declaration changed evidence: fix2-rec-diffs.txt last line (rrec_spec.h lines removed: 0)
+- [x] 14. notes "Fix round 2", questions_for_owner, RESULT last evidence: docs/recorder-notes.md
+- [x] 15. one heavy server run at a time beside the lead's evidence: runs s1, s2, u1 one after the other (their .start/.end)

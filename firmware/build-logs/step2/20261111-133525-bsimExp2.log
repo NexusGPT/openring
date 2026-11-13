@@ -1,0 +1,39 @@
+# remote.sh run 20261111-133525-bsimExp2
+# command: T=tests/bsim/control; D=/ws/firmware/$T; RING_OUT=/ws/out/step2-exp-c CTRL_BOARD=nrf54lm20bsim/nrf54lm20a/cpuapp CTRL_CONF=$D/ll_sw_split.conf CTRL_DTC=$D/ll_sw_split.overlay $T/run.sh A > /ws/out/step2-exp-c.txt 2>&1; echo "exp ll_sw_split on nrf54lm20bsim: exit $?"; grep -E "^TEST|0x3d|RESULT|rror|warning" /ws/out/step2-exp-c.txt | head -12; tail -n 25 /ws/out/step2-exp-c/build-ring.log | cut -c1-200
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 13:35:25 CET
+# free on the server's /: 81 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-133525-bsimExp2; server log /root/ring-os/logs/20261111-133525-bsimExp2.log
+exp ll_sw_split on nrf54lm20bsim: exit 1
+ccache /usr/bin/gcc -DKERNEL -DK_HEAP_MEM_POOL_SIZE=2048 -DMBEDTLS_CONFIG_FILE=\"config-mbedtls.h\" -DNRF54LM20A_XXAA -DNRF54L_CONFIGURATION_56_ENABLE=0 -DNRF_APPLICATION -DTF_PSA_CRYPTO_CONFIG_FILE=\"config-tf-psa-crypto.h\" -D__ZEPHYR__=1 -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/mdk_replacements -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/hal_replacements -I/ws/out/step2-exp-c/ring/zephyr/include/generated/zephyr -I/ws/zephyr/include -I/ws/out/step2-exp-c/ring/zephyr/include/generated -I/ws/zephyr/soc/native/inf_clock -I/ws/zephyr/boards/native/nrf_bsim -I/ws/zephyr/boards/native/nrf_bsim/soc -I/ws/zephyr/boards/native/nrf_bsim/common -I/ws/zephyr/boards/native/nrf_bsim/common/cmsis -I/ws/zephyr/scripts/native_simulator/common/src/include -I/ws/zephyr/soc/nordic/common -I/ws/zephyr/subsys/bluetooth/controller/ll_sw/nordic/hal/nrf5/nrfx_glue -I/ws/zephyr/subsys/bluetooth -I/ws/nrf/include -I/ws/nrf/tests/include -I/ws/nrf/modules/hal_nordic/. -I/ws/modules/hal/nordic/nrfx -I/ws/modules/hal/nordic/nrfx/drivers/include -I/ws/modules/hal/nordic/nrfx/bsp/stable -I/ws/modules/hal/nordic/nrfx/bsp/stable/templates -I/ws/zephyr/modules/hal_nordic/nrfx/. -I/ws/firmware/modules/ring_core/include -I/ws/firmware/modules/ring_devices/include -I/ws/firmware/modules/ring_control/include -I/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models -I/ws/modules/bsim_hw_models/nrf_hw_models/src/nrfx/nrfx_replacements -I/ws/modules/crypto/mbedtls/include -I/ws/modules/crypto/tf-psa-crypto/include -I/ws/modules/crypto/tf-psa-crypto/drivers/builtin/include -I/ws/out/step2-exp-c/ring/modules/mbedtls/mbedtls/tf-psa-crypto/include -I/ws/modules/crypto/tf-psa-crypto/drivers/everest/include -I/ws/modules/crypto/tf-psa-crypto/drivers/p256-m/p256-m -I/ws/modules/crypto/tf-psa-crypto/drivers/pqcp/include -I/ws/zephyr/modules/mbedtls/configs -I/ws/zephyr/modules/mbedtls/include -Wshadow -fno-strict-aliasing -O0 -imacros /ws/out/step2-exp-c/ring/zephyr/include/generated/zephyr/autoconf.h -fno-common -g -gdwarf-4 -fdiagnostics-color=always -Wall -Wformat -Wformat-security -Wno-format-zero-length -Wdouble-promotion -Wno-pointer-sign -Wpointer-arith -Wexpansion-to-defined -Wno-unused-but-set-variable -Werror=implicit-int -fno-pic -fno-pie -fno-asynchronous-unwind-tables -fno-reorder-functions --param=min-pagesize=0 -fno-defer-pop -fmacro-prefix-map=/ws/firmware/tests/bsim/control/ring_app=CMAKE_SOURCE_DIR -fmacro-prefix-map=/ws/zephyr=ZEPHYR_BASE -fmacro-prefix-map=/ws=WEST_TOPDIR -ffunction-sections -fdata-sections -m32 -msse2 -mfpmath=sse -fvisibility=hidden -fno-freestanding -fshort-enums -std=c17 -MD -MT zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/hci_core.c.obj -MF zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/hci_core.c.obj.d -o zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/hci_core.c.obj -c /ws/zephyr/subsys/bluetooth/host/hci_core.c
+/ws/zephyr/include/zephyr/device.h:96:41: error: ‘__device_dts_ord_82’ undeclared here (not in a function); did you mean ‘__device_dts_ord_32’?
+RESULT FAIL build ring
+      |                          ^
+/ws/zephyr/include/zephyr/device.h:96:33: note: in expansion of macro ‘_CONCAT’
+   96 | #define DEVICE_NAME_GET(dev_id) _CONCAT(__device_, dev_id)
+      |                                 ^~~~~~~
+/ws/zephyr/include/zephyr/device.h:300:37: note: in expansion of macro ‘DEVICE_NAME_GET’
+  300 | #define DEVICE_DT_NAME_GET(node_id) DEVICE_NAME_GET(Z_DEVICE_DT_DEV_ID(node_id))
+      |                                     ^~~~~~~~~~~~~~~
+/ws/zephyr/include/zephyr/device.h:317:34: note: in expansion of macro ‘DEVICE_DT_NAME_GET’
+  317 | #define DEVICE_DT_GET(node_id) (&DEVICE_DT_NAME_GET(node_id))
+      |                                  ^~~~~~~~~~~~~~~~~~
+/ws/zephyr/subsys/bluetooth/host/hci_core.c:79:23: note: in expansion of macro ‘DEVICE_DT_GET’
+   79 | #define BT_HCI_DEV    DEVICE_DT_GET(BT_HCI_NODE)
+      |                       ^~~~~~~~~~~~~
+/ws/zephyr/subsys/bluetooth/host/hci_core.c:134:16: note: in expansion of macro ‘BT_HCI_DEV’
+  134 |         .hci = BT_HCI_DEV,
+      |                ^~~~~~~~~~
+[184/364] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/gatt_gap_svc_validate.c.obj
+[185/364] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/conn.c.obj
+[186/364] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/keys.c.obj
+[187/364] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/att.c.obj
+[188/364] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/gatt.c.obj
+[189/364] Building C object zephyr/subsys/bluetooth/crypto/CMakeFiles/subsys__bluetooth__crypto.dir/bt_crypto.c.obj
+[190/364] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/smp.c.obj
+ninja: build stopped: subcommand failed.
+FATAL ERROR: command exited with status 1: /opt/ncs/toolchains/197d1ad490/usr/local/bin/cmake --build /ws/out/step2-exp-c/ring --
+# finished (Mac clock): 2026-11-11 13:35:54 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-133525-bsimExp2.log

@@ -1,0 +1,88 @@
+/* Parts, S1 Gallery: white, hairlines, serif title, mono labels, no shadows, square panels. Tokens only.
+   Same frame as Home and Inside: 16 px rhythm, serif title with a mono stamp, mono section labels. */
+.pt { display: flex; flex-direction: column; gap: 16px; container-type: inline-size; }
+.pt-head .display { font-size: 26px; }
+.pt-head .label { margin: 4px 0 0; }
+.pt [data-kind] { margin: 0; padding: 8px 12px; font-size: 13px; line-height: 1.4; }
+.pt .sec { display: flex; flex-direction: column; gap: 10px; }
+.pt .sec-title { margin: 0; font-weight: 400; }
+.pt .sec-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+
+/* totals + export */
+.pt-totals-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); padding: 10px 0; }
+.pt-totals { margin: 0; font-family: var(--font-display); font-size: 20px; line-height: 1.25; color: var(--ink); min-width: 0; }
+.pt-totals strong { font-weight: 400; }
+.pt-sub { display: block; font-family: var(--font-text); font-size: 13px; color: var(--muted); margin-top: 2px; }
+.pt-export {
+  flex: none; padding: 7px 14px; border: 1px solid var(--ink); font-size: 13px; color: var(--ink); background: var(--bg);
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+a.pt-export:hover { background: var(--ink); color: var(--bg); }
+a.pt-export:active { transform: scale(0.98); }
+.pt-export[aria-disabled='true'] { border-color: var(--hairline); color: var(--muted-2); cursor: default; }
+
+/* filter chips */
+.pt-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.pt-chip {
+  padding: 5px 12px; border-radius: var(--radius-pill); font-size: 13px; color: var(--muted); background: var(--bg);
+  transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.pt-chip:hover { border-color: var(--ink); color: var(--ink); }
+.pt-chip:active { transform: scale(0.97); }
+.pt-chip[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.pt-chip-x { margin-left: 6px; }
+.pt-clear { border: 0; font-size: 13px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; padding: 5px 6px; transition: color var(--t-fast) var(--ease); }
+.pt-clear:hover { color: var(--ink); }
+
+@keyframes pt-fade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.pt-empty, .pt-note { margin: 0; font-size: 14px; color: var(--muted); padding: 10px 0; animation: pt-fade var(--t-med) var(--ease) both; }
+
+/* the list: hairline rows; narrow = stacked lines, wide = one line of columns */
+.pt-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--hairline); }
+.pt-item { border-bottom: 1px solid var(--hairline); animation: pt-fade var(--t-med) var(--ease) both; }
+.pt-row {
+  display: grid; width: 100%; border: 0; text-align: left; padding: 9px 4px; column-gap: 12px; row-gap: 1px; align-items: baseline;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) 6em;
+  grid-template-areas: 'part part price' 'maker code ev' 'action action action';
+  background: var(--bg); transition: background var(--t-fast) var(--ease); outline-offset: -2px;
+}
+.pt-row:hover { background: var(--hairline-2); }
+.pt-item[data-open] > .pt-row { background: var(--hairline-2); }
+.pt-part { grid-area: part; display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.pt-name { font-weight: 500; font-size: 14.5px; line-height: 1.35; overflow-wrap: anywhere; }
+.pt-refs { flex: none; }
+.pt-refs { text-transform: none; letter-spacing: 0.02em; }
+.pt-maker { grid-area: maker; font-size: 13px; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pt-code { grid-area: code; font-family: var(--font-label); font-size: 12px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pt-price { grid-area: price; font-size: 13px; color: var(--ink); text-align: right; white-space: nowrap; }
+.pt-ev { grid-area: ev; text-align: right; }
+.pt-none { color: var(--muted-2); }
+.pt-action { grid-area: action; font-size: 12.5px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.pt-action:empty { display: none; }
+.pt-open { color: var(--accent); }
+@container (min-width: 700px) {
+  .pt-row {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1.3fr) 5.5em 3.5em;
+    grid-template-areas: 'part maker code price ev' 'action action action action action';
+  }
+}
+
+/* a line's card, opened in place */
+.pt-card { padding: 6px 4px 18px; animation: pt-fade var(--t-slow) var(--ease-settle) both; display: flex; flex-direction: column; gap: 10px; }
+.pt-refpick { display: flex; gap: 6px; flex-wrap: wrap; }
+.pt-ref { padding: 3px 10px; border-radius: var(--radius-pill); font-family: var(--font-label); font-size: 12px; color: var(--muted); }
+.pt-ref[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.pt-drawing { margin: 0; font-size: 13px; color: var(--muted); }
+.pt-drawing a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; margin-right: 8px; }
+.pt-drawing a:hover { text-decoration-color: var(--ink); }
+
+/* the charging case */
+.pt-group {
+  display: flex; justify-content: space-between; align-items: baseline; width: 100%; padding: 9px 4px; text-align: left; font-size: 14px;
+  border-left: 0; border-right: 0; transition: background var(--t-fast) var(--ease);
+}
+.pt-group:hover { background: var(--hairline-2); }
+.pt-case { display: flex; flex-direction: column; gap: 10px; animation: pt-fade var(--t-med) var(--ease) both; }
+
+.pt-skeleton { display: flex; flex-direction: column; gap: 10px; }
+.pt-skeleton i { display: block; height: 44px; border-bottom: 1px solid var(--hairline); background: var(--hairline-2); opacity: 0.5; animation: pt-fade var(--t-slow) var(--ease) both; }

@@ -1,0 +1,35 @@
+ok   section 7 rows checked: 47 of 47
+ok   CP1 on VBUS
+ok   CP2 on USB_DN
+ok   CP3 on USB_DP
+ok   CP4 on GND
+ok   R41 = 680R (W5)
+ok   no U1 pin on LED_A or LED_K
+ok   P3.05 (G4) is a spare: SPARE_P3_05 [('TP16', '1'), ('U1', 'G4')]
+info bom.csv now differs from the snapshot (not a failure): only in live ['C61', 'C71', 'C72', 'C73', 'C74', 'C75', 'C76', 'C77', 'C78', 'C79', 'C80', 'CAP1', 'CAP2', 'CP1', 'CP2', 'CP3', 'CP4', 'FLEX1', 'FLEX2', 'J2', 'J3', 'L71', 'L72', 'LNR1', 'PRT1', 'R61', 'R62', 'R63', 'R64', 'R65', 'R66', 'RT1', 'SW3', 'SW4', 'SW5', 'TP16', 'TP17', 'TP18', 'TP19', 'TP20', 'TP21', 'TP22', 'U9'], only in snapshot ['C33', 'C34', 'C37', 'C38', 'CBL1', 'NPM-REF', 'R33', 'R34', 'R51', 'R52', 'R53', 'R54', 'R55', 'R56', 'U7', 'U8', 'W1', 'W2', 'W3', 'W4']
+ok   designators: 96 bom electrical, 113 placed, 20 not placed (listed), 34 added
+ok   every pin of 113 parts appears exactly once (365 pin rows)
+ok   no single-pin net (91 nets)
+ok   rail VBAT source BT1.+
+ok   rail VDD_1V8 source U2.VOUT1
+ok   rail VDD_MIC source U2.LSOUT1/VOUTLDO1
+ok   rail VDD_3V0 source U2.VOUT2
+ok   rail VDD_SD source U2.LSOUT2/VOUTLDO2
+ok   rail ELVDD source U4.OVDD
+ok   rail ELVSS source U4.OVSS
+ok   rail VBUS source CP1.1
+ok   U5 SELECT on GND
+FAIL U6 SELECT on ['GND'], want VDD_MIC
+ok   H8 connects only to C10, to GND
+FAIL A5-1 microphones wrong: ['U5', 'U6']
+ok   A5-2 U7 U8 R33 R34 C33 C34 C37 C38 absent; E6 MIC_B_CLK and D7 MIC_B_DATA reach only test pads TP20 and TP21
+ok   A5-3 no SKRHADE010; SW1 UP, SW3 DOWN, SW4 LEFT, SW5 RIGHT each line to GND, each line holds only U1, J_BAND_A and its switch (no pull-up, no protection part, as the old lines)
+ok   A5-4 JOY_CENTER (H4) reaches only test pad TP22
+ok   A5-5 SW2 SKTAAAE010 BTN_REC (H2) to GND, no EVPAVAA1A, 5 SKTAAAE010 in all
+ok   A5-6 M1 = VC0720B088L; W6 circuit unchanged (F6 - R61 - Q1 gate, R62, D1 across M1, M1+ on VDD_3V0)
+ok   A5-7 U3 CSNP32GCR01-BOW, 8 pads numbered as the maker table (p5), W3 wiring and 4 pull-ups
+ok   A5-8 J1 FH35C-15S-0.3SHW(50) 15 positions = DISP1 15 contacts in the printed order ELVSS,ELVDD,MTP,VCI,IOVCC,SWIRE,TE,RESX,CS,SCL,RS,SDA,GND,GND,GND; pin 4 listed provisional
+ok   A5-9 J_BAND_A 6 pads, J_BAND_B 9 pads (counts from architecture 17.3); every pin of SW1-SW5, M1, BT1, RT1, CP1-CP4 is on a net with a tail pad; J2 J3 W1-W10 absent
+ok   A5-10 rev A5 in 9 sheet files and on all 9 PDF pages
+FAIL net members differ: [('GND', [('U6', 'P5')]), ('VDD_MIC', [('U6', 'P5')])]
+RESULT FAIL 3 netlist a5_1_u6_select_gnd.csv

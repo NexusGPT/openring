@@ -1,0 +1,55 @@
+# remote.sh run 20261113-071604-u8-bsim2
+# command: bash tests/bsim/factory/run.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 07:16:04 CET
+# free on the server's /: 40 GB
+# source firmware copied to /root/ring-os/src-u-factory
+# started on the server as 20261113-071604-u8-bsim2; server log /root/ring-os/logs/20261113-071604-u8-bsim2.log
+bsim-factory: firmware /ws/firmware/tests/bsim/factory, outputs /ws/out/20261113-071604-u8-bsim2-bsim-factory, broken 0
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261113-071604-u8-bsim2-bsim-factory/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== build ring for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261113-071604-u8-bsim2-bsim-factory/build-ring.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring ok
+=== test (ok): ring + scanner, 88 simulated seconds, 2026-11-13T06:17:28Z
+exit codes: phy 0, ring 0, scanner 0
+--- ring /ws/out/20261113-071604-u8-bsim2-bsim-factory/run-ok-ring.log
+d_00: @00:00:00.000200  RING CHECK bt_enable PASS (t=0)
+d_00: @00:00:00.000200  RING CHECK rfa_init PASS (t=0)
+d_00: @00:00:00.000200  RING CHECK device id PASS (t=0)
+d_00: @00:00:00.000200  RING BEACON NAME Ring0000
+d_00: @00:00:02.000326  RING CHECK SHIP_ENTER accepted PASS (t=2000)
+d_00: @00:00:02.000326  RING CHECK SHIP_ENTER cleared the flag PASS (t=2000)
+d_00: @00:00:02.000326  RING SHIP_ENTER ANSWERED t=2000
+d_00: @00:00:08.000426  RING VBUS REMOVED t=8000
+d_00: @00:00:08.000426  RING BEACON STOPPED t=8000
+d_00: @00:01:20.000652  RING CHECK T-RADIO answered pass PASS (t=80000)
+d_00: @00:01:20.000652  RING CHECK T-RADIO took 10 s PASS (t=80000)
+d_00: @00:01:20.000652  RING SCRIPT DONE t=80000
+d_00: @00:01:20.000652  RING RESULT PASS (7 checks)
+--- scanner /ws/out/20261113-071604-u8-bsim2-bsim-factory/run-ok-scanner.log
+d_01: @00:00:00.000174  HOST CHECK bt_enable PASS (t=0)
+d_01: @00:00:00.000200  HOST CHECK scan started PASS (t=0)
+d_01: @00:01:26.000300  HOST REPORTS 150
+d_01: @00:01:26.000300  HOST CHECK heard the ring PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK silent before SHIP_ENTER PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK beacon starts within 300 ms of the command PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK beacon heard while VBUS is on (at least 40 reports in 6 s) PASS (t=86000)
+d_01: @00:01:26.000300  HOST BEACON NAME Ring0000
+d_01: @00:01:26.000300  HOST CHECK name is Ring and 4 upper case hex digits PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK the same name in every report PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK every report is not connectable (ADV_NONCONN_IND) PASS (t=86000)
+d_01: @00:01:26.000300  HOST MEDIAN GAP 106 ms of 56
+d_01: @00:01:26.000300  HOST CHECK interval about 100 ms (median gap 95 to 125 ms) PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK stopped within 1 s of VBUS removal PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK none for 60 s after the removal PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK radio test heard for 10 s (at least 80 reports) PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK radio test stops with the test PASS (t=86000)
+d_01: @00:01:26.000300  HOST RESULT PASS (14 checks)
+names: ring 'Ring0000', scanner 'Ring0000'
+TEST RESULT PASS (21 checks passed)
+RESULT PASS
+# finished (Mac clock): 2026-11-13 07:17:42 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-071604-u8-bsim2.log

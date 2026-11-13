@@ -1,0 +1,12 @@
+ecad/ring/pcb/check_board.py:13: 7 KiCad's rules check (kicad-cli pcb drc --severity-all --all-track-errors) reports 0 violations and 0 unconnected items
+ecad/ring/pcb/check_board.py:15: import csv, json, math, os, subprocess, sys
+ecad/ring/pcb/check_board.py:24: KC = "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
+ecad/ring/pcb/check_board.py:166: ce = subprocess.run([sys.executable, os.path.join(HERE, "check_escapes.py"), board_path], capture_output=True, text=True)
+ecad/ring/pcb/check_board.py:173: d = subprocess.run([KC, "pcb", "drc", "--severity-all", "--all-track-errors", "--format", "json", "-o", rep, board_path], capture_output=True, text=True)
+ecad/case/pcb/check_boards.py:11: 5. kicad-cli pcb drc --severity-all --all-track-errors reports 0 violations and 0 unconnected items on each board
+ecad/case/pcb/check_boards.py:13: import csv, json, os, subprocess, sys
+ecad/case/pcb/check_boards.py:25: KC = "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
+ecad/case/pcb/check_boards.py:61: with open(out + ".log", "w") as lg:
+ecad/case/pcb/check_boards.py:62: rc = subprocess.call([KC, "pcb", "drc", "--severity-all", "--all-track-errors", "--format", "json", "-o", out, path], stdout=lg, stderr=subprocess.STDOUT)
+ecad/case/pcb/check_boards.py:167: fail("%s: kicad-cli drc produced no report (exit %s)" % (tag, rc))
+ecad/case/pcb/check_boards.py:171: ok("%s: rules check 0 violations, 0 unconnected items (kicad-cli pcb drc --severity-all --all-track-errors)" % tag)

@@ -1,0 +1,1 @@
+Expected result of run 3 (written before it starts): native_sim timing cases pass with 0.1 ms ticks (boards/native_sim.conf); test_pmic_script_and_cell expects 3,820 mV; test_usb_speed_packets reads 1,228 bytes; 42 of 42 on both boards; 4 broken copies fail their named case on both; UNIT PASS tests/rhw.

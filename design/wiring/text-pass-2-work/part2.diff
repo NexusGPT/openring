@@ -1,0 +1,50 @@
+195c195
+< 14. **C3 Ring charge time, under 90 minutes: UNPROVEN.** The power chip is now the nPM1304 (architecture 17.13), set to 15 mA: 0.55 to 0.74 C for a cell of 20 to 27 mAh [CALC: 15 / 27.2 and 15 / 20.4]. The constant-current part alone then takes 82 to 109 minutes [CALC: 20.4 / 15 and 27.2 / 15 hours], so 90 minutes is not met for the larger cell at this setting. A higher setting needs the cell maker's own limit (open item S12) and Nordic's confirmation of the chip (S18). Firmware F4 charges when VBUS is present. Before 17.13: the nPM1300 could not go below 32 mA and the charger stayed off.
+---
+> 14. **C3 Ring charge time, under 90 minutes: UNPROVEN.** The power chip is now the nPM1304 (architecture 17.13), set to 15 mA: 0.55 to 0.74 C for a cell of 20 to 27 mAh [CALC: 15 / 27.2 and 15 / 20.4]. REPLACED (2026-11-13; old cell sizes of 20.4 to 27.2 mAh). Do not use: ~~The constant-current part alone then takes 82 to 109 minutes [CALC: 20.4 / 15 and 27.2 / 15 hours]~~. Per size, from `design/mfg/specs/cell.md` line 63 [CALC, firmware F6 8.1]: the constant-current part alone takes 1.17 to 1.57 hours at US 7 and 1.59 to 2.13 hours at US 13, so 90 minutes is not met for the larger cell at this setting. A higher setting needs the cell maker's own limit (open item S12) and Nordic's confirmation of the chip (S18). Firmware F4 charges when VBUS is present. Before 17.13: the nPM1300 could not go below 32 mA and the charger stayed off.
+204c204
+< 22. **S6 Water and dust, IP65 or better: NOT MET ON PAPER (2026-11-11).** The assembly study lists nine openings and joints: two have no sealing means in any file (glass to body, the floor slots), and the others have no chosen material and no test. No rating can be claimed today (`design/mfg/assembly/assembly.md` section 4; architecture 17.23, open item S26). The target stays IP65; the seals must be designed and a type test passed.
+---
+> 22. **Record of 2026-11-11, REPLACED by line 26 (S6) and by item 3 of the section "Changes after sign-off: owner decisions of 2026-11-13" (splash and sweat resistant as a goal; no rating claimed; the spray test of assembly step 25 is the pass line). Do not use the IP65 wording below.** S6 Water and dust, IP65 or better: NOT MET ON PAPER (2026-11-11). The assembly study lists nine openings and joints: two have no sealing means in any file (glass to body, the floor slots), and the others have no chosen material and no test. No rating can be claimed today (`design/mfg/assembly/assembly.md` section 4; architecture 17.23, open item S26). The target stays IP65; the seals must be designed and a type test passed.
+153c153
+< | Record button | +4.0 | under the board, at its outer edge | recessed 0.8 mm in the wall |
+---
+> | Record button: REPLACED by section 17.11 (the record button is removed; one control, the joystick; a long press of its centre records). Do not use: ~~Record button~~ | +4.0 | under the board, at its outer edge | recessed 0.8 mm in the wall |
+162c162
+< - Join: 4 screws M1.2 x 3 from below, at the corners, and a 0.5 mm silicone gasket in a groove.
+---
+> - Join: REPLACED by `design/wiring/lead-decisions.md` line 57 (row "adhesive code, switch code, screw (items 45, 100, 103)": "The M1.2 screw is no longer in the design (not in the model, not in the parts list)"). Do not use: ~~4 screws M1.2 x 3 from below, at the corners~~; and a 0.5 mm silicone gasket in a groove.
+229c229
+< - Record button (owner, 2026-11-10: recording "only when a long press on it"): a long press of 1.0 second starts a recording. A long press of 1.0 second stops it. A short press during a recording marks a highlight. A short press outside a recording wakes the screen. A double press does nothing. A bump or a short press never starts and never stops a recording. The stop gesture, the highlight and the unused double press are the lead's reading, disclosed to the owner.
+---
+> - REPLACED by section 17.11 (the record button is removed; one control, the joystick; a long press of its centre records). Do not use: Record button (owner, 2026-11-10: recording "only when a long press on it"): a long press of 1.0 second starts a recording. A long press of 1.0 second stops it. A short press during a recording marks a highlight. A short press outside a recording wakes the screen. A double press does nothing. A bump or a short press never starts and never stops a recording. The stop gesture, the highlight and the unused double press are the lead's reading, disclosed to the owner.
+303c303
+< | Case transfer | high-speed USB, 4 minutes per recorded hour | full-speed USB host in the case, 6.3 minutes per recorded hour | case design |
+---
+> | Case transfer | high-speed USB, 4 minutes per recorded hour | full-speed USB host in the case, REPLACED by `design/firmware.md` line 718 and `design/case/case-architecture.md` line 88 (3.21 minutes per recorded hour, 2 microphones). Do not use: ~~6.3 minutes per recorded hour~~ | case design |
+18c18
+< Open (point 3): surface finish and solder-mask colour are not stated. The 3D model shows gold pad rectangles on a solder-mask face (design/mech/thin/thin-notes.md); that is the modeller's assumption.
+---
+> Surface finish ENEPIG; solder mask green on both sides, U1 and U2 land openings equal to the land (source: design/ecad/ring/pcb/fab/stackup.txt line 20; open point 3 closed). Before: "not stated"; the 3D model shows gold pad rectangles on a solder-mask face (design/mech/thin/thin-notes.md), the modeller's assumption.
+56c56
+< 3. Surface finish and solder-mask colour: the board maker proposes, the design partner accepts.
+---
+> 3. CLOSED 2026-11-13: surface finish ENEPIG, solder mask green on both sides (`design/ecad/ring/pcb/fab/stackup.txt` line 20). Before: the board maker proposes, the design partner accepts.
+1c1
+< # Recording light path (review finding F01) - history: the recording light is removed in v7 (architecture 17.30), so this study describes a part the design no longer has
+---
+> # Recording light path (review finding F01) - history: the recording light was removed in design version 7 (architecture 17.30; `design/architecture.md` line 523) and this file is history, so this study describes a part the design no longer has
+13,14c13,14
+<  "J_BAND_A": "PROVISIONAL: pad group only (the flex tail and its connector are not on this board). Pad count from the netlist; the tail pitch is in no project file, so 6 pads in one row spread across the 2.2 mm tail width of placement.csv; pad sizes are drawn sizes. Position: the tail's X from placement.csv, Y moved off the board edge",
+<  "J_BAND_B": "PROVISIONAL: pad group only (the flex tail and its connector are not on this board). Pad count from the netlist; the tail pitch is in no project file, so 9 pads in two staggered rows (5 + 4) spread across the 2.2 mm tail width of placement.csv; pad sizes are drawn sizes. Position: the tail's X from placement.csv, Y moved off the board edge"
+---
+>  "J_BAND_A": "REPLACED (2026-11-13), the file is history of the old 6-layer board (board-notes.md line 7). Current: land group only, hot-bar soldered to the tail foot, positions and sizes from design/ecad/band/band-interface.md section 2; source design/ecad/band/OpenRingBand.pretty/J_BAND_A_BOARD.kicad_mod line 6.",
+>  "J_BAND_B": "REPLACED (2026-11-13), the file is history of the old 6-layer board (board-notes.md line 7). Current: land group only, hot-bar soldered to the tail foot, positions and sizes from design/ecad/band/band-interface.md section 2; source design/ecad/band/OpenRingBand.pretty/J_BAND_B_BOARD.kicad_mod line 6."
+64c64
+<             "Not ready: the circuit board layout (who routes it is not decided), the software code, a working sample. Not confirmed by a maker: the case's spring pin and the pin holder's 0.79 mm walls.",
+---
+>             "Not ready: the software code, a working sample, a built and tested circuit board (the layout is routed and passes its rules check with 0 unconnected items). Not confirmed by a maker: the case's spring pin and the pin holder's 0.79 mm walls.",
+99c99
+<             "尚未完成：电路板布线（由谁布线尚未决定）、软件代码、可工作的样机。制造商尚未确认：充电盒的弹簧顶针和顶针座 0.79 mm 的壁厚。",
+---
+>             "尚未完成：软件代码、可工作的样机、已制造并测试的电路板（电路板布线已完成，设计规则检查无未连接项）。制造商尚未确认：充电盒的弹簧顶针和顶针座 0.79 mm 的壁厚。",

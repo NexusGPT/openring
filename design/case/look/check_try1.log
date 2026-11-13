@@ -1,0 +1,11 @@
+ring sizes checked: US [7, 8, 9, 10, 11, 12, 13] (bores computed from sizes.csv; US 9 is the real file)
+FAIL intersection cell_dnk852338 x shell: 2.4766 mm3
+assembly US 9: 32 parts, every pair, largest intersection 2.476642 mm3
+Traceback (most recent call last):
+  File "design/case/case_check.py", line 251, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "design/case/case_check.py", line 77, in main
+    inner = min((f for f in ps.faces() if 0.7 <= f.area <= 0.9), key=lambda f: math.hypot(f.center().X - prm["cx"][str(n)], 0.0))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: min() iterable argument is empty

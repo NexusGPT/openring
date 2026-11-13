@@ -1,0 +1,241 @@
+# remote.sh run 20261113-043354-u-rhw
+# command: bash tools/unit_run.sh tests/rhw
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 04:33:54 CET
+# free on the server's /: 30 GB
+# source firmware copied to /root/ring-os/src-u-rhw
+# started on the server as 20261113-043354-u-rhw; server log /root/ring-os/logs/20261113-043354-u-rhw.log
+=== part tests-native_sim start 2026-11-13T03:34:23Z log /ws/out/20261113-043354-u-rhw-unit/tests-native_sim.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-043354-u-rhw-unit/twister-native_sim/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+ERROR   - CMake build failure: /ws/firmware/tests/rhw for native_sim/native
+INFO    - 1/1 native_sim/native         ring_rhw.sim                                       ERROR CMake build failure (native <host/gnu>)
+INFO    - /ws/out/20261113-043354-u-rhw-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/rhw/ring_rhw.sim/build.log
+ERROR   - Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/tests/rhw
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: native_sim, qualifiers: native
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/native/native_sim/native_sim.dts
+-- Found devicetree overlay: /ws/firmware/tests/rhw/app.overlay
+devicetree error: node '/ring-sim-disk' compatible 'ring,sim-disk' has unknown vendor prefix 'ring'
+CMake Error at /ws/zephyr/cmake/modules/dts.cmake:327 (execute_process):
+  execute_process failed command indexes:
+
+    1: "Child return code: 1"
+
+Call Stack (most recent call first):
+  /ws/zephyr/cmake/modules/dts.cmake:435 (dts_edt_pickle)
+  /ws/zephyr/cmake/modules/zephyr_default.cmake:133 (dts_init)
+  /ws/zephyr/cmake/modules/zephyr_default.cmake:133 (cmake_language)
+  /ws/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)
+  /ws/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)
+  CMakeLists.txt:9 (find_package)
+
+
+-- Configuring incomplete, errors occurred!
+
+INFO    - /ws/out/20261113-043354-u-rhw-unit/twister-native_sim/native_sim_native/host_gnu/firmware/tests/rhw/ring_rhw.sim/build.log
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 6.50 seconds.
+INFO    - 0 of 42 executed test cases passed (0.00%), 42 errored on 1 out of total 1514 platforms (0.07%).
+INFO    - 0 test configurations executed on platforms, 1 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-043354-u-rhw-unit/twister-native_sim/twister.json
+INFO    - Writing xunit report /ws/out/20261113-043354-u-rhw-unit/twister-native_sim/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-043354-u-rhw-unit/twister-native_sim/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_rhw.sim on native_sim/native error (CMake build failure - devicetree error)
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_rhw.sim
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/rhw -T ring_rhw.sim
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+=== part tests-native_sim end 2026-11-13T03:34:33Z exit 1
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp start 2026-11-13T03:34:33Z log /ws/out/20261113-043354-u-rhw-unit/tests-nrf54lm20bsim_nrf54lm20a_cpuapp.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/20261113-043354-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/testplan.json
+INFO    - JOBS: 8
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+ERROR   - CMake build failure: /ws/firmware/tests/rhw for nrf54lm20bsim/nrf54lm20a/cpuapp
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_rhw.sim                                 ERROR CMake build failure (native <host/gnu>)
+INFO    - /ws/out/20261113-043354-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/rhw/ring_rhw.sim/build.log
+ERROR   - Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/tests/rhw
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: nrf54lm20bsim, qualifiers: nrf54lm20a/cpuapp
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/zephyr/boards/native/nrf_bsim/nrf54lm20bsim_nrf54lm20a_cpuapp.dts
+-- Found devicetree overlay: /ws/firmware/tests/rhw/app.overlay
+devicetree error: node '/ring-sim-disk' compatible 'ring,sim-disk' has unknown vendor prefix 'ring'
+CMake Error at /ws/zephyr/cmake/modules/dts.cmake:327 (execute_process):
+  execute_process failed command indexes:
+
+    1: "Child return code: 1"
+
+Call Stack (most recent call first):
+  /ws/zephyr/cmake/modules/dts.cmake:435 (dts_edt_pickle)
+  /ws/zephyr/cmake/modules/zephyr_default.cmake:133 (dts_init)
+  /ws/zephyr/cmake/modules/zephyr_default.cmake:133 (cmake_language)
+  /ws/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)
+  /ws/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)
+  CMakeLists.txt:9 (find_package)
+
+
+-- Configuring incomplete, errors occurred!
+
+INFO    - /ws/out/20261113-043354-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/rhw/ring_rhw.sim/build.log
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 6.57 seconds.
+INFO    - 0 of 42 executed test cases passed (0.00%), 42 errored on 1 out of total 1514 platforms (0.07%).
+INFO    - 0 test configurations executed on platforms, 1 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/20261113-043354-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.json
+INFO    - Writing xunit report /ws/out/20261113-043354-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister.xml...
+INFO    - Writing xunit report /ws/out/20261113-043354-u-rhw-unit/twister-nrf54lm20bsim_nrf54lm20a_cpuapp/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_rhw.sim on nrf54lm20bsim/nrf54lm20a/cpuapp error (CMake build failure - devicetree error)
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p nrf54lm20bsim/nrf54lm20a/cpuapp -s ring_rhw.sim
+INFO    - or with west:
+INFO    - west build -p -b nrf54lm20bsim/nrf54lm20a/cpuapp tests/rhw -T ring_rhw.sim
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+=== part tests-nrf54lm20bsim_nrf54lm20a_cpuapp end 2026-11-13T03:34:40Z exit 1
+=== part broken-rhw start 2026-11-13T03:34:40Z log /ws/out/20261113-043354-u-rhw-unit/broken-rhw.log
+##### broken copy: disk_fault_late
+diff -u -r /ws/firmware/modules/ring_rhw/src/sim_disk.c /ws/out/20261113-043354-u-rhw-unit/broken-rhw/broken_ring_rhw_disk_fault_late/src/sim_disk.c
+--- /ws/firmware/modules/ring_rhw/src/sim_disk.c	2026-11-13 03:23:06.000000000 +0000
++++ /ws/out/20261113-043354-u-rhw-unit/broken-rhw/broken_ring_rhw_disk_fault_late/src/sim_disk.c	2026-11-13 03:34:41.034302532 +0000
+@@ -192,7 +192,7 @@
+ 		keep = 0;
+ 	} else if (cut_done) {
+ 		keep = 0;                 /* lost after the cut; the call "succeeds" */
+-	} else if (fail_k > 0 && call - fail_base >= fail_from && call - fail_base < fail_from + fail_k) {
++	} else if (fail_k > 0 && call - fail_base >= fail_from + 1 && call - fail_base < fail_from + 1 + fail_k) {
+ 		r = -EIO;
+ 		keep = 0;
+ 	} else if (cut_n > 0 && call - cut_base == cut_n) {
+  execute_process failed command indexes:
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 6.53 seconds.
+INFO    - 0 of 42 executed test cases passed (0.00%), 42 errored on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy disk_fault_late, native_sim: 1 (log /ws/out/20261113-043354-u-rhw-unit/broken-rhw/twister-disk_fault_late-native_sim.log)
+disk_fault_late on native_sim: the named case did not fail (twister exit 1): FAIL - [rhw_sim.test_disk_write_fault_at_n]
+  execute_process failed command indexes:
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 6.51 seconds.
+INFO    - 0 of 42 executed test cases passed (0.00%), 42 errored on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy disk_fault_late, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-043354-u-rhw-unit/broken-rhw/twister-disk_fault_late-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+disk_fault_late on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): FAIL - [rhw_sim.test_disk_write_fault_at_n]
+##### broken copy: cut_keeps_tail
+diff -u -r /ws/firmware/modules/ring_rhw/src/sim_disk.c /ws/out/20261113-043354-u-rhw-unit/broken-rhw/broken_ring_rhw_cut_keeps_tail/src/sim_disk.c
+--- /ws/firmware/modules/ring_rhw/src/sim_disk.c	2026-11-13 03:23:06.000000000 +0000
++++ /ws/out/20261113-043354-u-rhw-unit/broken-rhw/broken_ring_rhw_cut_keeps_tail/src/sim_disk.c	2026-11-13 03:34:56.674958680 +0000
+@@ -196,7 +196,7 @@
+ 		r = -EIO;
+ 		keep = 0;
+ 	} else if (cut_n > 0 && call - cut_base == cut_n) {
+-		keep = cut_k < count ? cut_k : count;
++		keep = count;
+ 		cut_done = true;
+ 		sim_log(RHW_EV_DISK_CUT, lba, keep, 0, 0, NULL);
+ 	}
+  execute_process failed command indexes:
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 6.54 seconds.
+INFO    - 0 of 42 executed test cases passed (0.00%), 42 errored on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy cut_keeps_tail, native_sim: 1 (log /ws/out/20261113-043354-u-rhw-unit/broken-rhw/twister-cut_keeps_tail-native_sim.log)
+cut_keeps_tail on native_sim: the named case did not fail (twister exit 1): FAIL - [rhw_sim.test_disk_cut_after_sector]
+  execute_process failed command indexes:
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 6.88 seconds.
+INFO    - 0 of 42 executed test cases passed (0.00%), 42 errored on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy cut_keeps_tail, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-043354-u-rhw-unit/broken-rhw/twister-cut_keeps_tail-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+cut_keeps_tail on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): FAIL - [rhw_sim.test_disk_cut_after_sector]
+##### broken copy: reboot_wipes_card
+diff -u -r /ws/firmware/modules/ring_rhw/src/sim_disk.c /ws/out/20261113-043354-u-rhw-unit/broken-rhw/broken_ring_rhw_reboot_wipes_card/src/sim_disk.c
+--- /ws/firmware/modules/ring_rhw/src/sim_disk.c	2026-11-13 03:23:06.000000000 +0000
++++ /ws/out/20261113-043354-u-rhw-unit/broken-rhw/broken_ring_rhw_reboot_wipes_card/src/sim_disk.c	2026-11-13 03:35:12.682606783 +0000
+@@ -234,9 +234,9 @@
+ 	inited = false;
+ 	cut_done = false;
+ 	cut_n = 0;
++	memset(key_of, 0, sizeof(key_of));
++	used = 0;
+ 	if (full) {
+-		memset(key_of, 0, sizeof(key_of));
+-		used = 0;
+ 		sectors = DEFAULT_SECTORS;
+ 		fail_init_n = 0;
+ 		wr_calls = 0;
+  execute_process failed command indexes:
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 6.49 seconds.
+INFO    - 0 of 42 executed test cases passed (0.00%), 42 errored on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy reboot_wipes_card, native_sim: 1 (log /ws/out/20261113-043354-u-rhw-unit/broken-rhw/twister-reboot_wipes_card-native_sim.log)
+reboot_wipes_card on native_sim: the named case did not fail (twister exit 1): FAIL - [rhw_sim.test_reboot_keeps_card_settings_retained]
+  execute_process failed command indexes:
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 7.24 seconds.
+INFO    - 0 of 42 executed test cases passed (0.00%), 42 errored on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy reboot_wipes_card, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-043354-u-rhw-unit/broken-rhw/twister-reboot_wipes_card-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+reboot_wipes_card on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): FAIL - [rhw_sim.test_reboot_keeps_card_settings_retained]
+##### broken copy: mic_no_block_ignored
+diff -u -r /ws/firmware/modules/ring_rhw/src/sim_mic.c /ws/out/20261113-043354-u-rhw-unit/broken-rhw/broken_ring_rhw_mic_no_block_ignored/src/sim_mic.c
+--- /ws/firmware/modules/ring_rhw/src/sim_mic.c	2026-11-13 03:23:38.000000000 +0000
++++ /ws/out/20261113-043354-u-rhw-unit/broken-rhw/broken_ring_rhw_mic_no_block_ignored/src/sim_mic.c	2026-11-13 03:35:29.048247040 +0000
+@@ -145,7 +145,7 @@
+ 		sim_log(RHW_EV_MIC_READ, -1, timeout_ms, 0, -EIO, NULL);
+ 		return -EIO;
+ 	}
+-	if (stop_after >= 0 && delivered >= (uint32_t)stop_after) {
++	if (stop_after < -1 && delivered >= (uint32_t)stop_after) {
+ 		k_sleep(K_MSEC(timeout_ms));
+ 		sim_log(RHW_EV_MIC_READ, -1, timeout_ms, 0, -EAGAIN, NULL);
+ 		return -EAGAIN;
+  execute_process failed command indexes:
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 6.95 seconds.
+INFO    - 0 of 42 executed test cases passed (0.00%), 42 errored on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy mic_no_block_ignored, native_sim: 1 (log /ws/out/20261113-043354-u-rhw-unit/broken-rhw/twister-mic_no_block_ignored-native_sim.log)
+mic_no_block_ignored on native_sim: the named case did not fail (twister exit 1): FAIL - [rhw_sim.test_mic_stop_delivering]
+  execute_process failed command indexes:
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 6.87 seconds.
+INFO    - 0 of 42 executed test cases passed (0.00%), 42 errored on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy mic_no_block_ignored, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261113-043354-u-rhw-unit/broken-rhw/twister-mic_no_block_ignored-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+mic_no_block_ignored on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case did not fail (twister exit 1): FAIL - [rhw_sim.test_mic_stop_delivering]
+RESULT FAIL disk_fault_late/native_sim disk_fault_late/nrf54lm20bsim/nrf54lm20a/cpuapp cut_keeps_tail/native_sim cut_keeps_tail/nrf54lm20bsim/nrf54lm20a/cpuapp reboot_wipes_card/native_sim reboot_wipes_card/nrf54lm20bsim/nrf54lm20a/cpuapp mic_no_block_ignored/native_sim mic_no_block_ignored/nrf54lm20bsim/nrf54lm20a/cpuapp
+=== part broken-rhw end 2026-11-13T03:35:45Z exit 1
+UNIT FAIL tests/rhw tests-native_sim tests-nrf54lm20bsim_nrf54lm20a_cpuapp broken-rhw
+# finished (Mac clock): 2026-11-13 04:35:47 CET
+# remote exit code: 1
+# local log: firmware/build-logs/20261113-043354-u-rhw.log

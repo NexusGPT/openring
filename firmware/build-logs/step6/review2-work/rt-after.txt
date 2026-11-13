@@ -1,0 +1,35 @@
+66: }
+67: 
+68: uint32_t rt_screens_told(void)
+69: {
+70: 	return screens_told;
+71: }
+72: 
+73: /* the product's glue ops (app/src/main.c), each wrapped to keep a log */
+74: static void w_action(enum rc_action a, rc_ms_t t)
+75: {
+76: 	if (n_acts < ACTS_MAX) {
+77: 		acts[n_acts].a = (uint8_t)a;
+78: 		acts[n_acts].t_ms = t;   /* the time of the core step the glue gives */
+79: 	}
+80: 	n_acts++;
+81: 	rrec_action(a, t);
+82: }
+83: 
+84: static bool w_after(const struct rc_actions *a, enum rc_event ev, enum rc_state st, rc_ms_t t)
+85: {
+86: 	if (n_steps < STEPS_MAX) {
+87: 		steps[n_steps].row = a->last_row;
+88: 		steps[n_steps].ev = (uint8_t)ev;
+89: 		steps[n_steps].state = (uint8_t)st;
+90: 		steps[n_steps].t_ms = k_uptime_get();
+91: 	}
+92: 	n_steps++;
+93: 	return rrec_glue_after(a, ev, st, t);
+94: }
+95: 
+96: static const struct rglue_ops gops = {
+97: 	.action = w_action,
+98: 	.after = w_after,
+99: 	.screen_fact = rrec_glue_screen_fact,
+100: 	.sign_start = rrec_sign_hook,

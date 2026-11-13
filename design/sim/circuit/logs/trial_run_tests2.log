@@ -1,0 +1,15 @@
+decks: 7 written to work/trial_out/decks from design/ecad/ring and design/ecad/case
+PASS ring1 motor start: 10 of 10 rows hold; tightest row R1.2: motor.vbat_min_spec = 3.00646 holds >= 3.0
+PASS ring2 power-up: 20 of 20 rows hold; tightest row R2.2: powerup.v18_peak_c330 = 1.8 holds <= 1.89
+FAIL ring3 charge path: 6 of 7 rows hold; R3.1: charge.icc_min = 0 needs >= 0.0135 A
+  ring1: largest cell resistance that passes at open-circuit 3.45 V = 1.9919 ohm; first rows to fail just above it: R1.2
+  ring1 info: largest cell resistance that passes at open-circuit 3.30 V = 1.2570 ohm; limiting rows R1.2
+  ring1 info: largest cell resistance that passes at open-circuit 3.60 V = 2.7653 ohm; limiting rows R1.2
+  ring1 info: at that resistance the cell gives 225.9 mA at the start, the cell terminal falls to 3.0000 V, the chip battery path carries 84.3 mA, U11 carries 215.7 mA, VDD_3V0 falls to 2.882 V, VMOT to 2.906 V
+  ring2 info cell 3.30 V: VDD_1V8 valid at 0.00198706 s, VDD_3V0 valid at 0.00198706 s, VDD_SD (host enable at 0.02 s) valid at 0.0206378 s, VDD_MIC (host enable at 0.04 s) valid at 0.0402054 s
+  ring2 info cell 4.35 V: VDD_1V8 valid at 0.00198617 s, VDD_3V0 valid at 0.00198617 s, VDD_SD (host enable at 0.02 s) valid at 0.0206378 s, VDD_MIC (host enable at 0.04 s) valid at 0.0402054 s
+  ring3 info: terminal voltage at open-circuit 4.349 V (charge current has fallen to 1.00 mA): 4.3500 V
+  ring3 info: VBUS demand with a recording running and 15 mA charge: peak 18.7 mA
+  ring3 info: with the default 100 mA input limit and a recording running: VSYS 4.985 V, charge current 2.37 mA, VBUS current 18.7 mA
+tests: 3, pass: 2, fail: 1, seconds: 25
+RESULT FAIL

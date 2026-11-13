@@ -1,0 +1,11 @@
+--- a/ring_devices/src/rdev.c
++++ b/ring_devices/src/rdev.c
+@@ -708,7 +708,7 @@
+ 	/* bt_unpair() ends a link with the peer and deletes the bond: the keys of both sides, the peer's
+ 	 * and the ring's own (one record in the Bluetooth host), and the stored notification settings. */
+ 	while (rdev_slot_peer(slot, &peer) == 0 && guard++ < RDEV_SLOTS) {
+-		err = bt_unpair(slot, &peer);
++		err = 0;
+ 		if (err != 0) {
+ 			printk("rdev: bt_unpair slot %u failed %d\n", slot, err);
+ 			k_mutex_unlock(&lk);

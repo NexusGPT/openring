@@ -1,0 +1,32 @@
+== 1. chip pins by number (patterns P<port>.<n>, NRF_GPIO, gpio<port> <n>)
+no hit
+== 2. kernel calls in the pure part (rfa_logic.c, rfa_logic.h): kernel headers and k_ calls
+no hit
+== 3. includes of the pure part
+modules/ring_factory/src/rfa_logic.c:5:#include <string.h>
+modules/ring_factory/src/rfa_logic.c:7:#include <ring_factory/rfa.h>
+modules/ring_factory/src/rfa_logic.c:9:#include "rfa_logic.h"
+modules/ring_factory/src/rfa_logic.h:16:#include <stdbool.h>
+modules/ring_factory/src/rfa_logic.h:17:#include <stddef.h>
+modules/ring_factory/src/rfa_logic.h:18:#include <stdint.h>
+modules/ring_factory/src/rfa_logic.h:20:#include <ring_rhw/rrec_spec.h>
+== 4. includes of the thin part (rfa.c): hardware only through rhw.h and other units' headers
+8:#include <errno.h>
+9:#include <string.h>
+11:#include <zephyr/kernel.h>
+12:#include <zephyr/spinlock.h>
+14:#include <ring_factory/rfa.h>
+15:#include <ring_rhw/rhw.h>
+17:#include <ring_store/rst.h>
+20:#include "rfa_logic.h"
+== 5. direct hardware or kit driver names in rfa.c (gpio, i2c, spi, pdm, nrfx, device_get, DT_)
+no hit
+== 6. other companies' names in strings of this unit (Nordic, Apple, Google, Samsung, Zephyr, Android)
+no hit
+== 7. rail call with 'on' for the microphone in this unit's sources (one-path rule: only rec_mics_on switches VDD_MIC on)
+no hit
+== 8. names that start or stop a recording (rglue_input, rc_core_input, RC_EV_LONG_PRESS) in ring_factory
+no hit
+== 9. server address or key text in the files of this unit and in my logs (the address is read from tools/remote.sh at run time, never written here)
+files naming the address (count): 0
+no key text hit

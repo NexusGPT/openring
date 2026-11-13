@@ -1,0 +1,133 @@
+firmware/tests/core/evidence/r2b-firmware-md-before.md:17:5. **Recording light** (architecture 17.21): no firmware change; R41 is 820 ohm for 1.50 mA (F4 wrote 680 ohm); the current budget keeps 1.5 m
+firmware/tests/core/evidence/r2b-firmware-md-before.md:22:`firmware-check.py` checks the F5 rules (section 10.6). The state machine, the gestures, the one-control rule, the recording rule and the hard
+firmware/tests/core/evidence/r2b-firmware-md-before.md:25:1. **One control** (17.11): the separate record button is removed (no pill, no cap, no opening). The record gesture lives on the joystick's CE
+firmware/tests/core/evidence/r2b-firmware-md-before.md:26:2. **Source of the centre press, both cases** (17.11): build constant `CENTRE_SOURCE` = `SW2` (a real switch on BTN_REC P0.04 under the nub's 
+firmware/tests/core/evidence/r2b-firmware-md-before.md:38:5. **Record button = its own switch SW2 on BTN_REC** (17.3, 17.8): same gestures as F2 (long press 1.0 s starts, long press 1.0 s stops, short
+firmware/tests/core/evidence/r2b-firmware-md-before.md:47:1. The recording light has no chip pin (architecture A2 section 9, W5): the F1 light output pin, its patterns and its pattern player are remov
+firmware/tests/core/evidence/r2b-firmware-md-before.md:59:13. VDD_MIC, and so the recording light, is on only in `RECORDING`, exactly while audio is stored (H3 closed; H2 closed with the removed state
+firmware/tests/core/evidence/r2b-firmware-md-before.md:82:| Buttons and joystick | GPIO with the chip's internal pull-up (`GPIO_PULL_UP \| GPIO_ACTIVE_LOW`, architecture W1), Zephyr `gpio-keys` input 
+firmware/tests/core/evidence/r2b-firmware-md-before.md:234:Centre source: build constant `CENTRE_SOURCE`, `SW2` by default (architecture 17.11 first choice; the rebuild of 17.12 must show that the swi
+firmware/tests/core/evidence/r2b-firmware-md-before.md:238:| `SW2` | SW2 on BTN_REC P0.04, a real switch under the nub's centre: its debounced press edge is CENTRE_DOWN | 20 ms (`gpio-keys`) on SW2 an
+firmware/tests/core/evidence/r2b-firmware-md-before.md:241:Guard against accidental starts. The nub sits where the thumb rests, so a thumb at rest can hold the centre. The guard, in order:
+firmware/tests/core/evidence/r2b-firmware-md-before.md:244:- **G3** at 1,000 ms a start gives M1 and the recording light comes on with VDD_MIC; a stop gives M2.
+firmware/tests/core/evidence/r2b-firmware-md-before.md:257:### 2.2 Joystick (four direction switches under one nub: SW1 up JOY_UP P0.06, SW3 down JOY_DOWN P0.07, SW4 toward the hand JOY_LEFT P0.08, SW
+firmware/tests/core/evidence/r2b-firmware-md-before.md:312:- The 1, 2 and 3 pulse counts follow requirement U4 and architecture section 9. MW is new in F4: one 60 ms pulse **[CHOICE]**, between MT (25
+firmware/tests/core/evidence/r2b-firmware-md-before.md:318:### 3.2 Recording light
+firmware/tests/core/evidence/r2b-firmware-md-before.md:320:- No chip pin touches the light (architecture 17.21, netlist.csv): VDD_3V0, R41 820 ohm, LED1 (Kingbright KPG-1005SURC-TT, nets LED_A and LED
+firmware/tests/core/evidence/r2b-firmware-md-before.md:321:- The firmware's only influence is when VDD_MIC is on: only in `RECORDING` (section 1.1), including the test recordings of factory tests T-MI
+firmware/tests/core/evidence/r2b-firmware-md-before.md:322:- Cost: light current (3.0 V - 1.767 V) / (820 ohm + 0.7 ohm) = 1.50 mA from VDD_3V0 [CALC; 1.767 V at 1.5 mA from the maker's curve and R41 
+firmware/tests/core/evidence/r2b-firmware-md-before.md:410:2. `regulator_enable()` on the nPM1304 load switch 1 (VDD_MIC, ball A4 LSOUT1, netlist.csv). The recording light turns on here (hardware, sec
+firmware/tests/core/evidence/r2b-firmware-md-before.md:830:Caveat, from architecture section 4 and 16.8: the main-chip, storage, radio and power-chip lines are estimates, not datasheet values, and ben
+firmware/tests/core/evidence/r2b-firmware-md-before.md:887:| 0x41 | T-LIGHT | recording light | two 1 s test recordings 1 s apart (the light has no chip pin; it follows VDD_MIC) | jig light sensor: on
+firmware/tests/core/evidence/r2b-firmware-md-before.md:895:Sub-command 0x11 (the F2 skew test) is removed in F3: the ring answers BAD_ARG. T-LIGHT is the same test as in F2.
+firmware/tests/core/evidence/r2b-firmware-md-before.md:901:| 5 | board | SWD on test pads TP3 SWDCLK, TP4 SWDIO, TP5 NRESET; USB on the J_BAND_B lands; the jig feeds a battery voltage on the cell land
+firmware/tests/core/evidence/r2b-firmware-md-before.md:903:| 18 | open ring | USB through the pads; FACTORY ENTER | every test: T-SCREEN, T-JOY, T-CENTRE, T-MOTOR, T-MIC1, T-MIC2, T-LIGHT, T-STORE, T-
+firmware/tests/core/evidence/r2b-firmware-md-before.md:1018:27. Whether the centre key of section 2.2 reads a centre press reliably on the real nub in both cases (bench item B6, architecture 16.5), wh
+firmware/tests/core/evidence/r2b-firmware-md-before.md:1052:| H15 | Architecture section 9 (first two bullets), 16.5 (the line on the record button), 17.3 (the table row for the record button and the 
+firmware/tests/core/evidence/r3-firmware-md-before.md:17:5. **Recording light** (architecture 17.21): no firmware change; R41 is 820 ohm for 1.50 mA (F4 wrote 680 ohm); the current budget keeps 1.5 mA
+firmware/tests/core/evidence/r3-firmware-md-before.md:22:`firmware-check.py` checks the F5 rules (section 10.6). The state machine, the gestures, the one-control rule, the recording rule and the hard-
+firmware/tests/core/evidence/r3-firmware-md-before.md:25:1. **One control** (17.11): the separate record button is removed (no pill, no cap, no opening). The record gesture lives on the joystick's CEN
+firmware/tests/core/evidence/r3-firmware-md-before.md:26:2. **Source of the centre press, both cases** (17.11): build constant `CENTRE_SOURCE` = `SW2` (a real switch on BTN_REC P0.04 under the nub's c
+firmware/tests/core/evidence/r3-firmware-md-before.md:38:5. **Record button = its own switch SW2 on BTN_REC** (17.3, 17.8): same gestures as F2 (long press 1.0 s starts, long press 1.0 s stops, short 
+firmware/tests/core/evidence/r3-firmware-md-before.md:47:1. The recording light has no chip pin (architecture A2 section 9, W5): the F1 light output pin, its patterns and its pattern player are remove
+firmware/tests/core/evidence/r3-firmware-md-before.md:59:13. VDD_MIC, and so the recording light, is on only in `RECORDING`, exactly while audio is stored (H3 closed; H2 closed with the removed state)
+firmware/tests/core/evidence/r3-firmware-md-before.md:82:| Buttons and joystick | GPIO with the chip's internal pull-up (`GPIO_PULL_UP \| GPIO_ACTIVE_LOW`, architecture W1), Zephyr `gpio-keys` input d
+firmware/tests/core/evidence/r3-firmware-md-before.md:236:Centre source: build constant `CENTRE_SOURCE`, `SW2` by default (architecture 17.11 first choice; the rebuild of 17.12 must show that the swit
+firmware/tests/core/evidence/r3-firmware-md-before.md:240:| `SW2` | SW2 on BTN_REC P0.04, a real switch under the nub's centre: its debounced press edge is CENTRE_DOWN | 20 ms (`gpio-keys`) on SW2 and
+firmware/tests/core/evidence/r3-firmware-md-before.md:243:Guard against accidental starts. The nub sits where the thumb rests, so a thumb at rest can hold the centre. The guard, in order:
+firmware/tests/core/evidence/r3-firmware-md-before.md:246:- **G3** at 1,000 ms a start gives M1 and the recording light comes on with VDD_MIC; a stop gives M2.
+firmware/tests/core/evidence/r3-firmware-md-before.md:259:### 2.2 Joystick (four direction switches under one nub: SW1 up JOY_UP P0.06, SW3 down JOY_DOWN P0.07, SW4 toward the hand JOY_LEFT P0.08, SW5
+firmware/tests/core/evidence/r3-firmware-md-before.md:314:- The 1, 2 and 3 pulse counts follow requirement U4 and architecture section 9. MW is new in F4: one 60 ms pulse **[CHOICE]**, between MT (25 
+firmware/tests/core/evidence/r3-firmware-md-before.md:320:### 3.2 Recording light
+firmware/tests/core/evidence/r3-firmware-md-before.md:322:- No chip pin touches the light (architecture 17.21, netlist.csv): VDD_3V0, R41 820 ohm, LED1 (Kingbright KPG-1005SURC-TT, nets LED_A and LED_
+firmware/tests/core/evidence/r3-firmware-md-before.md:323:- The firmware's only influence is when VDD_MIC is on: only in `RECORDING` (section 1.1), including the test recordings of factory tests T-MIC
+firmware/tests/core/evidence/r3-firmware-md-before.md:324:- Cost: light current (3.0 V - 1.767 V) / (820 ohm + 0.7 ohm) = 1.50 mA from VDD_3V0 [CALC; 1.767 V at 1.5 mA from the maker's curve and R41 8
+firmware/tests/core/evidence/r3-firmware-md-before.md:412:2. `regulator_enable()` on the nPM1304 load switch 1 (VDD_MIC, ball A4 LSOUT1, netlist.csv). The recording light turns on here (hardware, sect
+firmware/tests/core/evidence/r3-firmware-md-before.md:832:Caveat, from architecture section 4 and 16.8: the main-chip, storage, radio and power-chip lines are estimates, not datasheet values, and benc
+firmware/tests/core/evidence/r3-firmware-md-before.md:889:| 0x41 | T-LIGHT | recording light | two 1 s test recordings 1 s apart (the light has no chip pin; it follows VDD_MIC) | jig light sensor: on,
+firmware/tests/core/evidence/r3-firmware-md-before.md:897:Sub-command 0x11 (the F2 skew test) is removed in F3: the ring answers BAD_ARG. T-LIGHT is the same test as in F2.
+firmware/tests/core/evidence/r3-firmware-md-before.md:903:| 5 | board | SWD on test pads TP3 SWDCLK, TP4 SWDIO, TP5 NRESET; USB on the J_BAND_B lands; the jig feeds a battery voltage on the cell lands
+firmware/tests/core/evidence/r3-firmware-md-before.md:905:| 18 | open ring | USB through the pads; FACTORY ENTER | every test: T-SCREEN, T-JOY, T-CENTRE, T-MOTOR, T-MIC1, T-MIC2, T-LIGHT, T-STORE, T-R
+firmware/tests/core/evidence/r3-firmware-md-before.md:1020:27. Whether the centre key of section 2.2 reads a centre press reliably on the real nub in both cases (bench item B6, architecture 16.5), whe
+firmware/tests/core/evidence/r3-firmware-md-before.md:1054:| H15 | Architecture section 9 (first two bullets), 16.5 (the line on the record button), 17.3 (the table row for the record button and the l
+firmware/tests/core/evidence/r2-firmware-md-before.md:17:5. **Recording light** (architecture 17.21): no firmware change; R41 is 820 ohm for 1.50 mA (F4 wrote 680 ohm); the current budget keeps 1.5 mA
+firmware/tests/core/evidence/r2-firmware-md-before.md:22:`firmware-check.py` checks the F5 rules (section 10.6). The state machine, the gestures, the one-control rule, the recording rule and the hard-
+firmware/tests/core/evidence/r2-firmware-md-before.md:25:1. **One control** (17.11): the separate record button is removed (no pill, no cap, no opening). The record gesture lives on the joystick's CEN
+firmware/tests/core/evidence/r2-firmware-md-before.md:26:2. **Source of the centre press, both cases** (17.11): build constant `CENTRE_SOURCE` = `SW2` (a real switch on BTN_REC P0.04 under the nub's c
+firmware/tests/core/evidence/r2-firmware-md-before.md:38:5. **Record button = its own switch SW2 on BTN_REC** (17.3, 17.8): same gestures as F2 (long press 1.0 s starts, long press 1.0 s stops, short 
+firmware/tests/core/evidence/r2-firmware-md-before.md:47:1. The recording light has no chip pin (architecture A2 section 9, W5): the F1 light output pin, its patterns and its pattern player are remove
+firmware/tests/core/evidence/r2-firmware-md-before.md:59:13. VDD_MIC, and so the recording light, is on only in `RECORDING`, exactly while audio is stored (H3 closed; H2 closed with the removed state)
+firmware/tests/core/evidence/r2-firmware-md-before.md:82:| Buttons and joystick | GPIO with the chip's internal pull-up (`GPIO_PULL_UP \| GPIO_ACTIVE_LOW`, architecture W1), Zephyr `gpio-keys` input d
+firmware/tests/core/evidence/r2-firmware-md-before.md:228:Centre source: build constant `CENTRE_SOURCE`, `SW2` by default (architecture 17.11 first choice; the rebuild of 17.12 must show that the swit
+firmware/tests/core/evidence/r2-firmware-md-before.md:232:| `SW2` | SW2 on BTN_REC P0.04, a real switch under the nub's centre: its debounced press edge is CENTRE_DOWN | 20 ms (`gpio-keys`) on SW2 and
+firmware/tests/core/evidence/r2-firmware-md-before.md:235:Guard against accidental starts. The nub sits where the thumb rests, so a thumb at rest can hold the centre. The guard, in order:
+firmware/tests/core/evidence/r2-firmware-md-before.md:238:- **G3** at 1,000 ms a start gives M1 and the recording light comes on with VDD_MIC; a stop gives M2.
+firmware/tests/core/evidence/r2-firmware-md-before.md:250:### 2.2 Joystick (four direction switches under one nub: SW1 up JOY_UP P0.06, SW3 down JOY_DOWN P0.07, SW4 toward the hand JOY_LEFT P0.08, SW5
+firmware/tests/core/evidence/r2-firmware-md-before.md:305:- The 1, 2 and 3 pulse counts follow requirement U4 and architecture section 9. MW is new in F4: one 60 ms pulse **[CHOICE]**, between MT (25 
+firmware/tests/core/evidence/r2-firmware-md-before.md:311:### 3.2 Recording light
+firmware/tests/core/evidence/r2-firmware-md-before.md:313:- No chip pin touches the light (architecture 17.21, netlist.csv): VDD_3V0, R41 820 ohm, LED1 (Kingbright KPG-1005SURC-TT, nets LED_A and LED_
+firmware/tests/core/evidence/r2-firmware-md-before.md:314:- The firmware's only influence is when VDD_MIC is on: only in `RECORDING` (section 1.1), including the test recordings of factory tests T-MIC
+firmware/tests/core/evidence/r2-firmware-md-before.md:315:- Cost: light current (3.0 V - 1.767 V) / (820 ohm + 0.7 ohm) = 1.50 mA from VDD_3V0 [CALC; 1.767 V at 1.5 mA from the maker's curve and R41 8
+firmware/tests/core/evidence/r2-firmware-md-before.md:403:2. `regulator_enable()` on the nPM1304 load switch 1 (VDD_MIC, ball A4 LSOUT1, netlist.csv). The recording light turns on here (hardware, sect
+firmware/tests/core/evidence/r2-firmware-md-before.md:823:Caveat, from architecture section 4 and 16.8: the main-chip, storage, radio and power-chip lines are estimates, not datasheet values, and benc
+firmware/tests/core/evidence/r2-firmware-md-before.md:880:| 0x41 | T-LIGHT | recording light | two 1 s test recordings 1 s apart (the light has no chip pin; it follows VDD_MIC) | jig light sensor: on,
+firmware/tests/core/evidence/r2-firmware-md-before.md:888:Sub-command 0x11 (the F2 skew test) is removed in F3: the ring answers BAD_ARG. T-LIGHT is the same test as in F2.
+firmware/tests/core/evidence/r2-firmware-md-before.md:894:| 5 | board | SWD on test pads TP3 SWDCLK, TP4 SWDIO, TP5 NRESET; USB on the J_BAND_B lands; the jig feeds a battery voltage on the cell lands
+firmware/tests/core/evidence/r2-firmware-md-before.md:896:| 18 | open ring | USB through the pads; FACTORY ENTER | every test: T-SCREEN, T-JOY, T-CENTRE, T-MOTOR, T-MIC1, T-MIC2, T-LIGHT, T-STORE, T-R
+firmware/tests/core/evidence/r2-firmware-md-before.md:1011:27. Whether the centre key of section 2.2 reads a centre press reliably on the real nub in both cases (bench item B6, architecture 16.5), whe
+firmware/tests/core/evidence/r2-firmware-md-before.md:1045:| H15 | Architecture section 9 (first two bullets), 16.5 (the line on the record button), 17.3 (the table row for the record button and the l
+firmware/tests/core/evidence/r3b-firmware-md-before.md:17:5. **Recording light** (architecture 17.21): no firmware change; R41 is 820 ohm for 1.50 mA (F4 wrote 680 ohm); the current budget keeps 1.5 m
+firmware/tests/core/evidence/r3b-firmware-md-before.md:22:`firmware-check.py` checks the F5 rules (section 10.6). The state machine, the gestures, the one-control rule, the recording rule and the hard
+firmware/tests/core/evidence/r3b-firmware-md-before.md:25:1. **One control** (17.11): the separate record button is removed (no pill, no cap, no opening). The record gesture lives on the joystick's CE
+firmware/tests/core/evidence/r3b-firmware-md-before.md:26:2. **Source of the centre press, both cases** (17.11): build constant `CENTRE_SOURCE` = `SW2` (a real switch on BTN_REC P0.04 under the nub's 
+firmware/tests/core/evidence/r3b-firmware-md-before.md:38:5. **Record button = its own switch SW2 on BTN_REC** (17.3, 17.8): same gestures as F2 (long press 1.0 s starts, long press 1.0 s stops, short
+firmware/tests/core/evidence/r3b-firmware-md-before.md:47:1. The recording light has no chip pin (architecture A2 section 9, W5): the F1 light output pin, its patterns and its pattern player are remov
+firmware/tests/core/evidence/r3b-firmware-md-before.md:59:13. VDD_MIC, and so the recording light, is on only in `RECORDING`, exactly while audio is stored (H3 closed; H2 closed with the removed state
+firmware/tests/core/evidence/r3b-firmware-md-before.md:82:| Buttons and joystick | GPIO with the chip's internal pull-up (`GPIO_PULL_UP \| GPIO_ACTIVE_LOW`, architecture W1), Zephyr `gpio-keys` input 
+firmware/tests/core/evidence/r3b-firmware-md-before.md:241:Centre source: build constant `CENTRE_SOURCE`, `SW2` by default (architecture 17.11 first choice; the rebuild of 17.12 must show that the swi
+firmware/tests/core/evidence/r3b-firmware-md-before.md:245:| `SW2` | SW2 on BTN_REC P0.04, a real switch under the nub's centre: its debounced press edge is CENTRE_DOWN | 20 ms (`gpio-keys`) on SW2 an
+firmware/tests/core/evidence/r3b-firmware-md-before.md:248:Guard against accidental starts. The nub sits where the thumb rests, so a thumb at rest can hold the centre. The guard, in order:
+firmware/tests/core/evidence/r3b-firmware-md-before.md:251:- **G3** at 1,000 ms a start gives M1 and the recording light comes on with VDD_MIC; a stop gives M2.
+firmware/tests/core/evidence/r3b-firmware-md-before.md:264:### 2.2 Joystick (four direction switches under one nub: SW1 up JOY_UP P0.06, SW3 down JOY_DOWN P0.07, SW4 toward the hand JOY_LEFT P0.08, SW
+firmware/tests/core/evidence/r3b-firmware-md-before.md:319:- The 1, 2 and 3 pulse counts follow requirement U4 and architecture section 9. MW is new in F4: one 60 ms pulse **[CHOICE]**, between MT (25
+firmware/tests/core/evidence/r3b-firmware-md-before.md:325:### 3.2 Recording light
+firmware/tests/core/evidence/r3b-firmware-md-before.md:327:- No chip pin touches the light (architecture 17.21, netlist.csv): VDD_3V0, R41 820 ohm, LED1 (Kingbright KPG-1005SURC-TT, nets LED_A and LED
+firmware/tests/core/evidence/r3b-firmware-md-before.md:328:- The firmware's only influence is when VDD_MIC is on: only in `RECORDING` (section 1.1), including the test recordings of factory tests T-MI
+firmware/tests/core/evidence/r3b-firmware-md-before.md:329:- Cost: light current (3.0 V - 1.767 V) / (820 ohm + 0.7 ohm) = 1.50 mA from VDD_3V0 [CALC; 1.767 V at 1.5 mA from the maker's curve and R41 
+firmware/tests/core/evidence/r3b-firmware-md-before.md:417:2. `regulator_enable()` on the nPM1304 load switch 1 (VDD_MIC, ball A4 LSOUT1, netlist.csv). The recording light turns on here (hardware, sec
+firmware/tests/core/evidence/r3b-firmware-md-before.md:837:Caveat, from architecture section 4 and 16.8: the main-chip, storage, radio and power-chip lines are estimates, not datasheet values, and ben
+firmware/tests/core/evidence/r3b-firmware-md-before.md:894:| 0x41 | T-LIGHT | recording light | two 1 s test recordings 1 s apart (the light has no chip pin; it follows VDD_MIC) | jig light sensor: on
+firmware/tests/core/evidence/r3b-firmware-md-before.md:902:Sub-command 0x11 (the F2 skew test) is removed in F3: the ring answers BAD_ARG. T-LIGHT is the same test as in F2.
+firmware/tests/core/evidence/r3b-firmware-md-before.md:908:| 5 | board | SWD on test pads TP3 SWDCLK, TP4 SWDIO, TP5 NRESET; USB on the J_BAND_B lands; the jig feeds a battery voltage on the cell land
+firmware/tests/core/evidence/r3b-firmware-md-before.md:910:| 18 | open ring | USB through the pads; FACTORY ENTER | every test: T-SCREEN, T-JOY, T-CENTRE, T-MOTOR, T-MIC1, T-MIC2, T-LIGHT, T-STORE, T-
+firmware/tests/core/evidence/r3b-firmware-md-before.md:1025:27. Whether the centre key of section 2.2 reads a centre press reliably on the real nub in both cases (bench item B6, architecture 16.5), wh
+firmware/tests/core/evidence/r3b-firmware-md-before.md:1059:| H15 | Architecture section 9 (first two bullets), 16.5 (the line on the record button), 17.3 (the table row for the record button and the 
+firmware/tests/core/evidence/r4-firmware-md-before.md:17:5. **Recording light** (architecture 17.21): no firmware change; R41 is 820 ohm for 1.50 mA (F4 wrote 680 ohm); the current budget keeps 1.5 mA
+firmware/tests/core/evidence/r4-firmware-md-before.md:22:`firmware-check.py` checks the F5 rules (section 10.6). The state machine, the gestures, the one-control rule, the recording rule and the hard-
+firmware/tests/core/evidence/r4-firmware-md-before.md:25:1. **One control** (17.11): the separate record button is removed (no pill, no cap, no opening). The record gesture lives on the joystick's CEN
+firmware/tests/core/evidence/r4-firmware-md-before.md:26:2. **Source of the centre press, both cases** (17.11): build constant `CENTRE_SOURCE` = `SW2` (a real switch on BTN_REC P0.04 under the nub's c
+firmware/tests/core/evidence/r4-firmware-md-before.md:38:5. **Record button = its own switch SW2 on BTN_REC** (17.3, 17.8): same gestures as F2 (long press 1.0 s starts, long press 1.0 s stops, short 
+firmware/tests/core/evidence/r4-firmware-md-before.md:47:1. The recording light has no chip pin (architecture A2 section 9, W5): the F1 light output pin, its patterns and its pattern player are remove
+firmware/tests/core/evidence/r4-firmware-md-before.md:59:13. VDD_MIC, and so the recording light, is on only in `RECORDING`, exactly while audio is stored (H3 closed; H2 closed with the removed state)
+firmware/tests/core/evidence/r4-firmware-md-before.md:82:| Buttons and joystick | GPIO with the chip's internal pull-up (`GPIO_PULL_UP \| GPIO_ACTIVE_LOW`, architecture W1), Zephyr `gpio-keys` input d
+firmware/tests/core/evidence/r4-firmware-md-before.md:244:Centre source: build constant `CENTRE_SOURCE`, `SW2` by default (architecture 17.11 first choice; the rebuild of 17.12 must show that the swit
+firmware/tests/core/evidence/r4-firmware-md-before.md:248:| `SW2` | SW2 on BTN_REC P0.04, a real switch under the nub's centre: its debounced press edge is CENTRE_DOWN | 20 ms (`gpio-keys`) on SW2 and
+firmware/tests/core/evidence/r4-firmware-md-before.md:251:Guard against accidental starts. The nub sits where the thumb rests, so a thumb at rest can hold the centre. The guard, in order:
+firmware/tests/core/evidence/r4-firmware-md-before.md:254:- **G3** at 1,000 ms a start gives M1 and the recording light comes on with VDD_MIC; a stop gives M2.
+firmware/tests/core/evidence/r4-firmware-md-before.md:267:### 2.2 Joystick (four direction switches under one nub: SW1 up JOY_UP P0.06, SW3 down JOY_DOWN P0.07, SW4 toward the hand JOY_LEFT P0.08, SW5
+firmware/tests/core/evidence/r4-firmware-md-before.md:322:- The 1, 2 and 3 pulse counts follow requirement U4 and architecture section 9. MW is new in F4: one 60 ms pulse **[CHOICE]**, between MT (25 
+firmware/tests/core/evidence/r4-firmware-md-before.md:328:### 3.2 Recording light
+firmware/tests/core/evidence/r4-firmware-md-before.md:330:- No chip pin touches the light (architecture 17.21, netlist.csv): VDD_3V0, R41 820 ohm, LED1 (Kingbright KPG-1005SURC-TT, nets LED_A and LED_
+firmware/tests/core/evidence/r4-firmware-md-before.md:331:- The firmware's only influence is when VDD_MIC is on: only in `RECORDING` (section 1.1), including the test recordings of factory tests T-MIC
+firmware/tests/core/evidence/r4-firmware-md-before.md:332:- Cost: light current (3.0 V - 1.767 V) / (820 ohm + 0.7 ohm) = 1.50 mA from VDD_3V0 [CALC; 1.767 V at 1.5 mA from the maker's curve and R41 8
+firmware/tests/core/evidence/r4-firmware-md-before.md:420:2. `regulator_enable()` on the nPM1304 load switch 1 (VDD_MIC, ball A4 LSOUT1, netlist.csv). The recording light turns on here (hardware, sect
+firmware/tests/core/evidence/r4-firmware-md-before.md:840:Caveat, from architecture section 4 and 16.8: the main-chip, storage, radio and power-chip lines are estimates, not datasheet values, and benc
+firmware/tests/core/evidence/r4-firmware-md-before.md:897:| 0x41 | T-LIGHT | recording light | two 1 s test recordings 1 s apart (the light has no chip pin; it follows VDD_MIC) | jig light sensor: on,
+firmware/tests/core/evidence/r4-firmware-md-before.md:905:Sub-command 0x11 (the F2 skew test) is removed in F3: the ring answers BAD_ARG. T-LIGHT is the same test as in F2.
+firmware/tests/core/evidence/r4-firmware-md-before.md:911:| 5 | board | SWD on test pads TP3 SWDCLK, TP4 SWDIO, TP5 NRESET; USB on the J_BAND_B lands; the jig feeds a battery voltage on the cell lands
+firmware/tests/core/evidence/r4-firmware-md-before.md:913:| 18 | open ring | USB through the pads; FACTORY ENTER | every test: T-SCREEN, T-JOY, T-CENTRE, T-MOTOR, T-MIC1, T-MIC2, T-LIGHT, T-STORE, T-R
+firmware/tests/core/evidence/r4-firmware-md-before.md:1028:27. Whether the centre key of section 2.2 reads a centre press reliably on the real nub in both cases (bench item B6, architecture 16.5), whe
+firmware/tests/core/evidence/r4-firmware-md-before.md:1062:| H15 | Architecture section 9 (first two bullets), 16.5 (the line on the record button), 17.3 (the table row for the record button and the l
+firmware/tests/core/src/test_round2.c:243:	th_event(RC_EV_VBUS_OUT);              /* out of the case, thumb still on the nub */
+firmware/docs/review/core-review-1/probe2.c:11: /* Q2: TRANSFER, vbus out with storage full */
+grep exit 

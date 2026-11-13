@@ -1,0 +1,91 @@
+--- base/design/ecad/ring/netlist.csv	2026-11-13 12:51:36
++++ patched/design/ecad/ring/netlist.csv	2026-11-13 12:54:10
+@@ -102,6 +102,7 @@
+ GND,R66,2,~,passive
+ GND,R71,2,~,passive
+ GND,R72,2,~,passive
++GND,R73,2,~,passive
+ GND,RT1,2,~,passive
+ GND,SW1,2,~,passive
+ GND,SW1,4,~,passive
+@@ -298,6 +299,7 @@
+ VBUS,CP1,1,1,power_out
+ VBUS,J_BAND_B,4,VBUS,passive
+ VBUS,R1,1,~,passive
++VBUS,R73,1,~,passive
+ VBUS,U2,B1,VBUS,power_in
+ VBUS,U2,B2,VBUS,power_in
+ VBUS,U9,4,D2+,passive
+--- base/design/ecad/ring/parts.csv	2026-11-13 12:51:36
++++ patched/design/ecad/ring/parts.csv	2026-11-13 12:54:10
+@@ -43,6 +43,7 @@
+ C80,C,100nF,CL03A104KP3NNNC,OpenRing:Chip_0201,power,no
+ R71,R,47k,RC0201FR-0747KL,OpenRing:Chip_0201,power,no
+ R72,R,150k,RC0201FR-07150KL,OpenRing:Chip_0201,power,no
++R73,R,330k,RC0201FR-07330KL,OpenRing:Chip_0201,power,no
+ RT1,NTC,10k NTC,NCP15XH103F03RC,OpenRingBand:RT1_NTC_0402,band,no
+ BT1,CELL,4.35V 20-27mAh at US9 (17.6mAh min at US7) curved,Grepow custom,OpenRingBand:PRT1_Tabs,band,no
+ R57,R,4.7k,RC0201FR-074K7L,OpenRing:Chip_0201,power,no
+@@ -89,7 +90,7 @@
+ M1,MOTOR,W0525AB001D,W0525AB001D,OpenRingBand:W0525AB001D_Lands,band,no
+ U11,TLV75530P_DQN,TLV75530P 3.0V,TLV75530PDQNR,OpenRing:X2SON-4_TLV755xxPDQN_1.0x1.0,controls,no
+ C83,C,10uF,GRM155R60J106ME15,OpenRing:Chip_0402,controls,no
+-C84,C,10uF,GRM155R60J106ME15,OpenRing:Chip_0402,controls,no
++C84,C,4.7uF,GRM155R61A475MEAAD,OpenRing:Chip_0402,controls,no
+ R61,R,100R,RC0201FR-07100RL,OpenRing:Chip_0201,controls,no
+ R62,R,100k,RC0201FR-07100KL,OpenRing:Chip_0201,controls,no
+ CP1,CONTACTPAD_VBUS,gold pad 1.6mm,,OpenRingBand:CP_Pad_1.6,band,no
+--- base/design/ecad/ring/additions.csv	2026-11-13 12:51:36
++++ patched/design/ecad/ring/additions.csv	2026-11-13 12:54:10
+@@ -8,7 +8,8 @@
+ R62,added,motor regulator enable pull-down 100 kohm (motor-drive.md)
+ U11,added,"motor 3.0 V regulator from VBAT, TLV75530PDQNR (motor-drive.md)"
+ C83,added,U11 input 10 uF
+-C84,added,U11 output and motor 10 uF (Jinlong 9-4 asks 2 uF or more)
++C84,added,"U11 output and motor 4.7 uF GRM155R61A475MEAAD, was 10 uF (lead-decisions.md sim finding 4 and its correction; Jinlong 9-4 asks 2 uF or more)"
++R73,added,"discharge resistor VBUS to GND 330 kohm: the pads fall under 0.1 V within 10 s after the ring leaves the case (lead-decisions.md sim finding 1); code RC0201FR-07330KL by the series coding, not confirmed at a distributor"
+ C85,added,"A7 D2: U2 VBAT 2.2 uF at balls D1, D2 (nPM1304 spec Table 37 C6, page 157)"
+ C86,added,"A7 D4: U2 LSOUT1 (VDD_MIC) 1.0 uF at ball A4 (nPM1304 spec configuration 2, C14, pages 158 and 159)"
+ C87,added,"A7 D4: U2 LSOUT2 (VDD_SD) 1.0 uF at ball A5 (nPM1304 spec configuration 2, C14, pages 158 and 159)"
+--- base/design/ecad/ring/make_netlist.py	2026-11-13 12:51:30
++++ patched/design/ecad/ring/make_netlist.py	2026-11-13 12:54:10
+@@ -303,6 +303,10 @@
+ two('C80', 'C', '100nF', '', 'ring:C_0201', P, 'VDD_1V8', 'GND')
+ two('R71', 'R', '47k', '', 'ring:R_0201', P, 'VSET1', 'GND')
+ two('R72', 'R', '150k', '', 'ring:R_0201', P, 'VSET2', 'GND')
++# R73 discharge resistor VBUS to GND, 330 kohm 0201 (lead-decisions.md row "sim finding 1", 2026-11-13): without it the
++# circuit bench holds up to 4.5 V on the VBUS pad 10 s after the ring leaves the case. Yageo RC0201FR-07330KL follows the
++# coding of the series RC0201FR-07 (parts/order-codes.md section 1) and is NOT confirmed at a distributor.
++two('R73', 'R', '330k', 'RC0201FR-07330KL', 'ring:R_0201', P, 'VBUS', 'GND')
+ two('RT1', 'NTC', '10k NTC', 'NCP15XH103F03RC', 'ring:RT1_BAND', BD, 'NTC', 'GND')  # in the band at the cell (A5 17.3)
+ part('BT1', 'CELL', '4.35V 20-27mAh at US9 (17.6mAh min at US7) curved', 'Grepow custom', 'ring:CELL_TABS', BD, {'1': 'VBAT', '2': 'GND'}, by='number')  # A7: architecture 17.15 and 17.17 (was 15-20 mAh of 17.10); cell sweep 2026-11-11: smallest 17.6 mAh per 17.26 (before it 18.2 mAh)
+ two('R57', 'R', '4.7k', '', 'ring:R_0201', P, 'PMIC_SDA', 'VDD_1V8')
+@@ -390,7 +394,9 @@
+ part('U11', 'TLV75530P_DQN', 'TLV75530P 3.0V', 'TLV75530PDQNR', 'ring:X2SON-4_DQN_1x1', K,
+      {'1': 'VMOT', '2': 'GND', '3': 'MOT_EN', '4': 'VBAT', '5': 'GND'}, by='number')
+ two('C83', 'C', '10uF', 'GRM155R60J106ME15', 'ring:C_0402', K, 'VBAT', 'GND')
+-two('C84', 'C', '10uF', 'GRM155R60J106ME15', 'ring:C_0402', K, 'VMOT', 'GND')
++# C84 4.7 uF in place of 10 uF (lead-decisions.md rows "sim finding 4 (item 41)" and "sim finding 4, correction", 2026-11-13):
++# Murata GRM155R61A475MEAAD, same 0402 footprint and nets; C83 stays 10 uF
++two('C84', 'C', '4.7uF', 'GRM155R61A475MEAAD', 'ring:C_0402', K, 'VMOT', 'GND')
+ two('R61', 'R', '100R', '', 'ring:R_0201', K, 'MOTOR', 'MOT_EN')
+ two('R62', 'R', '100k', '', 'ring:R_0201', K, 'MOT_EN', 'GND')
+ # v7 (architecture 17.30): the recording light circuit (its resistor, its light and its transistor) is removed in v7;
+@@ -427,7 +433,8 @@
+     ('CP3', 'case contact pad D+, third from -Y'), ('CP4', 'case contact pad GND, fourth from -Y'),
+     ('R61', 'motor regulator enable series resistor 100 ohm (motor-drive.md)'), ('R62', 'motor regulator enable pull-down 100 kohm (motor-drive.md)'),
+     ('U11', 'motor 3.0 V regulator from VBAT, TLV75530PDQNR (motor-drive.md)'), ('C83', 'U11 input 10 uF'),
+-    ('C84', 'U11 output and motor 10 uF (Jinlong 9-4 asks 2 uF or more)'),
++    ('C84', 'U11 output and motor 4.7 uF GRM155R61A475MEAAD, was 10 uF (lead-decisions.md sim finding 4 and its correction; Jinlong 9-4 asks 2 uF or more)'),
++    ('R73', 'discharge resistor VBUS to GND 330 kohm: the pads fall under 0.1 V within 10 s after the ring leaves the case (lead-decisions.md sim finding 1); code RC0201FR-07330KL by the series coding, not confirmed at a distributor'),
+     ('C85', 'A7 D2: U2 VBAT 2.2 uF at balls D1, D2 (nPM1304 spec Table 37 C6, page 157)'),
+     ('C86', 'A7 D4: U2 LSOUT1 (VDD_MIC) 1.0 uF at ball A4 (nPM1304 spec configuration 2, C14, pages 158 and 159)'),
+     ('C87', 'A7 D4: U2 LSOUT2 (VDD_SD) 1.0 uF at ball A5 (nPM1304 spec configuration 2, C14, pages 158 and 159)'),
+--- base/design/ecad/ring/sch-notes.md	2026-11-13 12:51:30
++++ patched/design/ecad/ring/sch-notes.md	2026-11-13 12:54:10
+@@ -313,3 +313,5 @@
+ - Order codes (round 2, lead rulings): C71, C86, C87 Murata GRM155R61E105KA12D; RT1 Murata NCP15XH103F03RC; L71, L72 and L10 Murata 1269AS-H-2R2M=P2; C85 and C60 Kyocera AVX 0402ZC225KAT2A; C35 and C36 Kyocera AVX 04025A102JAT2A (1.0 nF C0G, see O10). C88 has no code (no 10 uF 16 V row at 1.0 mm or less), its bom.csv line says NOT CLOSED.
+ - `open-pins.csv` holds the header only: no pin number waits on a document. What is not closed is listed in `pcb/footprint-notes.md` under "Not closed".
+ - `check_netlist.py` was edited for the J1 pin names, U11 pad 5 and DISP1 pins 3 and 4 (`pcb/w1-evidence/check_netlist.diff`). Result: RESULT PASS, ERC 0 errors 0 warnings.
++
++2026-11-13 (circuit changes C1 and C2: discharge resistor R73, C84 4.7 uF): lead decisions of 2026-11-13 (`design/wiring/lead-decisions.md` rows "sim finding 1", "sim finding 4 (item 41)", "sim finding 4, correction"), applied in `make_netlist.py`: R73 (330 kohm, 0201, sheet power) joins VBUS (pin 1) to GND (pin 2), so that the pads on the finger fall under 0.1 V within 10 s after the ring leaves the case; its code Yageo RC0201FR-07330KL follows the coding of the series RC0201FR-07 (`design/parts/order-codes.md` section 1) and is not confirmed at a distributor. C84 changes from 10 uF (GRM155R60J106ME15) to 4.7 uF (Murata GRM155R61A475MEAAD), same 0402 footprint and nets; C83 stays 10 uF. The board (`pcb/`) is not changed here: until the board carries R73, a board check against this netlist reports R73 as missing. Evidence and the bench rows before and after: `circuit-two-notes.md`.

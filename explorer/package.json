@@ -1,0 +1,52 @@
+{
+  "name": "ring-explorer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Read-only browser viewer of the AI ring design. Runs on this Mac only.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/stage-static.mjs",
+    "preview": "vite preview",
+    "collect": "${COLLECT_PY:-../design/.venv/bin/python} collector/run.py",
+    "typecheck": "tsc --noEmit",
+    "gen:types": "tsx scripts/gen-types.ts",
+    "check:types": "tsx scripts/gen-types.ts --check",
+    "check:docs": "node scripts/check-contract-doc.mjs",
+    "guard": "node scripts/guard-no-ring-facts.mjs",
+    "test:unit": "vitest run",
+    "test:collector": "node scripts/run-pytest.mjs collector/tests",
+    "test": "npm run typecheck && npm run check:types && npm run check:docs && npm run guard && npm run test:unit && npm run test:collector",
+    "journeys": "playwright test -c tests/playwright.config.ts --project=journeys",
+    "checks": "playwright test -c tests/playwright.config.ts --project=checks",
+    "test:hosted": "playwright test -c tests/playwright.config.ts --project=static"
+  },
+  "dependencies": {
+    "@fontsource/geist-mono": "5.3.0",
+    "@fontsource/geist-sans": "5.3.0",
+    "@fontsource/libre-caslon-text": "5.3.0",
+    "@tanstack/react-query": "5.107.1",
+    "ajv": "8.20.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router-dom": "7.18.5",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "4.5.1",
+    "@playwright/test": "1.65.0",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/three": "0.187.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "json-schema-to-typescript": "16.0.0",
+    "jsdom": "31.0.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vite": "8.3.7",
+    "vitest": "5.1.0"
+  }
+}

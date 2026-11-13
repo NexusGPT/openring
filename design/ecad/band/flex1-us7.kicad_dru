@@ -1,0 +1,6 @@
+(version 1)
+(rule "exposed land to line" (condition "A.Type == 'Pad' && B.Type == 'Track'") (constraint clearance (min 0.25mm)))
+(rule "exposed land to line 2" (condition "A.Type == 'Track' && B.Type == 'Pad'") (constraint clearance (min 0.25mm)))
+(rule "land to land" (condition "A.Type == 'Pad' && B.Type == 'Pad'") (constraint clearance (min 0.15mm)))
+(rule "land to via" (condition "A.Type == 'Pad' && B.Type == 'Via'") (constraint clearance (min 0.15mm)))
+(rule "land to via 2" (condition "A.Type == 'Via' && B.Type == 'Pad'") (constraint clearance (min 0.15mm)))

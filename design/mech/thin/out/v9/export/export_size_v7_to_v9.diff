@@ -1,0 +1,53 @@
+2c2,6
+< """Export the maker files of ONE ring size from the inside model v7 (thin.py; round joystick, no recording light; pads at X -1.0).
+---
+> """Export the maker files of ONE ring size from the inside model v9 (thin.py: v8 band circuits as drawn, v9 board parts at the board plan's places, resin radio corner RC1).
+> Copy of out/v7-export/export_size.py (kept there unchanged) with these changes: the two band circuit files (flex-tail-thumb, flex-tail-away) are NOT
+> written (another lane owns them; their rows come from out/v8/rows_flex_usN.json); a radio-corner file (RC1, the same at every size, written with 'all');
+> every row also carries the model's own solid count and volume (item 104); texts and the body dimension table follow v8 and v9.
+> (v7 docstring follows.) Export the maker files of ONE ring size from the inside model v7 (thin.py; round joystick, no recording light; pads at X -1.0).
+18c22
+< OUTD = os.path.join(THIN, "out/v7-export")
+---
+> OUTD = os.path.join(THIN, "out/v9/export")
+74c78
+<     rows.append(dict(common, format="STEP", path=rel(base + ".step"), triangles="", watertight=""))
+---
+>     rows.append(dict(common, format="STEP", path=rel(base + ".step"), triangles="", watertight="", model_solids=m_n, model_volume=round(m_v, 4)))
+97c101
+< src = f"design/mech/thin/thin.py v7 built at US {SIZE} ({os.path.basename(EXT)}, bore {P['bore_d']})"
+---
+> src = f"design/mech/thin/thin.py v9 built at US {SIZE} ({os.path.basename(EXT)}, bore {P['bore_d']})"
+104c108
+< st = emit("body", SIZE, body, src + " (outer_body)", "machined body WITH the inside pockets cut (model v7)", stl=True, model_volume=mvol)
+---
+> st = emit("body", SIZE, body, src + " (outer_body)", "machined metal body WITH the inside pockets cut; the resin radio corner RC1 (X -14.80 to -8.60, Y 2.05 to the skin) is cut away and is its own file (model v9)", stl=True, model_volume=mvol)
+143,145c147,151
+< emit("flex-tail-thumb", SIZE, S["band_flex_thumb"]["flex"], src + " (band_flex_thumb__flex)", "joystick-side ribbon: vertical piece, trunk, bend, flat head; 0.15 thick, no copper")
+< emit("joystick-stiffener", SIZE, S["band_flex_thumb"]["metal"], src + " (band_flex_thumb__metal)", "flat stiffener 6.4 x 6.4 x 0.075 under the ribbon head")
+< emit("flex-tail-away", SIZE, S["band_flex_away"]["flex"], src + " (band_flex_away__flex)", "other-side ribbon to the cell and the pads; 0.15 thick, no copper")
+---
+> # v9: flex-tail-thumb and flex-tail-away are not written here (design/mfg/parts/flex-tail-* belong to another lane; written by out/v8/export_ribbons.py)
+> emit("joystick-stiffener", SIZE, S["band_flex_thumb"]["metal"], src + " (band_flex_thumb__metal)", "flat polyimide stiffener 6.4 x 6.4 x 0.10 under the ribbon head (model v8)")
+> rcs = S["radio_corner"]["resin"]
+> rcb = rcs.bounding_box()
+> say(f"radio corner US {SIZE}: {len(rcs.solids())} solids, volume {pvol(rcs):.4f} mm3, box X {rcb.min.X:.4f} to {rcb.max.X:.4f}, Y {rcb.min.Y:.4f} to {rcb.max.Y:.4f}, Z {rcb.min.Z:.4f} to {rcb.max.Z:.4f} (the one radio-corner file is written from US 9)")
+181c187
+<         ("Band channel", "6.8 wide", "r %.4f to %.4f, from +30 through the bottom to -30 deg" % (thin.R_IN, thin.R_OUT - P["shell_t"])),
+---
+>         ("Band channel", "7.0 wide (edge walls 0.50, model v8)", "r %.4f to %.4f, from +30 through the bottom to -30 deg" % (thin.R_IN, thin.R_OUT - P["shell_t"])),
+183c189,191
+<         ("Floor slots (2)", "2.0 x 0.6", "X -3.5 to -1.5, Y +-5.9, from Z %.2f to %.2f" % (P["slot_z0"], ctx["Z_FLOOR"] + 0.6)),
+---
+>         ("Floor slots (2)", "2.1 x 0.6", "X -3.55 to -1.45, Y +-5.9, from Z %.2f to %.2f (model v8)" % (P["slot_z0"], ctx["Z_FLOOR"] + 0.6)),
+>         ("Radio corner RC1 (resin, own part)", "X -14.80 to -8.60", "Y 2.05 to the outer skin, all Z: cut away from the metal body, bonded on the planes X -8.60 and Y 2.05 (model v9)"),
+>         ("Antenna floor pocket (in RC1)", "3.60 x 2.00 x 0.20", "X -12.60 to -9.00, Y 4.25 to 6.25, floor top Z %.2f down to Z %.2f (model v9)" % (ctx["Z_FLOOR"], ctx["Z_FLOOR"] - 0.20)),
+206c214
+<     s9 = f"design/mech/thin/thin.py v7 built at US 9; same shape at every size"
+---
+>     s9 = f"design/mech/thin/thin.py v9 built at US 9; same shape at every size"
+210c218,219
+<     emit("main-board", "all", S["main_board"]["pcb"], s9 + " (main_board__pcb)", "bare board core 27.2 x 12.6 with the antenna notch, no other hole; no mask, pads, copper or parts")
+---
+>     emit("main-board", "all", S["main_board"]["pcb"], s9 + " (main_board__pcb)", "bare board core 27.2 x 12.6, no notch and no hole (model v9); no mask, pads, copper or parts")
+>     emit("radio-corner", "all", S["radio_corner"]["resin"], s9 + " (radio_corner__resin)", "RC1 resin radio corner of the body, X -14.80 to -8.60, Y 2.05 to the skin, with the antenna floor pocket 0.20 deep (model v9); resin not chosen", stl=True)

@@ -1,0 +1,93 @@
+# remote.sh run 20261111-211806-find7
+# command: bash tests/bsim/probe-nrf54/find7.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 21:18:06 CET
+# free on the server's /: 47 GB
+# source firmware copied to /root/ring-os/src-probe54
+# started on the server as 20261111-211806-find7; server log /root/ring-os/logs/20261111-211806-find7.log
+## test_connect1.c 225-300
+		} else {
+			printk("[SUBSCRIBED]\n");
+		}
+
+		return BT_GATT_ITER_STOP;
+	}
+
+	return BT_GATT_ITER_STOP;
+}
+
+static void update_conn(struct bt_conn *conn, bool bonded)
+{
+	int err;
+
+	if (encrypt_link != bonded) {
+		FAIL("Unexpected bonding status\n");
+		return;
+	}
+
+	printk("Updating connection (bonded: %d)\n", bonded);
+
+	err = bt_conn_le_param_update(conn, &update_params);
+	if (err) {
+		FAIL("Parameter update failed (err %d)\n", err);
+		return;
+	}
+}
+
+static struct bt_conn_auth_info_cb auth_cb_success = {
+	.pairing_complete = update_conn,
+};
+
+static void connected(struct bt_conn *conn, uint8_t conn_err)
+{
+	int err;
+
+	if (conn_err) {
+		FAIL("Failed to connect to %s (%u)\n", bt_conn_dst_str(conn), conn_err);
+		return;
+	}
+
+	printk("Connected: %s\n", bt_conn_dst_str(conn));
+
+	if (conn != default_conn) {
+		return;
+	}
+
+	if (encrypt_link) {
+		k_sleep(K_MSEC(500));
+		bt_conn_auth_info_cb_register(&auth_cb_success);
+		err = bt_conn_set_security(conn, BT_SECURITY_L2);
+		if (err) {
+			FAIL("bt_conn_set_security failed (err %d)\n", err);
+			return;
+		}
+	} else {
+		update_conn(conn, false);
+	}
+}
+
+static void params_updated(struct bt_conn *conn, uint16_t interval,
+			   uint16_t latency, uint16_t timeout)
+{
+	uint8_t chm[5] = { 0x11, 0x22, 0x33, 0x44, 0x00 };
+	int err;
+
+	if (interval != UPDATE_PARAM_INTERVAL_MAX ||
+	    latency != UPDATE_PARAM_LATENCY ||
+	    timeout != UPDATE_PARAM_TIMEOUT) {
+		FAIL("Unexpected connection parameters "
+		     "(interval: %d, latency: %d, timeout: %d)\n",
+		     interval, latency, timeout);
+		return;
+	}
+
+	printk("Connection parameters updated "
+## RealEncryption in hw models and zephyr (read only)
+grep: /ws/tools/bsim/components/ext_nRF54L_hw_models: No such file or directory
+/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models/BLECrypt_if.c:107:    .option = "RealEncryption",
+/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models/BLECrypt_if.c:122:static void BLECrypt_if_enable_real_encryption(void) {
+/ws/modules/bsim_hw_models/nrf_hw_models/src/HW_models/BLECrypt_if.c:178:NSI_TASK(BLECrypt_if_enable_real_encryption, HW_INIT, 100);
+nrf_hw_models
+# finished (Mac clock): 2026-11-11 21:18:21 CET
+# remote exit code: 0
+# local log: firmware/build-logs/probe-nrf54/20261111-211806-find7.log

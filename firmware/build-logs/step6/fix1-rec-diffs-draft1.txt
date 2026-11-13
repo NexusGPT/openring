@@ -1,0 +1,3834 @@
+##### changed: modules/ring_audio/src/rau.c
+--- base/modules/ring_audio/src/rau.c
++++ modules/ring_audio/src/rau.c
+@@ -47,3 +47,5 @@
+ static bool thread_started;
+-static bool hook_added;
++#ifdef CONFIG_RING_RHW_SIM
++static bool hook_added;   /* simulation only (finding F2 of the units: guarded for the kit build) */
++#endif
+ 
+@@ -312,7 +314,12 @@
+ /* ------------------------------------------------------------------ public */
++#ifdef CONFIG_RING_RHW_SIM
+ static void clear_state(void)
+ {
+-	/* a simulated reboot: whatever runs stops, the RAM state is empty */
++	/* a simulated reboot: whatever runs stops, the RAM state is empty. The drivers were reset before this hook runs
++	 * (rhw_sim_reboot), so the capture loop sees its input fail and ends; this waits for that end (step 6 fix round 1,
++	 * finding F1 of the units: rau_init after the reboot must not find the old loop still running), with the same bound
++	 * as rau_halt. */
+ 	if (atomic_get(&capturing)) {
+ 		atomic_set(&halting, 1);
++		(void)k_sem_take(&halt_sem, K_MSEC(RREC_BLOCK_COUNT * RREC_BLOCK_MS));
+ 	}
+@@ -321,2 +328,3 @@
+ }
++#endif
+ 
+##### new: modules/ring_devices/CMakeLists.txt
+--- base/modules/ring_devices/CMakeLists.txt
++++ modules/ring_devices/CMakeLists.txt
+@@ -0,0 +1,8 @@
++# Ring devices: device list and switch decision (pure logic, no radio), and
++# the Bluetooth part (pairing, identities, advertising, switching).
++if(CONFIG_RING_DEVICES_LOGIC OR CONFIG_RING_DEVICES)
++  zephyr_library_named(ring_devices)
++  zephyr_include_directories(include)
++  zephyr_library_sources(src/rdev_logic.c)
++  zephyr_library_sources_ifdef(CONFIG_RING_DEVICES src/rdev.c)
++endif()
+##### new: modules/ring_devices/Kconfig
+--- base/modules/ring_devices/Kconfig
++++ modules/ring_devices/Kconfig
+@@ -0,0 +1,20 @@
++config RING_DEVICES_LOGIC
++	bool "Ring devices logic: device list, switch decision"
++	help
++	  Pure logic with no kernel, driver or Bluetooth call.
++
++config RING_DEVICES
++	bool "Ring devices: pairing with a passkey, three paired devices, active device"
++	select RING_DEVICES_LOGIC
++	depends on BT_PERIPHERAL && BT_SMP && BT_ID_MAX >= 3
++	help
++	  One local Bluetooth identity per paired device, up to three devices,
++	  one active; switching, reconnect and removal of a pairing.
++
++config RING_DEVICES_FAST_ADV_S
++	int "Seconds of fast advertising (100 ms) after a drop or a switch"
++	default 30
++	depends on RING_DEVICES
++	help
++	  After that the ring advertises every 1,000 ms (FW 7.3). The pairing
++	  window always advertises every 100 ms.
+##### changed: modules/ring_devices/include/ring_devices/rdev.h
+--- base/modules/ring_devices/include/ring_devices/rdev.h
++++ modules/ring_devices/include/ring_devices/rdev.h
+@@ -84,2 +84,8 @@
+ 
++/* Ship mode step 1 (design/firmware.md l.937, "close ... radio"; added in step 6 fix round 1, review finding R6-02):
++ * stop this part's advertising, end the link, and never advertise again until the next boot. Other advertising (the
++ * factory ship beacon) is not touched. 0, or the error of bt_conn_disconnect(). Any thread; does not wait for the
++ * link to end. */
++int rdev_stop(void);
++
+ #define RDEV_PAIR_WINDOW_MS 60000   /* FW 7.4: SCR_PAIR open for 60 s */
+##### new: modules/ring_devices/include/ring_devices/rdev_logic.h
+--- base/modules/ring_devices/include/ring_devices/rdev_logic.h
++++ modules/ring_devices/include/ring_devices/rdev_logic.h
+@@ -0,0 +1,97 @@
++/*
++ * Ring devices: the device list and the switch decision. Pure logic: no
++ * kernel, driver or Bluetooth call; runs on native_sim with no radio.
++ *
++ * Three slots. Slot n is local Bluetooth identity n of the ring (one identity
++ * per paired device, as nRF Desktop does: ble_bond.rst lines 48, 54, 57-58).
++ * A slot is paired when a bond exists for its identity; the Bluetooth part
++ * tells this module which slots are paired.
++ */
++#ifndef RING_DEVICES_RDEV_LOGIC_H
++#define RING_DEVICES_RDEV_LOGIC_H
++
++#include <stdbool.h>
++#include <stdint.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#define RDEV_SLOTS 3
++#define RDEV_NONE  0xFF   /* no slot */
++#define RDEV_ANY   0xFE   /* a request for any free slot */
++
++struct rdev_list {
++	uint8_t paired;  /* bit n set: slot n holds a pairing */
++	uint8_t active;  /* the active slot, or RDEV_NONE */
++};
++
++void rdev_list_init(struct rdev_list *l);
++bool rdev_list_is_paired(const struct rdev_list *l, uint8_t slot);
++uint8_t rdev_list_count(const struct rdev_list *l);
++/* The lowest empty slot, or RDEV_NONE when all three hold a pairing. */
++uint8_t rdev_list_free_slot(const struct rdev_list *l);
++
++/* Slot to use for a new pairing: requested is a slot number or RDEV_ANY.
++ * Returns the slot, or a negative errno: -EINVAL out of range, -EEXIST the
++ * requested slot is paired (remove it first), -ENOSPC no free slot. */
++int rdev_list_choose_pair_slot(const struct rdev_list *l, uint8_t requested);
++
++/* A new pairing was made in the slot: it is paired; it becomes active only when no slot is active.
++ * -EINVAL out of range, -EEXIST already paired. */
++int rdev_list_add(struct rdev_list *l, uint8_t slot);
++
++/* The pairing of the slot was removed. When it was the active one, the next
++ * paired slot after it (in slot order, wrapping) becomes active, or none.
++ * -EINVAL out of range, -ENOENT not paired. */
++int rdev_list_remove(struct rdev_list *l, uint8_t slot);
++
++/* The paired slot after from, wrapping, other than from; RDEV_NONE if none. */
++uint8_t rdev_list_next(const struct rdev_list *l, uint8_t from);
++
++enum rdev_switch {
++	RDEV_SWITCH_NOP,           /* the target is already active */
++	RDEV_SWITCH_GO,            /* make the target active */
++	RDEV_SWITCH_REFUSE_RANGE,  /* no such slot */
++	RDEV_SWITCH_REFUSE_EMPTY,  /* the slot holds no pairing */
++};
++enum rdev_switch rdev_list_decide_switch(const struct rdev_list *l, uint8_t target);
++/* Make target active. Returns the decision taken. */
++enum rdev_switch rdev_list_switch(struct rdev_list *l, uint8_t target);
++
++/* What the Bluetooth part has to do now. */
++struct rdev_state {
++	uint8_t active;       /* active slot or RDEV_NONE */
++	bool window;          /* the pairing window is open */
++	uint8_t window_slot;  /* the slot being paired, valid while window */
++	uint8_t link_slot;    /* the identity of the current link, or RDEV_NONE when no link */
++};
++
++enum rdev_step {
++	RDEV_STEP_IDLE,        /* no link, nothing to advertise */
++	RDEV_STEP_STAY,        /* the link is the right one: keep it, no advertising */
++	RDEV_STEP_DISCONNECT,  /* the link is the wrong one: end it (then ask again) */
++	RDEV_STEP_ADVERTISE,   /* no link: advertise with identity slot */
++};
++
++struct rdev_plan {
++	uint8_t step;   /* enum rdev_step */
++	uint8_t slot;   /* RDEV_STEP_ADVERTISE: the identity to advertise with */
++	bool open;      /* RDEV_STEP_ADVERTISE: open to any device (pairing window) */
++};
++
++/* The target is the window slot while the window is open, else the active slot. */
++struct rdev_plan rdev_plan_next(const struct rdev_state *s);
++
++/* May a key go over this link? Only when the link is encrypted with an authenticated key and
++ * belongs to the active device: between a switch and the new link the old device's link is
++ * still up and must get nothing. */
++bool rdev_link_usable(uint8_t link_slot, bool secure, uint8_t active);
++
++const char *rdev_step_name(enum rdev_step s);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
+##### changed: modules/ring_devices/src/rdev.c
+--- base/modules/ring_devices/src/rdev.c
++++ modules/ring_devices/src/rdev.c
+@@ -45,2 +45,3 @@
+ static bool inited;
++static bool stopped;   /* rdev_stop() (ship mode step 1): no advertising and no link from now on */
+ static bool adv_on;
+@@ -192,2 +193,7 @@
+ 	k_mutex_lock(&lk, K_FOREVER);
++	if (stopped) {
++		adv_stop();
++		k_mutex_unlock(&lk);
++		return;
++	}
+ 	st.active = list.active;
+@@ -491,2 +497,20 @@
+ 
++/* Step 6 fix round 1 (review finding R6-02, FW l.937 "close ... radio"): ship mode step 1. Advertising stops, the link
++ * is ended, and nothing advertises again (update_fn returns at once). Advertising of another part (the factory ship
++ * beacon of ruling R20, rhw_beacon) is not touched: adv_stop() acts only on this part's own advertising. */
++int rdev_stop(void)
++{
++	int err = 0;
++
++	k_mutex_lock(&lk, K_FOREVER);
++	stopped = true;
++	adv_stop();
++	if (cur_conn != NULL && !disconnecting) {
++		err = bt_conn_disconnect(cur_conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
++		disconnecting = (err == 0);
++	}
++	k_mutex_unlock(&lk);
++	return err;
++}
++
+ int rdev_init(const struct rdev_callbacks *callbacks)
+##### new: modules/ring_devices/src/rdev_logic.c
+--- base/modules/ring_devices/src/rdev_logic.c
++++ modules/ring_devices/src/rdev_logic.c
+@@ -0,0 +1,159 @@
++/* Ring devices: pure logic (device list, switch decision, plan). */
++
++#include <errno.h>
++
++#include <ring_devices/rdev_logic.h>
++
++void rdev_list_init(struct rdev_list *l)
++{
++	l->paired = 0;
++	l->active = RDEV_NONE;
++}
++
++bool rdev_list_is_paired(const struct rdev_list *l, uint8_t slot)
++{
++	return slot < RDEV_SLOTS && (l->paired & (1U << slot)) != 0;
++}
++
++uint8_t rdev_list_count(const struct rdev_list *l)
++{
++	uint8_t n = 0;
++
++	for (uint8_t i = 0; i < RDEV_SLOTS; i++) {
++		n += rdev_list_is_paired(l, i) ? 1 : 0;
++	}
++	return n;
++}
++
++uint8_t rdev_list_free_slot(const struct rdev_list *l)
++{
++	for (uint8_t i = 0; i < RDEV_SLOTS; i++) {
++		if (!rdev_list_is_paired(l, i)) {
++			return i;
++		}
++	}
++	return RDEV_NONE;
++}
++
++int rdev_list_choose_pair_slot(const struct rdev_list *l, uint8_t requested)
++{
++	if (requested == RDEV_ANY) {
++		uint8_t s = rdev_list_free_slot(l);
++
++		return s == RDEV_NONE ? -ENOSPC : (int)s;
++	}
++	if (requested >= RDEV_SLOTS) {
++		return -EINVAL;
++	}
++	if (rdev_list_is_paired(l, requested)) {
++		return -EEXIST;
++	}
++	return requested;
++}
++
++int rdev_list_add(struct rdev_list *l, uint8_t slot)
++{
++	if (slot >= RDEV_SLOTS) {
++		return -EINVAL;
++	}
++	if (rdev_list_is_paired(l, slot)) {
++		return -EEXIST;
++	}
++	l->paired |= (uint8_t)(1U << slot);
++	/* the new device becomes the active one only when no device is active (design/firmware.md 3.4, 7.4) */
++	if (l->active == RDEV_NONE) {
++		l->active = slot;
++	}
++	return 0;
++}
++
++uint8_t rdev_list_next(const struct rdev_list *l, uint8_t from)
++{
++	for (uint8_t k = 1; k <= RDEV_SLOTS; k++) {
++		uint8_t s = (uint8_t)((from + k) % RDEV_SLOTS);
++
++		if (s != from && rdev_list_is_paired(l, s)) {
++			return s;
++		}
++	}
++	return RDEV_NONE;
++}
++
++int rdev_list_remove(struct rdev_list *l, uint8_t slot)
++{
++	if (slot >= RDEV_SLOTS) {
++		return -EINVAL;
++	}
++	if (!rdev_list_is_paired(l, slot)) {
++		return -ENOENT;
++	}
++	l->paired &= (uint8_t)~(1U << slot);
++	if (l->active == slot) {
++		l->active = rdev_list_next(l, slot);
++	}
++	return 0;
++}
++
++enum rdev_switch rdev_list_decide_switch(const struct rdev_list *l, uint8_t target)
++{
++	if (target >= RDEV_SLOTS) {
++		return RDEV_SWITCH_REFUSE_RANGE;
++	}
++	if (!rdev_list_is_paired(l, target)) {
++		return RDEV_SWITCH_REFUSE_EMPTY;
++	}
++	if (l->active == target) {
++		return RDEV_SWITCH_NOP;
++	}
++	return RDEV_SWITCH_GO;
++}
++
++enum rdev_switch rdev_list_switch(struct rdev_list *l, uint8_t target)
++{
++	enum rdev_switch d = rdev_list_decide_switch(l, target);
++
++	if (d == RDEV_SWITCH_GO) {
++		l->active = target;
++	}
++	return d;
++}
++
++struct rdev_plan rdev_plan_next(const struct rdev_state *s)
++{
++	struct rdev_plan p = { RDEV_STEP_IDLE, RDEV_NONE, false };
++	uint8_t target = s->window ? s->window_slot : s->active;
++
++	if (target >= RDEV_SLOTS) {
++		/* nothing to be connected to: end any link */
++		p.step = s->link_slot != RDEV_NONE ? RDEV_STEP_DISCONNECT : RDEV_STEP_IDLE;
++		return p;
++	}
++	if (s->link_slot != RDEV_NONE) {
++		p.step = s->link_slot == target ? RDEV_STEP_STAY : RDEV_STEP_DISCONNECT;
++		return p;
++	}
++	p.step = RDEV_STEP_ADVERTISE;
++	p.slot = target;
++	p.open = s->window;
++	return p;
++}
++
++const char *rdev_step_name(enum rdev_step s)
++{
++	switch (s) {
++	case RDEV_STEP_IDLE:
++		return "idle";
++	case RDEV_STEP_STAY:
++		return "stay";
++	case RDEV_STEP_DISCONNECT:
++		return "disconnect";
++	case RDEV_STEP_ADVERTISE:
++		return "advertise";
++	}
++	return "?";
++}
++
++bool rdev_link_usable(uint8_t link_slot, bool secure, uint8_t active)
++{
++	return secure && link_slot != RDEV_NONE && link_slot == active;
++}
+##### new: modules/ring_devices/zephyr/module.yml
+--- base/modules/ring_devices/zephyr/module.yml
++++ modules/ring_devices/zephyr/module.yml
+@@ -0,0 +1,4 @@
++name: ring_devices
++build:
++  cmake: .
++  kconfig: Kconfig
+##### changed: modules/ring_motor/src/rmo.c
+--- base/modules/ring_motor/src/rmo.c
++++ modules/ring_motor/src/rmo.c
+@@ -94,2 +94,5 @@
+ 
++#ifdef CONFIG_RING_RHW_SIM
++/* simulation only (rhw_sim_reboot); guarded so that the development kit build has no unused function (step 6 fix round 1,
++ * finding F2 of the units) */
+ static void reboot_hook(void)
+@@ -108,2 +111,3 @@
+ }
++#endif
+ 
+##### changed: modules/ring_recorder/src/rrec.c
+--- base/modules/ring_recorder/src/rrec.c
++++ modules/ring_recorder/src/rrec.c
+@@ -27,2 +27,5 @@
+ #endif
++#if defined(CONFIG_RING_DEVICES)
++#include <ring_devices/rdev.h>
++#endif
+ #if defined(CONFIG_RING_RHW_SIM)
+@@ -37,2 +40,8 @@
+ #define FINISH_WAIT_MS 5000  /* rxf_finish: the command that runs may take this long (FW l.178 gives no number) */
++/* Ship mode (review finding R6-01): the wearer feels the whole M2 of FW l.151 before the motor is stopped. M2 is "80 on,
++ * 120 off, 80 on", 280 ms in all (FW l.323; the segments are the comment of RREC_PAT_M2 in rrec_spec.h, which holds no
++ * number for the total); the join waits for rmo_playing() to end, at most these 280 ms plus a margin of 100 ms for the
++ * timer and the threads (the margin is the join's choice). */
++#define SHIP_M2_MS        280
++#define SHIP_M2_MARGIN_MS 100
+ 
+@@ -264,9 +273,63 @@
+ 
+-/* ------------------------------------------------------------------ ship mode step 1 (FW l.937) */
+-static void ship_mode(void)
+-{
+-	rmo_stop();                              /* no motor while the chip is cut */
+-	if (rst_mounted()) {
+-		(void)rst_unmount();             /* storage closed (the queued log records are written first) */
+-	}
++/* ------------------------------------------------------------------ VDD_SD off (FW l.178, l.179, l.912 to l.920) */
++/* Through the unmount that waits for a store call running on another thread (a transfer command, review finding R6-03),
++ * bounded by FINISH_WAIT_MS. The result is never dropped: a failed unmount (the call did not end in time) is written to
++ * the event log and tried again on the recorder's thread (RREC_JOB_UNMOUNT) until it succeeds. */
++static int unmount_now(void)
++{
++	uint8_t args[4];
++	int r;
++
++	if (!rst_mounted()) {
++		return 0;
++	}
++	r = rst_unmount_wait(FINISH_WAIT_MS);
++	if (r == -EBUSY) {
++		sys_put_le32((uint32_t)r, args);
++		rrec_log(RREC_LOG_STORAGE_RETRY, args, sizeof(args));
++		(void)rrec_post(RREC_JOB_UNMOUNT, 0);
++	}
++	return r;
++}
++
++/* ------------------------------------------------------------------ ship mode (FW 8.4, l.936 to l.941) */
++#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
++static void (*ship_hook)(void);
++static uint32_t radio_stops;
++static int radio_stop_rc;
++
++void rrec_test_set_ship_hook(void (*fn)(void))
++{
++	ship_hook = fn;
++}
++
++uint32_t rrec_test_radio_stops(void)
++{
++	return radio_stops;
++}
++
++int rrec_test_radio_stop_rc(void)
++{
++	return radio_stop_rc;
++}
++#endif
++
++/* The recorder's thread, after the step that asked for ship mode ended (RREC_JOB_SHIP): the screens were told the new
++ * state (SHIP or OFF) in that step, the menu's power off no longer holds the screens thread (R6-10). */
++void rrec_ship_now(void)
++{
++	int64_t end = rhw_clock()->now_ms() + SHIP_M2_MS + SHIP_M2_MARGIN_MS;
++	int r;
++
++	/* the M2 of FW l.151 is felt whole (R6-01), then no motor while the chip is cut */
++	while (rmo_playing() && rhw_clock()->now_ms() < end) {
++		k_sleep(K_MSEC(5));
++	}
++	rmo_stop();
++	/* step 1 (FW l.937, R6-02): close everything: recording, storage, USB, radio, screen */
++	if (rrec_st.recording) {
++		(void)rrec_close(rhw_clock()->now_ms());   /* the rows close it before; kept as the last guard */
++	}
++	(void)unmount_now();                     /* storage closed (the queued log records are written first) */
++	(void)rxf_stop(FINISH_WAIT_MS);          /* USB: the command aborted, the stack disabled */
+ 	if (rrec_st.usb_hfxo) {
+@@ -275,2 +338,19 @@
+ 	}
++#if defined(CONFIG_RING_DEVICES)
++	r = rdev_stop();                         /* radio: this part's advertising and link; the ship beacon (R20) stays */
++#else
++	r = 0;
++#endif
++#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
++	radio_stops++;
++	radio_stop_rc = r;
++#else
++	ARG_UNUSED(r);
++#endif
++	rscr_sync();                             /* screen: the screens thread drew SCR_OFF (panel off) for SHIP or OFF */
++#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
++	if (ship_hook != NULL) {
++		ship_hook();
++	}
++#endif
+ #if defined(CONFIG_RING_FACTORY)
+@@ -282,2 +362,14 @@
+ 
++/* the recorder's thread: a failed unmount tried again (RREC_JOB_UNMOUNT) while the state still wants VDD_SD off */
++void rrec_unmount_retry(void)
++{
++	enum rc_state s = rrec_core_state();
++
++	if (s == RC_ST_RECOVERY || s == RC_ST_RECORDING || s == RC_ST_TRANSFER || s == RC_ST_BOOT ||
++	    s == RC_ST_FACTORY_TEST) {
++		return;   /* the state wants the card (or runs its own sequence): nothing to retry */
++	}
++	(void)unmount_now();
++}
++
+ static void play(enum rrec_pattern p)
+@@ -328,5 +420,3 @@
+ 	case RC_ACT_SD_OFF:
+-		if (rst_mounted()) {
+-			(void)rst_unmount();
+-		}
++		(void)unmount_now();             /* FW l.178, l.179: the result is kept (R6-03) */
+ 		break;
+@@ -338,3 +428,3 @@
+ 	case RC_ACT_SHIP_MODE:
+-		ship_mode();
++		rrec_st.ship_pending = true;     /* on the recorder's thread after this step (rrec_glue_after) */
+ 		break;
+@@ -382,3 +472,6 @@
+ 	case RC_ACT_ABORT_COMMAND:
++		/* FW l.179: abort the command, then wait for it to end (bounded as rxf_finish) so that VDD_SD goes off in this
++		 * step (R6-03) */
+ 		rxf_abort();
++		(void)rxf_finish(FINISH_WAIT_MS);
+ 		break;
+@@ -403,6 +496,24 @@
+ 
++/* HFXO held by the join per FW 8.2 (review finding R6-04): on in BOOT and RECOVERY (l.915), CHARGING "when USB runs"
++ * (l.918: VBUS is present in CHARGING), TRANSFER (l.919), FACTORY_TEST (driven over USB); RECORDING's is the audio
++ * part's (rau_prepare); STANDBY and the error states "when the radio runs" (the radio's own request) */
++static bool hfxo_wanted(enum rc_state s)
++{
++	return s == RC_ST_BOOT || s == RC_ST_RECOVERY || s == RC_ST_CHARGING || s == RC_ST_TRANSFER || s == RC_ST_FACTORY_TEST;
++}
++
++void rrec_hfxo_follow_state(enum rc_state s)
++{
++	bool want = hfxo_wanted(s);
++
++	if (want && !rrec_st.usb_hfxo) {
++		rrec_st.usb_hfxo = rhw_hfxo()->request(usb_hfxo_running) == 0;
++	} else if (!want && rrec_st.usb_hfxo) {
++		(void)rhw_hfxo()->release();
++		rrec_st.usb_hfxo = false;
++	}
++}
++
+ static void rails_follow_state(enum rc_state s)
+ {
+-	bool usb = s == RC_ST_CHARGING || s == RC_ST_TRANSFER || s == RC_ST_FACTORY_TEST;
+-
+ 	if (s != RC_ST_BOOT && s != RC_ST_FACTORY_TEST) {
+@@ -411,3 +522,3 @@
+ 		} else if (rst_mounted()) {
+-			(void)rst_unmount();
++			(void)unmount_now();
+ 		}
+@@ -415,3 +526,3 @@
+ 	/* VDD_MIC only in RECORDING (FW l.112): never needed when the actions ran as written; kept as the last guard */
+-	if (s != RC_ST_RECORDING && !rrec_st.test_recording && rhw_pmic()->rail_get(RHW_RAIL_MIC)) {
++	if (s != RC_ST_RECORDING && atomic_get(&rrec_st.test_recording) == 0 && rhw_pmic()->rail_get(RHW_RAIL_MIC)) {
+ 		if (rau_capturing()) {
+@@ -424,9 +535,3 @@
+ 	}
+-	/* HFXO with USB (FW l.917, l.918): CHARGING with VBUS, TRANSFER (and FACTORY_TEST, driven over USB) */
+-	if (usb && !rrec_st.usb_hfxo) {
+-		rrec_st.usb_hfxo = rhw_hfxo()->request(usb_hfxo_running) == 0;
+-	} else if (!usb && rrec_st.usb_hfxo) {
+-		(void)rhw_hfxo()->release();
+-		rrec_st.usb_hfxo = false;
+-	}
++	rrec_hfxo_follow_state(s);   /* FW 8.2, for the state that follows */
+ }
+@@ -489,2 +594,3 @@
+ 	enum rc_state prev = (enum rc_state)rrec_st.core_state;
++	bool on;
+ 
+@@ -515,3 +621,3 @@
+ 	}
+-	rpw_state(rrec_st.test_recording ? RC_ST_RECORDING : state);   /* ruling 8 of the root unit's notes */
++	rpw_state(atomic_get(&rrec_st.test_recording) != 0 ? RC_ST_RECORDING : state);   /* ruling 8 of the root unit's notes */
+ 	rails_follow_state(state);
+@@ -524,3 +630,9 @@
+ 	}
+-	return rscr_glue_after(a, last_event, state, t);
++	on = rscr_glue_after(a, last_event, state, t);
++	if (rrec_st.ship_pending) {
++		/* ship mode after the screens learned SHIP or OFF (the screen closes, R6-02), on the recorder's thread (R6-10) */
++		rrec_st.ship_pending = false;
++		(void)rrec_post(RREC_JOB_SHIP, 0);
++	}
++	return on;
+ }
+@@ -587,3 +699,3 @@
+ 	tr_block = on_block;
+-	rrec_st.test_recording = true;
++	atomic_set(&rrec_st.test_recording, 1);
+ 	rsy_recording(true);
+@@ -632,3 +744,3 @@
+ 	tr_block = NULL;
+-	rrec_st.test_recording = false;
++	atomic_set(&rrec_st.test_recording, 0);
+ 	rsy_recording(false);
+##### changed: modules/ring_recorder/src/rrec_boot.c
+--- base/modules/ring_recorder/src/rrec_boot.c
++++ modules/ring_recorder/src/rrec_boot.c
+@@ -51,2 +51,3 @@
+ 	rrec_st.core_state = RC_ST_BOOT;
++	rrec_hfxo_follow_state(RC_ST_BOOT);               /* FW l.915: HFXO on in BOOT (review finding R6-04) */
+ 	rrec_bridge_start();
+##### changed: modules/ring_recorder/src/rrec_bridge.c
+--- base/modules/ring_recorder/src/rrec_bridge.c
++++ modules/ring_recorder/src/rrec_bridge.c
+@@ -39,2 +39,32 @@
+ 
++/* Review finding R6-08: a job of these kinds that does not fit the queue is kept as one latched bit per kind and queued
++ * when the queue has room again (after each job of the recorder's thread). No event is lost and none is doubled: a
++ * second one of the same kind while its bit is set is the same fact. */
++enum latch_bit {
++	LB_VBUS_OUT = 0,
++	LB_CHUNK_WRITE_FAILED,
++	LB_MIC_NO_BLOCK,
++	LB_SHIP,
++	LB_UNMOUNT,
++	LB_COUNT,
++};
++static const struct job latch_job[LB_COUNT] = {
++	[LB_VBUS_OUT] = { .kind = RREC_JOB_EVENT, .arg = RC_EV_VBUS_OUT },
++	[LB_CHUNK_WRITE_FAILED] = { .kind = RREC_JOB_EVENT, .arg = RC_EV_CHUNK_WRITE_FAILED },
++	[LB_MIC_NO_BLOCK] = { .kind = RREC_JOB_EVENT, .arg = RC_EV_MIC_NO_BLOCK },
++	[LB_SHIP] = { .kind = RREC_JOB_SHIP, .arg = 0 },
++	[LB_UNMOUNT] = { .kind = RREC_JOB_UNMOUNT, .arg = 0 },
++};
++static atomic_t latched;
++
++static int latch_of(const struct job *j)
++{
++	for (int b = 0; b < LB_COUNT; b++) {
++		if (latch_job[b].kind == j->kind && latch_job[b].arg == j->arg) {
++			return b;
++		}
++	}
++	return -1;
++}
++
+ int rrec_post(enum rrec_job kind, uint32_t arg)
+@@ -43,2 +73,3 @@
+ 	int r;
++	int b;
+ 
+@@ -47,2 +78,7 @@
+ 	if (r != 0) {
++		b = latch_of(&j);
++		if (b >= 0) {
++			/* kept: counted as done here, posted again from the latch (rrec_idle waits for the latch too) */
++			(void)atomic_or(&latched, BIT(b));
++		}
+ 		(void)atomic_inc(&done);   /* not queued: counted as done so a waiting test does not hang */
+@@ -50,2 +86,18 @@
+ 	return r;
++}
++
++/* the recorder's thread: queue every latched job for which the queue has room now */
++static void latch_flush(void)
++{
++	for (int b = 0; b < LB_COUNT; b++) {
++		if ((atomic_get(&latched) & BIT(b)) == 0) {
++			continue;
++		}
++		(void)atomic_inc(&posted);
++		if (k_msgq_put(&job_q, &latch_job[b], K_NO_WAIT) == 0) {
++			(void)atomic_and(&latched, ~BIT(b));
++		} else {
++			(void)atomic_inc(&done);   /* still no room: the bit stays */
++		}
++	}
+ }
+@@ -55,3 +107,3 @@
+ {
+-	return atomic_get(&posted) == atomic_get(&done);
++	return atomic_get(&posted) == atomic_get(&done) && atomic_get(&latched) == 0;
+ }
+@@ -105,6 +157,10 @@
+ 
+-	r = rst_mounted() ? 0 : rst_mount(false, &mi);
+-	if (r == 0 && rst_mounted()) {
+-		rrec_st.fact_open = mi.open_flag;
+-		rrec_st.fact_open_pending = true;
++	if (rst_mounted()) {
++		r = 0;   /* already mounted: the open flag fact keeps its value (no mount info was read, R6-09) */
++	} else {
++		r = rst_mount(false, &mi);
++		if (r == 0) {
++			rrec_st.fact_open = mi.open_flag;
++			rrec_st.fact_open_pending = true;
++		}
+ 	}
+@@ -123,3 +179,5 @@
+ 	for (;;) {
+-		if (k_msgq_get(&job_q, &j, K_FOREVER) != 0) {
++		/* 100 ms at most between two looks at the latch: a bit set while this thread waited is queued then (R6-08) */
++		if (k_msgq_get(&job_q, &j, K_MSEC(100)) != 0) {
++			latch_flush();
+ 			continue;
+@@ -139,2 +197,8 @@
+ 			break;
++		case RREC_JOB_SHIP:
++			rrec_ship_now();
++			break;
++		case RREC_JOB_UNMOUNT:
++			rrec_unmount_retry();
++			break;
+ 		default:
+@@ -143,2 +207,3 @@
+ 		(void)atomic_inc(&done);
++		latch_flush();
+ 	}
+@@ -282,3 +347,3 @@
+ 	rrec_log(RREC_LOG_FAULT_MIC, args, sizeof(args));
+-	if (!rrec_st.test_recording) {
++	if (atomic_get(&rrec_st.test_recording) == 0) {
+ 		(void)rrec_post(RREC_JOB_EVENT, RC_EV_MIC_NO_BLOCK);   /* FW l.169 */
+##### changed: modules/ring_recorder/src/rrec_int.h
+--- base/modules/ring_recorder/src/rrec_int.h
++++ modules/ring_recorder/src/rrec_int.h
+@@ -11,2 +11,4 @@
+ #include <stdint.h>
++
++#include <zephyr/sys/atomic.h>
+ 
+@@ -45,3 +47,9 @@
+ 	RREC_JOB_RETRY,          /* RC_ACT_RETRY_STORAGE: the storage init, then RETRY_OK or RETRY_FAILED (ruling R3) */
++	RREC_JOB_SHIP,           /* RC_ACT_SHIP_MODE, after the step that asked for it: ship mode steps 1 to 5 (FW 8.4) on
++	                          * the recorder's thread (rpw.h: "Join's thread"; review findings R6-01, R6-02, R6-10) */
++	RREC_JOB_UNMOUNT,        /* a failed unmount tried again (review finding R6-03) */
+ };
++/* 0 when queued. A job that does not fit the queue: an event of the kinds VBUS_OUT, CHUNK_WRITE_FAILED and MIC_NO_BLOCK,
++ * and the jobs SHIP and UNMOUNT, are kept as one latched bit per kind and queued when the queue has room again (review
++ * finding R6-08); any other job is dropped (-ENOMSG). */
+ int rrec_post(enum rrec_job job, uint32_t arg);
+@@ -71,3 +79,3 @@
+ 	bool recording;          /* a recording of type 1 is open (OPEN done, CLOSE not yet) */
+-	bool test_recording;     /* a factory test recording runs (transfer thread; atomic flag) */
++	atomic_t test_recording; /* a factory test recording runs: 1 (written on the transfer thread, read on others) */
+ 	uint32_t rec_id;         /* the open recording */
+@@ -75,3 +83,5 @@
+ 	bool reboot_pending;     /* RC_ACT_REBOOT seen in this step: reboot in after, reason from the step's event */
+-	bool usb_hfxo;           /* the join holds HFXO for USB (CHARGING with VBUS, TRANSFER; FW l.912 to l.920) */
++	bool usb_hfxo;           /* the join holds HFXO per FW 8.2 (l.915 BOOT and RECOVERY, l.918 CHARGING with USB, l.919
++	                          * TRANSFER; FACTORY_TEST, driven over USB); RECORDING's is the audio part's own */
++	bool ship_pending;       /* RC_ACT_SHIP_MODE seen in this step: the ship job is posted after the screens were told */
+ 	uint8_t chg_err_reason;  /* the last charge error (RC_ACT_LOG_CHARGE_ERROR) */
+@@ -106,2 +116,9 @@
+ void rrec_feed_test_blocks(const struct rst_chunk *c);
++/* rrec.c, the recorder's thread: ship mode (RREC_JOB_SHIP): wait for M2 to end (bounded), step 1 (recording, storage,
++ * USB, radio, screen closed), then rpw_ship() for steps 2 to 5 (FW 8.4). */
++void rrec_ship_now(void);
++/* rrec.c, the recorder's thread: a failed unmount tried again (RREC_JOB_UNMOUNT). */
++void rrec_unmount_retry(void);
++/* rrec.c: HFXO requested or released as FW 8.2 says for state s (also at the start of the boot sequence). */
++void rrec_hfxo_follow_state(enum rc_state s);
+ #if defined(CONFIG_RING_RHW_SIM)
+@@ -126,4 +143,9 @@
+ void rrec_tap_clear(void);
+-/* true when the recorder's thread has no job queued and none running. */
++/* true when the recorder's thread has no job queued, none running and none latched. */
+ bool rrec_idle(void);
++/* Called on the recorder's thread at the end of ship mode step 1, right before rpw_ship() (SHPHLDCONFIG); NULL clears. */
++void rrec_test_set_ship_hook(void (*fn)(void));
++/* rdev_stop() calls made by ship mode step 1 since boot (the radio, FW l.937), and the last one's answer */
++uint32_t rrec_test_radio_stops(void);
++int rrec_test_radio_stop_rc(void);
+ #endif
+##### new: modules/ring_store/CMakeLists.txt
+--- base/modules/ring_store/CMakeLists.txt
++++ modules/ring_store/CMakeLists.txt
+@@ -0,0 +1,8 @@
++# Ring recorder storage (software step 6, unit U2). The pure files make no kernel call; rst.c is the thin part; the
++# real-driver file is built only where the simulated drivers are off (development kit build) and is not proven.
++if(CONFIG_RING_STORE)
++  zephyr_library_named(ring_store)
++  zephyr_include_directories(include)
++  zephyr_library_sources(src/rst_fmt.c src/rst_layout.c src/rst_log.c src/rst.c)
++  zephyr_library_sources_ifndef(CONFIG_RING_RHW_SIM src/rst_hw_real.c)
++endif()
+##### new: modules/ring_store/Kconfig
+--- base/modules/ring_store/Kconfig
++++ modules/ring_store/Kconfig
+@@ -0,0 +1,21 @@
++config RING_STORE
++	bool "Ring recorder storage: raw append-only log on the card (software step 6, unit U2)"
++	depends on RING_RHW
++	select CRC
++	help
++	  The recording store of design/firmware.md section 5: superblock, index records, event log records and chunks
++	  with CRC-32, the recovery scan, free space and deletion after a confirmed transfer. The pure files
++	  (rst_fmt.c, rst_layout.c, rst_log.c) make no kernel call; rst.c reaches the card, the storage bus and the
++	  VDD_SD rail only through ring_rhw.
++
++if RING_STORE
++
++config RING_STORE_STACK_SIZE
++	int "Stack of the storage thread (bytes)"
++	default 4096
++
++config RING_STORE_THREAD_PRIORITY
++	int "Priority of the storage thread"
++	default 5
++
++endif
+##### changed: modules/ring_store/include/ring_store/rst.h
+--- base/modules/ring_store/include/ring_store/rst.h
++++ modules/ring_store/include/ring_store/rst.h
+@@ -142,2 +142,8 @@
+ 
++/* As rst_unmount, but a store call running on another thread is waited for, up to timeout_ms (added in step 6 fix
++ * round 1, review finding R6-03: VDD_SD off after an aborted or finished transfer command, FW l.178, l.179). 0, -EIO
++ * (the rail goes off anyway), -EBUSY when the running call did not end within timeout_ms (nothing changed).
++ * Blocks up to timeout_ms plus the unmount's own time. */
++int rst_unmount_wait(int32_t timeout_ms);
++
+ /* true between a successful rst_mount and rst_unmount. Does not block. */
+##### changed: modules/ring_store/src/rst.c
+--- base/modules/ring_store/src/rst.c
++++ modules/ring_store/src/rst.c
+@@ -466,3 +466,4 @@
+ 
+-int rst_unmount(void)
++/* the body of rst_unmount and rst_unmount_wait, with op_lock held by the caller */
++static int unmount_locked(void)
+ {
+@@ -470,5 +471,2 @@
+ 
+-	if (!op_take()) {
+-		return -EBUSY;
+-	}
+ 	if (!S.mounted) {
+@@ -495,2 +493,20 @@
+ 	return r;
++}
++
++int rst_unmount(void)
++{
++	if (!op_take()) {
++		return -EBUSY;
++	}
++	return unmount_locked();
++}
++
++/* Step 6 fix round 1 (review finding R6-03): the unmount that waits up to timeout_ms for the store call that runs on
++ * another thread (op_lock taken with a timeout instead of K_NO_WAIT), then the same body as rst_unmount. */
++int rst_unmount_wait(int32_t timeout_ms)
++{
++	if (k_mutex_lock(&op_lock, K_MSEC(MAX(timeout_ms, 0))) != 0) {
++		return -EBUSY;
++	}
++	return unmount_locked();
+ }
+##### new: modules/ring_store/src/rst_fmt.c
+--- base/modules/ring_store/src/rst_fmt.c
++++ modules/ring_store/src/rst_fmt.c
+@@ -0,0 +1,324 @@
++/*
++ * rst_fmt.c: the byte formats of the storage part (pure: stdint, stdbool, string, errno constants and the CRC-32 of
++ * Zephyr's C library only). Chunk header FW l.537 to l.580, superblock l.587 to l.610, index record l.612 to l.634,
++ * event log record l.1062. Written for this project.
++ */
++#include <errno.h>
++#include <string.h>
++
++#include <zephyr/sys/crc.h>
++
++#include "rst_fmt.h"
++
++uint32_t rst_fmt_crc32(const uint8_t *data, size_t len)
++{
++	return crc32_ieee(data, len);
++}
++
++uint32_t rst_fmt_digest_add(uint32_t state, uint32_t payload_crc)
++{
++	uint8_t w[sizeof(uint32_t)];
++
++	rst_put32(w, payload_crc);
++	return crc32_ieee_update(state, w, sizeof(w));
++}
++
++/* ------------------------------------------------------------------ superblock */
++
++void rst_fmt_sb_encode(const struct rst_sb *s, uint8_t *out)
++{
++	memset(out, 0, RREC_SECTOR_BYTES);
++	rst_put32(out + RREC_SB_OFF_MAGIC, RREC_SB_MAGIC);
++	rst_put16(out + RREC_SB_OFF_VERSION, RREC_SB_VERSION);
++	rst_put16(out + RREC_SB_OFF_SIZE, RREC_SECTOR_BYTES);
++	rst_put32(out + RREC_SB_OFF_SB_SEQ, s->sb_seq);
++	rst_put32(out + RREC_SB_OFF_CARD_SECTORS, s->card_sectors);
++	rst_put32(out + RREC_SB_OFF_CHUNK_FIRST_LBA, s->chunk_first_lba);
++	rst_put32(out + RREC_SB_OFF_CHUNK_COUNT_TOTAL, s->chunk_count_total);
++	rst_put32(out + RREC_SB_OFF_HEAD_CHUNK_SEQ, s->head_chunk_seq);
++	rst_put32(out + RREC_SB_OFF_TAIL_CHUNK_SEQ, s->tail_chunk_seq);
++	rst_put32(out + RREC_SB_OFF_NEXT_RECORDING_ID, s->next_recording_id);
++	rst_put32(out + RREC_SB_OFF_INDEX_HEAD, s->index_head);
++	rst_put32(out + RREC_SB_OFF_INDEX_TAIL, s->index_tail);
++	out[RREC_SB_OFF_OPEN_FLAG] = s->open_flag;
++	rst_put32(out + RREC_SB_OFF_OPEN_RECORDING_ID, s->open_recording_id);
++	rst_put32(out + RREC_SB_OFF_OPEN_FIRST_CHUNK, s->open_first_chunk_seq);
++	rst_put32(out + RREC_SB_OFF_BOOT_COUNT, s->boot_count);
++	rst_put32(out + RREC_SB_OFF_LOG_HEAD, s->log_head);
++	rst_put32(out + RREC_SB_OFF_CRC, crc32_ieee(out, RREC_SB_OFF_CRC));
++}
++
++int rst_fmt_sb_decode(const uint8_t *in, struct rst_sb *s)
++{
++	if (rst_get32(in + RREC_SB_OFF_MAGIC) != RREC_SB_MAGIC ||
++	    rst_get16(in + RREC_SB_OFF_VERSION) != RREC_SB_VERSION ||
++	    rst_get16(in + RREC_SB_OFF_SIZE) != RREC_SECTOR_BYTES ||
++	    rst_get32(in + RREC_SB_OFF_CRC) != crc32_ieee(in, RREC_SB_OFF_CRC)) {
++		return -EBADMSG;
++	}
++	s->sb_seq = rst_get32(in + RREC_SB_OFF_SB_SEQ);
++	s->card_sectors = rst_get32(in + RREC_SB_OFF_CARD_SECTORS);
++	s->chunk_first_lba = rst_get32(in + RREC_SB_OFF_CHUNK_FIRST_LBA);
++	s->chunk_count_total = rst_get32(in + RREC_SB_OFF_CHUNK_COUNT_TOTAL);
++	s->head_chunk_seq = rst_get32(in + RREC_SB_OFF_HEAD_CHUNK_SEQ);
++	s->tail_chunk_seq = rst_get32(in + RREC_SB_OFF_TAIL_CHUNK_SEQ);
++	s->next_recording_id = rst_get32(in + RREC_SB_OFF_NEXT_RECORDING_ID);
++	s->index_head = rst_get32(in + RREC_SB_OFF_INDEX_HEAD);
++	s->index_tail = rst_get32(in + RREC_SB_OFF_INDEX_TAIL);
++	s->open_flag = in[RREC_SB_OFF_OPEN_FLAG];
++	s->open_recording_id = rst_get32(in + RREC_SB_OFF_OPEN_RECORDING_ID);
++	s->open_first_chunk_seq = rst_get32(in + RREC_SB_OFF_OPEN_FIRST_CHUNK);
++	s->boot_count = rst_get32(in + RREC_SB_OFF_BOOT_COUNT);
++	s->log_head = rst_get32(in + RREC_SB_OFF_LOG_HEAD);
++	return 0;
++}
++
++/* ------------------------------------------------------------------ index record */
++
++void rst_fmt_ix_encode(const struct rst_ix *r, uint8_t *out)
++{
++	memset(out, 0, RREC_SECTOR_BYTES);
++	rst_put32(out + RREC_IX_OFF_MAGIC, RREC_IX_MAGIC);
++	rst_put16(out + RREC_IX_OFF_VERSION, RREC_IX_VERSION);
++	out[RREC_IX_OFF_TYPE] = r->type;
++	out[RREC_IX_OFF_CLOSE_STATE] = r->close_state;
++	rst_put32(out + RREC_IX_OFF_RECORD_NUMBER, r->record_number);
++	rst_put32(out + RREC_IX_OFF_RECORDING_ID, r->recording_id);
++	rst_put32(out + RREC_IX_OFF_FIRST_CHUNK_SEQ, r->first_chunk_seq);
++	rst_put32(out + RREC_IX_OFF_CHUNK_COUNT, r->chunk_count);
++	out[RREC_IX_OFF_RECORDING_TYPE] = r->recording_type;
++	out[RREC_IX_OFF_CHANNELS] = r->channels;
++	rst_put16(out + RREC_IX_OFF_HIGHLIGHT_COUNT, r->highlight_count);
++	rst_put32(out + RREC_IX_OFF_SAMPLE_RATE, r->sample_rate_hz);
++	rst_put64(out + RREC_IX_OFF_START_UTC_MS, (uint64_t)r->start_utc_ms);
++	rst_put64(out + RREC_IX_OFF_DURATION_FRAMES, r->duration_frames);
++	rst_put32(out + RREC_IX_OFF_DIGEST, r->digest);
++	for (uint32_t i = 0; i < RREC_CLOSE_HIGHLIGHTS; i++) {
++		rst_put32(out + RREC_IX_OFF_HIGHLIGHT_MS + i * sizeof(uint32_t), r->highlight_ms[i]);
++	}
++	rst_put32(out + RREC_IX_OFF_CRC, crc32_ieee(out, RREC_IX_OFF_CRC));
++}
++
++int rst_fmt_ix_decode(const uint8_t *in, struct rst_ix *r)
++{
++	if (rst_get32(in + RREC_IX_OFF_MAGIC) != RREC_IX_MAGIC ||
++	    rst_get16(in + RREC_IX_OFF_VERSION) != RREC_IX_VERSION ||
++	    rst_get32(in + RREC_IX_OFF_CRC) != crc32_ieee(in, RREC_IX_OFF_CRC)) {
++		return -EBADMSG;
++	}
++	r->type = in[RREC_IX_OFF_TYPE];
++	r->close_state = in[RREC_IX_OFF_CLOSE_STATE];
++	r->record_number = rst_get32(in + RREC_IX_OFF_RECORD_NUMBER);
++	r->recording_id = rst_get32(in + RREC_IX_OFF_RECORDING_ID);
++	r->first_chunk_seq = rst_get32(in + RREC_IX_OFF_FIRST_CHUNK_SEQ);
++	r->chunk_count = rst_get32(in + RREC_IX_OFF_CHUNK_COUNT);
++	r->recording_type = in[RREC_IX_OFF_RECORDING_TYPE];
++	r->channels = in[RREC_IX_OFF_CHANNELS];
++	r->highlight_count = rst_get16(in + RREC_IX_OFF_HIGHLIGHT_COUNT);
++	r->sample_rate_hz = rst_get32(in + RREC_IX_OFF_SAMPLE_RATE);
++	r->start_utc_ms = (int64_t)rst_get64(in + RREC_IX_OFF_START_UTC_MS);
++	r->duration_frames = rst_get64(in + RREC_IX_OFF_DURATION_FRAMES);
++	r->digest = rst_get32(in + RREC_IX_OFF_DIGEST);
++	for (uint32_t i = 0; i < RREC_CLOSE_HIGHLIGHTS; i++) {
++		r->highlight_ms[i] = rst_get32(in + RREC_IX_OFF_HIGHLIGHT_MS + i * sizeof(uint32_t));
++	}
++	return 0;
++}
++
++/* ------------------------------------------------------------------ chunk */
++
++/* the header CRC-32 over header bytes 0 to 507 (FW l.580), for the encoder and the decoder alike */
++static uint32_t chunk_hdr_crc(const uint8_t *h)
++{
++	return crc32_ieee(h, RREC_CH_OFF_HEADER_CRC);
++}
++
++bool rst_fmt_chunk_hdr_valid(const struct rst_chunk_hdr *h)
++{
++	return h->frames != 0 && h->frames <= RREC_CHUNK_FRAMES && h->highlight_count <= RREC_HIGHLIGHTS_PER_CHUNK &&
++	       h->motor_count <= RREC_MOTOR_PER_CHUNK;
++}
++
++int rst_fmt_chunk_encode(struct rst_chunk *c, uint32_t *payload_crc)
++{
++	const struct rst_chunk_hdr *h = &c->hdr;
++	uint8_t *o = c->bytes;
++	uint8_t *payload = c->bytes + RREC_CHUNK_HEADER_BYTES;
++	uint32_t pcrc;
++
++	if (!rst_fmt_chunk_hdr_valid(h)) {
++		return -EINVAL;
++	}
++	/* unused payload bytes of a last chunk are zero (FW l.535) */
++	memset(payload + (size_t)h->frames * RREC_CHANNELS * sizeof(int16_t), 0,
++	       RREC_CHUNK_PAYLOAD_BYTES - (size_t)h->frames * RREC_CHANNELS * sizeof(int16_t));
++	pcrc = crc32_ieee(payload, RREC_CHUNK_PAYLOAD_BYTES);
++
++	memset(o, 0, RREC_CHUNK_HEADER_BYTES);
++	rst_put32(o + RREC_CH_OFF_MAGIC, RREC_CHUNK_MAGIC);
++	rst_put16(o + RREC_CH_OFF_VERSION, RREC_CHUNK_HEADER_VERSION);
++	rst_put16(o + RREC_CH_OFF_SIZE, RREC_CHUNK_HEADER_BYTES);
++	rst_put32(o + RREC_CH_OFF_CHUNK_SEQ, h->chunk_seq);
++	rst_put32(o + RREC_CH_OFF_RECORDING_ID, h->recording_id);
++	rst_put32(o + RREC_CH_OFF_CHUNK_IN_REC, h->chunk_in_recording);
++	rst_put16(o + RREC_CH_OFF_FLAGS, h->flags);
++	o[RREC_CH_OFF_RECORDING_TYPE] = h->recording_type;
++	o[RREC_CH_OFF_CHANNELS] = RREC_CHANNELS;
++	rst_put32(o + RREC_CH_OFF_SAMPLE_RATE, RREC_PCM_RATE_HZ);
++	o[RREC_CH_OFF_SAMPLE_FORMAT] = RREC_SAMPLE_FORMAT_S16LE;
++	o[RREC_CH_OFF_MIC_MASK] = RREC_MIC_MASK;
++	rst_put32(o + RREC_CH_OFF_FRAMES, h->frames);
++	rst_put32(o + RREC_CH_OFF_PAYLOAD_BYTES, h->frames * RREC_CHANNELS * (uint32_t)sizeof(int16_t));
++	rst_put64(o + RREC_CH_OFF_FIRST_FRAME_INDEX, h->first_frame_index);
++	rst_put64(o + RREC_CH_OFF_UTC_MS, (uint64_t)h->utc_ms);
++	rst_put64(o + RREC_CH_OFF_UPTIME_NS, h->uptime_ns);
++	rst_put32(o + RREC_CH_OFF_PDM_CLOCK_HZ, RREC_PDM_CLOCK_HZ);
++	rst_put16(o + RREC_CH_OFF_PDM_RATIO, RREC_PDM_RATIO);
++	o[RREC_CH_OFF_GAIN_CODE] = RREC_PDM_GAIN_CODE;
++	rst_put16(o + RREC_CH_OFF_HIGHLIGHT_COUNT, h->highlight_count);
++	for (uint32_t i = 0; i < RREC_HIGHLIGHTS_PER_CHUNK; i++) {
++		rst_put32(o + RREC_CH_OFF_HIGHLIGHT_FRAME + i * sizeof(uint32_t),
++			  i < h->highlight_count ? h->highlight_frame[i] : RREC_UNUSED_U32);
++	}
++	rst_put16(o + RREC_CH_OFF_BATTERY_MV, h->battery_mv);
++	rst_put16(o + RREC_CH_OFF_TEMP_C_X10, (uint16_t)h->temp_c_x10);
++	rst_put32(o + RREC_CH_OFF_BOOT_COUNT, h->boot_count);
++	rst_put32(o + RREC_CH_OFF_DROPOUT_BLOCKS, h->dropout_blocks);
++	rst_put32(o + RREC_CH_OFF_FW_VERSION, h->fw_version);
++	rst_put32(o + RREC_CH_OFF_CYCLE_HZ, h->cycle_hz);
++	rst_put16(o + RREC_CH_OFF_MOTOR_COUNT, h->motor_count);
++	for (uint32_t i = 0; i < RREC_MOTOR_PER_CHUNK; i++) {
++		uint8_t *p = o + RREC_CH_OFF_MOTOR_FRAMES + i * 2 * sizeof(uint32_t);
++
++		rst_put32(p, i < h->motor_count ? h->motor_frames[i][0] : RREC_UNUSED_U32);
++		rst_put32(p + sizeof(uint32_t), i < h->motor_count ? h->motor_frames[i][1] : RREC_UNUSED_U32);
++	}
++	rst_put32(o + RREC_CH_OFF_PAYLOAD_CRC, pcrc);
++	rst_put32(o + RREC_CH_OFF_HEADER_CRC, chunk_hdr_crc(o));
++	if (payload_crc != NULL) {
++		*payload_crc = pcrc;
++	}
++	return 0;
++}
++
++int rst_fmt_chunk_hdr_decode(const uint8_t *in, struct rst_chunk_hdr *h, uint32_t *payload_crc)
++{
++	if (rst_get32(in + RREC_CH_OFF_MAGIC) != RREC_CHUNK_MAGIC ||
++	    rst_get16(in + RREC_CH_OFF_VERSION) != RREC_CHUNK_HEADER_VERSION ||
++	    rst_get16(in + RREC_CH_OFF_SIZE) != RREC_CHUNK_HEADER_BYTES ||
++	    rst_get32(in + RREC_CH_OFF_HEADER_CRC) != chunk_hdr_crc(in)) {
++		return -EBADMSG;
++	}
++	h->chunk_seq = rst_get32(in + RREC_CH_OFF_CHUNK_SEQ);
++	h->recording_id = rst_get32(in + RREC_CH_OFF_RECORDING_ID);
++	h->chunk_in_recording = rst_get32(in + RREC_CH_OFF_CHUNK_IN_REC);
++	h->flags = rst_get16(in + RREC_CH_OFF_FLAGS);
++	h->recording_type = in[RREC_CH_OFF_RECORDING_TYPE];
++	h->frames = rst_get32(in + RREC_CH_OFF_FRAMES);
++	h->first_frame_index = rst_get64(in + RREC_CH_OFF_FIRST_FRAME_INDEX);
++	h->utc_ms = (int64_t)rst_get64(in + RREC_CH_OFF_UTC_MS);
++	h->uptime_ns = rst_get64(in + RREC_CH_OFF_UPTIME_NS);
++	h->highlight_count = rst_get16(in + RREC_CH_OFF_HIGHLIGHT_COUNT);
++	for (uint32_t i = 0; i < RREC_HIGHLIGHTS_PER_CHUNK; i++) {
++		h->highlight_frame[i] = rst_get32(in + RREC_CH_OFF_HIGHLIGHT_FRAME + i * sizeof(uint32_t));
++	}
++	h->battery_mv = rst_get16(in + RREC_CH_OFF_BATTERY_MV);
++	h->temp_c_x10 = (int16_t)rst_get16(in + RREC_CH_OFF_TEMP_C_X10);
++	h->boot_count = rst_get32(in + RREC_CH_OFF_BOOT_COUNT);
++	h->dropout_blocks = rst_get32(in + RREC_CH_OFF_DROPOUT_BLOCKS);
++	h->fw_version = rst_get32(in + RREC_CH_OFF_FW_VERSION);
++	h->cycle_hz = rst_get32(in + RREC_CH_OFF_CYCLE_HZ);
++	h->motor_count = rst_get16(in + RREC_CH_OFF_MOTOR_COUNT);
++	for (uint32_t i = 0; i < RREC_MOTOR_PER_CHUNK; i++) {
++		const uint8_t *p = in + RREC_CH_OFF_MOTOR_FRAMES + i * 2 * sizeof(uint32_t);
++
++		h->motor_frames[i][0] = rst_get32(p);
++		h->motor_frames[i][1] = rst_get32(p + sizeof(uint32_t));
++	}
++	if (payload_crc != NULL) {
++		*payload_crc = rst_get32(in + RREC_CH_OFF_PAYLOAD_CRC);
++	}
++	return 0;
++}
++
++int rst_fmt_chunk_verify(const uint8_t *chunk, struct rst_chunk_hdr *h, uint32_t *payload_crc)
++{
++	uint32_t pcrc;
++	int r = rst_fmt_chunk_hdr_decode(chunk, h, &pcrc);
++
++	if (r != 0) {
++		return r;
++	}
++	if (crc32_ieee(chunk + RREC_CHUNK_HEADER_BYTES, RREC_CHUNK_PAYLOAD_BYTES) != pcrc) {
++		return -EILSEQ;
++	}
++	if (payload_crc != NULL) {
++		*payload_crc = pcrc;
++	}
++	return 0;
++}
++
++/* ------------------------------------------------------------------ event log record */
++
++void rst_fmt_log_encode(const struct rrec_logrec *r, uint8_t *out)
++{
++	memset(out, 0, RREC_LOG_RECORD_BYTES);
++	rst_put32(out + RREC_LG_OFF_MAGIC, RREC_LOG_MAGIC);
++	rst_put32(out + RREC_LG_OFF_SEQ, r->seq);
++	rst_put64(out + RREC_LG_OFF_UPTIME_NS, (uint64_t)r->uptime_ns);
++	rst_put64(out + RREC_LG_OFF_UTC_MS, (uint64_t)r->utc_ms);
++	rst_put16(out + RREC_LG_OFF_CODE, r->code);
++	out[RREC_LG_OFF_STATE] = r->state;
++	memcpy(out + RREC_LG_OFF_ARGS, r->args, RREC_LOG_ARG_BYTES);
++	if (r->has_crash) {
++		uint8_t *p = out + RREC_LG_OFF_CRASH;
++
++		rst_put32(p, r->crash.reason);
++		rst_put32(p + 4, r->crash.pc);
++		rst_put32(p + 8, r->crash.lr);
++		rst_put32(p + 12, r->crash.psr);
++		p += 16;
++		memcpy(p, r->crash.thread, RREC_CRASH_NAME_BYTES);
++		p += RREC_CRASH_NAME_BYTES;
++		for (uint32_t i = 0; i < RREC_CRASH_STACK_WORDS; i++) {
++			rst_put32(p + i * sizeof(uint32_t), r->crash.stack[i]);
++		}
++	}
++	rst_put32(out + RREC_LG_OFF_CRC, crc32_ieee(out, RREC_LG_OFF_CRC));
++}
++
++int rst_fmt_log_decode(const uint8_t *in, struct rrec_logrec *r)
++{
++	if (rst_get32(in + RREC_LG_OFF_MAGIC) != RREC_LOG_MAGIC ||
++	    rst_get32(in + RREC_LG_OFF_CRC) != crc32_ieee(in, RREC_LG_OFF_CRC)) {
++		return -EBADMSG;
++	}
++	memset(r, 0, sizeof(*r));
++	r->seq = rst_get32(in + RREC_LG_OFF_SEQ);
++	r->uptime_ns = (int64_t)rst_get64(in + RREC_LG_OFF_UPTIME_NS);
++	r->utc_ms = (int64_t)rst_get64(in + RREC_LG_OFF_UTC_MS);
++	r->code = rst_get16(in + RREC_LG_OFF_CODE);
++	r->state = in[RREC_LG_OFF_STATE];
++	memcpy(r->args, in + RREC_LG_OFF_ARGS, RREC_LOG_ARG_BYTES);
++	const uint8_t *p = in + RREC_LG_OFF_CRASH;
++
++	for (uint32_t i = 0; i < RREC_CRASH_BLOCK_BYTES; i++) {
++		if (p[i] != 0) {
++			r->has_crash = true;
++			break;
++		}
++	}
++	if (r->has_crash) {
++		r->crash.reason = rst_get32(p);
++		r->crash.pc = rst_get32(p + 4);
++		r->crash.lr = rst_get32(p + 8);
++		r->crash.psr = rst_get32(p + 12);
++		p += 16;
++		memcpy(r->crash.thread, p, RREC_CRASH_NAME_BYTES);
++		p += RREC_CRASH_NAME_BYTES;
++		for (uint32_t i = 0; i < RREC_CRASH_STACK_WORDS; i++) {
++			r->crash.stack[i] = rst_get32(p + i * sizeof(uint32_t));
++		}
++	}
++	return 0;
++}
+##### new: modules/ring_store/src/rst_fmt.h
+--- base/modules/ring_store/src/rst_fmt.h
++++ modules/ring_store/src/rst_fmt.h
+@@ -0,0 +1,110 @@
++/*
++ * rst_fmt.h: the byte formats of the storage part (pure: no kernel call). "FW l.N" = line N of design/firmware.md.
++ * Not a public header (the public one is ring_store/rst.h). Every number comes from rrec_spec.h.
++ */
++#ifndef RST_FMT_H
++#define RST_FMT_H
++
++#include <stdbool.h>
++#include <stddef.h>
++#include <stdint.h>
++
++#include <ring_store/rst.h>
++
++/* ---- little-endian access (FW l.70: every multi-byte field is little-endian) */
++static inline void rst_put16(uint8_t *p, uint16_t v)
++{
++	p[0] = (uint8_t)v;
++	p[1] = (uint8_t)(v >> 8);
++}
++static inline void rst_put32(uint8_t *p, uint32_t v)
++{
++	rst_put16(p, (uint16_t)v);
++	rst_put16(p + 2, (uint16_t)(v >> 16));
++}
++static inline void rst_put64(uint8_t *p, uint64_t v)
++{
++	rst_put32(p, (uint32_t)v);
++	rst_put32(p + 4, (uint32_t)(v >> 32));
++}
++static inline uint16_t rst_get16(const uint8_t *p)
++{
++	return (uint16_t)(p[0] | (p[1] << 8));
++}
++static inline uint32_t rst_get32(const uint8_t *p)
++{
++	return (uint32_t)rst_get16(p) | ((uint32_t)rst_get16(p + 2) << 16);
++}
++static inline uint64_t rst_get64(const uint8_t *p)
++{
++	return (uint64_t)rst_get32(p) | ((uint64_t)rst_get32(p + 4) << 32);
++}
++
++/* ---- superblock (FW l.587 to l.610) */
++struct rst_sb {
++	uint32_t sb_seq;
++	uint32_t card_sectors;
++	uint32_t chunk_first_lba;
++	uint32_t chunk_count_total;
++	uint32_t head_chunk_seq;
++	uint32_t tail_chunk_seq;
++	uint32_t next_recording_id;
++	uint32_t index_head;          /* next index record number */
++	uint32_t index_tail;          /* oldest index record still needed */
++	uint8_t open_flag;
++	uint32_t open_recording_id;
++	uint32_t open_first_chunk_seq;
++	uint32_t boot_count;
++	uint32_t log_head;            /* next event log record number (seq) */
++};
++
++/* out: RREC_SECTOR_BYTES bytes, reserved bytes zero, CRC-32 over bytes 0 to 507 in the last 4 (FW l.610). */
++void rst_fmt_sb_encode(const struct rst_sb *s, uint8_t *out);
++/* 0, or -EBADMSG when magic, version, size or CRC do not match. */
++int rst_fmt_sb_decode(const uint8_t *in, struct rst_sb *s);
++
++/* ---- index record (FW l.612 to l.634) */
++struct rst_ix {
++	uint8_t type;                 /* RREC_IX_TYPE_* */
++	uint8_t close_state;          /* RREC_IX_CLOSE_*; 0 for CONFIRM and DELETE */
++	uint32_t record_number;
++	uint32_t recording_id;
++	uint32_t first_chunk_seq;
++	uint32_t chunk_count;
++	uint8_t recording_type;
++	uint8_t channels;
++	uint16_t highlight_count;
++	uint32_t sample_rate_hz;
++	int64_t start_utc_ms;
++	uint64_t duration_frames;
++	uint32_t digest;
++	uint32_t highlight_ms[RREC_CLOSE_HIGHLIGHTS];
++};
++void rst_fmt_ix_encode(const struct rst_ix *r, uint8_t *out);
++int rst_fmt_ix_decode(const uint8_t *in, struct rst_ix *r);
++
++/* ---- chunk (FW l.535 to l.580) */
++/* Encodes c->hdr into sector 0 of c->bytes: the constant fields, payload_bytes = frames x 4, the unused highlight and
++ * motor slots as RREC_UNUSED_U32, the reserved bytes zero. Zeroes the payload bytes after the valid frames (FW l.535),
++ * then both CRC-32 (payload over all RREC_CHUNK_PAYLOAD_BYTES, header over bytes 0 to 507). *payload_crc (may be NULL)
++ * gets the payload CRC. -EINVAL when frames is 0 or over RREC_CHUNK_FRAMES, highlight_count over 8 or motor_count over 4. */
++int rst_fmt_chunk_encode(struct rst_chunk *c, uint32_t *payload_crc);
++/* true when frames, highlight_count and motor_count are in their ranges (what rst_fmt_chunk_encode accepts). */
++bool rst_fmt_chunk_hdr_valid(const struct rst_chunk_hdr *h);
++/* Decodes one header sector. 0, or -EBADMSG when magic, version, size or header CRC do not match. */
++int rst_fmt_chunk_hdr_decode(const uint8_t *sector0, struct rst_chunk_hdr *h, uint32_t *payload_crc);
++/* Decodes a whole chunk (RREC_CHUNK_BYTES) and also checks the payload CRC. 0, -EBADMSG (header), -EILSEQ (payload). */
++int rst_fmt_chunk_verify(const uint8_t *chunk, struct rst_chunk_hdr *h, uint32_t *payload_crc);
++
++/* ---- event log record (FW l.1062) */
++void rst_fmt_log_encode(const struct rrec_logrec *r, uint8_t *out);
++int rst_fmt_log_decode(const uint8_t *in, struct rrec_logrec *r);
++
++/* ---- digest (FW l.630): CRC-32 over the payload_crc32 values of all chunks in order, each as a 4-byte little-endian
++ * word. State 0 at the start; add each chunk's payload CRC in order; the state after the last is the digest. */
++uint32_t rst_fmt_digest_add(uint32_t state, uint32_t payload_crc);
++
++/* CRC-32 (ISO-HDLC) of a buffer: Zephyr's crc32_ieee (FW l.70). */
++uint32_t rst_fmt_crc32(const uint8_t *data, size_t len);
++
++#endif
+##### new: modules/ring_store/src/rst_hw_real.c
+--- base/modules/ring_store/src/rst_hw_real.c
++++ modules/ring_store/src/rst_hw_real.c
+@@ -0,0 +1,76 @@
++/*
++ * rst_hw_real.c: the real card and storage bus for the storage part (software step 6, unit U2). Built only where the
++ * simulated drivers are off (the development kit build, decision D15). It is NOT PROVEN: no card and no SPI exist in
++ * any test of step 6 (plan section 7, item 1). Where the devicetree has no `spi00` node the file registers nothing and
++ * every card call keeps answering -ENODEV (the "absent" instance of ring_rhw).
++ * Kit calls used: the disk access API (init, deinit and sector count through ioctl, read, write) and device power
++ * management (suspend, resume). No pin is named here.
++ */
++#include <errno.h>
++
++#include <zephyr/device.h>
++#include <zephyr/devicetree.h>
++#include <zephyr/init.h>
++#include <zephyr/pm/device.h>
++#include <zephyr/storage/disk_access.h>
++
++#include <ring_rhw/rhw.h>
++
++/* what the full-run stage "recorder-product-drivers" prints: whether the real calls were compiled */
++#if DT_NODE_EXISTS(DT_NODELABEL(spi00)) && defined(CONFIG_DISK_ACCESS)
++const bool rst_hw_real_compiled = true;
++
++#define RST_DISK_NAME "SD"
++
++static int r_init(void)
++{
++	return disk_access_ioctl(RST_DISK_NAME, DISK_IOCTL_CTRL_INIT, NULL);
++}
++
++static int r_deinit(void)
++{
++	return disk_access_ioctl(RST_DISK_NAME, DISK_IOCTL_CTRL_DEINIT, NULL);
++}
++
++static int r_read(uint32_t lba, uint8_t *buf, uint32_t count)
++{
++	return disk_access_read(RST_DISK_NAME, buf, lba, count);
++}
++
++static int r_write(uint32_t lba, const uint8_t *buf, uint32_t count)
++{
++	return disk_access_write(RST_DISK_NAME, buf, lba, count);
++}
++
++static int r_count(uint32_t *out)
++{
++	return disk_access_ioctl(RST_DISK_NAME, DISK_IOCTL_GET_SECTOR_COUNT, out);
++}
++
++static const struct rhw_disk_api real_disk = {
++	.init = r_init, .deinit = r_deinit, .read = r_read, .write = r_write, .sector_count = r_count,
++};
++
++static int b_suspend(void)
++{
++	return pm_device_action_run(DEVICE_DT_GET(DT_NODELABEL(spi00)), PM_DEVICE_ACTION_SUSPEND);
++}
++
++static int b_resume(void)
++{
++	return pm_device_action_run(DEVICE_DT_GET(DT_NODELABEL(spi00)), PM_DEVICE_ACTION_RESUME);
++}
++
++static const struct rhw_sdbus_api real_sdbus = { .suspend = b_suspend, .resume = b_resume };
++
++static int rst_hw_real_register(void)
++{
++	int r = rhw_register_disk(&real_disk);
++
++	return r != 0 ? r : rhw_register_sdbus(&real_sdbus);
++}
++
++SYS_INIT(rst_hw_real_register, APPLICATION, 50);
++#else
++const bool rst_hw_real_compiled = false;
++#endif
+##### new: modules/ring_store/src/rst_layout.c
+--- base/modules/ring_store/src/rst_layout.c
++++ modules/ring_store/src/rst_layout.c
+@@ -0,0 +1,45 @@
++/* rst_layout.c: the sector map and the free-space rules of the storage part (pure). Written for this project. */
++#include "rst_layout.h"
++
++uint32_t rst_lay_chunk_total(uint32_t sectors)
++{
++	if (sectors <= RREC_LBA_CHUNK_FIRST) {
++		return 0;
++	}
++	return (sectors - RREC_LBA_CHUNK_FIRST) / RREC_CHUNK_SECTORS;
++}
++
++uint32_t rst_lay_chunk_lba(uint32_t total, uint32_t seq)
++{
++	if (total == 0) {
++		return UINT32_MAX;
++	}
++	return RREC_LBA_CHUNK_FIRST + (seq % total) * RREC_CHUNK_SECTORS;
++}
++
++uint32_t rst_lay_index_lba(uint32_t n)
++{
++	return RREC_LBA_INDEX_FIRST + (n % RREC_INDEX_RING_RECORDS);
++}
++
++uint32_t rst_lay_log_lba(uint32_t seq)
++{
++	return RREC_LBA_LOG_FIRST + ((seq > 0 ? seq - 1u : 0u) % RREC_LOG_RING_RECORDS);
++}
++
++uint32_t rst_lay_sb_lba(uint32_t sb_seq)
++{
++	return sb_seq % 2u ? RREC_LBA_SB_B : RREC_LBA_SB_A;
++}
++
++void rst_lay_space(uint32_t total, uint32_t head, uint32_t tail, struct rst_space *out)
++{
++	uint32_t used = head >= tail ? head - tail : 0;
++
++	out->total = total;
++	out->used = used > total ? total : used;
++	out->free_chunks = total - out->used;
++	out->sfull = out->free_chunks <= RREC_SFULL_CHUNKS;
++	out->s30 = out->free_chunks <= RREC_S30_CHUNKS;
++	out->minutes_left = (uint32_t)(((uint64_t)out->free_chunks * RREC_CHUNK_MS) / (60u * 1000u));
++}
+##### new: modules/ring_store/src/rst_layout.h
+--- base/modules/ring_store/src/rst_layout.h
++++ modules/ring_store/src/rst_layout.h
+@@ -0,0 +1,29 @@
++/*
++ * rst_layout.h: where things lie on the card and how much is free (pure: no kernel call). FW l.519 to l.531
++ * (sector map), l.650 to l.654 (free space). Not a public header.
++ */
++#ifndef RST_LAYOUT_H
++#define RST_LAYOUT_H
++
++#include <stdbool.h>
++#include <stdint.h>
++
++#include <ring_store/rst.h>
++
++/* chunk_count_total = floor((sectors - first chunk LBA) / chunk sectors) (FW l.529); 0 when the card is too small. */
++uint32_t rst_lay_chunk_total(uint32_t sectors);
++/* First sector of chunk number seq: first chunk LBA + (seq mod total) x chunk sectors (FW l.531). UINT32_MAX when
++ * total is 0. */
++uint32_t rst_lay_chunk_lba(uint32_t total, uint32_t seq);
++/* Index record n at first index LBA + (n mod RREC_INDEX_RING_RECORDS) (FW l.612). */
++uint32_t rst_lay_index_lba(uint32_t n);
++/* Event log record seq (first seq 1) in the ring of RREC_LOG_RING_RECORDS from RREC_LBA_LOG_FIRST (FW l.525): record 1
++ * is in LBA 2, record 2,046 in LBA 2,047, record 2,047 in LBA 2 again. */
++uint32_t rst_lay_log_lba(uint32_t seq);
++/* A superblock is written to LBA sb_seq mod 2 (FW l.587). */
++uint32_t rst_lay_sb_lba(uint32_t sb_seq);
++/* Used = head - tail; free = total - used; S30 and SFULL at or under their limits; minutes left = free x 0.512 s
++ * rounded down (FW l.650 to l.653). */
++void rst_lay_space(uint32_t total, uint32_t head, uint32_t tail, struct rst_space *out);
++
++#endif
+##### new: modules/ring_store/src/rst_log.c
+--- base/modules/ring_store/src/rst_log.c
++++ modules/ring_store/src/rst_log.c
+@@ -0,0 +1,318 @@
++/*
++ * rst_log.c: the logic that works on what is on the card (pure: stdint, stdbool, string and the formats of rst_fmt.c;
++ * the card is reached through a read callback). Written for this project.
++ */
++#include <errno.h>
++#include <string.h>
++
++#include "rst_layout.h"
++#include "rst_log.h"
++
++/* ------------------------------------------------------------------ superblock choice */
++
++int rst_log_pick_sb(const uint8_t *copy_a, const uint8_t *copy_b, struct rst_sb *out, int *which)
++{
++	struct rst_sb a, b;
++	bool va = rst_fmt_sb_decode(copy_a, &a) == 0;
++	bool vb = rst_fmt_sb_decode(copy_b, &b) == 0;
++
++	if (!va && !vb) {
++		return -ENOENT;
++	}
++	if (va && (!vb || a.sb_seq > b.sb_seq)) {
++		*out = a;
++		*which = 0;
++	} else {
++		*out = b;
++		*which = 1;
++	}
++	return 0;
++}
++
++/* ------------------------------------------------------------------ recordings */
++
++static void rec_from_ix(struct rst_rec *r, const struct rst_ix *x)
++{
++	memset(r, 0, sizeof(*r));
++	r->info.recording_id = x->recording_id;
++	r->info.type = x->recording_type;
++	r->info.channels = x->channels;
++	r->info.first_chunk_seq = x->first_chunk_seq;
++	r->info.chunk_count = x->chunk_count;
++	r->info.sample_rate_hz = x->sample_rate_hz;
++	r->info.start_utc_ms = x->start_utc_ms;
++	r->info.duration_frames = x->duration_frames;
++	r->info.digest = x->digest;
++	r->info.highlight_count = x->highlight_count;
++	r->close_state = x->close_state;
++	r->confirmed = false;
++	r->info.state = x->close_state == RREC_IX_CLOSE_RECOVERED ? RREC_LIST_STATE_RECOVERED : RREC_LIST_STATE_NEW;
++}
++
++static void rec_confirm(struct rst_rec *r)
++{
++	r->confirmed = true;
++	r->info.state = RREC_LIST_STATE_TRANSFERRED;
++}
++
++void rst_recs_init(struct rst_recs *t, struct rst_rec *store, uint32_t cap)
++{
++	memset(t, 0, sizeof(*t));
++	t->ent = store;
++	t->cap = cap;
++}
++
++struct rst_rec *rst_recs_find(struct rst_recs *t, uint32_t id)
++{
++	for (uint32_t i = 0; i < t->n; i++) {
++		if (t->ent[i].info.recording_id == id) {
++			return &t->ent[i];
++		}
++	}
++	return NULL;
++}
++
++void rst_recs_apply(struct rst_recs *t, const struct rst_ix *x)
++{
++	struct rst_rec *r;
++
++	switch (x->type) {
++	case RREC_IX_TYPE_CLOSE:
++		if (t->first_id == 0) {
++			t->first_id = x->recording_id;
++		}
++		if (x->recording_id < t->first_id || rst_recs_find(t, x->recording_id) != NULL) {
++			return;       /* a record this table already has or has seen the end of */
++		}
++		if (t->n == t->cap) {
++			t->evict_max_id = t->ent[0].info.recording_id;
++			memmove(&t->ent[0], &t->ent[1], (t->n - 1) * sizeof(t->ent[0]));
++			t->n--;
++		}
++		rec_from_ix(&t->ent[t->n++], x);
++		t->live_total++;
++		break;
++	case RREC_IX_TYPE_CONFIRM:
++		r = rst_recs_find(t, x->recording_id);
++		if (r != NULL) {
++			rec_confirm(r);
++		}
++		break;
++	case RREC_IX_TYPE_DELETE:
++		r = rst_recs_find(t, x->recording_id);
++		if (r != NULL) {
++			uint32_t i = (uint32_t)(r - t->ent);
++
++			memmove(&t->ent[i], &t->ent[i + 1], (t->n - i - 1) * sizeof(t->ent[0]));
++			t->n--;
++			t->live_total--;
++		} else if (t->first_id != 0 && x->recording_id >= t->first_id && x->recording_id <= t->evict_max_id &&
++			   t->live_total > 0) {
++			t->live_total--;       /* a live recording that was pushed out of the table */
++		}
++		break;
++	default:
++		break;
++	}
++}
++
++static int read_ix(rst_rd_fn rd, void *ctx, uint32_t n, struct rst_ix *x, uint8_t *sector)
++{
++	int r = rd(ctx, rst_lay_index_lba(n), sector, 1);
++
++	if (r != 0) {
++		return -EIO;
++	}
++	if (rst_fmt_ix_decode(sector, x) != 0 || x->record_number != n) {
++		return -EBADMSG;
++	}
++	return 0;
++}
++
++int rst_log_load_index(rst_rd_fn rd, void *ctx, uint32_t tail, uint32_t head, struct rst_recs *t, uint8_t *sector)
++{
++	struct rst_ix x;
++
++	rst_recs_init(t, t->ent, t->cap);
++	for (uint32_t n = tail; n != head; n++) {
++		int r = read_ix(rd, ctx, n, &x, sector);
++
++		if (r != 0) {
++			return r;
++		}
++		rst_recs_apply(t, &x);
++	}
++	return 0;
++}
++
++int rst_log_index_find(rst_rd_fn rd, void *ctx, uint32_t tail, uint32_t head, uint32_t id_lo, uint32_t win,
++		       struct rst_rec *out, uint32_t *n, uint8_t *sector)
++{
++	struct rst_ix x;
++
++	memset(out, 0, win * sizeof(out[0]));
++	for (uint32_t k = tail; k != head; k++) {
++		int r = read_ix(rd, ctx, k, &x, sector);
++
++		if (r != 0) {
++			return r;
++		}
++		if (x.recording_id < id_lo || x.recording_id - id_lo >= win) {
++			continue;
++		}
++		struct rst_rec *slot = &out[x.recording_id - id_lo];
++
++		if (x.type == RREC_IX_TYPE_CLOSE) {
++			rec_from_ix(slot, &x);
++		} else if (x.type == RREC_IX_TYPE_CONFIRM && slot->info.recording_id != 0) {
++			rec_confirm(slot);
++		} else if (x.type == RREC_IX_TYPE_DELETE) {
++			memset(slot, 0, sizeof(*slot));
++		}
++	}
++	uint32_t m = 0;
++
++	for (uint32_t i = 0; i < win; i++) {
++		if (out[i].info.recording_id != 0) {
++			if (m != i) {
++				out[m] = out[i];
++			}
++			m++;
++		}
++	}
++	*n = m;
++	return 0;
++}
++
++int rst_log_tail_walk(rst_rd_fn rd, void *ctx, uint32_t index_tail, uint32_t index_head, uint32_t head_chunk_seq,
++		      uint32_t *new_chunk_tail, uint32_t *new_index_tail, uint8_t *sector)
++{
++	struct rst_ix c, x;
++
++	for (uint32_t n = index_tail; n != index_head; n++) {
++		int r = read_ix(rd, ctx, n, &c, sector);
++
++		if (r != 0) {
++			return r;
++		}
++		if (c.type != RREC_IX_TYPE_CLOSE) {
++			continue;
++		}
++		bool deleted = false;
++
++		for (uint32_t m = n + 1; m != index_head && !deleted; m++) {
++			r = read_ix(rd, ctx, m, &x, sector);
++			if (r != 0) {
++				return r;
++			}
++			deleted = x.type == RREC_IX_TYPE_DELETE && x.recording_id == c.recording_id;
++		}
++		if (!deleted) {
++			*new_chunk_tail = c.first_chunk_seq;
++			*new_index_tail = n;
++			return 0;
++		}
++	}
++	*new_chunk_tail = head_chunk_seq;
++	*new_index_tail = index_head;
++	return 0;
++}
++
++/* ------------------------------------------------------------------ recovery scan */
++
++int rst_log_scan(rst_rd_fn rd, void *rctx, uint32_t total, uint32_t recording_id, uint32_t first_seq, uint8_t *buf,
++		 void (*progress)(void *ctx, uint32_t kept), void *pctx, struct rst_scan *out)
++{
++	struct rst_chunk_hdr h;
++	uint32_t pcrc;
++
++	memset(out, 0, sizeof(*out));
++	while (out->kept < total) {
++		uint32_t seq = first_seq + out->kept;
++		uint32_t lba = rst_lay_chunk_lba(total, seq);
++
++		if (rd(rctx, lba, buf, RREC_CHUNK_SECTORS) != 0) {
++			out->err_lba = lba;
++			return -EIO;
++		}
++		if (rst_fmt_chunk_verify(buf, &h, &pcrc) != 0 || h.recording_id != recording_id || h.chunk_seq != seq) {
++			break;
++		}
++		if (out->kept == 0) {
++			out->start_utc_ms = h.utc_ms;
++			out->recording_type = h.recording_type;
++		}
++		out->digest = rst_fmt_digest_add(out->digest, pcrc);
++		out->duration_frames += h.frames;
++		for (uint32_t i = 0; i < h.highlight_count && i < RREC_HIGHLIGHTS_PER_CHUNK; i++) {
++			if (out->highlight_count < RREC_CLOSE_HIGHLIGHTS) {
++				out->highlight_ms[out->highlight_count] =
++					(uint32_t)(((uint64_t)h.highlight_frame[i] * 1000u) / RREC_PCM_RATE_HZ);   /* frames from the first kept frame (FW l.566) */
++			}
++			out->highlight_count++;
++		}
++		out->kept++;
++		if (progress != NULL) {
++			progress(pctx, out->kept);
++		}
++	}
++	for (uint32_t i = out->highlight_count; i < RREC_CLOSE_HIGHLIGHTS; i++) {
++		out->highlight_ms[i] = RREC_UNUSED_U32;
++	}
++	return 0;
++}
++
++/* ------------------------------------------------------------------ event log on the card */
++
++int rst_log_evlog_head(rst_rd_fn rd, void *ctx, uint32_t hint, uint32_t *head, uint8_t *sector)
++{
++	struct rrec_logrec rec;
++	uint32_t s = hint == 0 ? 1 : hint;
++
++	for (uint32_t i = 0; i < RREC_LOG_RING_RECORDS; i++) {
++		if (rd(ctx, rst_lay_log_lba(s), sector, 1) != 0) {
++			return -EIO;
++		}
++		if (rst_fmt_log_decode(sector, &rec) != 0 || rec.seq != s) {
++			break;
++		}
++		s++;
++	}
++	*head = s;
++	return 0;
++}
++
++/* ------------------------------------------------------------------ event log RAM buffer */
++
++void rst_evbuf_init(struct rst_evbuf *b)
++{
++	memset(b, 0, sizeof(*b));
++}
++
++void rst_evbuf_push(struct rst_evbuf *b, const struct rrec_logrec *r)
++{
++	if (b->n == RREC_LOG_BUFFER_RECORDS) {
++		b->first = (b->first + 1) % RREC_LOG_BUFFER_RECORDS;      /* the oldest unwritten is dropped */
++		b->n--;
++		b->dropped++;
++	}
++	b->r[(b->first + b->n) % RREC_LOG_BUFFER_RECORDS] = *r;
++	b->n++;
++}
++
++bool rst_evbuf_peek(const struct rst_evbuf *b, struct rrec_logrec *out)
++{
++	if (b->n == 0) {
++		return false;
++	}
++	*out = b->r[b->first];
++	return true;
++}
++
++void rst_evbuf_pop(struct rst_evbuf *b)
++{
++	if (b->n > 0) {
++		b->first = (b->first + 1) % RREC_LOG_BUFFER_RECORDS;
++		b->n--;
++	}
++}
+##### new: modules/ring_store/src/rst_log.h
+--- base/modules/ring_store/src/rst_log.h
++++ modules/ring_store/src/rst_log.h
+@@ -0,0 +1,90 @@
++/*
++ * rst_log.h: the logic of the storage part that works on what is on the card (pure: no kernel call; the card is
++ * reached through a read callback). FW l.587 (superblock choice), l.636 (state of a recording), l.646 (recovery scan),
++ * l.660 (tail move), l.1062 (event log buffer). Not a public header.
++ */
++#ifndef RST_LOG_H
++#define RST_LOG_H
++
++#include <stdbool.h>
++#include <stdint.h>
++
++#include "rst_fmt.h"
++
++/* Reads count sectors from lba into buf. 0 or a negative errno. */
++typedef int (*rst_rd_fn)(void *ctx, uint32_t lba, uint8_t *buf, uint32_t count);
++
++/* ---- superblock choice at mount (FW l.587): the copy with a valid CRC and the higher sb_seq wins.
++ * 0 with *out filled and *which = 0 (copy A) or 1 (copy B); -ENOENT when neither copy is valid. */
++int rst_log_pick_sb(const uint8_t *copy_a, const uint8_t *copy_b, struct rst_sb *out, int *which);
++
++/* ---- recordings rebuilt from the index (FW l.636: a recording's state is its last record) */
++struct rst_rec {
++	struct rst_rec_info info;     /* info.recording_id 0 = no such recording (ids start at 1) */
++	uint8_t close_state;          /* RREC_IX_CLOSE_* of its CLOSE record */
++	bool confirmed;               /* a CONFIRM record follows */
++};
++
++/* The newest recordings (cap of them, oldest first) that are not deleted. A live recording pushed out when the table
++ * is full is not lost: evict_max_id is the highest id pushed out, and every id at or under it is read from the index
++ * on demand (decision D16). Ids above evict_max_id are complete in ent[]. */
++struct rst_recs {
++	struct rst_rec *ent;
++	uint32_t cap;
++	uint32_t n;
++	uint32_t live_total;          /* recordings not deleted, exact */
++	uint32_t first_id;            /* id of the first CLOSE record of the walk (0 when none) */
++	uint32_t evict_max_id;        /* 0 when nothing was pushed out */
++};
++
++void rst_recs_init(struct rst_recs *t, struct rst_rec *store, uint32_t cap);
++/* Applies one index record (CLOSE adds, CONFIRM marks, DELETE removes). Unknown ids are ignored. */
++void rst_recs_apply(struct rst_recs *t, const struct rst_ix *r);
++struct rst_rec *rst_recs_find(struct rst_recs *t, uint32_t id);
++/* Builds the table from index records tail to head - 1. 0, -EIO on a read error, -EBADMSG on a bad record. */
++int rst_log_load_index(rst_rd_fn rd, void *ctx, uint32_t tail, uint32_t head, struct rst_recs *t, uint8_t *sector);
++/* Reads the index for ids id_lo to id_lo + win - 1 only: out[] (win entries) gets the live ones in id order,
++ * *n their count. 0, -EIO, -EBADMSG. */
++int rst_log_index_find(rst_rd_fn rd, void *ctx, uint32_t tail, uint32_t head, uint32_t id_lo, uint32_t win,
++		       struct rst_rec *out, uint32_t *n, uint8_t *sector);
++
++/* ---- delete (FW l.660): after a DELETE record was appended, the new tail: the first chunk seq of the first recording,
++ * in chunk order, that is not deleted (head_chunk_seq when none is left), and the index record number of its CLOSE
++ * record (index_head when none). 0, -EIO, -EBADMSG. */
++int rst_log_tail_walk(rst_rd_fn rd, void *ctx, uint32_t index_tail, uint32_t index_head, uint32_t head_chunk_seq,
++		      uint32_t *new_chunk_tail, uint32_t *new_index_tail, uint8_t *sector);
++
++/* ---- recovery scan (FW l.646) */
++struct rst_scan {
++	uint32_t kept;                /* chunks that passed */
++	uint32_t digest;              /* over their payload CRCs */
++	uint64_t duration_frames;
++	int64_t start_utc_ms;         /* of the first chunk */
++	uint8_t recording_type;
++	uint16_t highlight_count;     /* sum over the kept chunk headers */
++	uint32_t highlight_ms[RREC_CLOSE_HIGHLIGHTS];
++	uint32_t err_lba;             /* the sector that failed to read, on -EIO */
++};
++/* From first_seq: keep a chunk while magic, header CRC, payload CRC, recording_id and chunk_seq (the previous + 1;
++ * first_seq for the first) all match; stop at the first mismatch. buf: RREC_CHUNK_BYTES. progress(ctx, kept so far) after
++ * each kept chunk, may be NULL. 0, or -EIO on a read error. */
++int rst_log_scan(rst_rd_fn rd, void *rctx, uint32_t total, uint32_t recording_id, uint32_t first_seq, uint8_t *buf,
++		 void (*progress)(void *ctx, uint32_t kept), void *pctx, struct rst_scan *out);
++
++/* ---- event log in the card (FW l.525): the first free seq at or after hint (the superblock's log_head may lag). 0, -EIO. */
++int rst_log_evlog_head(rst_rd_fn rd, void *ctx, uint32_t hint, uint32_t *head, uint8_t *sector);
++
++/* ---- the RAM buffer of event log records (FW l.1062): RREC_LOG_BUFFER_RECORDS, the oldest unwritten dropped when full */
++struct rst_evbuf {
++	struct rrec_logrec r[RREC_LOG_BUFFER_RECORDS];
++	uint32_t first;
++	uint32_t n;
++	uint32_t dropped;
++};
++void rst_evbuf_init(struct rst_evbuf *b);
++void rst_evbuf_push(struct rst_evbuf *b, const struct rrec_logrec *r);
++/* The oldest record, without removing it; false when empty. */
++bool rst_evbuf_peek(const struct rst_evbuf *b, struct rrec_logrec *out);
++void rst_evbuf_pop(struct rst_evbuf *b);
++
++#endif
+##### new: modules/ring_store/zephyr/module.yml
+--- base/modules/ring_store/zephyr/module.yml
++++ modules/ring_store/zephyr/module.yml
+@@ -0,0 +1,4 @@
++name: ring_store
++build:
++  cmake: .
++  kconfig: Kconfig
+##### new: modules/ring_xfer/CMakeLists.txt
+--- base/modules/ring_xfer/CMakeLists.txt
++++ modules/ring_xfer/CMakeLists.txt
+@@ -0,0 +1,13 @@
++# Ring recorder USB transfer (software step 6, unit U4). The pure files (rxf_proto.c, rxf_desc.c) make no kernel call;
++# rxf_class.c is the thin part (reaches hardware only through ring_rhw); the real-stack file (rxf_hw_real.c) is built
++# only where the simulated drivers are off (the development kit build) and is not proven.
++if(CONFIG_RING_XFER_LOGIC OR CONFIG_RING_XFER)
++  zephyr_library_named(ring_xfer)
++  zephyr_include_directories(include)
++  zephyr_library_include_directories(src)
++  zephyr_library_sources(src/rxf_proto.c src/rxf_desc.c)
++  zephyr_library_sources_ifdef(CONFIG_RING_XFER src/rxf_class.c)
++  if(CONFIG_RING_XFER AND NOT CONFIG_RING_RHW_SIM)
++    zephyr_library_sources(src/rxf_hw_real.c)
++  endif()
++endif()
+##### new: modules/ring_xfer/Kconfig
+--- base/modules/ring_xfer/Kconfig
++++ modules/ring_xfer/Kconfig
+@@ -0,0 +1,34 @@
++config RING_XFER_LOGIC
++	bool "Ring USB transfer: protocol and descriptor tables (pure part, no kernel call)"
++	select CRC
++	help
++	  The 16-byte header, CRC-32, status codes, opcode table, argument limits and response layouts of
++	  design/firmware.md section 6, and the descriptor tables of the vendor class.
++
++config RING_XFER
++	bool "Ring USB transfer: the vendor class and its thread (thin part, reaches hardware only through ring_rhw)"
++	depends on RING_RHW
++	select RING_XFER_LOGIC
++	help
++	  The transfer thread, the stack enabled on VBUS ready and disabled on VBUS removed, the request reader and the
++	  BUSY answer (design/firmware.md section 6).
++
++if RING_XFER
++
++config RING_XFER_STACK_SIZE
++	int "Stack of the transfer thread (bytes)"
++	default 4096
++
++config RING_XFER_THREAD_PRIO
++	int "Priority of the transfer thread (preemptible, higher number = lower priority)"
++	default 6
++
++config RING_XFER_SEND_TIMEOUT_MS
++	int "Time one send may take before the host is taken as stopped (ms)"
++	default 2000
++
++config RING_XFER_RESYNC_MS
++	int "Silence on the bulk OUT pipe after which a half-read request is dropped (ms)"
++	default 100
++
++endif
+##### changed: modules/ring_xfer/include/ring_xfer/rxf.h
+--- base/modules/ring_xfer/include/ring_xfer/rxf.h
++++ modules/ring_xfer/include/ring_xfer/rxf.h
+@@ -90,2 +90,8 @@
+ 
++/* Ship mode step 1 (FW l.937, "close ... USB"; added in step 6 fix round 1, review finding R6-02): stop reading and
++ * answering, abort the command that runs and wait up to timeout_ms for it to end, then disable the stack
++ * (rhw_usb()->disable()); the stack stays off until the next RHW_USB_VBUS_READY. 0; -ETIMEDOUT when the command did
++ * not end in time (the stack is disabled anyway). Join's thread; blocks up to timeout_ms. */
++int rxf_stop(int32_t timeout_ms);
++
+ #ifdef __cplusplus
+##### changed: modules/ring_xfer/src/rxf_class.c
+--- base/modules/ring_xfer/src/rxf_class.c
++++ modules/ring_xfer/src/rxf_class.c
+@@ -48,2 +48,3 @@
+ static atomic_t cancel_req;         /* rxf_abort(): drop the request that has not started */
++static atomic_t stopped;            /* rxf_stop() (ship mode step 1): the stack stays off until the next VBUS ready */
+ static volatile bool vbus;
+@@ -227,4 +228,7 @@
+ 		case IT_VBUS_READY:
+-			/* FW l.978: the stack starts only after the power chip reported VBUS */
+-			(void)rhw_usb()->enable();
++			/* FW l.978: the stack starts only after the power chip reported VBUS (not after rxf_stop until VBUS
++			 * is reported again) */
++			if (atomic_get(&stopped) == 0) {
++				(void)rhw_usb()->enable();
++			}
+ 			break;
+@@ -254,2 +258,3 @@
+ 	case RHW_USB_VBUS_READY:
++		atomic_set(&stopped, 0);          /* VBUS reported again: the stack may start (after rxf_stop) */
+ 		vbus = true;
+@@ -304,2 +309,3 @@
+ 	atomic_set(&cancel_req, 0);
++	atomic_set(&stopped, 0);
+ 	tx_held = false;
+@@ -345 +351,21 @@
+ }
++
++/* Step 6 fix round 1 (review finding R6-02): ship mode step 1 closes USB (FW l.937). Nothing more is read or answered
++ * (as on VBUS removed), the command that runs is aborted and waited for up to timeout_ms, then the stack is disabled on
++ * the caller's thread so that it is off when this returns. */
++int rxf_stop(int32_t timeout_ms)
++{
++	k_spinlock_key_t k;
++	int r;
++
++	atomic_set(&stopped, 1);
++	k = k_spin_lock(&lk);
++	vbus = false;                     /* on_rx drops, emit_cb cancels, no BUSY answer is sent */
++	rx_reset();
++	busy_n = 0u;
++	k_spin_unlock(&lk, k);
++	rxf_abort();
++	r = rxf_finish(timeout_ms);
++	(void)rhw_usb()->disable();
++	return r;
++}
+##### new: modules/ring_xfer/src/rxf_desc.c
+--- base/modules/ring_xfer/src/rxf_desc.c
++++ modules/ring_xfer/src/rxf_desc.c
+@@ -0,0 +1,45 @@
++/*
++ * rxf_desc.c: the pure part of the vendor class: the full-speed and high-speed descriptor tables (FW l.669).
++ * Written for this project. No kernel call.
++ */
++#include <string.h>
++
++#include "rxf_desc.h"
++
++#define DESC_TYPE_INTERFACE 0x04u   /* USB 2.0 table 9-5 */
++#define DESC_TYPE_ENDPOINT 0x05u    /* USB 2.0 table 9-5 */
++#define EP_ATTR_BULK 0x02u          /* USB 2.0 table 9-13 */
++
++uint16_t rxf_desc_mps(enum rhw_usb_speed speed)
++{
++	return speed == RHW_USB_HS ? (uint16_t)RREC_USB_MPS_HS : (uint16_t)RREC_USB_MPS_FS;
++}
++
++size_t rxf_desc_get(enum rhw_usb_speed speed, uint8_t out[RXF_DESC_BYTES])
++{
++	uint16_t mps = rxf_desc_mps(speed);
++	const uint8_t eps[2] = { RREC_USB_EP_OUT, RREC_USB_EP_IN };
++	uint8_t *p = out;
++
++	/* interface: length 9, type 4, number 0 (the stack assigns it), alternate 0, 2 endpoints, class, subclass,
++	 * protocol, no string */
++	*p++ = 9u;
++	*p++ = DESC_TYPE_INTERFACE;
++	*p++ = 0u;
++	*p++ = 0u;
++	*p++ = 2u;
++	*p++ = RREC_USB_CLASS;
++	*p++ = RREC_USB_SUBCLASS;
++	*p++ = RREC_USB_PROTOCOL;
++	*p++ = 0u;
++	for (int i = 0; i < 2; i++) {
++		*p++ = 7u;
++		*p++ = DESC_TYPE_ENDPOINT;
++		*p++ = eps[i];
++		*p++ = EP_ATTR_BULK;
++		*p++ = (uint8_t)mps;
++		*p++ = (uint8_t)(mps >> 8);
++		*p++ = 0u;                      /* bulk: no interval */
++	}
++	return (size_t)(p - out);
++}
+##### new: modules/ring_xfer/src/rxf_desc.h
+--- base/modules/ring_xfer/src/rxf_desc.h
++++ modules/ring_xfer/src/rxf_desc.h
+@@ -0,0 +1,22 @@
++/*
++ * rxf_desc.h: the pure descriptor tables of the vendor class (software step 6, unit U4). Not public. No kernel call.
++ * FW l.669: one interface 0xFF/0x00/0x00, bulk OUT 0x01, bulk IN 0x81, wMaxPacketSize 64 at full speed and 512 at high
++ * speed. The stack numbers the interface and builds the configuration descriptor around these bytes.
++ */
++#ifndef RXF_DESC_H
++#define RXF_DESC_H
++
++#include <stddef.h>
++#include <stdint.h>
++
++#include <ring_rhw/rhw.h>
++
++#define RXF_DESC_BYTES 23u      /* interface descriptor (9) + two endpoint descriptors (7 each) */
++
++/* The class's descriptors for the speed: written to out (RXF_DESC_BYTES). Returns RXF_DESC_BYTES. */
++size_t rxf_desc_get(enum rhw_usb_speed speed, uint8_t out[RXF_DESC_BYTES]);
++
++/* wMaxPacketSize of the bulk endpoints at the speed. */
++uint16_t rxf_desc_mps(enum rhw_usb_speed speed);
++
++#endif
+##### new: modules/ring_xfer/src/rxf_hw_real.c
+--- base/modules/ring_xfer/src/rxf_hw_real.c
++++ modules/ring_xfer/src/rxf_hw_real.c
+@@ -0,0 +1,259 @@
++/*
++ * rxf_hw_real.c: the real USB device for the transfer part (software step 6, unit U4). Built only where the simulated
++ * drivers are off (the development kit build, decision D15). It is NOT PROVEN on a ring: no USB controller exists in
++ * any simulation of step 6 (plan section 7, row X1). Where the devicetree has no enabled `zephyr_udc0` node the file registers
++ * nothing and rhw_usb() keeps answering -ENODEV (the "absent" instance of ring_rhw).
++ * Kit calls used: the device_next stack (USBD_DEFINE_CLASS, usbd_add_configuration, usbd_register_class, usbd_init,
++ * usbd_enable, usbd_disable, usbd_bus_speed, usbd_msg_register_cb, usbd_ep_enqueue, usbd_ep_buf_alloc/free via the
++ * buffer pool macro). Written for this project; the stack's own loopback class is the model of the shape only.
++ * "FW l.N" = line N of design/firmware.md. No pin is named here.
++ */
++#include <errno.h>
++#include <string.h>
++
++#include <zephyr/device.h>
++#include <zephyr/devicetree.h>
++#include <zephyr/init.h>
++#include <zephyr/kernel.h>
++#include <zephyr/net_buf.h>
++#include <zephyr/usb/usbd.h>
++
++#include <ring_rhw/rhw.h>
++
++#include "rxf_desc.h"
++
++/* what the full-run stage "recorder-product-drivers" prints: whether the real calls were compiled */
++#if DT_NODE_HAS_STATUS(DT_NODELABEL(zephyr_udc0), okay)
++const bool rxf_hw_real_compiled = true;
++
++/* Placeholders for the product's identity: the vendor and product id and the strings are the owner's to choose
++ * (TO CONFIRM); the values below are the kit's test pair and must be replaced before a release. */
++#define RXF_VID 0x2fe3
++#define RXF_PID 0x0100
++#define RXF_BLOCK 1024u         /* bytes per IN transfer: a multiple of both packet sizes (CONFIG_UDC_BUF_POOL_SIZE of the
++				 * application must hold a few of them) */
++
++struct rxf_desc_set {
++	uint8_t bytes[RXF_DESC_BYTES];
++	struct usb_desc_header nil;
++};
++
++static struct rxf_desc_set fs_set, hs_set;
++static struct rhw_usb_cb ucb;
++static struct usbd_class_data *class_ctx;
++static K_SEM_DEFINE(in_done, 0, 1);
++static int in_err;
++static bool configured;
++
++USBD_DEVICE_DEFINE(rxf_usbd, DEVICE_DT_GET(DT_NODELABEL(zephyr_udc0)), RXF_VID, RXF_PID);
++USBD_DESC_LANG_DEFINE(rxf_lang);
++USBD_DESC_MANUFACTURER_DEFINE(rxf_mfr, "Ring");
++USBD_DESC_PRODUCT_DEFINE(rxf_product, "Ring recorder");
++USBD_DESC_CONFIG_DEFINE(rxf_fs_cfg_desc, "FS");
++USBD_DESC_CONFIG_DEFINE(rxf_hs_cfg_desc, "HS");
++static const uint8_t rxf_attrib = 0;            /* bus powered, no remote wake-up */
++USBD_CONFIGURATION_DEFINE(rxf_fs_config, rxf_attrib, 100, &rxf_fs_cfg_desc);
++USBD_CONFIGURATION_DEFINE(rxf_hs_config, rxf_attrib, 100, &rxf_hs_cfg_desc);
++
++static struct net_buf *in_pending;      /* the IN buffer on the bus: tells the IN completion from an OUT one */
++
++static int enqueue_out(struct usbd_class_data *c_data)
++{
++	struct net_buf *buf = usbd_ep_buf_alloc(c_data, RREC_USB_EP_OUT, RREC_USB_MPS_HS);
++	int r;
++
++	if (buf == NULL) {
++		return -ENOMEM;
++	}
++	r = usbd_ep_enqueue(c_data, buf);
++	if (r != 0) {
++		net_buf_unref(buf);
++	}
++	return r;
++}
++
++static int rxf_request(struct usbd_class_data *c_data, struct net_buf *buf, int err)
++{
++	if (buf != in_pending) {
++		if (err == 0 && ucb.rx != NULL && buf->len != 0) {
++			ucb.rx(buf->data, buf->len);                 /* FW l.677: copy and queue */
++		}
++		net_buf_unref(buf);
++		if (err != -ECONNABORTED) {
++			(void)enqueue_out(c_data);
++		}
++	} else {
++		in_err = err;
++		in_pending = NULL;
++		net_buf_unref(buf);
++		k_sem_give(&in_done);
++	}
++	return 0;
++}
++
++static void *rxf_get_desc(struct usbd_class_data *c_data, const enum usbd_speed speed)
++{
++	ARG_UNUSED(c_data);
++	return speed == USBD_SPEED_HS ? (void *)&hs_set : (void *)&fs_set;   /* FW l.669, l.1 of 6.1 */
++}
++
++static void rxf_enable(struct usbd_class_data *c_data)
++{
++	class_ctx = c_data;
++	configured = true;
++	(void)enqueue_out(c_data);
++	(void)enqueue_out(c_data);
++}
++
++static void rxf_disable(struct usbd_class_data *c_data)
++{
++	ARG_UNUSED(c_data);
++	configured = false;
++}
++
++static int rxf_init(struct usbd_class_data *c_data)
++{
++	ARG_UNUSED(c_data);
++	(void)rxf_desc_get(RHW_USB_FS, fs_set.bytes);
++	(void)rxf_desc_get(RHW_USB_HS, hs_set.bytes);
++	memset(&fs_set.nil, 0, sizeof(fs_set.nil));
++	memset(&hs_set.nil, 0, sizeof(hs_set.nil));
++	return 0;
++}
++
++static struct usbd_class_api rxf_class_api = {
++	.request = rxf_request,
++	.enable = rxf_enable,
++	.disable = rxf_disable,
++	.init = rxf_init,
++	.get_desc = rxf_get_desc,
++};
++
++USBD_DEFINE_CLASS(rxf_vendor, &rxf_class_api, NULL, NULL);
++
++static void msg_cb(struct usbd_context *const ctx, const struct usbd_msg *const msg)
++{
++	ARG_UNUSED(ctx);
++	if (ucb.event == NULL) {
++		return;
++	}
++	switch (msg->type) {
++	case USBD_MSG_VBUS_READY:
++		ucb.event(RHW_USB_VBUS_READY);
++		break;
++	case USBD_MSG_VBUS_REMOVED:
++		ucb.event(RHW_USB_VBUS_REMOVED);
++		break;
++	case USBD_MSG_CONFIGURATION:
++		ucb.event(msg->status != 0 ? RHW_USB_CONFIGURED : RHW_USB_UNCONFIGURED);
++		break;
++	case USBD_MSG_SUSPEND:
++		ucb.event(RHW_USB_SUSPENDED);
++		break;
++	case USBD_MSG_RESET:
++		ucb.event(RHW_USB_UNCONFIGURED);
++		break;
++	default:
++		break;
++	}
++}
++
++static bool inited;
++
++/* The first call of the stack that fails ends the start; its own error code goes back to the caller. */
++#define STEP(call)                                                                                                     \
++	do {                                                                                                           \
++		int step_r = (call);                                                                                   \
++		if (step_r != 0) {                                                                                     \
++			return step_r;                                                                                 \
++		}                                                                                                      \
++	} while (0)
++
++static int r_enable(void)
++{
++	if (!inited) {
++		STEP(usbd_add_descriptor(&rxf_usbd, &rxf_lang));
++		STEP(usbd_add_descriptor(&rxf_usbd, &rxf_mfr));
++		STEP(usbd_add_descriptor(&rxf_usbd, &rxf_product));
++		STEP(usbd_add_configuration(&rxf_usbd, USBD_SPEED_FS, &rxf_fs_config));
++		/* FW l.669: both registered, the high-speed one when the controller can do it (the nRF54LM20A usbhs can) */
++		if (usbd_caps_speed(&rxf_usbd) == USBD_SPEED_HS) {
++			STEP(usbd_add_configuration(&rxf_usbd, USBD_SPEED_HS, &rxf_hs_config));
++		}
++		STEP(usbd_register_class(&rxf_usbd, "rxf_vendor", USBD_SPEED_FS, 1));
++		if (usbd_caps_speed(&rxf_usbd) == USBD_SPEED_HS) {
++			STEP(usbd_register_class(&rxf_usbd, "rxf_vendor", USBD_SPEED_HS, 1));
++		}
++		STEP(usbd_msg_register_cb(&rxf_usbd, msg_cb));
++		STEP(usbd_init(&rxf_usbd));
++		inited = true;
++	}
++	return usbd_enable(&rxf_usbd);              /* only after VBUS ready (FW l.978) */
++}
++
++static int r_disable(void)
++{
++	return usbd_disable(&rxf_usbd);             /* on VBUS removed (FW l.978) */
++}
++
++static int r_send(const uint8_t *data, size_t len, int32_t timeout_ms)
++{
++	size_t off = 0;
++
++	if (!inited || !configured) {
++		return -ENODEV;
++	}
++	while (off < len) {
++		size_t n = MIN(RXF_BLOCK, len - off);
++		struct net_buf *buf = usbd_ep_buf_alloc(class_ctx, RREC_USB_EP_IN, n);
++		int r;
++
++		if (buf == NULL) {
++			return -EAGAIN;
++		}
++		net_buf_add_mem(buf, data + off, n);
++		in_pending = buf;
++		r = usbd_ep_enqueue(class_ctx, buf);
++		if (r != 0) {
++			in_pending = NULL;
++			net_buf_unref(buf);
++			return r;
++		}
++		if (k_sem_take(&in_done, K_MSEC(timeout_ms)) != 0) {
++			return -EAGAIN;                 /* the host stopped reading */
++		}
++		if (in_err != 0) {
++			return in_err;
++		}
++		off += n;
++	}
++	return 0;
++}
++
++static enum rhw_usb_speed r_speed(void)
++{
++	return usbd_bus_speed(&rxf_usbd) == USBD_SPEED_HS ? RHW_USB_HS : RHW_USB_FS;   /* FW l.669 */
++}
++
++static void r_set_callbacks(const struct rhw_usb_cb *cb)
++{
++	if (cb == NULL) {
++		memset(&ucb, 0, sizeof(ucb));
++	} else {
++		ucb = *cb;
++	}
++}
++
++static const struct rhw_usb_api real_api = {
++	.enable = r_enable, .disable = r_disable, .send = r_send, .speed = r_speed, .set_callbacks = r_set_callbacks,
++};
++
++static int rxf_hw_real_register(void)
++{
++	return rhw_register_usb(&real_api);
++}
++
++SYS_INIT(rxf_hw_real_register, APPLICATION, 90);
++#else
++const bool rxf_hw_real_compiled = false;
++#endif
+##### new: modules/ring_xfer/src/rxf_proto.c
+--- base/modules/ring_xfer/src/rxf_proto.c
++++ modules/ring_xfer/src/rxf_proto.c
+@@ -0,0 +1,402 @@
++/*
++ * rxf_proto.c: the pure part of the USB transfer (software step 6, unit U4): header, CRC, status codes, opcode table,
++ * argument limits, response layouts, BUSY. No kernel call (decision D11a: crc32_ieee() of the C library is a library
++ * function). "FW l.N" = line N of design/firmware.md. Written for this project.
++ */
++#include <string.h>
++
++#include <zephyr/sys/crc.h>
++
++#include "rxf_proto.h"
++
++/* ------------------------------------------------------------------ little-endian helpers (FW l.70) */
++static uint16_t get16(const uint8_t *p)
++{
++	return (uint16_t)(p[0] | (p[1] << 8));
++}
++
++static uint32_t get32(const uint8_t *p)
++{
++	return (uint32_t)p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24);
++}
++
++static uint64_t get64(const uint8_t *p)
++{
++	return (uint64_t)get32(p) | ((uint64_t)get32(p + 4) << 32);
++}
++
++static void put16(uint8_t *p, uint16_t v)
++{
++	p[0] = (uint8_t)v;
++	p[1] = (uint8_t)(v >> 8);
++}
++
++static void put32(uint8_t *p, uint32_t v)
++{
++	p[0] = (uint8_t)v;
++	p[1] = (uint8_t)(v >> 8);
++	p[2] = (uint8_t)(v >> 16);
++	p[3] = (uint8_t)(v >> 24);
++}
++
++/* ------------------------------------------------------------------ header */
++uint32_t rxf_proto_payload_crc(const uint8_t *payload, size_t length)
++{
++	return length == 0u ? 0u : crc32_ieee(payload, length);   /* FW l.686: 0 when the length is 0 */
++}
++
++void rxf_proto_put_header(uint8_t out[RREC_MSG_HEADER_BYTES], uint8_t opcode, enum rrec_status st, uint32_t tag,
++			  uint32_t length, uint32_t crc)
++{
++	put16(out + RREC_MSG_OFF_MAGIC, RREC_MSG_MAGIC);
++	out[RREC_MSG_OFF_OPCODE] = opcode;
++	out[RREC_MSG_OFF_STATUS] = (uint8_t)st;
++	put32(out + RREC_MSG_OFF_TAG, tag);
++	put32(out + RREC_MSG_OFF_LENGTH, length);
++	put32(out + RREC_MSG_OFF_CRC, crc);
++}
++
++bool rxf_proto_opcode_known(uint8_t opcode)
++{
++	return opcode >= RREC_OP_FIRST && opcode <= RREC_OP_LAST;
++}
++
++enum rrec_status rxf_proto_check(const uint8_t *req, size_t req_len, struct rxf_req *h)
++{
++	uint32_t expect;
++
++	memset(h, 0, sizeof(*h));
++	if (req_len < RREC_MSG_HEADER_BYTES) {
++		return RREC_ST_BAD_MAGIC;
++	}
++	h->opcode = req[RREC_MSG_OFF_OPCODE];
++	h->tag = get32(req + RREC_MSG_OFF_TAG);
++	h->length = get32(req + RREC_MSG_OFF_LENGTH);
++	h->crc = get32(req + RREC_MSG_OFF_CRC);
++	if (get16(req + RREC_MSG_OFF_MAGIC) != RREC_MSG_MAGIC) {
++		return RREC_ST_BAD_MAGIC;                     /* FW l.690 */
++	}
++	if (h->length > RXF_MAX_REQ_PAYLOAD || h->length != req_len - RREC_MSG_HEADER_BYTES) {
++		return RREC_ST_BAD_ARG;
++	}
++	expect = rxf_proto_payload_crc(req + RREC_MSG_HEADER_BYTES, h->length);
++	if (h->crc != expect) {
++		return RREC_ST_BAD_CRC;                       /* FW l.690 */
++	}
++	if (!rxf_proto_opcode_known(h->opcode)) {
++		return RREC_ST_UNKNOWN_OPCODE;                /* FW l.689 */
++	}
++	return RREC_ST_OK;
++}
++
++/* A response with no payload: status in the header, length 0, CRC 0 (FW l.690). Its own small buffer, so it can be
++ * sent while a command uses the staging buffer. */
++static int emit_error(rxf_emit_fn emit, void *user, uint8_t opcode, enum rrec_status st, uint32_t tag)
++{
++	uint8_t out[RREC_MSG_HEADER_BYTES + 4] = { 0 };
++	uint32_t len;
++
++	len = 0u;   /* an error response has no payload (FW l.690) */
++	rxf_proto_put_header(out, opcode, st, tag, len, rxf_proto_payload_crc(out + RREC_MSG_HEADER_BYTES, len));
++	return emit(user, out, RREC_MSG_HEADER_BYTES + len, true);
++}
++
++void rxf_proto_busy_header(const uint8_t *req, size_t req_len, uint8_t out[RREC_MSG_HEADER_BYTES])
++{
++	struct rxf_req h;
++	enum rrec_status st = rxf_proto_check(req, req_len, &h);
++
++	if (st == RREC_ST_OK) {
++		st = RREC_ST_BUSY;                            /* FW l.711 */
++	}
++	rxf_proto_put_header(out, h.opcode, st, h.tag, 0u, 0u);
++}
++
++void rxf_proto_init(struct rxf_ctx *c, const struct rxf_backend *be)
++{
++	memset(c, 0, sizeof(*c));
++	c->be = be;
++}
++
++void rxf_proto_abort(struct rxf_ctx *c)
++{
++	if (__atomic_load_n(&c->running, __ATOMIC_ACQUIRE) != 0) {
++		__atomic_store_n(&c->aborted, 1, __ATOMIC_RELEASE);
++	}
++}
++
++static bool stopped(const struct rxf_ctx *c)
++{
++	return __atomic_load_n(&c->aborted, __ATOMIC_ACQUIRE) != 0;
++}
++
++/* ------------------------------------------------------------------ the commands */
++static int outcome_of(int emit_rc, struct rxf_ctx *c)
++{
++	if (emit_rc == 0) {
++		return RXF_SENT;
++	}
++	return stopped(c) ? RXF_ABORTED : RXF_SEND_FAILED;
++}
++
++/* Answer with the payload already at stage + 16 (or an error status). */
++static int finish_small(struct rxf_ctx *c, rxf_emit_fn emit, void *user, const struct rxf_req *h, enum rrec_status st,
++			uint32_t len, struct rxf_result *res)
++{
++	int rc;
++
++	if (stopped(c)) {
++		return RXF_ABORTED;                           /* FW l.179: no response for an aborted command */
++	}
++	res->status = st;
++	if (st != RREC_ST_OK) {
++		rc = emit_error(emit, user, h->opcode, st, h->tag);
++		return outcome_of(rc, c);
++	}
++	res->length = len;
++	rxf_proto_put_header(c->stage, h->opcode, st, h->tag, len, rxf_proto_payload_crc(c->stage + RREC_MSG_HEADER_BYTES, len));
++	rc = emit(user, c->stage, RREC_MSG_HEADER_BYTES + len, true);
++	return outcome_of(rc, c);
++}
++
++static int read_range(struct rxf_ctx *c, uint32_t mps, const struct rxf_req *h, const uint8_t *p, rxf_emit_fn emit,
++		      void *user, struct rxf_result *res)
++{
++	uint32_t rec, first, count, crc = 0u, rem, total, n;
++	enum rrec_status st;
++	uint8_t *s = c->stage;
++
++	if (h->length != RREC_READ_REQ_BYTES) {
++		return finish_small(c, emit, user, h, RREC_ST_BAD_ARG, 0u, res);
++	}
++	rec = get32(p);
++	first = get32(p + 4);
++	count = get32(p + 8);
++	if (count < RREC_READ_COUNT_MIN || count > RREC_READ_COUNT_MAX) {              /* FW l.698 */
++		return finish_small(c, emit, user, h, RREC_ST_BAD_ARG, 0u, res);
++	}
++	if (first + count < first) {
++		return finish_small(c, emit, user, h, RREC_ST_NOT_FOUND, 0u, res);
++	}
++	/* every chunk must exist before any byte is sent (rxf.h range_check, FW l.661) */
++	st = c->be->range_check(rec, first, count);
++	if (st != RREC_ST_OK) {
++		return finish_small(c, emit, user, h, st, 0u, res);
++	}
++	/* pass 1: the header's CRC covers the whole payload and comes before it (FW l.686, rxf.h) */
++	for (uint32_t i = 0; i < count; i++) {
++		if (stopped(c)) {
++			return RXF_ABORTED;
++		}
++		st = c->be->read_chunk(rec, first + i, s);
++		if (st != RREC_ST_OK) {
++			return finish_small(c, emit, user, h, st, 0u, res);
++		}
++		c->crcs[i] = crc32_ieee(s, RREC_CHUNK_BYTES);
++		crc = crc32_ieee_update(crc, s, RREC_CHUNK_BYTES);
++	}
++	res->status = RREC_ST_OK;
++	res->length = count * RREC_CHUNK_BYTES;
++	rxf_proto_put_header(s, h->opcode, RREC_ST_OK, h->tag, res->length, crc);
++	if (mps == 0u) {
++		mps = RREC_USB_MPS_FS;
++	}
++	/* pass 2: header, then each chunk exactly as stored; the carry (less than one packet) stays in front of the
++	 * next chunk so that every piece but the last is a whole number of packets */
++	rem = RREC_MSG_HEADER_BYTES;
++	for (uint32_t i = 0; i < count; i++) {
++		if (stopped(c)) {
++			return RXF_ABORTED;
++		}
++		st = c->be->read_chunk(rec, first + i, s + rem);
++		if (st != RREC_ST_OK || crc32_ieee(s + rem, RREC_CHUNK_BYTES) != c->crcs[i]) {
++			res->status = RREC_ST_STORAGE_ERROR;  /* the chunk changed or failed after the header was fixed */
++			return RXF_SEND_FAILED;
++		}
++		total = rem + RREC_CHUNK_BYTES;
++		n = (i + 1u == count) ? total : (total / mps) * mps;
++		if (n != 0u) {
++			int rc = emit(user, s, n, i + 1u == count);
++
++			if (rc != 0) {
++				return outcome_of(rc, c);
++			}
++		}
++		rem = total - n;
++		memmove(s, s + n, rem);
++	}
++	return RXF_SENT;
++}
++
++static int dispatch(struct rxf_ctx *c, uint32_t mps, const struct rxf_req *h, const uint8_t *p, rxf_emit_fn emit,
++		    void *user, struct rxf_result *res)
++{
++	const struct rxf_backend *be = c->be;
++	uint8_t *out = c->stage + RREC_MSG_HEADER_BYTES;
++	enum rrec_status st = RREC_ST_OK;
++	uint32_t len = 0u, plen = h->length;
++	size_t olen = 0u;
++
++	switch (h->opcode) {
++	case RREC_OP_GET_INFO:                                                  /* FW l.696 */
++		if (plen != 0u) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		st = be->get_info(out);
++		len = RREC_GET_INFO_BYTES;
++		break;
++	case RREC_OP_LIST_RECORDINGS: {                                         /* FW l.697 */
++		uint16_t max;
++
++		if (plen != RREC_LIST_REQ_BYTES) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		max = get16(p + 4);
++		if (max < RREC_LIST_MAX_MIN || max > RREC_LIST_MAX_MAX) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		st = be->list(get32(p), max, out, &olen);
++		if (st == RREC_ST_OK && (olen < 2u || olen > RXF_LIST_PAYLOAD_MAX)) {
++			st = RREC_ST_STORAGE_ERROR;
++		}
++		len = (uint32_t)olen;
++		break;
++	}
++	case RREC_OP_READ_RANGE:                                                /* FW l.698 */
++		return read_range(c, mps, h, p, emit, user, res);
++	case RREC_OP_CONFIRM:                                                   /* FW l.699 */
++		if (plen != RREC_CONFIRM_REQ_BYTES) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		st = be->confirm(get32(p), get32(p + 4));
++		break;
++	case RREC_OP_DELETE: {                                                  /* FW l.700 */
++		uint32_t free_after = 0u;
++
++		if (plen != RREC_DELETE_REQ_BYTES) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		st = be->del(get32(p), &free_after);
++		put32(out, free_after);
++		len = RREC_DELETE_RESP_BYTES;
++		break;
++	}
++	case RREC_OP_SET_TIME:                                                  /* FW l.701 */
++		if (plen != RREC_SET_TIME_REQ_BYTES) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		st = be->set_time((int64_t)get64(p), (int16_t)get16(p + 8));
++		break;
++	case RREC_OP_GET_BATTERY:                                               /* FW l.702 */
++		if (plen != 0u) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		st = be->get_battery(out);
++		len = RREC_GET_BATTERY_BYTES;
++		break;
++	case RREC_OP_FW_BEGIN:                                                  /* FW l.703 */
++		if (plen != RREC_FW_BEGIN_REQ_BYTES) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		st = be->fw_begin(get32(p), get32(p + 4));
++		break;
++	case RREC_OP_FW_DATA:                                                   /* FW l.704 */
++		if (plen < 4u + RREC_FW_DATA_MIN || plen > 4u + RREC_FW_DATA_MAX) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		st = be->fw_data(get32(p), p + 4, plen - 4u);
++		break;
++	case RREC_OP_FW_END:                                                    /* FW l.705 */
++		if (plen != 0u) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		st = be->fw_end();
++		break;
++	case RREC_OP_GET_LOG: {                                                 /* FW l.706 */
++		uint16_t max;
++
++		if (plen != RREC_GET_LOG_REQ_BYTES) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		max = get16(p + 4);
++		if (max < RREC_GET_LOG_MAX_MIN || max > RREC_GET_LOG_MAX_MAX) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		st = be->get_log(get32(p), max, out, &olen);
++		if (st == RREC_ST_OK && (olen < 2u || olen > RXF_LOG_PAYLOAD_MAX)) {
++			st = RREC_ST_STORAGE_ERROR;
++		}
++		len = (uint32_t)olen;
++		break;
++	}
++	case RREC_OP_REBOOT:                                                    /* FW l.707 */
++		if (plen != 0u) {
++			st = RREC_ST_BAD_ARG;
++		}
++		break;                                                          /* the join reboots in after_response */
++	case RREC_OP_FACTORY:                                                   /* FW l.708 */
++		if (plen < 1u) {
++			st = RREC_ST_BAD_ARG;
++			break;
++		}
++		st = be->factory(p, plen, out, &olen);
++		if (st == RREC_ST_OK && olen > RXF_FACTORY_RESULT_MAX) {
++			st = RREC_ST_STORAGE_ERROR;
++		}
++		len = (uint32_t)olen;
++		break;
++	default:
++		st = RREC_ST_UNKNOWN_OPCODE;
++		break;
++	}
++	return finish_small(c, emit, user, h, st, len, res);
++}
++
++int rxf_proto_handle(struct rxf_ctx *c, uint32_t mps, const uint8_t *req, size_t req_len, rxf_emit_fn emit,
++		     void *user, struct rxf_result *res)
++{
++	struct rxf_req h;
++	enum rrec_status st;
++	int rc;
++
++	memset(res, 0, sizeof(*res));
++	if (!c->be->may_answer()) {                       /* FW l.673: CHARGING, TRANSFER, FACTORY_TEST only */
++		res->outcome = RXF_NO_ANSWER;
++		return RXF_NO_ANSWER;
++	}
++	st = rxf_proto_check(req, req_len, &h);
++	res->opcode = h.opcode;
++	res->tag = h.tag;
++	if (st != RREC_ST_OK) {
++		res->status = st;
++		rc = emit_error(emit, user, h.opcode, st, h.tag);
++		res->outcome = rc == 0 ? RXF_SENT : RXF_SEND_FAILED;
++		return res->outcome;
++	}
++	if (__atomic_exchange_n(&c->running, 1, __ATOMIC_ACQ_REL) != 0) {
++		res->status = RREC_ST_BUSY;               /* FW l.711 */
++		rc = emit_error(emit, user, h.opcode, RREC_ST_BUSY, h.tag);
++		res->outcome = rc == 0 ? RXF_SENT : RXF_SEND_FAILED;
++		return res->outcome;
++	}
++	__atomic_store_n(&c->aborted, 0, __ATOMIC_RELEASE);
++	res->dispatched = true;
++	res->outcome = (enum rxf_outcome)dispatch(c, mps, &h, req + RREC_MSG_HEADER_BYTES, emit, user, res);
++	__atomic_store_n(&c->running, 0, __ATOMIC_RELEASE);
++	if (res->outcome == RXF_SENT && c->be->after_response != NULL) {
++		c->be->after_response(h.opcode, res->status, h.tag, h.length);   /* FW l.705, l.707 */
++	}
++	return res->outcome;
++}
+##### new: modules/ring_xfer/src/rxf_proto.h
+--- base/modules/ring_xfer/src/rxf_proto.h
++++ modules/ring_xfer/src/rxf_proto.h
+@@ -0,0 +1,100 @@
++/*
++ * rxf_proto.h: the pure part of the USB transfer (software step 6, unit U4). Not public: the logic suites and
++ * rxf_class.c include it. No kernel call (stdint, stdbool, string, and crc32_ieee() of the C library, decision D11a).
++ * "FW l.N" = line N of design/firmware.md. Numbers only from rrec_spec.h.
++ *
++ * What it does: validates one complete request (FW 6.2), checks the argument limits (FW 6.3) BEFORE it calls the
++ * backend, builds the response and hands it to an emit function in pieces whose sizes are multiples of the bus
++ * speed's packet size except the last one (so no short packet ends a transfer early and no zero-length packet is
++ * needed, FW l.688), then calls backend->after_response().
++ */
++#ifndef RXF_PROTO_H
++#define RXF_PROTO_H
++
++#include <stdbool.h>
++#include <stddef.h>
++#include <stdint.h>
++
++#include <ring_xfer/rxf.h>
++
++/* The largest request payload: FW_DATA = offset u32 + 4,096 image bytes (FW l.704). */
++#define RXF_MAX_REQ_PAYLOAD (4u + RREC_FW_DATA_MAX)
++#define RXF_REQ_BYTES (RREC_MSG_HEADER_BYTES + RXF_MAX_REQ_PAYLOAD)
++
++#define RXF_LIST_PAYLOAD_MAX (2u + RREC_LIST_MAX_MAX * RREC_LIST_ENTRY_BYTES)         /* FW l.697 */
++#define RXF_LOG_PAYLOAD_MAX (2u + RREC_GET_LOG_MAX_MAX * RREC_LOG_RECORD_BYTES)       /* FW l.706 */
++#define RXF_FACTORY_RESULT_MAX 256u                                                   /* rxf.h */
++
++/* One staging buffer holds the 16-byte header and a whole small response, or the carry-over (less than one packet)
++ * and one chunk of a READ_RANGE stream. */
++#define RXF_STAGE_BYTES (RREC_CHUNK_BYTES + RREC_USB_MPS_HS)
++
++/* Hands out bytes to the transport. 0, or a negative errno (the response is then abandoned). Every call but the last
++ * of one response (last = false) has a size that is a multiple of the packet size passed to rxf_proto_handle(); the
++ * transport may hold its output line from the first call until the call with last = true. */
++typedef int (*rxf_emit_fn)(void *user, const uint8_t *data, size_t len, bool last);
++
++struct rxf_ctx {
++	const struct rxf_backend *be;
++	volatile int running;   /* a command runs (set and cleared inside rxf_proto_handle only) */
++	volatile int aborted;   /* rxf_proto_abort() while a command ran */
++	uint8_t stage[RXF_STAGE_BYTES];
++	uint32_t crcs[RREC_READ_COUNT_MAX];
++};
++
++enum rxf_outcome {
++	RXF_SENT = 0,           /* the response was handed over completely */
++	RXF_NO_ANSWER = 1,      /* may_answer() was false: nothing was sent (FW l.673) */
++	RXF_ABORTED = 2,        /* rxf_proto_abort() (VBUS removed): the rest of the response was not sent (FW l.179) */
++	RXF_SEND_FAILED = 3,    /* emit failed (host stopped reading) or a chunk read changed or failed mid-stream */
++};
++
++struct rxf_result {
++	enum rxf_outcome outcome;
++	uint8_t opcode;         /* of the request (as received) */
++	enum rrec_status status;
++	uint32_t tag;
++	uint32_t length;        /* payload length of the response */
++	bool dispatched;        /* the request reached the command table (valid header, known opcode, not BUSY) */
++};
++
++/* Parsed header of a request (little-endian fields, FW l.677 to l.686). */
++struct rxf_req {
++	uint8_t opcode;
++	uint32_t tag;
++	uint32_t length;
++	uint32_t crc;
++};
++
++void rxf_proto_init(struct rxf_ctx *c, const struct rxf_backend *be);
++
++/* VBUS removed: if a command runs, it stops at its next step and sends nothing more (FW l.179). Any thread. */
++void rxf_proto_abort(struct rxf_ctx *c);
++
++/* The checks that need no backend: header present, magic, length bound and match, CRC, opcode known. Returns OK or the
++ * status of FW l.689 to l.690 (BAD_MAGIC, BAD_CRC, UNKNOWN_OPCODE, BAD_ARG for a length that is too large or does
++ * not match the bytes given). *h is filled from the header bytes whenever 16 bytes were given. */
++enum rrec_status rxf_proto_check(const uint8_t *req, size_t req_len, struct rxf_req *h);
++
++/* The 16-byte header of a response (FW l.677 to l.686): magic, opcode, status, tag, length, crc (0 when length is 0). */
++void rxf_proto_put_header(uint8_t out[RREC_MSG_HEADER_BYTES], uint8_t opcode, enum rrec_status st, uint32_t tag,
++			 uint32_t length, uint32_t crc);
++
++/* The CRC-32 of a payload; 0 when the length is 0 (FW l.686). */
++uint32_t rxf_proto_payload_crc(const uint8_t *payload, size_t length);
++
++/* The header of the answer to a request that cannot run now: its own error status when the request is bad, BUSY
++ * when it is valid (FW l.711). For the part that receives a request while a command runs. */
++void rxf_proto_busy_header(const uint8_t *req, size_t req_len, uint8_t out[RREC_MSG_HEADER_BYTES]);
++
++/* true when the command table knows the opcode (RREC_OP_FIRST to RREC_OP_LAST). */
++bool rxf_proto_opcode_known(uint8_t opcode);
++
++/* Handle one request of req_len bytes (header + payload, complete) and hand the response to emit. mps = the packet
++ * size of the bus speed now (64 or 512). Runs on the transfer thread. Returns 0 (RXF_SENT) or a nonzero outcome of
++ * `res`. backend->after_response() is called only after a complete hand-over (outcome RXF_SENT) and only for a
++ * dispatched request (valid header, known opcode, not BUSY): its status may be an error such as BAD_ARG. */
++int rxf_proto_handle(struct rxf_ctx *c, uint32_t mps, const uint8_t *req, size_t req_len, rxf_emit_fn emit,
++		     void *user, struct rxf_result *res);
++
++#endif
+##### new: modules/ring_xfer/zephyr/module.yml
+--- base/modules/ring_xfer/zephyr/module.yml
++++ modules/ring_xfer/zephyr/module.yml
+@@ -0,0 +1,4 @@
++name: ring_xfer
++build:
++  cmake: .
++  kconfig: Kconfig
+##### changed: tests/factory/src/common.c
+--- base/tests/factory/src/common.c
++++ tests/factory/src/common.c
+@@ -10,2 +10,3 @@
+ int64_t fx_frame_ms[FX_MAX_FRAMES];
++int64_t fx_frame_ticks[FX_MAX_FRAMES];
+ uint32_t fx_frames;
+@@ -132,2 +133,3 @@
+ 		fx_frame_ms[fx_frames] = rhw_clock()->now_ms();
++		fx_frame_ticks[fx_frames] = k_uptime_ticks();
+ 	}
+##### changed: tests/factory/src/common.h
+--- base/tests/factory/src/common.h
++++ tests/factory/src/common.h
+@@ -55,2 +55,3 @@
+ extern int64_t fx_frame_ms[FX_MAX_FRAMES];
++extern int64_t fx_frame_ticks[FX_MAX_FRAMES];   /* k_uptime_ticks() of each frame (fix round 1, R6-13) */
+ extern uint32_t fx_frames;
+##### changed: tests/factory/src/test_screen.c
+--- base/tests/factory/src/test_screen.c
++++ tests/factory/src/test_screen.c
+@@ -197,2 +197,6 @@
+ 	/* red 0, green 1, blue 2, white 3, black 4, grid 5 (rfa.h), 1 s apart */
++	for (uint32_t i = 0; i < fx_frames && i < FX_MAX_FRAMES; i++) {
++		TC_PRINT("T-SCREEN stamps: frame %u at %lld ms, %lld ticks (%u ticks/s), spacing %lld ms\n", i, fx_frame_ms[i],
++			 fx_frame_ticks[i], (unsigned)CONFIG_SYS_CLOCK_TICKS_PER_SEC, i > 0 ? fx_frame_ms[i] - fx_frame_ms[i - 1] : 0);
++	}
+ 	zassert_equal(fx_frames, 6);
+@@ -201,3 +205,12 @@
+ 		if (i > 0) {
+-			zassert_equal(fx_frame_ms[i] - fx_frame_ms[i - 1], 1000, "1 s each (FW l.1025)");
++			/* 1 s each (FW l.1025). Fix round 1 (review finding R6-13): the frames are spaced by k_sleep(1,000 ms) in
++			 * rfa.c (run_screen), not by a periodic timer: each wait is at least 1,000 ms and ends on the next kernel
++			 * tick (the kernel adds one tick to a relative timeout), so a frame comes 1,000 ms plus up to one tick
++			 * after the one before. Measured in ticks (not in whole ms, whose floor made the result depend on the
++			 * moment the earlier cases ended): at least 1,000,000 us and less than 1,000 ms + 1 ms (the tolerance:
++			 * one tick is 100 us at 10,000 ticks per second) */
++			int64_t us = k_ticks_to_us_floor64((uint64_t)(fx_frame_ticks[i] - fx_frame_ticks[i - 1]));
++
++			zassert_true(us >= 1000000 && us < 1001000, "1 s each (FW l.1025): frame %u came %lld us after the one "
++				     "before", i, us);
+ 		}
+##### changed: tests/recorder/CMakeLists.txt
+--- base/tests/recorder/CMakeLists.txt
++++ tests/recorder/CMakeLists.txt
+@@ -33,3 +33,6 @@
+   src/test_log.c
+-  src/test_screens.c)
++  src/test_screens.c
++  src/test_ship.c
++  src/test_unmount.c
++  src/test_factory.c)
+ endif()
+##### changed: tests/recorder/broken_edit.py
+--- base/tests/recorder/broken_edit.py
++++ tests/recorder/broken_edit.py
+@@ -2,3 +2,3 @@
+ Prints "<named case> <suite file>". One named fault per variant; the edit must match exactly once. The variants are those
+-of firmware/docs/step6-plan.md, unit J "Broken copies"."""
++of firmware/docs/step6-plan.md, unit J "Broken copies", and the six of fix round 1 (review findings R6-01 to R6-06)."""
+ import pathlib
+@@ -71,2 +71,27 @@
+         "\treturn s == RC_ST_RECOVERY || s == RC_ST_RECORDING || s == RC_ST_TRANSFER || s == RC_ST_STANDBY;\n"),
++    # ----- step 6 fix round 1 (review findings R6-01 to R6-06), one copy each
++    # R6-01: ship mode stops the motor at once (M2 cut)
++    "ship_cuts_m2": (REC, "recorder_ship.test_ship_feels_whole_m2", "test_ship",
++        "\twhile (rmo_playing() && rhw_clock()->now_ms() < end) {\n",
++        "\twhile (false && rmo_playing() && rhw_clock()->now_ms() < end) {\n"),
++    # R6-02: the screens are not told the ship state (the screen keeps its picture during ship mode)
++    "ship_screen_on": (REC, "recorder_ship.test_ship_closes_each_part_first", "test_ship",
++        "\ton = rscr_glue_after(a, last_event, state, t);\n",
++        "\ton = rscr_glue_after(a, last_event, rrec_st.ship_pending ? prev : state, t);\n"),
++    # R6-03: the unmount does not wait for the running store call and its result is dropped
++    "unmount_result_dropped": (REC, "recorder_unmount.test_unconfigured_finish_times_out", "test_unmount",
++        "\tr = rst_unmount_wait(FINISH_WAIT_MS);\n",
++        "\t(void)rst_unmount();\n\tr = 0;\n"),
++    # R6-04: no HFXO in BOOT and RECOVERY
++    "no_hfxo_in_boot": (REC, "recorder_rails.test_hfxo_in_boot_and_recovery", "test_rails",
++        "\treturn s == RC_ST_BOOT || s == RC_ST_RECOVERY || s == RC_ST_CHARGING || s == RC_ST_TRANSFER || s == RC_ST_FACTORY_TEST;\n",
++        "\treturn s == RC_ST_CHARGING || s == RC_ST_TRANSFER || s == RC_ST_FACTORY_TEST;\n"),
++    # R6-05: the close drops the partial chunk
++    "close_drops_partial": (REC, "recorder_actions.test_close_order", "test_actions",
++        "\t(void)rst_close(cr.last, &cr.close);     /* partial chunk, CLOSE record, superblock with the flag clear */\n",
++        "\t(void)rst_close(NULL, &cr.close);        /* the partial chunk dropped */\n"),
++    # R6-06: the factory's test recording is opened as type 1
++    "test_recording_wrong_type": (REC, "recorder_factory.test_tmic_records_type_2_for_2s", "test_factory",
++        "\t\tr = rst_open(RREC_REC_TYPE_FACTORY, 0, &id);   /* type 2 (FW l.548, l.1024) */\n",
++        "\t\tr = rst_open(RREC_REC_TYPE_RECORDING, 0, &id);   /* type 1: wrong */\n"),
+ }
+##### changed: tests/recorder/short_run.sh
+--- base/tests/recorder/short_run.sh
++++ tests/recorder/short_run.sh
+@@ -31,3 +31,3 @@
+ 	echo "twister exit code on $P: $R (log $OUT/twister-$T.log)"
+-	grep -E "FAIL|PASS|passed|failed|Assertion|error:|CMake Error|warning:|ROW|RULES|RAILS|SIGN-1|stop|start|close|open order|boot|frame hash|M1 action" "$OUT/twister-$T.log" | cut -c1-300 | head -400
++	grep -E "FAIL|PASS|passed|failed|Assertion|error:|CMake Error|warning:|ROW|RULES|RAILS|SIGN-1|stop|start|close|open order|boot|frame hash|M1 action|ship|unmount|SCR_CHARGING|T-MIC|T-SIGN|latch|HFXO|close frames" "$OUT/twister-$T.log" | cut -c1-300 | head -400
+ 	[ "$R" -ne 0 ] && RC=1
+##### changed: tests/recorder/src/rt.c
+--- base/tests/recorder/src/rt.c
++++ tests/recorder/src/rt.c
+@@ -135,3 +135,3 @@
+ 		if (rc_core_state(rglue_core()) != RC_ST_RECORDING && rhw_pmic()->rail_get(RHW_RAIL_MIC) &&
+-		    !rrec_st.test_recording) {
++		    atomic_get(&rrec_st.test_recording) == 0) {
+ 			mic_at_screens++;
+@@ -242,3 +242,3 @@
+ 			sc[i].mv = i == 0 ? b->mv : (b->mv_next != 0 ? b->mv_next : b->mv);
+-			sc[i].ua = 3000;
++			sc[i].ua = b->ua != 0 ? b->ua : 3000;
+ 			sc[i].temp_c_x10 = 250;
+@@ -247,2 +247,5 @@
+ 		rhw_sim_pmic_script(sc, 2);
++	}
++	if (b->chg_forced != 0) {
++		rhw_sim_pmic_charge_state((int)b->chg_forced - 1);
+ 	}
+@@ -287,4 +290,3 @@
+ 	rhw_sim_reset();
+-	rhw_sim_reboot();   /* every unit's RAM state back to reset values */
+-	rt_sleep(100);      /* the audio thread leaves a capture the reboot stopped before rau_init runs again (notes, finding F1) */
++	rhw_sim_reboot();   /* every unit's RAM state back to reset values (the audio part waits for its capture loop, F1) */
+ 	apply(b);
+@@ -296,4 +298,3 @@
+ 	rt_sleep(100);
+-	rhw_sim_reboot();
+-	rt_sleep(100);      /* as in rt_fresh (finding F1) */
++	rhw_sim_reboot();   /* the audio part waits for its capture loop (finding F1): no sleep after it */
+ 	apply(b);
+##### changed: tests/recorder/src/rt.h
+--- base/tests/recorder/src/rt.h
++++ tests/recorder/src/rt.h
+@@ -40,2 +40,4 @@
+ 	bool unconfirmed;         /* the running image is not confirmed (the update self-test runs, FW l.1014) */
++	int32_t ua;               /* with mv: the battery current of the samples in µA (0 = 3,000 µA discharge; < 0 charging) */
++	uint8_t chg_forced;       /* 0 = the simulated charger's own state; else the charge state + 1 (RREC_CHG_* + 1) */
+ };
+##### changed: tests/recorder/src/test_actions.c
+--- base/tests/recorder/src/test_actions.c
++++ tests/recorder/src/test_actions.c
+@@ -40,2 +40,58 @@
+ 
++/* the frames of the closed recording against what the simulated input delivered (review finding R6-05): every kept frame
++ * is the input's frame counter (left) and its inverse (right) from frame 800 on (FW l.460: the first 50 ms dropped), none
++ * missing; the chunks' frames add up to the CLOSE record's duration; the last chunk is the partial one; and the duration
++ * is what was captured from the start to the mark */
++static void check_closed_frames(int64_t start_ms, int64_t mark_ms)
++{
++	static uint8_t chunk[RREC_CHUNK_BYTES];
++	struct rst_mount_info mi;
++	struct rst_rec_info info[8];
++	uint16_t n = 0;
++	uint64_t sum = 0;
++	uint32_t last_frames = 0;
++	uint32_t bad = 0;
++	int64_t want;
++
++	zassert_equal(rst_mount(false, &mi), 0, "mount");
++	zassert_equal(rst_list(0, 8, info, &n), 0, "list");
++	zassert_true(n >= 1, "the recording is listed");
++	for (uint32_t c = 0; c < info[n - 1].chunk_count; c++) {
++		uint32_t fr;
++		const uint8_t *pl = &chunk[RREC_CHUNK_HEADER_BYTES];
++
++		zassert_equal(rst_read_chunk(info[n - 1].recording_id, c, chunk), 0, "read chunk %u", c);
++		fr = sys_get_le32(&chunk[RREC_CH_OFF_FRAMES]);
++		for (uint32_t f = 0; f < fr; f++) {
++			uint16_t want_l = (uint16_t)((RREC_DISCARD_FRAMES + sum + f) & 0xFFFFu);
++			uint16_t l = sys_get_le16(&pl[f * 4]);
++			uint16_t r = sys_get_le16(&pl[f * 4 + 2]);
++
++			if (l != want_l || r != (uint16_t)~want_l) {
++				if (bad < 3) {
++					TC_PRINT("close frames: chunk %u frame %u: %u/%u, captured %u/%u\n", c, f, l, r, want_l,
++						 (uint16_t)~want_l);
++				}
++				bad++;
++			}
++		}
++		sum += fr;
++		last_frames = fr;
++	}
++	(void)rst_unmount();
++	/* FW l.443, l.460: 16 frames per ms; the kept frames run from the start + 50 ms to the mark */
++	want = (mark_ms - start_ms) * 16 - (int64_t)RREC_DISCARD_FRAMES;
++	TC_PRINT("close frames: %u chunks, %llu frames in the chunks, CLOSE duration %llu, last chunk %u frames, "
++		 "captured to the mark %lld (start %lld ms, mark %lld ms), %u frames not as captured\n", info[n - 1].chunk_count,
++		 sum, info[n - 1].duration_frames, last_frames, want, start_ms, mark_ms, bad);
++	zassert_equal(bad, 0, "every kept frame is the captured one (%u not)", bad);
++	zassert_equal(sum, info[n - 1].duration_frames, "the chunks hold the whole duration (%llu of %llu)", sum,
++		      info[n - 1].duration_frames);
++	zassert_true(last_frames > 0 && last_frames < RREC_CHUNK_FRAMES, "the last chunk is the partial one (%u)",
++		     last_frames);
++	/* one block (256 frames, FW l.443) plus one ms of each stamp: the mark and the start are ms times */
++	zassert_true(sum + RREC_BLOCK_FRAMES + 32 >= (uint64_t)want && sum <= (uint64_t)want + RREC_BLOCK_FRAMES + 32,
++		     "kept %llu, captured to the mark %lld", sum, want);
++}
++
+ /* FW l.125: close = partial chunk, CLOSE record, superblock flag clear, stop PDM, clocks low, VDD_MIC off, VDD_SD off */
+@@ -44,6 +100,21 @@
+ 	int32_t i_part, i_close, i_sb, i_stop, i_sleep, i_mic, i_sd;
+-
+-	rt_fresh(NULL);
+-	rt_long();
+-	rt_sleep(1300);   /* the mark falls inside a chunk: a partial chunk exists */
++	int64_t start_ms, mark_ms;
++
++	rt_fresh(NULL);
++	rhw_sim_log_clear();
++	rt_long();
++	start_ms = rt_ev_us(rt_find(RHW_EV_MIC_START, -1, -1, 0)) / 1000;
++	zassert_true(start_ms > 0, "the input started");
++	rt_sleep(1300);
++	/* the stop press so that its mark (1,000 ms after the press, FW l.128) falls in the middle of a chunk: a partial
++	 * chunk of about half a chunk exists (8,192 frames, FW l.535) */
++	for (int i = 0; i < 200; i++) {
++		int64_t at_mark = (k_uptime_get() + RREC_LONG_PRESS_MS - start_ms) * 16 - (int64_t)RREC_DISCARD_FRAMES;
++		int64_t in_chunk = at_mark % RREC_CHUNK_FRAMES;
++
++		if (in_chunk >= 3000 && in_chunk <= 5000) {
++			break;
++		}
++		rt_sleep(4);
++	}
+ 	rhw_sim_log_clear();
+@@ -52,2 +123,4 @@
+ 	zassert_equal(rt_state(), RC_ST_STANDBY, "stopped");
++	mark_ms = act_time(RC_ACT_CLOSE);
++	zassert_true(mark_ms > start_ms, "CLOSE carried out");
+ 	i_part = find_write(RREC_LBA_CHUNK_FIRST, UINT32_MAX, 0);
+@@ -67,2 +140,3 @@
+ 	zassert_true(i_sd > i_mic, "VDD_SD off last");
++	check_closed_frames(start_ms, mark_ms);
+ }
+@@ -291,2 +365,49 @@
+ 
++/* Review finding R6-08: an event of the kinds VBUS_OUT, MIC_NO_BLOCK, CHUNK_WRITE_FAILED that finds the recorder's queue
++ * full is latched and reaches the core when the queue has room (rows 40, 37, 36 of FW 1.2) */
++static int fill_queue_then_post(enum rc_event ev)
++{
++	int r;
++	int n = 0;
++
++	k_sched_lock();
++	while (n < 100 && rrec_post(RREC_JOB_EVENT, RC_EV_INIT_DONE) == 0) {   /* no row outside BOOT: dropped by the core */
++		n++;
++	}
++	r = rrec_post(RREC_JOB_EVENT, ev);
++	k_sched_unlock();
++	TC_PRINT("latch: %d jobs filled the queue, the post of event %d answered %d\n", n, ev, r);
++	return r;
++}
++
++ZTEST(recorder_actions, test_latched_events_not_lost)
++{
++	rt_fresh(NULL);
++	rt_vbus(true);
++	zassert_equal(rt_state(), RC_ST_CHARGING, "CHARGING");
++	rt_steps_clear();
++	zassert_not_equal(fill_queue_then_post(RC_EV_VBUS_OUT), 0, "the queue was full");
++	rt_settle();
++	zassert_true(rt_row_seen(40), "row 40: VBUS removed reached the core (FW l.172)");
++	zassert_equal(rt_state(), RC_ST_STANDBY, "STANDBY");
++
++	rt_fresh(NULL);
++	rt_long();
++	zassert_equal(rt_state(), RC_ST_RECORDING, "recording");
++	rt_steps_clear();
++	zassert_not_equal(fill_queue_then_post(RC_EV_MIC_NO_BLOCK), 0, "the queue was full");
++	rt_settle();
++	zassert_true(rt_row_seen(37), "row 37: no block reached the core (FW l.169)");
++	zassert_equal(rt_state(), RC_ST_ERR_MIC_FAULT, "ERR_MIC_FAULT");
++
++	rt_fresh(NULL);
++	rt_long();
++	zassert_equal(rt_state(), RC_ST_RECORDING, "recording");
++	rt_steps_clear();
++	zassert_not_equal(fill_queue_then_post(RC_EV_CHUNK_WRITE_FAILED), 0, "the queue was full");
++	rt_settle();
++	zassert_true(rt_row_seen(36), "row 36: the write fault reached the core (FW l.168)");
++	zassert_equal(rt_state(), RC_ST_ERR_STORAGE_FAULT, "ERR_STORAGE_FAULT");
++}
++
+ /* FW l.218, l.1065 (C23, the join's part): during a recording the audio and storage threads report progress through the
+##### new: tests/recorder/src/test_factory.c
+--- base/tests/recorder/src/test_factory.c
++++ tests/recorder/src/test_factory.c
+@@ -0,0 +1,136 @@
++/*
++ * recorder_factory: the join's half of T-MIC and T-SIGN on the REAL rrec_test_recording (step 6 fix round 1, review
++ * finding R6-06): design/firmware.md l.1024 (T-MIC: "a 2 s test recording (recording_type 2) through the normal path")
++ * and l.1029 (T-SIGN: "two 1 s test recordings 1 s apart; the ring reports the times VDD_MIC went on and off"). The
++ * requests go over the simulated USB to the real factory part, which calls the join through its ops.
++ */
++#include <string.h>
++
++#include <zephyr/sys/byteorder.h>
++
++#include <ring_store/rst.h>
++
++#include "rt.h"
++
++#if defined(CONFIG_RING_FACTORY)
++static uint8_t resp[RREC_MSG_HEADER_BYTES + 256];
++
++static void to_factory(void)
++{
++	struct rt_boot b = { .factory_flag = true };
++	uint8_t st;
++	uint8_t sub = RREC_FAC_ENTER;
++
++	rt_fresh(&b);
++	rt_vbus(true);
++	rt_usb_configured();
++	(void)rt_usb(RREC_OP_FACTORY, &sub, 1, resp, sizeof(resp), &st);
++	zassert_equal(rt_state(), RC_ST_FACTORY_TEST, "FACTORY_TEST");
++}
++
++/* the newest recording on the card (mounted for the read) */
++static bool newest(struct rst_rec_info *out)
++{
++	struct rst_mount_info mi;
++	struct rst_rec_info info[8];
++	uint16_t n = 0;
++	bool was = rst_mounted();
++
++	if (!was && rst_mount(false, &mi) != 0) {
++		return false;
++	}
++	(void)rst_list(0, 8, info, &n);
++	if (!was) {
++		(void)rst_unmount();
++	}
++	if (n == 0) {
++		return false;
++	}
++	*out = info[n - 1];
++	return true;
++}
++#endif
++
++/* T-MIC1 (FW l.1024): one recording of type 2, 2 s long (32,000 frames at 16 kHz, FW l.443), through rec_mics_on */
++ZTEST(recorder_factory, test_tmic_records_type_2_for_2s)
++{
++#if defined(CONFIG_RING_FACTORY)
++	uint8_t pl[2] = { RREC_FAC_MIC, 1 };
++	struct rst_rec_info r;
++	uint8_t st = 0xFF;
++	int n;
++
++	memset(&r, 0, sizeof(r));
++
++	to_factory();
++	rhw_sim_log_clear();
++	n = rt_usb(RREC_OP_FACTORY, pl, sizeof(pl), resp, sizeof(resp), &st);
++	TC_PRINT("T-MIC1: response %d bytes, status %u, result %u\n", n, st, n > RREC_MSG_HEADER_BYTES ?
++		 resp[RREC_MSG_HEADER_BYTES] : 0xFF);
++	zassert_equal(st, RREC_ST_OK, "the request answered OK");
++	zassert_equal(resp[RREC_MSG_HEADER_BYTES], RREC_FAC_RESULT_PASS, "T-MIC1 passed on the counter input");
++	zassert_equal(rt_count_rail(RHW_RAIL_MIC, true), 1u, "VDD_MIC on once");
++	zassert_true(newest(&r), "the test recording is on the card");
++	TC_PRINT("T-MIC1: recording %u type %u, %llu frames, %u chunks\n", r.recording_id, r.type, r.duration_frames,
++		 r.chunk_count);
++	zassert_equal(r.type, 2, "recording_type 2 (FW l.1024)");
++	/* 2 s = 32,000 frames (FW l.1024, l.443); within one block of 256 frames (FW l.443): the cut is at a ms time */
++	zassert_true(r.duration_frames + 256 >= 32000 && r.duration_frames <= 32000 + 256, "2 s long (%llu frames)",
++		     r.duration_frames);
++	zassert_false(rt_mic(), "VDD_MIC off after the test");
++#else
++	ztest_test_skip();
++#endif
++}
++
++/* T-SIGN (FW l.1029): two 1 s test recordings 1 s apart; the reported VDD_MIC on and off times are the rail's own */
++ZTEST(recorder_factory, test_tsign_reports_mic_times)
++{
++#if defined(CONFIG_RING_FACTORY)
++	uint8_t sub = RREC_FAC_SIGN;
++	uint8_t st = 0xFF;
++	int64_t rep[4];
++	int64_t rail[4];
++	int32_t i = 0;
++	int n;
++
++	to_factory();
++	rhw_sim_log_clear();
++	n = rt_usb(RREC_OP_FACTORY, &sub, 1, resp, sizeof(resp), &st);
++	zassert_equal(st, RREC_ST_OK, "the request answered OK");
++	zassert_true(n >= RREC_MSG_HEADER_BYTES + 1 + 32, "result and four times (%d bytes)", n);
++	zassert_equal(resp[RREC_MSG_HEADER_BYTES], RREC_FAC_RESULT_PASS, "T-SIGN result pass");
++	for (int k = 0; k < 4; k++) {
++		rep[k] = (int64_t)sys_get_le64(&resp[RREC_MSG_HEADER_BYTES + 1 + 8 * k]);
++	}
++	/* the rail's own on, off, on, off times from the event log of the simulated power chip */
++	for (int k = 0; k < 4; k++) {
++		i = rt_find_rail(RHW_RAIL_MIC, (k % 2) == 0, k == 0 ? 0 : (uint32_t)i + 1);
++		rail[k] = i >= 0 ? rt_ev_us(i) / 1000 : -1;
++	}
++	TC_PRINT("T-SIGN: reported on %lld off %lld on %lld off %lld ms; rail on %lld off %lld on %lld off %lld ms\n", rep[0],
++		 rep[1], rep[2], rep[3], rail[0], rail[1], rail[2], rail[3]);
++	zassert_equal(rt_count_rail(RHW_RAIL_MIC, true), 2u, "two test recordings: VDD_MIC on twice");
++	for (int k = 0; k < 4; k++) {
++		zassert_true(rail[k] >= 0, "rail edge %d", k);
++		/* the time is read right after the rail call: the same ms or the next (1 ms, the rail wait of FW l.458) */
++		zassert_true(rep[k] >= rail[k] && rep[k] <= rail[k] + 1, "time %d reported %lld, rail %lld", k, rep[k],
++			     rail[k]);
++	}
++	/* each 1 s long (FW l.1029), the second 1 s after the first ended (FW l.1029) */
++	zassert_true(rep[1] - rep[0] >= 1000, "first recording 1 s (%lld ms)", rep[1] - rep[0]);
++	zassert_true(rep[3] - rep[2] >= 1000, "second recording 1 s (%lld ms)", rep[3] - rep[2]);
++	zassert_true(rep[2] - rep[1] >= 1000, "1 s apart (%lld ms)", rep[2] - rep[1]);
++	zassert_false(rt_mic(), "VDD_MIC off after the test");
++#else
++	ztest_test_skip();
++#endif
++}
++
++static void *setup(void)
++{
++	rt_setup();
++	return NULL;
++}
++
++ZTEST_SUITE(recorder_factory, NULL, setup, NULL, NULL, NULL);
+##### changed: tests/recorder/src/test_rails.c
+--- base/tests/recorder/src/test_rails.c
++++ tests/recorder/src/test_rails.c
+@@ -5,4 +5,7 @@
+ 
+-/* FW l.912 to l.920: VDD_SD on in BOOT, RECOVERY, RECORDING, TRANSFER; VDD_MIC only in RECORDING; HFXO on in RECORDING and
+- * TRANSFER, and with USB in CHARGING. FACTORY_TEST is "per test" and BOOT/RECOVERY are passed through (not checked). */
++/* FW l.912 to l.920 (the table of 8.2): VDD_SD on in BOOT, RECOVERY, RECORDING, TRANSFER; VDD_MIC only in RECORDING;
++ * HFXO on in BOOT and RECOVERY (l.915), RECORDING (l.917), TRANSFER (l.919), with USB in CHARGING (l.918: VBUS is present
++ * in CHARGING, so USB runs), and in STANDBY and the error states only when the radio runs (l.916, l.920; these suites
++ * do not run the radio, so off). After a row the ring rests in its new state; BOOT and RECOVERY are passed through, so
++ * their HFXO is checked by test_hfxo_in_boot_and_recovery from the event log; FACTORY_TEST is "per test". */
+ static int check_rails(int row)
+@@ -71,2 +74,77 @@
+ 
++/* the HFXO requests outstanding just after simulated event i (the a0 of the last HFXO request or release up to i) */
++static int64_t hfxo_at(uint32_t upto)
++{
++	struct rhw_sim_ev e;
++	int64_t n = 0;
++
++	for (uint32_t i = 0; i <= upto && rhw_sim_log_get(i, &e); i++) {
++		if (e.kind == RHW_EV_HFXO_REQUEST || e.kind == RHW_EV_HFXO_RELEASE) {
++			n = e.a0;
++		}
++	}
++	return n;
++}
++
++/* the first step whose state after it is s, at or after step `from`; -1 when none */
++static int32_t step_into(enum rc_state s, uint32_t from)
++{
++	for (uint32_t i = from; i < rt_steps(); i++) {
++		if (rt_step_get(i).state == s) {
++			return (int32_t)i;
++		}
++	}
++	return -1;
++}
++
++/* the HFXO count stays above 0 from simulated event `a` through every event before time t_end_us */
++static bool held_through(int32_t a, int64_t t_end_us)
++{
++	struct rhw_sim_ev e;
++	int64_t n = hfxo_at((uint32_t)a);
++
++	if (n < 1) {
++		return false;
++	}
++	for (uint32_t i = (uint32_t)a + 1; rhw_sim_log_get(i, &e) && e.t_us < t_end_us; i++) {
++		if ((e.kind == RHW_EV_HFXO_REQUEST || e.kind == RHW_EV_HFXO_RELEASE) && e.a0 < 1) {
++			return false;
++		}
++	}
++	return true;
++}
++
++/* FW l.915 (review finding R6-04): HFXO on in BOOT and RECOVERY, released when the state that follows does not want it
++ * (STANDBY, l.916: "when the radio runs"; these suites do not run the radio) */
++ZTEST(recorder_rails, test_hfxo_in_boot_and_recovery)
++{
++	int32_t i_init, i_rec, i_stb;
++	int64_t t_stb_us;
++
++	/* BOOT: the boot mount (the first card init) runs with HFXO held, until the step into STANDBY */
++	rt_fresh(NULL);
++	i_init = rt_find(RHW_EV_DISK_INIT, -1, -1, 0);
++	i_stb = step_into(RC_ST_STANDBY, 0);
++	zassert_true(i_init >= 0 && i_stb >= 0, "booted to STANDBY (%d, %d)", i_init, i_stb);
++	t_stb_us = rt_step_get((uint32_t)i_stb).t_ms * 1000;
++	TC_PRINT("HFXO BOOT: requests %lld at the boot card init (event %d), STANDBY step at %lld us, now %u\n",
++		 hfxo_at((uint32_t)i_init), i_init, t_stb_us, rhw_sim_hfxo_requests());
++	zassert_true(held_through(i_init, t_stb_us), "HFXO on in BOOT (FW l.915)");
++	zassert_equal(rhw_sim_hfxo_requests(), 0u, "released in STANDBY (FW l.916)");
++
++	/* RECOVERY (row 9: the open flag at boot, the scan, STANDBY): held from BOOT through RECOVERY */
++	zassert_equal(rt_run_row(9), 0, NULL);
++	zassert_true(rt_row_seen(9), "row 9");
++	i_rec = step_into(RC_ST_RECOVERY, 0);
++	i_stb = step_into(RC_ST_STANDBY, i_rec < 0 ? 0 : (uint32_t)i_rec);
++	zassert_true(i_rec >= 0 && i_stb > i_rec, "BOOT, RECOVERY, STANDBY (%d, %d)", i_rec, i_stb);
++	i_init = rt_find(RHW_EV_DISK_INIT, -1, -1, 0);
++	t_stb_us = rt_step_get((uint32_t)i_stb).t_ms * 1000;
++	TC_PRINT("HFXO RECOVERY: requests %lld at the boot card init (event %d), RECOVERY step at %lld ms, STANDBY at %lld us, "
++		 "now %u\n", hfxo_at((uint32_t)i_init), i_init, rt_step_get((uint32_t)i_rec).t_ms, t_stb_us,
++		 rhw_sim_hfxo_requests());
++	zassert_true(held_through(i_init, t_stb_us), "HFXO on in BOOT and RECOVERY (FW l.915)");
++	zassert_equal(rhw_sim_hfxo_requests(), 0u, "released in STANDBY (FW l.916)");
++}
++
+ static void *setup(void)
+##### changed: tests/recorder/src/test_rows.c
+--- base/tests/recorder/src/test_rows.c
++++ tests/recorder/src/test_rows.c
+@@ -19,3 +19,3 @@
+ 	}
+-	if (s == RC_ST_FACTORY_TEST && rrec_st.test_recording) {
++	if (s == RC_ST_FACTORY_TEST && atomic_get(&rrec_st.test_recording) != 0) {
+ 		return true;
+@@ -55,3 +55,3 @@
+ 			checks++;
+-			if (rrec_st.test_recording && rt_mic()) {
++			if (atomic_get(&rrec_st.test_recording) != 0 && rt_mic()) {
+ 				t_mic_seen_on = true;
+##### changed: tests/recorder/src/test_screens.c
+--- base/tests/recorder/src/test_screens.c
++++ tests/recorder/src/test_screens.c
+@@ -22,5 +22,8 @@
+ 
+-static uint64_t charging_screen(uint16_t soc_x10)
++/* SCR_CHARGING after a boot with VBUS (row 5) on a set world: 1,000 µAh cell at 50.0 % (gauge start 500), charging at
++ * 1 mA (samples of -1,000 µA), the charger's state as given (0 = its own: constant current with VBUS) */
++static uint64_t charging_screen(uint8_t chg_forced)
+ {
+-	struct rt_boot b = { .soc_x10 = soc_x10 };
++	struct rt_boot b = { .vbus = true, .mv = 3900, .ua = -1000, .gauge_uah = 1000, .soc_x10 = 500,
++			     .chg_forced = chg_forced };
+ 	struct rscr s;
+@@ -28,3 +31,3 @@
+ 	rt_fresh(&b);
+-	rt_vbus(true);
++	zassert_equal(rt_state(), RC_ST_CHARGING, "CHARGING (row 5)");
+ 	rt_sleep(1500);   /* the battery values reach the screens once a second (rscr_set_battery) */
+@@ -35,13 +38,37 @@
+ 
+-/* FW l.374: SCR_CHARGING shows the battery from the gauge (C39): the same gauge value draws the same frame, another value
+- * another frame */
++/* the same screen drawn from values the test gives the screens itself */
++static uint64_t ref_screen(uint8_t pct, bool charging, bool full, uint16_t to_full_min)
++{
++	rscr_set_battery(pct, charging, full, to_full_min);
++	return frame_hash();
++}
++
++/* FW l.374 (C39, review finding R6-14): SCR_CHARGING shows "battery % and icon, "Charging" or "Full", time to full in
++ * minutes from the fuel gauge". The values the screen received are those typed here: the picture the join's values drew
++ * equals the picture of the typed values, and differs when any one of them differs. */
+ ZTEST(recorder_screens, test_battery_reaches_screens)
+ {
+-	uint64_t a1 = charging_screen(623);
+-	uint64_t a2 = charging_screen(623);
+-	uint64_t b1 = charging_screen(412);
++	/* 50 % (gauge 500 = 50.0 %); "Charging" (constant current with VBUS); time to full 30 min [CALC: 1,000 µAh x
++	 * (1,000 - 500) / 1,000 at 1 mA = 0.5 h = 30 min] */
++	uint64_t a = charging_screen(0);
++	uint64_t ok = ref_screen(50, true, false, 30);
++	uint64_t ttf31 = ref_screen(50, true, false, 31);
++	uint64_t pct51 = ref_screen(51, true, false, 30);
++	uint64_t full = ref_screen(50, false, true, 30);
++	uint64_t f, f_ok, f_chg;
+ 
+-	TC_PRINT("SCR_CHARGING frame hash: 62.3 %% %016llx, again %016llx, 41.2 %% %016llx\n", a1, a2, b1);
+-	zassert_equal(a1, a2, "the same gauge value, the same picture");
+-	zassert_not_equal(a1, b1, "another gauge value, another picture: the value reaches the screen");
++	TC_PRINT("SCR_CHARGING frames: from the join %016llx; typed 50 %% Charging 30 min %016llx, 31 min %016llx, 51 %% "
++		 "%016llx, Full %016llx\n", a, ok, ttf31, pct51, full);
++	zassert_equal(a, ok, "the screen received 50 %%, Charging, 30 min");
++	zassert_not_equal(a, ttf31, "the time to full is in the picture");
++	zassert_not_equal(a, pct51, "the percent is in the picture");
++	zassert_not_equal(a, full, "Charging, not Full");
++	/* "Full": the charger reports charging completed (RREC_CHG_FULL) */
++	f = charging_screen(RREC_CHG_FULL + 1);
++	f_ok = ref_screen(50, false, true, 30);
++	f_chg = ref_screen(50, true, false, 30);
++	TC_PRINT("SCR_CHARGING frames (full): from the join %016llx; typed 50 %% Full %016llx, Charging %016llx\n", f, f_ok,
++		 f_chg);
++	zassert_equal(f, f_ok, "the screen received 50 %%, Full");
++	zassert_not_equal(f, f_chg, "Full, not Charging");
+ }
+##### new: tests/recorder/src/test_ship.c
+--- base/tests/recorder/src/test_ship.c
++++ tests/recorder/src/test_ship.c
+@@ -0,0 +1,154 @@
++/*
++ * recorder_ship: ship mode as the join carries it out (step 6 fix round 1, review findings R6-01, R6-02, R6-10):
++ * design/firmware.md 8.4 (l.936 to l.941), the menu's "Power off" row (l.151) and ruling R20 (l.1057).
++ * Orders are read from the one event log of the simulated drivers (rhw_sim.h).
++ */
++#include <string.h>
++
++#include "rt.h"
++
++/* ------------------------------------------------------------------ ship mode (fix round 1: R6-01, R6-02, R6-10) */
++static struct {
++	bool called;
++	uint32_t log_n;        /* the simulated event log's length when step 1 ended (SHPHLDCONFIG comes after it) */
++	bool mic, sd, usb, blanked, beacon_stopped;
++	uint32_t radio_stops;
++	char thread[16];
++} at_ship;
++
++static void ship_hook(void)
++{
++	const char *nm = k_thread_name_get(k_current_get());
++
++	at_ship.called = true;
++	at_ship.log_n = rhw_sim_log_count();
++	at_ship.mic = rt_mic();
++	at_ship.sd = rt_sd();
++	at_ship.usb = rhw_sim_usb_enabled();
++	at_ship.blanked = rt_blanked();
++	at_ship.beacon_stopped = rt_find(RHW_EV_BEACON_STOP, -1, -1, 0) >= 0;
++	at_ship.radio_stops = rrec_test_radio_stops();
++	strncpy(at_ship.thread, nm != NULL ? nm : "", sizeof(at_ship.thread) - 1);
++}
++
++/* FW l.151, l.323: menu "Power off": the whole M2 (80 on, 120 off, 80 on) on the MOTOR pin before SHPHLDCONFIG (R6-01) */
++ZTEST(recorder_ship, test_ship_feels_whole_m2)
++{
++	static const int32_t m2_ms[3] = { 80, 120, 80 };   /* FW l.323 */
++	struct rhw_sim_ev e;
++	int64_t t[4];
++	int lv[4];
++	int n = 0;
++	int32_t i_cfg;
++
++	rt_fresh(NULL);
++	rhw_sim_log_clear();
++	rglue_event(RC_EV_MENU_POWER_OFF);
++	rt_settle();
++	zassert_true(rt_row_seen(19), "row 19 (FW l.151)");
++	i_cfg = rt_find(RHW_EV_PMIC_SHPHLD_CFG, -1, -1, 0);
++	zassert_true(i_cfg >= 0, "SHPHLDCONFIG written");
++	for (int32_t i = 0; i < i_cfg && rhw_sim_log_get((uint32_t)i, &e); i++) {
++		if (e.kind == RHW_EV_MOTOR) {
++			if (n < 4) {
++				t[n] = e.t_us;
++				lv[n] = (int)e.a0;
++			}
++			n++;
++		}
++	}
++	TC_PRINT("ship: %d MOTOR edges before SHPHLDCONFIG (index %d)\n", n, i_cfg);
++	zassert_equal(n, 4, "M2 = 4 edges before SHPHLDCONFIG (%d)", n);
++	for (int i = 0; i < 4; i++) {
++		zassert_equal(lv[i], (i % 2) == 0 ? 1 : 0, "edge %d level", i);
++	}
++	for (int i = 0; i < 3; i++) {
++		int64_t d = t[i + 1] - t[i];
++
++		TC_PRINT("ship: M2 segment %d lasted %lld us (FW l.323: %d ms)\n", i, d, m2_ms[i]);
++		/* the motor unit's tolerance (tests/motor t_check_edges): -1 us to +1 ms */
++		zassert_true(d >= (int64_t)m2_ms[i] * 1000 - 1 && d < (int64_t)m2_ms[i] * 1000 + 1000,
++			     "segment %d: %lld us, FW l.323 %d ms", i, d, m2_ms[i]);
++	}
++}
++
++/* FW l.937 step 1, ruling R20: before SHPHLDCONFIG the recording, storage, USB, radio and screen are closed; the ship
++ * beacon still runs; ship mode runs on the recorder's thread (R6-02, R6-10). The factory SHIP_ENTER (VBUS present, the
++ * ship waits for VBUS removal) and the menu's power off with the screen on. */
++ZTEST(recorder_ship, test_ship_closes_each_part_first)
++{
++#if defined(CONFIG_RING_FACTORY)
++	static uint8_t resp[64];
++	uint8_t st;
++	uint8_t sub = RREC_FAC_SHIP_ENTER;
++	struct rt_boot b = { .factory_flag = true };
++	int32_t i_cfg, i_usb_off, i_sd_off;
++	uint32_t radio0;
++
++	rt_fresh(&b);
++	rt_vbus(true);
++	rt_usb_configured();
++	(void)rt_usb(RREC_OP_FACTORY, (const uint8_t[]){ RREC_FAC_ENTER }, 1, resp, sizeof(resp), &st);
++	zassert_equal(rt_state(), RC_ST_FACTORY_TEST, "FACTORY_TEST");
++	zassert_true(rhw_sim_usb_enabled(), "USB runs");
++	zassert_false(rt_blanked(), "the screen is on (SCR_FACTORY)");
++	memset(&at_ship, 0, sizeof(at_ship));
++	radio0 = rrec_test_radio_stops();
++	rrec_test_set_ship_hook(ship_hook);
++	rhw_sim_log_clear();
++	(void)rt_usb_send(RREC_OP_FACTORY, &sub, 1);
++	for (int i = 0; i < 300 && !at_ship.called; i++) {
++		rt_sleep(10);
++	}
++	rt_sleep(200);   /* the ship waits for VBUS removal now (FW l.939) */
++	rrec_test_set_ship_hook(NULL);
++	i_cfg = rt_find(RHW_EV_PMIC_SHPHLD_CFG, -1, -1, 0);
++	i_usb_off = rt_find(RHW_EV_USB_DISABLE, -1, -1, 0);
++	i_sd_off = rt_find_rail(RHW_RAIL_SD, false, 0);
++	TC_PRINT("ship (factory): step 1 ended at log %u on thread %s; SHPHLDCONFIG %d, USB disable %d, VDD_SD off %d; "
++		 "at step 1's end: VDD_MIC %d, VDD_SD %d, USB %d, screen blanked %d, radio stops %u, beacon stopped %d\n",
++		 at_ship.log_n, at_ship.thread, i_cfg, i_usb_off, i_sd_off, at_ship.mic, at_ship.sd, at_ship.usb,
++		 at_ship.blanked, at_ship.radio_stops - radio0, at_ship.beacon_stopped);
++	zassert_true(at_ship.called, "ship mode step 1 ran");
++	zassert_true(i_cfg >= 0 && (uint32_t)i_cfg >= at_ship.log_n, "SHPHLDCONFIG after step 1");
++	zassert_false(at_ship.mic, "recording closed (VDD_MIC off)");
++	zassert_false(at_ship.sd, "storage closed (VDD_SD off)");
++	zassert_true(i_sd_off >= 0 && i_sd_off < i_cfg, "VDD_SD off before SHPHLDCONFIG");
++	zassert_false(at_ship.usb, "USB closed");
++	zassert_true(i_usb_off >= 0 && i_usb_off < i_cfg, "USB disabled before SHPHLDCONFIG");
++	zassert_equal(at_ship.radio_stops - radio0, 1u, "the radio stopped once (rdev_stop)");
++	zassert_true(at_ship.blanked, "the screen closed (panel off) before SHPHLDCONFIG");
++	zassert_false(at_ship.beacon_stopped, "the ship beacon still runs (ruling R20)");
++	zassert_equal(strcmp(at_ship.thread, "rrec"), 0, "on the recorder's thread (%s)", at_ship.thread);
++	rt_row_cleanup(70);
++	zassert_true(rhw_sim_shipped(), "the ship task after VBUS removal");
++
++	/* the menu's power off with the screen on (the status screen of a short press) */
++	rt_fresh(NULL);
++	rt_short();
++	zassert_false(rt_blanked(), "the screen is on");
++	memset(&at_ship, 0, sizeof(at_ship));
++	rrec_test_set_ship_hook(ship_hook);
++	rhw_sim_log_clear();
++	rglue_event(RC_EV_MENU_POWER_OFF);
++	rt_settle();
++	rrec_test_set_ship_hook(NULL);
++	i_cfg = rt_find(RHW_EV_PMIC_SHPHLD_CFG, -1, -1, 0);
++	TC_PRINT("ship (menu): step 1 ended at log %u on thread %s, SHPHLDCONFIG %d, screen blanked %d\n", at_ship.log_n,
++		 at_ship.thread, i_cfg, at_ship.blanked);
++	zassert_true(at_ship.called && i_cfg >= 0 && (uint32_t)i_cfg >= at_ship.log_n, "step 1, then SHPHLDCONFIG");
++	zassert_true(at_ship.blanked, "the screen closed before SHPHLDCONFIG");
++	zassert_equal(strcmp(at_ship.thread, "rrec"), 0, "on the recorder's thread (%s)", at_ship.thread);
++#else
++	ztest_test_skip();
++#endif
++}
++
++
++static void *setup(void)
++{
++	rt_setup();
++	return NULL;
++}
++
++ZTEST_SUITE(recorder_ship, NULL, setup, NULL, NULL, NULL);
+##### new: tests/recorder/src/test_unmount.c
+--- base/tests/recorder/src/test_unmount.c
++++ tests/recorder/src/test_unmount.c
+@@ -0,0 +1,138 @@
++/*
++ * recorder_unmount: VDD_SD off when TRANSFER is left while a command uses the store (step 6 fix round 1, review finding
++ * R6-03): design/firmware.md l.178 ("finish the current command; VDD_SD off"), l.179 ("abort the command; VDD_SD off"),
++ * and 8.2 (l.912 to l.920: VDD_SD off in STANDBY and CHARGING). The simulated card stalls only its writes
++ * (rhw_sim_disk_stall_ms); the "read command" is GET_LOG (FW l.706), whose store call first writes the queued event log
++ * records, so with queued records and a stalled card it holds the store for the stall times the records.
++ * The transfer part runs its bus events on the transfer thread after the command that runs (rxf_class.c), so "unconfigured
++ * while a command runs" does not reach the core through the class until the command ended; the cases of l.178 give the
++ * core the event themselves (rglue_event, as the cases of the Bluetooth highlight do) while GET_LOG holds the store.
++ */
++#include <string.h>
++
++#include <zephyr/sys/byteorder.h>
++
++#include <ring_store/rst.h>
++#include <ring_xfer/rxf.h>
++
++#include "rt.h"
++
++/* a TRANSFER with the card mounted, then `records` event log records queued on a card that stalls each write by
++ * `stall_ms`, then GET_LOG sent (not waited for) */
++static void transfer_with_busy_store(uint32_t stall_ms, int records)
++{
++	uint8_t pl[RREC_GET_LOG_REQ_BYTES];
++	uint8_t a[4] = { 0 };
++
++	rt_fresh(NULL);
++	rt_vbus(true);
++	rt_usb_configured();
++	zassert_equal(rt_state(), RC_ST_TRANSFER, "TRANSFER");
++	zassert_true(rt_sd(), "VDD_SD on in TRANSFER");
++	rhw_sim_disk_stall_ms(stall_ms);
++	for (int i = 0; i < records; i++) {
++		a[0] = (uint8_t)i;
++		rrec_log(RREC_LOG_BATTERY, a, sizeof(a));   /* records to write: the storage thread and GET_LOG write them */
++	}
++	sys_put_le32(1, pl);
++	sys_put_le16(RREC_GET_LOG_MAX_MAX, &pl[4]);
++	zassert_equal(rt_usb_send(RREC_OP_GET_LOG, pl, sizeof(pl)), 0, "GET_LOG sent");
++	rt_sleep(100);
++	zassert_true(rxf_busy(), "the command runs");
++	rt_steps_clear();
++	rhw_sim_log_clear();
++}
++
++/* the end of a case: the command ended (the transfer thread is free again) and the card no longer stalls */
++static void command_ended(void)
++{
++	for (int i = 0; i < 600 && rxf_busy(); i++) {
++		rt_sleep(100);
++	}
++	zassert_false(rxf_busy(), "the command ended");
++	rhw_sim_disk_stall_ms(0);
++	rt_settle();
++}
++
++/* the step of `row` ended with VDD_SD off: the rail went off inside that step (before its after-call), not in a later one */
++static void sd_off_in_the_step(int row)
++{
++	int32_t i_off = rt_find_rail(RHW_RAIL_SD, false, 0);
++	int64_t step_ms = -1;
++
++	for (uint32_t i = 0; i < rt_steps(); i++) {
++		if (rt_step_get(i).row == row) {
++			step_ms = rt_step_get(i).t_ms;
++			break;
++		}
++	}
++	TC_PRINT("unmount: row %d step at %lld ms, VDD_SD off at %lld us, steps %u, VDD_SD now %d\n", row, step_ms,
++		 rt_ev_us(i_off), rt_steps(), rt_sd());
++	zassert_true(step_ms >= 0, "row %d taken", row);
++	zassert_false(rt_sd(), "VDD_SD off when the step of row %d ended", row);
++	zassert_true(i_off >= 0 && rt_ev_us(i_off) <= step_ms * 1000 + 1000, "VDD_SD went off inside the step of row %d",
++		     row);
++}
++
++/* FW l.179: VBUS removed in TRANSFER while GET_LOG holds the store: abort, the command ends, VDD_SD off in that step */
++ZTEST(recorder_unmount, test_vbus_out_during_read_command)
++{
++	transfer_with_busy_store(400, 6);
++	rt_vbus(false);
++	zassert_equal(rt_state(), RC_ST_STANDBY, "STANDBY (FW l.179)");
++	sd_off_in_the_step(47);
++	command_ended();
++}
++
++/* FW l.178: unconfigured in TRANSFER while GET_LOG holds the store longer than the finish waits (5,000 ms, the join's
++ * bound): the finish times out, the unmount waits for the store call, VDD_SD off in that step */
++ZTEST(recorder_unmount, test_unconfigured_finish_times_out)
++{
++	int64_t t0;
++
++	transfer_with_busy_store(1300, 6);
++	t0 = k_uptime_get();
++	rglue_event(RC_EV_USB_UNCONFIGURED);
++	rt_settle();
++	TC_PRINT("unmount: the unconfigured step took about %lld ms\n", k_uptime_get() - t0);
++	zassert_equal(rt_state(), RC_ST_CHARGING, "CHARGING (FW l.178)");
++	sd_off_in_the_step(46);
++	zassert_true(k_uptime_get() - t0 > 5000, "the finish timed out first (the command held the store longer)");
++	zassert_true(rhw_sim_pmic_charger_on(), "charge on (FW l.178)");
++	command_ended();
++}
++
++/* a store call longer than both waits: the failed unmount is reported (event log) and tried again until VDD_SD is off */
++ZTEST(recorder_unmount, test_failed_unmount_retried_and_reported)
++{
++	struct rrec_tap_rec t;
++	int busy = 0;
++
++	rrec_tap_clear();
++	transfer_with_busy_store(3000, 6);
++	rrec_tap_clear();
++	rglue_event(RC_EV_USB_UNCONFIGURED);
++	for (int i = 0; i < 400 && rt_sd(); i++) {
++		rt_sleep(100);
++	}
++	rt_settle();
++	for (uint32_t k = 0; rrec_tap_get(k, &t); k++) {
++		if (t.code == RREC_LOG_STORAGE_RETRY && (int32_t)sys_get_le32(t.args) == -EBUSY) {
++			busy++;
++		}
++	}
++	TC_PRINT("unmount: %d failed unmounts reported, VDD_SD now %d, state %s\n", busy, rt_sd(),
++		 rc_state_name(rt_state()));
++	zassert_true(busy >= 1, "the failed unmount was reported (%d)", busy);
++	zassert_false(rt_sd(), "tried again until VDD_SD went off");
++	zassert_false(rst_mounted(), "unmounted");
++	command_ended();
++}
++
++static void *setup(void)
++{
++	rt_setup();
++	return NULL;
++}
++
++ZTEST_SUITE(recorder_unmount, NULL, setup, NULL, NULL, NULL);
+##### changed: tests/store/src/test_svc.c
+--- base/tests/store/src/test_svc.c
++++ tests/store/src/test_svc.c
+@@ -518,2 +518,31 @@
+ 
++/* step 6 fix round 1 (R6-03): rst_unmount_wait waits for the call that runs on another thread, then unmounts (rail off);
++ * with a bound shorter than that call it answers -EBUSY and changes nothing */
++ZTEST(store_svc, test_unmount_wait_waits_for_running_call)
++{
++	struct rst_mount_info mi;
++	uint32_t id;
++
++	tst_card(100);
++	tst_mount_boot(&mi);
++	zassert_equal(rst_open(RREC_REC_TYPE_RECORDING, 0, &id), 0);
++	rhw_sim_disk_stall_ms(300);                    /* the close writes 2 sectors, 300 ms each */
++	helper_rc = 99;
++	k_thread_create(&helper, helper_stack, K_THREAD_STACK_SIZEOF(helper_stack), helper_close, NULL, NULL, NULL, 1,
++			0, K_NO_WAIT);
++	k_msleep(100);
++	zassert_equal(rst_unmount_wait(50), -EBUSY, "the close runs longer than 50 ms");
++	zassert_true(rst_mounted(), "nothing changed");
++	zassert_true(rhw_pmic()->rail_get(RHW_RAIL_SD), "VDD_SD still on");
++	int64_t t0 = k_uptime_get();
++
++	zassert_equal(rst_unmount_wait(5000), 0, "waited for the close, then unmounted");
++	TC_PRINT("rst_unmount_wait waited %lld ms for the running close\n", k_uptime_get() - t0);
++	zassert_true(k_uptime_get() - t0 >= 100, "it waited for the running call");
++	zassert_false(rst_mounted(), "unmounted");
++	zassert_false(rhw_pmic()->rail_get(RHW_RAIL_SD), "VDD_SD off");
++	zassert_equal(k_thread_join(&helper, K_SECONDS(5)), 0);
++	zassert_equal(helper_rc, 0, "the close itself succeeded");
++}
++
+ /* the ring of 3: a fourth chunk waits for nobody and is refused, nothing is overwritten */
+##### changed: tests/xfer/src/test_svc.c
+--- base/tests/xfer/src/test_svc.c
++++ tests/xfer/src/test_svc.c
+@@ -400,2 +400,31 @@
+ 
++/* step 6 fix round 1 (R6-02, FW l.937): rxf_stop() aborts the command that runs (no response), the stack is disabled
++ * when it returns and stays off with VBUS still present; the next VBUS ready starts it again */
++ZTEST(xfer_svc, test_stop_closes_usb_for_ship)
++{
++	vbus_on();
++	zassert_true(rhw_sim_usb_enabled(), "the stack runs with VBUS");
++	fk.hook = slow;
++	host_send(RREC_OP_GET_BATTERY, 0x41, NULL, 0);
++	k_msleep(5);
++	zassert_true(rxf_busy(), "a command runs");
++	zassert_equal(rxf_stop(1000), 0, "the command ended within the bound");
++	zassert_false(rhw_sim_usb_enabled(), "the stack is off when rxf_stop returns");
++	zassert_equal(rhw_sim_log_count_kind(RHW_EV_USB_DISABLE), 1u, "one disable");
++	zassert_false(rxf_busy());
++	k_msleep(80);
++	zassert_equal(rhw_sim_usb_host_read(rsp, sizeof(rsp)), 0u, "no response for the aborted command");
++	zassert_equal(fk.after_calls, 0u, "the aborted command is not reported");
++	fk.hook = NULL;
++	k_msleep(20);
++	zassert_false(rhw_sim_usb_enabled(), "VBUS still present: the stack stays off");
++	zassert_equal(rhw_sim_log_count_kind(RHW_EV_USB_ENABLE), 1u, "not started again by itself");
++	rhw_sim_vbus(false);
++	k_msleep(2);
++	vbus_on();
++	zassert_true(rhw_sim_usb_enabled(), "VBUS ready again: the stack starts");
++	host_send(RREC_OP_GET_INFO, 0x42, NULL, 0);
++	zassert_equal(host_get(rsp, sizeof(rsp), 30), 51u, "and answers");
++}
++
+ /* the bus events reach the join on the transfer thread: configured, unconfigured, suspended; VBUS removal is not one */
+FILES CHANGED OR ADDED: 52

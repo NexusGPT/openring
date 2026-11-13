@@ -1,0 +1,26 @@
+broken copy run 2026-11-13 04:15:30 CET, mutation r15
+change applied (diff of the copy against its original):
+148c148
+< 	if (c->sm.state != from && c->facts.batt == RC_BATT_B2 && !c->facts.vbus &&
+---
+> 	if (0 && c->sm.state != from && c->facts.batt == RC_BATT_B2 && !c->facts.vbus &&
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_round2.c:57: rc_core_state(&core) == want (left 9, right 1)
+FAIL rc_round2.test_r1_entry_into_standby_checks_battery_then_storage
+    assert failed firmware/tests/core/src/test_round3.c:67: out.last_row == 23 (left 22, right 23)
+FAIL rc_round3.test_r10_leaving_case_at_b2_switches_off
+    assert failed firmware/tests/core/src/test_round3.c:142: out.last_row == 63 (left 6, right 63)
+FAIL rc_round3.test_r12_b2_in_boot_kept_then_off
+    assert failed firmware/tests/core/src/test_round3.c:279: rc_core_state(&core) == RC_ST_OFF (left 10, right 1)
+FAIL rc_round3.test_r15_walk_every_entry_with_b2_kept_ends_off
+    assert failed firmware/tests/core/src/test_round3.c:111: out.last_row == 23 (left 25, right 23)
+FAIL rc_round3.test_r15a_b2_checked_before_the_storage_fault
+    assert failed firmware/tests/core/src/test_round3.c:211: out.last_row == 63 (left 6, right 63)
+FAIL rc_round3.test_r15b_failed_storage_init_with_b2_kept_goes_off
+    assert failed firmware/tests/core/src/test_round4.c:127: st == RC_ST_OFF || st == RC_ST_SHIP || st == RC_ST_BOOT || st == RC_ST_RECOVERY (left 0, right 0)
+FAIL rc_round4.test_r16_sequences_never_awake_at_b2_without_vbus
+    assert failed firmware/tests/core/src/test_round4.c:67: rc_core_state(&core) == RC_ST_OFF (left 9, right 1)
+FAIL rc_round4.test_r16_walk_every_state_vbus_present_b2_then_vbus_out_ends_off
+suites=13 tests=221 pass=213 fail=8
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation r15, named case rc_round3.test_r15a_b2_checked_before_the_storage_fault failed

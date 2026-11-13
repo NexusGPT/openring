@@ -1,0 +1,606 @@
+#!/usr/bin/env python3
+"""Checks netlist.csv against the architecture (A5-draft, sections 7, 14, 16, 17 with 17.11 to 17.13: A6; 17.16 to 17.22: A7;
+17.29 and 17.30, design v7: A8) and bom.csv, and against the netlist KiCad exports from ring.kicad_sch. Exit 0 only when
+every check passes.
+usage: check_netlist.py [netlist.csv [sheet_folder [bom.csv]]]   (a second file lets a broken copy be tested; a folder
+holding ring*.kicad_sch and ring-schematic.pdf lets check A8-10 test a broken copy; a bom.csv path lets the parts-list
+rules test a broken copy)"""
+import csv, os, re, subprocess, sys, collections
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import xml.etree.ElementTree as ET
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+DESIGN = os.path.abspath(os.path.join(HERE, '..', '..'))
+KICAD_CLI = os.environ.get("KICAD_CLI", "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli")
+NETFILE = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'netlist.csv')
+SCHDIR = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] != '-' else HERE
+BOMFILE = sys.argv[3] if len(sys.argv) > 3 else os.path.join(DESIGN, 'bom.csv')
+FAIL = []
+import make_netlist as MK  # BAND_SPLIT: the one table that says which flex tail carries which line
+
+
+def fail(msg):
+    FAIL.append(msg)
+    print('FAIL', msg)
+
+
+def ok(msg):
+    print('ok  ', msg)
+
+
+rows = list(csv.DictReader(open(NETFILE)))
+parts = {p['reference']: p for p in csv.DictReader(open(os.path.join(HERE, 'parts.csv')))}
+syms = collections.defaultdict(list)
+for r in csv.DictReader(open(os.path.join(HERE, 'symbols.csv'))):
+    syms[r['symbol']].append(r)
+adds = list(csv.DictReader(open(os.path.join(HERE, 'additions.csv'))))
+added = {a['reference'] for a in adds if a['kind'] == 'added'}
+not_placed = {a['reference'] for a in adds if a['kind'] == 'bom_not_placed'}
+testpads = {a['reference'] for a in adds if a['kind'] == 'testpad'}
+
+nets = collections.defaultdict(list)
+pin_of = collections.defaultdict(list)
+for r in rows:
+    pin_of[(r['reference'], r['pin_number'])].append(r)
+    if r['pin_type'] != 'no_connect':
+        nets[r['net']].append(r)
+
+
+def net_at(ref, pin):
+    rr = [r for r in pin_of.get((ref, pin), []) if r['pin_type'] != 'no_connect']
+    return rr[0]['net'] if len(rr) == 1 else None
+
+
+def endpoints(net):
+    return {(r['reference'], r['pin_name']) for r in nets.get(net, [])}
+
+# ---------------------------------------------------------------- (a) section 7 pin plan
+arch = open(os.path.join(DESIGN, 'architecture.md')).read()
+sec7 = arch.split('## 7.')[1].split('## 8.')[0]
+table = [l for l in sec7.splitlines() if l.startswith('| ') and not l.startswith('| Signal') and not l.startswith('|---')]
+plan = []
+for l in table:
+    c = [x.strip() for x in l.strip('|').split('|')]
+    sig, pin, ball = c[0], c[1], c[2]
+    if sig.startswith('Spare'):
+        for pn in [p.strip() for p in pin.split(',')]:
+            plan.append(('SPARE_' + pn.replace('.', '_'), pn, None))
+        continue
+    if ball in ('n/a', ''):
+        continue
+    sigs = [s.strip() for s in sig.split('/')]
+    balls = [b.strip() for b in ball.split('/')]
+    pins = [p.strip() for p in pin.split('/')]
+    if len(sigs) != len(balls):
+        fail('cannot parse section 7 row: %s' % l); continue
+    for i, (s, b) in enumerate(zip(sigs, balls)):
+        plan.append((s, pins[i] if i < len(pins) else pin, b))
+# ball of spare pins from the ball list
+balls_csv = {r['pin_name_as_printed']: r['ball'] for r in csv.DictReader(open(os.path.join(DESIGN, 'parts', 'nrf54lm20a-csp61-pins.csv')))}
+NAME = {'USB D-': 'USB_DN', 'D+': 'USB_DP', 'nRESET': 'NRESET', 'XL1': 'XL1', 'XL2': 'XL2'}
+# function each signal must reach (from sections 5, 7, 9 and 14)
+FUNC = {
+    'MIC_A_CLK': [('U5', 'CLOCK'), ('U6', 'CLOCK')],
+    'MIC_A_DATA': [('R31', '~'), ('R32', '~')],
+    'XL1': [('X2', 'X1')], 'XL2': [('X2', 'X2')],
+    'SD_SCK': [('U10', 'A1')], 'SD_MOSI': [('U10', 'A2')], 'SD_MISO': [('U10', 'A4')], 'SD_CS': [('U10', 'A3')],  # A6 F07: through U10
+    'LCD_SCK': [('DISP1', 'SCL')], 'LCD_MOSI': [('DISP1', 'SDA')], 'LCD_CS': [('DISP1', 'CS')],
+    'LCD_DCX': [('DISP1', 'RS')], 'LCD_RST': [('DISP1', 'RESX')], 'LCD_TE': [('DISP1', 'TE')],
+    'PMIC_SDA': [('U2', 'SDA')], 'PMIC_SCL': [('U2', 'SCL')], 'PMIC_INT': [('U2', 'GPIO0')],
+    'OLED_PWR_EN': [('U4', 'AVDDEN')],
+    'BTN_REC': [('SW2', '~')], 'JOY_UP': [('SW1', '~')], 'JOY_DOWN': [('SW3', '~')],
+    'JOY_LEFT': [('SW4', '~')], 'JOY_RIGHT': [('SW5', '~')],
+    'MOTOR': [('R61', '~')], 'DBG_TX': [('TP1', '1')], 'DBG_RX': [('TP2', '1')],
+    'USB_DN': [('CP2', '1'), ('U9', 'D1-')], 'USB_DP': [('CP3', '1'), ('U9', 'D1+')],
+    'VBUS': [('CP1', '1')], 'SWDCLK': [('TP3', '1')], 'SWDIO': [('TP4', '1')], 'NRESET': [('TP5', '1')],
+    'ANT': [('L2', '~')],
+}
+# A5 (architecture 16.6, 17.4): these three section 7 signals are spare pins on a test pad only
+A5_SPARE = {'MIC_B_DATA': 'TP21', 'JOY_CENTER': 'TP22'}
+# W2 (design/wiring/ring-board-plan.md a.2, lead-decisions.md 2026-11-13 00:39): balls E5 (P1.19), E6 (P1.24, MIC_B_CLK)
+# and E8 (P1.01) are not connected; their section 7 rows must show the ball as no-connect and the net absent
+W2_OPEN = {'E5': 'SPARE_P1_19', 'E6': 'MIC_B_CLK', 'E8': 'SPARE_P1_01',
+           # W2 round 2 (lead's ruling b, 2026-11-13): B5 (DBG_RX), B9 (P2.03), G4 (P3.05), H4 (JOY_CENTER) not connected,
+           # test pads TP2, TP13, TP16, TP22 removed (pcb/board-notes-r2.md); expected value changed by that ruling
+           'B5': 'DBG_RX', 'B9': 'SPARE_P2_03', 'G4': 'SPARE_P3_05', 'H4': 'JOY_CENTER'}
+n7 = 0
+for sig, pin, ball in plan:
+    s = NAME.get(sig, sig)
+    if ball is None:
+        ball = balls_csv.get(pin)
+        want = [(t, '1') for t in testpads]
+    else:
+        want = FUNC.get(s)
+    if ball in W2_OPEN and W2_OPEN[ball] == s:
+        nc = [r for r in pin_of.get(('U1', ball), []) if r['pin_type'] == 'no_connect']
+        if len(nc) != 1 or s in nets:
+            fail('W2: ball %s (%s) must be no-connect and net %s absent' % (ball, s, s)); continue
+        n7 += 1; continue
+    if s in A5_SPARE:
+        netname = net_at('U1', ball)
+        mem = {r['reference'] for r in nets.get(netname, [])}
+        if netname != s or mem != {'U1', A5_SPARE[s]}:
+            fail('A5 section 17: %s ball %s net %r members %s, want only U1 and %s' % (s, ball, netname, sorted(mem), A5_SPARE[s])); continue
+        n7 += 1; continue
+    if s in ('VBUS',):
+        netname = net_at('U1', ball)  # H9 reaches VBUS through Nordic's R1
+        ep = endpoints(netname) | endpoints('VBUS') if netname else set()
+        if netname != 'U1_VBUS' or ('R1', '~') not in ep:
+            fail('VBUS ball %s not on U1_VBUS through R1' % ball)
+    else:
+        netname = net_at('U1', ball)
+        if s != 'ANT' and netname != s:
+            fail('section 7: %s ball %s is on net %r' % (s, ball, netname)); continue
+        ep = endpoints(netname)
+    if want is None:
+        fail('no expected function for %s' % s); continue
+    if s.startswith('SPARE'):
+        if not any(e in ep for e in want):
+            fail('spare %s ball %s has no test pad' % (pin, ball)); continue
+    elif not all(e in ep for e in want):
+        fail('section 7: %s ball %s misses %s' % (s, ball, [e for e in want if e not in ep])); continue
+    n7 += 1
+ok('section 7 rows checked: %d of %d' % (n7, len(plan))) if n7 == len(plan) else fail('section 7 %d of %d' % (n7, len(plan)))
+# second level: mic data resistors reach the mic DATA pins
+for r, u in (('R31', 'U5'), ('R32', 'U6')):
+    if (u, 'DATA') not in endpoints(net_at(r, '1')) | endpoints(net_at(r, '2')):
+        fail('%s does not reach %s DATA' % (r, u))
+# (removed in A5: the check that each JOY line passes the joystick wire link J2-wire-J3; J2, J3 and W5 to W10
+# no longer exist, check A5-9 below checks the flex tail J_BAND_A instead)
+
+# contact pad order from -Y to +Y: VBUS, D-, D+, GND (case design, lead 2026-11-10)
+for cp, want in (('CP1', 'VBUS'), ('CP2', 'USB_DN'), ('CP3', 'USB_DP'), ('CP4', 'GND')):
+    got = net_at(cp, '1')
+    fail('%s on %s, want %s' % (cp, got, want)) if got != want else ok('%s on %s' % (cp, want))
+# (the R41 value check of 17.21 and the 'no chip pin on the light' check were removed in v7: the light circuit is gone,
+# architecture 17.30; check A8-1 below proves it is absent)
+p305 = net_at('U1', 'G4')
+mem = sorted((r['reference'], r['pin_number']) for r in nets.get(p305, []))
+# W2 round 2 (lead's ruling b): G4 (P3.05) is not connected and TP16 is removed (expected value changed by that ruling)
+ok('P3.05 (G4) is not connected (W2 round 2): %s %s' % (p305, mem)) if p305 is None and 'SPARE_P3_05' not in nets and 'TP16' not in {r['reference'] for r in rows} else fail('P3.05 net %r members %s' % (p305, mem))
+# ---------------------------------------------------------------- (b) designators vs bom.csv
+MECH = re.compile(r'^(PCB|HSG|SCR|GSK|GL|ADH|FOAM|MEM)\d+$')
+# Designator list frozen from bom.csv as first read (lead's instruction, 2026-11-10: bom.csv changes
+# while the lead fills maker codes; the check must not fail on that). bom_refs_snapshot.csv holds it.
+# R51 to R56 are in it and excluded below: wiring decision W1 drops the six joystick/button pull-ups.
+# CBL1 is replaced by wires W5-W10 and pad connectors J2, J3 (lead, 2026-11-10).
+bomrefs = {r['reference'] for r in csv.DictReader(open(os.path.join(HERE, 'bom_refs_snapshot.csv')))}
+live = set()
+for r in csv.DictReader(open(BOMFILE)):
+    for ref in [x.strip() for x in r['reference'].split(',')]:
+        if ref and not MECH.match(ref):
+            live.add(ref)
+if live != bomrefs:
+    print('info bom.csv now differs from the snapshot (not a failure): only in live %s, only in snapshot %s' % (
+        sorted(live - bomrefs), sorted(bomrefs - live)))
+inet = {r['reference'] for r in rows}
+miss = sorted(bomrefs - inet - not_placed)
+extra = sorted(inet - bomrefs - added - testpads)
+bad_np = sorted(not_placed - bomrefs)
+if miss: fail('bom.csv electrical designators missing from netlist: %s' % miss)
+if extra: fail('netlist designators in neither bom.csv nor additions: %s' % extra)
+if bad_np: fail('not-placed list names designators absent from bom.csv: %s' % bad_np)
+if not (miss or extra or bad_np):
+    ok('designators: %d bom electrical, %d placed, %d not placed (listed), %d added' % (
+        len(bomrefs), len(inet), len(not_placed), len(added)))
+
+# ---------------------------------------------------------------- (c) every pin exactly once
+nerr = 0
+for ref, p in parts.items():
+    for sp in syms[p['symbol']]:
+        k = (ref, sp['pin_number'])
+        if len(pin_of.get(k, [])) != 1:
+            fail('pin %s.%s appears %d times' % (ref, sp['pin_number'], len(pin_of.get(k, [])))); nerr += 1
+for k in pin_of:
+    if k[0] not in parts:
+        fail('netlist part %s not in parts.csv' % k[0]); nerr += 1
+    elif k[1] not in {sp['pin_number'] for sp in syms[parts[k[0]]['symbol']]}:
+        fail('netlist pin %s.%s not on its symbol' % k); nerr += 1
+if not nerr:
+    ok('every pin of %d parts appears exactly once (%d pin rows)' % (len(parts), len(rows)))
+
+# ---------------------------------------------------------------- (d) single-pin nets
+single = [n for n, rr in nets.items() if len(rr) < 2 and not (rr and rr[0]['reference'] in testpads)]
+fail('single-pin nets: %s' % single) if single else ok('no single-pin net (%d nets)' % len(nets))
+
+# ---------------------------------------------------------------- (e) rails of section 3
+sec3 = arch.split('## 3.')[1].split('## 4.')[0]
+rails = []
+for l in sec3.splitlines():
+    if l.startswith('| ') and not l.startswith('| Rail') and not l.startswith('|---'):
+        rails += [x.strip() for x in l.strip('|').split('|')[0].split('/')]
+for rail in rails:
+    src = [r for r in nets.get(rail, []) if r['pin_type'] == 'power_out']
+    if len(src) != 1:
+        fail('rail %s has %d power_out sources: %s' % (rail, len(src), [(r['reference'], r['pin_name']) for r in src]))
+    else:
+        ok('rail %s source %s.%s' % (rail, src[0]['reference'], src[0]['pin_name']))
+
+# ---------------------------------------------------------------- (f) microphone SELECT (was LR)
+for u, want in (('U5', 'GND'), ('U6', 'VDD_MIC')):
+    n = [r['net'] for r in rows if r['reference'] == u and r['pin_name'] == 'SELECT']
+    fail('%s SELECT on %s, want %s' % (u, n, want)) if n != [want] else ok('%s SELECT on %s' % (u, want))
+
+# ---------------------------------------------------------------- (g) ball H8
+h8 = net_at('U1', 'H8')
+others = [r for r in nets.get(h8, []) if not (r['reference'] == 'U1' and r['pin_number'] == 'H8')]
+if len(others) == 1 and parts[others[0]['reference']]['symbol'] == 'C':
+    c = others[0]['reference']
+    other_net = [r['net'] for r in rows if r['reference'] == c and r['net'] != h8]
+    fail('H8 capacitor %s not to GND' % c) if other_net != ['GND'] else ok('H8 connects only to %s, to GND' % c)
+else:
+    fail('ball H8 net %s has %s' % (h8, [(r['reference'], r['pin_number']) for r in others]))
+
+# ---------------------------------------------------------------- (i) A5 changes (architecture 16.4, 16.6, 17.3, 17.4)
+def refs_on(net):
+    return {r['reference'] for r in nets.get(net, [])}
+
+
+def netof(ref, pin):
+    return net_at(ref, pin)
+
+
+def a5(tag, cond, good, bad):
+    ok('%s %s' % (tag, good)) if cond else fail('%s %s' % (tag, bad))
+
+
+sym_of = {ref: p['symbol'] for ref, p in parts.items()}
+
+# A7-3 (was A5-1) microphones: two Knowles SPK0641HT4H-1 (architecture 17.19), 8 pins numbered as the Knowles pin table
+# (sheet 6, read here from the saved text copy), SELECT of U5 to ground and of U6 to VDD_MIC, 100 ohm on DATA, decoupling
+mic_refs = sorted(r for r, sy in sym_of.items() if sy == 'SPK0641HT4H_1')
+bad3 = [] if mic_refs == ['U5', 'U6'] else ['microphone parts %s' % mic_refs]
+bad3 += ['old microphone symbol %s' % r for r, sy in sym_of.items() if sy.startswith('IM73D') or sy.startswith('IM68D')]
+try:
+    kt = open(os.path.join(DESIGN, 'mech', 'mic-path', 'datasheets', 'knowles-spk0641ht4h-1_chipsmall.txt')).read()
+    kn = {m.group(1): m.group(2) for m in re.finditer(r'^\s+([1-8])\s+(DATA|CLOCK|SELECT|Vdd|GROUND)\s', kt, re.M)}
+except Exception as e:
+    kt = ''; kn = {}; bad3.append('cannot read the Knowles text copy: %s' % e)
+mine3 = {sp['pin_number']: sp['pin_name'] for sp in syms['SPK0641HT4H_1']}
+if len(kn) != 8 or {k: v.upper() for k, v in kn.items()} != mine3:
+    bad3.append('symbol pins %s against the Knowles table %s' % (mine3, kn))
+for u, sel, dl in (('U5', 'GND', 'MIC1_DATA'), ('U6', 'VDD_MIC', 'MIC2_DATA')):
+    want = {'1': dl, '2': 'MIC_A_CLK', '3': sel, '4': 'VDD_MIC', '5': 'GND', '6': 'GND', '7': 'GND', '8': 'GND'}
+    bad3 += ['%s pin %s on %s want %s' % (u, k, netof(u, k), v) for k, v in want.items() if netof(u, k) != v]
+    bad3 += ['%s value or part %r %r' % (u, parts[u]['value'], parts[u]['mpn'])] if (parts.get(u, {}).get('value'), parts.get(u, {}).get('mpn')) != ('SPK0641HT4H-1', 'SPK0641HT4H-1') else []
+bad3 += [] if net_at('U1', 'F1') == 'MIC_A_CLK' and net_at('U1', 'F2') == 'MIC_A_DATA' else ['F1 F2 not on MIC_A_CLK MIC_A_DATA']
+bad3 += ['%s not between MICn_DATA and MIC_A_DATA' % r for r in ('R31', 'R32') if not (netof(r, '1') in ('MIC1_DATA', 'MIC2_DATA') and netof(r, '2') == 'MIC_A_DATA')]
+bad3 += ['%s not VDD_MIC to GND' % c for c in ('C31', 'C32', 'C35', 'C36') if (netof(c, '1'), netof(c, '2')) != ('VDD_MIC', 'GND')]
+bad3 += ['%s value %r is not marked Class 1 (Knowles sheet 4)' % (c, parts[c]['value']) for c in ('C35', 'C36') if not any(t in parts[c]['value'] for t in ('Class 1', 'C0G', 'NP0'))]
+bad3 += ['microphone rows left in open-pins.csv'] if any(r.startswith('U5,') or r.startswith('U6,') for r in open(os.path.join(HERE, 'open-pins.csv')).read().split('\n')) else []
+a5('A7-3', not bad3, 'two SPK0641HT4H-1, 8 pins equal the Knowles table (1 DATA, 2 CLOCK, 3 SELECT, 4 Vdd, 5-8 GROUND all on GND), U5 SELECT GND, U6 SELECT VDD_MIC, CLOCK on MIC_A_CLK F1, DATA through R31 R32 to MIC_A_DATA F2, C31 C32 C35 C36, C35 C36 Class 1, no microphone pin open',
+   'microphones wrong: %s' % bad3)
+
+# A5-2 second pair and its decoupling gone; MIC_B_CLK E6 and MIC_B_DATA D7 only on test pads
+gone = ['U7', 'U8', 'R33', 'R34', 'C33', 'C34', 'C37', 'C38']
+left = [g for g in gone if g in parts or any(r['reference'] == g for r in rows)]
+okb = not left and not {'MIC3_DATA', 'MIC4_DATA'} & set(nets)
+okb = okb and not refs_on('MIC_B_CLK') and refs_on('MIC_B_DATA') == {'U1', 'TP21'}   # W2: E6 open, TP20 removed (ring-board-plan.md a.2)
+okb = okb and net_at('U1', 'E6') is None and net_at('U1', 'D7') == 'MIC_B_DATA'
+a5('A5-2', okb, 'U7 U8 R33 R34 C33 C34 C37 C38 absent; E6 (MIC_B_CLK) not connected (W2) and D7 MIC_B_DATA reaches only test pad TP21',
+   'second microphone pair not removed or MIC_B not test pad only: still present %s' % left)
+
+TAILS = {'J_BAND_A', 'J_BAND_B'}
+
+
+def tail_of(net):
+    t = refs_on(net) & TAILS
+    return next(iter(t)) if len(t) == 1 else None
+
+
+# A5-3 joystick: no 5-way part; four SKTAAAE010, each between its line and ground, no pull-up or protection part
+oj = not [r for r, sy in sym_of.items() if sy == 'SKRHADE010']
+for sw, line, ball in (('SW1', 'JOY_UP', 'H1'), ('SW3', 'JOY_DOWN', 'G2'), ('SW4', 'JOY_LEFT', 'G1'), ('SW5', 'JOY_RIGHT', 'G10')):
+    oj = oj and sym_of.get(sw) == 'SKTAAAE010' and netof(sw, '1') == line and netof(sw, '3') == line and netof(sw, '2') == 'GND' and netof(sw, '4') == 'GND'
+    oj = oj and net_at('U1', ball) == line and tail_of(line) is not None and refs_on(line) == {'U1', tail_of(line), sw}
+a5('A5-3', oj, 'no SKRHADE010; SW1 UP, SW3 DOWN, SW4 LEFT, SW5 RIGHT each line to GND, each line holds only U1, one flex tail and its switch (no pull-up, no protection part, as the old lines)',
+   'joystick wrong (5-way part, switch wiring, or a part on a JOY line)')
+
+# A5-4 JOY_CENTER H4 on a test pad only
+# W2 round 2 (lead's ruling b): H4 is not connected and TP22 is removed (expected value changed by that ruling)
+a5('A5-4', net_at('U1', 'H4') is None and not refs_on('JOY_CENTER'),
+   'JOY_CENTER (H4) not connected, TP22 removed (W2 round 2)', 'JOY_CENTER still present: %s' % sorted(refs_on('JOY_CENTER')))
+
+# A5-5 (A6, 17.11, 17.29) the centre switch SW2 under the round joystick cap on BTN_REC, no record button; EVPAVAA1A gone, five SKTAAAE010 in all
+n_sk = sorted(r for r, sy in sym_of.items() if sy == 'SKTAAAE010')
+orb = sym_of.get('SW2') == 'SKTAAAE010' and netof('SW2', '1') == 'BTN_REC' and netof('SW2', '3') == 'BTN_REC' and netof('SW2', '2') == 'GND' and netof('SW2', '4') == 'GND'
+orb = orb and net_at('U1', 'H2') == 'BTN_REC' and tail_of('BTN_REC') is not None and refs_on('BTN_REC') == {'U1', tail_of('BTN_REC'), 'SW2'}
+orb = orb and not [r for r, sy in sym_of.items() if sy == 'EVPAVAA1A'] and n_sk == ['SW1', 'SW2', 'SW3', 'SW4', 'SW5']
+a5('A5-5', orb, 'SW2 SKTAAAE010 (joystick centre switch) BTN_REC (H2) to GND, no EVPAVAA1A, 5 SKTAAAE010 in all', 'centre switch SW2 wrong: %s' % n_sk)
+
+# A7-2 (was A5-6) motor: architecture 17.16 and 17.22, motor-drive.md 2.1: M1 W0525AB001D between VMOT and GND; U11
+# TLV75530PDQNR IN on VBAT, OUT on VMOT, EN on MOT_EN (R61 from MOTOR F6, R62 to GND); C83 VBAT-GND, C84 VMOT-GND; no Q1, no D1
+bad2 = []
+bad2 += [] if (parts.get('M1', {}).get('value'), parts.get('M1', {}).get('mpn')) == ('W0525AB001D', 'W0525AB001D') else ['M1 part %r' % parts.get('M1')]
+bad2 += [] if (netof('M1', '1'), netof('M1', '2')) == ('VMOT', 'GND') else ['M1 on %s %s' % (netof('M1', '1'), netof('M1', '2'))]
+u11 = {'1': 'VMOT', '2': 'GND', '3': 'MOT_EN', '4': 'VBAT', '5': 'GND'}
+bad2 += [] if parts.get('U11', {}).get('mpn') == 'TLV75530PDQNR' else ['U11 part %r' % parts.get('U11')]
+bad2 += ['U11 pin %s on %s want %s' % (k, netof('U11', k), v) for k, v in u11.items() if netof('U11', k) != v]
+bad2 += [] if {sp['pin_number']: sp['pin_name'] for sp in syms['TLV75530P_DQN']} == {'1': 'OUT', '2': 'GND', '3': 'EN', '4': 'IN', '5': 'PAD'} else ['U11 symbol pins']
+bad2 += ['%s not %s to GND' % (c, n) for c, n in (('C83', 'VBAT'), ('C84', 'VMOT')) if (netof(c, '1'), netof(c, '2')) != (n, 'GND')]
+bad2 += ['%s value %r' % (c, parts.get(c, {}).get('value')) for c in ('C83', 'C84') if parts.get(c, {}).get('value') != '10uF']
+bad2 += [] if (netof('R61', '1'), netof('R61', '2')) == ('MOTOR', 'MOT_EN') and (netof('R62', '1'), netof('R62', '2')) == ('MOT_EN', 'GND') else ['R61 R62 wiring']
+bad2 += [] if net_at('U1', 'F6') == 'MOTOR' and parts['R61']['value'] == '100R' and parts['R62']['value'] == '100k' else ['F6 or R61 R62 values']
+bad2 += [] if refs_on('MOT_EN') == {'R61', 'R62', 'U11'} and refs_on('MOTOR') == {'U1', 'R61'} else ['MOT_EN %s MOTOR %s' % (sorted(refs_on('MOT_EN')), sorted(refs_on('MOTOR')))]
+bad2 += [] if refs_on('VMOT') == {'U11', 'C84', 'M1', 'J_BAND_A'} else ['VMOT members %s' % sorted(refs_on('VMOT'))]
+bad2 += ['%s still present' % r for r in ('Q1', 'D1') if r in parts or any(x['reference'] == r for x in rows)]
+bad2 += ['net %s still present' % n for n in ('MOTOR_DRV', 'MOTOR_G') if n in nets]
+bad2 += ['M1 or the motor regulator on VDD_3V0'] if refs_on('VDD_3V0') & {'M1', 'U11', 'C84'} else []
+a5('A7-2', not bad2, 'M1 W0525AB001D on VMOT and GND; U11 TLV75530PDQNR (1 OUT VMOT, 2 GND, 3 EN MOT_EN, 4 IN VBAT, pad GND); R61 MOTOR-MOT_EN 100R, R62 MOT_EN-GND 100k; C83 VBAT, C84 VMOT 10uF; Q1, D1, MOTOR_DRV, MOTOR_G absent',
+   'motor drive wrong: %s' % bad2)
+
+# A5-7 storage: CSNP32GCR01-BOW, 8 pads numbered as the maker table, W3 wiring
+SD = {'1': 'DAT2', '2': 'DAT3', '3': 'CLK', '4': 'VSS', '5': 'CMD', '6': 'DAT0', '7': 'DAT1', '8': 'VCC'}
+SDNET = {'1': 'SD_DAT2', '2': 'SDC_CS', '3': 'SDC_SCK', '4': 'GND', '5': 'SDC_MOSI', '6': 'SDC_MISO', '7': 'SD_DAT1', '8': 'VDD_SD'}
+os_ = parts.get('U3', {}).get('value') == 'CSNP32GCR01-BOW' and parts['U3']['symbol'] == 'CSNP32GCR01_BOW'
+os_ = os_ and all(netof('U3', k) == v for k, v in SDNET.items()) and len(syms['CSNP32GCR01_BOW']) == 8
+os_ = os_ and {sp['pin_number']: sp['pin_name'] for sp in syms['CSNP32GCR01_BOW']} == SD
+for r, n in (('R60', 'SDC_MISO'), ('R63', 'SD_DAT1'), ('R64', 'SD_DAT2'), ('R65', 'SDC_CS')):
+    os_ = os_ and {netof(r, '1'), netof(r, '2')} == {n, 'VDD_SD'}
+try:
+    import fitz
+    txt = fitz.open(os.path.join(DESIGN, 'datasheets', 'slim2_cs-sdnand-20230403.pdf'))[4].get_text()
+    docname = {'1': 'SDD2', '2': 'CD/SDD3', '3': 'SCLK', '4': 'VSS', '5': 'CMD', '6': 'SDD0', '7': 'SDD1', '8': 'VCC'}
+    bad_doc = [k for k, v in docname.items() if not re.search(r'\n%s\s*\n\s*%s' % (k, re.escape(v)), txt)]
+except Exception as e:  # not a pass: recorded as a failure
+    bad_doc = ['cannot read maker pdf: %s' % e]
+a5('A5-7', os_ and not bad_doc, 'U3 CSNP32GCR01-BOW, 8 pads numbered as the maker table (p5), W3 wiring and 4 pull-ups',
+   'storage wrong or pad numbers differ from the maker table: %s' % bad_doc)
+
+# A5-8 screen connector: 15 positions, names and order as printed in parts/slim.md 1.3
+slim = open(os.path.join(DESIGN, 'parts', 'slim.md')).read()
+sec13 = slim.split('### 1.3')[1].split('### 1.4')[0]
+line = [l for l in sec13.splitlines() if l.startswith('- Pin table')][0]
+line = line.split('As printed')[0].split('15 pins:')[1]
+printed = []
+for m in re.finditer(r'\b(\d+)(?:-(\d+))? ([A-Z]{2,}[A-Z0-9]*)\b', line):
+    hi = int(m.group(2) or m.group(1)); lo = int(m.group(1))
+    printed += [m.group(3)] * (hi - lo + 1)
+W9 = ['ELVSS', 'ELVDD', None, 'VDD_3V0', 'VDD_1V8', 'SWIRE', 'LCD_TE', 'LCD_RST', 'LCD_CS', 'LCD_SCK', 'LCD_DCX', 'LCD_MOSI', 'GND', 'GND', 'GND']
+o8 = len(printed) == 15 and parts.get('J1', {}).get('value') == 'FH35C-15S-0.3SHW(50)' and len(syms['FPC_15']) == 15
+o8 = o8 and [sp['pin_name'] for sp in syms['TOH095XVT-01']] == printed
+for k in range(1, 16):
+    nd, nj = netof('DISP1', str(k)), netof('J1', '%d' % k)
+    o8 = o8 and nd == nj and nd == W9[k - 1]
+    if W9[k - 1] is None:
+        o8 = o8 and nd is None and netof('J1', '%d' % k) is None
+openpins = open(os.path.join(HERE, 'open-pins.csv')).read()
+o8 = o8 and 'DISP1,' not in openpins   # W1: pins 3 and 4 are closed by the Tailor drawing p5 table (3 MTP, 4 VCC)
+a5('A5-8', o8, 'J1 FH35C-15S-0.3SHW(50) 15 positions = DISP1 15 contacts in the printed order %s; pins 3 and 4 closed (Tailor drawing p5)' % ','.join(printed),
+   'screen connector wrong (printed order %s)' % printed)
+
+# A6-9 the two flex tails (architecture 17.8 as replaced by 17.11 and 17.12). The split of lines between the tails is the
+# table BAND_SPLIT in make_netlist.py; the rules below do not depend on which tail is which, except that the lead's
+# confirmation of the motor's tail is left open (the motor pair may be on either tail, but both lines on the same one).
+split = MK.BAND_SPLIT
+want_a = [n for n, _, sd in split if sd == 'A']
+want_b = [n for n, _, sd in split if sd == 'B']
+ja = [netof('J_BAND_A', str(i + 1)) for i in range(len(syms['BAND_PADS_A']))]
+jb = [netof('J_BAND_B', str(i + 1)) for i in range(len(syms['BAND_PADS_B']))]
+o9 = ja == want_a and jb == want_b and len(ja) == len(want_a) and len(jb) == len(want_b)
+o9 = o9 and [sp['pin_name'] for sp in syms['BAND_PADS_A']] == [p for _, p, sd in split if sd == 'A']
+o9 = o9 and [sp['pin_name'] for sp in syms['BAND_PADS_B']] == [p for _, p, sd in split if sd == 'B']
+side = {}
+for n, _, sd in split:
+    side.setdefault(n, set()).add(sd)
+JOYSET = ['JOY_UP', 'JOY_DOWN', 'JOY_LEFT', 'JOY_RIGHT', 'BTN_REC']
+CELLSET = ['VBAT', 'NTC', 'VBUS', 'USB_DN', 'USB_DP']
+one = lambda names: len(set(x for n in names for x in side.get(n, {'?'}))) == 1 and all(len(side.get(n, {'?', '!'})) == 1 for n in names)
+o9 = o9 and one(JOYSET) and one(CELLSET) and one(['VMOT'])  # A7: motor return is a ground pad (motor-drive.md W2)
+o9 = o9 and side['JOY_UP'] != side['VBAT']                       # joystick side and cell side are different tails
+o9 = o9 and side['VMOT'] == side['JOY_UP']                       # A7 (17.16): the motor is on tail A, the joystick side
+o9 = o9 and all(side[n] == side['JOY_UP'] for n in ('BTN_REC',))   # the centre switch is on the joystick's tail
+o9 = o9 and {n for n in side if len(side[n]) > 1} == {'GND'}      # only ground is on both tails
+o9 = o9 and 'GND' in want_a and 'GND' in want_b
+band_parts = ['SW1', 'SW2', 'SW3', 'SW4', 'SW5', 'M1', 'BT1', 'RT1', 'CP1', 'CP2', 'CP3', 'CP4']
+for bp in band_parts:
+    for sp in syms[parts[bp]['symbol']]:
+        n = netof(bp, sp['pin_number'])
+        o9 = o9 and n is not None and (TAILS & refs_on(n)) != set()
+o9 = o9 and all(parts[b]['sheet'] == 'band' for b in band_parts + ['J_BAND_A', 'J_BAND_B'])
+old = [r for r in ('J2', 'J3', 'W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10', 'CAP2') if r in parts]
+o9 = o9 and not old
+o9 = o9 and len(ja) == 8 and len(jb) == 7 and ja.count('GND') == 2  # A7: 8 and 7 pads (17.14), MOT- and GND on ground (W2)
+a5('A6-9', o9, 'J_BAND_A %d pads and J_BAND_B %d pads equal the BAND_SPLIT table; joystick lines, SW2 and VMOT on one tail, cell/NTC/VBUS/D-/D+ on the other, only GND on both, two GND pads on A; every pin of SW1-SW5, M1, BT1, RT1, CP1-CP4 is on a net with a tail pad; J2 J3 W1-W10 absent' % (len(ja), len(jb)),
+   'flex tails wrong: A %s B %s want A %s B %s old parts %s' % (ja, jb, want_a, want_b, old))
+
+# A8-10 (was A7-10) title block A8 (design v7) in every sheet file and on every PDF page
+files = sorted(f for f in os.listdir(SCHDIR) if f.startswith('ring') and f.endswith('.kicad_sch'))
+notA6 = [f for f in files if '(rev "A8")' not in open(os.path.join(SCHDIR, f)).read()]
+try:
+    import fitz
+    pdf = fitz.open(os.path.join(SCHDIR, 'ring-schematic.pdf'))
+    pg = [i + 1 for i, p in enumerate(pdf) if not re.search(r'Rev:?\s*A8', p.get_text())]
+    npg = len(pdf)
+except Exception as e:
+    pg, npg = ['cannot read pdf: %s' % e], -1
+a5('A8-10', not notA6 and not pg and npg == len(files), 'rev A8 (design v7) in %d sheet files and on all %d PDF pages' % (len(files), npg),
+   'title block not A8: files %s pdf pages %s (pdf %d pages, %d files)' % (notA6, pg, npg, len(files)))
+
+# A7-1 (was A6-1) U2 nPM1304-CAAA: every ball number and name equals npm1304-balls.csv (Nordic Table 33, page 153);
+# no placeholder P<n>; no GPIO4; no U2 row left in open-pins.csv; order code nPM1304-CAAA-R7 (Table 50, page 168)
+openrows = list(csv.DictReader(open(os.path.join(HERE, 'open-pins.csv'))))
+u2 = parts.get('U2', {})
+bad1 = [] if (u2.get('symbol'), u2.get('value'), u2.get('mpn')) == ('nPM1304_CSP35', 'nPM1304', 'nPM1304-CAAA-R7') else ['U2 part %r' % u2]
+nordic = [(r['ball'], r['name']) for r in csv.DictReader(open(os.path.join(HERE, 'npm1304-balls.csv')))]
+mine1 = [(sp['pin_number'], sp['pin_name']) for sp in syms['nPM1304_CSP35']]
+bad1 += [] if sorted(mine1) == sorted(nordic) and len(nordic) == 35 else ['U2 pins differ from Table 33: only mine %s only Nordic %s' % (sorted(set(mine1) - set(nordic)), sorted(set(nordic) - set(mine1)))]
+bad1 += ['placeholder pin %s' % p for p, _ in mine1 if re.fullmatch(r'P\d+', p)]
+bad1 += ['GPIO4 present'] if any(n == 'GPIO4' for _, n in mine1) or any(r['reference'] == 'U2' and r['pin_name'] == 'GPIO4' for r in rows) else []
+bad1 += ['U2 rows in open-pins.csv: %d' % len([r for r in openrows if r['reference'] == 'U2'])] if any(r['reference'] == 'U2' for r in openrows) else []
+WANT_U2 = {'B1': 'VBUS', 'B2': 'VBUS', 'C1': 'VSYS', 'C2': 'VSYS', 'C7': 'VSYS', 'D1': 'VBAT', 'D2': 'VBAT', 'D3': 'NTC', 'D4': 'SHPHLD',
+           'D6': 'PMIC_INT', 'E3': 'PMIC_SCL', 'E5': 'PMIC_SDA', 'E4': 'VDD_1V8', 'C3': 'VBUSOUT', 'B6': 'VDD_1V8', 'B7': 'SW1',
+           'A7': 'GND', 'C6': 'VDD_3V0', 'D7': 'SW2', 'E7': 'GND', 'B4': 'VDD_1V8', 'B5': 'VDD_3V0', 'A4': 'VDD_MIC', 'A5': 'VDD_SD',
+           'A6': 'GND', 'E2': 'VSET1', 'E1': 'VSET2', 'A1': None, 'A2': None, 'A3': None, 'B3': None, 'C4': None, 'C5': None, 'D5': None, 'E6': None}
+bad1 += ['U2 ball %s on %s want %s' % (b, netof('U2', b), n) for b, n in WANT_U2.items() if netof('U2', b) != n]
+bomrows = list(csv.DictReader(open(BOMFILE)))
+bu2 = [r for r in bomrows if r['reference'] == 'U2']
+bad1 += [] if len(bu2) == 1 and bu2[0]['maker_part_number'] == 'nPM1304-CAAA-R7' else ['bom.csv U2 order code %r' % [r['maker_part_number'] for r in bu2]]
+a5('A7-1', not bad1, 'U2 nPM1304-CAAA-R7: %d balls equal npm1304-balls.csv (Table 33 p153), no P<n> placeholder, no GPIO4, no U2 row in open-pins.csv, every ball on its A6 net' % len(mine1),
+   'U2 wrong: %s' % bad1)
+
+# A7-4 power chip passives against Nordic's reference (npm1304-reference.md D1 to D4)
+bad4 = []
+bad4 += [] if parts['C71']['value'] == '1.0uF 25V' and (netof('C71', '1'), netof('C71', '2')) == ('VBUS', 'GND') else ['C71 %r on %s' % (parts['C71']['value'], (netof('C71', '1'), netof('C71', '2')))]
+bc71 = [r for r in bomrows if r['reference'] == 'C71']
+bad4 += [] if len(bc71) == 1 and '25 V' in bc71[0]['value'] and bc71[0]['maker_part_number'] != 'GRM155R60J475ME47D' else ['bom.csv C71 %r' % [(r['value'], r['maker_part_number']) for r in bc71]]
+for c, n, v in (('C85', 'VBAT', '2.2uF'), ('C86', 'VDD_MIC', '1.0uF'), ('C87', 'VDD_SD', '1.0uF'), ('C88', 'VSYS', '10uF')):
+    bad4 += [] if parts.get(c, {}).get('value') == v and (netof(c, '1'), netof(c, '2')) == (n, 'GND') else ['%s %r on %s want %s %s' % (c, parts.get(c, {}).get('value'), (netof(c, '1'), netof(c, '2')), v, n)]
+bad4 += [] if len([r for r in nets.get('VSYS', []) if r['reference'].startswith('C') and parts[r['reference']]['value'] == '10uF']) == 3 else ['VSYS does not hold three 10 uF']
+a5('A7-4', not bad4, 'C71 1.0 uF 25 V on VBUS (not the 6.3 V part), C85 2.2 uF on VBAT, C86 1.0 uF on VDD_MIC, C87 1.0 uF on VDD_SD, three 10 uF on VSYS (C74, C75, C88)',
+   'power chip passives wrong: %s' % bad4)
+
+# A8-1 (design v7, architecture 17.30) the recording light is removed in v7. References that must not appear anywhere in
+# the circuit, the parts list or the pin lists (the light, its resistor, its transistor, its guide and its plug):
+REMOVED_V7 = ('LED1', 'R41', 'Q2', 'LG1', 'LP1')  # removed in v7 (architecture 17.30)
+REMOVED_V7_SYMS = ('LED_KPG1005', 'DMN2450UFB4')  # the two symbols of the light circuit, removed in v7
+REMOVED_V7_NETS = ('LED_A', 'LED_K')  # nets that existed only for the light, removed in v7
+REMOVED_V7_TEXT = re.compile(r'\b(LED1|R41|Q2|LG1|LP1)\b|KPG-1005|DMN2450|light guide|light plug|light pipe|recording light', re.I)  # words of the parts removed in v7
+bad_v7 = ['%s in parts.csv' % r for r in REMOVED_V7 if r in parts]
+bad_v7 += ['%s in the netlist' % r for r in REMOVED_V7 if any(x['reference'] == r for x in rows)]
+bad_v7 += ['%s in the bom.csv reference column' % r for r in REMOVED_V7 if any(r in [t.strip() for t in b['reference'].split(',')] for b in bomrows)]
+bad_v7 += ['%s added in additions.csv' % r for r in REMOVED_V7 if r in added]
+bad_v7 += ['%s in open-pins.csv' % r for r in REMOVED_V7 if any(o['reference'] == r for o in openrows)]
+bad_v7 += ['symbol %s present' % y for y in REMOVED_V7_SYMS if y in syms or y in sym_of.values()]
+bad_v7 += ['net %s present' % n for n in REMOVED_V7_NETS if n in nets]
+bad_v7 += ['net %s carries a light name' % n for n in nets if re.search(r'(^|_)LED(_|\d|$)|LIGHT', n)]
+bad_v7 += ['test pad list names %s' % n for n in MK.TPS if re.search(r'(^|_)LED(_|\d|$)|LIGHT', n)]
+bad_v7 += ['test pad %s on %s' % (t, net_at(t, '1')) for t in testpads if re.search(r'(^|_)LED(_|\d|$)|LIGHT', net_at(t, '1') or '')]
+want_mic = {'U2', 'U5', 'U6', 'C31', 'C32', 'C35', 'C36', 'C86'}
+bad_v7 += [] if refs_on('VDD_MIC') == want_mic else ['VDD_MIC members %s, want %s' % (sorted(refs_on('VDD_MIC')), sorted(want_mic))]
+# text: no line of the parts list or the generated tables names the light, except a line that says "removed in v7"
+# (symbols.csv rows of the power chip carry Nordic's ball name LED1: those rows are excepted by symbol name; they are not the light removed in v7)
+for fn, path in (('bom.csv', BOMFILE), ('parts.csv', os.path.join(HERE, 'parts.csv')), ('additions.csv', os.path.join(HERE, 'additions.csv')),
+                 ('open-pins.csv', os.path.join(HERE, 'open-pins.csv')), ('symbols.csv', os.path.join(HERE, 'symbols.csv'))):
+    for k, l in enumerate(open(path).read().split('\n'), 1):
+        if fn == 'symbols.csv' and l.startswith('nPM1304_CSP35,'):
+            continue
+        if REMOVED_V7_TEXT.search(l) and 'removed in v7' not in l:
+            bad_v7.append('%s line %d names %r' % (fn, k, REMOVED_V7_TEXT.search(l).group(0)))
+a5('A8-1', not bad_v7, 'no LED1, R41, Q2, LG1, LP1 in parts, netlist, bom.csv, additions or open pins; no LED symbol, no LED_A/LED_K net, no test pad or spare pin for a light; VDD_MIC holds only U2, U5, U6, C31, C32, C35, C36, C86; no line names the light except lines saying "removed in v7"',
+   'parts removed in v7 still present: %s' % bad_v7)
+
+# A8-2 (design v7, architecture 17.29) the round joystick in the parts list: CAP1 the round moulded cap, FRM1 the fixed
+# round titanium frame with its adhesive, HSG1 with the round 5.6 mm opening, the five switches with their directions,
+# and no line naming the older joystick shape (except a line saying "removed in v7")
+def bomline(ref):
+    rr = [b for b in bomrows if ref in [t.strip() for t in b['reference'].split(',')]]
+    return ' '.join(rr[0].values()) if len(rr) == 1 else None
+bad_j = []
+c1 = bomline('CAP1')
+for tok in ('Makrolon 2407', '901510', 'custom moulded part', '4.40', 'dish 0.25', '0.70, 1.30, 1.90', '6.90 x 6.40 x 0.40', 'SPI A-2', 'VDI 3400 Ref 21', '0.20 mm radial'):
+    bad_j += [] if c1 and tok in c1 else ['CAP1 line lacks %r' % tok]
+f1 = bomline('FRM1')
+for tok in ('Ti-6Al-4V', '5.40', '4.80', '1.30', 'DP420', '0.10 mm radial', 'gloss black'):
+    bad_j += [] if f1 and tok in f1 else ['FRM1 line lacks %r' % tok]
+h1 = bomline('HSG1') or ''
+bad_j += [] if 'round opening 5.6' in h1 and '6.6 x 5.6' not in h1 else ['HSG1 joystick opening is not the round 5.6 mm']
+sw = bomline('SW1') or ''
+for tok in ('SW1 up', 'SW3 down', 'SW4 toward the hand', 'SW5 toward the fingertip'):
+    bad_j += [] if tok in sw else ['switch line lacks %r' % tok]
+bad_j += [] if 'long press of 1.0 s' in (bomline('SW2') or '') else ['SW2 line lacks the 1.0 s long press']
+for k, l in enumerate(open(BOMFILE).read().split('\n'), 1):
+    if re.search(r'\bnub|rectangular', l, re.I) and 'removed in v7' not in l:
+        bad_j.append('bom.csv line %d names the old joystick shape' % k)
+a5('A8-2', not bad_j, 'bom.csv: CAP1 round 4.40 mm cap in Makrolon 2407 901510 (custom moulded part), FRM1 Ti-6Al-4V frame 5.40/4.80/1.30 bonded with DP420, HSG1 round 5.6 mm opening, SW1 up, SW3 down, SW4 toward the hand, SW5 toward the fingertip, SW2 1.0 s long press; no older joystick shape (the shapes removed in v7)',
+   'round joystick wrong in bom.csv: %s' % bad_j)
+
+# A7-8 decisions re-checked: cell value (17.15, 17.17), one control (no switch beyond SW1 to SW5), U10 C81 C82
+bad8 = [] if '20-27mAh' in parts['BT1']['value'] and '17.6mAh' in parts['BT1']['value'] else ['BT1 value %r' % parts['BT1']['value']]
+bbt = [r for r in bomrows if r['reference'] == 'BT1']
+bad8 += [] if len(bbt) == 1 and '20 to 27 mAh' in bbt[0]['value'] and '17.6 mAh' in bbt[0]['key_figures'] else ['bom.csv BT1']
+bad8 += ['switch beyond the joystick: %s' % r for r, sy in sym_of.items() if sy == 'SKTAAAE010' and r not in ('SW1', 'SW2', 'SW3', 'SW4', 'SW5')]
+bad8 += ['part %s present' % r for r in ('U10', 'C81', 'C82') if r not in parts]
+a5('A7-8', not bad8, 'BT1 20 to 27 mAh at US 9 with 17.6 mAh at US 7 (netlist value and bom.csv key figures; architecture 17.26); only SW1 to SW5; U10, C81, C82 present (their wiring: A6-7)',
+   'kept decisions wrong: %s' % bad8)
+
+# A6-2 (b) one control: SW2 stays (BTN_REC), CAP2 gone, CAP1 kept, no line names a record cap or pill
+bt = ' '.join(' '.join(r.values()) for r in bomrows)
+caps = [r['reference'] for r in bomrows if r['reference'] in ('CAP1', 'CAP2')]
+o2 = caps == ['CAP1'] and not re.search(r'Record button cap|record pill|record cap|CAP2|pill 4\.4|over the record switch', bt)
+o2 = o2 and 'CAP2' not in parts and sym_of.get('SW2') == 'SKTAAAE010' and netof('SW2', '1') == 'BTN_REC'
+a5('A6-2', o2, 'SW2 kept on BTN_REC; bom.csv keeps CAP1 and has no CAP2, record cap or record pill', 'one-control rule broken: caps %s' % caps)
+
+# A6-3 (c) the charging pads touch the skin: VBUS is an input only on the ring, D- and D+ hold only the chip and U9
+vb = [(r['reference'], r['pin_name']) for r in nets.get('VBUS', []) if r['pin_type'] == 'power_out']
+o3 = vb == [('CP1', '1')]
+o3 = o3 and refs_on('USB_DN') == {'U1', 'U9', 'CP2', tail_of('USB_DN')} and refs_on('USB_DP') == {'U1', 'U9', 'CP3', tail_of('USB_DP')}
+o3 = o3 and {r['reference'] for r in nets['VBUS']} == {'CP1', 'U2', 'U9', 'R1', 'C71', 'C72', tail_of('VBUS')}
+o3 = o3 and not ({r['reference'] for r in nets.get('VBUSOUT', [])} & {'CP1', 'U9', tail_of('VBUS')})
+a5('A6-3', o3, 'VBUS: the only source is the pad CP1 (the case); U2 VBUS and U1 (through R1) are inputs; VBUSOUT is a separate net not on a pad; D- and D+ hold only U1, U9, their pad and the tail (no resistor, no other driver)',
+   'pad nets wrong: VBUS sources %s, USB_DN %s, USB_DP %s' % (vb, sorted(refs_on('USB_DN')), sorted(refs_on('USB_DP'))))
+
+# A6-7 (d, review F07) storage bus: no line joins the 1.8 V chip ball and the 3.0 V storage pad directly
+o7 = True
+bad7 = []
+for sig, csig, a, b in (('SD_SCK', 'SDC_SCK', '1', '12'), ('SD_MOSI', 'SDC_MOSI', '2', '11'), ('SD_CS', 'SDC_CS', '3', '10'), ('SD_MISO', 'SDC_MISO', '4', '9')):
+    if refs_on(sig) != {'U1', 'U10'} or refs_on(csig) - {'U3', 'U10', 'R60', 'R65'} or netof('U10', a) != sig or netof('U10', b) != csig:
+        bad7.append(sig)
+    if 'U1' in refs_on(csig) or 'U3' in refs_on(sig):
+        bad7.append(sig + ' direct')
+want_u10 = {'5': 'VDD_1V8', '6': 'GND', '7': 'GND', '8': 'GND', '13': 'VDD_SD', '14': 'VDD_1V8', '15': 'VDD_1V8', '16': 'VDD_1V8'}
+bad7 += ['U10 pin %s on %s want %s' % (k, netof('U10', k), v) for k, v in want_u10.items() if netof('U10', k) != v]
+bad7 += ['pull-up on the 1.8 V side: %s' % r for r in ('R60', 'R63', 'R64', 'R65') if 'VDD_SD' in (netof(r, '1'), netof(r, '2')) and not ({netof(r, '1'), netof(r, '2')} & {'SDC_MISO', 'SDC_CS', 'SD_DAT1', 'SD_DAT2'})]
+bad7 += ['U10 supply capacitor %s' % c for c, n in (('C81', 'VDD_1V8'), ('C82', 'VDD_SD')) if {netof(c, '1'), netof(c, '2')} != {n, 'GND'}]
+# U10 pin table against the saved TI datasheet text (SCES898C Table 4-1, column RSV)
+try:
+    tt = open(os.path.join(HERE, 'evidence', 'a6', 'ti_sn74axc4t774.txt')).read()
+    blk = tt.split('Table 4-1. Pin Functions')[1].split('www.ti.com')[0].split('\n')
+    toks = [x.strip() for x in blk if x.strip()]
+    ti = {}
+    for k, tok in enumerate(toks):
+        if re.fullmatch(r'(A[1-4]|B[1-4]|DIR[1-4]|OE|GND|VCCA|VCCB)', tok) and k + 3 < len(toks) and all(re.fullmatch(r'\d+', toks[k + j]) for j in (1, 2, 3)):
+            ti[tok] = toks[k + 2]
+    got = {sp['pin_name']: sp['pin_number'] for sp in syms['SN74AXC4T774_RSV']}
+    bad7 += ['U10 pin %s is %s, TI RSV column says %s' % (n, got.get(n), ti.get(n)) for n in sorted(set(got) | set(ti)) if got.get(n) != ti.get(n)]
+    bad7 += ([] if len(ti) == 16 else ['TI text gave %d of 16 pins' % len(ti)])
+except Exception as e:
+    bad7.append('cannot read the saved TI datasheet text: %s' % e)
+a5('A6-7', not bad7, 'F07: SD_SCK, SD_MOSI, SD_CS, SD_MISO reach the card only through U10 (VCCA VDD_1V8, VCCB VDD_SD, DIR1-3 high, DIR4 low, OE low), pull-ups on the card side, U10 pin numbers equal the RSV column of the TI table',
+   'storage level shift wrong: %s' % bad7)
+
+# A6-4 (h) microphone figure and (f) charge settings in the files this task owns
+bim = [r for r in bomrows if r['reference'] == 'U5,U6']
+o4 = len(bim) == 1 and 'SNR 64.5 dB(A)' in bim[0]['key_figures'] and bim[0]['maker_part_number'] == 'SPK0641HT4H-1' and 'IM68D128B' not in ' '.join(bim[0].values())
+o4 = o4 and re.search(r'Signal to Noise Ratio\s+SNR\s+94 dB SPL @ 1 kHz, A-weighted\s+-\s+64\.5', kt) is not None
+a5('A7-6', o4, 'microphone line names SPK0641HT4H-1 with SNR 64.5 dB(A) as the Knowles sheet 2 text, no IM68D128B', 'microphone line wrong')
+OLD = re.compile(r'(\b32 mA|\b68 mA|\b4\.40 V|\b4\.4 V\b|\b4\.45 V|\b800 mA)')
+hits = []
+for fn in ('bom.csv',):
+    for k, l in enumerate(open(os.path.join(DESIGN, fn)).read().split('\n'), 1):
+        if OLD.search(l): hits.append((fn, k, OLD.search(l).group(1)))
+for fn in ('parts.csv', 'additions.csv', 'open-pins.csv', 'netlist.csv', 'sch-notes.md'):
+    for k, l in enumerate(open(os.path.join(HERE, fn)).read().split('\n'), 1):
+        if OLD.search(l) and 'WAS:' not in l: hits.append((fn, k, OLD.search(l).group(1)))
+a5('A6-5', not hits, 'no charge setting other than 15 mA and 4.35 V in bom.csv, parts.csv, additions.csv, open-pins.csv, netlist.csv, sch-notes.md (lines marked WAS: excepted)',
+   'old charge setting found: %s' % hits)
+
+# ---------------------------------------------------------------- (h) KiCad's own netlist
+xml = os.path.join(HERE, 'ring-kicad.xml')
+lg = open(os.path.join(HERE, 'evidence', 'kicad_netlist_export.log'), 'w')
+rc = subprocess.call([KICAD_CLI, 'sch', 'export', 'netlist', '--format', 'kicadxml', '-o', xml,
+                      os.path.join(HERE, 'ring.kicad_sch')], stdout=lg, stderr=lg)
+if rc != 0 or not os.path.exists(xml):
+    fail('kicad-cli export netlist exit %d' % rc)
+else:
+    kn = {}
+    knc = set()
+    for n in ET.parse(xml).getroot().iter('net'):
+        nodes = {(x.get('ref'), x.get('pin')) for x in n.iter('node') if not x.get('ref').startswith('#')}
+        name = n.get('name').lstrip('/')
+        if name.startswith('unconnected-'):
+            knc |= nodes
+        elif nodes:
+            kn[name] = nodes
+    mine = {n: {(r['reference'], r['pin_number']) for r in rr} for n, rr in nets.items()}
+    mnc = {(r['reference'], r['pin_number']) for r in rows if r['pin_type'] == 'no_connect'}
+    d1 = sorted(set(mine) ^ set(kn))
+    d2 = sorted(n for n in set(mine) & set(kn) if mine[n] != kn[n])
+    if d1: fail('net names differ between netlist.csv and KiCad export: %s' % d1)
+    if d2: fail('net members differ: %s' % [(n, sorted(mine[n] ^ kn[n])) for n in d2])
+    if mnc != knc: fail('no-connect pins differ: %s' % sorted(mnc ^ knc))
+    if not (d1 or d2 or mnc != knc):
+        ok('KiCad export matches netlist.csv: %d nets, %d no-connect pins' % (len(kn), len(knc)))
+
+print('RESULT', 'FAIL %d' % len(FAIL) if FAIL else 'PASS', 'netlist', os.path.basename(NETFILE))
+sys.exit(1 if FAIL else 0)

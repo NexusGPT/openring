@@ -1,0 +1,23 @@
+=== C21 no core input call and no long press in the unit (module sources)
+files: firmware/modules/ring_xfer/src/rxf_proto.c firmware/modules/ring_xfer/src/rxf_proto.h firmware/modules/ring_xfer/src/rxf_desc.c firmware/modules/ring_xfer/src/rxf_desc.h firmware/modules/ring_xfer/src/rxf_class.c firmware/modules/ring_xfer/CMakeLists.txt firmware/modules/ring_xfer/Kconfig
+RESULT C21 no core input call and no long press in the unit (module sources): 0 hits
+=== pure parts make no kernel call (rxf_proto.c, rxf_desc.c and their headers)
+files: firmware/modules/ring_xfer/src/rxf_proto.c firmware/modules/ring_xfer/src/rxf_proto.h firmware/modules/ring_xfer/src/rxf_desc.c firmware/modules/ring_xfer/src/rxf_desc.h
+RESULT pure parts make no kernel call (rxf_proto.c, rxf_desc.c and their headers): 0 hits
+=== pure parts include list
+files: firmware/modules/ring_xfer/src/rxf_proto.c firmware/modules/ring_xfer/src/rxf_desc.c
+firmware/modules/ring_xfer/src/rxf_proto.c:6:#include <string.h>
+firmware/modules/ring_xfer/src/rxf_proto.c:8:#include <zephyr/sys/crc.h>
+firmware/modules/ring_xfer/src/rxf_proto.c:10:#include "rxf_proto.h"
+firmware/modules/ring_xfer/src/rxf_desc.c:5:#include <string.h>
+firmware/modules/ring_xfer/src/rxf_desc.c:7:#include "rxf_desc.h"
+RESULT pure parts include list: hits listed above (grep exit 0)
+=== no chip pin by number (P0.xx, P1.xx, GPIO, pin) in module sources and tests
+files: firmware/modules/ring_xfer/src/rxf_proto.c firmware/modules/ring_xfer/src/rxf_proto.h firmware/modules/ring_xfer/src/rxf_desc.c firmware/modules/ring_xfer/src/rxf_desc.h firmware/modules/ring_xfer/src/rxf_class.c firmware/modules/ring_xfer/CMakeLists.txt firmware/modules/ring_xfer/Kconfig firmware/tests/xfer/src/glue.c firmware/tests/xfer/src/test_desc.c firmware/tests/xfer/src/test_proto.c firmware/tests/xfer/src/test_store.c firmware/tests/xfer/src/test_svc.c firmware/tests/xfer/src/xt.c firmware/tests/xfer/src/glue.h firmware/tests/xfer/src/xt.h
+RESULT no chip pin by number (P0.xx, P1.xx, GPIO, pin) in module sources and tests: 0 hits
+=== hardware only through rhw.h in the thin part: no kit driver include
+files: firmware/modules/ring_xfer/src/rxf_class.c
+RESULT hardware only through rhw.h in the thin part: no kit driver include: 0 hits
+=== no use of the server address or a key in files of the unit
+files: firmware/modules/ring_xfer/src/rxf_class.c firmware/modules/ring_xfer/src/rxf_desc.c firmware/modules/ring_xfer/src/rxf_proto.c firmware/modules/ring_xfer/src/rxf_desc.h firmware/modules/ring_xfer/src/rxf_proto.h firmware/modules/ring_xfer/CMakeLists.txt firmware/modules/ring_xfer/Kconfig firmware/tests/xfer/src/glue.c firmware/tests/xfer/src/test_desc.c firmware/tests/xfer/src/test_proto.c firmware/tests/xfer/src/test_store.c firmware/tests/xfer/src/test_svc.c firmware/tests/xfer/src/xt.c firmware/tests/xfer/src/glue.h firmware/tests/xfer/src/xt.h firmware/tests/xfer/short_run.sh firmware/tests/xfer/broken_run.sh firmware/tests/xfer/broken_edit.py firmware/tests/xfer/CMakeLists.txt firmware/tests/xfer/prj.conf firmware/tests/xfer/testcase.yaml
+RESULT no use of the server address or a key in files of the unit: 0 hits

@@ -1,0 +1,11 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -516,7 +516,7 @@
+ 	if (err == 0) {
+ 		k_mutex_lock(&lk, K_FOREVER);
+ 		st.sc_indications++;
+-		sc_pending = true;
++		sc_pending = false;
+ 		k_mutex_unlock(&lk);
+ 		step_submit(K_MSEC(50));
+ 	}

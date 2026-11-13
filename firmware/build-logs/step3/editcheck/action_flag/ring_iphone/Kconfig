@@ -1,0 +1,31 @@
+config RING_IPHONE_LOGIC
+	bool "Ring iPhone logic: ANCS response reassembly, AMS decoder (pure)"
+	select RING_INBOX
+	select RING_TIME_LOGIC
+	help
+	  No kernel, driver or Bluetooth call.
+
+config RING_IPHONE
+	bool "Ring iPhone: notifications and actions, media, time from an iPhone"
+	select RING_IPHONE_LOGIC
+	select RING_TIME
+	select RING_DEVICES
+	select BT_GATT_CLIENT
+	select BT_GATT_DM
+	select BT_GATTP
+	select BT_ANCS_CLIENT
+	select BT_AMS_CLIENT
+	select BT_CTS_CLIENT
+	depends on BT_PERIPHERAL && BT_SMP
+	help
+	  After the link of the active device reaches security level 4 the ring looks for Apple's
+	  three services (Notification Center, Media, Current Time) and for Service Changed. A device
+	  without them (Android, Mac) is not an error. Nothing received here can start or stop a recording.
+
+config RING_IPHONE_FETCH_QUEUE
+	int "Notifications waiting for their attributes"
+	default 32
+	depends on RING_IPHONE
+	help
+	  The iPhone sends every notification it holds when the ring subscribes. The ring asks for the
+	  attributes of one at a time. An id that does not fit is not fetched (counted).

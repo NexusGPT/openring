@@ -1,0 +1,389 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "firmware-rules.schema.json",
+  "type": "object",
+  "properties": {
+    "design_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "basis_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1
+          },
+          "microphones": {
+            "type": "string",
+            "enum": [
+              "on",
+              "off"
+            ]
+          },
+          "storage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "screen": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "radio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "meaning",
+          "microphones",
+          "storage",
+          "screen",
+          "radio",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "transitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_kind": {
+            "type": "string",
+            "enum": [
+              "long_press",
+              "short_press",
+              "double_press",
+              "joystick",
+              "vbus",
+              "battery",
+              "storage",
+              "other"
+            ]
+          },
+          "to": {
+            "type": "string",
+            "minLength": 1
+          },
+          "actions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "motor_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "from",
+          "event_text",
+          "event_kind",
+          "to",
+          "actions",
+          "motor_ids",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "gestures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "long_press",
+              "short_press",
+              "double_press",
+              "joystick",
+              "vbus",
+              "battery",
+              "storage",
+              "other"
+            ]
+          },
+          "timing_text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "min_hold_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "max_hold_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "window_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fires": {
+            "type": "string",
+            "enum": [
+              "while_held",
+              "on_release",
+              "after_window",
+              "never"
+            ]
+          },
+          "per_state": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "effect": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "state",
+                "effect"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "kind",
+          "timing_text",
+          "min_hold_ms",
+          "max_hold_ms",
+          "window_ms",
+          "fires",
+          "per_state",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "motor_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pulses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "on_ms": {
+                  "type": "integer"
+                },
+                "off_ms": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "on_ms",
+                "off_ms"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "total_ms": {
+            "type": "integer"
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "id",
+          "event",
+          "pulses",
+          "total_ms",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "joystick": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "effect": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "direction",
+          "effect",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "light_rule": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "on_where_microphones_on": {
+          "type": "boolean"
+        },
+        "source": {
+          "$ref": "common.schema.json#/$defs/Source"
+        }
+      },
+      "required": [
+        "text",
+        "on_where_microphones_on",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "text",
+          "source"
+        ],
+        "additionalProperties": false
+      },
+      "description": "Plain notes on what changed in the ring since the design the rules were written for."
+    }
+  },
+  "required": [
+    "design_version",
+    "basis_version",
+    "states",
+    "transitions",
+    "gestures",
+    "motor_patterns",
+    "joystick",
+    "light_rule"
+  ],
+  "additionalProperties": false,
+  "title": "FirmwareRules",
+  "description": "behaviour.json: what the behaviour engine interprets. No state name or timing is written in app source."
+}

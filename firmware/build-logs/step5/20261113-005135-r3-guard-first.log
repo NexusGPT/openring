@@ -1,0 +1,13 @@
+# remote.sh run 20261113-005135-r3-guard-first
+# command: mkdir -p /ws/out/r3-0 && RING_OUT=/ws/out/r3-0/bt bash tests/bsim/relay/run.sh --broken session_start_clears_relay > /ws/out/r3-0/bt.log 2>&1; echo "exit $?"; grep -a "TEST . RESULT\|^broken\|CHECK.* FAIL" /ws/out/r3-0/bt.log | sed "s/^[a-z_0-9]*: @[0-9:.]* //" | cut -c1-200
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 00:51:35 CET
+# free on the server's /: 41 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261113-005135-r3-guard-first; server log /root/ring-os/logs/20261113-005135-r3-guard-first.log
+exit 1
+TEST B RESULT PASS (39 checks passed)
+broken session_start_clears_relay: the named check line did not say FAIL: RING CHECK B: the session start after a relay HELLO kept the entries.* FAIL
+# finished (Mac clock): 2026-11-13 00:54:11 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step5/20261113-005135-r3-guard-first.log

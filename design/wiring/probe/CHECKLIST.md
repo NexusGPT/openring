@@ -1,0 +1,10 @@
+- [ ] 1. Copy board and project into probe folder (copy-sha.txt)
+- [ ] 2. Baseline DRC of copy: expect 0 violations, 225 unconnected
+- [ ] 3. Export DSN with pcbnew.ExportSpecctraDSN
+- [ ] 4. Server folder /root/ring-wiring-probe only; Freerouting in Docker, batch, nice 19, 20 min limit; flags from its docs
+- [ ] 5. Run A: import SES, save new file, DRC
+- [ ] 6. Run B (if time): via_at_smd on, blind vias if accepted
+- [ ] 7. Per run: connections done/not done (Freerouting and KiCad), nets not done, segments, vias, layers, run time, violations by kind, part where unrouted nets cluster
+- [ ] 8. Keep each DSN and result file
+- [ ] 9. Remove own containers; name pulled image and size; ssh key never printed; server masked
+- [ ] 10. Last line RESULT:

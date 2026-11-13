@@ -1,0 +1,37 @@
+# remote.sh run 20261113-055701-u-store
+# command: for f in storage/disk_access.h drivers/disk.h sys/crc.h; do echo "== $f"; for n in disk_access_read disk_access_write disk_access_ioctl DISK_IOCTL_CTRL_INIT DISK_IOCTL_CTRL_DEINIT DISK_IOCTL_GET_SECTOR_COUNT crc32_ieee crc32_ieee_update; do echo "$n $(grep -c "$n" /ws/zephyr/include/zephyr/$f)"; done; done
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 05:57:01 CET
+# free on the server's /: 52 GB
+# source firmware copied to /root/ring-os/src-u-store
+# started on the server as 20261113-055701-u-store; server log /root/ring-os/logs/20261113-055701-u-store.log
+== storage/disk_access.h
+disk_access_read 1
+disk_access_write 1
+disk_access_ioctl 2
+DISK_IOCTL_CTRL_INIT 1
+DISK_IOCTL_CTRL_DEINIT 0
+DISK_IOCTL_GET_SECTOR_COUNT 0
+crc32_ieee 0
+crc32_ieee_update 0
+== drivers/disk.h
+disk_access_read 0
+disk_access_write 0
+disk_access_ioctl 0
+DISK_IOCTL_CTRL_INIT 2
+DISK_IOCTL_CTRL_DEINIT 2
+DISK_IOCTL_GET_SECTOR_COUNT 1
+crc32_ieee 0
+crc32_ieee_update 0
+== sys/crc.h
+disk_access_read 0
+disk_access_write 0
+disk_access_ioctl 0
+DISK_IOCTL_CTRL_INIT 0
+DISK_IOCTL_CTRL_DEINIT 0
+DISK_IOCTL_GET_SECTOR_COUNT 0
+crc32_ieee 4
+crc32_ieee_update 2
+# finished (Mac clock): 2026-11-13 05:57:23 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-055701-u-store.log

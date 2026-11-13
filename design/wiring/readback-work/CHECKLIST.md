@@ -1,0 +1,26 @@
+# Checklist (items from the brief and the agent file); closed with evidence, or not done with the measured limit
+- [x] 1. First line says computed from files, not measured on hardware. evidence: ../board-readback.md line 1
+- [x] 2. Pass lines written first with time, limits with source lines. evidence: ../board-readback.md section 0 (frozen copy board-readback_prereg_frozen_copy.md), logs/limit_quotes.log
+- [x] 3. P1 ring (Route A IPC-D-356 and Route B Gerber): nets, pads, shorts, opens. evidence: results/p1_ring.json, logs/p1_ring.log
+- [x] 4. P1 case_main, case_pins (from commit b9ec3cfa). evidence: results/p1_case_main.json, results/p1_case_pins.json, logs/version_check.log
+- [x] 5. P1 flex1-us7..13 (7 boards). evidence: results/p1_flex1-us*.json
+- [x] 6. P1 flex2-us7..13 (7 boards). evidence: results/p1_flex2-us*.json
+- [x] 7. P2 control copy (byte copy and re-saved) on both routes. evidence: results/p1_ring_p2_control.json, results/p1_ring_p2_resave.json
+- [x] 8. P2 cut copy fails on LCD_SCK. evidence: results/p1_ring_p2_cut.json, logs/p2_make_cut.log, logs/p2_ipc_diff.log
+- [x] 9. P2 joined copy fails. evidence: results/p1_ring_p2_join.json, logs/p2_make_join.log
+- [x] 10. P3 ring VBAT to U2 and U11 at 235 mA. evidence: results/p3_ring.json, logs/p3_ring.log
+- [x] 11. P3 ring VMOT at 175 and 80 mA. evidence: results/p3_ring.json
+- [x] 12. P3 ring VBUS at 15 mA and 100 mA. evidence: results/p3_ring.json
+- [x] 13. P3 ring VDD_1V8 and VDD_SD. evidence: results/p3_ring.json
+- [x] 14. P3 band cell and motor lines, all 14 boards (US 7, 9, 13 first). evidence: results/p3_band.json, logs/p3_band.log
+- [x] 15. P3 case VRING and cell lines. evidence: results/p3_case.json (cell GND at 50 um raster, stated)
+- [x] 16. P4 antenna Z0, width, clearance, reference, length, nearest copper per layer. evidence: results/p4p5.json, logs/p4p5.log, logs/xcheck_clear.log
+- [x] 17. P4 USB pair Zdiff, mismatch. evidence: results/p4p5.json P4_4, P4_5
+- [x] 18. P5 XL1, XL2, XC1, XC2 length and nearest copper. evidence: results/p4p5.json P5
+- [x] 19. Scorer pilot: planted open and short on all 17 boards, hand labels, solver and formula checks. evidence: logs/pilot_all.log, logs/pilot_scorer_rerun.log, logs/hand_check.log, logs/pilot_solver.log
+- [x] 20. Final audit script on final reply and files, saved. evidence: audit.log
+- [x] 21. Not-run list, questions_for_owner, RESULT line last. evidence: ../board-readback.md sections 3 and 5
+- [x] 22. Work folder under 150 MB; nothing written outside the work folder and board-readback.md; no browser. evidence: logs/misc_counts.log, logs/process_check.log
+- [x] 23. Case and band stackups read; difference reported. evidence: band board file 0.012 mm copper (matches band-interface.md line 132); case: no stackup block in the board files, deviation D2 in the report
+- [x] 24. Limits resolved: items with no written limit stated as REPORT. evidence: results/verdicts.json
+- [-] 25. Hardware measurement: not done, not possible (computed from files only, stated in line 1)

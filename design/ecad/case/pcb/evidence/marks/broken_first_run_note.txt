@@ -1,0 +1,6 @@
+First run of evidence/marks/run_broken.sh (11:5x CET), a partial look that is replaced by the second run (broken/ logs are rewritten by the second run):
+ - make_broken_marks.py failed after the first copy (AttributeError: 'swig_runtime_data5.SwigPyObject' object has no attribute 'GetDrawings': the SWIG board object of the first copy was freed when the name was reused). Only broken_nomarks_pins was written.
+ - check_boards.py on it: exit 1, 6 FAIL lines: "PCB2: no F.SilkS mark with the text 'P1' ..." (and P4; B.SilkS P1, P2, P3, P4), "RESULT FAIL 6".
+ - broken_nomarks_main, broken_swapped_pins, broken_small_pins did not exist, so their runs failed with "file ... missing": that is a crash of my script, not a result of the check. They are not counted.
+ - The four copies from make_broken_copy.py all failed with their own lines (R3.1 net, U4 outside, 1 violation + 1 unconnected, R30 missing), as in the earlier project run.
+The second run removed broken_nomarks_pins.* and all.done first (my own files, rewritten by the same script).

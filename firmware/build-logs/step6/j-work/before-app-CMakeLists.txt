@@ -1,0 +1,41 @@
+# Ring OS application.
+#
+# The ring_core module is added with ZEPHYR_EXTRA_MODULES, only when
+# firmware/modules/ring_core/zephyr/module.yml exists. Why not the west
+# manifest: ring_core lives in this same repository (the manifest's own
+# "self" project), and west lists modules only from separate projects.
+# The check on the file lets the app build before that module is delivered.
+
+cmake_minimum_required(VERSION 3.20.0)
+
+set(RING_CORE_DIR ${CMAKE_CURRENT_LIST_DIR}/../modules/ring_core)
+if(EXISTS ${RING_CORE_DIR}/zephyr/module.yml)
+  list(APPEND ZEPHYR_EXTRA_MODULES ${RING_CORE_DIR})
+  message(STATUS "ring_core module: added from ${RING_CORE_DIR}")
+else()
+  message(STATUS "ring_core module: not present, app builds without it")
+endif()
+
+# Step 2: ring_devices (pairing, three devices) and ring_control (keyboard, media
+# keys, pointer), added the same way and only when present. Step 3: ring_inbox (the store
+# of the last notifications), ring_time (the clock) and ring_iphone (notifications, media,
+# time from an iPhone). Step 5: ring_relay (notifications from a helper app on an Android phone, into the same store).
+foreach(RING_MOD ring_devices ring_control ring_inbox ring_time ring_iphone ring_relay ring_glue ring_screens)
+  set(RING_MOD_DIR ${CMAKE_CURRENT_LIST_DIR}/../modules/${RING_MOD})
+  if(EXISTS ${RING_MOD_DIR}/zephyr/module.yml)
+    list(APPEND ZEPHYR_EXTRA_MODULES ${RING_MOD_DIR})
+    message(STATUS "${RING_MOD} module: added from ${RING_MOD_DIR}")
+  else()
+    message(STATUS "${RING_MOD} module: not present, app builds without it")
+  endif()
+endforeach()
+
+# Step 4: ring_screens (the screens, drawn with LVGL on a memory display until the panel driver exists).
+
+# Step 3: the link and stack settings of the iPhone part live in one file that the test ring includes too.
+list(APPEND EXTRA_CONF_FILE ${CMAKE_CURRENT_LIST_DIR}/../modules/ring_iphone/ring_iphone_link.conf)
+
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+project(ring_app)
+
+target_sources(app PRIVATE src/main.c)

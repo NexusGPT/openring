@@ -1,0 +1,9 @@
+case r27_to_3v3 exit 1 | FAIL C2: CHG_OTG R27 100k to GND ; FAIL net members differ: [('3V3', [('R27', '2')]), ('GND', [('R27', '2')])]
+case r28_dsel_open exit 1 | FAIL other pins: U2.24 on None ; FAIL C2: DSEL R28 10k to 3V3 ; FAIL net names differ: ['CHG_DSEL']
+case r29_missing_pullup exit 1 | FAIL C2: SD_D2 R29 10k to 3V3 ; FAIL net members differ: [('3V3', [('R29', '2')]), ('SD_D2', [('R29', '2')])]
+case r30_to_gnd exit 1 | FAIL C2: SD_D3 R30 10k to 3V3 ; FAIL net members differ: [('3V3', [('R30', '2')]), ('GND', [('R30', '2')])]
+case usbc_dp_to_u2 exit 1 | FAIL other pins: U2.2 on 'USB_C_DP' ; FAIL other pins: J1.A6 on 'USB_C_DP' ; FAIL C2: USB-C D+/D- reach no U2 pin
+case u5_en_fault_swapped exit 1 | FAIL pin plan: U1 pin 19 (IO15) net 'VRING_EN' does not meet 'VRING_EN' ; FAIL pin plan: U1 pin 20 (IO16) net 'VRING_FAULT_N' does not meet 'VRING_FAULT_N' ; FAIL pin plan 63 of 65
+case led_anode_to_gnd exit 1 | FAIL C2: LED1 common anode pin 1 on 3V3 ; FAIL net members differ: [('3V3', [('LED1', '1')]), ('GND', [('LED1', '1')])]
+case divider_r4_to_3v3 exit 1 | FAIL C2: divider R3 511k 3V3-FB, R4 91k FB-GND ; FAIL net members differ: [('3V3', [('R4', '2')]), ('GND', [('R4', '2')])]
+ring p305_on_light exit 1 | FAIL section 7: SPARE_P3_05 ball G4 is on net 'LED_K' ; FAIL section 7 46 of 47 ; FAIL a chip pin touches the light: ['LED1', 'Q2', 'R41', 'U1']

@@ -1,0 +1,41 @@
+start 2026-11-13 07:38:14
+ring sizes checked: US [7, 8, 9, 10, 11, 12, 13] (real exterior files: ring-merged32h-us7.step, ring-merged32h-us8.step, ring-merged32h-us9.step, ring-merged32h-us10.step, ring-merged32h-us11.step, ring-merged32h-us12.step, ring-merged32h-us13.step)
+pads read from design/mech/thin/placement.csv: row at X -1.000 mm (spread 0.000), discs 1.60 x 0.07 mm, face radius 9.4761 about Z -9.8740 (fit spread 0.0000), arc pitch 2.4000 mm; VBUS (CP1) arc +3.6000; D- (CP2) arc +1.1998; D+ (CP3) arc -1.1998; GND (CP4) arc -3.6000
+model built from design/mech/thin/placement.csv: row at X -1.000 mm, arc pitch 2.4000 mm
+CASE_CHECK_ONLY_R4=15,16: tests 1 to 14 left out; runs [15, 16]
+15a main board in the model = case_main.kicad_pcb now: 60 pieces (board + 59 part bodies), largest box difference 0.0000 mm (needs <= 0.01; rebuild with case.py if not): OK
+15a main board outline from the file: 8 corners, x -11.992 to 12.858, y -17.700 to 20.200, thickness 1.000; same as the build: OK
+15a main board back face: 16 footprints (TP1, TP10, TP11, TP12, TP13, TP14, TP15, TP16, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9), 0 with a body: OK
+15a pin_board_pcb2_wing_R: y 2.350 to 4.900, z 21.210 to 26.210, x 6.396 to 7.196; model differs by 0.0000: OK
+15a pin_board_pcb2: y -2.250 to 2.250, z 21.210 to 26.210, x 5.820 to 6.620; model differs by 0.0000: OK
+15a pin_board_pcb2_wing_L: y -4.900 to -2.350, z 21.210 to 26.210, x 6.396 to 7.196; model differs by 0.0000: OK
+15a P1 on the pin board file at y 3.521 z 23.710; model pin pin_P1_VBUS axis offset 0.0000 (needs <= 0.01): OK
+15a P2 on the pin board file at y 1.197 z 23.710; model pin pin_P2_D- axis offset 0.0000 (needs <= 0.01): OK
+15a P3 on the pin board file at y -1.197 z 23.710; model pin pin_P3_D+ axis offset 0.0000 (needs <= 0.01): OK
+15a P4 on the pin board file at y -3.521 z 23.710; model pin pin_P4_GND axis offset 0.0000 (needs <= 0.01): OK
+15b 59 part bodies of the main board: smallest distance to a rigid case part 0.301 mm (U6 to board_retainer; needs >= 0.3); to a lead or the thermistor 0.000 mm (U1 to lead_W3; needs > 0)
+    15b U6 to board_retainer: 0.301 mm
+    15b J1 to cell_dnk852338: 0.345 mm
+    15b R14 to board_retainer: 0.350 mm
+    15b C7 to board_retainer: 0.360 mm
+    15b J1 to board_retainer: 0.391 mm
+    15b J1 to shell: 0.395 mm
+    15b U4 to board_retainer: 0.400 mm
+    15b U5 to board_retainer: 0.450 mm
+15c the main board (outline from the file) to the rigid case parts: smallest 0.350 mm to shell, then 0.350 to usb_bezel (needs >= 0.3; left out by design: the retainer, which presses on it, and the cell, 0.300 mm below it with the insulating sheet between): OK
+15b tallest bodies (top z, case frame): J1 16.505 (3.305 above the board), U1 15.595 (2.395 above the board), L1 15.295 (2.095 above the board), L2 14.795 (1.595 above the board), U5 14.745 (1.545 above the board); cavity ceiling z 16.900
+16 lead_TH1_1: diameter 0.30 mm, path 6.7 mm, cut 11.7 mm (parts list none): OK; smallest free room 0.150 mm to lead_TH1_2, then 0.773 to main_board bodies (needs >= 0.05); ends at TH1_bead 0.119: OK
+16 lead_TH1_2: diameter 0.30 mm, path 4.7 mm, cut 9.7 mm (parts list none): OK; smallest free room 0.150 mm to lead_TH1_1, then 0.950 to main_board bodies (needs >= 0.05); ends at TH1_bead 0.119: OK
+16 lead_W1: diameter 0.50 mm, path 10.2 mm, cut 15.2 mm (parts list 30): OK; smallest free room 0.180 mm to pin_holder, then 0.229 to liner (needs >= 0.05); ends at pin_board_pcb2_wing_R 0.020: OK
+16 lead_W2: diameter 0.50 mm, path 10.8 mm, cut 15.8 mm (parts list 30): OK; smallest free room 0.161 mm to main_board bodies, then 0.180 to pin_holder (needs >= 0.05); ends at pin_board_pcb2 0.020: OK
+16 lead_W3: diameter 0.50 mm, path 10.8 mm, cut 15.8 mm (parts list 30): OK; smallest free room 0.000 mm to main_board bodies, then 0.180 to pin_holder (needs >= 0.05); ends at pin_board_pcb2 0.020: FAIL
+FAIL 16 lead_W3 free room 0.000 to main_board bodies
+16 lead_W4: diameter 0.50 mm, path 10.2 mm, cut 15.2 mm (parts list 30): OK; smallest free room 0.038 mm to main_board bodies, then 0.180 to pin_holder (needs >= 0.05); ends at pin_board_pcb2_wing_L 0.020: FAIL
+FAIL 16 lead_W4 free room 0.038 to main_board bodies
+16 lead_W5: diameter 1.00 mm, path 11.2 mm, cut 16.2 mm (parts list 40): OK; smallest free room 0.300 mm to shell, then 0.600 to main_board bodies (needs >= 0.05); ends at cell_dnk852338 0.020: OK
+16 lead_W6: diameter 1.00 mm, path 6.7 mm, cut 11.7 mm (parts list 40): OK; smallest free room 0.300 mm to shell, then 0.800 to insulation_sheet (needs >= 0.05); ends at cell_dnk852338 0.020: OK
+16 lead_W7: diameter 0.50 mm, path 10.7 mm, cut 15.7 mm (parts list 20): OK; smallest free room 0.000 mm to main_board bodies, then 0.180 to pin_holder (needs >= 0.05); ends at pin_board_pcb2 0.020: FAIL
+FAIL 16 lead_W7 free room 0.000 to main_board bodies
+pairs checked 2746; failures 3
+case_check: FAIL, 2746 pairs checked, 3 failures, ring sizes US [7, 8, 9, 10, 11, 12, 13] (only tests [15, 16])
+end 2026-11-13 07:40:12 exit 1

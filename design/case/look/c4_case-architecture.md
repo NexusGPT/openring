@@ -1,0 +1,196 @@
+# Ring charging case: architecture (version C4)
+
+Version C4 (2026-11-10) is the pebble case the owner picked ("A: flat on a post", reference picture owner-2159): a rounded case in a satin finish, the ring standing around a centre post, a flat lid that swivels aside. The ring's pads are on the INSIDE of the band (`design/architecture.md` 17.12). Electronics, parts and figures are those of C3; the mechanics are replaced (section 7 and "Changes from C3 to C4" below).
+
+## Changes from C3 to C4
+
+| Topic | C3 | C4 | Source |
+|---|---|---|---|
+| Look | printed box with hinge, 13.0 mm lid and latch tab | rounded pebble, flat 4.0 mm lid that swivels open on a corner pin, rides on four 0.4 mm glides (constant shadow gap), two magnets as detent | owner 21:59 and 22:40, `design/architecture.md` 17.12, case.py |
+| Ring pads | four pads on the OUTSIDE of the band at 150 degrees, pitch 1.6 mm | four pads on the INSIDE face of the band opposite the block, in a row around the band; arc pitch at the inner radius is a parameter, default 2.0 mm, pad diameter 1.0 mm, row 1.0 mm from the band middle toward the light end | `design/architecture.md` 17.12, case.py PAD_PITCH |
+| Seating | ring rolled 30 degrees on two flanks of a V seat, block rests in a pocket, pins vertical under the pads | ring stands with its band axis vertical, band bottom on the floor around a centre post, block hangs in a pocket beside the post; the band is clamped between the pins (inside) and two flat flanks at +-20 degrees of a V wall (outside), so the band's 2.6 mm thickness, not the ring size, fixes the pad place | case.py, out/case_params.json |
+| One post for US 7 to 13 | one V seat, pad moves 0.157 mm | the same V wall; the bore centre moves 2.59 mm (x 11.98 to 14.58) and the pad faces move 0.14 mm in height between sizes; stepped PCB2 islands and the pins' travel take it up: heights 2.277 to 2.421 mm, spread 0.144 mm, stroke needed 0.34 mm (section 7) | out/case_params.json pin_travel |
+| One orientation | pocket walls and the joystick nub wall A | the pocket (block outline over all sizes plus 0.15 mm each side) blocks a ring turned 180 degrees or across; a ring flipped over is NOT blocked at every size, but no pin reaches a pad on it (section 7, conflict K3 in case-notes.md) | case_check.py |
+| Hold-down | two spring plungers in the lid, M5, S7 spring | none: the pins push the band onto the V wall with 4 x 0.39 N; the lid does not touch the ring (0.7 mm clear) | section 7 |
+| Pins | CONFLICT K1: Harwin P70-6000045R proposed for 1.6 mm pitch | unchanged: Harwin P70-6000045R, proposed, not confirmed (K1); the pitch is now a parameter and the contact window of 2.15 to 2.65 mm is my assumption (stroke not in the file read) | case-notes.md K1 |
+| Outer size | 44.0 x 37.6 x 58.0 mm | 43.2 x 44.0 x 40.6 mm (out/case_size.txt); the concept was 46.0 x 46.0 x 37.7 mm without cell, board, socket and light | case.py |
+| Pin board | PCB2 10.0 x 16.4 x 0.8 plus printed holder | PCB2 is a rigid-flex of three 0.8 mm islands (3.9 + 2 x 2.85 wide, 5.0 high) in the post's pin lug, the outer two recessed; the pin holder is gone | case.py |
+| Main board | PCB1 stands in the YZ plane in a side compartment | PCB1 23.0 x 35.4 x 1.0 lies flat above the cell under the ring floor; J1 and the light open through the -X wall | case.py |
+| Ring presence E1 | on PCB2, 2.1 mm below the band's lowest point | on PCB2's front face between the pins, 2.28 to 2.42 mm from the band's inner face (pin heights): bench B3 repeats | case.py |
+
+Electrical sections 1 to 6 are unchanged except the pad coordinates and the pin remark below.
+
+C2 changes against C1 (2026-11-10, after the case schematic `design/ecad/case/sch-notes.md`): 464.4 MB per recorded hour (4-microphone ring figure with block headers), so 6.37 min (C3 replaces both: 232.2 MB and 3.18 min, section 1); TPS2553 pin numbers EN 3, FAULT 4, GND 2; LED1 common anode on 3V3, cathodes driven low; U2 DSEL 10 kΩ pull-up (R28); CHG_OTG 100 kΩ pull-down (R27); SD_D2 and SD_D3 10 kΩ pull-ups (R29, R30); USB-C D+/D- no longer reach U2 (blocks the 9 V / 12 V adapter handshake); TPS63802 divider 511 kΩ / 91 kΩ (3.308 V); L1 1 µH settled; fifth pin-board wire W7 for E1; strapping pins left open per the series datasheet. The ring now records only after a long press (no listening mode): no change for the case.
+
+
+Built against `design/architecture.md` version A5-draft and `requirements.md` section 2.7.
+The mechanics (shell, post, pins, lid) are those of C4 for the thin ring with its pads on the inside; the electronics were first designed against A1 and are unchanged, because the link to the ring is still four contacts carrying USB full speed and 5 V.
+Evidence tags: **DS** = read in the maker's document (file in `design/datasheets/`, text copies in `design/case/evidence/txt/`); **LIST** = listing, search text, a standard not read here, or my assumption; **CALC** = arithmetic in `design/case/evidence/calc_case.py`, output `design/case/evidence/calc_case.log`.
+
+Axes (C4): X from the V wall toward the block pocket, Y across, Z up, bottom of the case at Z = 0. The ring stands with its band axis along Z; the block points to +X; the light end of the ring is up. The ring-file frame (X band axis, Z toward the block) is turned by `Rot(0, 90, 0)`.
+
+## 1. Central choice: USB host plus Wi-Fi in one part
+
+| Candidate | USB host | Wi-Fi | Fact that decides | Verdict |
+|---|---|---|---|---|
+| Espressif ESP32-S3-MINI-1-N8 (module) | "USB 2.0 OTG Full-Speed Interface", "FS and LS data rates", host mode with 8 channels, Bulk supported [DS case_esp32s3_ds.pdf p.55-56] | 802.11b/g/n, "802.11n up to 150 Mbps" [DS case_esp32s3_mini1.pdf p.1] | One module, 15.4 x 20.5 x 2.4 mm [DS mini1 Table 1-1]; SD/MMC host, 4-bit, up to 80 MHz [DS esp32s3_ds p.57]; 3.0 to 3.6 V supply, 0.5 A [DS mini1 Table 6-2] | **Chosen** |
+| Espressif ESP32-S3-WROOM-1 | same chip, full speed only | yes | Larger module (not read: LIST); no gain over MINI-1 | rejected, size |
+| Espressif ESP32-P4 + ESP32-C6 module | "USB 2.0 High-Speed OTG" [DS case_esp32p4_ds.pdf p.4] | **none in the chip**: "Wi-Fi" appears only in the trademark notice of the 10,450-line text [DS, evidence/read_p4.log] | Needs a second chip for Wi-Fi, QFN104 10 x 10 mm [DS p4 p.1], external flash; saves 2.50 min per recorded hour only | rejected (see notes) |
+
+**Transfer time, stated plainly [CALC, evidence/calc_case.log]:**
+- One recorded hour: 16,000 x 2 bytes x 2 channels x 3,600 s = 230.4 MB of audio (the ring has 2 microphones, `design/architecture.md` 16.6). The 464.4 MB behind the C2 figure 6.37 min was the old 4-microphone figure (460.8 MB plus 0.78 % block headers: 464.4 / 460.8 = 1.0078). C3 keeps that header ratio (assumption, LIST): 230.4 x 1.0078 = **232.2 MB per recorded hour** [CALC].
+- At the full-speed line rate of 12 Mbit/s (1.500 MB/s): 232.2 / 1.500 = 154.8 s = **2.58 min**. This is a bound the bus never reaches.
+- Full-speed bulk ceiling: 19 packets x 64 bytes per 1 ms frame = 1.216 MB/s (USB 2.0 figure, LIST). 232.2 / 1.216 = 190.96 s = **3.18 min per recorded hour. This is the planning figure for the chosen part.** A 10-hour day: 31.8 min. A full ring by storage (4 GB, 4,000 / 232.2 = 17.2 hours): 54.8 min. The ring's cell limits recording to 3.8 to 5.0 hours at 4.0 mA (A5-draft 17.10): 3.8 x 3.18 = 12.1 to 5.0 x 3.18 = 15.9 min.
+- High speed through ESP32-P4: the ring's storage read over SPI (2 MB/s, architecture.md section 8) is the limit: 232.2 / 2.0 = 116.1 s = 1.94 min per recorded hour. The gain is 1.24 min per recorded hour.
+- A ring charge at 1 C (the charge current is open item S12) takes about 60 min of constant current. In the 60 minutes a ring charge takes, the case copies 18.9 recorded hours (60 / 3.18), more than the ring can hold; the 3.8 to 5.0 recorded hours of one battery are copied in 12.1 to 15.9 min.
+- Condition: the ring's nRF54LM20A must run its high-speed USB device at full speed when the host does not answer the high-speed handshake. USB 2.0 requires this of every high-speed device (LIST). Nordic's USBHS page was not readable (`design/parts/mcu.md` line 71). Bench item B1.
+
+## 2. Block diagram
+
+```
+ USB-C (J1) --VBUS 5 V--> [BQ25895 U2  charger + power path + boost] --BAT--> [cell 700 mAh with PCM, BT1]
+   |  CC1, CC2: 5.1 k to GND (R1, R2), sensed by U1 ADC          |  SYS 3.0-4.4 V
+   |  D+, D-  : not connected (U2 D+/D- open: no 9/12 V handshake) +--> [TPS63802 U3 buck-boost] --3V3--> U1, U4, LED1
+   |                                                              |
+   |                             PMID 5.0 V (USB in) / 4.998 V (boost) --> [TPS2553 U5 switch, 401 mA limit] --VRING-->
+   |                                                                                                           |
+ [ESP32-S3-MINI-1-N8 U1] --USB host D+/D- (IO20/IO19)--> [TPD4E05U06 U6 ESD] -------------------------------+  |
+   |-- SD 4-bit --> [ZDSD64GLQEAG-R U4, 8 GB buffer]                                                          v  v
+   |-- I2C, INT, OTG, CE --> U2                                         4 spring pins P1-P4 (Mill-Max 0981) on pin board
+   |-- EN, FAULT --> U5 ; VRING sense (divider)                            P1 VBUS  P2 D-  P3 D+  P4 GND
+   |-- TOUCH4 --> copper electrode under the seat (ring presence)               |
+   |-- 3 GPIO, active low --> RGB LED1 (common anode on 3V3)                      ring pads (C4: on the inside of the band, in a row around it)
+   +-- Wi-Fi 2.4 GHz (module antenna) --> upload
+```
+
+## 3. Fixed parts, one per function
+
+| Ref | Function | Maker, part number | Key facts | Tag |
+|---|---|---|---|---|
+| U1 | Main chip: USB host, Wi-Fi, SD host, touch input | Espressif ESP32-S3-MINI-1-N8 | 8 MB flash, no PSRAM, 15.4 x 20.5 x 2.4 mm [Table 1-1]; 3.0-3.6 V [Table 6-2]; Wi-Fi TX peak 355 mA at 802.11b 20.5 dBm, RX 95 mA [Table 6-4]; Deep-sleep with ULP sensor-monitored pattern 18 µA typ [Table 6-7 p.30] | DS |
+| U2 | Case cell charger, power path, 5 V boost, battery voltage ADC | TI BQ25895RTWR (BQ25895, RTW WQFN-24 4 x 4 mm) | Input 3.9-14 V; boost 4.55-5.51 V in 64 mV steps, default 5.126 V, up to 3.1 A; boost output on PMID; boost needs "no input source detected at VBUS"; ADC battery range 2.304-4.848 V, 20 mV steps; ILIM pin; inductor 1 µH (text of section 9.2.2: "To get good loop stability, 1-µH and minimum of 20-µF output capacitor is recommended"; the 2.2 µH label in the figure text is not used) [DS case_bq25895.pdf p.1, Table 6-1, p.10-11, section 9.2.2] | DS (order suffix RTWR: LIST) |
+| U3 | 3.3 V rail from SYS | TI TPS63802DLAR | Buck-boost, input 1.3-5.5 V, 2 A at VO 3.3 V, 11 µA IQ, VFB 0.5 V, R2 at most 100 k [DS case_tps63802.pdf p.1, p.19] | DS |
+| U4 | Recording buffer, 8 GB | Zetta ZDSD64GLQEAG-R | 64 Gb, LGA8x2 9 x 10 mm, SD3.0, 1/4-bit, speed class 10 supported, 3.3 V [DS sdnand_zetta_family_atta.pdf p.3] | DS |
+| U5 | Ring VBUS switch with current limit | TI TPS2553DBVR | SOT-23-6, EN active high, 2.5-6.5 V, 85 mΩ, adjustable 75-1700 mA, reverse-voltage protection, FAULT open drain; IOSmin = 25230 / RILIM^1.016 [DS case_tps2553.pdf p.1, Figure 5-1, section 9.2.1.2] | DS (DBVR suffix: LIST) |
+| U6 | ESD on the exposed pins D+, D-, VBUS | TI TPD4E05U06DQAR | 4 channels, 0.42-0.5 pF, IEC 61000-4-2 ±12 kV contact, breakdown 6.5 V min, USON-10 [DS case_tpd4e05u06.pdf p.1] | DS |
+| BT1 | Case cell | DNK Power DNK852338 (LP852338) | 700 mAh, 3.7 V, 2.59 Wh, charge 4.2 V, max charge 0.5C, PCM over-charge 4.275 V, over-discharge 2.5 V, 40.0 x 23 x 8.5 mm with PCM, 11.7 g [DS case_cell_dnk852338.pdf] | DS |
+| J1 | USB-C receptacle | GCT USB4105-GF-A | 8.94 x 7.35 x 3.31 mm top mount, VBUS 5 A, 20,000 cycles, CC1 A5, CC2 B5 [DS case_usb4105.pdf drawing rev B4] | DS |
+| P1-P4 | Spring pins | Mill-Max 0981-0-15-20-87-14-11-0 | SMT, initial height 5.182 mm, stroke 1.397 mm, mid stroke 0.70 mm, plunger 1.06 mm, flange 2.11 mm, 90 gf, 20 mΩ max, 100,000 cycles at mid stroke [DS p3_millmax_0981.pdf p.1, p.3] | DS |
+| LED1 | One light, RGB, common anode (pin 1), cathodes red 2, green 3, blue 4 (package drawing p.1, read by the schematic helper) | Kingbright APTF1616SEEZGQBDC | 1.6 x 1.6 x 0.7 mm; VF at 20 mA: red 2.0 typ, green 3.3 typ, blue 3.3 typ [DS case_kb_aptf1616.pdf p.1-2] | DS |
+| E1 | Ring presence | copper electrode 6 x 3 mm on the pin board, fifth wire W7 to U1 TOUCH4 (IO4) | no extra part; confirmed by USB attach | CALC / bench B3 |
+| R1, R2 | CC pull-downs | 5.1 kΩ 1 % 0402 | USB-C sink | LIST |
+| H1 | Lid hold | corner pivot (3.0 mm steel pin), four 0.4 mm glides and two magnets (C4); the pins push the band onto the V wall | | LIST |
+
+The full list with passives: `case-bom.csv`.
+
+## 4. Power tree [values from section 3 rows; CALC lines from calc_case.log]
+
+| Rail | Source | Voltage | Load |
+|---|---|---|---|
+| VBUS_IN | USB-C J1 | 5.0 V (USB) | U2 VBUS, input limit 500 mA by register (USB default), 1.5 A when CC shows a 1.5 A source |
+| BAT | BT1 | 2.5 (PCM cut) / 3.0 (firmware stop) to 4.2 V | U2 BAT |
+| SYS | U2 | 3.0-4.4 V on battery (BAT minus BATFET); with USB in, held above the minimum system voltage, default 3.5 V [DS section 8] | U3, VRING divider |
+| PMID | U2 | 5.0 V from USB when plugged; 4.998 V boost (BOOSTV code 7 = 4.55 + 0.064 x 7) when on battery | U5 IN |
+| VRING | U5 OUT | same as PMID minus 85 mΩ x I; limit 401 mA min (RILIM 59.0 kΩ) | pin P1 to ring VBUS |
+| 3V3 | U3 | 3.308 V (R3 511 kΩ top, R4 91 kΩ bottom: 0.5 x (1 + 511/91), the 3.3 V row of TI Table 10-5) | U1 (355 mA peak), U4, LED1, pull-ups |
+| REGN | U2 internal | for TS divider (RT1 5.23 k, RT2 30.1 k (E96 nearest to the computed 5.21 k and 29.87 k; TI Figure 9-1 values), 103AT NTC) [DS section 8] | |
+
+Ring charge: the case supplies at least 401 mA at 4.998 V, about 2.0 W. The ring's charger draws 15 to 20 mA x 4.35 V = 0.065 to 0.087 W at 1 C (cell 15 to 20 mAh, 4.35 V: A5-draft 17.10 and S12); the charge current is open item S12 (the power chip's 32 mA minimum is above 1 C for this cell). The case does not set the ring's charge time; the ring's charger setting does (ring side).
+
+Cell sizing [CALC], at 1 C; the charge current is open item S12: one ring charge takes 0.058 to 0.077 Wh in the ring cell (15 to 20 mAh x 3.85 V, nominal voltage: LIST). The ring's charger is linear: 3.85 / 4.998 = 0.770. Boost efficiency taken as 0.85 at light load (datasheet gives 93 % at 1 A). Case energy per ring charge = 0.0578 / 0.770 / 0.85 = 0.088 Wh to 0.077 / 0.770 / 0.85 = 0.118 Wh; 3 charges = 0.265 to 0.353 Wh. Minimum cell for 3 charges: 72 to 95 mAh (0.353 Wh / 3.7 V = 95; 0.265 / 3.7 = 72). Chosen 700 mAh: 22.0 charges at the least (2.59 Wh / 0.118 Wh) and 29.4 at the most (2.59 / 0.088), 22.0 to 29.4 ring charges (C2 with the old 135 mAh ring cell: 3.26). The C3 ring needs far less than the chosen cell; the cell stays at 700 mAh because the brief keeps it (electrical choice, not changed here).
+
+Cell current: on battery the case keeps Wi-Fi off while VRING is on (boost plus ring is about 0.35 A from the cell; Wi-Fi peak adds about 0.38 A; the cell allows 1C = 700 mA continuous).
+
+## 5. Sequence, step by step
+
+1. Ring set into the pocket and around the post, lid closed: the two magnets hold the lid; the band's bottom rests on the floor and its outside on the two flanks of the V wall; each pin stands at 2.28 to 2.42 mm (Harwin P70 pin of conflict K1, working height 2.10 mm).
+2. U1 sleeps in Deep-sleep with the touch channel IO4 monitored. The ring's metal band over electrode E1 (on PCB2's front face, 2.28 to 2.42 mm from the band's inner face: bench B3) raises the touch reading above the stored empty value: U1 wakes.
+3. U1 reads the USB-C state from CC1/CC2 (ADC). No source: U1 sets the OTG pin high and the OTG_CONFIG bit to 1 [DS bq25895 section 8, "OTG pin HIGH and OTG_CONFIG bit =1"], BOOSTV code 7; with a source: no boost, PMID follows USB VBUS.
+4. U1 sets U5 EN high: VRING rises at P1. U1 watches VRING sense (IO5) and FAULT (IO16). FAULT low or VRING below 4.5 V after 50 ms: EN low, light red blink (short or wrong object).
+5. Ring's charger starts on VBUS. The ring's USB device pulls D+ up: U1, as USB host, sees the attach and enumerates (full speed). No attach within 3 s: EN low, light amber blink 3 times ("turn the ring over": a ring flipped over is not blocked by the pocket at every size), back to sleep.
+6. U1 asks the ring for its file list and copies new recordings to U4 (SD 4-bit). Light: blue breathing. Speed 1.216 MB/s at most: 3.18 min per recorded hour.
+7. After each file: U1 checks the file length and checksum against the ring's list, then tells the ring the file is safe; the ring may delete it.
+8. Charging continues while VRING is on. The ring reports its charge state over USB. At full: EN low, OTG off. Light: green steady 10 s, then off.
+9. Upload: when Wi-Fi is known and either USB-C is plugged or the ring charge is done, U1 uploads files from U4 over Wi-Fi, then deletes them from U4 after the server confirms. Light: blue slow blink.
+10. Case charging: USB-C plugged: BQ25895 charges BT1 at 350 mA (0.5C), input limit from the CC reading. Light: amber steady while charging the case only.
+11. Case low (BATV below 3.40 V): no boost, red blink every 5 s while the ring sits in the case.
+12. Lid swung open and ring lifted: touch reading falls, USB detach: EN low, OTG off, U1 back to Deep-sleep.
+
+## 6. Pin plan of U1 (ESP32-S3-MINI-1-N8, pin numbers from Table 3-1 [DS p.11-12])
+
+| Module pin | Name | Net | Notes |
+|---|---|---|---|
+| 1, 2, 42, 43, 46-65 | GND | GND | |
+| 3 | 3V3 | 3V3 | 10 µF + 0.1 µF at the pin |
+| 4 | IO0 | BOOT test pad | strapping pin, 10 kΩ to 3V3, pad to GND for download |
+| 5 | IO1 | CC1_SENSE | ADC1_CH0, 100 kΩ series from J1 A5 |
+| 6 | IO2 | CC2_SENSE | ADC1_CH1, 100 kΩ series from J1 B5 |
+| 7 | IO3 | not connected | strapping pin for the JTAG source, floating by default; used only when EFUSE_STRAP_JTAG_SEL is burnt (default 0) [DS esp32s3_ds section 3, Table 3-1 p.32]: left open |
+| 8 | IO4 | RING_TOUCH | TOUCH4, to electrode E1 on the pin board |
+| 9 | IO5 | VRING_SENSE | ADC1_CH4, divider 100 kΩ / 47 kΩ from VRING (5.0 V -> 1.60 V) |
+| 10 | IO6 | CHG_OTG | to U2 OTG (pin 8), R27 100 kΩ to GND: OTG_CONFIG resets to 1 ("OTG Enable (default)" [DS bq25895 REG03 bit 5]), so a floating OTG pin could start the boost before U1 runs |
+| 11 | IO7 | CHG_INT_N | from U2 INT (pin 7), 10 kΩ to 3V3 |
+| 12 | IO8 | I2C_SDA | to U2 SDA (pin 6), 10 kΩ to 3V3 |
+| 13 | IO9 | SD_D3 | U4, R30 10 kΩ to 3V3 (Zetta: RDAT pull-up 10-100 kΩ) |
+| 14 | IO10 | SD_D2 | U4, R29 10 kΩ to 3V3 (Zetta: RDAT pull-up 10-100 kΩ) |
+| 15 | IO11 | SD_CMD | U4, 10 kΩ to 3V3 |
+| 16 | IO12 | SD_CLK | U4, 22 Ω series |
+| 17 | IO13 | SD_D0 | U4, 10 kΩ to 3V3 |
+| 18 | IO14 | SD_D1 | U4, 10 kΩ to 3V3 |
+| 19 | IO15 | VRING_EN | to U5 EN (pin 3, TPS2553 SOT-23 [DS Table 5-1]), R25 100 kΩ to GND |
+| 20 | IO16 | VRING_FAULT_N | from U5 FAULT (pin 4 [DS Table 5-1]), R17 10 kΩ to 3V3 |
+| 21 | IO17 | I2C_SCL | to U2 SCL (pin 5), 10 kΩ to 3V3 |
+| 22 | IO18 | CHG_CE_N | to U2 CE (pin 9), 10 kΩ to GND (charging on by default) |
+| 23 | IO19 | USB_D- | USB_D- of the internal PHY, through U6 to P2 |
+| 24 | IO20 | USB_D+ | USB_D+ of the internal PHY, through U6 to P3 |
+| 25 | IO21 | LED_R | R8 470 Ω to LED1 red cathode (pin 2); active low |
+| 26 | IO26 | not connected | |
+| 27 | IO47 | LED_G | R9 150 Ω to LED1 green cathode (pin 3); active low (bench B4) |
+| 30 | IO48 | LED_B | R10 150 Ω to LED1 blue cathode (pin 4); active low (bench B4) |
+| 28, 29, 31-37 | IO33, IO34, IO35, IO36, IO37, IO38, IO39, IO40, IO41 | spare to test pads | |
+| 38 | IO42 | spare test pad | |
+| 39 | TXD0 | UART test pad | programming and log |
+| 40 | RXD0 | UART test pad | |
+| 41 | IO45 | not connected | strapping pin for VDD_SPI, weak pull-down, default 0 [DS esp32s3_ds Table 3-1 p.32]: left open, module default kept |
+| 44 | IO46 | not connected | strapping pin (boot mode, ROM print), weak pull-down, default 0; with IO0 weak pull-up 1 this gives SPI boot [DS esp32s3_ds Table 3-1 p.32]: left open |
+| 45 | EN | EN | 10 kΩ to 3V3, 1 µF to GND, test pad; never floating [DS Table 3-1] |
+
+Other pins: U2 STAT (pin 4) not used (status read over I2C), 10 kΩ to 3V3; U2 DSEL (pin 24) R28 10 kΩ to 3V3 (Table 6-1: "Connect the DSEL to a logic rail via 10-KΩ resistor"), not read by U1; U2 QON (pin 12) to a test pad; U2 D+/D- (pins 2, 3) not connected, and J1 A6/B6/A7/B7 not connected: HVDCP_EN and MAXC_EN reset to 1 ("Enable HVDCP handshake (default)", "Enable MaxCharge handshake (default)" [DS bq25895 REG02]) and the handshake asks the adapter "to raise output voltage from 5 V to 9 V / 12 V" [DS section 8.2.3.3.1]; PMID would pass that to U5 (7 V absolute maximum [DS tps2553]) and to the ring. Without D+/D- the charger cannot see a DCP, so no handshake; U1 sets the input limit from the CC reading and also clears HVDCP_EN and MAXC_EN at start. U5 U6 then see at most the USB VBUS, inside the 5.5 V operating maximum of U6 [DS tpd4e05u06 Recommended Operating Conditions]. Whether TI allows D+/D- open: open item S5; U2 ILIM (pin 10): 260 Ω to GND gives 355 / 260 = 1.37 A typ cap [DS KILIM 320-390], register sets the working limit.
+
+Pin order around the band (C4): P1 VBUS at y = -2.954, P2 D- at -0.998, P3 D+ at 0.998, P4 GND at 2.954 (Y of the case frame; the order VBUS, D-, D+, GND is the one in `design/architecture.md` 17.12; the direction along Y is assumption A1 in case-notes.md; the ring files do not name the pads).
+
+## 7. Mechanical layout (built in case.py, checked by case_check.py)
+
+All numbers below come from `out/case_params.json`, `out/case_size.txt` and `out/work_c4/run_check_final.log` (last line: "case_check: PASS, 1807 pairs checked, 0 failures, ring sizes US [7, 8, 9, 10, 11, 12, 13]"). The ring files give one size only (US 9, `ring-merged32e.step`, read only): the other sizes are computed (the US 9 block, glass and joystick kept, the band a new tube with the bore of `design/look/s1/out/sizes.csv`, 2.6 mm thick, the joystick moved radially), so the per-size check used computed bores, not per-size ring files.
+
+**Outer size, closed** (out/case_size.txt): 43.2 x 44.0 x 40.6 mm. The concept was 46.0 x 46.0 x 37.7 mm and left out the cell, board, USB-C socket and light. The height comes from the stack under the ring's floor (bottom plate 1.5, cell 8.5, board 1.0 with the 3.31 mm socket, 0.3 mm gaps, floor 1.8: the floor is 17.2 mm above the bottom) plus the standing ring (band 8.0, block 29.3 long, so the block's top is at 21.21 + 14.65 mm), the rim 0.3 mm above the block, a 0.4 mm gap and the 4.0 mm lid: rim at 36.160 mm, lid top at 40.560 mm. The length (X) is set by the block pocket for US 7 to 13 (the block moves 2.595 mm toward +X from US 7 to US 13 plus the bore growth) and the width (Y, 44.0) by the cell (40.0 long) with 0.3 mm and a 1.5 mm wall each side. Plan corners: radius 4 at the -X end (the cell's corners), 14 at the +X end.
+
+**Ring seat (one post for US 7 to 13).** The ring stands with its band axis vertical and the band's bottom face on the floor (gap to the floor 0.010 to 0.010 mm over the seven sizes). The post (12.0 mm diameter, top 3.5 mm above the band's middle) stands in the bore; its pin lug faces -X, toward the pads. The band's outside rests on two flat flanks (tangent at +-20 degrees from the pad direction, strips 3.3 to 5.8 mm from the centre line) of the V wall, 0.01 mm model gap (measured normal gap 0.010 to 0.011 mm on both flanks at every size). The pins push the band onto the V wall from the inside, so the band is clamped by its own thickness: it is 2.6 mm at every size, therefore the pad row stays at the same place whatever the bore. What changes with the size is the bore centre (x = 11.985 at US 7 to 14.580 at US 13, 2.595 mm, the V wall guides it) and the curvature of the pad row (the outer pads sit further from the post than the inner pads). Post and pin board stay at least 1.083 mm from the ring body at every size.
+
+**How one post serves seven bores: pin travel.** The band is clamped by its own 2.6 mm thickness, so the pad faces of all seven sizes lie within a narrow band of heights; the rest is taken up by the pins' travel. Pin heights (from the pin base plane to the pad face) over the seven sizes and the four pins run from 2.277 to 2.421 mm, a spread of 0.144 mm (inner pins P2, P3 vary most, 0.144 mm from US 7 to US 13). PCB2 is a rigid-flex of three islands: the inner island (P2, P3) and two outer islands (P1, P4) recessed by 0.401 mm, because the pad row is an arc and the outer pads sit nearer the post; with the islands stepped, all four pins stand at 2.35 mm at US 10. With 0.2 mm of tolerance on top a pin needs 0.344 mm of stroke from first contact: pin compression 0.37 to 0.58 mm below the 2.80 mm free height. The model assumes the Harwin P70-6000045R works in a window of 2.15 to 2.65 mm (the low end: its barrel edge must clear the concave pad row, sag 0.29 mm at 0.75 mm off the pad centre on US 7, so 1.85 + 0.30; the high end: 0.15 mm below the free height); the stroke is NOT in the file read, so this is [LIST] proposed, not confirmed (K1, supplier item S4). All 28 pin heights are inside the window and no pin barrel touches the band at any size (the pins are modelled at their working compression for each size in the collision check). Lateral offset of the pin axis to the pad centre: at most 0.014 mm over all sizes (limit 0.1), because the pin row is set at the pad positions of US 10 and the pad Y moves by 0.014 mm at most across the sizes. Force: 0.39 N at the 2.10 mm working height [`design/parts/ui-pass3.md` line 190]; at 2.2 to 2.45 mm the pins are less compressed, the force there is not measured.
+
+**Pad pitch (parameter).** The pitch along the arc at the band's inner radius is `PAD_PITCH` in case.py (default 2.0 mm; the ring's inside model fixes the final value; env `CASE_PAD_PITCH` runs the check at another value). The pin barrel is 1.5 mm, so the pitch cannot go below 1.6 mm. Pitch only changes the recess of the outer islands (0.26 mm at 1.6, 0.40 at 2.0, 0.58 at 2.4: computed from the pad geometry) and the spread (0.148 to 0.138 mm); above 2.4 mm the margin of the outer pins' barrel edge over the pad row at US 7 is gone (needed height 2.27 mm at 2.5 and 2.29 at 2.6, against 2.28 mm available; the pins-only run at 2.6 mm still passes, with no margin), and the outer barrel (at 3.6 mm from the centre line at 2.4 mm pitch, plus 0.75) reaches 4.35 mm of PCB2's 4.9 mm half width (4.95 mm at 2.8 mm pitch: too wide). Range the post allows: 1.6 to 2.4 mm. Proven by pins-only runs (out/work_c4/pitch_check.py: offset, window, pin barrel against the ring body, US 7 to 13) at 1.6, 2.4 and 2.6 mm, all PASS; the full check ran at 2.0 mm only (case-notes.md proof files).
+
+**Keying (one way in).** The pocket for the block is the block's widest outline over all sizes, including its flare into the band, with 0.15 mm each side (width 20.091 mm, wider than the 14.75 mm block proper; a relief to 20.8 mm beside the band); it lies on the +X side of the post. A ring turned 180 degrees (block toward the post) or across hits the shell and the post for US 7, 9 and 13 (case_check.py, wrong placement lines). A ring FLIPPED over (band axis reversed, joystick nub on the other side) is not blocked at every size: the joystick nub is the only asymmetric feature of the ring and a nub on the +Y side stays inside the well that the larger sizes need; case_check.py prints what each size does. In every case no pin reaches a pad of a flipped ring: the pad row sits 1.0 mm from the band's middle, so the flipped row is 2.0 mm from the pins (check line "pin tip to nearest pad"), and the pins touch only the band's inside face. The light then blinks "turn the ring over" (sequence step 5). A ring-side feature (for example a chamfer on one end of the block) would make the pocket block the flip; that is a request to the ring design, conflict K3 in case-notes.md.
+
+**Roll (open item R1).** The band is a cylinder, so the V wall does not fix the ring's turn about its own axis; the pocket's side walls (a pocket 20.091 mm wide, because it follows the block's flare into the band) are the only stop. The check turns each ring in 0.25 degree steps until it touches the shell (INFO lines of case_check.py, not counted as failures): the pad row then moves at most 0.680 mm, against 0.2 mm that a 0.6 mm pin tip can take on a 1.0 mm pad before it leaves the pad. So the roll is NOT held to the pad's tolerance: the check proves the nominal pose, not the roll tolerance. A nub channel (two walls along the joystick nub's path, as in C3) or a ring-side feature is needed; not designed. Conflict R1 in case-notes.md.
+
+**Lid.** A flat cap of 4.0 mm, same outline as the base, on a vertical 3.0 mm steel pin at the -X, -Y corner (x = -6.978, y = -17.500: the pivot is chosen so that the lid, swung, uncovers the whole well and pocket; a search over corner positions is in out/work_c4/pivot_search.py), resting on four 0.4 mm PTFE glides (one is a 6.0 mm washer round the pivot pin, three are 4.0 mm discs; a constant 0.4 mm shadow gap); two 4.0 mm magnets near the +X, +Y corner hold it. Opened, the lid lies outside the base, held by the pivot pin only (friction); how stiff that pin fit must be to keep the lid from drooping is bench item B7. The base's rim is 0.3 mm above the top of the ring's block, so the lid is 0.700 mm (smallest over the seven sizes) from the ring when closed (needs 0.5). It swivels 100 degrees to open: over the sweep it stays 0.700 mm from the ring and 0.400 mm from every other part, and at 100 degrees it covers 0.0000 mm3 of the well and the pocket. There is no hold-down on the ring: the pins and the V wall hold it, and the lid does not touch it.
+
+**Finger notches.** Two notches in the rim beside the pocket (3.5 mm each side, 7 mm deep) let a thumb and finger pinch the block's top end to lift the ring out.
+
+**Compartments.** Under the floor: bottom plate (4 screws), the cell 40 x 23 x 8.5 mm lying along Y, PCB1 23.0 x 35.4 x 1.0 above it with U1 (15.4 x 20.5 x 2.4), U2, U3, U4, U5, L1, L2, the light and the USB-C socket J1 on its top face (reserved volumes, not a layout). J1's mouth and the light open through the -X wall (0.35 mm gap around the socket). Distance to the shell walls: cell 0.400 mm, main board 0.400 mm, J1 0.350 mm, light 1.052 mm (needs 0.3). PCB2 stands in the lug; its five wires (W1 to W4, W7) go down a slot in the floor to PCB1. The satin finish is a 0.6 mm skin that the dimensions already include; there is no separate liner part in C4.
+
+**Files.** out/case_assembly_US9.step and .glb (case with the US 9 ring seated, one named node per part, ring node `ring_US9`), out/parts/*.step (one STEP per part, including `lid` and `hinge_pivot`, the lid's vertical swivel axis), STL of the printed parts out/case_shell.stl, case_base_plate.stl, case_lid.stl, case_post.stl, case_pin_board_pcb2.stl, case_hinge_pivot.stl. Drawings: out/case-c4-closed.png and out/case-c4-open-ring.png.
+
+## 8. Items only a supplier can close
+
+| # | Item | Who | What to ask |
+|---|---|---|---|
+| S1 | Cell with the leads, connector and PCM side for this layout | DNK Power | DNK852338 with 40 mm flying leads from the PCM end, NTC 10 k 103AT optional, UN38.3 report, 20 samples |
+| S2 | Full-speed fallback of the ring chip's high-speed USB | Nordic | confirmation that nRF54LM20A USBHS enumerates at full speed with a full-speed host |
+| S3 | Exact package drawing and pad layout of ZDSD64GLQEAG-R | Zetta | LGA8x2 9 x 10 mm drawing and package height |
+| S4 | Pin for 1.6 mm pad pitch (conflict K1) | Mill-Max, Harwin | a pin with barrel and flange at most 1.5 mm: stroke, force curve and life of the Harwin P70-6000045R (stroke is not in the catalogue page read); or Mill-Max confirmation that a 0981 layout at 1.6 mm exists |
+| S5 | Boost efficiency at 0.1-0.3 A, PMID load in charge mode | TI | confirmation that a load on PMID is allowed while charging from VBUS |
+| S6 | Production housing | tooling partner | material and process for shell, lid, post and bottom plate |
+| S7 | Satin finish that lets the Wi-Fi through | tooling partner | a metal-look finish for shell and lid that does not screen the 2.4 GHz antenna of U1 (conflict K2 in case-notes.md), with a sample and a Wi-Fi range test |

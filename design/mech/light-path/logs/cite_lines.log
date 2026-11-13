@@ -1,0 +1,41 @@
+52:| Recording light | KPG-1005SURC-TT, red, top view | Kingbright | 1.0 x 0.5 x 0.2 | 2.4 V, 631 nm | [LIST] (action 12.5) |
+91:| Recording light | 1.5 mA at 3.0 V [CALC] (3.0 V - 2.0 V) / 680 ohm | 0 |
+154:| Recording light | +4.0 | on top of the board | under a clear window in the housing top |
+232:- Recording light: on whenever the microphones are powered, with no software path to switch it off. Wiring: VDD_3V0, a 680 ohm resistor (1.5 mA), the light, then transistor Q2 (DMN2450UFB4) to gro
+243:| U5 light | faces outward | on the top face, thumb side | visible to the room when the hand lies on a table |
+260:| 12.5 | Recording light | Kingbright | datasheet of KPG-1005SURC-TT |
+284:| W5 | Recording light | Q2 = DMN2450UFB4, gate on VDD_MIC, R41 = 680 ohm from VDD_3V0 | section 9; (3.0 V - 2.0 V) / 680 ohm = 1.5 mA [CALC; 2.0 V typical from Kingbright's 2013 preliminary sheet
+422:- Openings: 2 microphone slots 1.2 x 0.3 mm in the block's wall away from the thumb, at X = -11 and +11. Joystick and record button on the band, thumb side. 4 charging pads on the outside of the b
+518:| S20 | Exterior to follow the inside model v4: the joystick opening 5.6 x 6.6 mm at 78 degrees on the joystick side, the light window moved to X -13.25, Y -4.7, and the microphone slots, which to
+581:- Recording light: a reverse-mount red light on the board's under face at X -13.25, Y -4.7, shining through a 0.5 mm hole in the board and a small clear light guide (LP1) to a 0.6 mm window in the
+--- bom
+47:Recording light,LED1,1,"red top-view LED under a clear window, on top of the board",Kingbright,KPG-1005SURC-TT,0402 top view,1.0 x 0.5 x 0.2,,"forward voltage 2.0 V typ, 2.4 V max at 20 mA; 631 nm;
+48:Recording light resistor,R41,1,"series resistor of the recording light, 1.5 mA from 3.0 V (architecture W5)",Yageo,,0201,,680 ohm 1 %,(3.0 V - 2.0 V) / 680 ohm = 1.5 mA (architecture W5; 2.0 V typi
+49:Recording light transistor,Q2,1,switch that makes the light follow microphone power (architecture section 9); type not fixed,Diodes Inc.,DMN2450UFB4,X2-DFN1006-3,,gate on VDD_MIC,see bom-notes.md: 
+--- placement rows
+11:mic_1,U5,board,-11.000,-5.125,0.940,3.500,2.650,0.980,,True,IM68D128B: small substrate 
+13:antenna,ANT1,board,-12.700,4.400,1.050,1.600,3.200,1.200,,False,"Johanson 2450AT18D0100
+14:screen_connector,J1,board,-12.000,0.000,0.980,3.200,5.200,0.900,,True,"FH35C-15S-0.3SHW
+15:main_board,PCB1,board,0.000,0.000,1.600,27.200,12.600,0.300,,False,"27.2 x 12.6 x 0.3, 
+16:foam,FOAM1,screen,0.000,0.000,1.800,27.200,12.600,0.100,,False,frame 1.2 wide round the
+17:screen,DISP1,screen,0.000,0.000,2.250,27.350,12.800,0.800,,True,"glass panel with a dri
+21:recording_led,LED1,board,-13.250,-4.700,1.180,0.500,1.000,0.780,,False,"reverse-mount r
+22:light_pipe,LP1,screen,-13.250,-4.700,2.450,0.600,0.600,0.400,,False,"clear plug 0.6 x 0
+--- thin.py
+38:    adh_t=0.10, foam_t=0.10, under=1.00, gap=0.05, pad_t=0.02,
+322:    lower = box(P["scr_x"], P["scr_y"], 0.4, 0, 0, Z_SC0 + 0.2)
+323:    upper = box(P["scr_x"] - 4.8, P["scr_y"], 0.4, 2.4, 0, Z_SC0 + 0.6)
+324:    drv = box(1.6, 8.0, 0.3, sx0 + 2.4, 0.0, Z_SC0 + 0.4 + 0.15)
+325:    lit_cx = -29.3 / 2 + 5.33 + P["lit_x"] / 2
+366:    cav.append(rbox(P["scr_x"] + 0.1, P["scr_y"] + 0.1, 8.0, 0, 0, Z_FLOOR + 4.0, 0.1))
+--- check_thin
+25:LIMIT = 0.001
+161:    if lowest < ctx["Z_FLOOR"] - 1e-9:
+--- main-board
+12:Default, to confirm with the maker: 6 layers, 0.3 mm thick. Laminate type, copper weight and the stack-up: open point
+15:Standard multilayer board process; fine-pitch 0201 assembly afterwards. Via type and minimum track and gap: open poin
+21:General: ISO 2768-m for the outline, notches and corner radius (default, to confirm with the maker). Thickness, coppe
+29:| board thickness | 0.3 mm | open point 2 | finished board |
+39:| parts height limit under the board | 1.00 mm | not a dimension | tallest part (coil 1.0) |
+42:Outline and notch sizes; thickness (finished); layer count and stack-up by a section coupon; impedance if the antenna
+56:6. Antenna keep-out, section 6 (older state): no copper and no metal within 4.2 x 4.7 mm on every layer; the antenna 

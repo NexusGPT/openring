@@ -1,0 +1,44 @@
+5c5
+< import csv, os, subprocess, sys
+---
+> import csv, os, re, subprocess, sys
+89c89,91
+< NO_OPEN = "paste layer design/ecad/ring/pcb/fab/gerber/ring-F_Paste.gbr for J_BAND_A:1"
+---
+> # A land the design leaves bare on purpose: test pad TP1 gets no paste (the 12 test pads have no opening).
+> # The land used before, J_BAND_A:1 of ring-F_Paste.gbr, no longer fits: it has an opening since commit 796a0086.
+> NO_OPEN = "paste layer design/ecad/ring/pcb/fab/gerber/ring-B_Paste.gbr for TP1:1"
+191a194,226
+> # ---------- controls on the real table: the ring board's paste regions moved 1.0 mm off their lands ----------
+> def shift_regions(src, dst, dy_mm):
+>     out, inreg = [], False
+>     for l in open(src, encoding="utf-8"):
+>         s = l.strip()
+>         if s.startswith("G36"):
+>             inreg = True
+>         if s.startswith("G37"):
+>             inreg = False
+>         if inreg:
+>             l = re.sub(r"Y(-?\d+)", lambda m: "Y%d" % (int(m.group(1)) + int(dy_mm * 1e6)), l)
+>         out.append(l)
+>     with open(dst, "w", encoding="utf-8") as f:
+>         f.write("".join(out))
+> 
+> 
+> for face, rid, want in (("F", "J-W001-A", 1), ("B", "P-ring-B", 17)):
+>     d = os.path.join(BROKEN, "ring-%s-regions-moved" % face)
+>     os.makedirs(d, exist_ok=True)
+>     real_gbr = "design/ecad/ring/pcb/fab/gerber/ring-%s_Paste.gbr" % face
+>     moved_gbr = os.path.join(d, "ring-%s_Paste.gbr" % face)  # same board name, so R4 reads the ring pads
+>     shift_regions(os.path.join(ROOT, real_gbr), moved_gbr, 1.0)
+>     rs = list(real_rows)
+>     rs[idx[rid]] = dict(rs[idx[rid]], solder_source=rs[idx[rid]]["solder_source"].replace(real_gbr, rel(moved_gbr)))
+>     path = os.path.join(BROKEN, "real-ring-%s-regions-moved.csv" % face)
+>     write(path, fields, rs)
+>     rc, out = run(["--joints", path], path[:-4] + ".log")
+>     new = [l for l in out if l not in base_set and not l.startswith("RESULT")]
+>     rules = sorted({l.split()[0] for l in new})
+>     ok = rc == 1 and rules == ["R4"] and len(new) == want and all((" %s " % rid) in l for l in new)
+>     results.append(("real ring-%s regions moved 1.0 mm" % face, "exit 1, %d new R4 lines on %s" % (want, rid),
+>                     "exit %d, new rules %s, %d new lines" % (rc, rules, len(new)), ok))
+> 

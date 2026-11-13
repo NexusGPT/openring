@@ -1,0 +1,327 @@
+{
+ "roots": [
+  "firmware"
+ ],
+ "note": "Ring software, plan approved by the owner on 2026-11-11. Step 1 has two pieces that share no file. Later steps add their lanes here before they start. Step 1 closed on 2026-11-11 (workspace and core, core reviewed four times). Step 2 started the same day as one lane. Step 6 opened on 2026-11-13: cut into 11 units by firmware/docs/step6-plan.md (one root, nine parts, one join); at most three builders at a time on the server.",
+ "lanes": [
+  {
+   "id": "os-infra",
+   "step": 1,
+   "owns": [
+    "firmware/west.yml",
+    "firmware/app/**",
+    "firmware/tools/**",
+    "firmware/README.md",
+    "firmware/.gitignore",
+    "firmware/docs/BUILD-MODE.md",
+    "firmware/docs/infra-notes.md",
+    "firmware/build-logs/**",
+    "server:/root/ring-os/**"
+   ],
+   "depends_on": [],
+   "surfaces": [],
+   "unsplittable_reason": "one build workspace: manifest, container, scripts and the skeleton application must agree with each other"
+  },
+  {
+   "id": "os-core",
+   "step": 1,
+   "owns": [
+    "firmware/modules/ring_core/**",
+    "firmware/tests/core/**",
+    "firmware/docs/core-notes.md"
+   ],
+   "depends_on": [],
+   "surfaces": [],
+   "unsplittable_reason": "the state table, the gesture recogniser and their tests are one unit judged against one section of the specification"
+  },
+  {
+   "id": "os-devices-control",
+   "step": 2,
+   "owns": [
+    "firmware/modules/ring_devices/**",
+    "firmware/modules/ring_control/**",
+    "firmware/tests/control/**",
+    "firmware/tests/devices/**",
+    "firmware/tests/bsim/control/**",
+    "firmware/docs/devices-control-notes.md",
+    "firmware/app/** (wiring lines)",
+    "firmware/tools/build_all.sh (test wiring)",
+    "server:/root/ring-os/src-step2/**"
+   ],
+   "depends_on": [
+    "os-infra",
+    "os-core"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "kept as one lane: the control tests need the devices part's pairing on the same link, and both wire into one application; four control modes since the owner's ask of 2026-11-11 (media, presenter, pointer, agent)"
+  },
+  {
+   "id": "os-iphone",
+   "step": 3,
+   "owns": [
+    "firmware/modules/ring_iphone/**",
+    "firmware/modules/ring_inbox/**",
+    "firmware/tests/bsim/iphone/**"
+   ],
+   "depends_on": [
+    "os-devices-control"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "to be split into the Apple services and the inbox when step 3 starts"
+  },
+  {
+   "id": "os-screens",
+   "step": 4,
+   "owns": [
+    "firmware/modules/ring_ui/**",
+    "design/software/os/screens/**"
+   ],
+   "depends_on": [
+    "os-iphone"
+   ],
+   "surfaces": [
+    "ring screen 120 x 240"
+   ],
+   "unsplittable_reason": "one small screen with one look"
+  },
+  {
+   "id": "os-relay",
+   "step": 5,
+   "owns": [
+    "firmware/modules/ring_relay/**",
+    "firmware/tests/bsim/relay/**",
+    "design/software/os/android-helper-spec.md"
+   ],
+   "depends_on": [
+    "os-iphone"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "one service with its specification"
+  },
+  {
+   "id": "s6-u0-rhw",
+   "step": 6,
+   "owns": [
+    "firmware/modules/ring_rhw/**",
+    "firmware/modules/ring_store/include/**",
+    "firmware/modules/ring_audio/include/**",
+    "firmware/modules/ring_xfer/include/**",
+    "firmware/modules/ring_power/include/**",
+    "firmware/modules/ring_motor/include/**",
+    "firmware/modules/ring_sys/include/**",
+    "firmware/modules/ring_factory/include/**",
+    "firmware/modules/ring_recorder/include/**",
+    "firmware/tests/rhw/**",
+    "firmware/tools/unit_run.sh",
+    "firmware/docs/rhw-notes.md"
+   ],
+   "depends_on": [],
+   "surfaces": [],
+   "unsplittable_reason": "the shared headers, the specification constants and the simulated drivers are one frozen root"
+  },
+  {
+   "id": "s6-u1-core6",
+   "step": 6,
+   "owns": [
+    "firmware/modules/ring_core/**",
+    "firmware/tests/core/**",
+    "firmware/docs/core-notes.md (section Step 6)"
+   ],
+   "depends_on": [
+    "os-core"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "one new row and its guard in the generated table"
+  },
+  {
+   "id": "s6-u2-store",
+   "step": 6,
+   "owns": [
+    "firmware/modules/ring_store/** (not include/)",
+    "firmware/tests/store/**",
+    "firmware/docs/store-notes.md"
+   ],
+   "depends_on": [
+    "s6-u0-rhw"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "one storage format"
+  },
+  {
+   "id": "s6-u3-audio",
+   "step": 6,
+   "owns": [
+    "firmware/modules/ring_audio/** (not include/)",
+    "firmware/tests/audio/**",
+    "firmware/docs/audio-notes.md"
+   ],
+   "depends_on": [
+    "s6-u0-rhw"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "one audio pipeline"
+  },
+  {
+   "id": "s6-u4-xfer",
+   "step": 6,
+   "owns": [
+    "firmware/modules/ring_xfer/** (not include/)",
+    "firmware/tests/xfer/**",
+    "firmware/docs/xfer-notes.md"
+   ],
+   "depends_on": [
+    "s6-u0-rhw",
+    "s6-u2-store"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "one transfer protocol"
+  },
+  {
+   "id": "s6-u5-power",
+   "step": 6,
+   "owns": [
+    "firmware/modules/ring_power/** (not include/)",
+    "firmware/tests/power/**",
+    "firmware/docs/power-notes.md"
+   ],
+   "depends_on": [
+    "s6-u0-rhw"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "one power part"
+  },
+  {
+   "id": "s6-u6-motor",
+   "step": 6,
+   "owns": [
+    "firmware/modules/ring_motor/** (not include/)",
+    "firmware/tests/motor/**",
+    "firmware/docs/motor-notes.md"
+   ],
+   "depends_on": [
+    "s6-u0-rhw"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "one pattern player"
+  },
+  {
+   "id": "s6-u7-sys",
+   "step": 6,
+   "owns": [
+    "firmware/modules/ring_sys/** (not include/)",
+    "firmware/tests/sys/**",
+    "firmware/docs/sys-notes.md"
+   ],
+   "depends_on": [
+    "s6-u0-rhw"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "time, update, crash and watchdog share the persistent stores"
+  },
+  {
+   "id": "s6-u8-factory",
+   "step": 6,
+   "owns": [
+    "firmware/modules/ring_factory/** (not include/)",
+    "firmware/tests/factory/**",
+    "firmware/tests/bsim/factory/**",
+    "firmware/docs/factory-notes.md"
+   ],
+   "depends_on": [
+    "s6-u2-store",
+    "s6-u3-audio",
+    "s6-u5-power",
+    "s6-u6-motor",
+    "s6-u7-sys"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "the factory tests run the other units"
+  },
+  {
+   "id": "s6-u9-screens6",
+   "step": 6,
+   "owns": [
+    "firmware/modules/ring_screens/**",
+    "firmware/tests/screens/**",
+    "firmware/docs/screens-notes.md (section Step 6)"
+   ],
+   "depends_on": [
+    "s6-u0-rhw",
+    "os-screens"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "two calls of the screens part"
+  },
+  {
+   "id": "s6-j-recorder",
+   "step": 6,
+   "owns": [
+    "firmware/modules/ring_recorder/** (not include/)",
+    "firmware/modules/ring_glue/**",
+    "firmware/app/**",
+    "firmware/tools/build_all.sh",
+    "firmware/tools/stack_report.py",
+    "firmware/README.md",
+    "firmware/tests/recorder/**",
+    "firmware/docs/recorder-notes.md"
+   ],
+   "depends_on": [
+    "s6-u1-core6",
+    "s6-u2-store",
+    "s6-u3-audio",
+    "s6-u4-xfer",
+    "s6-u5-power",
+    "s6-u6-motor",
+    "s6-u7-sys",
+    "s6-u8-factory",
+    "s6-u9-screens6"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "the only unit that edits the application, the glue and the full run",
+   "outside_owns": {
+    "firmware/modules/ring_power/include/ring_power/rpw.h": "addition only: two calls (a battery sample now; the charger state with latched error and current), lead's ruling of 13 Nov on the factory unit's gap 3; the power unit's builder is finished",
+    "firmware/modules/ring_power/src/**": "the code of those two calls only",
+    "firmware/tests/power/**": "new cases and one broken copy for those two calls only"
+   }
+  },
+  {
+   "id": "os-board",
+   "step": 7,
+   "owns": [
+    "firmware/boards/**"
+   ],
+   "depends_on": [
+    "os-core"
+   ],
+   "surfaces": [],
+   "unsplittable_reason": "one board description"
+  },
+  {
+   "id": "s6-fix1",
+   "owns": [
+    "firmware/modules/ring_recorder/** (not include/)",
+    "firmware/tests/recorder/**",
+    "firmware/docs/recorder-notes.md (section Fix round 1)",
+    "firmware/build-logs/step6/fix1-*"
+   ],
+   "depends_on": [
+    "s6-j-recorder"
+   ],
+   "outside_owns": {
+    "firmware/modules/ring_store/**": "addition only: an unmount that waits for the running store call (finding R6-03)",
+    "firmware/modules/ring_xfer/**": "addition only: a call that stops the USB stack for ship mode, if none exists (R6-02)",
+    "firmware/modules/ring_devices/**": "addition only: a call that stops the radio for ship mode, if none exists (R6-02)",
+    "firmware/modules/ring_screens/src/rscr_real.c": "the menu's power off is handed to the join's thread (R6-10)",
+    "firmware/modules/ring_audio/src/rau.c": "simulation-only helpers guarded; clear_state waits for the capture loop (F1, F2)",
+    "firmware/modules/ring_motor/src/rmo.c": "simulation-only helpers guarded (F2)",
+    "firmware/tests/factory/src/**": "the frame spacing case must not depend on when earlier cases ended (R6-13)",
+    "firmware/tests/store/**, firmware/tests/xfer/**, firmware/tests/devices/**": "one case per added call",
+    "firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h": "addition only: RREC_PAT_M2_MS 280 (FW l.323) and RREC_LOG_UNMOUNT_FAILED 0x0290 (lead rulings on R6-01 and R6-03)",
+    "firmware/tests/** (cases that count the log codes)": "26 becomes 27 where a case counts or lists the codes",
+    "firmware/tests/bsim/control/**": "addition only: one check that no advertising follows ship close, with its broken copy (finding R6-02; lead's word of 2026-11-13)",
+    "firmware/modules/ring_screens/src/rscr.c": "addition only: a sync asked before the screens started returns at once (lead ruling 4)"
+   },
+   "unsplittable_reason": "every change sits on a seam of the join; the same recorder test folder proves all of them"
+  }
+ ]
+}

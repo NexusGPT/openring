@@ -1,0 +1,20 @@
+start 2026-11-13 07:37:32
+well hull: 58506 points over the band circles and the seven real joysticks
+skin bbox z [(-0.0, 3.0), (3.0, 37.66), (37.96, 41.4)]
+skin parts: plate 4373, shell blank 68430, lid blank 5116 mm3, valid (True, True, True)
+Traceback (most recent call last):
+  File "design/case/case.py", line 1153, in <module>
+    main()
+  File "design/case/case.py", line 1109, in main
+    parts, rings, meta = build()
+                         ^^^^^^^
+  File "design/case/case.py", line 726, in build
+    pcb1_x0 = jx0 - CB.body_u_front(boards, "J1")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "design/case/r4/case_boards.py", line 88, in body_u_front
+    return label_bodies(boards["main"])[ref].bounding_box().min.X - OX
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "design/case/r4/case_boards.py", line 81, in label_bodies
+    raise RuntimeError("footprints with a 3D model but no body in the STEP: %s" % missing)
+RuntimeError: footprints with a 3D model but no body in the STEP: ['L1', 'L2', 'LED1', 'U1', 'U3', 'U4', 'U6']
+end 2026-11-13 07:37:41 exit 1

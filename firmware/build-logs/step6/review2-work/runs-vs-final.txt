@@ -1,0 +1,131 @@
+== diff before-0290 rrec.c vs pinned rrec.c
+274,277c274,279
+<  * bounded by FINISH_WAIT_MS. The result is never dropped: a failed unmount (the call did not end in time) is written to
+<  * the event log (RREC_LOG_UNMOUNT_FAILED: errno, state, try, lead's ruling) and tried again on the recorder's thread
+<  * (RREC_JOB_UNMOUNT) until it succeeds. */
+< static uint8_t unmount_tries;   /* failed tries since the last successful unmount */
+---
+>  * bounded by FINISH_WAIT_MS. The result is never dropped: a failed unmount (the call did not end in time) is tried again
+>  * on the recorder's thread (RREC_JOB_UNMOUNT) until it succeeds. RREC_LOG_UNMOUNT_FAILED (errno, state, try; lead's ruling
+>  * on the record) is written at the FIRST failed try (its errno, try 1) and once more when the tries end (errno 0 when the
+>  * unmount then succeeded, else the last errno; try = the number of tries made), never once per try: on a stalling card
+>  * the records must not lengthen the store's own work. */
+> static uint8_t unmount_tries;   /* tries made since the first failed one (0: none failed) */
+279c281
+< static int unmount_now(void)
+---
+> static void unmount_record(int err, uint8_t tries)
+281a284,301
+> 
+> 	sys_put_le32((uint32_t)err, args);
+> 	args[4] = rrec_st.core_state;
+> 	args[5] = tries;
+> 	rrec_log(RREC_LOG_UNMOUNT_FAILED, args, sizeof(args));
+> }
+> 
+> /* the tries of a failed unmount end: the record with the result and the count */
+> static void unmount_tries_end(int err)
+> {
+> 	if (unmount_tries != 0) {
+> 		unmount_record(err, unmount_tries);
+> 		unmount_tries = 0;
+> 	}
+> }
+> 
+> static int unmount_now(void)
+> {
+285c305
+< 		unmount_tries = 0;
+---
+> 		unmount_tries_end(0);   /* unmounted meanwhile: the tries ended with VDD_SD off */
+288a309,311
+> 	if (unmount_tries != 0 && unmount_tries < UINT8_MAX) {
+> 		unmount_tries++;        /* one more try of the same failed unmount */
+> 	}
+290,291c313,315
+< 		if (unmount_tries < UINT8_MAX) {
+< 			unmount_tries++;
+---
+> 		if (unmount_tries == 0) {
+> 			unmount_tries = 1;
+> 			unmount_record(r, 1);   /* the first failed try */
+293,296d316
+< 		sys_put_le32((uint32_t)r, args);
+< 		args[4] = rrec_st.core_state;
+< 		args[5] = unmount_tries;
+< 		rrec_log(RREC_LOG_UNMOUNT_FAILED, args, sizeof(args));
+299c319
+< 		unmount_tries = 0;
+---
+> 		unmount_tries_end(r);   /* 0, or -EIO (the rail went off anyway) */
+303a324,325
+> static int unmount_last_err = -EBUSY;   /* the answer of the last try (rrec_unmount_retry) */
+> 
+379c401,403
+< 		return;   /* the state wants the card (or runs its own sequence): nothing to retry */
+---
+> 		/* the state wants the card (or runs its own sequence): the tries end with the last errno */
+> 		unmount_tries_end(unmount_last_err);
+> 		return;
+381c405
+< 	(void)unmount_now();
+---
+> 	unmount_last_err = unmount_now();
+diff exit 1
+== u3 last lines
+d_00: @01:05:21.544022  unmount: row 47 step at 3921503 ms, VDD_SD off at 3921503000 us, steps 2, VDD_SD now 0
+unit_run exit 0
+# finished (Mac clock): 2026-11-13 16:32:53 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-160535-fix1-rec-u3.log
+== u3 status of new cases
+279:    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:140: recorder_actions_test_close_order: (i_sd > i_mic is false)
+297:sd_off_before_mic_off on native_sim: the named case failed, as required:  - FAIL - [recorder_actions.test_close_order] duration = 4.235 seconds
+298:sd_off_before_mic_off on native_sim: cases that failed (distinct): FAIL - [recorder_actions.test_close_order] FAIL - [recorder_actions.test_ship_closes_everything_first]  (lines with FAIL: 2)
+299:d_00: @00:00:09.249922      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:140: recorder_actions_test_close_order: (i_sd > i_mic is false)
+317:sd_off_before_mic_off on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:02:54.640522   - FAIL - [recorder_actions.test_close_order] duration = 4.235 seconds
+318:sd_off_before_mic_off on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_actions.test_close_order] FAIL - [recorder_actions.test_ship_closes_everything_first]  (lines with FAIL: 2)
+374:    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:291: recorder_actions_test_retry_storage_reports_result: (rt_row_seen(62) is false)
+392:retry_not_reported on native_sim: the named case failed, as required:  - FAIL - [recorder_actions.test_retry_storage_reports_result] duration = 61.633 seconds
+393:retry_not_reported on native_sim: cases that failed (distinct): FAIL - [recorder_actions.test_retry_storage_reports_result]  (lines with FAIL: 1)
+394:d_00: @00:01:31.941422      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_actions.c:291: recorder_actions_test_retry_storage_reports_result: (rt_row_seen(62) is false)
+412:retry_not_reported on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:01:57.084622   - FAIL - [recorder_actions.test_retry_storage_reports_result] duration = 61.633 seconds
+413:retry_not_reported on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_actions.test_retry_storage_reports_result]  (lines with FAIL: 1)
+589:ship_cuts_m2 on native_sim: the named case failed, as required:  - FAIL - [recorder_ship.test_ship_feels_whole_m2] duration = 2.222 seconds
+590:ship_cuts_m2 on native_sim: cases that failed (distinct): FAIL - [recorder_ship.test_ship_feels_whole_m2]  (lines with FAIL: 1)
+599:ship_cuts_m2 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:08.828322   - FAIL - [recorder_ship.test_ship_feels_whole_m2] duration = 2.222 seconds
+600:ship_cuts_m2 on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_ship.test_ship_feels_whole_m2]  (lines with FAIL: 1)
+624:ship_screen_on on native_sim: the named case failed, as required:  - FAIL - [recorder_ship.test_ship_closes_each_part_first] duration = 0.664 seconds
+625:ship_screen_on on native_sim: cases that failed (distinct): FAIL - [recorder_ship.test_ship_closes_each_part_first] FAIL - [recorder_ship.test_ship_feels_whole_m2]  (lines with FAIL: 2)
+635:ship_screen_on on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:22.934322   - FAIL - [recorder_ship.test_ship_closes_each_part_first] duration = 0.664 seconds
+636:ship_screen_on on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_ship.test_ship_closes_each_part_first] FAIL - [recorder_ship.test_ship_feels_whole_m2]  (lines with FAIL: 2)
+658: - FAIL - [recorder_unmount.test_failed_unmount_retried_and_reported] duration = 45.564 seconds
+665:unmount_result_dropped on native_sim: the named case failed, as required:  - FAIL - [recorder_unmount.test_unconfigured_finish_times_out] duration = 5.524 seconds
+666:unmount_result_dropped on native_sim: cases that failed (distinct): FAIL - [recorder_unmount.test_failed_unmount_retried_and_reported] FAIL - [recorder_unmount.test_unconfigured_finish_times_out] FAIL - [recorder_unmount.test_vbus_out_during_read_command]  (lines with FAIL: 3)
+674:d_00: @00:00:51.447822   - FAIL - [recorder_unmount.test_failed_unmount_retried_and_reported] duration = 45.564 seconds
+681:unmount_result_dropped on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:51.447822   - FAIL - [recorder_unmount.test_unconfigured_finish_times_out] duration = 5.524 seconds
+682:unmount_result_dropped on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_unmount.test_failed_unmount_retried_and_reported] FAIL - [recorder_unmount.test_unconfigured_finish_times_out] FAIL - [recorder_unmount.test_vbus_out_during_read_command]  (lines with FAIL: 3)
+696:    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rails.c:132: recorder_rails_test_hfxo_in_boot_and_recovery: (held_through(i_init, t_stb_us) is false)
+705:no_hfxo_in_boot on native_sim: the named case failed, as required:  - FAIL - [recorder_rails.test_hfxo_in_boot_and_recovery] duration = 0.172 seconds
+706:no_hfxo_in_boot on native_sim: cases that failed (distinct): FAIL - [recorder_rails.test_hfxo_in_boot_and_recovery]  (lines with FAIL: 1)
+707:d_00: @00:00:00.171922      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_rails.c:132: recorder_rails_test_hfxo_in_boot_and_recovery: (held_through(i_init, t_stb_us) is false)
+716:no_hfxo_in_boot on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:01:24.725922   - FAIL - [recorder_rails.test_hfxo_in_boot_and_recovery] duration = 0.172 seconds
+717:no_hfxo_in_boot on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_rails.test_hfxo_in_boot_and_recovery]  (lines with FAIL: 1)
+748:close_drops_partial on native_sim: the named case failed, as required:  - FAIL - [recorder_actions.test_close_order] duration = 4.236 seconds
+749:close_drops_partial on native_sim: cases that failed (distinct): FAIL - [recorder_actions.test_close_order]  (lines with FAIL: 1)
+767:close_drops_partial on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:02:57.145022   - FAIL - [recorder_actions.test_close_order] duration = 4.236 seconds
+768:close_drops_partial on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_actions.test_close_order]  (lines with FAIL: 1)
+790:test_recording_wrong_type on native_sim: the named case failed, as required:  - FAIL - [recorder_factory.test_tmic_records_type_2_for_2s] duration = 2.626 seconds
+791:test_recording_wrong_type on native_sim: cases that failed (distinct): FAIL - [recorder_factory.test_tmic_records_type_2_for_2s]  (lines with FAIL: 1)
+800:test_recording_wrong_type on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:06.310122   - FAIL - [recorder_factory.test_tmic_records_type_2_for_2s] duration = 2.626 seconds
+801:test_recording_wrong_type on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed (distinct): FAIL - [recorder_factory.test_tmic_records_type_2_for_2s]  (lines with FAIL: 1)
+== u3 start/end/exit
+2026-11-13 16:05:35 CET
+2026-11-13 16:32:53 CET
+0
+== u2 start/end/exit
+2026-11-13 14:12:31 CET
+2026-11-13 15:08:31 CET
+0
+== mtimes of pinned changed sources vs u3 start
+c26ae9881410499b2109c1d7f561ef8239090c22 2026-11-13 16:43:31 +0100

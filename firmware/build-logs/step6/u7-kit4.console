@@ -1,0 +1,28 @@
+# remote.sh run 20261113-061222-u7-kit4
+# command: west build -p always -b nrf54lm20dk/nrf54lm20a/cpuapp /ws/firmware/tests/sys/kitcompile -d /ws/out/u7-kit4 --no-sysbuild > /ws/out/u7-kit4.build.txt 2>&1 ; echo build-exit $? ; NM=/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-nm; O=/ws/out/u7-kit4/modules/ring_sys/CMakeFiles/ring_sys.dir/src/rsy_hw_real.c.obj; for s in ri_erase ri_write ri_read ri_request ri_is_confirmed ri_confirm ri_reboot ps_load ps_save rw_start rw_feed rr_read rr_gp_get rsy_hw_register; do echo $s: $($NM $O | grep -c " $s\$"); done; echo k_sys_fatal_error_handler in the image: $($NM /ws/out/u7-kit4/zephyr/zephyr.elf | grep -c k_sys_fatal_error_handler); echo rsy_ symbols in the image: $($NM /ws/out/u7-kit4/zephyr/zephyr.elf | grep -c ' rsy_'); echo warnings in ring_sys files: $(grep -E '(rsy[a-z_]*\.c).*(warning|error)' /ws/out/u7-kit4.build.txt | wc -l)
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 06:12:22 CET
+# free on the server's /: 51 GB
+# source firmware copied to /root/ring-os/src-u-sys
+# started on the server as 20261113-061222-u7-kit4; server log /root/ring-os/logs/20261113-061222-u7-kit4.log
+build-exit 0
+ri_erase: 1
+ri_write: 1
+ri_read: 1
+ri_request: 1
+ri_is_confirmed: 1
+ri_confirm: 1
+ri_reboot: 1
+ps_load: 1
+ps_save: 1
+rw_start: 1
+rw_feed: 1
+rr_read: 0
+rr_gp_get: 0
+rsy_hw_register: 1
+k_sys_fatal_error_handler in the image: 1
+rsy_ symbols in the image: 15
+warnings in ring_sys files: 9
+# finished (Mac clock): 2026-11-13 06:13:15 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-061222-u7-kit4.log

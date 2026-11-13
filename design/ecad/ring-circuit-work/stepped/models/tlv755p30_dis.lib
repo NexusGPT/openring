@@ -1,0 +1,20 @@
+* OWN MODEL of the project (not a maker model): Texas Instruments TLV75530PDQNR, 3.0 V LDO. Copy of the bench's own model
+* design/sim/circuit/models/tlv755p30.lib (built from TI SBVS320D, design/datasheets/motor_tlv755p.pdf) with two changes, made
+* for the stepped-enable test only (design/ecad/ring-circuit-work/stepped/pass-line.md, addendum 1):
+*  (1) with EN low the output source is off (target 0 V; the source cannot feed the input, Bin uses max(i(vs),0)), so the
+*      120 ohm pull-down of p6 does not load a still-driven output. In tlv755p30.lib the output stays driven for about
+*      0.7 ms after EN falls (the ramp node decays with 0.55 ms from above 1), with the pull-down on at the same time.
+*  (2) the start-up ramp is reset within about 1 us when EN falls (1 mohm in place of 1 ohm), so each rising EN edge starts
+*      a new start-up of 550 us (tSTR, p6). ASSUMPTION: the sheet defines tSTR from EN rising; how fast the part resets its
+*      soft start after a short low time is not stated in the files.
+* Everything else is unchanged: EN threshold, UVLO, tSTR, accuracy, load regulation, dropout, current limit, pull-down, IGND.
+.subckt TLV755P30D in out en gnd params: acc=0 rdo=0.65 icl=0.56
+Bon on 0 V = ( (v(en) > 0.65) && (v(in) > 1.3) ) ? 1 : 0
+Cr ramp 0 0.55m
+Bir 0 ramp I = v(on)
+Brd ramp 0 I = (1 - v(on)) * v(ramp) / 0.001
+Bo x 0 V = min( 3.0*(1+acc)*min(v(ramp),1)*v(on) - 0.036*max(i(vs),0), max(v(in) - rdo*max(i(vs),0), 0) ) - 5*max(0, i(vs) - icl)
+Vs x out 0
+Bpd out 0 I = (v(on) > 0.5) ? 0 : v(out)/120
+Bin in 0 I = max(i(vs), 0) + ((v(on) > 0.5) ? 25u : 0.1u)
+.ends TLV755P30D

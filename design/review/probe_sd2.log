@@ -1,0 +1,13 @@
+GND,U3,4,VSS,power_in
+SD_CS,U3,2,DAT3,bidirectional
+SD_DAT1,U3,7,DAT1,bidirectional
+SD_DAT2,U3,1,DAT2,bidirectional
+SD_MISO,U3,6,DAT0,bidirectional
+SD_MOSI,U3,5,CMD,bidirectional
+SD_SCK,U3,3,CLK,input
+VDD_SD,U3,8,VCC,power_in
+114:1. Screen power sequencing: VCI (VDD_3V0) and IOVCC (VDD_1V8) are on whenever the bucks run; ELVDD/ELVSS come up when the SH8501A drives SWIRE after OLED_PWR_EN. The screen datasheet's power sequence (p9) is not legible. Confirm the order and the SWIRE level of the SH8501A at reset, so that the SGM38046 stays in shutdown (both inputs low) when the screen is off.
+115-2. SGM38046 AVIN is drawn with only its 10 uF capacitor, as in the datasheet figure; the datasheet does not say where AVIN is fed from. Confirm AVIN is supplied internally; if not, it must join PVIN.
+--
+119:6. Back-powering: when VDD_SD is off, U1 must not drive SD lines high; when VDD_MIC is off, U1 must hold the mic clocks low. Firmware rule.
+120-7. VDD_3V0 load: motor 90 mA max plus the screen VCI plus the storage on buck 2 rated 200 mA (architecture section 2). Motor start current is not in the motor datasheet read here.

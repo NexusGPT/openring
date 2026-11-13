@@ -1,0 +1,16 @@
+Phase 2 is done. R73 (C1), C84 4.7 uF (C2) and C90 (C3) are in the real ring circuit files, along with the C88 text fixes and the check rows you granted. Notes: design/ecad/ring/circuit-two-notes.md (every file before and after, the logs). The work folder is design/ecad/ring-circuit-work (W).
+
+Method: W/phase2_edit.py edits make_netlist.py, bom.csv (rows matched by their text), bom-notes.md, sch-notes.md and check_netlist.py, each written whole and moved in. The tables were regenerated on a copy and moved in whole. A fresh make_netlist.py run gives the same five files (W/p2/regen_proof.txt). The bench and checks ran on a copy first (W/patched3).
+
+Bar 1: check_netlist ends "RESULT PASS netlist netlist.csv", then "check_netlist exit 0" (evidence/check_c2.log). ERC before and after: "** ERC messages: 0  Errors 0  Warnings 0". check_bom: "failures 0". Fail proofs (W/logs/failproof_summary.txt): C84 back at 10uF gives "found A7-2", "RESULT FAIL 1". Without R73: "found A6-3,C1-R73", "RESULT FAIL 3". Without C90: "found C3-VDD_3V0", "RESULT FAIL 2". prove_fail.sh does not cover these rows and was not run.
+
+Bar 2 (sim/circuit/results/summary.txt): "PASS ring1 motor start: 10 of 10 rows hold; tightest row R1.2: motor.vbat_min_spec = 3.02319 holds >= 3.0"; "PASS ring7 pads on the finger: 5 of 5 rows hold; tightest row R7.1: pads.vbus_gnd_10s = 0.0270141 holds < 0.1". Before, both read FAIL (2.99503 V; 4.49786 V), on the committed summary and on an unchanged copy run today. Rows: "PASS to FAIL: none"; "FAIL to PASS: R1.1, R1.2, R7.1, R7.4, R7.5". On the 3.0 V rail, R1.5 goes from 2.88534 to 2.9046 V (that comes from C84), and the other rail rows do not change. The buck model has no ripple, so the gain from C90 cannot show there. The soft-start-off what-if goes from 2.303 to 2.598 V. case2 and case4 still FAIL as before (case4 has no value since the case netlist changed at 11:47).
+
+Bar 3: the stepped enable does not lower the dip. At C84 4.7 uF the cell minimum is 3.02320 V with one step and 3.02320 to 3.02321 V stepped. At 10 uF it is 3.00261 V with one step, 3.00261 V with 2 ms steps and 3.00249 V with 0.3 ms steps. Without C90, the 10 uF case was 2.99504 V. Files: decks/stepped/pass-line.md (written before the runs), results/stepped/, logs/stepped_enable_c2.log, sim-notes.md section 12. The U11 model there is marked as the project's own. The bench model has a defect when EN falls (listed).
+
+Bar 4: pcb/ is untouched ("pcb diff exit 0"). The board will show R73 and C90 as missing until the board work lands.
+
+Left for you: the files that still say C84 is 10 uF or that the pads carry no voltage (circuit-two-notes.md, "Left for the lead"); the tlv755p30.lib defect; the ring7 what-if text in run_tests.py; R73's code is not confirmed at a distributor. W is 49 MB, 28 MB of it waveforms in W/stepped/diag_run that do not need to be committed.
+
+questions_for_owner: none
+RESULT: done, R73, C84 4.7 uF and C90 are in the ring circuit files with check_netlist PASS, ERC 0 errors, check_bom failures 0, and the bench ring1 and ring7 PASS with no row turned from PASS to FAIL.

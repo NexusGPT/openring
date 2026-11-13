@@ -1,0 +1,11 @@
+/* The ring's panel stands in as a memory display (the simulated chip has no display). */
+/ {
+	chosen {
+		zephyr,display = &ring_display;
+	};
+	ring_display: ring_display {
+		compatible = "ring,mem-display";
+		width = <120>;
+		height = <240>;
+	};
+};

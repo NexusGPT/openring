@@ -1,0 +1,90 @@
+reference,kind,why
+U9,added,W7 USB protection array TPD4E05U06 (parts/order-codes.md section 3 first choice; TI SLVSBO7O)
+CP1,added,"charging pad VBUS, first from -Y, inside face of the band (architecture 17.12; order from the case design)"
+CP2,added,"case contact pad D-, second from -Y"
+CP3,added,"case contact pad D+, third from -Y"
+CP4,added,"case contact pad GND, fourth from -Y"
+R61,added,motor regulator enable series resistor 100 ohm (motor-drive.md)
+R62,added,motor regulator enable pull-down 100 kohm (motor-drive.md)
+U11,added,"motor 3.0 V regulator from VBAT, TLV75530PDQNR (motor-drive.md)"
+C83,added,U11 input 10 uF
+C84,added,U11 output and motor 10 uF (Jinlong 9-4 asks 2 uF or more)
+C85,added,"A7 D2: U2 VBAT 2.2 uF at balls D1, D2 (nPM1304 spec Table 37 C6, page 157)"
+C86,added,"A7 D4: U2 LSOUT1 (VDD_MIC) 1.0 uF at ball A4 (nPM1304 spec configuration 2, C14, pages 158 and 159)"
+C87,added,"A7 D4: U2 LSOUT2 (VDD_SD) 1.0 uF at ball A5 (nPM1304 spec configuration 2, C14, pages 158 and 159)"
+C88,added,"A7 D3: U2 VSYS/PVDD third 10 uF (nPM1304 spec Table 37 C2 to C4, page 157)"
+R63,added,W3 pull-up DAT1 47 kohm
+R64,added,W3 pull-up DAT2 47 kohm
+R65,added,W3 pull-up DAT3/CS 47 kohm
+C61,added,W3 100 nF at storage supply
+R66,added,W10 AVDDEN pull-down 100 kohm
+C71,added,"A7 D1: U2 VBUS 1.0 uF X5R 25 V (nPM1304 spec Table 37 C1, page 157)"
+C72,added,"U2 VBUS 100 nF (nPM1300 DK C37; confirm for the nPM1304, S18)"
+C73,added,"U2 VBUSOUT 1.0 uF (nPM1300 DK C39; confirm for the nPM1304, S18)"
+C74,added,"U2 VSYS 10 uF (nPM1300 DK C40; confirm for the nPM1304, S18)"
+C75,added,"U2 VSYS 10 uF (nPM1300 DK C41; confirm for the nPM1304, S18)"
+C76,added,"U2 VSYS 1.0 nF (nPM1300 DK C42; confirm for the nPM1304, S18)"
+C77,added,"U2 VSYS 1.0 nF (nPM1300 DK C43; confirm for the nPM1304, S18)"
+L71,added,"U2 buck 1 inductor 2.2 uH (nPM1300 DK L7; confirm for the nPM1304, S18)"
+C78,added,"U2 VOUT1 10 uF (nPM1300 DK C46; confirm for the nPM1304, S18)"
+L72,added,"U2 buck 2 inductor 2.2 uH (nPM1300 DK L6; confirm for the nPM1304, S18)"
+C79,added,"U2 VOUT2 10 uF (nPM1300 DK C48; confirm for the nPM1304, S18)"
+C80,added,"U2 VDDIO 100 nF (nPM1300 DK C54; confirm for the nPM1304, S18)"
+RT1,added,NTC thermistor 10 kohm in the band at the cell (lead 2026-11-10); part code OPEN
+LT1,added,"W2 antenna frequency trim part, 0201, 0 ohm fitted, from ANT1 pins 2 and 3 to ground (ring-board-plan.md e.2)"
+C89,added,"W2 antenna-side shunt of the pi match, 0201, not fitted (ring-board-plan.md e.4)"
+TP17,added,W12 test pad VDD_1V8
+TP18,added,W12 test pad GND
+TP19,added,test pad on the power chip SHPHLD (factory wake from ship mode)
+J_BAND_A,added,"A6 flex tail A (joystick side, BAND_SPLIT): 4 direction switches, centre switch, motor 2, ground = 8 pads on the main board"
+J_BAND_B,added,"A6 flex tail B (other side, BAND_SPLIT): cell 2, temperature 1, charging pads 4 = 7 pads on the main board"
+U10,added,A6 review F07: level shifter SN74AXC4T774RSVR between the 1.8 V main chip and the 3.0 V storage part (TI SCES898C)
+C81,added,"A6 U10 VCCA 100 nF (TI SCES898C section 8, 0.1 uF)"
+C82,added,"A6 U10 VCCB 100 nF (TI SCES898C section 8, 0.1 uF)"
+SW3,added,A5 16.4 joystick switch DOWN (SKTAAAE010)
+SW4,added,A5 16.4 joystick switch LEFT (toward hand)
+SW5,added,A5 16.4 joystick switch RIGHT (toward fingertip)
+R51,bom_not_placed,"W1: no pull-ups on the board (lead, 2026-11-10)"
+R52,bom_not_placed,W1
+R53,bom_not_placed,W1
+R54,bom_not_placed,W1
+R55,bom_not_placed,W1
+R56,bom_not_placed,W1
+CBL1,bom_not_placed,joystick cable removed: switches reach the board through flex tail J_BAND_A (A5 17.3)
+U7,bom_not_placed,A5 16.4: 2 microphones in place of 4
+U8,bom_not_placed,A5 16.4
+R33,bom_not_placed,A5 16.4 (decoupling of the removed pair)
+R34,bom_not_placed,A5 16.4
+C33,bom_not_placed,A5 16.4
+C34,bom_not_placed,A5 16.4
+C37,bom_not_placed,A5 16.4
+C38,bom_not_placed,A5 16.4
+W1,bom_not_placed,"A5 17.3: contact board removed, the 4 charging pads reach the board through J_BAND_B"
+W2,bom_not_placed,A5 17.3
+W3,bom_not_placed,A5 17.3
+W4,bom_not_placed,A5 17.3
+NPM-REF,bom_not_placed,"placeholder line, split into C71-C80, L71, L72, RT1 (additions)"
+Q1,bom_not_placed,"A7 architecture 17.22, motor-drive.md W5: motor switch removed (the motor runs from U11)"
+D1,bom_not_placed,"A7 architecture 17.22, motor-drive.md W4: motor diode removed"
+LED1,bom_not_placed,recording light removed in v7 (architecture 17.30): a recording shows on the screen
+R41,bom_not_placed,"series resistor of the recording light, removed in v7 (architecture 17.30)"
+Q2,bom_not_placed,"transistor of the recording light, removed in v7 (architecture 17.30)"
+TP7,bom_not_placed,"W2 board plan a.2: ball E8 (P1.01) left open, its test pad removed (design/wiring/ring-board-plan.md)"
+TP10,bom_not_placed,"W2 board plan a.2: ball E5 (P1.19) left open, its test pad removed (design/wiring/ring-board-plan.md)"
+TP2,bom_not_placed,"W2 round 2, lead ruling b: ball B5 (P1.16, DBG_RX) left open, its test pad removed (pcb/board-notes-r2.md)"
+TP13,bom_not_placed,"W2 round 2, lead ruling b: ball B9 (P2.03) left open, its test pad removed (pcb/board-notes-r2.md)"
+TP1,testpad,single-pin net allowed
+TP3,testpad,single-pin net allowed
+TP4,testpad,single-pin net allowed
+TP5,testpad,single-pin net allowed
+TP6,testpad,single-pin net allowed
+TP8,testpad,single-pin net allowed
+TP9,testpad,single-pin net allowed
+TP11,testpad,single-pin net allowed
+TP12,testpad,single-pin net allowed
+TP14,testpad,single-pin net allowed
+TP15,testpad,single-pin net allowed
+TP17,testpad,single-pin net allowed
+TP18,testpad,single-pin net allowed
+TP19,testpad,single-pin net allowed
+TP21,testpad,single-pin net allowed

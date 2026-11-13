@@ -1,0 +1,383 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "case.schema.json",
+  "type": "object",
+  "properties": {
+    "glb": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "file": {
+              "$ref": "common.schema.json#/$defs/RelPath"
+            },
+            "lid_node": {
+              "type": "string",
+              "minLength": 1
+            },
+            "hinge": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "point": {
+                      "$ref": "common.schema.json#/$defs/Vec3"
+                    },
+                    "axis": {
+                      "$ref": "common.schema.json#/$defs/Vec3"
+                    }
+                  },
+                  "required": [
+                    "point",
+                    "axis"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "nodes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "part_ids": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "common.schema.json#/$defs/PartId"
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "part_ids"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "file",
+            "lid_node",
+            "hinge",
+            "nodes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Fact"
+      }
+    },
+    "part_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/PartId"
+      },
+      "description": "ids of case parts in parts.json; the lines are stored once, there"
+    },
+    "supplier_items": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/SupplierRequest"
+      }
+    },
+    "lines": {
+      "type": "array",
+      "description": "every line of the case parts list, each in exactly one class: solid (a solid of the model is it), board (a footprint of a case board carries it), not-fitted (quantity 0), no-solid (with the reason in words)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/PartId"
+          },
+          "part_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/PartId"
+            },
+            "minItems": 1
+          },
+          "class": {
+            "enum": [
+              "solid",
+              "board",
+              "not-fitted",
+              "no-solid"
+            ]
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "names of the solids that stand for the line (class solid)"
+          },
+          "boards": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "keys of the case boards whose files carry the line's reference"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/Source"
+          }
+        },
+        "required": [
+          "id",
+          "part_ids",
+          "class",
+          "nodes",
+          "boards",
+          "reason",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "solid": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "board": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "not_fitted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "no_solid": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "nodes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "nodes_linked": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "nodes_unlinked": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "lines",
+        "solid",
+        "board",
+        "not_fitted",
+        "no_solid",
+        "nodes",
+        "nodes_linked",
+        "nodes_unlinked"
+      ],
+      "additionalProperties": false
+    },
+    "unlinked_nodes": {
+      "type": "array",
+      "description": "solids of the model that no rule links to a parts-list line",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "boards": {
+      "type": "array",
+      "description": "the case boards: their solid in the model, their id in the Board screen's picker and every part their file holds",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "node": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "picker": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "file": {
+            "$ref": "common.schema.json#/$defs/RelPath"
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ref": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "part_id": {
+                  "anyOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/PartId"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "what": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "ref",
+                "value",
+                "part_id",
+                "what"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "node",
+          "picker",
+          "file",
+          "parts"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "model": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "file": {
+              "$ref": "common.schema.json#/$defs/RelPath"
+            },
+            "time": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "file",
+            "time"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "the model's own source file and its file time"
+    },
+    "refit": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "item": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "source": {
+              "$ref": "common.schema.json#/$defs/Source"
+            }
+          },
+          "required": [
+            "item",
+            "text",
+            "source"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "the sentence of a design file about the case's refit, when the design says one"
+    }
+  },
+  "required": [
+    "glb",
+    "facts",
+    "part_ids",
+    "supplier_items"
+  ],
+  "additionalProperties": false,
+  "title": "Case",
+  "description": "case/index.json: the case 3D, its numbers, the ids of its parts, its supplier items."
+}

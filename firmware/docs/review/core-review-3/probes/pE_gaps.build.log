@@ -1,0 +1,11 @@
+firmware/docs/review/core-review-3/probes/pE_gaps.c:7:108: error: use of undeclared identifier 'RC_ACT_RUN_RECOVERY'; did you mean 'RC_ST_RECOVERY'?
+    7 |   printf("INFO G2 after retry ok: state=%s open_flag_fact=%d run_recovery=%d\n", SN(), F()->open_flag, has(RC_ACT_RUN_RECOVERY));
+      |                                                                                                            ^~~~~~~~~~~~~~~~~~~
+      |                                                                                                            RC_ST_RECOVERY
+firmware/modules/ring_core/include/ring_core/rc_types.h:24:2: note: 'RC_ST_RECOVERY' declared here
+   24 |         RC_ST_RECOVERY,
+      |         ^
+firmware/docs/review/core-review-3/probes/pE_gaps.c:7:108: warning: implicit conversion from enumeration type 'enum rc_state' to different enumeration type 'enum rc_action' [-Wimplicit-enum-enum-cast]
+    7 |   printf("INFO G2 after retry ok: state=%s open_flag_fact=%d run_recovery=%d\n", SN(), F()->open_flag, has(RC_ACT_RUN_RECOVERY));
+      |                                                                                                        ~~~ ^~~~~~~~~~~~~~~~~~~
+1 warning and 1 error generated.

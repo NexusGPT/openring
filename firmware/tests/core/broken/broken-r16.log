@@ -1,0 +1,24 @@
+broken copy run 2026-11-13 04:15:31 CET, mutation r16
+change applied (diff of the copy against its original):
+124c124
+< 	if (ev == RC_EV_VBUS_OUT && c->facts.batt == RC_BATT_B2 &&
+---
+> 	if (0 && ev == RC_EV_VBUS_OUT && c->facts.batt == RC_BATT_B2 &&
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_round2.c:58: out.last_row == want_row (left 23, right 68)
+FAIL rc_round2.test_r1_entry_into_standby_checks_battery_then_storage
+    assert failed firmware/tests/core/src/test_round4.c:42: out.last_row == 68 (left 23, right 68)
+FAIL rc_round4.test_r16_b2_row_comes_before_the_vbus_removed_row
+    assert failed firmware/tests/core/src/test_round4.c:32: rc_core_state(&core) == RC_ST_OFF (left 10, right 1)
+FAIL rc_round4.test_r16_recovery_read_error_in_case_then_vbus_out_goes_off
+    assert failed firmware/tests/core/src/test_round4.c:127: st == RC_ST_OFF || st == RC_ST_SHIP || st == RC_ST_BOOT || st == RC_ST_RECOVERY (left 0, right 0)
+FAIL rc_round4.test_r16_sequences_never_awake_at_b2_without_vbus
+    assert failed firmware/tests/core/src/test_round4.c:19: out.last_row == 63 (left -1, right 63)
+FAIL rc_round4.test_r16_storage_fault_entered_in_case_then_vbus_out_goes_off
+    assert failed firmware/tests/core/src/test_round4.c:67: rc_core_state(&core) == RC_ST_OFF (left 4, right 1)
+FAIL rc_round4.test_r16_walk_every_state_vbus_present_b2_then_vbus_out_ends_off
+    assert failed firmware/tests/core/src/test_round4.c:159: out.last_row == 7 (left -1, right 7)
+FAIL rc_round4.test_t2_r16_boot_vbus_out_at_b2_takes_row_7_before_init_done
+suites=13 tests=221 pass=214 fail=7
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation r16, named case rc_round4.test_r16_b2_row_comes_before_the_vbus_removed_row failed

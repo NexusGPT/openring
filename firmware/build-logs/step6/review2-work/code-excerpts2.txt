@@ -1,0 +1,81 @@
+== rscr_set_battery
+235:void rscr_set_battery(uint8_t pct, bool charging, bool full, uint16_t to_full_min)
+236-{
+237-	k_mutex_lock(&lk, K_FOREVER);
+238-	batt_pct = pct;
+239-	batt_charging = charging;
+240-	batt_full = full;
+241-	batt_to_full = to_full_min;
+242-	k_mutex_unlock(&lk);
+243-	wake_thread();
+244-}
+245-
+246-void rscr_set_device_name(uint8_t slot, const char *name)
+247-{
+248-	k_mutex_lock(&lk, K_FOREVER);
+249-	if (slot < RDEV_SLOTS) {
+== render / wake_thread
+80:static void wake_thread(void)
+81-{
+82-	k_sem_give(&kick);
+83-}
+84-
+85-static void apply_fx(const struct rscr_fxs *fx)
+86-{
+87-	for (uint8_t i = 0; i < fx->n; i++) {
+88-		const struct rscr_fx *e = &fx->e[i];
+--
+337:static int render_locked(rc_ms_t now)
+338-{
+339-	int rc = 0;
+340-	uint8_t level;
+341-	bool want_on;
+342-
+343-	fill_frame(now);
+344-	want_on = frame.s.screen != SCR_OFF;
+345-	level = rscr_brightness_level(&frame.s);
+--
+368:static int render(rc_ms_t now)
+369-{
+370-	int rc;
+371-
+372-	k_mutex_lock(&draw_lk, K_FOREVER);
+373-	rc = render_locked(now);
+374-	k_mutex_unlock(&draw_lk);
+375-	return rc;
+376-}
+== test_screens.c frame_hash
+/*
+ * recorder_screens: what the join gives the screens part (plan rows C39, P18 the join's part, and the ruling "a recording
+ * started during the 10 s current-limit hold draws the dim sign").
+ */
+#include <string.h>
+
+#include "rt.h"
+
+static uint8_t frame[RSCR_W * RSCR_H * 3];
+
+static uint64_t frame_hash(void)
+{
+	uint64_t h = 0xcbf29ce484222325ull;
+
+	rscr_sync();
+	rscr_capture_rgb(frame);
+	for (size_t i = 0; i < sizeof(frame); i++) {
+		h = (h ^ frame[i]) * 0x100000001b3ull;
+	}
+	return h;
+}
+
+== rt.c step record
+18:static struct rt_step steps[STEPS_MAX];
+30:struct rt_step rt_step_get(uint32_t i)
+32:	return steps[i];
+38:		if (steps[i].row == row) {
+78:		acts[n_acts].t_ms = t;   /* the time of the core step the glue gives */
+87:		steps[n_steps].row = a->last_row;
+88:		steps[n_steps].ev = (uint8_t)ev;
+89:		steps[n_steps].state = (uint8_t)st;
+90:		steps[n_steps].t_ms = k_uptime_get();
+387:int rt_usb_recv(uint8_t *resp, size_t max, uint8_t *st, int32_t timeout_ms)
+392:	for (int32_t w = 0; w < timeout_ms; w += 10) {

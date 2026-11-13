@@ -1,0 +1,21 @@
+# remote.sh run 20261113-073425-j-build2
+# command: bash tests/recorder/short_run.sh native_sim CONFIG_RING_FACTORY=n build
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 07:34:25 CET
+# free on the server's /: 36 GB
+# source firmware copied to /root/ring-os/src-u-join
+# started on the server as 20261113-073425-j-build2; server log /root/ring-os/logs/20261113-073425-j-build2.log
+twister exit code on native_sim: 1 (log /ws/out/20261113-073425-j-build2-recorder-short/twister-native_sim.log)
+[110/748] Building C object CMakeFiles/app.dir/src/test_boot.c.obj
+[155/748] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/lib/boot_banner/banner.c.obj
+FAILED: [code=1] modules/ring_devices/CMakeFiles/ring_devices.dir/src/rdev.c.obj 
+/ws/firmware/modules/ring_devices/src/rdev.c:366:82: error: ‘struct bt_conn_pairing_feat’ declared inside parameter list will not be visible outside of this definition or declaration [-Werror]
+/ws/firmware/modules/ring_devices/src/rdev.c:405:10: error: ‘struct bt_conn_auth_cb’ has no member named ‘pairing_accept’
+/ws/firmware/modules/ring_devices/src/rdev.c:405:27: error: initialization of ‘void (*)(struct bt_conn *, unsigned int)’ from incompatible pointer type ‘enum bt_security_err (*)(struct bt_conn *, const struct bt_conn_pairing_feat * const)’ [-Werror=incompatible-pointer-types]
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 48.25 seconds.
+INFO    - 1) ring_recorder.sim on native_sim/native error (Build failure - error: struct bt_conn_pairing_feat declared inside parameter list will not be visible outside of this definition or declaration [-Werror])
+SHORT RUN exit 1
+# finished (Mac clock): 2026-11-13 07:35:41 CET
+# remote exit code: 1
+# local log: firmware/build-logs/20261113-073425-j-build2.log

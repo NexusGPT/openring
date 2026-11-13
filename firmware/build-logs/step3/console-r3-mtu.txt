@@ -1,0 +1,11 @@
+# remote.sh run 20261112-090745-r3-mtu
+# command: sed 's/^CONFIG_BT_L2CAP_TX_MTU=.*/CONFIG_BT_L2CAP_TX_MTU=23/' modules/ring_iphone/ring_iphone_link.conf > /ws/out/r3-mtu23.conf; west build -p always -b nrf54lm20bsim/nrf54lm20a/cpuapp --no-sysbuild -d /ws/out/r3-mtu23 tests/bsim/iphone/ring_app -DRING_IPHONE_LINK_CONF=/ws/out/r3-mtu23.conf > /ws/out/r3-mtu23.log 2>&1; echo build exit $?; grep -m2 'ring_iphone needs' /ws/out/r3-mtu23.log
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 09:07:45 CET
+# free on the server's /: 51 GB
+# source firmware copied to /root/ring-os/src-step3r3e
+# started on the server as 20261112-090745-r3-mtu; server log /root/ring-os/logs/20261112-090745-r3-mtu.log
+build exit 1
+# finished (Mac clock): 2026-11-12 09:08:19 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step3/20261112-090745-r3-mtu.log

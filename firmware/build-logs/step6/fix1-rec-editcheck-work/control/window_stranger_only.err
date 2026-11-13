@@ -1,0 +1,11 @@
+--- a/ring_devices/src/rdev.c
++++ b/ring_devices/src/rdev.c
+@@ -302,7 +302,7 @@
+ 	link_secure = false;
+ 	disconnecting = false;
+ 	/* Outside the pairing window only the device of this slot may stay. */
+-	if (!(window && window_slot == link_slot)) {
++	if (false) {
+ 		stranger = !(rdev_slot_peer(link_slot, &bonded) == 0 &&
+ 			     bt_addr_le_eq(&bonded, bt_conn_get_dst(conn)));
+ 	}

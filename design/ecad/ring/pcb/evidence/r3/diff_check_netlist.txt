@@ -1,0 +1,14 @@
+105c105,108
+<            'B5': 'DBG_RX', 'B9': 'SPARE_P2_03', 'G4': 'SPARE_P3_05', 'H4': 'JOY_CENTER'}
+---
+>            'B5': 'DBG_RX', 'B9': 'SPARE_P2_03', 'G4': 'SPARE_P3_05', 'H4': 'JOY_CENTER',
+>            # Round 3 (lead's decision of 2026-11-13, pin changes for routing; ecad/ring-route-f/pin-changes.md): P1.02 (F8)
+>            # not connected, test pad TP8 removed. Expected value changed by that decision.
+>            'F8': 'SPARE_P1_02'}
+160a164,169
+> # Round 3 (lead's decision of 2026-11-13, pin changes for routing): D6 (old LCD_TE) and E9 (old OLED_PWR_EN) are no-connect;
+> # nets SPARE_P1_02, SPARE_P1_14, SPARE_P1_30 and test pads TP8, TP9, TP11 are absent
+> _r3 = [b for b in ('D6', 'E9', 'F8') if len([r for r in pin_of.get(('U1', b), []) if r['pin_type'] == 'no_connect']) != 1]
+> _r3 += [n for n in ('SPARE_P1_02', 'SPARE_P1_14', 'SPARE_P1_30') if n in nets]
+> _r3 += [t for t in ('TP8', 'TP9', 'TP11') if t in {r['reference'] for r in rows} or t in parts]
+> ok('round 3: U1 D6, E9, F8 no-connect; SPARE_P1_02, SPARE_P1_14, SPARE_P1_30, TP8, TP9, TP11 absent') if not _r3 else fail('round 3 pin changes: %s' % _r3)

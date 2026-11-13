@@ -1,0 +1,88 @@
+FW l.125: - **close** = write the partial chunk, write the index CLOSE record, write the superblock with the open flag cleared, stop PDM, clocks low, VDD_MIC off, VDD_SD off.
+FW l.128: - **long press** = the joystick centre held 1,000 ms (section 2.1). **short press** = the centre held 40 to 450 ms with no second press in the 400 ms window. **double press** = two short presses (section 2.1).
+FW l.150: | `STANDBY` | double press of the joystick centre | `STANDBY` | nothing; with a control session open it closes the session (ruling R17, section 3.4) |
+FW l.151: | `STANDBY` | menu "Power off" confirmed | `OFF` | save settings and time; M2; ship mode |
+FW l.152: | `STANDBY` | VBUS appears | `CHARGING` | charge on |
+FW l.164: | `RECORDING` | battery reaches B5 | `ERR_BATTERY_LOW` | close; M3 |
+FW l.165: | `RECORDING` | battery reaches B2 | `OFF` | close; ship mode |
+FW l.166: | `RECORDING` | free space reaches S30 | `RECORDING` | M3 once; screen 3 s "30 min left" |
+FW l.167: | `RECORDING` | free space at SFULL | `ERR_STORAGE_FULL` | close; M3 |
+FW l.168: | `RECORDING` | chunk write fails 3 times | `ERR_STORAGE_FAULT` | stop PDM; clocks low; VDD_MIC off; superblock left open (RECOVERY at next boot); MF |
+FW l.169: | `RECORDING` | the PDM instance gives no block for 100 ms | `ERR_MIC_FAULT` | close; MF |
+FW l.170: | `RECORDING` | sudden power loss (cell cut, short, brown-out) during a write | `BOOT` | nothing runs; at the next power-on the open flag leads to `RECOVERY`; loss bounded in section 5.5 |
+FW l.171: | `CHARGING` | USB configured by the case (`USBD_MSG_CONFIGURATION`) | `TRANSFER` | VDD_SD on; mount; charge on stays |
+FW l.172: | `CHARGING` | VBUS removed, free space above SFULL, battery above B5 | `STANDBY` | none |
+FW l.173: | `CHARGING` | VBUS removed, free space at SFULL, battery above B5 | `ERR_STORAGE_FULL` | none (ruling R2: with the battery at B5 the next row applies) |
+FW l.174: | `CHARGING` | VBUS removed, battery at B2 | `OFF` | save settings and time; ship mode (ruling R10) |
+FW l.175: | `CHARGING` | VBUS removed, battery at B5 | `ERR_BATTERY_LOW` | none |
+FW l.176: | `CHARGING` | nPM1304 event charge error | `ERR_CHARGER` | log BCHGERRREASON and BCHGERRSENSOR [NPM p41]; charge off; MF |
+FW l.177: | `CHARGING` | long press | `CHARGING` | refused: M3; screen "In case" 3 s; charge on stays |
+FW l.178: | `TRANSFER` | USB suspended or unconfigured by the case | `CHARGING` | finish the current command; VDD_SD off; charge on |
+FW l.179: | `TRANSFER` | VBUS removed | `STANDBY` | abort the command; VDD_SD off |
+FW l.180: | `TRANSFER` | command FW_END accepted | `BOOT` | `boot_request_upgrade(BOOT_UPGRADE_TEST)`; reboot (section 9.2) |
+FW l.218: - The watchdog (`wdt31`, 8 s) resets the chip when the system work queue that feeds it stops (section 9.4); a reset during a recording leaves the open flag set, so `BOOT` goes to `RECOVERY`.
+FW l.320: | Id | Event | Pattern (on / off in ms) | Total ms |
+FW l.321: |---|---|---|---|
+FW l.322: | M1 | recording started | 80 on | 80 |
+FW l.323: | M2 | recording stopped by the user, by BLE, by case insertion | 80 on, 120 off, 80 on | 280 |
+FW l.324: | M3 | low battery (B15, B5), storage S30 or SFULL, an action refused | 80 on, 120 off, 80 on, 120 off, 80 on | 480 |
+FW l.325: | MH | highlight marked | 40 on | 40 |
+FW l.374: | SCR_CHARGING | `CHARGING` (5 s after insertion, 5 s after any input) | battery % and icon, "Charging" or "Full", time to full in minutes from the fuel gauge |
+FW l.443: Data path: each 16 ms, `dmic_read()` returns one block of 256 stereo frames from `pdm20`, already interleaved (channel 0 = mic 1, 1 = mic 2); the audio thread copies it into the current chunk and frees the block. After 32 blocks the chunk is full and goes to the storage thread's queue. 2 x 16,000 x 2 = 64,000 bytes per second, 230.4 MB per hour [CALC; architecture 16.6].
+FW l.460: 5. Discard the first 50 ms of samples (800 frames at 16 kHz). With step 3 the first kept frame comes at least 1 + 50 = 51 ms after VDD_MIC is enabled, after the 50 ms power-up time [DS Table 2]. The recording timestamp is the time of the first kept frame.
+FW l.908: 5. The thermistor limits and the die-temperature limits stop and resume charging by themselves (rows above); they are not a reason to hold the charger off.
+FW l.909: 
+FW l.910: ### 8.2 What is on in each state
+FW l.911: 
+FW l.912: | State | VDD_1V8 | VDD_3V0 | VDD_MIC | VDD_SD | Screen supply (OLED_PWR_EN) | HFXO | Radio | Wake sources |
+FW l.913: |---|---|---|---|---|---|---|---|---|
+FW l.914: | `SHIP`, `OFF` | off | off | off | off | off | off | off | VBUS only (section 8.4) |
+FW l.915: | `BOOT`, `RECOVERY` | on | on | off | on | on in `RECOVERY` | on | off | runs to completion |
+FW l.916: | `STANDBY` | on | on | off | off | when the screen is on | when the radio runs | advertising | the 4 direction inputs (JOY_UP, JOY_DOWN, JOY_LEFT, JOY_RIGHT) and BTN_REC when `CENTRE_SOURCE` is `SW2`, PMIC_INT, GRTC timer, radio |
+FW l.917: | `RECORDING` | on | on | on | on | on for the whole recording (rule R-SIGN, section 3.2) | on | advertising | PDM blocks every 16 ms, as `STANDBY` |
+FW l.918: | `CHARGING` | on | on | off | off | when the screen is on | when USB runs | off | PMIC_INT (VBUS removed, charge events), USB, inputs |
+FW l.919: | `TRANSFER` | on | on | off | on | when the screen is on | on | off | USB, PMIC_INT, inputs |
+FW l.920: | error states | on | on | off | off | when the screen is on | when the radio runs | per section 7.3 | as `STANDBY` |
+FW l.921: 
+FW l.922: Between events the application core sleeps in System ON idle (Zephyr idle thread); System OFF is not used, because the GRTC time and Bluetooth must keep running. The motor supply VMOT (U11) is on only while MOTOR is high, in any state; U11 stays on the cell and draws at most 1 µA when off, ship mode included (motor-drive.md section 2.7).
+FW l.923: 
+FW l.924: ### 8.3 Battery measurement
+FW l.925: 
+FW l.926: - The nPM1304's system monitor measures the battery voltage, the battery current and the thermistor [NPM p99, section 7.1]. The charger sensor driver gives voltage, current and temperature channels (`SENSOR_CHAN_GAUGE_VOLTAGE`, `SENSOR_CHAN_GAUGE_AVG_CURRENT`, `SENSOR_CHAN_GAUGE_TEMP`) [SRC 11; that the family driver serves the nPM1304 is TO CONFIRM, section 10.5 item 3]. Each sample feeds `nrf_fuel_gauge_process()`, which returns the state of charge [SRC 12]; `nrf_fuel_gauge_tte_get()` and `nrf_fuel_gauge_ttf_get()` give time to empty and to full [SRC 12].
+FW l.927: - **The motor's charge is added.** The chip measures the battery current inside its own path [NPM p99]; the motor draws from the cell through U11, outside that path (section 3.1). The motor player sums the charge of every pulse since the last sample (t_on x 80 mA + 10 ms x 175 mA per pulse, section 3.1; the allowance is an **[ESTIMATE]** until bench step B-M3 measures the start). The current fed to the gauge is I_fed = I_measured + Q_motor / t_sample, counted as a discharge [CALC example: one MF, 51.50 mA.s, in a 1 s sample adds 51.5 mA to that sample]. The sign the library expects for a discharge is TO CONFIRM (section 10.5, item 32). U11 is a linear regulator, so its input current equals the motor current within its own small ground current (motor-drive.md section 2.5).
+FW l.928: - Sampling: every 1 s in the recording states (thresholds use the mean of the last 10), every 60 s in the other awake states (thresholds use the single sample). Every sample also reads the battery current limit status (section 8.7).
+FW l.929: - The battery current during a discharge has a full scale of 140 mA [NPM p99]; the chip path stays at or under 55.7 mA with every load on (architecture 17.22).
+FW l.930: - The fuel gauge needs a battery model of the actual cells; Nordic makes it with its nPM PowerUP application [NPM p99]. One model per ring size or one for all is open (section 10.5, item 4).
+FW l.931: 
+FW l.932: ### 8.4 Ship mode entry and exit (nPM1304 ship task after VBUS removal, [NPM p116])
+FW l.933: 
+FW l.934: The nPM1304 enters ship mode through its task register TASKENTERSHIPMODE [NPM p118]. Its specification states: "When VBUS is not present, the device enters Ship mode immediately. The host software must wait until EVENTSVBUSIN0SET on page 136 to ensure VBUS is disconnected and discharged before writing to the register" [NPM p116]. EVENTSVBUSIN0SET holds the event EVENTVBUSREMOVED, "VBUS removed" [NPM p136]. There is no timer: the firmware does not use hibernate (TASKENTERHIBERNATE), and F4's timed hibernate is removed.
+FW l.935: 
+FW l.936: Entry, in this order, for `SHIP` (FACTORY sub-commands SHIP_ENTER and SHIP_SAMPLE, section 9.3) and for `OFF` (menu "Power off", or B2):
+FW l.937: 1. Close everything (recording, storage, USB, radio, screen); save the settings and the time in RRAM. SHIP_ENTER first clears the factory flag; SHIP_SAMPLE keeps it at 1.
+FW l.938: 2. Write SHPHLDCONFIG with the default press time (96 ms) and trigger TASKSHPHLDCFGSTROBE: the specification requires both before ship mode [NPM p116, p118].
+FW l.939: 3. If VBUS is present, wait for the event EVENTVBUSREMOVED (register EVENTSVBUSIN0SET, [NPM p136]), reported on PMIC_INT. While it waits the ring does nothing else: no screen, no radio, no storage, the USB stack is disabled on `UDC_EVT_VBUS_REMOVED` (section 8.6). Only the factory commands reach this step with VBUS present: every row into `OFF` starts from a state without VBUS (section 1.2).
+FW l.940: 4. Write TASKENTERSHIPMODE = 1 [NPM p118]. The chip isolates the battery and the main chip loses its supply.
+FW l.941: 5. If the main chip still runs 1 s after step 4 **[CHOICE]**, it logs the event and goes back to step 3 once; the jig of section 9.3 sees advertising stop or not and reports a fail.
+FW l.942: 
+FW l.1020: - Each test is a FACTORY sub-command; the response is result u8 (0 pass, 1 fail, 2 timeout) plus the measured values. The jig decides pass or fail with the limits below.
+FW l.1021: 
+FW l.1022: | Sub | Test | Part | Method | Pass |
+FW l.1023: |---|---|---|---|---|
+FW l.1024: | 0x10 | T-MIC1, T-MIC2 (argument 1 or 2) | each microphone | a 2 s test recording (recording_type 2) through the normal path while the jig speaker plays 1 kHz; report RMS level of each channel in dBFS and the count of identical consecutive samples | the tested channel within 3 dB of the mean of the 2; no channel stuck (no run of 1,000 equal samples); tapping only mic n raises channel n first (checks the channel map, section 4.1) |
+FW l.1025: | 0x20 | T-SCREEN | screen | full red, green, blue, white, black, 1 s each, then a grid | jig camera sees each colour, no dead row or column |
+FW l.1026: | 0x30 | T-JOY | joystick, 4 directions and the centre | the jig presses up (SW1), down (SW3), left (SW4), right (SW5) in turn; then the centre by the build's `CENTRE_SOURCE`: case `SW2`, SW2 alone; case `PAIR`, SW1 with SW3 and then SW4 with SW5, each pair closed within 20 ms of each other; then a roll test: centre held, SW4 closed 300 ms later, everything released after 1,200 ms | each direction within 1 s of its press, no other event; the centre reported once per press (twice in case `PAIR`), a centre press gives no up, down, left or right; the roll test gives one held centre of about 1,200 ms and no direction |
+FW l.1027: | 0x31 | T-CENTRE | the centre press as the record gesture | jig presses the centre once, twice (200 ms gap), and long (1,500 ms) | ring reports single, double, long, and the pulse MW at 500 ms of the long press; factory test mode reports the events and never starts a recording |
+FW l.1028: | 0x40 | T-MOTOR | motor | the power chip's ADC reads VBAT once before MOTOR goes high; MOTOR on 500 ms; VBAT read again 250 ms into the pulse; the ring reports both and the dip. The chip's battery current is not used: the motor's current does not pass the chip (section 3.1; motor-drive.md change F5) | jig accelerometer sees vibration; VBAT drops during the pulse by 20 mV or more **[ESTIMATE]**: 80 mA through 0.25 ohm of cell, protection circuit and ribbon; bench step B-M5 of motor-drive.md section 2.9 measures the real dip and then fixes this line |
+FW l.1029: | 0x41 | T-SIGN | recording sign on the screen (rule R-SIGN, section 3.2; replaces the light test, the light is removed in v7) | two 1 s test recordings 1 s apart; the ring reports the times VDD_MIC went on and off; the jig camera films the screen | in every camera frame between VDD_MIC on and VDD_MIC off the red dot is lit; no such frame shows a dark screen |
+FW l.1030: | 0x50 | T-STORE | storage | VDD_SD on, init, write 65 sectors at LBA 4,096, read back, compare CRC; time both; then delete every test recording (recording_type 2) the jig made | data equal; write at least 0.5 MB/s; read at least 1.0 MB/s; no test recording left |
+FW l.1057: - **R20 (ship beacon, the lead's ruling after design review 3):** a ring that leaves the factory has no paired device, and such a ring does not advertise in `STANDBY` (section 7.3), so "no advertising for 60 s" would be true with or without ship mode. From the moment SHIP_ENTER or SHIP_SAMPLE is accepted until the ring writes TASKENTERSHIPMODE, the ring sends a ship beacon: advertising that cannot be connected to, every 100 ms, at 0 dBm, with the name "Ring" plus the last 4 hex digits of the device id. The jig must receive the beacon while VBUS is on, see it stop within 1 s of removing VBUS, and see none for 60 s. The beacon exists only in `FACTORY_TEST`.
+FW l.1065: - Watchdog: `wdt31`, 8 s timeout, fed every 1 s by a work item on the system work queue (the product has no main loop). While a recording runs it is fed only when the audio and storage threads have both reported progress in the last 2 s; with no recording it is fed at every turn. A stalled system work queue, or a recording thread without progress, ends in a reset after 8 s.
+FW l.1202: ## Event log codes (ruling R23, software step 6)
+FW l.1230: | 0x0250 | `RREC_LOG_SHIP_RETRY` | still running 1 s after the ship task (FW l.941) | try u8 |
+FW l.1231: | 0x0260 | `RREC_LOG_TIME_GUESS` | the saved time at boot, used as a guess only (FW l.1005; ruling D18) | saved utc_ms i64 |
+FW l.1232: | 0x0270 | `RREC_LOG_SELFTEST` | update self-test end (FW l.1014) | result u8 (0 pass, 1 fail, 2 timeout), items passed mask u8 (bit 0 storage, 1 Bluetooth, 2 USB) |
+FW l.1233: | 0x0280 | `RREC_LOG_DROPPED` | records dropped from the full RAM buffer (FW l.1062) | count u32 |
+FW l.1234: | 0x0290 | `RREC_LOG_UNMOUNT_FAILED` | storage could not be unmounted when a row asked for VDD_SD off (FW l.178, l.179); written at the first failed try of a step and once more when the retries of that step end, never once per try (rulings of 2026-11-13 after review finding R6-03: 27 codes) | errno i32 (at the end: 0 when the unmount then succeeded, else the last errno), state u8 (enum rc_state), try u8 (1 at the first failed try; at the end the number of tries made) |
+FW l.1235: 
+FW l.1236: 

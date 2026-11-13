@@ -1,0 +1,22 @@
+Verdict: FAIL, with 2 major faults, 4 minor faults and 6 notes. The full review is in design/wiring/wiring-review.md and its last line is the RESULT line. All 67 wiring lines are true against the files. The design fails only on B4, because the builder's guide is out of date.
+
+Per bar line (pinned b9ec3cfa; HEAD moved to 46824af3 but no judged file changed):
+- B1 pass: 67 of 67 lines, each connection listed once, marking and per-size cuts on 28 of 28 lines. I listed 99 interface pins myself and 97 are on a line. The other 2 are screen contact 3, which has no connection on purpose.
+- B2 pass: the board nets match the csv signal on 262 checks. 152 of 152 copper paths join at all 7 sizes, across 25 lines. Each ring pad meets the right case pin at every size, 28 of 28.
+- B3 pass with one minor fault: I ran KiCad's rules check on all 17 boards myself and each shows 0 violations and 0 unconnected items. 888 pad nets match the netlists. The 5 pin-board wire pads have no netlist row.
+- B4 FAIL: see the faults below.
+- B5 pass: on all 14 band circuits the tail lands match the main board land by land. J1 is not mirrored: pad 1 is at Y +2.097 and screen contact 1 lands there with the screen turned 180 degrees, and the opening faces +X. The case wire pads match on 5 of 5.
+
+Major faults:
+- M1, assembly.md lines 21, 55, 96, 120, 124: the guide still says all parts sit on the under face and the top face is bare. The board has 21 footprints on the screen face: J1, C1, C14, C2, C5, C7, FB1, R71, R72 and 12 test pads. A builder doing the single under-face reflow could not place those 9 parts, and the test jig would find no test pad.
+- M2, assembly.md line 201: the guide routes the screen tail round the hand end into J1 on the under face. It never says to turn the screen 180 degrees, and it keeps the foam frame that layout C rules out.
+
+Minor faults:
+- m1: the cable's direction into J1 is not in any file a builder reads. It goes in contacts up, from the fingertip side, with contact 1 toward +Y.
+- m2: the P1 (VRING) and P4 (GND) wings of the pin board are the same shape and have no silkscreen. If they are swapped, the case's VRING lands on the ring's GND pad.
+- m3: the order for soldering the 5 case wires is not stated.
+- m4: the case netlist has no rows for the pin board's wire pads WP1 to WP7.
+
+Not checked: the pin heights at each size, which need the 3D solids; the view mapping of the pin board, which I took from case.py; whether FH35C has top contacts, which I took from the screen cable study; and the pdf, page by page.
+
+Evidence and scripts are in design/wiring/review-work/ (CHECKLIST.md, audit.log, check_*.log, drc-summary.log). I ran fake inputs through my own checks and they caught 5 of 5 faults. No design file was changed.

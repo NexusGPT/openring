@@ -1,0 +1,13 @@
+broken gerber: regions removed 15
+CASE honest_copy                want_exit=0 got_exit=0 as expected | RESULT PASS joints 99
+CASE paste_removed_at_15_lands  want_exit=1 got_exit=1 as expected | RESULT FAIL 30
+CASE empty_table                want_exit=1 got_exit=1 as expected | RESULT FAIL 99
+CASE row_dropped                want_exit=1 got_exit=1 as expected | RESULT FAIL 1
+CASE check_empty                want_exit=1 got_exit=1 as expected | RESULT FAIL 1
+CASE check_meaningless          want_exit=1 got_exit=0 DIFFERS | RESULT PASS joints 99
+CASE heat_meaningless           want_exit=1 got_exit=0 DIFFERS | RESULT PASS joints 99
+CASE step_unknown               want_exit=1 got_exit=1 as expected | RESULT FAIL 1
+CASE gap_text                   want_exit=1 got_exit=1 as expected | RESULT FAIL 1
+CASE flood_conflicting_dups     want_exit=1 got_exit=1 as expected | RESULT FAIL 15
+CASE missing_paste_file         want_exit=1 got_exit=1 as expected | RESULT FAIL 1
+RESULT fakes=11 differs=2

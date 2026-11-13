@@ -1,0 +1,12 @@
+broken copy run 2026-11-13 04:15:38 CET, mutation sign_hook_twice
+change applied (diff of the copy against its original):
+140a141
+> 		(void)c->sign_fn(c->sign_ctx, t);
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_rules.c:510: hook_calls == 1 (left 2, right 1)
+FAIL rc_rules.test_sign_hook_not_called_when_refused_otherwise
+    assert failed firmware/tests/core/src/test_rules.c:434: hook_calls == 1 (left 2, right 1)
+FAIL rc_rules.test_sign_hook_once_per_press
+suites=13 tests=221 pass=219 fail=2
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation sign_hook_twice, named case rc_rules.test_sign_hook_once_per_press failed

@@ -1,0 +1,13 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -1136,6 +1136,10 @@
+ 	if ((rinbox_get(&inbox, (uint8_t)at)->flags & need) == 0) {
+ 		st.actions_refused++;
+ 		k_mutex_unlock(&lk);
++		(void)bt_ancs_notification_action(&ancs_c, uid,
++						  action == RIP_ACTION_POSITIVE ? BT_ANCS_ACTION_ID_POSITIVE
++										: BT_ANCS_ACTION_ID_NEGATIVE,
++						  action_write_cb);
+ 		return -ENOTSUP;
+ 	}
+ 	if (!ancs_ready || sconn == NULL) {

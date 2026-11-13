@@ -1,0 +1,16 @@
+# remote.sh run 20261113-125748-fix1-rec-s3
+# command: rm -rf /ws/out/fix1rec-s2 && for b in native_sim nrf54lm20bsim/nrf54lm20a/cpuapp; do t=$(echo $b | tr / _); west twister -T tests/store -T tests/xfer -T tests/audio -T tests/motor -T tests/devices -T tests/factory -p $b -O /ws/out/fix1rec-s3/tw-$t -j 8 --inline-logs -v > /ws/out/fix1rec-s3-$t.log 2>&1; echo "twister $b exit $?"; grep -E ' - FAIL - |executed test|Assertion|error:|warning:|unmount_wait|stop_closes_usb|T-SCREEN stamps' /ws/out/fix1rec-s3-$t.log | cut -c1-250 | head -60; done
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 12:57:48 CET
+# free on the server's /: 30 GB
+# source firmware copied to /root/ring-os/src-u-fix6
+# started on the server as 20261113-125748-fix1-rec-s3; server log /root/ring-os/logs/20261113-125748-fix1-rec-s3.log
+twister native_sim exit 0
+INFO    - 7 of 8 executed test configurations passed (87.50%), 1 built (not run), 0 failed, 0 errored, with no warnings in 53.72 seconds.
+INFO    - 221 of 221 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+twister nrf54lm20bsim/nrf54lm20a/cpuapp exit 0
+INFO    - 7 of 7 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 73.40 seconds.
+INFO    - 221 of 221 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+# finished (Mac clock): 2026-11-13 13:00:22 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-125748-fix1-rec-s3.log

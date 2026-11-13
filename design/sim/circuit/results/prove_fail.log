@@ -1,0 +1,19 @@
+PROOF OK broken1_capacitor: bench exit 1, expected failing rows R4.7,R4.8, failing rows R4.7,R4.8, expected rows that did not fail none, rows expected green that did not pass none, extra failing rows none
+    R4.7 inrush.t90_ss50 = 0.0255363 needs <= 0.0018
+    R4.8 inrush.t90_ss25 = 0.0512558 needs <= 0.0018
+PROOF OK broken2_pullup: bench exit 1, expected failing rows R5.6, failing rows R5.6, expected rows that did not fail none, rows expected green that did not pass none, extra failing rows none
+    R5.6 shifter.pullup_high_at_card_min = 0 needs >= 0.625*3.0
+PROOF OK broken3_swapped: bench exit 1, expected failing rows R2.2,R2.3,R2.7,R2.12,R2.13,R2.17, failing rows R2.10,R2.12,R2.13,R2.17,R2.2,R2.20,R2.3,R2.7, expected rows that did not fail none, rows expected green that did not pass none, extra failing rows R2.10,R2.20
+    R2.2 powerup.v18_peak_c330 = 3 needs <= 1.89
+    R2.3 powerup.v30_min_c330 = 1.8 needs >= 2.85
+    R2.7 powerup.vsd_min_c330 = 1.8 needs >= 2.7
+    R2.12 powerup.v18_peak_c435 = 3 needs <= 1.89
+    R2.13 powerup.v30_min_c435 = 1.8 needs >= 2.85
+    R2.17 powerup.vsd_min_c435 = 1.8 needs >= 2.7
+PROOF OK broken_case2_ce_gnd: bench exit 1, expected failing rows C2.5,C2.6, failing rows C2.5,C2.6, expected rows that did not fail none, rows expected green that did not pass none, extra failing rows none
+    C2.5 charge.ce_poweron_min = -0.00859091 needs >= 1.3
+    C2.6 charge.icc_poweron_max = 0.602227 needs <= 1e-6
+PROOF OK broken_case4_anode_3v3: bench exit 1, expected failing rows C4.6,C4.7, failing rows C4.6,C4.7, expected rows that did not fail none, rows expected green that did not pass none, extra failing rows none
+    C4.6 led.green_current_min = 0.00159371 needs >= 0.002
+    C4.7 led.blue_current_min = 0.00173116 needs >= 0.002
+PROOF RESULT OK

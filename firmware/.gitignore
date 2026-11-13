@@ -1,0 +1,24 @@
+# Build outputs (builds normally run on the server, under /root/ring-os/ws/out)
+build/
+build-*/
+!build-logs/
+twister-out*/
+*.pyc
+__pycache__/
+.DS_Store
+
+# Run logs from tools/remote.sh: only the final proof logs named in
+# docs/infra-notes.md are tracked.
+build-logs/*.log
+build-logs/*.part
+build-logs/.*.part
+!build-logs/20261111-110248-build-all-skeleton.log
+!build-logs/20261111-110533-build-all-broken.log
+!build-logs/20261111-112002-build-all-failtest.log
+!build-logs/20261111-110741-kit-samples.log
+!build-logs/20261111-111017-bsim-hr.log
+!build-logs/20261111-103243-setup.log
+# Copies used by the proofs (their source is the tracked tree)
+build-logs/infra/copies/
+!build-logs/20261111-113215-build-all.log
+!build-logs/20261111-114413-build-all.log

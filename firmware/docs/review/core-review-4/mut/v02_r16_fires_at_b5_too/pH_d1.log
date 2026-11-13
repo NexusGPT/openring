@@ -1,0 +1,13 @@
+PASS D1 path 1 entered ERR_STORAGE_FAULT under VBUS at B2
+PASS D1 path 1 VBUS removed: OFF with SHIP_MODE
+PASS D1 path 2 entered ERR_STORAGE_FAULT under VBUS at B2
+PASS D1 path 2 VBUS removed: OFF with SHIP_MODE, flag stays set
+PASS D2 STORAGE_FAULT_SET from outside refused
+PASS R16 TRANSFER at B2: ABORT_COMMAND, SD_OFF, then OFF
+FAIL R16 at B5 (not B2): VBUS out leaves ERR_STORAGE_FAULT awake as before
+PASS B2 in RECORDING: close, OFF
+PASS R16 FACTORY_TEST at B2: BOOT (reboot) then init done gives OFF
+PASS ... init done at B2 no VBUS: OFF
+INFO RECOVERY at B2, VBUS out: state=RECOVERY (stays until the scan ends)
+PASS RECOVERY scan done after VBUS out at B2: OFF
+SUMMARY pass=10 fail=1

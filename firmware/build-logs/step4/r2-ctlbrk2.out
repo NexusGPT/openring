@@ -1,0 +1,149 @@
+# remote.sh run 20261112-161603-r2-ctlbrk2
+# command: tests/bsim/control/run.sh --broken pair_takes_over
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 16:16:03 CET
+# free on the server's /: 57 GB
+# source firmware copied to /root/ring-os/src-os-screens
+# started on the server as 20261112-161603-r2-ctlbrk2; server log /root/ring-os/logs/20261112-161603-r2-ctlbrk2.log
+bsim-control: firmware /ws/firmware/tests/bsim/control, outputs /ws/out/20261112-161603-r2-ctlbrk2-bsim-control, scenarios , broken 1
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-161603-r2-ctlbrk2-bsim-control/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+##### broken copy: pair_takes_over
+--- a/ring_devices/src/rdev.c
++++ b/ring_devices/src/rdev.c
+@@ -420,7 +420,7 @@
+ 			/* the new device becomes the active one only when no device is active; otherwise the active device
+ 			 * stays and no active_changed fires (the link of the new device ends: the plan advertises to the
+ 			 * active device again) */
+-			if (list.active == RDEV_NONE) {
++			if (true) {
+ 				list.active = slot;
+ 				took = true;
+ 				save_active();
+=== build ring-pair_takes_over for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-161603-r2-ctlbrk2-bsim-control/build-ring-pair_takes_over.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring-pair_takes_over ok
+=== test B (broken-pair_takes_over): ring + 2 host(s), 130 simulated seconds, 2026-11-12T15:16:58Z
+exit codes: phy 0, ring 0, hosts 0 0
+--- ring /ws/out/20261112-161603-r2-ctlbrk2-bsim-control/run-broken-pair_takes_over-B-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens for slot 0 PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT paired slot 0
+d_00: @00:00:05.594822  RING EVENT active slot 0
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:10.307600  RING CHECK host 1 pairs, link ready PASS (t=10307)
+d_00: @00:00:10.307600  RING CHECK slot 0 active PASS (t=10307)
+d_00: @00:00:11.007800  RING CHECK P1 media.centre sends 2 report(s) PASS (t=11007)
+d_00: @00:00:11.708000  RING CHECK P1 media.right sends 2 report(s) PASS (t=11708)
+d_00: @00:00:30.000100  RING CHECK pairing window opens for slot 1 PASS (t=30000)
+d_00: @00:00:30.094607  RING EVENT link slot 0 down
+d_00: @00:00:30.553122  RING PASSKEY slot 1 296922
+d_00: @00:00:35.153151  RING EVENT paired slot 1
+d_00: @00:00:35.153151  RING EVENT active slot 1
+d_00: @00:00:35.153151  RING EVENT link slot 1 up
+d_00: @00:00:35.660546  RING CHECK B: host 2 pairs (the paired callback fires) PASS (t=35660)
+d_00: @00:00:35.660546  RING CHECK B: after the second pairing the first device is still the active one (slot 0) and both bonds exist FAIL (t=35660)
+d_00: @00:01:15.700546  RING CHECK B: host 1 reconnects and its link is ready again FAIL (t=75700)
+d_00: @00:01:15.700546  RING CHECK B: the first device is still the active one with its link up FAIL (t=75700)
+d_00: @00:01:16.400746  RING CHECK P2a media.centre sends 2 report(s) PASS (t=76400)
+d_00: @00:01:17.100946  RING CHECK P2a media.left sends 2 report(s) PASS (t=77100)
+d_00: @00:01:17.100946  RING CHECK B: switch to slot 1 PASS (t=77100)
+d_00: @00:01:20.101046  RING CHECK B: host 2 reconnects, link ready PASS (t=80101)
+d_00: @00:01:20.101046  RING CHECK slot 1 active after the switch PASS (t=80101)
+d_00: @00:01:20.801246  RING CHECK P2 media.centre sends 2 report(s) PASS (t=80801)
+d_00: @00:01:21.501446  RING CHECK P2 media.left sends 2 report(s) PASS (t=81501)
+d_00: @00:01:21.501446  RING EVENT link slot 1 down
+d_00: @00:01:21.501446  RING EVENT active slot 0
+d_00: @00:01:21.501446  RING CHECK switch to slot 0 PASS (t=81501)
+d_00: @00:01:22.022975  RING EVENT link slot 0 up
+d_00: @00:01:25.102146  RING CHECK host 1 reconnects, link ready PASS (t=85102)
+d_00: @00:01:25.102146  RING CHECK slot 0 active PASS (t=85102)
+d_00: @00:01:25.802346  RING CHECK P3 media.up sends 2 report(s) PASS (t=85802)
+d_00: @00:01:26.502546  RING CHECK P3 media.down sends 2 report(s) PASS (t=86502)
+d_00: @00:01:26.502546  RING EVENT link slot 0 down
+d_00: @00:01:26.502546  RING EVENT active slot 1
+d_00: @00:01:26.502546  RING CHECK switch to slot 1 PASS (t=86502)
+d_00: @00:01:26.502546  RING CHECK key in the switch window is not sent PASS (t=86502)
+d_00: @00:01:27.040587  RING EVENT link slot 1 up
+d_00: @00:01:30.103246  RING CHECK host 2 reconnects, link ready PASS (t=90103)
+d_00: @00:01:30.803446  RING CHECK P4 media.right sends 2 report(s) PASS (t=90803)
+d_00: @00:01:30.803446  RING CHECK switch to an empty slot is refused PASS (t=90803)
+d_00: @00:01:30.803446  RING CHECK switch to the active slot changes nothing PASS (t=90803)
+d_00: @00:01:30.803446  RING CHECK three distinct local identities PASS (t=90803)
+d_00: @00:01:30.803446  RING CHECK two paired callbacks PASS (t=90803)
+d_00: @00:01:30.803446  RING SCRIPT DONE t=90803 checks=32 fails=3
+d_00: @00:01:30.803446  RING RESULT FAIL
+--- host 1 /ws/out/20261112-161603-r2-ctlbrk2-bsim-control/run-broken-pair_takes_over-B-host1.log
+d_01: @00:00:00.000174  HOST H1 CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.643312  HOST H1 connected (t=643), bonded=0
+d_01: @00:00:01.144997  HOST H1 passkey entry asked, read ok (t=1144)
+d_01: @00:00:01.144997  HOST H1 CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  HOST H1 CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  HOST H1 security level 4 (t=5594)
+d_01: @00:00:05.594821  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:07.044845  HOST H1 INFO subscribed to 3 input reports (t=7044)
+d_01: @00:00:10.844853  HOST H1 REPORT t=10844 id=2 len=2 data=cd00
+d_01: @00:00:10.845293  HOST H1 REPORT t=10845 id=2 len=2 data=0000
+d_01: @00:00:11.094853  HOST H1 REPORT t=11094 id=2 len=2 data=b500
+d_01: @00:00:11.095293  HOST H1 REPORT t=11095 id=2 len=2 data=0000
+d_01: @00:00:30.094608  HOST H1 disconnected reason 0x13 (t=30094)
+d_01: @00:01:21.671373  HOST H1 connected (t=81671), bonded=1
+d_01: @00:01:22.022978  HOST H1 security level 4 (t=82022)
+d_01: @00:01:22.022978  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=82022)
+d_01: @00:01:23.572906  HOST H1 INFO subscribed to 3 input reports (t=83572)
+d_01: @00:01:25.172914  HOST H1 REPORT t=85172 id=2 len=2 data=e900
+d_01: @00:01:25.173354  HOST H1 REPORT t=85173 id=2 len=2 data=0000
+d_01: @00:01:25.872914  HOST H1 REPORT t=85872 id=2 len=2 data=ea00
+d_01: @00:01:25.873354  HOST H1 REPORT t=85873 id=2 len=2 data=0000
+d_01: @00:01:26.572669  HOST H1 disconnected reason 0x13 (t=86572)
+d_01: @00:02:05.000495  HOST H1 EVAL t=125000
+d_01: @00:02:05.000495  HOST H1 CHECK P1 media.centre PASS (t=125000)
+d_01: @00:02:05.000495  HOST H1 CHECK P1 media.right PASS (t=125000)
+d_01: @00:02:05.000495  HOST H1 CHECK P2a media.centre (host 2 has paired; host 1 is still the active device) FAIL (t=125000)
+d_01: @00:02:05.000495  HOST H1 CHECK P2a media.left FAIL (t=125000)
+d_01: @00:02:05.000495  HOST H1 CHECK P3 media.up (after the switch back) FAIL (t=125000)
+d_01: @00:02:05.000495  HOST H1 CHECK P3 media.down FAIL (t=125000)
+d_01: @00:02:05.000495  HOST H1 CHECK no other report received FAIL (t=125000)
+d_01: @00:02:05.000495  HOST H1 INFO 8 report(s) received in total
+d_01: @00:02:05.000495  HOST H1 RESULT FAIL checks=12 fails=5
+--- host 2 /ws/out/20261112-161603-r2-ctlbrk2-bsim-control/run-broken-pair_takes_over-B-host2.log
+d_02: @00:00:00.000174  HOST H2 CHECK Bluetooth up PASS (t=0)
+d_02: @00:00:30.201641  HOST H2 connected (t=30201), bonded=0
+d_02: @00:00:30.703326  HOST H2 passkey entry asked, read ok (t=30703)
+d_02: @00:00:30.703326  HOST H2 CHECK passkey read from the ring's display PASS (t=30703)
+d_02: @00:00:35.153150  HOST H2 CHECK pairing with the passkey completed and bonded PASS (t=35153)
+d_02: @00:00:35.153150  HOST H2 security level 4 (t=35153)
+d_02: @00:00:35.153150  HOST H2 CHECK link encrypted and authenticated (security level 4) PASS (t=35153)
+d_02: @00:00:36.603174  HOST H2 INFO subscribed to 3 input reports (t=36603)
+d_02: @00:01:16.203182  HOST H2 REPORT t=76203 id=2 len=2 data=cd00
+d_02: @00:01:16.203622  HOST H2 REPORT t=76203 id=2 len=2 data=0000
+d_02: @00:01:16.453182  HOST H2 REPORT t=76453 id=2 len=2 data=b600
+d_02: @00:01:16.453622  HOST H2 REPORT t=76453 id=2 len=2 data=0000
+d_02: @00:01:20.603182  HOST H2 REPORT t=80603 id=2 len=2 data=cd00
+d_02: @00:01:20.603622  HOST H2 REPORT t=80603 id=2 len=2 data=0000
+d_02: @00:01:20.853182  HOST H2 REPORT t=80853 id=2 len=2 data=b600
+d_02: @00:01:20.853622  HOST H2 REPORT t=80853 id=2 len=2 data=0000
+d_02: @00:01:21.552937  HOST H2 disconnected reason 0x13 (t=81552)
+d_02: @00:01:26.688985  HOST H2 connected (t=86688), bonded=1
+d_02: @00:01:27.040590  HOST H2 security level 4 (t=87040)
+d_02: @00:01:27.040590  HOST H2 CHECK link encrypted and authenticated (security level 4) PASS (t=87040)
+d_02: @00:01:28.590518  HOST H2 INFO subscribed to 3 input reports (t=88590)
+d_02: @00:01:30.190526  HOST H2 REPORT t=90190 id=2 len=2 data=b500
+d_02: @00:01:30.190966  HOST H2 REPORT t=90190 id=2 len=2 data=0000
+d_02: @00:02:05.000454  HOST H2 EVAL t=125000
+d_02: @00:02:05.000454  HOST H2 CHECK P2 media.centre PASS (t=125000)
+d_02: @00:02:05.000454  HOST H2 CHECK P2 media.left PASS (t=125000)
+d_02: @00:02:05.000454  HOST H2 CHECK P4 media.right (after the second switch) FAIL (t=125000)
+d_02: @00:02:05.000454  HOST H2 CHECK no other report received FAIL (t=125000)
+d_02: @00:02:05.000454  HOST H2 INFO 10 report(s) received in total
+d_02: @00:02:05.000454  HOST H2 RESULT FAIL checks=9 fails=2
+ring script done at 90803 ms, host 1 evaluated at 125000 ms
+TEST B RESULT FAIL (43 checks passed; infra: none; checks: ring-result host1-result host2-result 10-failed-checks)
+broken pair_takes_over: test B failed on its named check, as required: d_00: @00:00:35.660546  RING CHECK B: after the second pairing the first device is still the active one (slot 0) and both bonds exist FAIL (t=35660)
+RESULT PASS
+# finished (Mac clock): 2026-11-12 16:17:06 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step4/20261112-161603-r2-ctlbrk2.log

@@ -1,0 +1,93 @@
+== RC_EV_USB / rrec_post callers
+modules/ring_recorder/src/rrec_int.h:55:int rrec_post(enum rrec_job job, uint32_t arg);
+modules/ring_recorder/src/rrec_bridge.c:70:int rrec_post(enum rrec_job kind, uint32_t arg)
+modules/ring_recorder/src/rrec_bridge.c:242:	(void)rrec_post(RREC_JOB_BATTERY, level);             /* rc_core_battery through rglue_battery (P11) */
+modules/ring_recorder/src/rrec_bridge.c:247:	(void)rrec_post(RREC_JOB_EVENT, present ? RC_EV_VBUS_IN : RC_EV_VBUS_OUT);
+modules/ring_recorder/src/rrec_bridge.c:254:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_CHARGE_ERROR);
+modules/ring_recorder/src/rrec_bridge.c:286:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_STORAGE_S30);
+modules/ring_recorder/src/rrec_bridge.c:295:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_STORAGE_SFULL);
+modules/ring_recorder/src/rrec_bridge.c:305:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_CHUNK_WRITE_FAILED);
+modules/ring_recorder/src/rrec_bridge.c:349:		(void)rrec_post(RREC_JOB_EVENT, RC_EV_MIC_NO_BLOCK);   /* FW l.169 */
+modules/ring_recorder/src/rrec_bridge.c:406:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_USB_CONFIGURED);
+modules/ring_recorder/src/rrec_bridge.c:411:	(void)rrec_post(RREC_JOB_EVENT, RC_EV_USB_UNCONFIGURED);
+modules/ring_recorder/src/rrec.c:174:		(void)rrec_post(RREC_JOB_EVENT, RC_EV_CHUNK_WRITE_FAILED);
+modules/ring_recorder/src/rrec.c:204:		(void)rrec_post(RREC_JOB_EVENT, RC_EV_MIC_NO_BLOCK);
+modules/ring_recorder/src/rrec.c:224:		(void)rrec_post(RREC_JOB_EVENT, RC_EV_MIC_NO_BLOCK);
+modules/ring_recorder/src/rrec.c:317:		(void)rrec_post(RREC_JOB_UNMOUNT, 0);
+modules/ring_recorder/src/rrec.c:483:		(void)rrec_post(RREC_JOB_RETRY, 0);   /* ruling R3: the result comes back as an event */
+modules/ring_recorder/src/rrec.c:658:		(void)rrec_post(RREC_JOB_RECOVER, 0);
+modules/ring_recorder/src/rrec.c:668:		(void)rrec_post(RREC_JOB_SHIP, 0);
+modules/ring_recorder/src/rrec_backend.c:254:		(void)rrec_post(RREC_JOB_EVENT, RC_EV_FW_END);   /* row FW l.180: request done, reboot after the OK */
+modules/ring_recorder/src/rrec_backend.c:265:			(void)rrec_post(RREC_JOB_EVENT, RC_EV_FACTORY_ENTER);
+modules/ring_recorder/src/rrec_backend.c:268:			(void)rrec_post(RREC_JOB_EVENT, RC_EV_FACTORY_EXIT);
+modules/ring_recorder/src/rrec_backend.c:271:			(void)rrec_post(RREC_JOB_EVENT, RC_EV_SHIP_ENTER);
+modules/ring_recorder/src/rrec_backend.c:274:			(void)rrec_post(RREC_JOB_EVENT, RC_EV_SHIP_SAMPLE);
+== rxf_cb in recorder
+modules/ring_recorder/src/rrec_backend.c:302:	.after_response = be_after_response,
+modules/ring_recorder/src/rrec_bridge.c:414:static const struct rxf_cb xfer_cb = {
+modules/ring_recorder/src/rrec_bridge.c:415:	.configured = xf_configured,
+modules/ring_recorder/src/rrec_bridge.c:416:	.unconfigured = xf_unconfigured,
+modules/ring_recorder/src/rrec_bridge.c:419:const struct rxf_cb *rrec_xfer_cb(void)
+modules/ring_recorder/src/rrec_int.h:22:/* rglue_ops.after for the product: the join's step bookkeeping (state change record, sampling class, rails that follow
+modules/ring_recorder/src/rrec_int.h:59:struct rxf_cb;
+modules/ring_recorder/src/rrec_int.h:69:const struct rxf_cb *rrec_xfer_cb(void);
+== rxf_finish impl
+48:static atomic_t cancel_req;         /* rxf_abort(): drop the request that has not started */
+155:		k_mutex_lock(&tx_lock, K_FOREVER);
+186:		k_mutex_lock(&tx_lock, K_FOREVER);
+208:	k_mutex_lock(&fin_mutex, K_FOREVER);
+209:	k_condvar_broadcast(&fin_cv);
+221:		if (k_msgq_get(&itemq, &it, K_FOREVER) != 0) {
+324:void rxf_abort(void)
+332:int rxf_finish(int32_t timeout_ms)
+337:	k_mutex_lock(&fin_mutex, K_FOREVER);
+339:		if (k_condvar_wait(&fin_cv, &fin_mutex, sys_timepoint_timeout(end)) != 0) {
+367:	rxf_abort();
+368:	r = rxf_finish(timeout_ms);
+== rscr_sync and started
+22:static volatile uint32_t gen_asked, gen_done;
+28:static bool started;
+138:	if (!started || forced_down) {
+141:	k_mutex_lock(&lk, K_FOREVER);
+155:	k_mutex_lock(&lk, K_FOREVER);
+171:	if (!started || forced_down) {
+174:	k_mutex_lock(&lk, K_FOREVER);
+182:	k_mutex_lock(&lk, K_FOREVER);
+190:	k_mutex_lock(&lk, K_FOREVER);
+200:	k_mutex_lock(&lk, K_FOREVER);
+211:	k_mutex_lock(&lk, K_FOREVER);
+230:	if (started) {
+237:	k_mutex_lock(&lk, K_FOREVER);
+248:	k_mutex_lock(&lk, K_FOREVER);
+261:	if (!started || forced_down) {
+264:	k_mutex_lock(&lk, K_FOREVER);
+275:	if (!started || forced_down) {
+278:	k_mutex_lock(&lk, K_FOREVER);
+288:	k_mutex_lock(&lk, K_FOREVER);
+305:	k_mutex_lock(&lk, K_FOREVER);
+372:	k_mutex_lock(&draw_lk, K_FOREVER);
+380:	k_mutex_lock(&draw_lk, K_FOREVER);
+392:	rscr_sync();
+411:	k_mutex_lock(&lk, K_FOREVER);
+416:	k_mutex_lock(&draw_lk, K_FOREVER);   /* lock order: draw lock, then screens lock (as in render) */
+417:	k_mutex_lock(&lk, K_FOREVER);
+455:	if (!started || forced_down) {
+461:	k_mutex_lock(&sign_lk, K_FOREVER);
+462:	k_mutex_lock(&lk, K_FOREVER);
+476:		k_mutex_lock(&lk, K_FOREVER);
+502:		k_mutex_lock(&lk, K_FOREVER);
+513:		want = gen_asked;
+515:		k_mutex_lock(&lk, K_FOREVER);
+525:		k_mutex_lock(&lk, K_FOREVER);
+537:		gen_done = want;
+542:void rscr_sync(void)
+548:	if (!started) {
+551:	want = ++gen_asked;
+554:	while ((int32_t)(gen_done - want) < 0) {
+563:	if (started) {
+== CONFIG_RING_DEVICES in confs
+app/prj.conf:37:CONFIG_RING_DEVICES=y
+tests/recorder/prj.conf:32:CONFIG_RING_DEVICES=y
+tests/recorder/prj.conf:32:CONFIG_RING_DEVICES=y
+app/prj.conf:37:CONFIG_RING_DEVICES=y
+app/prj.conf:37:CONFIG_RING_DEVICES=y

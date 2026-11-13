@@ -1,0 +1,220 @@
+# AI ring meeting recorder: product requirements
+
+Version 1 draft, 2026-11-10. Shape decided by the owner: **large screen block** (a band plus a block of about 30 x 20 x 8 mm). Scope decided by the owner: hardware only for now. First goal: a working prototype.
+
+How to read this:
+- **Owner** = the requirement comes from the owner's words.
+- **Proposed** = a target the lead proposes. It needs the owner's yes.
+- **Bench** = a choice the first bench device must settle by measurement.
+- Evidence sits in `feasibility.md` and the three research files in this folder.
+
+## 1. Product in one paragraph
+
+A ring with a flat block on top. The block holds 4 microphones, a small screen, one button, a vibration motor, a recording light, storage, a wireless chip and a battery near 140 mAh. Only the band changes between sizes. A small case charges the ring and moves recordings off it. The product claim: meeting audio at the level of a Plaud Note Pro, from a ring.
+
+## 2. Requirements
+
+### 2.1 Shape and sizes
+
+| # | Requirement | Target | Source |
+|---|---|---|---|
+| S1 | Shape | Band plus one block, block at most 30 x 20 x 8 mm | Owner |
+| S2 | Sizes | 7 sizes, US 7 to 13 (changed 2026-11-11, item 21 below; signed value: 9 sizes, US 5 to 13) | Galaxy Ring ships 9, Aina 7 (sizes 7 to 13) |
+| S3 | One block for all sizes | The block is identical; only the band changes | Proposed. Aina does this |
+| S4 | Sizing kit | Plastic rings in all sizes, sent before the ring | Proposed. Aina does this |
+| S5 | Weight | 12 g as a target, measured on the first ring; not a pass line | Owner, 2026-11-13: "A target, measured on the first ring (Recommended)". Was: under 12 g |
+| S6 | Water and dust | Splash and sweat resistant as a goal; no rating is claimed; a spray test is a pass line of the build guide | Owner, 2026-11-13: "Splash and sweat resistant as a goal". Was: IP65 or better |
+
+### 2.2 Audio
+
+| # | Requirement | Target | Source |
+|---|---|---|---|
+| A1 | Microphone count | 4 | Proposed. Plaud Note Pro has 4 plus a vibration sensor |
+| A2 | Microphone class | 72 to 73 dB(A) signal-to-noise, digital | Proposed. Infineon IM73D122 or IM72D128, 4 x 3 x 1.2 mm |
+| A3 | Array | 4 positions at the block corners, 15 to 36 mm apart | Proposed, from the research spacing figures |
+| A4 | Directional option | One position can take a directional part (Soundskrit SKR0400) | Bench: omni array against directional part |
+| A5 | Recording format | All 4 channels stored separately | Proposed. Cleanup after capture needs the raw channels |
+| A6 | Pickup range | Clear speech at 5 m in a meeting room | Proposed. Plaud Note Pro claims "Up to 16.4 feet" |
+| A7 | Quality bar | Transcript error rate equal to or below a Plaud Note Pro on the same meeting | Proposed. See section 4 |
+| A8 | Hand effects | Measured: hand flat on table, hand moving, hand under table | Bench. No published data exists |
+
+### 2.3 Recording time and power
+
+| # | Requirement | Target | Source |
+|---|---|---|---|
+| P1 | Battery, a curved cell in the band | 17.6 to 31.9 mAh by ring size, US 7 to 13 (20.3 to 27.1 mAh at US 9) | Measured on the inside model per size (section "Changes after sign-off", item 2). Owner: "all battery not in housing but in ring". Was: 130 mAh or more in the block |
+| P2 | Recording time | 2 microphones, 4.3 to 7.8 hours by ring size, US 7 to 13 (5.0 to 6.6 hours at US 9), at the estimated 4.1 mA | Owner, 2026-11-13: "Accept 4 to 8 hours for the thin ring (Recommended)". The current is an estimate until bench test B2. Was: 4 microphones, 10 hours or more |
+| P3 | Day mode | 1 to 2 microphones, records only when someone speaks, 16 hours or more | Proposed. Owner asked for all-day capture |
+| P4 | Average draw, meeting mode | 13 mA or less | Proposed, follows from P1 and P2 |
+| P5 | Average draw, day mode | 8.75 mA or less | Proposed, follows from P1 and P3 |
+| P6 | Screen while recording | Off, except on a button press | Proposed. No power figure exists for a small OLED |
+| P7 | Standby | 7 days or more | Proposed. No source. Bench |
+
+### 2.4 Button, light, haptics
+
+| # | Requirement | Target | Source |
+|---|---|---|---|
+| U1 | Button | One mechanical button with a clear click, on the side of the block | Owner: "clear button for recording" |
+| U2 | Press styles | Double press: start or stop. Single press while recording: mark a highlight. Long press: voice note | Owner: "multiple press style". Mapping is Proposed |
+| U3 | No accidental stop | A long press of the joystick's centre starts and stops a recording; a single bump never stops one (the recessed button no longer exists: item 16 of "Changes after sign-off") | Proposed. A Vocci review reports an accidental stop |
+| U4 | Haptics | One vibration motor. 1 pulse on start, 2 on stop, 3 on low battery or full storage | Owner: "haptic feedback". Patterns are Proposed |
+| U5 | Recording light | A light that faces outward, visible to other people, on whenever a microphone records | Owner: "indicator". Outward-facing is Proposed. Vocci's light faces the wearer |
+| U6 | Light cannot be disabled | No setting turns the recording light off | Proposed. Answers the privacy criticism and consent rules |
+
+### 2.5 Screen
+
+| # | Requirement | Target | Source |
+|---|---|---|---|
+| D1 | Screen | 0.9 to 1.1 inch on top of the block | Owner: "a small screen potentially". Aina uses 0.9 inch |
+| D2 | What it shows | Recording state and timer, battery, storage left, mode, time | Proposed |
+| D3 | Screen type | Colour OLED, or black-and-white memory LCD | Bench: measure OLED power first. Memory LCD draws under 15 µW |
+| D4 | Touch | None. No touch layer | Owner, 2026-11-10 |
+| D5 | Screen control | The record button plus a small thumb joystick (up, down, left, right, press) | Owner, 2026-11-10: "Button plus small joystick" |
+| D6 | Screen type | Colour OLED | Owner, 2026-11-10. D3's memory LCD stays the fallback if measured OLED power breaks P2 |
+
+### 2.6 Storage and transfer
+
+| # | Requirement | Target | Source |
+|---|---|---|---|
+| T1 | Storage | 8 GB or more | Proposed. 4 channels at 32 kbit/s need 57.6 MB per hour; 47 hours need 2.7 GB |
+| T2 | Transfer from the ring | Bluetooth for small files and control | Proposed |
+| T3 | Fast transfer | The case reads the ring over contacts and uploads over Wi-Fi | Proposed. Bluetooth needs about 6 minutes per recorded hour of 4-channel audio |
+| T4 | No phone needed to record | The ring records alone | Proposed. Vocci and Plaud do this |
+
+### 2.7 Case
+
+| # | Requirement | Target | Source |
+|---|---|---|---|
+| C1 | Case | "small ring case" that charges the ring | Owner |
+| C2 | Case battery | 500 mAh or more: 3 full ring charges | Proposed. Vocci's case gives 3 charges, RingConn's holds 500 mAh |
+| C3 | Ring charge time | Under 90 minutes | Proposed. Galaxy Ring and Oura state 90 minutes |
+| C4 | Contacts or wireless | Contact pins | Proposed. Pins also carry data for T3. A wireless coil does not |
+| C5 | Case port | USB-C | Proposed |
+
+### 2.8 Electronics
+
+| # | Requirement | Target | Source |
+|---|---|---|---|
+| E1 | Main chip | A low-power Bluetooth chip with inputs for 4 digital microphones | Bench. Candidates: Nordic nRF54L15, Nordic nRF5340, Ambiq Apollo510 |
+| E2 | Sound-triggered wake | Day mode wakes on speech | Proposed. TDK T5838 waits at about 20 µA |
+| E3 | Vibration motor | 8 mm coin type, under 3.3 mm tall | Proposed, from the research list |
+
+## 3. Out of scope for version 1
+
+- The phone app, transcripts and summaries. Owner: hardware only for now.
+- Phone and video call capture. Not researched. See open decision O1.
+- Health sensors.
+- A speaker.
+- Touch on the screen.
+
+## 4. How we prove it (the bench test)
+
+- Device under test: a development-kit build with the 4 chosen microphones at block spacing.
+- Reference: a Plaud Note Pro on the same table.
+- Same meeting, 4 speakers, at 1 m, 3 m and 5 m.
+- Three hand positions: flat on the table, moving, under the table.
+- Measure: transcript word error rate from one transcription service for both recordings.
+- Measure: average current in meeting mode and in day mode.
+- Pass: error rate equal to or below the Plaud at 1 m and 3 m with the hand on the table, and P4 and P5 met.
+
+## 5. Cost estimate
+
+Published prices at quantity 1, read 2026-11-10 (full table with sources in `prices.md`; currencies as published, most lines are search text):
+
+| Part | Price at quantity 1 | Price at volume |
+|---|---|---|
+| Microphone, Infineon IM73D122 (4 per ring) | £2.04 each | £0.85 each at 5,000 |
+| Bluetooth chip, Nordic nRF5340 | $11.14 | $6.09 at 3,000 |
+| Bluetooth chip, Nordic nRF54L15 | £3.62 | £1.81 at 3,000 |
+| Colour screen, 1.2 inch AMOLED (nearest priced part) | $29.90 | not published |
+| Battery cell, 150 mAh | $5.95 | $4.76 at 100 |
+| Storage, 8 GB eMMC | $4.92 | $4.55 at 150 |
+| Vibration motor, 8 mm | $5.15 | $4.03 at 100 |
+| Vibration driver chip | $2.03 to $3.35 | not published |
+| Power chip, Nordic nPM1300 | £1.25 | £1.03 at 1,000 |
+| Click switch | $0.65 | $0.60 at 500 |
+
+- Sum of these lines for one ring at quantity 1: about $75, the screen being about $30 of it [inferred; £1 taken as $1.25, an assumption].
+- Not in that sum: circuit board, housing, band, glass, joystick, seals, assembly, the case.
+- Prices not found: a 0.9 to 1.1 inch colour screen, the joystick, the housing.
+- Bench kits: Nordic nRF5340 Audio kit about $167, nRF54L15 kit €34.62, Infineon microphone evaluation kit £76.45 (lead time listed as 57 weeks).
+- Prototype engineering cost: from partner quotes. No published figure was found.
+
+## 6. Risks
+
+| Risk | Why | What reduces it |
+|---|---|---|
+| Audio from a hand is worse than from a table | Hands move, cover microphones and go under the table. No data exists | Bench test before any ring-shaped build |
+| Power draw above target | Real recorders draw 10 to 17 mA. The 4 microphones alone draw 2.3 mA | Measure on the bench. Day mode. Case top-ups |
+| The block is too big to wear all day | 30 x 20 x 8 mm on a finger | 3D-printed dummy rings worn for a week before electronics |
+| Screen drains the battery | No power figure for a small OLED | Screen off while recording. Memory LCD as fallback |
+| Recording law | About 12 US states need consent from everyone. EU rules apply to makers | Outward light that cannot be disabled. Legal review before sale |
+| Aina ships first with a similar shape | Announced 2026-11-05, ships early 2027 | Compete on audio, which Aina does not specify |
+| Nine sizes raise cost | Each size needs its own band | One block for all sizes. Sizing kit first |
+| No team | Owner has no hardware team yet | Partner shortlist and brief are the next steps |
+
+## 7. Open decisions for the owner
+
+- O1. Phone and video calls: leave to a later software version, or add a vibration sensor as Plaud does.
+- O2. Screen type if OLED power is high: accept a black-and-white screen, or accept fewer hours.
+- O3. Price position: no target price is set yet.
+
+## SIGN-OFF
+
+Owner sign-off on version 1 of these requirements: **"Approve (Recommended)"**, 2026-11-10, on the targets card (4 microphones, 30 x 20 x 8 mm block, 130 mAh, 10 h meeting mode, 16 h day mode, 8 GB, button mapping, outward recording light, one vibration motor, 9 sizes, 500 mAh case with contact pins and Wi-Fi upload, no speaker, no health sensors, no call capture).
+
+Owner additions the same day:
+- Screen control: "Button plus small joystick".
+- Design bar: "I need you to fully design EVERYTHING in the ring from the internal, parts, circuit board, etc." and "There should be no ambiguity to build it 100%".
+
+Not yet signed: the items marked Bench in section 2 keep one fixed design choice and one test that can change it.
+
+## Changes after sign-off
+
+- 2026-11-10, owner: "9.5 mm block (Recommended)". S1 becomes 30 x 20 x 9.5 mm. P1 becomes 135 mAh minimum.
+- Design changes that follow from part datasheets (microphone layout A3, storage format T1, case transfer T3, light position U5) are listed in `design/architecture.md` section 10. They are disclosed to the owner and are not yet signed.
+- 2026-11-10, owner: "The ring shouldn't CONSTANTLY record, only when a long press on it. Then you have a live storing audio". P3 (day mode that records only when someone speaks) is removed. U2 becomes: a long press starts a recording and a long press stops it; a short press during a recording marks a highlight. The stop gesture and the highlight are the lead's reading of the owner's words.
+
+### Changes after sign-off: the current ring (architecture A5-draft, firmware F3), 2026-11-10
+
+The ring now follows `design/architecture.md` section 17 (17.8 wins over 17.7, then 17.1 to 17.6, then 16). The signed targets above stay as signed. Each line below names a requirement the current ring no longer meets or changes, the owner's words behind it, and the architecture line (file `design/architecture.md`). Owner words, in order: "I hate all of them, they are not as slick as the ring I shared"; "Slim, like the photo (Recommended)"; "Custom joystick"; "L but ALMOST NO BEZEL" (line 310); "MUCH THINER NEEDED"; "all battery not in housing but in ring"; "3.2 mm but now you need to work on curvature, edges, etc. and merge INTO ring"; "vibration on the ring,"; "You forgot the joystick on ring." (line 411); "Joystick not well placed and screen part should be more incurved" (line 476); "expecting full app done and properly redesigned ring (e.g., joystick placed on bottom and not top of screen quarter of the way down and properly incruved, properly designed inside animation/transition screen, etc.)", "autonomous mode on", "Pick default and work without asking questions" (line 486).
+
+1. **P2 Meeting mode, 10 hours or more: NOT MET.** Now 5.0 to 6.6 hours at 4.1 mA on a cell of 20.3 to 27.1 mAh at US 9, and 4.3 to 7.8 hours across US 7 to 13 (17.6 to 31.9 mAh; architecture 17.26, inside model v6, measured per size). Before that: 5.1 to 6.8 hours at 4.0 mA on 20 to 27 mAh (architecture 17.15, inside model v4; before that 3.8 to 5.0 hours on 15 to 20 mAh by 17.10). Owner: "MUCH THINER NEEDED" and "all battery not in housing but in ring". Architecture section 17.15 (hours), 17.5 ("The signed target of 10 hours is NOT met by this ring"), section 16 (4.0 mA).
+2. **P1 Battery in the block, 130 mAh or more (135 mAh after the 9.5 mm change): NOT MET, and the battery is no longer in the block.** Now a curved cell of 1.6 x 6.0 mm cross-section, 39.175 mm on its centre line at US 9 (376.1 cubic mm; architecture 17.26, model v6; before that 39.36 mm), in the band from +48.7 degrees through the bottom to -99.0 degrees, 20 to 27 mAh [CALC: 376.1 x 0.054 = 20.3 and 376.1 x 0.072 = 27.1]. Owner: "all battery not in housing but in ring". Architecture 17.15. The joystick sits on the band's side face at 78 degrees (owner: "should be placed here"), so the cell runs under the bottom of the band; before the owner moved the joystick the cell was 28.4 mm (17.10).
+3. **P4 Average draw, meeting mode, 13 mA or less: still met (about 4.0 mA), but its basis changed.** The 13 mA figure assumed 130 mAh and 10 hours; at 20 to 27 mAh, 13 mA gives 1.6 to 2.1 hours (20.4 / 13 = 1.57, 27.2 / 13 = 2.09). Architecture 17.5, 17.15.
+4. **A1 Microphone count, 4: CHANGED to 2** (one stereo input, 22 mm apart on the axis along the finger, slots in the block wall away from the thumb). Owner: "L but ALMOST NO BEZEL", "MUCH THINER NEEDED". Architecture lines 351, 373, 420.
+5. **A2 Microphone class, 72 to 73 dB(A): NOT MET.** Now Infineon IM68D128B, 68 dB(A), 3.5 x 2.65 x 0.98 mm. Owner: "MUCH THINER NEEDED". Architecture lines 41, 351.
+6. **A3 Array, 4 positions at the block corners, 15 to 36 mm apart: CHANGED** to 2 positions, 22 mm apart along the finger (one direction of focus in place of two). Architecture lines 351, 404.
+7. **A5 Recording format, all 4 channels stored separately: CHANGED** to 2 channels, 16 kHz, 16 bit, raw: 64,000 bytes per second, 230.4 MB per hour. Architecture lines 375, 356.
+8. **S1 Shape, block at most 30 x 20 x 9.5 mm: still met, size CHANGED.** Block 29.3 x 14.75 mm in plan, 3.85 mm high at the centre line and 2.95 mm at its long edges (3.2 mm in 17.1), with a formed cover glass 1.10 mm thick at its centre; it no longer holds the battery, motor or controls. Owner: "MUCH THINER NEEDED", "3.2 mm but now you need to work on curvature, edges, etc. and merge INTO ring", "Joystick not well placed and screen part should be more incurved". Architecture lines 417, 424, 488.
+9. **T1 Storage, 8 GB or more: NOT MET.** Now 4 GB (CSNP32GCR01-BOW, 3.7 GB usable), about 16 hours of 2-channel audio. Owner: "MUCH THINER NEEDED". Architecture lines 356, 42. T3's "about 6 minutes per recorded hour" was for 4-channel audio; with 2 channels it is 3.2 minutes (firmware F3 section 6.4).
+10. **D5 Screen control, record button plus a thumb joystick (up, down, left, right, press): CHANGED in form.** Four switches SW1 up, SW3 down, SW4 toward the hand, SW5 toward the fingertip under one rounded rectangular nub 4.6 x 3.6 mm in a 6.4 x 5.4 mm frame, at the bottom of the band turned toward the thumb (+150 degrees); a centre press is read when two opposite switches close within 40 ms (bench item B6); no fifth switch. Owner: "Custom joystick", "You forgot the joystick on ring.", "joystick placed on bottom ... properly incruved". Architecture lines 365, 366, 444, 489.
+11. **U1 Button, one mechanical button on the side of the block: CHANGED in position and form.** Its own switch SW2 under a pill cap 4.4 x 2.4 mm, on the side of the band at +88 degrees, not on the block. Gestures unchanged (long press 1.0 s starts and stops, short press marks a highlight, double press does nothing). Owner: "merge INTO ring", "You forgot the joystick on ring.". Architecture lines 367, 431, 490.
+12. **E3 Vibration motor, 8 mm coin type, under 3.3 mm tall: CHANGED in size and position.** Vybronics VC0720B088L, 7.0 mm diameter x 2.1 mm, 3.0 V, 85 mA maximum, in the thumb-side shoulder of the band at +51 degrees (17.10), not in the block; driven at full duty from the 3.0 V rail through Q1. Owner: "vibration on the ring,". Architecture lines 432, 452, 491.
+13. **C1 Case, "small ring case" that charges the ring, and C4 contact pins: CHANGED, the case's seat must be redesigned.** The ring has no flat block with pads under it; it charges and transfers through four pads (VBUS, D-, D+, GND, 1.0 mm diameter at X = -2.4, -0.8, +0.8, +2.4 mm) on the outside of the band at -150 degrees (17.8). Owner: "merge INTO ring". Architecture lines 435, 457, 493.
+14. **C3 Ring charge time, under 90 minutes: UNPROVEN.** The power chip is now the nPM1304 (architecture 17.13), set to 15 mA: 0.47 to 0.85 C for the measured cells of 17.6 to 31.9 mAh [CALC: 15 / 31.9 and 15 / 17.6; before, for 20 to 27 mAh: 0.55 to 0.74 C]. REPLACED (2026-11-13; old cell sizes of 20.4 to 27.2 mAh). Do not use: ~~The constant-current part alone then takes 82 to 109 minutes [CALC: 20.4 / 15 and 27.2 / 15 hours]~~. Per size, from `design/mfg/specs/cell.md` line 63 [CALC, firmware F6 8.1]: the constant-current part alone takes 1.17 to 1.57 hours at US 7 and 1.59 to 2.13 hours at US 13, so 90 minutes is not met for the larger cell at this setting. A higher setting needs the cell maker's own limit (open item S12) and Nordic's confirmation of the chip (S18). Firmware F4 charges when VBUS is present. Before 17.13: the nPM1300 could not go below 32 mA and the charger stayed off.
+15. **S3 One block for all sizes: still true for the block, but hours differ by size.** The cell's arc length scales with the band's inner diameter, so smaller sizes hold a shorter cell and fewer hours than the US 9 figures above. Owner: "merge INTO ring". Architecture line 437.
+16. **2026-11-10, owner: one control, no record button. U1 Button ("One mechanical button with a clear click, on the side of the block", and item 11 above): REMOVED.** There is no separate record button, no pill cap and no opening for it (architecture 17.11). The record gesture moves to the centre press of the joystick: long press 1.0 s starts a recording, long press 1.0 s stops it, a short press while recording marks a highlight, a double press does nothing; a joystick direction never starts or stops a recording (firmware F4 sections 2.1, 2.2). Owner: "I think we may not need a button on top of joystick and just have long press on joystick as recording button. So D1 but just joystick, no button". The rule behind U2 is unchanged: "The ring shouldn't CONSTANTLY record, only when a long press on it. Then you have a live storing audio". Architecture 17.11.
+17. **2026-11-10, owner: U3 "The button sits recessed. A single bump never stops a recording": the recessed button no longer exists; U3 is carried by the joystick's centre press and by firmware instead.** The nub is the joystick's own (4.6 x 3.6 mm in a 6.4 x 5.4 mm frame, standing 0.5 mm proud, 16.5); no recess is specified for it. A bump or short press never starts or stops a recording: only a hold of 1.0 s does, with a warning pulse at 0.5 s and a start pulse at 1.0 s (firmware F4 section 2.1, guard G1 to G5; its cost: the first second of a meeting is not recorded, and a thumb resting on the centre for a full second does start one). Whether this holds on a real thumb is bench item B6 (architecture 16.5). Owner: "I think we may not need a button on top of joystick and just have long press on joystick as recording button. So D1 but just joystick, no button". Architecture 17.11.
+18. **2026-11-10, owner: D5 Screen control "the record button plus a small thumb joystick" and the number of controls: CHANGED from two controls to ONE (the joystick), in a new position.** The joystick stays four direction switches SW1 up, SW3 down, SW4 toward the hand, SW5 toward the fingertip under one nub; it moves from the bottom of the band (+150 degrees, item 10 above) to the band's outer side face at 78 degrees from the top, on the side seen when the screen's text reads upright (the thumb's side). The centre press is first a real switch SW2 (BTN_REC) under the nub's centre, second the two-opposite-switches reading within 40 ms (bench B6); firmware F4 builds for both (`CENTRE_SOURCE`). Owner: "wrongly placed", "should be placed here" (red rectangle on the band's side face), and "I think we may not need a button on top of joystick and just have long press on joystick as recording button. So D1 but just joystick, no button". Architecture 17.11.
+19. **2026-11-10, owner: C4 contact pins and item 13 above: the four charging pads move from the OUTSIDE of the band to the INSIDE face (at 180 degrees, opposite the block, in the resin liner); they touch the skin when worn.** Firmware F4 section 8.6: VBUS is an input only, nothing is driven onto the pads when no case is present, USB is off without VBUS. The charger is now switched on whenever VBUS is present (review finding F05, fixed in F4); the charge current is set to 15 mA on the nPM1304 (item 14 above, architecture 17.13), until the cell maker states its own limit (open item S12); before 17.13 the nPM1300 could not go below 32 mA and the charger part was an open choice. C3 (charge time under 90 minutes) stays UNPROVEN (item 14 above). Owner: "charging case is shit", "needs to be like this with charging pin on inside probably", "A: flat on a post (Recommended)". Architecture 17.12.
+
+20. **Scope: the phone app enters the project (2026-11-10).** Section "Not in this version" said "The phone app, transcripts and summaries. Owner: hardware only for now". Owner, 2026-11-10: "We need a lightweight OS on it that enables specialised software and can sync with phone. Look at things like MentraOS", then, on the options: "A2: own protocol, same model". The ring gets a link protocol and a phone app (iPhone and Android) that runs specialised apps; transcripts and summaries stay out until the owner names them. Architecture section 18.
+21. **2026-11-11, owner: S2 Sizes, CHANGED from 9 sizes (US 5 to 13) to 7 sizes (US 7 to 13).** Asked which sizes version 1 covers, with the facts that the body files and the charging case exist for US 7 to 13 only and that on sizes 5 and 6 the battery shrinks and overlaps the joystick, the owner answered: "US 7 to 13 (Recommended)". Sizes 5 and 6 can follow later as their own design. This answers review findings F08 and, for sizes 5 and 6, F09.
+22. **Record of 2026-11-11, REPLACED by line 26 (S6) and by item 3 of the section "Changes after sign-off: owner decisions of 2026-11-13" (splash and sweat resistant as a goal; no rating claimed; the spray test of assembly step 25 is the pass line). Do not use the IP65 wording below.** S6 Water and dust, IP65 or better: NOT MET ON PAPER (2026-11-11). The assembly study lists nine openings and joints: two have no sealing means in any file (glass to body, the floor slots), and the others have no chosen material and no test. No rating can be claimed today (`design/mfg/assembly/assembly.md` section 4; architecture 17.23, open item S26). The target stays IP65; the seals must be designed and a type test passed.
+23. **2026-11-11, owner: U5 Recording light and U6 Light cannot be disabled, REMOVED; D1 Screen, CHANGED to a screen that fills the glass face; P6 Screen while recording, CHANGED.** Owner: "We shouldn't have the indicator at the top, just the screen that take full space". Asked on a card that stated the cost (the light is wired to the microphones and no software can switch it off; a full-face screen needs a new screen part), the owner answered: "Full screen, no separate light". So: the lit screen fills the whole glass face of 29.2958 x 14.429 mm (the glass outline of the accepted exterior; 29.1 x 14.56 was a stale size note of the inside model, corrected 2026-11-12); the red recording light, its light guide, its window in the glass and its drive parts are removed; a recording shows on the screen itself, which stays lit with at least a red dot and the timer for as long as a recording runs (lead's rule for the software, architecture 17.30). What is lost, stated once: the sign that others see is now drawn by software, so a software fault could hide it; privacy and consent rules of some countries ask for a visible sign, to check before sale. Same day: the joystick is round with a thumb texture and stands further out, and the whole ring has one dark glossy finish (architecture 17.29). **P6 Screen while recording ("Off, except on a button press"): CHANGED.** The screen is the recording sign and is never dark while a recording runs: it shows at least a red dot and the timer, dimmed after 3 s without input, and the full recording picture on any joystick input (lead's rule for the software, architecture 17.30; behaviour rules `design/firmware.md` R-SIGN). The power cost of the always-lit dot is not measured yet (bench). The signed P6 row stays as signed.
+
+### Changes after sign-off: owner decisions of 2026-11-13
+
+The owner answered these on one card with the full context of each. The rows of section 2 named below now state the decided value; the older value stays in each row's last cell.
+
+1. **P2 recording time: 4.3 to 7.8 hours by ring size replaces 10 hours.** Owner: "Accept 4 to 8 hours for the thin ring (Recommended)". Item 1 of the list above is no longer "not met": the target itself changed.
+2. **P1 battery: the curved cell in the band, 17.6 to 31.9 mAh by ring size, replaces 130 mAh in the block.** It follows from the same answer and from "all battery not in housing but in ring".
+3. **S6 water: "Splash and sweat resistant as a goal".** No rating is claimed. A spray test becomes a pass line of the build guide. Item 22 above stays true for IP65: it is not claimed.
+4. **S5 weight: 12 g is "A target, measured on the first ring (Recommended)".** It is not a pass line.
+5. **S1 block height: 4.17 mm.** Owner: "4.17 mm, stock screen with connector (Recommended)". The block was 3.20 mm (3.85 mm at the centre line of the formed glass). The stock screen is used with its own cable; the screen is turned 180 degrees and its connector stands on the board's screen face (`design/wiring/screen-cable-study.md` section 4.3). The models, the cover glass, the case fit and the assembly order follow; until they do, their files still describe the 3.20 mm block.
+6. **Antenna corner: "Keep the resin corner (Recommended)".**
+7. **The Agent mode of the ring software stays: "Keep the Agent mode (Recommended)".**
+8. **Phone app: its specification is written "After the ring software is finished (Recommended)".**
+9. **S1 block top: flat glass, 4.15 mm.** Owner, 2026-11-13: "Flat glass, 4.15 mm (Recommended)". The taller block has a flat cover glass 0.43 mm thick; its top is 4.15 mm above the block's underside (4.82 mm with the crowned glass, which is dropped). A drop test of the thin glass is a pass line of the build guide.
+10. **USB identity: "Keep the test pair for now (Recommended)".** Marked not for shipping.

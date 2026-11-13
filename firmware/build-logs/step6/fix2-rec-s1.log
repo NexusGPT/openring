@@ -1,0 +1,829 @@
+# remote.sh run 20261113-171032-fix2-rec-s1
+# command: rm -rf /ws/out/fix1rec-u3 && RING_OUT=/ws/out/fix2rec-s1 bash tests/recorder/short_run.sh; rc=$?; grep -rh --include=handler.log -E 'retry:|one wait each|ship storage|stuck screens|latched VBUS|T-SIGN|unmount: row' /ws/out/fix2rec-s1/twister-*/ | cut -c1-220; exit $rc
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 17:10:32 CET
+# free on the server's /: 32 GB
+# source firmware copied to /root/ring-os/src-u-fix6
+# started on the server as 20261113-171032-fix2-rec-s1; server log /root/ring-os/logs/20261113-171032-fix2-rec-s1.log
+twister exit code on native_sim: 1 (log /ws/out/fix2rec-s1/twister-native_sim.log)
+INFO    - 1/1 native_sim/native         ring_recorder.sim                                  FAILED rc=1 (native 6.172s <host/gnu>)
+START - test_ship_without_screens_ends
+ship without screens: idle 1, SHPHLDCONFIG at 5, ship task at 7, 2332 ms
+ PASS - test_ship_without_screens_ends in 2.504 seconds
+ PASS - test_ble_highlight_marks in 5.015 seconds
+START - test_close_order
+close order: chunk 45, CLOSE record 137, superblock 138, PDM stop 139, clocks low 143, VDD_MIC off 144, VDD_SD off 148
+close frames: 6 chunks, 43984 frames in the chunks, CLOSE duration 43984, last chunk 3024 frames, captured to the mark 43984 (start 8693 ms, mark 11492 ms), 0 frames not as captured
+ PASS - test_close_order in 4.236 seconds
+START - test_latched_events_not_lost
+latch: 33 jobs filled the queue, the post of event 17 answered -42
+latch: 33 jobs filled the queue, the post of event 16 answered -42
+ PASS - test_latched_events_not_lost in 3.006 seconds
+START - test_latched_vbus_follows_the_level
+latch: 33 jobs filled the queue, the post of event 1 answered -42
+latched VBUS: VBUS in posted -42, row 40 seen 0, state CHARGING, VBUS present 1
+ PASS - test_latched_vbus_follows_the_level in 0.343 seconds
+START - test_m1_at_start
+ PASS - test_m1_at_start in 2.693 seconds
+ PASS - test_mw_in_recording_marked in 6.295 seconds
+open order: VDD_SD on 4, init 6, superblock 14, VDD_MIC on 17, configure 18, start 20
+ PASS - test_open_order in 2.693 seconds
+ PASS - test_refusal_plays_m3 in 6.031 seconds
+ PASS - test_retry_storage_reports_result in 121.693 seconds
+START - test_ship_closes_everything_first
+ PASS - test_ship_closes_everything_first in 6.758 seconds
+START - test_stop_m2_after_mic_off
+stop: VDD_MIC off at 146 (t 164726000 us), first MOTOR high from the press at 151 (t 164726000 us)
+ PASS - test_stop_m2_after_mic_off in 3.693 seconds
+ PASS - test_watchdog_fed_while_recording in 14.693 seconds
+Running TESTSUITE recorder_boot
+START - test_boot_count_only_at_boot
+boot_count at boot 1, after VBUS out and in twice 1
+ PASS - test_boot_count_only_at_boot in 0.946 seconds
+ PASS - test_init_done_each_row in 6.530 seconds
+ PASS - test_recovery_rows in 8.127 seconds
+START - test_restart_after_cut_recovers
+ PASS - test_restart_after_cut_recovers in 5.231 seconds
+ PASS - test_selftest_items in 31.545 seconds
+START - test_vbus_boot_charges_before_mount
+boot with VBUS: charger enabled at 14, first card init at 20
+ PASS - test_vbus_boot_charges_before_mount in 0.737 seconds
+TESTSUITE recorder_boot succeeded
+T-MIC1: response 29 bytes, status 0, result 0
+T-MIC1: recording 1 type 2, 32000 frames, 4 chunks
+ PASS - test_tmic_records_type_2_for_2s in 2.626 seconds
+T-SIGN: reported on 235840 off 236913 on 237914 off 238987 ms; rail on 235840 off 236913 on 237914 off 238987 ms
+ PASS - test_tsign_reports_mic_times in 3.685 seconds
+ PASS - test_each_kind_logged in 71.689 seconds
+START - test_pattern_start_logged
+M1 action at 311932 ms, start logged 311932 ms
+ PASS - test_pattern_start_logged in 2.693 seconds
+START - test_stop_press_time_logged
+stop press: fired at 316786 ms, logged press start 315786 ms
+ PASS - test_stop_press_time_logged in 3.593 seconds
+START - test_hfxo_in_boot_and_recovery
+HFXO BOOT: requests 1 at the boot card init (event 17), STANDBY step at 317158000 us, now 0
+HFXO RECOVERY: requests 1 at the boot card init (event 17), RECOVERY step at 319866 ms, STANDBY at 319866000 us, now 0
+ PASS - test_hfxo_in_boot_and_recovery in 2.881 seconds
+RAILS row 3 -> STANDBY: ok
+RAILS row 5 -> CHARGING: ok
+RAILS row 6 -> ERR_STORAGE_FAULT: ok
+RAILS row 8 -> ERR_BATTERY_LOW: ok
+RAILS row 9 -> STANDBY: ok
+RAILS row 12 -> RECORDING: ok
+RAILS row 20 -> CHARGING: ok
+RAILS row 24 -> ERR_STORAGE_FULL: ok
+RAILS row 26 -> STANDBY: ok
+RAILS row 27 -> RECORDING: ok
+RAILS row 30 -> CHARGING: ok
+RAILS row 37 -> ERR_MIC_FAULT: ok
+RAILS row 39 -> TRANSFER: ok
+RAILS row 40 -> STANDBY: ok
+RAILS row 44 -> ERR_CHARGER: ok
+RAILS row 46 -> CHARGING: ok
+RAILS row 47 -> STANDBY: ok
+RAILS row 61 -> STANDBY: ok
+ PASS - test_rails_per_state in 78.844 seconds
+ PASS - test_sd_rail_per_state in 5.696 seconds
+ PASS - test_charge_on_every_vbus_row in 8.892 seconds
+ PASS - test_factory_rows in 49.395 seconds
+ PASS - test_fw_end_row in 0.635 seconds
+ROW 1 SHIP -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+ROW 2 OFF -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+ROW 3 BOOT -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 4 BOOT -> RECOVERY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 5 BOOT -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+ROW 6 BOOT -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+ROW 7 BOOT -> OFF: taken yes, now OFF, VDD_MIC checks ok
+ROW 8 BOOT -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+ROW 9 RECOVERY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 10 RECOVERY -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+ROW 11 RECOVERY -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+ROW 12 STANDBY -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+ROW 13 STANDBY -> RECOVERY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 14 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 15 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 16 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 17 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 18 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 19 STANDBY -> OFF: taken yes, now OFF, VDD_MIC checks ok
+ROW 20 STANDBY -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+ROW 21 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 22 STANDBY -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+ROW 23 STANDBY -> OFF: taken yes, now OFF, VDD_MIC checks ok
+ROW 24 STANDBY -> ERR_STORAGE_FULL: taken yes, now ERR_STORAGE_FULL, VDD_MIC checks ok
+ROW 25 STANDBY -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+ROW 26 RECORDING -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 27 RECORDING -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+ROW 28 RECORDING -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+ROW 29 RECORDING -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+ROW 30 RECORDING -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+ROW 31 RECORDING -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+ROW 32 RECORDING -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+ROW 33 RECORDING -> OFF: taken yes, now OFF, VDD_MIC checks ok
+ROW 34 RECORDING -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+ROW 35 RECORDING -> ERR_STORAGE_FULL: taken yes, now ERR_STORAGE_FULL, VDD_MIC checks ok
+ROW 36 RECORDING -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+ROW 37 RECORDING -> ERR_MIC_FAULT: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 38 RECORDING -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+ROW 39 CHARGING -> TRANSFER: taken yes, now TRANSFER, VDD_MIC checks ok
+ROW 40 CHARGING -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 41 CHARGING -> ERR_STORAGE_FULL: taken yes, now ERR_STORAGE_FULL, VDD_MIC checks ok
+ROW 42 CHARGING -> OFF: taken yes, now OFF, VDD_MIC checks ok
+ROW 43 CHARGING -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+ROW 44 CHARGING -> ERR_CHARGER: taken yes, now ERR_CHARGER, VDD_MIC checks ok
+ROW 45 CHARGING -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+ROW 46 TRANSFER -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+ROW 47 TRANSFER -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 48 TRANSFER -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+ROW 49: test recording in FACTORY_TEST, VDD_MIC seen on inside it: yes
+ROW 49 TRANSFER -> FACTORY_TEST: taken yes, now FACTORY_TEST, VDD_MIC checks ok
+ROW 50 TRANSFER -> TRANSFER: taken yes, now TRANSFER, VDD_MIC checks ok
+ROW 51 ERR_STORAGE_FULL -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+ROW 52 ERR_STORAGE_FULL -> ERR_STORAGE_FULL: taken yes, now ERR_STORAGE_FULL, VDD_MIC checks ok
+ROW 53 ERR_STORAGE_FULL -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+ROW 54 ERR_STORAGE_FULL -> OFF: taken yes, now OFF, VDD_MIC checks ok
+ROW 55 ERR_BATTERY_LOW -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+ROW 56 ERR_BATTERY_LOW -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+ROW 57 ERR_BATTERY_LOW -> OFF: taken yes, now OFF, VDD_MIC checks ok
+ROW 58 ERR_STORAGE_FAULT -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+ROW 59 ERR_STORAGE_FAULT -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+ROW 60 ERR_STORAGE_FAULT -> RECOVERY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 61 ERR_STORAGE_FAULT -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 62 ERR_STORAGE_FAULT -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+ROW 63 ERR_STORAGE_FAULT -> OFF: taken yes, now OFF, VDD_MIC checks ok
+ROW 64 ERR_MIC_FAULT -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 65 ERR_MIC_FAULT -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+ROW 66 ERR_MIC_FAULT -> OFF: taken yes, now OFF, VDD_MIC checks ok
+ROW 67 ERR_CHARGER -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+ROW 68 ERR_CHARGER -> OFF: taken yes, now OFF, VDD_MIC checks ok
+ROW 69 FACTORY_TEST -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+ROW 70 FACTORY_TEST -> SHIP: taken yes, now SHIP, VDD_MIC checks ok
+ROW 71 FACTORY_TEST -> SHIP: taken yes, now SHIP, VDD_MIC checks ok
+ROW 72 FACTORY_TEST -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+ROWS: 72 rows, 0 not run, 0 not taken, 0 with a VDD_MIC fault, 7272 checks
+ PASS - test_mic_rail_only_in_recording in 1619.301 seconds
+ PASS - test_recording_exits in 21.480 seconds
+ PASS - test_transfer_rows in 1.400 seconds
+ PASS - test_usb_configured in 0.363 seconds
+ PASS - test_vbus_in_recording in 2.743 seconds
+ PASS - test_vbus_out_at_b2_goes_off in 63.465 seconds
+ PASS - test_factory_gestures_reach_the_jig in 4.567 seconds
+START - test_no_command_starts_or_stops
+RULES opcode 0x01 in CHARGING: status 0
+RULES opcode 0x02 in CHARGING: status 8
+RULES opcode 0x03 in CHARGING: status 8
+RULES opcode 0x04 in CHARGING: status 8
+RULES opcode 0x05 in CHARGING: status 8
+RULES opcode 0x06 in CHARGING: status 0
+RULES opcode 0x07 in CHARGING: status 0
+RULES opcode 0x08 in CHARGING: status 4
+RULES opcode 0x09 in CHARGING: status 4
+RULES opcode 0x0a in CHARGING: status 10
+RULES opcode 0x0b in CHARGING: status 8
+RULES opcode 0x0c in CHARGING: status 0
+RULES opcode 0x0d in CHARGING: status 11
+RULES opcode 0x01 in TRANSFER: status 0
+RULES opcode 0x02 in TRANSFER: status 0
+RULES opcode 0x03 in TRANSFER: status 5
+RULES opcode 0x04 in TRANSFER: status 5
+RULES opcode 0x05 in TRANSFER: status 5
+RULES opcode 0x06 in TRANSFER: status 0
+RULES opcode 0x07 in TRANSFER: status 0
+RULES opcode 0x08 in TRANSFER: status 4
+RULES opcode 0x09 in TRANSFER: status 4
+RULES opcode 0x0a in TRANSFER: status 10
+RULES opcode 0x0b in TRANSFER: status 0
+RULES opcode 0x0c in TRANSFER: status 0
+RULES opcode 0x0d in TRANSFER: status 11
+RULES factory 0x10: status 0
+RULES factory 0x11: status 4
+RULES factory 0x20: status 0
+RULES factory 0x30: status 0
+RULES factory 0x31: status 0
+RULES factory 0x40: status 0
+RULES factory 0x41: status 0
+RULES factory 0x50: status 0
+RULES factory 0x60: status 0
+RULES factory 0x70: status 0
+RULES factory 0x71: status 0
+RULES opcode 0x01 in FACTORY_TEST: status 0
+RULES opcode 0x02 in FACTORY_TEST: status 8
+RULES opcode 0x03 in FACTORY_TEST: status 8
+RULES opcode 0x04 in FACTORY_TEST: status 8
+RULES opcode 0x05 in FACTORY_TEST: status 8
+RULES opcode 0x06 in FACTORY_TEST: status 0
+RULES opcode 0x07 in FACTORY_TEST: status 0
+RULES opcode 0x08 in FACTORY_TEST: status 4
+RULES opcode 0x09 in FACTORY_TEST: status 4
+RULES opcode 0x0a in FACTORY_TEST: status 10
+RULES opcode 0x0b in FACTORY_TEST: status 8
+RULES opcode 0x0c in FACTORY_TEST: status 0
+RULES opcode 0x0d in FACTORY_TEST: status 0
+ PASS - test_no_command_starts_or_stops in 37.748 seconds
+SCR_CHARGING frames: from the join 7655bffd0ef9a850; typed 50 % Charging 30 min 7655bffd0ef9a850, 31 min 591387ab3360d06d, 51 % 48e46b48e88ce877, Full e228d8ba8a36c877
+SCR_CHARGING frames (full): from the join e228d8ba8a36c877; typed 50 % Full e228d8ba8a36c877, Charging 7655bffd0ef9a850
+ PASS - test_battery_reaches_screens in 3.344 seconds
+ PASS - test_ilim_dims_in_recording in 8.154 seconds
+START - test_start_during_ilim_hold_is_dim
+ PASS - test_start_during_ilim_hold_is_dim in 3.854 seconds
+START - test_start_order_and_times
+start: HFXO request 15 (2230973100 us), running 16 (2230974100 us), VDD_MIC on 17 (2230974100 us), configure 18 (2230975200 us), pins default 19, PDM start 20 (2230975200 us)
+ PASS - test_start_order_and_times in 2.693 seconds
+START - test_stop_order
+stop: PDM stop 141, pins sleep 145, VDD_MIC off 146, HFXO release 147, blocks held after 0
+ PASS - test_stop_order in 3.393 seconds
+Running TESTSUITE recorder_ship
+START - test_ship_closes_each_part_first
+ship (factory): step 1 ended at log 12 on thread rrec; SHPHLDCONFIG 12, USB disable 11, VDD_SD off 9; at step 1's end: VDD_MIC 0, VDD_SD 0, USB 0, screen blanked 1, radio stops 1, beacon stopped 0
+ship (menu): step 1 ended at log 7 on thread rrec, SHPHLDCONFIG 7, screen blanked 1
+ PASS - test_ship_closes_each_part_first in 6.888 seconds
+START - test_ship_closes_usb_before_second_unmount
+ship storage: step 1 ended 1, USB disable at 2258326 ms, second try's record at 2263326 ms, SHPHLDCONFIG 32
+ PASS - test_ship_closes_usb_before_second_unmount in 24.559 seconds
+START - test_ship_feels_whole_m2
+ship: 4 MOTOR edges before SHPHLDCONFIG (index 6)
+ship: M2 segment 0 lasted 80000 us (FW l.323: 80 ms)
+ship: M2 segment 1 lasted 120000 us (FW l.323: 120 ms)
+ship: M2 segment 2 lasted 80000 us (FW l.323: 80 ms)
+ship: M2 lasted 280000 us on the MOTOR pin (FW l.323: 280 ms)
+ PASS - test_ship_feels_whole_m2 in 2.504 seconds
+START - test_ship_with_stuck_screens_goes_on
+ PASS - test_ship_with_stuck_screens_goes_on in 3.505 seconds
+TESTSUITE recorder_ship succeeded
+ PASS - test_forced_draw_failure in 1.433 seconds
+SIGN-1 ROW 1: ok
+SIGN-1 ROW 2: ok
+SIGN-1 ROW 3: ok
+SIGN-1 ROW 4: ok
+SIGN-1 ROW 5: ok
+SIGN-1 ROW 6: ok
+SIGN-1 ROW 7: ok
+SIGN-1 ROW 8: ok
+SIGN-1 ROW 9: ok
+SIGN-1 ROW 10: ok
+SIGN-1 ROW 11: ok
+SIGN-1 ROW 12: ok
+SIGN-1 ROW 13: ok
+SIGN-1 ROW 14: ok
+SIGN-1 ROW 15: ok
+SIGN-1 ROW 16: ok
+SIGN-1 ROW 17: ok
+SIGN-1 ROW 18: ok
+SIGN-1 ROW 19: ok
+SIGN-1 ROW 20: ok
+SIGN-1 ROW 21: ok
+SIGN-1 ROW 22: ok
+SIGN-1 ROW 23: ok
+SIGN-1 ROW 24: ok
+SIGN-1 ROW 25: ok
+SIGN-1 ROW 26: ok
+SIGN-1 ROW 27: ok
+SIGN-1 ROW 28: ok
+SIGN-1 ROW 29: ok
+SIGN-1 ROW 30: ok
+SIGN-1 ROW 31: ok
+SIGN-1 ROW 32: ok
+SIGN-1 ROW 33: ok
+SIGN-1 ROW 34: ok
+SIGN-1 ROW 35: ok
+SIGN-1 ROW 36: ok
+SIGN-1 ROW 37: ok
+SIGN-1 ROW 38: ok
+SIGN-1 ROW 39: ok
+SIGN-1 ROW 40: ok
+SIGN-1 ROW 41: ok
+SIGN-1 ROW 42: ok
+SIGN-1 ROW 43: ok
+SIGN-1 ROW 44: ok
+SIGN-1 ROW 45: ok
+SIGN-1 ROW 46: ok
+SIGN-1 ROW 47: ok
+SIGN-1 ROW 48: ok
+SIGN-1 ROW 49: ok
+SIGN-1 ROW 50: ok
+SIGN-1 ROW 51: ok
+SIGN-1 ROW 52: ok
+SIGN-1 ROW 53: ok
+SIGN-1 ROW 54: ok
+SIGN-1 ROW 55: ok
+SIGN-1 ROW 56: ok
+SIGN-1 ROW 57: ok
+SIGN-1 ROW 58: ok
+SIGN-1 ROW 59: ok
+SIGN-1 ROW 60: ok
+SIGN-1 ROW 61: ok
+SIGN-1 ROW 62: ok
+SIGN-1 ROW 63: ok
+SIGN-1 ROW 64: ok
+SIGN-1 ROW 65: ok
+SIGN-1 ROW 66: ok
+SIGN-1 ROW 67: ok
+SIGN-1 ROW 68: ok
+SIGN-1 ROW 69: ok
+SIGN-1 ROW 70: ok
+SIGN-1 ROW 71: ok
+SIGN-1 ROW 72: ok
+SIGN-1: 72 rows, 0 not run, 0 failed, 606 ticks with VDD_MIC on checked
+ PASS - test_sign1_every_row in 1619.299 seconds
+START - test_close_mic_off_before_screen_leaves
+stop: the screens were told 7 times, 0 of them with VDD_MIC on outside RECORDING
+ PASS - test_close_mic_off_before_screen_leaves in 7.129 seconds
+ PASS - test_only_rec_mics_on_enables_mic in 5.225 seconds
+ PASS - test_sign_refused_no_mic_m3_log in 1.433 seconds
+START - test_start_draws_sign_before_mic
+ PASS - test_start_draws_sign_before_mic in 3.165 seconds
+Running TESTSUITE recorder_unmount
+START - test_failed_unmount_retried_and_reported
+unmount: record 1: errno -16, state TRANSFER, try 1
+unmount: record 2: errno 0, state CHARGING, try 4
+unmount: 2 records 0x0290, VDD_SD now 0, state CHARGING
+ PASS - test_failed_unmount_retried_and_reported in 27.501 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_unmount.c:222: recorder_unmount_test_one_wait_each_per_step: (held < 10000 + 1500 is false)
+at most one wait for the command and one for the unmount (15000 ms)
+ FAIL - test_one_wait_each_per_step in 15.463 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_unmount.c:204: recorder_unmount_test_retry_never_takes_the_card: (err[1] not equal to -EBUSY)
+ FAIL - test_retry_never_takes_the_card in 40.533 seconds
+unmount: the unconfigured step took about 7761 ms
+unmount: row 46 step at 4003307 ms, VDD_SD off at 4003307400 us, steps 2, VDD_SD now 0
+ PASS - test_unconfigured_finish_times_out in 8.912 seconds
+unmount: row 47 step at 4009791 ms, VDD_SD off at 4009791200 us, steps 2, VDD_SD now 0
+ PASS - test_vbus_out_during_read_command in 6.483 seconds
+TESTSUITE recorder_unmount failed.
+SUITE PASS - 100.00% [recorder_a_noscreens]: pass = 1, fail = 0, skip = 0, total = 1 duration = 2.504 seconds
+ - PASS - [recorder_a_noscreens.test_ship_without_screens_ends] duration = 2.504 seconds
+SUITE PASS - 100.00% [recorder_actions]: pass = 12, fail = 0, skip = 0, total = 12 duration = 177.149 seconds
+ - PASS - [recorder_actions.test_ble_highlight_marks] duration = 5.015 seconds
+ - PASS - [recorder_actions.test_close_order] duration = 4.236 seconds
+ - PASS - [recorder_actions.test_latched_events_not_lost] duration = 3.006 seconds
+ - PASS - [recorder_actions.test_latched_vbus_follows_the_level] duration = 0.343 seconds
+ - PASS - [recorder_actions.test_m1_at_start] duration = 2.693 seconds
+ - PASS - [recorder_actions.test_mw_in_recording_marked] duration = 6.295 seconds
+ - PASS - [recorder_actions.test_open_order] duration = 2.693 seconds
+ - PASS - [recorder_actions.test_refusal_plays_m3] duration = 6.031 seconds
+ - PASS - [recorder_actions.test_retry_storage_reports_result] duration = 121.693 seconds
+ - PASS - [recorder_actions.test_ship_closes_everything_first] duration = 6.758 seconds
+ - PASS - [recorder_actions.test_stop_m2_after_mic_off] duration = 3.693 seconds
+ - PASS - [recorder_actions.test_watchdog_fed_while_recording] duration = 14.693 seconds
+SUITE PASS - 100.00% [recorder_boot]: pass = 6, fail = 0, skip = 0, total = 6 duration = 53.116 seconds
+ - PASS - [recorder_boot.test_boot_count_only_at_boot] duration = 0.946 seconds
+ - PASS - [recorder_boot.test_init_done_each_row] duration = 6.530 seconds
+ - PASS - [recorder_boot.test_recovery_rows] duration = 8.127 seconds
+ - PASS - [recorder_boot.test_restart_after_cut_recovers] duration = 5.231 seconds
+ - PASS - [recorder_boot.test_selftest_items] duration = 31.545 seconds
+ - PASS - [recorder_boot.test_vbus_boot_charges_before_mount] duration = 0.737 seconds
+SUITE PASS - 100.00% [recorder_factory]: pass = 2, fail = 0, skip = 0, total = 2 duration = 6.311 seconds
+ - PASS - [recorder_factory.test_tmic_records_type_2_for_2s] duration = 2.626 seconds
+ - PASS - [recorder_factory.test_tsign_reports_mic_times] duration = 3.685 seconds
+SUITE PASS - 100.00% [recorder_log]: pass = 3, fail = 0, skip = 0, total = 3 duration = 77.975 seconds
+ - PASS - [recorder_log.test_each_kind_logged] duration = 71.689 seconds
+ - PASS - [recorder_log.test_pattern_start_logged] duration = 2.693 seconds
+ - PASS - [recorder_log.test_stop_press_time_logged] duration = 3.593 seconds
+SUITE PASS - 100.00% [recorder_rails]: pass = 3, fail = 0, skip = 0, total = 3 duration = 87.421 seconds
+ - PASS - [recorder_rails.test_hfxo_in_boot_and_recovery] duration = 2.881 seconds
+ - PASS - [recorder_rails.test_rails_per_state] duration = 78.844 seconds
+ - PASS - [recorder_rails.test_sd_rail_per_state] duration = 5.696 seconds
+SUITE PASS - 100.00% [recorder_rows]: pass = 9, fail = 0, skip = 0, total = 9 duration = 1767.674 seconds
+ - PASS - [recorder_rows.test_charge_on_every_vbus_row] duration = 8.892 seconds
+ - PASS - [recorder_rows.test_factory_rows] duration = 49.395 seconds
+ - PASS - [recorder_rows.test_fw_end_row] duration = 0.635 seconds
+ - PASS - [recorder_rows.test_mic_rail_only_in_recording] duration = 1619.301 seconds
+ - PASS - [recorder_rows.test_recording_exits] duration = 21.480 seconds
+ - PASS - [recorder_rows.test_transfer_rows] duration = 1.400 seconds
+ - PASS - [recorder_rows.test_usb_configured] duration = 0.363 seconds
+ - PASS - [recorder_rows.test_vbus_in_recording] duration = 2.743 seconds
+ - PASS - [recorder_rows.test_vbus_out_at_b2_goes_off] duration = 63.465 seconds
+SUITE PASS - 100.00% [recorder_rules]: pass = 2, fail = 0, skip = 0, total = 2 duration = 42.315 seconds
+ - PASS - [recorder_rules.test_factory_gestures_reach_the_jig] duration = 4.567 seconds
+ - PASS - [recorder_rules.test_no_command_starts_or_stops] duration = 37.748 seconds
+SUITE PASS - 100.00% [recorder_screens]: pass = 3, fail = 0, skip = 0, total = 3 duration = 15.352 seconds
+ - PASS - [recorder_screens.test_battery_reaches_screens] duration = 3.344 seconds
+ - PASS - [recorder_screens.test_ilim_dims_in_recording] duration = 8.154 seconds
+ - PASS - [recorder_screens.test_start_during_ilim_hold_is_dim] duration = 3.854 seconds
+SUITE PASS - 100.00% [recorder_sequence]: pass = 2, fail = 0, skip = 0, total = 2 duration = 6.086 seconds
+ - PASS - [recorder_sequence.test_start_order_and_times] duration = 2.693 seconds
+ - PASS - [recorder_sequence.test_stop_order] duration = 3.393 seconds
+SUITE PASS - 100.00% [recorder_ship]: pass = 4, fail = 0, skip = 0, total = 4 duration = 37.456 seconds
+ - PASS - [recorder_ship.test_ship_closes_each_part_first] duration = 6.888 seconds
+ - PASS - [recorder_ship.test_ship_closes_usb_before_second_unmount] duration = 24.559 seconds
+twister exit code on nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/fix2rec-s1/twister-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_recorder.sim                            FAILED rc=1 (native 6.583s <host/gnu>)
+d_00: @00:00:00.000122  START - test_ship_without_screens_ends
+d_00: @00:00:02.503522  ship without screens: idle 1, SHPHLDCONFIG at 5, ship task at 7, 2332 ms
+d_00: @00:00:02.503522   PASS - test_ship_without_screens_ends in 2.504 seconds
+d_00: @00:00:07.518522   PASS - test_ble_highlight_marks in 5.015 seconds
+d_00: @00:00:07.518522  START - test_close_order
+d_00: @00:00:11.753322  close order: chunk 45, CLOSE record 137, superblock 138, PDM stop 139, clocks low 143, VDD_MIC off 144, VDD_SD off 148
+d_00: @00:00:11.754422  close frames: 6 chunks, 44000 frames in the chunks, CLOSE duration 44000, last chunk 3040 frames, captured to the mark 44000 (start 8693 ms, mark 11493 ms), 0 frames not as captured
+d_00: @00:00:11.754422   PASS - test_close_order in 4.236 seconds
+d_00: @00:00:11.754422  START - test_latched_events_not_lost
+d_00: @00:00:13.186722  latch: 33 jobs filled the queue, the post of event 17 answered -42
+d_00: @00:00:14.699422  latch: 33 jobs filled the queue, the post of event 16 answered -42
+d_00: @00:00:14.759722   PASS - test_latched_events_not_lost in 3.006 seconds
+d_00: @00:00:14.759722  START - test_latched_vbus_follows_the_level
+d_00: @00:00:15.041922  latch: 33 jobs filled the queue, the post of event 1 answered -42
+d_00: @00:00:15.102222  latched VBUS: VBUS in posted -42, row 40 seen 0, state CHARGING, VBUS present 1
+d_00: @00:00:15.102222   PASS - test_latched_vbus_follows_the_level in 0.343 seconds
+d_00: @00:00:15.102222  START - test_m1_at_start
+d_00: @00:00:17.795022   PASS - test_m1_at_start in 2.693 seconds
+d_00: @00:00:24.089222   PASS - test_mw_in_recording_marked in 6.295 seconds
+d_00: @00:00:25.521522  open order: VDD_SD on 4, init 6, superblock 14, VDD_MIC on 17, configure 18, start 20
+d_00: @00:00:26.782022   PASS - test_open_order in 2.693 seconds
+d_00: @00:00:32.812422   PASS - test_refusal_plays_m3 in 6.031 seconds
+d_00: @00:02:34.505222   PASS - test_retry_storage_reports_result in 121.693 seconds
+d_00: @00:02:34.505222  START - test_ship_closes_everything_first
+d_00: @00:02:41.262622   PASS - test_ship_closes_everything_first in 6.758 seconds
+d_00: @00:02:41.262622  START - test_stop_m2_after_mic_off
+d_00: @00:02:44.955522  stop: VDD_MIC off at 146 (t 164725100 us), first MOTOR high from the press at 151 (t 164725100 us)
+d_00: @00:02:44.955522   PASS - test_stop_m2_after_mic_off in 3.693 seconds
+d_00: @00:02:59.648422   PASS - test_watchdog_fed_while_recording in 14.693 seconds
+d_00: @00:02:59.648422  Running TESTSUITE recorder_boot
+d_00: @00:02:59.648422  START - test_boot_count_only_at_boot
+d_00: @00:03:00.322322  boot_count at boot 1, after VBUS out and in twice 1
+d_00: @00:03:00.594222   PASS - test_boot_count_only_at_boot in 0.946 seconds
+d_00: @00:03:07.124122   PASS - test_init_done_each_row in 6.530 seconds
+d_00: @00:03:15.248522   PASS - test_recovery_rows in 8.125 seconds
+d_00: @00:03:15.248522  START - test_restart_after_cut_recovers
+d_00: @00:03:20.479422   PASS - test_restart_after_cut_recovers in 5.231 seconds
+d_00: @00:03:52.024122   PASS - test_selftest_items in 31.545 seconds
+d_00: @00:03:52.024122  START - test_vbus_boot_charges_before_mount
+d_00: @00:03:52.195922  boot with VBUS: charger enabled at 14, first card init at 20
+d_00: @00:03:52.760322   PASS - test_vbus_boot_charges_before_mount in 0.737 seconds
+d_00: @00:03:52.760322  TESTSUITE recorder_boot succeeded
+d_00: @00:03:55.384522  T-MIC1: response 29 bytes, status 0, result 0
+d_00: @00:03:55.385622  T-MIC1: recording 1 type 2, 32000 frames, 4 chunks
+d_00: @00:03:55.385622   PASS - test_tmic_records_type_2_for_2s in 2.626 seconds
+d_00: @00:03:59.070322  T-SIGN: reported on 235838 off 236911 on 237912 off 238985 ms; rail on 235838 off 236911 on 237912 off 238985 ms
+d_00: @00:03:59.070322   PASS - test_tsign_reports_mic_times in 3.685 seconds
+d_00: @00:05:10.758922   PASS - test_each_kind_logged in 71.689 seconds
+d_00: @00:05:10.758922  START - test_pattern_start_logged
+d_00: @00:05:12.191222  M1 action at 311930 ms, start logged 311930 ms
+d_00: @00:05:13.451722   PASS - test_pattern_start_logged in 2.693 seconds
+d_00: @00:05:13.451722  START - test_stop_press_time_logged
+d_00: @00:05:17.044622  stop press: fired at 316784 ms, logged press start 315784 ms
+d_00: @00:05:17.044622   PASS - test_stop_press_time_logged in 3.593 seconds
+d_00: @00:05:17.044622  START - test_hfxo_in_boot_and_recovery
+d_00: @00:05:17.216422  HFXO BOOT: requests 1 at the boot card init (event 17), STANDBY step at 317156000 us, now 0
+d_00: @00:05:19.925222  HFXO RECOVERY: requests 1 at the boot card init (event 17), RECOVERY step at 319864 ms, STANDBY at 319864000 us, now 0
+d_00: @00:05:19.925222   PASS - test_hfxo_in_boot_and_recovery in 2.881 seconds
+d_00: @00:05:20.097022  RAILS row 3 -> STANDBY: ok
+d_00: @00:05:20.268822  RAILS row 5 -> CHARGING: ok
+d_00: @00:05:20.840822  RAILS row 6 -> ERR_STORAGE_FAULT: ok
+d_00: @00:05:21.012622  RAILS row 8 -> ERR_BATTERY_LOW: ok
+d_00: @00:05:23.721422  RAILS row 9 -> STANDBY: ok
+d_00: @00:05:25.153722  RAILS row 12 -> RECORDING: ok
+d_00: @00:05:25.436722  RAILS row 20 -> CHARGING: ok
+d_00: @00:05:25.608522  RAILS row 24 -> ERR_STORAGE_FULL: ok
+d_00: @00:05:29.301422  RAILS row 26 -> STANDBY: ok
+d_00: @00:05:31.394222  RAILS row 27 -> RECORDING: ok
+d_00: @00:05:32.948422  RAILS row 30 -> CHARGING: ok
+d_00: @00:05:35.041122  RAILS row 37 -> ERR_MIC_FAULT: ok
+d_00: @00:05:35.403722  RAILS row 39 -> TRANSFER: ok
+d_00: @00:05:35.796322  RAILS row 40 -> STANDBY: ok
+d_00: @00:05:36.188922  RAILS row 44 -> ERR_CHARGER: ok
+d_00: @00:05:36.661922  RAILS row 46 -> CHARGING: ok
+d_00: @00:05:37.134922  RAILS row 47 -> STANDBY: ok
+d_00: @00:06:38.767322  RAILS row 61 -> STANDBY: ok
+d_00: @00:06:38.767322   PASS - test_rails_per_state in 78.843 seconds
+d_00: @00:06:44.463122   PASS - test_sd_rail_per_state in 5.696 seconds
+d_00: @00:06:53.354722   PASS - test_charge_on_every_vbus_row in 8.892 seconds
+d_00: @00:07:42.749422   PASS - test_factory_rows in 49.395 seconds
+d_00: @00:07:43.383522   PASS - test_fw_end_row in 0.635 seconds
+d_00: @00:07:53.775822  ROW 1 SHIP -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+d_00: @00:08:04.168122  ROW 2 OFF -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+d_00: @00:08:14.450022  ROW 3 BOOT -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:08:27.268922  ROW 4 BOOT -> RECOVERY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:08:37.550822  ROW 5 BOOT -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+d_00: @00:08:48.232922  ROW 6 BOOT -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+d_00: @00:09:00.504722  ROW 7 BOOT -> OFF: taken yes, now OFF, VDD_MIC checks ok
+d_00: @00:09:10.786622  ROW 8 BOOT -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+d_00: @00:09:23.605522  ROW 9 RECOVERY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:09:36.424422  ROW 10 RECOVERY -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+d_00: @00:09:49.243322  ROW 11 RECOVERY -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+d_00: @00:10:00.785722  ROW 12 STANDBY -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+d_00: @00:10:12.331022  ROW 13 STANDBY -> RECOVERY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:10:23.873422  ROW 14 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:10:35.415822  ROW 15 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:10:46.958222  ROW 16 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:10:57.900622  ROW 17 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:11:09.093222  ROW 18 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:11:21.706722  ROW 19 STANDBY -> OFF: taken yes, now OFF, VDD_MIC checks ok
+d_00: @00:11:32.099022  ROW 20 STANDBY -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+d_00: @00:12:43.441322  ROW 21 STANDBY -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:13:54.783622  ROW 22 STANDBY -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+d_00: @00:15:07.050522  ROW 23 STANDBY -> OFF: taken yes, now OFF, VDD_MIC checks ok
+d_00: @00:15:17.332422  ROW 24 STANDBY -> ERR_STORAGE_FULL: taken yes, now ERR_STORAGE_FULL, VDD_MIC checks ok
+d_00: @00:15:28.235322  ROW 25 STANDBY -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+d_00: @00:15:42.038322  ROW 26 RECORDING -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:15:54.241222  ROW 27 RECORDING -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+d_00: @00:16:06.707922  ROW 28 RECORDING -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+d_00: @00:16:18.314522  ROW 29 RECORDING -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+d_00: @00:16:29.974322  ROW 30 RECORDING -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+d_00: @00:16:46.577122  ROW 31 RECORDING -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+d_00: @00:17:00.694122  ROW 32 RECORDING -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+d_00: @00:17:15.058222  ROW 33 RECORDING -> OFF: taken yes, now OFF, VDD_MIC checks ok
+d_00: @00:17:29.161022  ROW 34 RECORDING -> RECORDING: taken yes, now RECORDING, VDD_MIC checks ok
+d_00: @00:17:43.266322  ROW 35 RECORDING -> ERR_STORAGE_FULL: taken yes, now ERR_STORAGE_FULL, VDD_MIC checks ok
+d_00: @00:17:56.369122  ROW 36 RECORDING -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+d_00: @00:18:08.571922  ROW 37 RECORDING -> ERR_MIC_FAULT: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:18:20.190222  ROW 38 RECORDING -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+d_00: @00:18:30.662922  ROW 39 CHARGING -> TRANSFER: taken yes, now TRANSFER, VDD_MIC checks ok
+d_00: @00:18:41.165622  ROW 40 CHARGING -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:18:51.557922  ROW 41 CHARGING -> ERR_STORAGE_FULL: taken yes, now ERR_STORAGE_FULL, VDD_MIC checks ok
+d_00: @00:19:03.899922  ROW 42 CHARGING -> OFF: taken yes, now OFF, VDD_MIC checks ok
+d_00: @00:19:14.292222  ROW 43 CHARGING -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+d_00: @00:19:24.794922  ROW 44 CHARGING -> ERR_CHARGER: taken yes, now ERR_CHARGER, VDD_MIC checks ok
+d_00: @00:19:36.447722  ROW 45 CHARGING -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+d_00: @00:19:47.030822  ROW 46 TRANSFER -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+d_00: @00:19:57.613922  ROW 47 TRANSFER -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:20:08.358122  ROW 48 TRANSFER -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+d_00: @00:20:18.921322  ROW 49: test recording in FACTORY_TEST, VDD_MIC seen on inside it: yes
+d_00: @00:20:18.921322  ROW 49 TRANSFER -> FACTORY_TEST: taken yes, now FACTORY_TEST, VDD_MIC checks ok
+d_00: @00:20:30.654522  ROW 50 TRANSFER -> TRANSFER: taken yes, now TRANSFER, VDD_MIC checks ok
+d_00: @00:20:41.046822  ROW 51 ERR_STORAGE_FULL -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+d_00: @00:20:52.589222  ROW 52 ERR_STORAGE_FULL -> ERR_STORAGE_FULL: taken yes, now ERR_STORAGE_FULL, VDD_MIC checks ok
+d_00: @00:22:03.931522  ROW 53 ERR_STORAGE_FULL -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+d_00: @00:23:16.198422  ROW 54 ERR_STORAGE_FULL -> OFF: taken yes, now OFF, VDD_MIC checks ok
+d_00: @00:23:26.590722  ROW 55 ERR_BATTERY_LOW -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+d_00: @00:23:38.133122  ROW 56 ERR_BATTERY_LOW -> ERR_BATTERY_LOW: taken yes, now ERR_BATTERY_LOW, VDD_MIC checks ok
+d_00: @00:24:50.400022  ROW 57 ERR_BATTERY_LOW -> OFF: taken yes, now OFF, VDD_MIC checks ok
+d_00: @00:25:01.192522  ROW 58 ERR_STORAGE_FAULT -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+d_00: @00:26:12.935022  ROW 59 ERR_STORAGE_FAULT -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+d_00: @00:27:27.214522  ROW 60 ERR_STORAGE_FAULT -> RECOVERY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:28:38.957022  ROW 61 ERR_STORAGE_FAULT -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:29:50.699522  ROW 62 ERR_STORAGE_FAULT -> ERR_STORAGE_FAULT: taken yes, now ERR_STORAGE_FAULT, VDD_MIC checks ok
+d_00: @00:31:02.964622  ROW 63 ERR_STORAGE_FAULT -> OFF: taken yes, now OFF, VDD_MIC checks ok
+d_00: @00:31:20.727822  ROW 64 ERR_MIC_FAULT -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:31:33.041022  ROW 65 ERR_MIC_FAULT -> CHARGING: taken yes, now CHARGING, VDD_MIC checks ok
+d_00: @00:31:47.675922  ROW 66 ERR_MIC_FAULT -> OFF: taken yes, now OFF, VDD_MIC checks ok
+d_00: @00:31:58.289022  ROW 67 ERR_CHARGER -> STANDBY: taken yes, now STANDBY, VDD_MIC checks ok
+d_00: @00:33:12.852222  ROW 68 ERR_CHARGER -> OFF: taken yes, now OFF, VDD_MIC checks ok
+d_00: @00:33:23.505922  ROW 69 FACTORY_TEST -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+d_00: @00:33:57.759822  ROW 70 FACTORY_TEST -> SHIP: taken yes, now SHIP, VDD_MIC checks ok
+d_00: @00:34:32.013722  ROW 71 FACTORY_TEST -> SHIP: taken yes, now SHIP, VDD_MIC checks ok
+d_00: @00:34:42.687322  ROW 72 FACTORY_TEST -> BOOT: taken yes, now BOOT, VDD_MIC checks ok
+d_00: @00:34:42.687322  ROWS: 72 rows, 0 not run, 0 not taken, 0 with a VDD_MIC fault, 7272 checks
+d_00: @00:34:42.687322   PASS - test_mic_rail_only_in_recording in 1619.304 seconds
+d_00: @00:35:04.166722   PASS - test_recording_exits in 21.480 seconds
+d_00: @00:35:05.565822   PASS - test_transfer_rows in 1.400 seconds
+d_00: @00:35:05.928422   PASS - test_usb_configured in 0.363 seconds
+d_00: @00:35:08.671222   PASS - test_vbus_in_recording in 2.743 seconds
+d_00: @00:36:12.135322   PASS - test_vbus_out_at_b2_goes_off in 63.465 seconds
+d_00: @00:36:16.702022   PASS - test_factory_gestures_reach_the_jig in 4.567 seconds
+d_00: @00:36:16.702022  START - test_no_command_starts_or_stops
+d_00: @00:36:17.074722  RULES opcode 0x01 in CHARGING: status 0
+d_00: @00:36:17.165222  RULES opcode 0x02 in CHARGING: status 8
+d_00: @00:36:17.255722  RULES opcode 0x03 in CHARGING: status 8
+d_00: @00:36:17.346222  RULES opcode 0x04 in CHARGING: status 8
+d_00: @00:36:17.436722  RULES opcode 0x05 in CHARGING: status 8
+d_00: @00:36:17.527222  RULES opcode 0x06 in CHARGING: status 0
+d_00: @00:36:17.617722  RULES opcode 0x07 in CHARGING: status 0
+d_00: @00:36:17.708222  RULES opcode 0x08 in CHARGING: status 4
+d_00: @00:36:17.798722  RULES opcode 0x09 in CHARGING: status 4
+d_00: @00:36:17.889222  RULES opcode 0x0a in CHARGING: status 10
+d_00: @00:36:17.979722  RULES opcode 0x0b in CHARGING: status 8
+d_00: @00:36:18.070222  RULES opcode 0x0c in CHARGING: status 0
+d_00: @00:36:18.160722  RULES opcode 0x0d in CHARGING: status 11
+d_00: @00:36:18.331622  RULES opcode 0x01 in TRANSFER: status 0
+d_00: @00:36:18.422122  RULES opcode 0x02 in TRANSFER: status 0
+d_00: @00:36:18.512622  RULES opcode 0x03 in TRANSFER: status 5
+d_00: @00:36:18.603122  RULES opcode 0x04 in TRANSFER: status 5
+d_00: @00:36:18.693622  RULES opcode 0x05 in TRANSFER: status 5
+d_00: @00:36:18.784122  RULES opcode 0x06 in TRANSFER: status 0
+d_00: @00:36:18.874622  RULES opcode 0x07 in TRANSFER: status 0
+d_00: @00:36:18.965122  RULES opcode 0x08 in TRANSFER: status 4
+d_00: @00:36:19.055622  RULES opcode 0x09 in TRANSFER: status 4
+d_00: @00:36:19.146122  RULES opcode 0x0a in TRANSFER: status 10
+d_00: @00:36:19.236622  RULES opcode 0x0b in TRANSFER: status 0
+d_00: @00:36:19.327122  RULES opcode 0x0c in TRANSFER: status 0
+d_00: @00:36:19.417622  RULES opcode 0x0d in TRANSFER: status 11
+d_00: @00:36:22.041822  RULES factory 0x10: status 0
+d_00: @00:36:22.132322  RULES factory 0x11: status 4
+d_00: @00:36:28.222222  RULES factory 0x20: status 0
+d_00: @00:36:29.312622  RULES factory 0x30: status 0
+d_00: @00:36:30.403022  RULES factory 0x31: status 0
+d_00: @00:36:30.988422  RULES factory 0x40: status 0
+d_00: @00:36:34.220022  RULES factory 0x41: status 0
+d_00: @00:36:34.310522  RULES factory 0x50: status 0
+d_00: @00:36:44.400022  RULES factory 0x60: status 0
+d_00: @00:36:44.490522  RULES factory 0x70: status 0
+d_00: @00:36:44.581022  RULES factory 0x71: status 0
+d_00: @00:36:44.671522  RULES opcode 0x01 in FACTORY_TEST: status 0
+d_00: @00:36:44.762022  RULES opcode 0x02 in FACTORY_TEST: status 8
+d_00: @00:36:44.852522  RULES opcode 0x03 in FACTORY_TEST: status 8
+d_00: @00:36:44.943022  RULES opcode 0x04 in FACTORY_TEST: status 8
+d_00: @00:36:45.033522  RULES opcode 0x05 in FACTORY_TEST: status 8
+d_00: @00:36:45.124022  RULES opcode 0x06 in FACTORY_TEST: status 0
+d_00: @00:36:45.214522  RULES opcode 0x07 in FACTORY_TEST: status 0
+d_00: @00:36:45.305022  RULES opcode 0x08 in FACTORY_TEST: status 4
+d_00: @00:36:45.395522  RULES opcode 0x09 in FACTORY_TEST: status 4
+d_00: @00:36:45.486022  RULES opcode 0x0a in FACTORY_TEST: status 10
+d_00: @00:36:45.576522  RULES opcode 0x0b in FACTORY_TEST: status 8
+d_00: @00:36:45.667022  RULES opcode 0x0c in FACTORY_TEST: status 0
+d_00: @00:36:51.756922  RULES opcode 0x0d in FACTORY_TEST: status 0
+d_00: @00:36:54.449722   PASS - test_no_command_starts_or_stops in 37.748 seconds
+d_00: @00:36:56.121622  SCR_CHARGING frames: from the join 7655bffd0ef9a850; typed 50 % Charging 30 min 7655bffd0ef9a850, 31 min 591387ab3360d06d, 51 % 48e46b48e88ce877, Full e228d8ba8a36c877
+d_00: @00:36:57.793522  SCR_CHARGING frames (full): from the join e228d8ba8a36c877; typed 50 % Full e228d8ba8a36c877, Charging 7655bffd0ef9a850
+d_00: @00:36:57.793522   PASS - test_battery_reaches_screens in 3.344 seconds
+d_00: @00:37:05.946722   PASS - test_ilim_dims_in_recording in 8.154 seconds
+d_00: @00:37:05.946722  START - test_start_during_ilim_hold_is_dim
+d_00: @00:37:09.800122   PASS - test_start_during_ilim_hold_is_dim in 3.854 seconds
+d_00: @00:37:09.800122  START - test_start_order_and_times
+d_00: @00:37:11.232422  start: HFXO request 15 (2230972200 us), running 16 (2230973200 us), VDD_MIC on 17 (2230973200 us), configure 18 (2230974300 us), pins default 19, PDM start 20 (2230974300 us)
+d_00: @00:37:12.492922   PASS - test_start_order_and_times in 2.693 seconds
+d_00: @00:37:12.492922  START - test_stop_order
+d_00: @00:37:15.885822  stop: PDM stop 141, pins sleep 145, VDD_MIC off 146, HFXO release 147, blocks held after 0
+d_00: @00:37:15.885822   PASS - test_stop_order in 3.393 seconds
+d_00: @00:37:15.885822  Running TESTSUITE recorder_ship
+d_00: @00:37:15.885822  START - test_ship_closes_each_part_first
+d_00: @00:37:16.549122  ship (factory): step 1 ended at log 12 on thread rrec; SHPHLDCONFIG 12, USB disable 11, VDD_SD off 9; at step 1's end: VDD_MIC 0, VDD_SD 0, USB 0, screen blanked 1, radio stops 1, beacon stopped 0
+d_00: @00:37:22.773422  ship (menu): step 1 ended at log 7 on thread rrec, SHPHLDCONFIG 7, screen blanked 1
+d_00: @00:37:22.773422   PASS - test_ship_closes_each_part_first in 6.888 seconds
+d_00: @00:37:22.773422  START - test_ship_closes_usb_before_second_unmount
+d_00: @00:37:43.346622  ship storage: step 1 ended 1, USB disable at 2258326 ms, second try's record at 2263327 ms, SHPHLDCONFIG 32
+d_00: @00:37:47.331622   PASS - test_ship_closes_usb_before_second_unmount in 24.559 seconds
+d_00: @00:37:47.331622  START - test_ship_feels_whole_m2
+d_00: @00:37:49.835022  ship: 4 MOTOR edges before SHPHLDCONFIG (index 6)
+d_00: @00:37:49.835022  ship: M2 segment 0 lasted 80000 us (FW l.323: 80 ms)
+d_00: @00:37:49.835022  ship: M2 segment 1 lasted 120000 us (FW l.323: 120 ms)
+d_00: @00:37:49.835022  ship: M2 segment 2 lasted 80000 us (FW l.323: 80 ms)
+d_00: @00:37:49.835022  ship: M2 lasted 280000 us on the MOTOR pin (FW l.323: 280 ms)
+d_00: @00:37:49.835022   PASS - test_ship_feels_whole_m2 in 2.504 seconds
+d_00: @00:37:49.835022  START - test_ship_with_stuck_screens_goes_on
+d_00: @00:37:53.339722   PASS - test_ship_with_stuck_screens_goes_on in 3.505 seconds
+d_00: @00:37:53.339722  TESTSUITE recorder_ship succeeded
+d_00: @00:37:54.772022   PASS - test_forced_draw_failure in 1.433 seconds
+d_00: @00:38:05.164322  SIGN-1 ROW 1: ok
+d_00: @00:38:15.556622  SIGN-1 ROW 2: ok
+d_00: @00:38:25.838522  SIGN-1 ROW 3: ok
+d_00: @00:38:38.657422  SIGN-1 ROW 4: ok
+d_00: @00:38:48.939322  SIGN-1 ROW 5: ok
+d_00: @00:38:59.621422  SIGN-1 ROW 6: ok
+d_00: @00:39:11.893222  SIGN-1 ROW 7: ok
+d_00: @00:39:22.175122  SIGN-1 ROW 8: ok
+d_00: @00:39:34.993022  SIGN-1 ROW 9: ok
+d_00: @00:39:47.811922  SIGN-1 ROW 10: ok
+d_00: @00:40:00.630822  SIGN-1 ROW 11: ok
+d_00: @00:40:12.173222  SIGN-1 ROW 12: ok
+d_00: @00:40:23.718522  SIGN-1 ROW 13: ok
+d_00: @00:40:35.260922  SIGN-1 ROW 14: ok
+d_00: @00:40:46.803322  SIGN-1 ROW 15: ok
+d_00: @00:40:58.345722  SIGN-1 ROW 16: ok
+d_00: @00:41:09.288122  SIGN-1 ROW 17: ok
+d_00: @00:41:20.480722  SIGN-1 ROW 18: ok
+d_00: @00:41:33.094222  SIGN-1 ROW 19: ok
+d_00: @00:41:43.486522  SIGN-1 ROW 20: ok
+d_00: @00:42:54.828822  SIGN-1 ROW 21: ok
+d_00: @00:44:06.171122  SIGN-1 ROW 22: ok
+d_00: @00:45:18.438022  SIGN-1 ROW 23: ok
+d_00: @00:45:28.719922  SIGN-1 ROW 24: ok
+d_00: @00:45:39.622822  SIGN-1 ROW 25: ok
+d_00: @00:45:53.425822  SIGN-1 ROW 26: ok
+d_00: @00:46:05.628722  SIGN-1 ROW 27: ok
+d_00: @00:46:18.096422  SIGN-1 ROW 28: ok
+d_00: @00:46:29.703022  SIGN-1 ROW 29: ok
+d_00: @00:46:41.361822  SIGN-1 ROW 30: ok
+d_00: @00:46:57.964622  SIGN-1 ROW 31: ok
+d_00: @00:47:12.081622  SIGN-1 ROW 32: ok
+d_00: @00:47:26.445722  SIGN-1 ROW 33: ok
+d_00: @00:47:40.548522  SIGN-1 ROW 34: ok
+d_00: @00:47:54.652822  SIGN-1 ROW 35: ok
+d_00: @00:48:07.755622  SIGN-1 ROW 36: ok
+d_00: @00:48:19.958422  SIGN-1 ROW 37: ok
+d_00: @00:48:31.575722  SIGN-1 ROW 38: ok
+d_00: @00:48:42.048422  SIGN-1 ROW 39: ok
+d_00: @00:48:52.551122  SIGN-1 ROW 40: ok
+d_00: @00:49:02.943422  SIGN-1 ROW 41: ok
+d_00: @00:49:15.285422  SIGN-1 ROW 42: ok
+d_00: @00:49:25.677722  SIGN-1 ROW 43: ok
+d_00: @00:49:36.180422  SIGN-1 ROW 44: ok
+d_00: @00:49:47.833222  SIGN-1 ROW 45: ok
+d_00: @00:49:58.416322  SIGN-1 ROW 46: ok
+d_00: @00:50:08.999422  SIGN-1 ROW 47: ok
+d_00: @00:50:19.743622  SIGN-1 ROW 48: ok
+d_00: @00:50:30.306822  SIGN-1 ROW 49: ok
+d_00: @00:50:42.040022  SIGN-1 ROW 50: ok
+d_00: @00:50:52.432322  SIGN-1 ROW 51: ok
+d_00: @00:51:03.974722  SIGN-1 ROW 52: ok
+d_00: @00:52:15.317022  SIGN-1 ROW 53: ok
+d_00: @00:53:27.583922  SIGN-1 ROW 54: ok
+d_00: @00:53:37.976222  SIGN-1 ROW 55: ok
+d_00: @00:53:49.518622  SIGN-1 ROW 56: ok
+d_00: @00:55:01.785522  SIGN-1 ROW 57: ok
+d_00: @00:55:12.578022  SIGN-1 ROW 58: ok
+d_00: @00:56:24.320522  SIGN-1 ROW 59: ok
+d_00: @00:57:38.600022  SIGN-1 ROW 60: ok
+d_00: @00:58:50.342522  SIGN-1 ROW 61: ok
+d_00: @01:00:02.085022  SIGN-1 ROW 62: ok
+d_00: @01:01:14.350122  SIGN-1 ROW 63: ok
+d_00: @01:01:32.113322  SIGN-1 ROW 64: ok
+d_00: @01:01:44.426522  SIGN-1 ROW 65: ok
+d_00: @01:01:59.061422  SIGN-1 ROW 66: ok
+d_00: @01:02:09.674522  SIGN-1 ROW 67: ok
+d_00: @01:03:21.177322  SIGN-1 ROW 68: ok
+d_00: @01:03:34.891422  SIGN-1 ROW 69: ok
+d_00: @01:04:06.084922  SIGN-1 ROW 70: ok
+d_00: @01:04:40.338822  SIGN-1 ROW 71: ok
+d_00: @01:04:54.072822  SIGN-1 ROW 72: ok
+d_00: @01:04:54.072822  SIGN-1: 72 rows, 0 not run, 0 failed, 606 ticks with VDD_MIC on checked
+d_00: @01:04:54.072822   PASS - test_sign1_every_row in 1619.301 seconds
+d_00: @01:04:54.072822  START - test_close_mic_off_before_screen_leaves
+d_00: @01:04:57.565722  stop: the screens were told 7 times, 0 of them with VDD_MIC on outside RECORDING
+d_00: @01:05:01.201122   PASS - test_close_mic_off_before_screen_leaves in 7.129 seconds
+d_00: @01:05:06.425422   PASS - test_only_rec_mics_on_enables_mic in 5.225 seconds
+d_00: @01:05:07.857722   PASS - test_sign_refused_no_mic_m3_log in 1.433 seconds
+d_00: @01:05:07.857722  START - test_start_draws_sign_before_mic
+d_00: @01:05:11.022422   PASS - test_start_draws_sign_before_mic in 3.165 seconds
+d_00: @01:05:11.022422  Running TESTSUITE recorder_unmount
+d_00: @01:05:11.022422  START - test_failed_unmount_retried_and_reported
+d_00: @01:05:38.462522  unmount: record 1: errno -16, state TRANSFER, try 1
+d_00: @01:05:38.462522  unmount: record 2: errno 0, state CHARGING, try 4
+d_00: @01:05:38.462522  unmount: 2 records 0x0290, VDD_SD now 0, state CHARGING
+d_00: @01:05:38.522822   PASS - test_failed_unmount_retried_and_reported in 27.501 seconds
+d_00: @01:05:53.985822      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_unmount.c:222: recorder_unmount_test_one_wait_each_per_step: (held < 10000 + 1500 is false)
+d_00: @01:05:53.985822  at most one wait for the command and one for the unmount (15000 ms)
+d_00: @01:05:53.985822   FAIL - test_one_wait_each_per_step in 15.463 seconds
+d_00: @01:06:34.518122      Assertion failed at WEST_TOPDIR/firmware/tests/recorder/src/test_unmount.c:204: recorder_unmount_test_retry_never_takes_the_card: (err[1] not equal to -EBUSY)
+d_00: @01:06:34.518122   FAIL - test_retry_never_takes_the_card in 40.533 seconds
+d_00: @01:06:43.369822  unmount: the unconfigured step took about 7760 ms
+d_00: @01:06:43.369822  unmount: row 46 step at 4003309 ms, VDD_SD off at 4003309500 us, steps 2, VDD_SD now 0
+d_00: @01:06:43.430122   PASS - test_unconfigured_finish_times_out in 8.912 seconds
+d_00: @01:06:49.852322  unmount: row 47 step at 4009793 ms, VDD_SD off at 4009793300 us, steps 2, VDD_SD now 0
+d_00: @01:06:49.912622   PASS - test_vbus_out_during_read_command in 6.483 seconds
+d_00: @01:06:49.912622  TESTSUITE recorder_unmount failed.
+d_00: @01:06:49.912622  SUITE PASS - 100.00% [recorder_a_noscreens]: pass = 1, fail = 0, skip = 0, total = 1 duration = 2.504 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_a_noscreens.test_ship_without_screens_ends] duration = 2.504 seconds
+d_00: @01:06:49.912622  SUITE PASS - 100.00% [recorder_actions]: pass = 12, fail = 0, skip = 0, total = 12 duration = 177.149 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_ble_highlight_marks] duration = 5.015 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_close_order] duration = 4.236 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_latched_events_not_lost] duration = 3.006 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_latched_vbus_follows_the_level] duration = 0.343 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_m1_at_start] duration = 2.693 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_mw_in_recording_marked] duration = 6.295 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_open_order] duration = 2.693 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_refusal_plays_m3] duration = 6.031 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_retry_storage_reports_result] duration = 121.693 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_ship_closes_everything_first] duration = 6.758 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_stop_m2_after_mic_off] duration = 3.693 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_actions.test_watchdog_fed_while_recording] duration = 14.693 seconds
+d_00: @01:06:49.912622  SUITE PASS - 100.00% [recorder_boot]: pass = 6, fail = 0, skip = 0, total = 6 duration = 53.114 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_boot.test_boot_count_only_at_boot] duration = 0.946 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_boot.test_init_done_each_row] duration = 6.530 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_boot.test_recovery_rows] duration = 8.125 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_boot.test_restart_after_cut_recovers] duration = 5.231 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_boot.test_selftest_items] duration = 31.545 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_boot.test_vbus_boot_charges_before_mount] duration = 0.737 seconds
+d_00: @01:06:49.912622  SUITE PASS - 100.00% [recorder_factory]: pass = 2, fail = 0, skip = 0, total = 2 duration = 6.311 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_factory.test_tmic_records_type_2_for_2s] duration = 2.626 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_factory.test_tsign_reports_mic_times] duration = 3.685 seconds
+d_00: @01:06:49.912622  SUITE PASS - 100.00% [recorder_log]: pass = 3, fail = 0, skip = 0, total = 3 duration = 77.975 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_log.test_each_kind_logged] duration = 71.689 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_log.test_pattern_start_logged] duration = 2.693 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_log.test_stop_press_time_logged] duration = 3.593 seconds
+d_00: @01:06:49.912622  SUITE PASS - 100.00% [recorder_rails]: pass = 3, fail = 0, skip = 0, total = 3 duration = 87.420 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rails.test_hfxo_in_boot_and_recovery] duration = 2.881 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rails.test_rails_per_state] duration = 78.843 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rails.test_sd_rail_per_state] duration = 5.696 seconds
+d_00: @01:06:49.912622  SUITE PASS - 100.00% [recorder_rows]: pass = 9, fail = 0, skip = 0, total = 9 duration = 1767.677 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rows.test_charge_on_every_vbus_row] duration = 8.892 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rows.test_factory_rows] duration = 49.395 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rows.test_fw_end_row] duration = 0.635 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rows.test_mic_rail_only_in_recording] duration = 1619.304 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rows.test_recording_exits] duration = 21.480 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rows.test_transfer_rows] duration = 1.400 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rows.test_usb_configured] duration = 0.363 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rows.test_vbus_in_recording] duration = 2.743 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rows.test_vbus_out_at_b2_goes_off] duration = 63.465 seconds
+d_00: @01:06:49.912622  SUITE PASS - 100.00% [recorder_rules]: pass = 2, fail = 0, skip = 0, total = 2 duration = 42.315 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rules.test_factory_gestures_reach_the_jig] duration = 4.567 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_rules.test_no_command_starts_or_stops] duration = 37.748 seconds
+d_00: @01:06:49.912622  SUITE PASS - 100.00% [recorder_screens]: pass = 3, fail = 0, skip = 0, total = 3 duration = 15.352 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_screens.test_battery_reaches_screens] duration = 3.344 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_screens.test_ilim_dims_in_recording] duration = 8.154 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_screens.test_start_during_ilim_hold_is_dim] duration = 3.854 seconds
+d_00: @01:06:49.912622  SUITE PASS - 100.00% [recorder_sequence]: pass = 2, fail = 0, skip = 0, total = 2 duration = 6.086 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_sequence.test_start_order_and_times] duration = 2.693 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_sequence.test_stop_order] duration = 3.393 seconds
+d_00: @01:06:49.912622  SUITE PASS - 100.00% [recorder_ship]: pass = 4, fail = 0, skip = 0, total = 4 duration = 37.456 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_ship.test_ship_closes_each_part_first] duration = 6.888 seconds
+d_00: @01:06:49.912622   - PASS - [recorder_ship.test_ship_closes_usb_before_second_unmount] duration = 24.559 seconds
+SHORT RUN exit 1
+latched VBUS: VBUS in posted -42, row 40 seen 0, state CHARGING, VBUS present 1
+T-SIGN: reported on 235840 off 236913 on 237914 off 238987 ms; rail on 235840 off 236913 on 237914 off 238987 ms
+ship storage: step 1 ended 1, USB disable at 2258326 ms, second try's record at 2263326 ms, SHPHLDCONFIG 32
+stuck screens: SHPHLDCONFIG 7, 1281 ms after the power off
+one wait each: the glue's lock was free again after 15000 ms
+retry: state RECORDING, VDD_SD 1, records 0x0290 2: (-16, try 1), (0, try 3)
+unmount: row 46 step at 4003307 ms, VDD_SD off at 4003307400 us, steps 2, VDD_SD now 0
+unmount: row 47 step at 4009791 ms, VDD_SD off at 4009791200 us, steps 2, VDD_SD now 0
+d_00: @00:00:15.102222  latched VBUS: VBUS in posted -42, row 40 seen 0, state CHARGING, VBUS present 1
+d_00: @00:03:59.070322  T-SIGN: reported on 235838 off 236911 on 237912 off 238985 ms; rail on 235838 off 236911 on 237912 off 238985 ms
+d_00: @00:37:43.346622  ship storage: step 1 ended 1, USB disable at 2258326 ms, second try's record at 2263327 ms, SHPHLDCONFIG 32
+d_00: @00:37:53.339722  stuck screens: SHPHLDCONFIG 7, 1281 ms after the power off
+d_00: @01:05:53.985822  one wait each: the glue's lock was free again after 15000 ms
+d_00: @01:06:34.518122  retry: state RECORDING, VDD_SD 1, records 0x0290 2: (-16, try 1), (0, try 3)
+d_00: @01:06:43.369822  unmount: row 46 step at 4003309 ms, VDD_SD off at 4003309500 us, steps 2, VDD_SD now 0
+d_00: @01:06:49.852322  unmount: row 47 step at 4009793 ms, VDD_SD off at 4009793300 us, steps 2, VDD_SD now 0
+# finished (Mac clock): 2026-11-13 17:12:19 CET
+# remote exit code: 1
+# local log: firmware/build-logs/20261113-171032-fix2-rec-s1.log

@@ -1,0 +1,12 @@
+config RING_GLUE
+	bool "Ring glue: joystick edges into the core, the core's actions to control and recording"
+	select RING_CORE
+	select RING_CONTROL
+	help
+	  One module shared by the product application and the test application, so the chain
+	  that the tests prove is the chain the product runs.
+
+config RING_GLUE_STACK_SIZE
+	int "Stack size of the glue's tick thread"
+	default 2048
+	depends on RING_GLUE

@@ -1,0 +1,34 @@
+--- a/ring_iphone/src/ripl.c
++++ b/ring_iphone/src/ripl.c
+@@ -96,7 +96,7 @@
+ 				d->uid_seen = 0;
+ 				d->state = DS_UID;
+ 			} else {
+-				d->skipped++;
++				d->state = DS_ERR;
+ 			}
+ 			break;
+ 		case DS_UID:
+--- a/ring_iphone/src/ripl.c
++++ b/ring_iphone/src/ripl.c
+@@ -96,7 +96,7 @@
+ 				d->uid_seen = 0;
+ 				d->state = DS_UID;
+ 			} else {
+-				d->skipped++;
++				d->state = DS_ERR;
+ 			}
+ 			break;
+ 		case DS_UID:
+@@ -116,7 +116,7 @@
+ 					memcpy(again, d->hdr, 4);
+ 					d->skipped += 1;
+ 					d->state = DS_CMD;
+-					(void)ripl_ds_feed(d, again, 4);
++					d->state = DS_ERR;
+ 				}
+ 			}
+ 			break;
+MODULE=ring_iphone
+SCEN=L
+EXPECT=RING CHECK L: the four notifications all get their text, although the answer for the first is late FAIL

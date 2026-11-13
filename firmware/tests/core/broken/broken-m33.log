@@ -1,0 +1,17 @@
+broken copy run 2026-11-13 04:15:25 CET, mutation m33
+change applied (diff of the copy against its original):
+194d193
+< 	c->facts.batt = (uint8_t)level;
+196c195,196
+< 		return;  /* ruling R12: kept; the order at "init done" decides */
+---
+> 		c->facts.batt = (uint8_t)level;
+> 		return;
+199d198
+< 		/* a downward crossing: the row of the threshold reached */
+201a201
+> 	c->facts.batt = (uint8_t)level;
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+suites=13 tests=221 pass=221 fail=0
+RESULT PASS tests=221
+EQUIVALENT MUTATION: the tests pass on m33, as documented (no case can tell it from the original)

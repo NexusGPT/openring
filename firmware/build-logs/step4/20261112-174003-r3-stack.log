@@ -1,0 +1,32 @@
+# remote.sh run 20261112-174003-r3-stack
+# command: python3 tools/stack_report.py /ws/out/os-screens-r3dk; echo stack_report exit $?
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 17:40:03 CET
+# free on the server's /: 48 GB
+# source firmware copied to /root/ring-os/src-os-screens
+# started on the server as 20261112-174003-r3-stack; server log /root/ring-os/logs/20261112-174003-r3-stack.log
+frames read for 5293 functions from 682 .su files
+== glue thread (tick_thread, input): dispatch -> screens step
+    568 bytes counted  (0 unknown, 0 inlined)  rglue_input(88) -> dispatch(40) -> rscr_glue_after(112) -> load_view(312) -> r_inbox_get(0) -> rip_inbox_get(16)
+    312 bytes counted  (0 unknown, 1 inlined)  rglue_input(88) -> dispatch(40) -> rscr_glue_after(112) -> rscr_on_core(72) -> nav(inlined)
+    272 bytes counted  (0 unknown, 0 inlined)  rglue_input(88) -> dispatch(40) -> rscr_glue_after(112) -> apply_fx(16) -> r_pair_open(0) -> rdev_pair_open(16)
+    296 bytes counted  (0 unknown, 1 inlined)  tick_thread(72) -> dispatch(40) -> rscr_glue_after(112) -> rscr_on_core(72) -> enter_state(inlined)
+  largest chain: 568 bytes counted
+== Bluetooth RX work queue: devices callbacks into the screens
+    344 bytes counted  (0 unknown, 0 inlined)  cb_paired(0) -> rscr_on_paired(16) -> load_view(312) -> r_inbox_get(0) -> rip_inbox_get(16)
+    440 bytes counted  (0 unknown, 0 inlined)  cb_removed(0) -> rscr_on_removed(112) -> load_view(312) -> apply_fx(16)
+     16 bytes counted  (0 unknown, 0 inlined)  cb_passkey(0) -> rscr_on_passkey(16)
+  largest chain: 440 bytes counted
+== screens thread
+    232 bytes counted  (0 unknown, 2 inlined)  screens_thread(184) -> render(inlined) -> render_locked(32) -> fill_frame(inlined) -> r_inbox_get(0) -> rip_inbox_get(16)
+    768 bytes counted  (0 unknown, 1 inlined)  screens_thread(184) -> render(inlined) -> render_locked(32) -> rscr_draw(448) -> draw_list(104)
+    664 bytes counted  (0 unknown, 2 inlined)  screens_thread(184) -> do_sign_start(inlined) -> render_locked(32) -> rscr_draw(448) -> draw_notif(inlined)
+    224 bytes counted  (0 unknown, 0 inlined)  screens_thread(184) -> rscr_tick(40)
+    240 bytes counted  (0 unknown, 0 inlined)  screens_thread(184) -> apply_fx(16) -> r_dev_remove(0) -> rdev_remove(40)
+  largest chain: 768 bytes counted
+chain members unknown (not in the build output, not declared inlined): 0; declared inlined (counted in their callers): 7
+These sums are a static lower bound: frames of the named functions only, no LVGL, kernel or Bluetooth frames, no indirect callees.
+stack_report exit 0
+# finished (Mac clock): 2026-11-12 17:40:54 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step4/20261112-174003-r3-stack.log

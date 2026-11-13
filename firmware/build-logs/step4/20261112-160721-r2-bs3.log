@@ -1,0 +1,85 @@
+# remote.sh run 20261112-160721-r2-bs3
+# command: tests/bsim/screens/run.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 16:07:21 CET
+# free on the server's /: 45 GB
+# source firmware copied to /root/ring-os/src-os-screens
+# started on the server as 20261112-160721-r2-bs3; server log /root/ring-os/logs/20261112-160721-r2-bs3.log
+bsim-screens: firmware /ws/firmware/tests/bsim/screens, outputs /ws/out/20261112-160721-r2-bs3-bsim-screens, broken 0
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-160721-r2-bs3-bsim-screens/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== build ring for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-160721-r2-bs3-bsim-screens/build-ring.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring ok
+=== test S (ok): ring + stand-in iPhone, 100 simulated seconds, 2026-11-12T15:08:27Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-160721-r2-bs3-bsim-screens/run-ok-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK screens started (LVGL on the memory display) PASS (t=0)
+d_00: @00:00:01.780500  RING CHECK S: the first joystick event turns the screen on: SCR_STATUS PASS (t=1780)
+d_00: @00:00:01.780500  RING CHECK S: the panel is on PASS (t=1780)
+d_00: @00:00:02.560700  RING CHECK S: Right opens the menu PASS (t=2560)
+d_00: @00:00:05.406400  RING PASSKEY slot 0 925850
+d_00: @00:00:05.681500  RING CHECK S: Pair device opens SCR_PAIR and the pairing window of ring_devices PASS (t=5681)
+d_00: @00:00:05.681500  RING CHECK S: the passkey arrives from the pairing PASS (t=5681)
+d_00: @00:00:05.681500  RING CHECK S: six digits were generated and SCR_PAIR was on the screen when they arrived PASS (t=5681)
+d_00: @00:00:05.681500  RING CHECK S: the frame with the digits differs from the pairing frame without them PASS (t=5681)
+d_00: @00:00:10.006429  RING EVENT paired slot 0
+d_00: @00:00:10.006429  RING EVENT link slot 0 up
+d_00: @00:00:10.040229  RING CHECK S: the iPhone paired and is the active device (slot 0, the first paired device) PASS (t=10040)
+d_00: @00:00:10.540302  RING CHECK S: after the pairing the screen shows SCR_DEVICES PASS (t=10540)
+d_00: @00:00:10.540302  RING CHECK S: the pairing screen and the device list are different frames PASS (t=10540)
+d_00: @00:00:12.100766  RING CHECK S: back on the status screen PASS (t=12100)
+d_00: @00:00:12.100766  RING CHECK S: the notification service is found and subscribed PASS (t=12100)
+d_00: @00:00:12.880926  RING CHECK S: Up opens the notification list (empty: the inbox holds nothing) PASS (t=12880)
+d_00: @00:00:13.882934  RING CHECK S: the notification arrives with its text PASS (t=13882)
+d_00: @00:00:14.383034  RING CHECK S: the list screen follows the inbox (still SCR_NOTIFS, redrawn) PASS (t=14383)
+d_00: @00:00:14.383034  RING CHECK S: the frame of the list with the notification differs from the frame of the empty list PASS (t=14383)
+d_00: @00:00:15.163234  RING CHECK S: Right opens the notification detail PASS (t=15163)
+d_00: @00:00:15.163234  RING CHECK S: the detail frame differs from the list frame PASS (t=15163)
+d_00: @00:00:15.943434  RING CHECK S: the dismiss went out through ring_iphone once PASS (t=15943)
+d_00: @00:00:15.943434  RING CHECK S: the iPhone reported the removal: the inbox is empty PASS (t=15943)
+d_00: @00:00:16.443534  RING CHECK S: the screen went back to the list PASS (t=16443)
+d_00: @00:00:16.443534  RING CHECK S: the list is empty again and its frame equals the first empty-list frame PASS (t=16443)
+d_00: @00:00:16.443534  RING CHECK S: no draw was refused PASS (t=16443)
+d_00: @00:00:16.443534  RING MEMORY stack use of every thread after the two-device test (k_thread_stack_space_get):
+d_00: @00:00:16.443534  RING STACK rglue: size 2048, used at most 24
+d_00: @00:00:16.443534  RING STACK screens: size 8192, used at most 24
+d_00: @00:00:16.443534  RING STACK BT RX WQ: size 1536, used at most 24
+d_00: @00:00:16.443534  RING STACK bt_tx_processor: size 1024, used at most 24
+d_00: @00:00:16.443534  RING STACK BT LW WQ: size 1800, used at most 24
+d_00: @00:00:16.443534  RING STACK BT GATT DM WQ: size 1300, used at most 24
+d_00: @00:00:16.443534  RING STACK sysworkq: size 3072, used at most 24
+d_00: @00:00:16.443534  RING STACK MPSL Work: size 1024, used at most 24
+d_00: @00:00:16.443534  RING STACK idle: size 256, used at most 24
+d_00: @00:00:16.443534  RING STACK main: size 4096, used at most 24
+d_00: @00:00:16.443534  RING SCRIPT DONE t=16443 checks=26 fails=0
+d_00: @00:00:16.443534  RING RESULT PASS
+--- stand-in iPhone /ws/out/20261112-160721-r2-bs3-bsim-screens/run-ok-phone.log
+d_01: @00:00:00.000122  PHONE START scenario S
+d_01: @00:00:00.000174  PHONE CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.000174  PHONE CHECK the three Apple services are registered PASS (t=0)
+d_01: @00:00:05.057144  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:05.556604  PHONE CHECK passkey read from the ring's display PASS (t=5556)
+d_01: @00:00:10.006428  PHONE CHECK pairing with the passkey completed and bonded PASS (t=10006)
+d_01: @00:00:10.006428  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=10006)
+d_01: @00:00:10.856564  PHONE INFO HID client subscribed to 3 input reports (t=10856)
+d_01: @00:00:11.706460  PHONE INFO Notification Source subscribed (#1, security level 4, t=11706)
+d_01: @00:00:12.846560  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:12.996564  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:12.996564  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:13.706864  PHONE INFO NS event 0 uid 201 flags 0x18 (0)
+d_01: @00:00:15.206476  PHONE INFO action 1 for notification 201
+d_01: @00:00:15.506576  PHONE INFO NS event 2 uid 201 flags 0x18 (0)
+d_01: @00:01:11.706976  PHONE EVAL t=71706
+d_01: @00:01:11.706976  PHONE CHECK the dismiss chosen on the ring's screen arrived: one negative action (ActionID 1) for notification 201 PASS (t=71706)
+d_01: @00:01:11.706976  PHONE CHECK no action command arrived for any other notification and none was refused PASS (t=71706)
+d_01: @00:01:11.706976  PHONE RESULT PASS checks=7 fails=0
+ring script done at 16443 ms, stand-in evaluated at 71706 ms
+TEST S RESULT PASS (33 checks passed)
+RESULT PASS
+# finished (Mac clock): 2026-11-12 16:08:34 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step4/20261112-160721-r2-bs3.log

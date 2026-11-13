@@ -1,0 +1,68 @@
+import re, sys
+F = "design/ecad/case/pcb/board-notes.md"
+L = open(F, encoding="utf-8").read().split("\n")
+START = [i for i, l in enumerate(L) if l.startswith("**Case procedure: soldering order")][0]
+def idx(prefix):
+    h = [i for i, l in enumerate(L) if i > START and l.startswith(prefix)][:1] if prefix != "1. " or True else []
+    assert len(h) == 1, (prefix, h)
+    return h[0]
+# old steps
+i1, i2, i3, i4, i5, i6, i7, i8, i9 = [idx("%d. " % n) for n in range(1, 10)]
+assert i1 < i2 < i3 < i4 < i5 < i6 < i7 < i8 < i9 and i9 - i1 == 8
+old = {n: L[i1 + n - 1] for n in range(1, 10)}
+assert old[3].startswith("3. Which end first") and old[9].startswith("9. Cell leads")
+
+NEW1 = ("1. Build the case main board (change C5 of design/mfg/assembly/process.md, here PM). Do this before anything else. Nothing is powered at this step: no cell, no USB cable, no meter in voltage mode (PM C5: \"nothing is powered at this step\"). "
+ "(a) Stencil: stainless steel, laser cut, 0.10 mm thick, cut from fab/case_main/gerber/case_main-F_Paste.gbr, 265 openings, smallest area ratio 0.764 (PM P2 table, row \"Case main board, top (F)\"; PM line 92 for why 0.10 and not 0.125 mm). The bottom face has no opening and gets no stencil (PM P2 table, row \"Case main board, bottom (B)\"). "
+ "(b) Paste: Kester NP505-HR, SAC305, Type 4, no-clean (PM P1.2), kept in a refrigerator at 0 to 10 C (PM P1.2, storage). Print the top face only with a squeegee of 80 to 90 durometer (PM P6). Hand printing: align the stencil by its openings on the lands under the 10 times magnifier (PM P7, last bullet). "
+ "(c) Placing: put every part of the top face where fab/case_main/case_main_position.csv says (rows with Side \"top\"; export_fab.sh, Part e of this file), with the values of fab/case_main_parts.csv. The 16 test pads TP1 to TP16 are on the bottom face and are copper only (Round 2, \"Length used\"): nothing is placed there. The USB socket J1 goes on with the other parts. The module U1 has moisture class 3 (E1 p.47): keep it in its sealed bag until it is placed (my reading, the same rule PM P3 gives for U3 of the ring). "
+ "(d) Reflow once, with the profile of PM P3: ramp to 150 C at less than 2.5 C/s; soak 150 to 200 C in 90 to 110 s, then 200 to 217 C; 60 to 75 s above 217 C; at most 35 s above 230 C; peak 240 C, accepted 235 to 245 C on a thermocouple taped beside the most massive part; cool at 6 C/s or slower, and do not move the board while the solder is liquid. The radio module U1 accepts ONE reflow only (E1 p.47: \"Solder the module in a single reflow.\"; PM P3 table, row \"Case main board\" U1: margin 0 passes, AT THE LIMIT). So this board goes through the oven once, and never again: a part that needs rework is put right by hand (see (e)), never by a second pass. "
+ "(e) Inspect every joint at 10 times (PM P6, row Magnifier). Accept a part only when it sits in place and flat, and no solder bridges two neighbouring pads (the accept rule PM gives, from design/mfg/assembly/assembly.md line 99: \"no solder bridge between neighbouring contacts\", parts \"in place and not tilted\"); look hardest at the 0.5 mm pitch of the charger U2 (Round 1, Part c, \"inside the 0.5 mm pitch of U2\"). A joint that fails is put right by hand with the iron setting of PM P4 (340 C, 50 W, at most 7 s; my reading, PM gives no rework setting for these parts). The full written rule for a good reflowed joint is not in PM (PM C14: \"a standard the lead names\"): open, for the lead. The joints under the module U1 and under the thermal pad of U2 cannot be seen at 10 times, and no file gives a check for them: open, for the lead. "
+ "(f) Then, by hand, the four shell slots of the USB socket J1 (the four plated slots, all with pad name SH, Part a of this file): Kester 275 wire 0.5 mm, iron 340 C, 50 W, at most 7 s per joint (PM C5; PM P4 table, rows \"Case cell leads W5, W6\" and \"Case thermistor TH1 leads\", the setting of the same kind of joint), the tip face no wider than the pad (PM P4, general rule). Inspect these joints at 10 times as in (e). The residue stays on the board; it is never washed (PM P1.5).")
+
+NEW4 = ("4. Which end first: the pin board end (pads WP1 to WP4 and WP7) of all five wires first, then the main board end. Reason: the five pads WP1 to WP7 are on the front face of the pin board, and the pin holder has a 0.7 mm recess behind them (`design/case/case-architecture.md` line 17: \"wires had no room in front of the pad face\"; line 236); once the pin board is pressed into the holder (line 238: solder P1 to P4 to PCB2, press PCB2 into the holder, form the two stakes) these pads can no longer be reached (lead). "
+ "The four spring pins P1 to P4 are not soldered with an iron: they are reflowed in paste (`design/wiring/lead-decisions.md` row \"soldering process of the whole product\": \"The four spring pins are reflowed in paste, not soldered by iron\"; PM P4 table, row \"Spring pins P1 to P4 in PCB2\"; change C6). So the order on the pin board is: "
+ "(a) Stencil: stainless steel, laser cut, 0.10 mm, cut from fab/case_pins/gerber/case_pins-F_Paste.gbr (PM P2 table, row \"Case pin board (PCB2)\"). It has four openings, one ring over each pin pad: outer diameter 1.70 mm (the pad) and inner diameter 1.10 mm (the hole), so the paste lies on the pad ring and the hole stays free for the peg (pad and hole: `design/datasheets/p3_harwin_p70.txt` lines 68 and 69; \"pin in paste\" is PM P4, pins row). The ring shape is my choice [CHOICE]; PM gives no opening size. The five wire pads WP1 to WP4 and WP7 get no paste (their footprint says \"no paste\"). "
+ "(b) Paste: Kester NP505-HR as in step 1 (b). Print the front face. "
+ "(c) Carrier: PCB2 lies on a flat carrier that has a hole under each pin pad for the pin tail (the lead's instruction). The peg is 0.65 mm long and the board is 0.8 mm thick, so the tail does not come out of the back face (`design/datasheets/w15_harwin_product_P70-6000045R.txt` lines 280 and 345; Part b of this file, PCB2 0.8 mm); the carrier hole is kept for the paste that is pushed through the 1.1 mm hole (my reading). "
+ "(d) Place P1 to P4 from fab/case_pins/case_pins_position.csv, each with its peg in its hole and its barrel on the paste; the pins come in tape and reel with a pick and place cap (w15 file line 281). "
+ "(e) Reflow once with the profile of PM P3 (step 1 (d)). The pin maker allows 260 C for 10 s (w15 file line 326), the peak is 245 C at most: margin 15 C (PM P3 table, row \"Case pin board\"). "
+ "(f) Inspect each pin at 10 times: it stands upright, solder wets the pad ring round the barrel, and no solder bridges two pads (PM line 142 and assembly.md line 99 give the same rule as step 1 (e); the full rule is open, PM C14). The residue stays (PM P1.5). "
+ "Then, by hand: solder the five wire ends on the pin board, press the pin board into the holder, form the stakes, let the five wires drop down the floor slot, and only then solder the main board ends. The depth gauge step comes after the stakes (step 5), as it was.")
+
+def renum(s, a, b):
+    return s.replace(a, b)
+
+o2 = renum(old[2], "", "")
+new = []
+new.append(NEW1)
+new.append("2." + old[1][2:])
+new.append("3." + old[2][2:])
+new.append(NEW4)
+new.append("5." + old[4][2:])
+new.append("6." + old[5][2:])
+new.append("7." + old[6][2:])
+s8 = "8." + old[7][2:]
+assert "Solder in the order of step 5." in s8
+s8 = s8.replace("Solder in the order of step 5.", "Solder in the order of step 6.")
+new.append(s8)
+s9 = "9." + old[8][2:]
+a = "A reading of about 147 kohm between W1 and W4 is normal (R12 100 kohm plus R13 47 kohm from VRING through VRING_SENSE to ground, `design/ecad/case/netlist.csv`); a beep is a short."
+assert a in s9
+s9 = s9.replace(a, "A reading of about 147 kohm between W1 and W4 is normal (R12 100 kohm plus R13 47 kohm from VRING through VRING_SENSE to ground, `design/ecad/case/netlist.csv`); a beep is a short. Wait for a steady reading before you write the number down: the capacitor C15 (10 uF, `design/ecad/case/parts.csv` line 52, net VRING in `design/ecad/case/netlist.csv` line 252) is on the VRING line and charges through the meter, so the reading moves until C15 is charged (PM P8, change C15; review 3 G10).")
+new.append(s9)
+s10 = "10." + old[9][3:]
+s10 = s10.replace("(they come after step 8, because step 8 needs", "(they come after step 9, because step 9 needs")
+assert "after step 9, because step 9 needs" in s10
+b = "Never swap the two: a reversed cell on the charger is a fault."
+assert b in s10
+s10 = s10.replace(b, b + " After the two cell lead joints are made, check them: red probe on pad W5, black probe on pad W6, meter on volts: the reading must again be positive, between 3.0 and 4.35 V, the same as before cutting (PM P8, change C16; values from `design/wiring/lead-decisions.md` line 70, row \"case cell BT1 leads\": \"the reading must be positive, between 3.0 and 4.35 V\"). A reading outside this range, or a negative one, means a bad joint or swapped leads: reheat or redo the joint, and never go on with the case until the reading is right (my reading).")
+new.append(s10)
+L[i1:i1 + 9] = new
+txt = "\n".join(L)
+for a_, b_ in [("this is why step 7 of the soldering order tells", "this is why step 8 of the soldering order tells"),
+               ("(numbered steps 1 to 9)", "(numbered steps 1 to 10)")]:
+    assert a_ in txt, a_
+    txt = txt.replace(a_, b_)
+open(F, "w", encoding="utf-8").write(txt)
+print("OK")

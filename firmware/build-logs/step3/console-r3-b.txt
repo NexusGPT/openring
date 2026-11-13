@@ -1,0 +1,283 @@
+# remote.sh run 20261112-083918-r3-b
+# command: tests/bsim/iphone/run.sh --broken dm_gone; tests/iphone/broken_run.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 08:39:18 CET
+# free on the server's /: 54 GB
+# source firmware copied to /root/ring-os/src-step3r3b
+# started on the server as 20261112-083918-r3-b; server log /root/ring-os/logs/20261112-083918-r3-b.log
+bsim-iphone: firmware /ws/firmware/tests/bsim/iphone, outputs /ws/out/20261112-083918-r3-b-bsim-iphone, scenarios , broken 1
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-083918-r3-b-bsim-iphone/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+##### broken copy: dm_gone
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -685,7 +685,9 @@
+ 	struct bt_conn_info info;
+ 	/* The Bluetooth host ends a running discovery when the link goes down and calls the discovery's callback (as
+ 	 * "not found") before the disconnected callback of this module runs, so the link itself is asked too. */
+-	bool gone = (link == NULL) || (bt_conn_get_info(link, &info) != 0) || (info.state != BT_CONN_STATE_CONNECTED);
++	bool gone = false;
++	(void)link;
++	(void)info;
+ 
+ 	k_mutex_lock(&lk, K_FOREVER);
+ 	stale = gone || (sconn == NULL) || (((uintptr_t)ctx >> 8) != session_gen);
+=== build ring-dm_gone for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-083918-r3-b-bsim-iphone/build-ring-dm_gone.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring-dm_gone ok
+=== test D (broken-dm_gone): ring + stand-in iPhone, 90 simulated seconds, 2026-11-12T07:40:36Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-083918-r3-b-bsim-iphone/run-broken-dm_gone-D-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:07.344826  RING EVENT link slot 0 down
+d_00: @00:00:07.364900  RING CHECK D: the first link ends (the stand-in ends it while the ring is discovering) PASS (t=7364)
+d_00: @00:00:07.565000  RING CHECK D: the ring counted a session that ended in discovery PASS (t=7565)
+d_00: @00:00:11.168376  RING EVENT link slot 0 up
+d_00: @00:00:14.528900  RING CHECK D: the three services are found in the next session PASS (t=14528)
+d_00: @00:00:16.132100  RING CHECK D: a notification sent in the next session arrives with its text PASS (t=16132)
+d_00: @00:00:16.132100  RING CHECK D: the Media and Current Time services were each subscribed once (in the next session), the Notification Center service at least once, and Service Changed was found PASS (t=16132)
+d_00: @00:00:16.132100  RING INFO D: missing 0/1/0 (ancs/ams/cts), dm_errors 0, dm_stale 0, sessions 2, ended in discovery 1
+d_00: @00:00:16.132100  RING CHECK D: a discovery was running when the link ended and its answer was dropped as stale FAIL (t=16132)
+d_00: @00:00:16.132100  RING CHECK D: no service was reported missing (the answer of the ended session's discovery was not counted) FAIL (t=16132)
+d_00: @00:00:16.132100  RING SCRIPT DONE t=16132 checks=10 fails=2
+d_00: @00:00:16.132100  RING RESULT FAIL
+--- stand-in iPhone /ws/out/20261112-083918-r3-b-bsim-iphone/run-broken-dm_gone-D-phone.log
+d_01: @00:00:00.000122  PHONE START scenario D
+d_01: @00:00:00.000174  PHONE CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.000174  PHONE CHECK the three Apple services are registered PASS (t=0)
+d_01: @00:00:00.645537  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:01.144997  PHONE CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  PHONE CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:06.444957  PHONE INFO HID client subscribed to 3 input reports (t=6444)
+d_01: @00:00:07.254949  PHONE INFO the link is ended while the ring is discovering: Entity Update subscriptions 0, Current Time subscriptions 0 (t=7254)
+d_01: @00:00:10.918395  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:11.168379  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=11168)
+d_01: @00:00:12.118419  PHONE INFO HID client subscribed to 3 input reports (t=12118)
+d_01: @00:00:12.968315  PHONE INFO Notification Source subscribed (#1, security level 4, t=12968)
+d_01: @00:00:14.108415  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:14.258419  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:14.258419  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:16.012019  PHONE INFO NS event 0 uid 301 flags 0x18 (0)
+d_01: @00:00:31.012159  PHONE EVAL t=31012
+d_01: @00:00:31.012159  PHONE CHECK the link ended before the ring had subscribed to Media and Time (the drop came during discovery) PASS (t=31012)
+d_01: @00:00:31.012159  PHONE CHECK in the next session the ring subscribed to the Notification Source, Entity Update and Current Time PASS (t=31012)
+d_01: @00:00:31.012159  PHONE CHECK the ring never wrote Entity Update before subscribing to it PASS (t=31012)
+d_01: @00:00:31.012159  PHONE RESULT PASS checks=9 fails=0
+ring script done at 16132 ms, stand-in evaluated at 31012 ms
+TEST D RESULT FAIL (17 checks passed; infra: none; checks: ring-result 2-failed-checks)
+broken dm_gone: test D failed on its named check, as required: d_00: @00:00:16.132100  RING CHECK D: no service was reported missing (the answer of the ended session's discovery was not counted) FAIL (t=16132)
+RESULT PASS
+##### broken copy: media_state
+Common subdirectories: /ws/firmware/modules/ring_iphone/include and /ws/out/20261112-083918-r3-b-iphone-broken/broken_ring_iphone_media_state/include
+Common subdirectories: /ws/firmware/modules/ring_iphone/src and /ws/out/20261112-083918-r3-b-iphone-broken/broken_ring_iphone_media_state/src
+Common subdirectories: /ws/firmware/modules/ring_iphone/zephyr and /ws/out/20261112-083918-r3-b-iphone-broken/broken_ring_iphone_media_state/zephyr
+INFO    - 1/1 native_sim/native         ring_iphone.logic                                  FAILED rc=1 (native 0.014s <host/gnu>)
+START - test_clock_failed_zone_read_keeps_the_last_zone
+ PASS - test_clock_failed_zone_read_keeps_the_last_zone in 0.000 seconds
+ PASS - test_clock_no_drift_with_delayed_zone_read in 0.000 seconds
+ PASS - test_cts_to_ms in 0.000 seconds
+ PASS - test_cts_zone in 0.000 seconds
+ PASS - test_ds_app_identifier_longer_than_48_is_kept_to_48 in 0.000 seconds
+ PASS - test_ds_empty_notification_ok in 0.000 seconds
+ PASS - test_ds_errors in 0.000 seconds
+ PASS - test_ds_every_fragment_size in 0.000 seconds
+ PASS - test_ds_ignores_bytes_after_the_end in 0.000 seconds
+ PASS - test_ds_late_answer_of_another_request_is_skipped in 0.000 seconds
+ PASS - test_ds_longer_than_limit_is_skipped in 0.000 seconds
+ PASS - test_ds_whole in 0.000 seconds
+ PASS - test_false_header_with_id_zero_recovers_by_retry in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/iphone/src/test_iphone.c:277: ring_iphone_test_media_playback_state: m.state not equal to RIPL_PLAYER_PLAYING
+ FAIL - test_media_playback_state in 0.000 seconds
+ PASS - test_media_starts_unknown in 0.000 seconds
+ PASS - test_media_text_cut_on_a_character in 0.000 seconds
+ PASS - test_media_track_text in 0.000 seconds
+ PASS - test_request_bytes in 0.000 seconds
+TESTSUITE ring_iphone failed.
+SUITE FAIL -  94.44% [ring_iphone]: pass = 17, fail = 1, skip = 0, total = 18 duration = 0.000 seconds
+ - PASS - [ring_iphone.test_clock_failed_zone_read_keeps_the_last_zone] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_clock_no_drift_with_delayed_zone_read] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_cts_to_ms] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_cts_zone] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_app_identifier_longer_than_48_is_kept_to_48] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_empty_notification_ok] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_errors] duration = 0.000 seconds
+twister exit code on the broken copy media_state, native_sim: 1 (log /ws/out/20261112-083918-r3-b-iphone-broken/twister-media_state-native_sim.log)
+media_state on native_sim: the named case failed, as required:  - FAIL - [ring_iphone.test_media_playback_state] duration = 0.000 seconds (failed cases listed: 1)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_iphone.logic                            FAILED rc=1 (native 0.015s <host/gnu>)
+d_00: @00:00:00.000093  START - test_clock_failed_zone_read_keeps_the_last_zone
+d_00: @00:00:00.000093   PASS - test_clock_failed_zone_read_keeps_the_last_zone in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_clock_no_drift_with_delayed_zone_read in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_cts_to_ms in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_cts_zone in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_app_identifier_longer_than_48_is_kept_to_48 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_empty_notification_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_errors in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_every_fragment_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_ignores_bytes_after_the_end in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_late_answer_of_another_request_is_skipped in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_longer_than_limit_is_skipped in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_whole in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_false_header_with_id_zero_recovers_by_retry in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/iphone/src/test_iphone.c:277: ring_iphone_test_media_playback_state: m.state not equal to RIPL_PLAYER_PLAYING
+d_00: @00:00:00.000093   FAIL - test_media_playback_state in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_starts_unknown in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_text_cut_on_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_track_text in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_request_bytes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_iphone failed.
+d_00: @00:00:00.000093  SUITE FAIL -  94.44% [ring_iphone]: pass = 17, fail = 1, skip = 0, total = 18 duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_clock_failed_zone_read_keeps_the_last_zone] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_clock_no_drift_with_delayed_zone_read] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_cts_to_ms] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_cts_zone] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_app_identifier_longer_than_48_is_kept_to_48] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_empty_notification_ok] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_errors] duration = 0.000 seconds
+twister exit code on the broken copy media_state, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-083918-r3-b-iphone-broken/twister-media_state-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+media_state on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_iphone.test_media_playback_state] duration = 0.000 seconds (failed cases listed: 1)
+##### broken copy: clock_drift
+Common subdirectories: /ws/firmware/modules/ring_iphone/include and /ws/out/20261112-083918-r3-b-iphone-broken/broken_ring_iphone_clock_drift/include
+Common subdirectories: /ws/firmware/modules/ring_iphone/src and /ws/out/20261112-083918-r3-b-iphone-broken/broken_ring_iphone_clock_drift/src
+Common subdirectories: /ws/firmware/modules/ring_iphone/zephyr and /ws/out/20261112-083918-r3-b-iphone-broken/broken_ring_iphone_clock_drift/zephyr
+INFO    - 1/1 native_sim/native         ring_iphone.logic                                  FAILED rc=1 (native 0.016s <host/gnu>)
+START - test_clock_failed_zone_read_keeps_the_last_zone
+    Assertion failed at WEST_TOPDIR/firmware/tests/iphone/src/test_iphone.c:421: ring_iphone_test_clock_failed_zone_read_keeps_the_last_zone: rtime_rec_utc_ms(&r, 6000) not equal to 1794434751000LL - 7200000LL
+ FAIL - test_clock_failed_zone_read_keeps_the_last_zone in 0.000 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/iphone/src/test_iphone.c:395: ring_iphone_test_clock_no_drift_with_delayed_zone_read: (rtime_rec_utc_ms(&r, up + delay) not equal to local - zone * 60000LL + delay)
+ FAIL - test_clock_no_drift_with_delayed_zone_read in 0.000 seconds
+ PASS - test_cts_to_ms in 0.000 seconds
+ PASS - test_cts_zone in 0.000 seconds
+ PASS - test_ds_app_identifier_longer_than_48_is_kept_to_48 in 0.000 seconds
+ PASS - test_ds_empty_notification_ok in 0.000 seconds
+ PASS - test_ds_errors in 0.000 seconds
+ PASS - test_ds_every_fragment_size in 0.000 seconds
+ PASS - test_ds_ignores_bytes_after_the_end in 0.000 seconds
+ PASS - test_ds_late_answer_of_another_request_is_skipped in 0.000 seconds
+ PASS - test_ds_longer_than_limit_is_skipped in 0.000 seconds
+ PASS - test_ds_whole in 0.000 seconds
+ PASS - test_false_header_with_id_zero_recovers_by_retry in 0.000 seconds
+ PASS - test_media_playback_state in 0.000 seconds
+ PASS - test_media_starts_unknown in 0.000 seconds
+ PASS - test_media_text_cut_on_a_character in 0.000 seconds
+ PASS - test_media_track_text in 0.000 seconds
+ PASS - test_request_bytes in 0.000 seconds
+TESTSUITE ring_iphone failed.
+SUITE FAIL -  88.89% [ring_iphone]: pass = 16, fail = 2, skip = 0, total = 18 duration = 0.000 seconds
+ - FAIL - [ring_iphone.test_clock_failed_zone_read_keeps_the_last_zone] duration = 0.000 seconds
+ - FAIL - [ring_iphone.test_clock_no_drift_with_delayed_zone_read] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_cts_to_ms] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_cts_zone] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_app_identifier_longer_than_48_is_kept_to_48] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_ds_empty_notification_ok] duration = 0.000 seconds
+twister exit code on the broken copy clock_drift, native_sim: 1 (log /ws/out/20261112-083918-r3-b-iphone-broken/twister-clock_drift-native_sim.log)
+clock_drift on native_sim: the named case failed, as required:  - FAIL - [ring_iphone.test_clock_no_drift_with_delayed_zone_read] duration = 0.000 seconds (failed cases listed: 2)
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_iphone.logic                            FAILED rc=1 (native 0.020s <host/gnu>)
+d_00: @00:00:00.000093  START - test_clock_failed_zone_read_keeps_the_last_zone
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/iphone/src/test_iphone.c:421: ring_iphone_test_clock_failed_zone_read_keeps_the_last_zone: rtime_rec_utc_ms(&r, 6000) not equal to 1794434751000LL - 7200000LL
+d_00: @00:00:00.000093   FAIL - test_clock_failed_zone_read_keeps_the_last_zone in 0.000 seconds
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/iphone/src/test_iphone.c:395: ring_iphone_test_clock_no_drift_with_delayed_zone_read: (rtime_rec_utc_ms(&r, up + delay) not equal to local - zone * 60000LL + delay)
+d_00: @00:00:00.000093   FAIL - test_clock_no_drift_with_delayed_zone_read in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_cts_to_ms in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_cts_zone in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_app_identifier_longer_than_48_is_kept_to_48 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_empty_notification_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_errors in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_every_fragment_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_ignores_bytes_after_the_end in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_late_answer_of_another_request_is_skipped in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_longer_than_limit_is_skipped in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_whole in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_false_header_with_id_zero_recovers_by_retry in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_playback_state in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_starts_unknown in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_text_cut_on_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_track_text in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_request_bytes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_iphone failed.
+d_00: @00:00:00.000093  SUITE FAIL -  88.89% [ring_iphone]: pass = 16, fail = 2, skip = 0, total = 18 duration = 0.000 seconds
+d_00: @00:00:00.000093   - FAIL - [ring_iphone.test_clock_failed_zone_read_keeps_the_last_zone] duration = 0.000 seconds
+d_00: @00:00:00.000093   - FAIL - [ring_iphone.test_clock_no_drift_with_delayed_zone_read] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_cts_to_ms] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_cts_zone] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_app_identifier_longer_than_48_is_kept_to_48] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_ds_empty_notification_ok] duration = 0.000 seconds
+twister exit code on the broken copy clock_drift, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-083918-r3-b-iphone-broken/twister-clock_drift-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+clock_drift on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_iphone.test_clock_no_drift_with_delayed_zone_read] duration = 0.000 seconds (failed cases listed: 2)
+##### broken copy: clock_failed_read
+Common subdirectories: /ws/firmware/modules/ring_iphone/include and /ws/out/20261112-083918-r3-b-iphone-broken/broken_ring_iphone_clock_failed_read/include
+Common subdirectories: /ws/firmware/modules/ring_iphone/src and /ws/out/20261112-083918-r3-b-iphone-broken/broken_ring_iphone_clock_failed_read/src
+Common subdirectories: /ws/firmware/modules/ring_iphone/zephyr and /ws/out/20261112-083918-r3-b-iphone-broken/broken_ring_iphone_clock_failed_read/zephyr
+INFO    - Writing JSON report /ws/out/20261112-083918-r3-b-iphone-broken/twister-clock_failed_read-native_sim/testplan.json
+INFO    - 1/1 native_sim/native         ring_iphone.logic                                  FAILED rc=1 (native 0.016s <host/gnu>)
+INFO    - /ws/out/20261112-083918-r3-b-iphone-broken/twister-clock_failed_read-native_sim/native_sim_native/host_gnu/firmware/tests/iphone/ring_iphone.logic/handler.log
+START - test_clock_failed_zone_read_keeps_the_last_zone
+    Assertion failed at WEST_TOPDIR/firmware/tests/iphone/src/test_iphone.c:419: ring_iphone_test_clock_failed_zone_read_keeps_the_last_zone: (r.zone_known is false)
+one failed read does not turn a UTC clock into local time
+ FAIL - test_clock_failed_zone_read_keeps_the_last_zone in 0.000 seconds
+ PASS - test_clock_no_drift_with_delayed_zone_read in 0.000 seconds
+ PASS - test_cts_to_ms in 0.000 seconds
+ PASS - test_cts_zone in 0.000 seconds
+ PASS - test_ds_app_identifier_longer_than_48_is_kept_to_48 in 0.000 seconds
+ PASS - test_ds_empty_notification_ok in 0.000 seconds
+ PASS - test_ds_errors in 0.000 seconds
+ PASS - test_ds_every_fragment_size in 0.000 seconds
+ PASS - test_ds_ignores_bytes_after_the_end in 0.000 seconds
+ PASS - test_ds_late_answer_of_another_request_is_skipped in 0.000 seconds
+ PASS - test_ds_longer_than_limit_is_skipped in 0.000 seconds
+ PASS - test_ds_whole in 0.000 seconds
+ PASS - test_false_header_with_id_zero_recovers_by_retry in 0.000 seconds
+ PASS - test_media_playback_state in 0.000 seconds
+ PASS - test_media_starts_unknown in 0.000 seconds
+ PASS - test_media_text_cut_on_a_character in 0.000 seconds
+ PASS - test_media_track_text in 0.000 seconds
+ PASS - test_request_bytes in 0.000 seconds
+TESTSUITE ring_iphone failed.
+SUITE FAIL -  94.44% [ring_iphone]: pass = 17, fail = 1, skip = 0, total = 18 duration = 0.000 seconds
+ - FAIL - [ring_iphone.test_clock_failed_zone_read_keeps_the_last_zone] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_clock_no_drift_with_delayed_zone_read] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_cts_to_ms] duration = 0.000 seconds
+ - PASS - [ring_iphone.test_cts_zone] duration = 0.000 seconds
+twister exit code on the broken copy clock_failed_read, native_sim: 1 (log /ws/out/20261112-083918-r3-b-iphone-broken/twister-clock_failed_read-native_sim.log)
+clock_failed_read on native_sim: the named case failed, as required:  - FAIL - [ring_iphone.test_clock_failed_zone_read_keeps_the_last_zone] duration = 0.000 seconds (failed cases listed: 1)
+INFO    - Writing JSON report /ws/out/20261112-083918-r3-b-iphone-broken/twister-clock_failed_read-nrf54lm20bsim_nrf54lm20a_cpuapp/testplan.json
+INFO    - 1/1 nrf54lm20bsim/nrf54lm20a/cpuapp ring_iphone.logic                            FAILED rc=1 (native 0.013s <host/gnu>)
+INFO    - /ws/out/20261112-083918-r3-b-iphone-broken/twister-clock_failed_read-nrf54lm20bsim_nrf54lm20a_cpuapp/nrf54lm20bsim_nrf54lm20a_cpuapp/host_gnu/firmware/tests/iphone/ring_iphone.logic/handler.log
+d_00: @00:00:00.000093  START - test_clock_failed_zone_read_keeps_the_last_zone
+d_00: @00:00:00.000093      Assertion failed at WEST_TOPDIR/firmware/tests/iphone/src/test_iphone.c:419: ring_iphone_test_clock_failed_zone_read_keeps_the_last_zone: (r.zone_known is false)
+d_00: @00:00:00.000093  one failed read does not turn a UTC clock into local time
+d_00: @00:00:00.000093   FAIL - test_clock_failed_zone_read_keeps_the_last_zone in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_clock_no_drift_with_delayed_zone_read in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_cts_to_ms in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_cts_zone in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_app_identifier_longer_than_48_is_kept_to_48 in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_empty_notification_ok in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_errors in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_every_fragment_size in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_ignores_bytes_after_the_end in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_late_answer_of_another_request_is_skipped in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_longer_than_limit_is_skipped in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_ds_whole in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_false_header_with_id_zero_recovers_by_retry in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_playback_state in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_starts_unknown in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_text_cut_on_a_character in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_media_track_text in 0.000 seconds
+d_00: @00:00:00.000093   PASS - test_request_bytes in 0.000 seconds
+d_00: @00:00:00.000093  TESTSUITE ring_iphone failed.
+d_00: @00:00:00.000093  SUITE FAIL -  94.44% [ring_iphone]: pass = 17, fail = 1, skip = 0, total = 18 duration = 0.000 seconds
+d_00: @00:00:00.000093   - FAIL - [ring_iphone.test_clock_failed_zone_read_keeps_the_last_zone] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_clock_no_drift_with_delayed_zone_read] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_cts_to_ms] duration = 0.000 seconds
+d_00: @00:00:00.000093   - PASS - [ring_iphone.test_cts_zone] duration = 0.000 seconds
+twister exit code on the broken copy clock_failed_read, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/20261112-083918-r3-b-iphone-broken/twister-clock_failed_read-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+clock_failed_read on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:00.000093   - FAIL - [ring_iphone.test_clock_failed_zone_read_keeps_the_last_zone] duration = 0.000 seconds (failed cases listed: 1)
+RESULT PASS
+# finished (Mac clock): 2026-11-12 08:42:16 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step3/20261112-083918-r3-b.log

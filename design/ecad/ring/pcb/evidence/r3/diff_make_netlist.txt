@@ -1,0 +1,24 @@
+219,220c219,220
+<     'G9': 'LCD_SCK', 'G8': 'LCD_MOSI', 'F7': 'LCD_CS', 'G7': 'LCD_DCX', 'H5': 'LCD_RST', 'D6': 'LCD_TE',
+<     'B8': 'PMIC_SDA', 'E7': 'PMIC_SCL', 'D8': 'PMIC_INT', 'E9': 'OLED_PWR_EN',
+---
+>     'G9': 'LCD_SCK', 'G8': 'LCD_MOSI', 'F7': 'LCD_CS', 'G7': 'LCD_DCX', 'H5': 'LCD_RST', 'F4': 'LCD_TE',
+>     'B8': 'PMIC_SDA', 'E7': 'PMIC_SCL', 'D8': 'PMIC_INT', 'F9': 'OLED_PWR_EN',
+227c227,231
+<     'H10': 'SPARE_P1_00', 'F8': 'SPARE_P1_02', 'F4': 'SPARE_P1_14',
+---
+>     # Round 3 (lead's decision of 2026-11-13, pin changes for routing; ecad/ring-route-f/pin-changes.md): spare pins P1.02 (F8),
+>     # P1.14 (F4) and P1.30 (F9) dropped with their test pads TP8, TP9, TP11; LCD_TE moved from D6 (P1.22) to F4 (P1.14) and
+>     # OLED_PWR_EN from E9 (P1.29) to F9 (P1.30), so that the routed board closes. D6, E9, F8 are not connected.
+>     'D6': None, 'E9': None, 'F8': None,
+>     'H10': 'SPARE_P1_00',
+232c236
+<     'F9': 'SPARE_P1_30', 'A10': 'SPARE_P2_00', 'F5': 'SPARE_P3_03', 'G5': 'SPARE_P3_04',
+---
+>     'A10': 'SPARE_P2_00', 'F5': 'SPARE_P3_03', 'G5': 'SPARE_P3_04',
+411c415,417
+< TP_REMOVED = {'TP7', 'TP10', 'TP20', 'TP2', 'TP13', 'TP16', 'TP22'}
+---
+> # Round 3 (lead's decision of 2026-11-13, pin changes for routing): TP8 (SPARE_P1_02), TP9 (SPARE_P1_14), TP11 (SPARE_P1_30)
+> # are removed with their nets.
+> TP_REMOVED = {'TP7', 'TP10', 'TP20', 'TP2', 'TP13', 'TP16', 'TP22', 'TP8', 'TP9', 'TP11'}

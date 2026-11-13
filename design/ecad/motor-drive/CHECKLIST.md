@@ -1,0 +1,32 @@
+# Checklist: motor drive study (brief from the lead, 2026-11-11; builder rules)
+
+- [x] 1. Read architecture 3, 17.4, 17.13, 17.16, 17.18, rows W5, W6. evidence: motor-drive.md sections 1 and 2.8 cite them; audit.log LINE checks on architecture lines 40, 70, 72, 78, 88 to 91, 101, 285, 465, 595 to 597.
+- [x] 2. Read slim-2.md section 1 (five parts). evidence: motor-drive.md 3.4.
+- [x] 3. Read motor datasheet text, drive circuit page. evidence: src_w0525_text.txt, search_w0525_time.log; motor-drive.md 1 and 3.2.
+- [x] 4. Read nPM1304 CHARGER 6.2.10, 6.2.11; BUCK; LOADSW/LDO; POF; LED drivers, with page numbers. evidence: columns_p29.log, columns_p45.log, columns_p69.log, page6.png, page9.png, page29.png; motor-drive.md 1, 3.3.
+- [x] 5. Read firmware.md 3.1: longest pattern MF 800 ms (600 ms on), shortest pulse MT 25 ms. evidence: budget.log LONGEST_ON, SHORTEST_ON; motor-drive.md 2.3.
+- [x] 6. Read sch-notes.md power sheet. evidence: motor-drive.md 2.1 (U4 PVIN on VBAT from make_netlist.py line 275, sch-notes section 2 "Motor drive" and "Band").
+- [x] 7. Option (a) capacitor: arithmetic, start duration bounded, real part and size vs space. evidence: budget.log A_* lines; motor-drive.md 3.1.
+- [x] 8. Option (b): series resistor; pulse train; drive chip pages read; verdict. evidence: budget.log B_* lines; motor-drive.md 3.2.
+- [x] 9. Option (c): LOADSW, LDO, LED drivers with page numbers. evidence: columns_p69.log; motor-drive.md 3.3.
+- [x] 10. Option (d): other parts in the pocket; LRA. evidence: motor-drive.md 3.4. Web search not run: no web search tool in this session (stated in 3.4 and 5).
+- [x] 11. Option (e): risk stated (computed, not measured). evidence: budget.log E_* lines; motor-drive.md 3.5.
+- [x] 12. Exactly one recommendation, with stated margin (44 % at 3.1 V with storage write). evidence: budget.log R_MARGIN_WITH_SD@3.1; motor-drive.md 2 and 2.4.
+- [x] 13. Exact parts from datasheets on file or fetched. evidence: motor_tlv755p.pdf (src_tlv755p.txt), p3_sgm38046.txt p4 for capacitors (Murata sheets blocked: fetch_*.log).
+- [x] 14. Values. evidence: motor-drive.md 2.3.
+- [x] 15. Worst-case current with arithmetic: motor start + screen 55 mW + recording 4.0 mA + radio. evidence: budget.log R_CHIP_BRIEF@*, R_CHIP_WITH_SD@*; motor-drive.md 2.4.
+- [x] 16. Vibration strength claim vs 0.25 G. evidence: motor-drive.md 2.6.
+- [x] 17. Wiring changes as a list with file and present text, not made. evidence: motor-drive.md 2.8; audit.log LINE checks match each quoted present text.
+- [x] 18. Bench test on nPM1304-EK: connect, measure, pass line. evidence: motor-drive.md 2.9. The EK guide is not on file (stated).
+- [x] 19. Other loads vs 100 mA, one paragraph. evidence: budget.log OTHER_LOADS_*; motor-drive.md 4.
+- [x] 20. Every number carries a source or [ESTIMATE]. evidence: audit.log NUM, KEY and VAL lines (the NUM check finds each number somewhere in the sources or budget.log; it does not prove the exact line).
+- [x] 21. budget.py recomputes every current and capacitor figure. evidence: budget.py, budget.log.
+- [x] 22. budget.log last line `RESULT computed`. evidence: budget.log.
+- [x] 23. Rejected options table covers (a) to (e). evidence: motor-drive.md section 3 table.
+- [x] 24. Last line of motor-drive.md is the RESULT line. evidence: audit.log LASTLINE.
+- [x] 25. Wrote only in design/ecad/motor-drive/ and design/datasheets/motor_*; no git; no install; no browser; heavy runs with nice -n 19; no folder deleted. evidence: this session's commands (fetches via getpdf.sh into motor_* names).
+- [x] 26. No owner, company or project name in any web request. evidence: the fetched URLs are maker datasheet URLs (fetch_*.log).
+- [x] 27. Plain English, no em or en dashes. evidence: audit.log DASH lines.
+- [x] 28. Ring shape unchanged; motor stays in its pocket; vibration kept. evidence: motor-drive.md 2 (M1 unchanged, adds 3 board parts and removes 2).
+- [x] 29. Final audit over the reply and the study, output saved. evidence: audit.log.
+- [x] 30. Final reply under 3,500 characters. evidence: reply.txt size printed in audit.log run.

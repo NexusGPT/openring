@@ -1,0 +1,30 @@
+# remote.sh run 20261112-160958-r2-dk
+# command: west build -p always -b nrf54lm20dk/nrf54lm20a/cpuapp --sysbuild -d /ws/out/os-screens-r2dk -o=-j8 app > /ws/out/os-screens-r2dk.log 2>&1; echo build exit $?; python3 tools/stack_report.py /ws/out/os-screens-r2dk
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 16:09:58 CET
+# free on the server's /: 58 GB
+# source firmware copied to /root/ring-os/src-os-screens
+# started on the server as 20261112-160958-r2-dk; server log /root/ring-os/logs/20261112-160958-r2-dk.log
+build exit 0
+frames read for 5288 functions from 682 .su files
+== glue thread (tick_thread, input): dispatch -> screens step
+    568 bytes  rglue_input(88) -> dispatch(40) -> rscr_glue_after(112) -> load_view(312) -> r_inbox_get(0) -> rip_inbox_get(16)
+    312 bytes  rglue_input(88) -> dispatch(40) -> rscr_glue_after(112) -> rscr_on_core(72) -> nav(?)
+    272 bytes  rglue_input(88) -> dispatch(40) -> rscr_glue_after(112) -> apply_fx(16) -> r_pair_open(0) -> rdev_pair_open(16)
+    296 bytes  tick_thread(72) -> dispatch(40) -> rscr_glue_after(112) -> rscr_on_core(72) -> enter_state(?)
+  largest chain: 568 bytes
+== Bluetooth RX work queue: devices callbacks into the screens
+    344 bytes  cb_paired(0) -> rscr_on_paired(16) -> load_view(312) -> r_inbox_get(0) -> rip_inbox_get(16)
+    440 bytes  cb_removed(0) -> rscr_on_removed(112) -> load_view(312) -> apply_fx(16)
+     16 bytes  cb_passkey(0) -> rscr_on_passkey(16)
+  largest chain: 440 bytes
+== screens thread
+    224 bytes  screens_thread(176) -> render(?) -> render_locked(32) -> fill_frame(?) -> r_inbox_get(0) -> rip_inbox_get(16)
+    760 bytes  screens_thread(176) -> render(?) -> render_locked(32) -> rscr_draw(448) -> draw_list(104)
+    656 bytes  screens_thread(176) -> do_sign_start(?) -> render_locked(32) -> rscr_draw(448) -> draw_notif(?)
+    216 bytes  screens_thread(176) -> rscr_tick(40)
+    232 bytes  screens_thread(176) -> apply_fx(16) -> r_dev_remove(0) -> rdev_remove(40)
+  largest chain: 760 bytes
+# finished (Mac clock): 2026-11-12 16:11:26 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step4/20261112-160958-r2-dk.log

@@ -1,0 +1,17 @@
+host tests 2026-11-11 12:32:38 CET
+module: firmware/docs/review/core-review-3/mut/r20_init_failed_b2_not_checked_via_state_set/ring_core
+compiler: Apple clang version 21.0.0 (clang-2100.1.1.101)
+rows=71 stated=71 fnv1a32=0x8435a032 wrote firmware/docs/review/core-review-3/mut/r20_init_failed_b2_not_checked_via_state_set/build/fresh/state_table.inc firmware/docs/review/core-review-3/mut/r20_init_failed_b2_not_checked_via_state_set/build/fresh/state_table.json
+generated table: committed rows=71 checksum=0x8435a032u, fresh rows=71 checksum=0x8435a032u
+PASS generator.fresh_run_matches_committed_table
+firmware/docs/review/core-review-3/mut/r20_init_failed_b2_not_checked_via_state_set/ring_core/src/core.c:130:78: error: '&&' within '||' [-Werror,-Wlogical-op-parentheses]
+  130 |             (c->sm.state == RC_ST_STANDBY || c->sm.state == RC_ST_ERR_STORAGE_FAULT && from != RC_ST_BOOT ||
+      |                                           ~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+firmware/docs/review/core-review-3/mut/r20_init_failed_b2_not_checked_via_state_set/ring_core/src/core.c:130:78: note: place parentheses around the '&&' expression to silence this warning
+  130 |             (c->sm.state == RC_ST_STANDBY || c->sm.state == RC_ST_ERR_STORAGE_FAULT && from != RC_ST_BOOT ||
+      |                                                                                     ^
+      |                                              (                                                           )
+1 error generated.
+compile failed
+RESULT FAIL
+exit 1

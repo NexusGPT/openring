@@ -1,0 +1,40 @@
+design/wiring/screen-cable-study.md:37: The figures below run from the panel end (the end of the lower glass) along the cable. Y is from the panel's centre line, as seen in the front view (the lit face).
+design/wiring/screen-cable-study.md:46: | Thickness at the contact end | 0.2 +-0.03 including the polyimide (PI) stiffener | printed "0.2+-0.03含PI补强" |
+design/wiring/screen-cable-study.md:48: | Contact face | the contacts are on the BACK face, the face that lies on the ledge at the bond. The stiffener is on the front (lit) face. | back view draws the 15 fingers as pad
+design/wiring/screen-cable-study.md:54: - **Any contact face.** FH35C is a "dual-sided" connector with top and bottom contacts (p1, features 1 and 6). Which face of the cable carries the contacts therefore
+design/wiring/screen-cable-study.md:55: - **The cable.** FPC 0.2 +-0.03 thick (p2, spec sheet p1). For 15 contacts it is F = 4.8 wide (p5). The stock cable matches both.
+design/wiring/screen-cable-study.md:57: - 6.1 along the contact row (A).
+design/wiring/screen-cable-study.md:68: | Floor top | 0.40 |
+design/wiring/screen-cable-study.md:72: | Panel | 1.85 to 2.65 (lower glass 0.40, ASSUMED split: `thin-notes.md` line 39) |
+design/wiring/screen-cable-study.md:73: | Glass bottom | 2.75 |
+design/wiring/screen-cable-study.md:185: | Cable to the lower glass | 0.500 |
+design/wiring/screen-cable-study.md:206: 4. **Fingertip end pocket** in the body: X 13.725 to 14.165, Y +-6.40, from Z 2.15 to the ledge top. Metal left to the skin: 0.485 (0.525 at t 0.10). Nothing is cut at the hand end; today's 0.55 x 5.4 tail pocket there is no longer needed.
+design/wiring/screen-cable-study.md:216: - The half turn round the 0.40 lower glass has inner radius **0.212** (0.088 under 0.30).
+design/wiring/screen-cable-study.md:262: - **Cable thickness:** away from the contact end it is not printed. The start value is 0.14 (Hirose's reference stack). Measure it with a micrometer on a real module. Layout C is not sensitive t
+design/wiring/screen-cable-study.md:267: - **A lower connector than FH35C:** it would cut C's 0.97. One check of Hirose's public page was refused (HTTP 403), and no other source was searched. Not proven
+design/wiring/screen-cable-study.md:268: - **A connector-free joint:** soldering or bonding the contact end straight onto board lands is not studied.
+design/wiring/screen-cable-study.md:274: ### 7.1 C-solder: no connector, the contact end soldered by a hot bar on the board's screen face
+design/wiring/screen-cable-study.md:276: **Which way the contacts look after the fold back.**
+design/wiring/screen-cable-study.md:277: - Section 2: the contacts are on the face that lies on the glass ledge, so on the ledge they look down (-Z).
+design/wiring/screen-cable-study.md:278: - In layout C the cable turns 180 degrees in one plane (fold 1) and runs -X under the panel. A turn in one plane turns the face with it, so **the contacts then look UP, at the panel, not at the board.**
+design/wiring/screen-cable-study.md:279: - No bending in one plane can bring the contacts down while the cable still runs -X.
+design/wiring/screen-cable-study.md:282: - after it the cable runs +X with the contacts down;
+design/wiring/screen-cable-study.md:283: - the stiffened end lies on the lands under the upper run.
+design/wiring/screen-cable-study.md:291: | Fold inner radius | Block growth (t 0.14) | Block height | Least free space (cable to panel / to board / upper run to lower run) | Fold 1 | Metal left at the fingertip end | Log, last line |
+design/wiring/screen-cable-study.md:298: - Every run prints -0.009 to -0.016 to the lower glass at s 0.07. As in section 4.3, that comes from the first box piece at the ledge's edge (analytic 0.000), not from the geometry.
+design/wiring/screen-cable-study.md:305: 103: pin 1 lies toward +Y. This was worked out from the back view of page 5 (pin 1 left, cable end down) and the final position: cable end toward +X, contacts toward -Z. The board check must confirm it, the way `check_band.py` confirms the band lands.
+design/wiring/screen-cable-study.md:312: - The 0.1 mm PI stiffener is on the face away from the contacts (section 2). After fold 2 it faces up, so the hot bar presses on the stiffener. The heat passes through the stiffener and the cable film into the jo
+design/wiring/screen-cable-study.md:315: - that the gold contact fingers of this cable, made for a plug-in connector, take solder;
+design/wiring/screen-cable-study.md:322: 2. With the board out of the body and its screen face up, lay the stiffened end on the lands, contacts down. The cable lies flat toward -X and the glass-and-panel unit lies beyond the board's hand end.
+design/wiring/screen-cable-study.md:344: | Series | Kind | Height | 15 contacts | Cable | Fits the stock cable? |
+design/wiring/screen-cable-study.md:346: | Hirose FH35C (today's J1) | contacts on both faces, back flip | 0.9 +-0.1 | yes | 0.2 +-0.03 | yes |
+design/wiring/screen-cable-study.md:347: | Kyocera 6293, order code 04 6293 615 105 468+ | contacts on both faces, back flip | 0.90 +-0.10 (drawing, "ACTUATOR OPEN" view) | yes, A 4.2 / B 6.1 | 0.20 +-0.03, width A+0.6 = 4.8 | yes, the same height
+design/wiring/screen-cable-study.md:348: | Kyocera 6844, order code 04 6844 715 002 846+ | bottom contact, one-touch lock | 0.95 +-0.05 | yes | 0.2 +-0.03, but the cable needs side ears (A+1.4 = 5.6 wide) for its lock | no: the stock cable is a st
+design/wiring/screen-cable-study.md:355: - No lower connector was found in a document I could open. Every connector found reaches 1.00 mm at its upper tolerance, so **the growth stays +0.97**.
+design/wiring/screen-cable-study.md:356: - Not proven: makers whose pages refused me (Hirose, JAE, Molex, Panasonic, Amphenol) may print a lower part.
+design/wiring/screen-cable-study.md:368: - **30 contacts.** They include touch (TP_SDA, TP_SCL, VDD_TP, TP_INT, TP_RST) and two NFC pins. So its cable is not the 15-contact cable, and J1 (15 contacts) does
+design/wiring/screen-cable-study.md:369: wth: **not answerable from the files.** The missing page must come from Truly. Truly's public site answered, but I did not search it for a datasheet; contacting a maker is outside my rules.
+design/wiring/screen-cable-study.md:371: - Its thinner lower glass (0.2 against the 0.40 model value) would loosen fold 1 only.
+design/wiring/screen-cable-study.md:384: | Truly TR095A120SPC instead | not known | the missing dimension page from Truly; a 30-contact connector or lands | the module's cable is not drawn in any saved file |
+design/wiring/screen-cable-study.md:400: - Evidence: 7.3. The saved copy lacks the page; its interface has 30 contacts.
+design/wiring/screen-cable-study.md:402: least growth found for the stock cable is +0.68 mm (C-solder, hot bar, fold inner radius 0.20, not yet proven) against +0.97 mm with a connector (no lower connector found in a readable maker document); the Truly cable cannot be measured from the saved copy.

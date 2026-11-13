@@ -1,0 +1,18 @@
+Phase 1 is done. I wait for your message "review 3 has ended" before phase 2.
+
+Source: make_netlist.py writes netlist.csv, parts.csv and additions.csv. Regenerating a copy gives the committed files byte for byte (logs/source_proof.txt). It also takes maker codes from bom.csv. gen_sch.py needs no change: R73 has sheet "power" and lands on page 3 of the PDF with 330k (logs/pdf_r73.txt). The edit script is W/phase2_edit.py (W = design/ecad/ring-circuit-work). Every replacement must match once. A dry run on W/patched2 ends "edit exit 0".
+
+Bench (run_tests.py --ring-dir <copy> --out W/...; the committed decks, results and logs are untouched, logs/sim_tree_diff_phase1_sorted.txt):
+- Unpatched: "FAIL ring1 ... R1.2: motor.vbat_min_spec = 2.99503 needs >= 3.0 V"; "FAIL ring7 ... R7.1: pads.vbus_gnd_10s = 4.49786 needs < 0.1 V". These are the committed ring lines.
+- Patched: "PASS ring1 motor start: 10 of 10 rows hold; tightest row R1.2: motor.vbat_min_spec = 3.02319 holds >= 3.0"; "PASS ring7 pads on the finger: 5 of 5 rows hold; tightest row R7.1: pads.vbus_gnd_10s = 0.0270141 holds < 0.1".
+- 88 rows on each side: "PASS to FAIL: none"; "FAIL to PASS: R1.1, R1.2, R7.1, R7.4, R7.5" (logs/compare_base_patched.txt).
+- Already there on both copies: case2 FAIL and case4 FAIL "no value" ("singular matrix:  check node n_3v3"). The case netlist changed at 11:47. Not caused by this change.
+
+On the patched copy: ERC "Errors 0  Warnings 0" (as committed), check_bom "failures 0". check_netlist reads "RESULT FAIL 2": A7-2 (line 330 wants C84 10uF) and A6-3 (line 537, VBUS members without R73). Base: "RESULT PASS". That file is outside my Owns and holds expected values, so bar 1 waits on your ruling (sent by SendMessage).
+
+Stepped enable (pass line written before the run, stepped/pass-line.md; result stepped/result.md): it does not lower the dip. At C84 4.7 uF the lowest cell voltage is 3.02320 V with one step, with 3 x 2 ms steps and with 3 x 0.3 ms steps. At 10 uF it is 2.99504 V (one step), 2.99504 V and 2.99518 V. Each rising edge charges C84 again. Two earlier runs are kept but not used. The bench's own U11 model keeps its output driven for about 0.7 ms after EN falls, which made steps look 40.7 mV worse. My first fix drew a false 1 A. The valid run uses my own marked model stepped/models/tlv755p30_sw.lib. Info: at the DC-bias values (about 3.25 and 4.0 uF), one step gives 3.02320 V for both parts.
+
+Also for you (details in W/notes.md section 6): bom.csv was changed by someone else at 12:59 (RT1 line; the script still applies); some files still name C84 as 10 uF (logs/c84_still_10uF_live.txt); after phase 2, R73 will be missing on the board until the board work lands.
+
+questions_for_owner: none
+RESULT: done (phase 1), the edit script and the bench on a copy are ready; bar 1 for phase 2 waits on the lead's ruling about check_netlist.py.

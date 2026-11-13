@@ -1,0 +1,30 @@
+# Round 3 checklist (brief of 2026-11-13 10:5x, limit 2 hours from 10:53)
+
+- [x] 1. ring/pcb/ring.kicad_pcb is the route-f board (sha1 4376679f86a7...) or made from it with the same copper evidence: same_copper.log, rm_tp2.log
+- [x] 2. rules check inside ring/pcb: 0 violations, 0 unconnected items evidence: final/drc.log
+- [x] 3. make_netlist.py: SPARE_P1_02, SPARE_P1_14, SPARE_P1_30 gone; F8 no net evidence: a_make_netlist2.log, final/check_netlist.log
+- [x] 4. TP8, TP9, TP11 removed from the design (parts.csv, netlist.csv) evidence: final/check_netlist.log (round 3 line)
+- [x] 5. LCD_TE on U1 F4 (P1.14), D6 not connected evidence: diff_make_netlist.txt, final/check_netlist.log
+- [x] 6. OLED_PWR_EN on U1 F9 (P1.30), E9 not connected evidence: diff_make_netlist.txt, final/check_netlist.log
+- [x] 7. run_all.sh: ERC 0 errors 0 warnings evidence: final/erc-report.txt line 22
+- [x] 8. check_netlist.py passes; each changed expectation named with "lead's decision of 2026-11-13, pin changes for routing", before and after listed evidence: diff_check_netlist.txt, final/check_netlist.log
+- [x] 9. ring-board-plan.md a.3 rows D6, E9, F4, F8, F9 as built; check_escapes.py table follows evidence: edit_plan_a3.log, diff_check_escapes.txt, span_compare.log
+- [x] 10. placement-final.csv without TP8, TP9, TP11 evidence: edit_tables.log
+- [x] 11. footprint-sources.csv without TP8, TP9, TP11 evidence: edit_tables.log
+- [x] 12. TP8, TP9, TP11 footprints: no net and no copper checked first, then removed with KiCad Python; rules check rerun evidence: tp_copper_routef.log, rm_tp2.log, final/drc.log
+- [x] 13. check_board.py RESULT: PASS, all 7 checks evidence: final/check_board.log
+- [x] 14. make_broken.py six kinds (net, outside, track, missing, antvia, swap) each fail on their own fault on this board evidence: broken/summary.log
+- [x] 15. make_fab.sh into pcb/fab/: Gerber 4 layers, drill per via span, position files both faces, outline evidence: make_fab.done, fab_listing.log
+- [x] 16. every fab file listed with size and meaning; via spans with counts evidence: fab_listing.log, fab/drill/ring-drill-report.txt
+- [x] 17. firmware.md: pin table and every line naming P1.22/D6 LCD_TE, P1.29/E9 OLED_PWR_EN, spare P1.02, P1.14, P1.30; no line added or removed before line 1200 evidence: edit_firmware.log, edit_firmware2.log, firmware_grep_after.log
+- [x] 18. architecture.md section 7: five changes; DBG_RX (B5), JOY_CENTER (H4), P2.03, P3.05 marked not connected evidence: edit_architecture.log
+- [x] 19. python3 design/firmware-check.py prints 0 failures evidence: final/firmware_check.log
+- [x] 20. bom.csv test pad line lists the 12 remaining pads (from parts.csv); PCB1 row: 4 copper layers, any-layer microvias, 0.30 mm, 12 test pads, parts on both faces; no other row added evidence: edit_bom.log, edit_bom2.log, diff_bom.txt, tp_parts.log
+- [x] 21. check_bom.py fails only on RC1 as before (output quoted) evidence: final/check_bom.log
+- [x] 22. notes board-notes-r3.md: each bar's command and last line quoted from a saved log evidence: board-notes-r3.md, audit2.log
+- [x] 23. notes list what is not proven (J1 mounting pads, crystal line distances, antenna line neighbours: figures from route-f and route-e notes, remeasured with line_report.py if it runs) evidence: line_report.log, j1_pads.log
+- [x] 24. notes end with questions_for_owner then RESULT line evidence: board-notes-r3.md
+- [x] 25. before copies of every changed file under evidence/r3/before/ evidence: before_listing.log
+- [x] 26. check_band.py not run (said in the notes); no touch of ring-route-*, band, case, product-wiring*, explorer, firmware evidence: board-notes-r3.md (not run), final/git_status.log
+- [x] 27. evidence under 100 MB; no git writes; heavy commands nice -n 19 one at a time evidence: du 14M at 11:03 (printed), final/git_status.log
+- [x] 28. final reply under 3,500 characters evidence: final reply

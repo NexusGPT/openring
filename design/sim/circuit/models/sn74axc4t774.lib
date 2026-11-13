@@ -1,0 +1,31 @@
+* own model: Texas Instruments SN74AXC4T774 (ring U10), 4-bit dual-supply level shifter with a direction pin per bit, built only from the maker's datasheet SCES898C (design/datasheets/w1_ti_sn74axc4t774.pdf, PDF pages). No SPICE model of this part is public on the maker's site (see models/SOURCES.md).
+* ports: a1 a2 a3 a4 b1 b2 b3 b4 vcca vccb dir1 dir2 dir3 dir4 oe
+* input thresholds (p5 Table 5.3): VCCI 1.1 to 1.95 V: VIH 0.65 VCCI, VIL 0.35 VCCI; 2.3 to 2.7 V: 1.6 V, 0.7 V; 3 to 3.6 V: 2.0 V, 0.8 V; 0.65 to 1 V: 0.7 VCCI, 0.3 VCCI.
+*   The model switches its output at the middle of VIL and VIH; the tests then compare each input level with VIH and VIL themselves.
+* output impedance (p6 Table 5.5): VOH at IOH = -12 mA, VCCO 3 V: 2.3 V, so (3.0-2.3)/12 mA = 58 ohm; VOL 0.7 V at 12 mA = 58 ohm; at 1.65 V: (1.65-1.2)/8 mA = 56 ohm, VOL 0.45 V at 8 mA = 56 ohm. Model uses 57 ohm (mean of the four ratios; MODEL CHOICE).
+* control: OE high (p6 IOZ test, "OE = VIH") turns every port to high impedance; DIRn high = A to B (sch-notes.md 11.3 quoting function table, SCES898C); VCC isolation: below 0.1 V on either supply every port is Hi-Z (SCES898C, quoted in ecad/ring/sch-notes.md 11.3 line 3684 of the text copy).
+.subckt SN74AXC4T774 a1 a2 a3 a4 b1 b2 b3 b4 vcca vccb dir1 dir2 dir3 dir4 oe
+* usable = both supplies above 0.1 V and OE low (below 0.65 VCCA, control VIH)
+Bus us 0 V = ( (v(vcca) > 0.1) && (v(vccb) > 0.1) && (v(oe) < 0.5*v(vcca)) ) ? 1 : 0
+* thresholds for the A input (VCCA) and the B input (VCCB)
+Bta ta 0 V = (v(vcca) >= 3.0) ? 1.4 : (v(vcca) >= 2.3) ? 1.15 : (v(vcca) >= 1.1) ? 0.5*(0.65+0.35)*v(vcca) : 0.5*(0.7+0.3)*v(vcca)
+Btb tb 0 V = (v(vccb) >= 3.0) ? 1.4 : (v(vccb) >= 2.3) ? 1.15 : (v(vccb) >= 1.1) ? 0.5*(0.65+0.35)*v(vccb) : 0.5*(0.7+0.3)*v(vccb)
+* channel n: dir high: A input drives B pin through 57 ohm to VCCB or 0; dir low: B input drives A pin through 57 ohm to VCCA or 0
+.subckt CH a b vcca vccb dir us ta tb
+Bab drvb 0 V = (v(a) > v(ta)) ? v(vccb) : 0
+Bba drva 0 V = (v(b) > v(tb)) ? v(vcca) : 0
+* current from the pin to its drive node through 57 ohm, only when the channel points that way and the part is usable
+Gb b 0 value = ( (v(us) > 0.5) && (v(dir) > 0.5*v(vcca)) ) ? (v(b) - v(drvb))/57 : 0
+Ga a 0 value = ( (v(us) > 0.5) && (v(dir) < 0.5*v(vcca)) ) ? (v(a) - v(drva))/57 : 0
+* input leakage of the pin that is the input: 8 uA worst case at high level (SCES898C p6 Table 5.5 II data inputs, -40 to 125 C)
+Blkb b 0 I = ( (v(us) > 0.5) && (v(dir) < 0.5*v(vcca)) ) ? 8u*min(max(v(b)/max(v(vccb),0.1),0),1) : 0
+Blka a 0 I = ( (v(us) > 0.5) && (v(dir) > 0.5*v(vcca)) ) ? 8u*min(max(v(a)/max(v(vcca),0.1),0),1) : 0
+* numerical only: 1e12 ohm from each port to ground so that an undriven port is not a floating node (1 pA at 1 V, far below every stated leakage)
+Rfa a 0 1e12
+Rfb b 0 1e12
+.ends CH
+X1 a1 b1 vcca vccb dir1 us ta tb CH
+X2 a2 b2 vcca vccb dir2 us ta tb CH
+X3 a3 b3 vcca vccb dir3 us ta tb CH
+X4 a4 b4 vcca vccb dir4 us ta tb CH
+.ends SN74AXC4T774

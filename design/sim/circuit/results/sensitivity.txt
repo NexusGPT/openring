@@ -1,0 +1,17 @@
+ring1 at R_SPEC = 1.9565 ohm, cell open-circuit 3.45 V: cell minimum during the motor start (limit 3.0 V)
+  C84 = 10uF   (parts.csv value 10uF): cell minimum 2.9950 V, settled before the end of the start 3.0232 V, cell peak current 232.5 mA
+  C84 = 4.7uF  (parts.csv value 10uF): cell minimum 3.0232 V, settled before the end of the start 3.0232 V, cell peak current 218.1 mA
+  C84 = 3.3uF  (parts.csv value 10uF): cell minimum 3.0232 V, settled before the end of the start 3.0232 V, cell peak current 218.1 mA
+  C84 = 2.0uF  (parts.csv value 10uF): cell minimum 3.0232 V, settled before the end of the start 3.0232 V, cell peak current 218.1 mA
+ring1 numerical check at R_SPEC (cell minimum in V for a few solver settings):
+  .options reltol=1e-3                               tmax 5u   cell minimum 2.99527 V
+  .options reltol=1e-4                               tmax 5u   cell minimum 2.99503 V
+  .options reltol=1e-4                               tmax 2u   cell minimum 2.99468 V
+  .options reltol=1e-4 abstol=1e-12 vntol=1e-7       tmax 1u   cell minimum 2.99458 V
+  .options reltol=1e-3                               tmax 20u  cell minimum 2.99678 V
+case4 green and blue LED current (mA) for the typical Vf at 20 mA moved down from the sheet value 3.3 V (best ideality n over 2, 3, 4); limit 2 mA
+  Vf at 20 mA = 3.3 V: green 1.97 mA (n = 2), 1.41 mA (n = 3), 1.73 mA (n = 4)
+  Vf at 20 mA = 3.2 V: green 1.97 mA (n = 2), 1.92 mA (n = 3), 2.22 mA (n = 4)
+  Vf at 20 mA = 3.1 V: green 2.14 mA (n = 2), 2.46 mA (n = 3), 2.74 mA (n = 4)
+  Vf at 20 mA = 3.0 V: green 2.73 mA (n = 2), 3.02 mA (n = 3), 3.29 mA (n = 4)
+  Vf at 20 mA = 2.9 V: green 3.33 mA (n = 2), 3.60 mA (n = 3), 3.85 mA (n = 4)

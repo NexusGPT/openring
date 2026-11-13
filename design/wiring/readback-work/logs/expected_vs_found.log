@@ -1,0 +1,21 @@
+EXPECT OK  | antenna Z0 ohm (plan d.1 line 295: 49.3) | expected 49.3 | found 49.3079 | matches | p4p5.json P4_1.Z0
+EXPECT OK  | USB Zdiff at the plan gap 0.075 (plan d.2 line 301: 91.5) | expected 91.5 | found 91.4050 | matches | formula check
+EXPECT DIFF | USB Zdiff at the drawn modal gap (plan intends 90 +-10%) | expected 90.0 | found 104.6956 | DIFFERS | p4p5.json P4_4
+EXPECT DIFF | antenna L1 clearance mm (plan d.1: 0.200) | expected 0.2 | found 0.1250 | DIFFERS | p4p5.json P4_2
+EXPECT DIFF | antenna L2 GND under line (plan d.1: solid, 100 percent) | expected 100.0 | found 96.6467 | DIFFERS | p4p5.json P4_3
+EXPECT OK  | antenna line length mm (plan R2.0: 16.4) | expected 16.4 | found 16.1248 | matches | p4p5.json P4_len
+EXPECT OK  | USB mismatch mm (plan d.2: <= 0.10) | expected 0.1 | found 0.0000 | matches | p4p5.json P4_5
+EXPECT DIFF | XL1 length mm (plan d.4: <= 9.0) | expected 9.0 | found 9.6967 | DIFFERS | p4p5.json P5.XL1
+EXPECT DIFF | XL1 other-net gap mm (plan d.4: >= 0.20) | expected 0.2 | found 0.0873 | DIFFERS | p4p5.json P5.XL1.clear
+EXPECT OK  | XL2 length mm (plan d.4: <= 9.0) | expected 9.0 | found 7.3905 | matches | p4p5.json P5.XL2
+EXPECT DIFF | XL2 other-net gap mm (plan d.4: >= 0.20) | expected 0.2 | found 0.0919 | DIFFERS | p4p5.json P5.XL2.clear
+EXPECT OK  | XC1 length mm (plan d.4: <= 6.0) | expected 6.0 | found 4.9560 | matches | p4p5.json P5.XC1
+EXPECT DIFF | XC1 other-net gap mm (plan d.4: >= 0.20) | expected 0.2 | found 0.1050 | DIFFERS | p4p5.json P5.XC1.clear
+EXPECT OK  | XC2 length mm (plan d.4: <= 6.0) | expected 6.0 | found 4.9260 | matches | p4p5.json P5.XC2
+EXPECT DIFF | XC2 other-net gap mm (plan d.4: >= 0.20) | expected 0.2 | found 0.1030 | DIFFERS | p4p5.json P5.XC2.clear
+EXPECT OK  | band US13 VMOT mV (band-interface.md line 132: 8.7) | expected 8.7 | found 8.2834 | matches | p3_band.json us13.vmot
+EXPECT DIFF | band US13 motor GND land 6 mV (line 132: 12.9) | expected 12.9 | found 11.3046 | DIFFERS | p3_band.json us13.gnd6
+EXPECT OK  | band US13 cell VBAT mV (line 133: 11.0) | expected 11.0 | found 11.6111 | matches | p3_band.json us13.vbat
+EXPECT OK  | band US13 cell GND land 2 mV (line 133: 12.5) | expected 12.5 | found 13.1550 | matches | p3_band.json us13.cell_gnd2
+EXPECT OK  | ring shorts+opens (board notes: routed, 0 unconnected) | expected 0 | found 0.0000 | matches | p1_ring.json
+EXPECT cases 20, differing 9

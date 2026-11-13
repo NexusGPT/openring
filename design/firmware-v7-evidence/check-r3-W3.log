@@ -1,0 +1,44 @@
+firmware: review/review-3/fakes/W3_firmware.md
+architecture: design/architecture.md
+netlist: design/ecad/ring/netlist.csv
+check 1 sections: found [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], missing []
+check 2 states: 14 listed, 72 transitions, 14 states used
+check 3 pins: 29 pins, 26 signal names, 40 signal-pin pairs checked against 37 architecture signals
+check 4 RAM: 14 lines sum 305408, stated total 305408, limit 524288
+check 7 charger: 4350000 uV against the cell type 4.35 V; CHARGE_CURRENT 15000 uA, smallest cell 17.6 mAh
+check 8 microphone modes from the Knowles copy: [(1000000.0, 4800000.0), (350000.0, 800000.0)]
+check 8 PDM: 1 clock lines checked
+check 9-11 rules: 5 stated rules checked
+check 12 thermistor: 10000 ohm, limits [0, 10000, 40000, 45000] m°C
+check 13 removed names: 33 names, 0 uses outside the change list
+check 14 microphone rail: on in 1.1 for ['RECORDING'], in 8.2 for ['`RECORDING`']
+check 15 long press: 1 transitions into the recording state checked
+check 20 Bluetooth: 1 Bluetooth transition rows, 2 start or stop clauses in section 7 (each must be a refusal)
+check 16 battery: smallest 17.6, largest 31.9 mAh at 4.1 mA; minutes [39, 13, 5] and [70, 23, 9]; 7 recording rows, 7 charge rows
+check 16 F3 rules: 12 rule groups checked
+check 17 F4 rules: 6 rule groups checked, 72 transition rows read
+check 18a netlist: 40 signal-pin pairs, 29 pins, 19 named nets checked against 398 netlist rows
+check 18b microphone: sensitivity -26 dBFS, gain 0 dB, register 0x28, full scale 120 dB SPL, AOP 120 dB SPL
+check 18 F5 rules: 6 rule groups checked
+check 19 former cell values: 0 uses of 18.2, 24.3, 32.9 or 18,200 without 'before' within 60 characters
+check 21 v7: 6 rule groups checked, 0 lines name a removed part without 'removed in v7'; netlist.csv still holds none of LED1, R41, Q2 (reported, not judged: the wiring is another helper's file)
+check 22 F7 part 2: 3 HID reports, 4 control modes
+check 23 F7 part 3: 2 sentences on the screen going off in RECORDING (each must be a refusal), 4 screens, step 5 without a microphone test
+check 5 end: questions_for_owner and RESULT line
+FAIL line 904: a sentence lets the screen go off in RECORDING: the screen goes off at once and stays off for 10 s, also in `RECORDING` **[CHOICE]**:
+FAIL 2.2 has no joystick row for SCR_MODES
+FAIL 3.3 does not list SCR_MODES
+FAIL 2.2 has no joystick row for SCR_CONTROL
+FAIL 3.3 does not list SCR_CONTROL
+FAIL 2.2 has no joystick row for SCR_DEVICES
+FAIL 3.3 does not list SCR_DEVICES
+FAIL 2.2 has no joystick row for SCR_DEVICE
+FAIL 3.3 does not list SCR_DEVICE
+FAIL 2.2 does not give the six menu items in order
+FAIL 3.4 lacks the rule: A double press of the centre closes the session
+FAIL 3.4 lacks the rule: does not close the session
+FAIL 3.4 lacks the rule: is the highlight marker and is not sent
+FAIL 9.3: assembly step 5 runs a microphone test with no screen joined (ruling R18)
+FAIL 9.3 lacks ruling R18
+15 failures
+exit 1

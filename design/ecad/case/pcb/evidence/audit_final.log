@@ -1,0 +1,265 @@
+ok path: .
+ok path: design/ecad/case/pcb/board-notes.md
+ok path: design/case
+ok path: design/case/case-architecture.md
+ok path: design/case/case-bom.csv
+ok path: design/case/case.py
+ok path: design/case/out/case_params.json
+ok path: design/datasheets
+ok path: design/datasheets
+ok path: design/datasheets/w5_jlcpcb_capabilities.html
+ok path: design/datasheets/w5_jlcpcb_capabilities.html
+ok path: design/datasheets/w5_vishay_crcw_e3.pdf
+ok path: design/ecad/case
+ok path: design/ecad/case/closed-pins.csv
+ok path: design/ecad/case/evidence/check_w5_final.log
+ok path: design/ecad/case/netlist.csv
+ok path: design/ecad/case/open-pins.csv
+ok path: design/ecad/case/parts.csv
+ok path: design/ecad/case/pcb/
+ok path: design/ecad/case/pcb/OpenRingCase.pretty/
+ok path: design/ecad/case/pcb/build_boards.py
+ok path: design/ecad/case/pcb/case_main.kicad_pcb
+ok path: design/ecad/case/pcb/case_pins.kicad_pcb
+ok path: design/ecad/case/pcb/check_boards.py
+ok path: design/ecad/case/pcb/fab/
+ok path: design/ecad/case/pcb/make_broken.py
+ok path: design/ecad/case/pcb/make_footprints.py
+ok path: design/ecad/case/pcb/run_boards.sh
+ok path: design/ecad/case/sch-notes.md
+ok path: design/ecad/ring/netlist.csv
+ok path: design/ecad/ring/pcb/run_kipy.sh
+ok path: design/mech/thin/placement.csv
+ok path: fab/case_main/case_main.step
+ok path: fab/case_main/case_main_position.csv
+ok path: fab/case_main/gerber/
+ok path: fab/case_main/pdf/
+ok path: fab/case_main_parts.csv
+ok path: fab/case_pins/case_pins.step
+ok path: fab/case_pins/case_pins_position.csv
+ok path: fab/case_pins/gerber/
+ok path: fab/case_pins/pdf/
+ok path: fab/case_pins_parts.csv
+ok command: CASE_FINE=1
+ok command: CAV_YH
+ok command: CAV_YH = 20.35
+ok command: PCB1 = dict(x=23.0, y=35.4, t=1.0)
+NO MATCH command: PCB1["y"]
+ok command: RESULT PASS
+ok command: RESULT PASS check_boards case_main.kicad_pcb case_pins.kicad_pcb
+ok command: RESULT PASS netlist netlist.csv
+ok command: VIACOST=600 HISTINC=12 PGROW=1.3
+NO MATCH command: _wing_L
+NO MATCH command: _wing_R
+ok command: bash run_all.sh w5_final
+ok command: check_boards.py
+NO MATCH command: design/ecad/case/pcb/run_boards.sh
+ok command: design/ecad/ring/pcb/run_kipy.sh
+ok command: du -sh
+ok command: du -sh fab
+ok command: isPlaneNet
+ok command: j1_front
+ok command: kicad-cli pcb drc --severity-all --all-track-errors
+ok command: kicad-cli pcb drc --severity-all --all-track-errors --format report -o evidence/drc_case_main_final.rpt case_main.kicad_pcb
+ok command: kicad-cli pcb drc --severity-all --all-track-errors --format report -o evidence/drc_case_pins_final.rpt case_pins.kicad_pcb
+ok command: min_connection
+ok command: p["U1_esp32s3_mini1"] = box(pcb1_x0 + 0.6, pcb1_x0 + 0.6 + 15.4, -15.6, 4.9, ...)
+ok command: pcb1_x0
+ok command: pcb1_z
+ok command: pcb1_z0 = cell_z0 + CELL["t"] + 0.3
+NO MATCH command: pin_board_pcb2
+ok command: pin_holder
+ok command: placement
+ok command: slot = box(x_b + 1.0, x_b + 4.0, -4.0, 4.0, ...)
+ok command: tab = box(jx0 + 1.6, pcb1_x0 + 0.5, JY, JY + 8.94, ...)
+ok command: u1_ground_pattern
+NO MATCH command: wall_in_front_of_E1
+ok command: write_pro
+ok number 0 violations: broken_notrack    the longest track of net SD_D0 deleted (unconnected item)
+ok number 0 unconnected: broken_notrack    the longest track of net SD_D0 deleted (unconnected item)
+ok number 3 pad: #!/usr/bin/env python3
+ok number 0.10 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 0.50 mm: | PCB Manufacturing & Assembly Capabilities - JLCPCB | This website requires JavaScript. | Account Restriction Notice | Get Coupon Here | Coupons | Country / Re
+ok number 0.15 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+NO MATCH number 0.031 mm in reply line: 2. Rules: signal track and gap 0.10 mm, via 0.20 / 0.50 mm (ring 0.15 mm), power widths as before. The capability page l
+ok number 2.5 mm: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+NO MATCH number 37.9 mm in reply line: 3. Length: 2.5 mm used, 35.4 to 37.9 mm, toward the socket side, inside the cavity (case.py line 142). Other files need 
+ok number 21.050 mm: info PCB1: USB_D+ 21.050 mm, USB_D- 21.750 mm, difference 0.700 mm
+ok number 21.750 mm: info PCB1: USB_D+ 21.050 mm, USB_D- 21.750 mm, difference 0.700 mm
+ok number 0.700 mm: info PCB1: USB_D+ 21.050 mm, USB_D- 21.750 mm, difference 0.700 mm
+ok number 5.0 mm: it.u = random.uniform(5.0, 22.0)
+ok number 1.750 mm: info PCB2: USB_D+ 1.750 mm, USB_D- 1.750 mm, difference 0.000 mm
+ok number 270 ohm: iter 131 rerouted 4  nets in conflict 4  unrouted 0  t=270s
+ok number 3.2 MB: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 52 parts: iter 18 rerouted 12  nets in conflict 12  unrouted 0  t=52s
+ok number 261 MB: iter 121 rerouted 4  nets in conflict 4  unrouted 0  t=261s
+ok number 19 MB: count 19
+ok number 16 mm: TH1 pad 1 TS 16.45 -7.55
+ok number 1.0 mm: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+ok number 4 layers: broken_outside    U4 moved 60 mm to the right (outside the outline)
+ok number 0.40 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 0.30 mm: chosen widths (outer 1 oz): VBUS_IN 0.40 mm; SYS BAT SW PMID U3_L1 U3_L2 0.30 mm; VRING and 3V3 0.20 mm; everything else 0.15 mm
+ok number 0.60 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 83 parts: iter 26 rerouted 12  nets in conflict 12  unrouted 0  t=83s
+ok number 35.4 mm: # ---------------- PCB1 (case.py line 141: PCB1 = dict(x=23.0, y=35.4, t=1.0); case_params.json pcb1_x0)
+ok number 0.8 mm: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+ok number 0.4 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 2 vias: TH1 pad 2 GND 16.45 -9.55
+ok number 2.0 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 2 layers: TH1 pad 2 GND 16.45 -9.55
+ok number 0.09 mm: | PCB Manufacturing & Assembly Capabilities - JLCPCB | This website requires JavaScript. | Account Restriction Notice | Get Coupon Here | Coupons | Country / Re
+ok number 0.25 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 0.20 mm: ok   PCB1: every pad inside the outline, edge clearance 0.20 mm
+ok number 0.2 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 3 mm: #!/usr/bin/env python3
+ok number 40 mm: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+ok number 100 mm: DIAG net USB_D- pin reachable cells 66 bbox x 119.30..119.95 y 100.25..100.45 via possible 0
+ok number 3.9 mm: (descr "Touch electrode E1, front part: copper rectangle 3.9 x 1.15 mm on the front face of the pin board inner island (case-bom.csv line 24: copper electrode, 
+ok number 1.15 mm: (descr "Touch electrode E1, front part: copper rectangle 3.9 x 1.15 mm on the front face of the pin board inner island (case-bom.csv line 24: copper electrode, 
+ok number 4.6 mm: smd(fp, 1 + r, 4.6, y, 0.8, 0.6, rr=0.15)     # outer left-group column (bottom view) -> right side here
+ok number 19 footprints: count 19
+ok number 2.7 mm: | PCB Manufacturing & Assembly Capabilities - JLCPCB | This website requires JavaScript. | Account Restriction Notice | Get Coupon Here | Coupons | Country / Re
+ok number 0006 A: (descr "TI DBV0006A SOT-23 6 pin, body 2.9 x 1.6 mm, pitch 0.95 mm. Land pattern: case_tps2553.pdf p.44 'Example Board Layout' DBV0006A: 6 pads 1.1 x 0.6 mm, co
+ok number 0010 A: (descr "TI DQA0010A USON 10 pin, 1.0 x 2.5 mm, 0.5 mm pitch. Land pattern: case_tpd4e05u06.pdf p.29 'Example Board Layout' DQA0010A: pads 0.565 x 0.2 mm, pins 3
+ok number 2.8 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 3.1 mm: print("R3.1 was", p.GetNetname())
+ok number 9 vias: TH1 pad 2 GND 16.45 -9.55
+ok number 0.3 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 0.9 mm: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+ok number 4 pads: broken_outside    U4 moved 60 mm to the right (outside the outline)
+ok number 89 parts: netlist rows 279 parts 89 nets 61
+ok number 61 nets: PCB1 unrouted: footprints 84 nets 61
+NO MATCH number 13.2 mm in notes line: | PCB1 height | z 12.2 to 13.2 mm | case_params.json key `pcb1_z` |
+ok number 1.6 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 10.2 mm: W6,cell lead,cell BT1 black (-) lead at the PCM end (x 4.76 y 20.00),PCB1 pad W6 (x -0.84 y 18.65),GND,10.2,15.2,40
+ok number 8.94 mm: # ---------------- J1 (case.py lines 172-174: J1_LIP, JY = 8.0, J1_YC = JY + 8.94 / 2; line 745 j1 box 7.35 x 8.94; case_params.json j1_front)
+ok number 4.18 mm: J1_ORIGIN_FROM_FRONT = 4.18                    # USB4105 drawing p.1: mating face at y = +4.18 mm in the footprint frame
+ok number 20.5 mm: U1_L = U1_V1 - U1_V0                           # module length 20.5 mm (case_esp32s3_mini1.pdf Figure 10-1 p.42)
+ok number 4.1 mm: | PCB Manufacturing & Assembly Capabilities - JLCPCB | This website requires JavaScript. | Account Restriction Notice | Get Coupon Here | Coupons | Country / Re
+ok number 3.05 mm: (at -7 3.05)
+ok number 5.05 mm: # antenna: module antenna area 5.05 mm at the -Y end (case_esp32s3_mini1.pdf Figure 11-1 p.45); the module is rotated 180 degrees so the antenna is at v = U1_V0
+ok number 20.35 mm: # round 2: the board may grow toward +y (d negative, the socket side) up to the cavity wall (case.py line 142 CAV_YH = 20.35, 0.15 mm kept): d from BOARD_D0 to 
+ok number 0.65 mm: # board (v -15.6 .. 4.9); moved here by U1_OVERHANG + 2.1 toward -v. The cavity half width is 20.35 (case.py line 142 CAV_YH), the module end then is 0.65 mm fr
+ok number 0.1 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 3 pads: #!/usr/bin/env python3
+ok number 1.7 mm: # our widths (see board-notes.md): P2/P3 pads dia 1.7 at |y| 1.197 reach 2.047, so the inner island needs >= 2.25 for a 0.2 mm copper edge
+ok number 0.7 mm: removing previous WIRE_PTH_0.7.kicad_mod
+ok number 1.3 mm: VIACOST=600 HISTINC=12 PGROW=1.3 ./grid_router work/c1_in.txt work/c2_out_s1.txt 300 1 > evidence/run_boards_router.log 2>&1
+ok number 1.1 mm: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+ok number 28 unconnected: seed 41 wire length 1033.5 overlap 0.0000 outside 28.020 antenna 0.0000 far 14.00
+ok number 84 footprints: PCB1 unrouted: footprints 84 nets 61
+ok number 529 track: iter 529 rerouted 2  nets in conflict 2  unrouted 0  t=71s
+ok number 106 vias: DIAG net TS pin reachable cells 106 bbox x 120.70..121.75 y 86.10..86.40 via possible 0
+ok number 10 footprints: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+ok number 5 track: - KiCad's own library models (path ${KICAD10_3DMODEL_DIR}/...): R 0402 (Resistor_SMD), C 0402 0603 0805 (Capacitor_SMD), U5 SOT-23-6, U2 QFN-24 4x4 EP 2.6 x 2.6
+ok number 18.5 mm: HINTS = {"U4": (10.8, -12.0, 90), "U2": (19.3, -13.0, 0), "L1": (19.8, -8.3, 0), "U3": (18.5, 4.5, 0), "L2": (19.8, 9.0, 0), "U5": (18.5, -2.0, 0),
+ok number 10 mm: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+ok number 4 mm: broken_outside    U4 moved 60 mm to the right (outside the outline)
+ok number 0.6 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 0402 parts: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+ok number 26 nets: iter 1 rerouted 35  nets in conflict 26  unrouted 0  t=4s
+ok number 0.1124 mm: # the router writes short pad-exit stubs narrower than the rule (0.1124 mm): set every track to at least the minimum width
+ok number 88 tracks: iter 88 rerouted 4  nets in conflict 4  unrouted 0  t=228s
+ok number 22 violations: 2026-11-12 23:48:22.510 INFO   [14E16A\AD9BED] Job '14E16A\AD9BED' finished with state: COMPLETED (elapsed: 8 minutes 44.51 seconds, finished at UTC: 2026-11-12
+ok number 0.05 mm: (width 0.05)
+ok number 4 nets: broken_outside    U4 moved 60 mm to the right (outside the outline)
+ok number 3 nets: #!/usr/bin/env python3
+ok number 40 unconnected: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+ok number 1.5 A: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 15.7 K: VBUS_IN                                                 1.500 A on 0.40 mm: temperature rise 15.7 K
+ok number 1.0 A: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+ok number 0.35 A: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 10.0 K: "kicad_version": "10.0.8",
+ok number 0.6 A: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 0.355 A: 3V3 (U1 peak)                            I=0.355 A  outer 1 oz dT 10 K: 0.072 mm   dT 20 K: 0.047 mm   inner 0.5 oz dT 10 K: 0.375 mm
+ok number 3.1 K: print("R3.1 was", p.GetNetname())
+ok number 0.401 A: VRING (TPS2553 limit)                    I=0.401 A  outer 1 oz dT 10 K: 0.085 mm   dT 20 K: 0.056 mm   inner 0.5 oz dT 10 K: 0.443 mm
+ok number 2.4 K: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 1.9 K: PCB1_X0 = P["pcb1_x0"]                         # case_params.json key pcb1_x0 (case.py line 702: pcb1_x0 = x_lay + 1.9)
+ok number 2 A: TH1 pad 2 GND 16.45 -9.55
+ok number 0.5 mm: return LIBM + "/Package_DFN_QFN.3dshapes/QFN-24-1EP_4x4mm_P0.5mm_EP2.6x2.6mm.step"
+NO MATCH number 13.200 mm in notes line: USB pair: NOT within 0.5 mm and not complete on PCB1. In the rebuilt board D+ (U1.24 to U6.1) is not routed (its route o
+ok number 23.200 mm: before: D+ 23.200 mm, D- 12.850 mm, difference 10.350 mm
+ok number 19.150 mm: after: D+ 23.200 mm, D- 19.150 mm, difference 4.050 mm
+ok number 0.000 mm: info PCB2: USB_D+ 1.750 mm, USB_D- 1.750 mm, difference 0.000 mm
+ok number 3.1 net: print("R3.1 was", p.GetNetname())
+ok number 60 mm: broken_outside    U4 moved 60 mm to the right (outside the outline)
+ok number 15 violations: DIAG net PMID pin reachable cells 15 bbox x 116.80..117.50 y 87.75..87.75 via possible 0
+NO MATCH number 8.800 mm in notes line: | broken_notrack | one 8.800 mm track of SD_D0 deleted | rules check goes from 28 to 29 unconnected items and 1 violatio
+ok number 29 unconnected: iter 29 rerouted 12  nets in conflict 12  unrouted 0  t=94s
+ok number 1 violation: TH1 pad 1 TS 16.45 -7.55
+ok number 1.3 MB: VIACOST=600 HISTINC=12 PGROW=1.3 ./grid_router work/c1_in.txt work/c2_out_s1.txt 300 1 > evidence/run_boards_router.log 2>&1
+ok number 20 MB: iter 2 rerouted 26  nets in conflict 20  unrouted 0  t=5s
+ok number 84 parts: PCB1 unrouted: footprints 84 nets 61
+ok number 261 ohm: iter 121 rerouted 4  nets in conflict 4  unrouted 0  t=261s
+ok number 260 ohm: iter 120 rerouted 4  nets in conflict 4  unrouted 0  t=260s
+ok number 4 files: broken_outside    U4 moved 60 mm to the right (outside the outline)
+ok number 2 files: TH1 pad 2 GND 16.45 -9.55
+ok number 2 pad: TH1 pad 2 GND 16.45 -9.55
+ok number 5 mm: - KiCad's own library models (path ${KICAD10_3DMODEL_DIR}/...): R 0402 (Resistor_SMD), C 0402 0603 0805 (Capacitor_SMD), U5 SOT-23-6, U2 QFN-24 4x4 EP 2.6 x 2.6
+ok number 39 mm: iter 15 rerouted 12  nets in conflict 12  unrouted 0  t=39s
+ok number 49 mm: iter 49 rerouted 10  nets in conflict 10  unrouted 0  t=170s
+ok number 2.4 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+NO MATCH number 0.006 mm in notes line: Source: CS line 17 ("P1/W1 VRING (ring VBUS), P2/W2 USB_D-, P3/W3 USB_D+, P4/W4 GND"), the ring netlist (RN lines 85, 28
+ok number 5 V: - KiCad's own library models (path ${KICAD10_3DMODEL_DIR}/...): R 0402 (Resistor_SMD), C 0402 0603 0805 (Capacitor_SMD), U5 SOT-23-6, U2 QFN-24 4x4 EP 2.6 x 2.6
+NO MATCH number 1.97 mm in notes line: | Touch electrode E1 through the holder wall (bench B3; CB line 24, CA line 220: "E1 reads through a 1.97 mm LCP wall") 
+NO MATCH number 2.42 mm in notes line: | Touch electrode E1 through the holder wall (bench B3; CB line 24, CA line 220: "E1 reads through a 1.97 mm LCP wall") 
+ok number 4 net: broken_outside    U4 moved 60 mm to the right (outside the outline)
+ok number 470 ohm: DIAG net CHG_OTG pin reachable cells 470 bbox x 119.00..121.25 y 98.45..99.65 via possible 0
+ok number 150 ohm: in conflict: U3_L2(150) SD_D2(150) VRING(148) 3V3(150)
+NO MATCH number 3.308 V in notes line: | LED brightness (bench B4; CS risk 6, CA line 178) | R8 470 ohm (red), R9 150 ohm (green), R10 150 ohm (blue) from 3V3 
+ok number 2.8 V: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 3.3 V: ***** Sheet /Power: BQ25895 charger, TPS63802 3.3 V, cell/
+ok number 2 V: TH1 pad 2 GND 16.45 -9.55
+ok number 1.4 V: LED_U = 1.6                                    # model centre is 1.4; moved +0.2 mm so the pad copper keeps 0.2 mm from the board edge
+ok number 0.7 V: removing previous WIRE_PTH_0.7.kicad_mod
+ok number 0.3 V: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 100 ohm: DIAG net USB_D- pin reachable cells 66 bbox x 119.30..119.95 y 100.25..100.45 via possible 0
+ok number 68 ohm: iter 68 rerouted 6  nets in conflict 6  unrouted 0  t=203s
+ok number 0.3 A: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+NO MATCH number 4.998 V in notes line: | Boost efficiency from the cell to VRING (bench B5; CA section 4 "boost efficiency taken as 0.85", CHECKLIST of design/
+NO MATCH number 3.70 V in notes line: | Boost efficiency from the cell to VRING (bench B5; CA section 4 "boost efficiency taken as 0.85", CHECKLIST of design/
+ok number 22 ohm: 2026-11-12 23:48:22.510 INFO   [14E16A\AD9BED] Job '14E16A\AD9BED' finished with state: COMPLETED (elapsed: 8 minutes 44.51 seconds, finished at UTC: 2026-11-12
+ok number 5.1 V: 3D Viewer | CNC Machining | Milling (3-, 4- & full 5-axis), turning | 3D Printing | FDM, SLA, SLS, MJF, DMLS, Polyjet | Sheet Metal Fabrication | Laser cutting,
+NO MATCH number 0.227 A in notes line: | Boost efficiency from the cell to VRING (bench B5; CA section 4 "boost efficiency taken as 0.85", CHECKLIST of design/
+ok number 0.36 A: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 22 mm: 2026-11-12 23:48:22.510 INFO   [14E16A\AD9BED] Job '14E16A\AD9BED' finished with state: COMPLETED (elapsed: 8 minutes 44.51 seconds, finished at UTC: 2026-11-12
+ok number 30 mm: broken_nopart     R30 removed
+ok number 4.5 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+NO MATCH number 40.7 mm in notes line: 6. To make PCB1 routable at 0.15 mm track and gap: free the bottom face of PCB1 for 0402 parts. That needs a gap of at l
+ok number 4.050 mm: after: D+ 23.200 mm, D- 19.150 mm, difference 4.050 mm
+ok number 0402 pad: footprints written: ['CELL_LEADS.kicad_mod', 'DFN-10_DLA_2x3.kicad_mod', 'ESP32-S3-MINI-1.kicad_mod', 'HARWIN_P70_6000045R.kicad_mod', 'LED_APTF1616.kicad_mod',
+NO MATCH number 1.05 mm in notes line: 5. The chip land patterns SMD_0402, SMD_0603, SMD_0805 are IPC-7351B nominal. I fetched Vishay's own pattern (design/dat
+ok number 510 ohm: in conflict: U3_L2(510) 3V3(510)
+NO MATCH number 4.35 V in notes line: 2. Status light: LED1 anode on SYS; R8 510 ohm, R9 270 ohm, R10 270 ohm give 2.2 to 4.7 mA over SYS 3.5 to 4.35 V (sch-n
+NO MATCH number 8.8 mm in notes line: `check_boards.py`: `RESULT PASS check_boards case_main.kicad_pcb case_pins.kicad_pcb`, exit 0 (evidence/check_boards_goo
+ok number 1 unconnected: TH1 pad 1 TS 16.45 -7.55
+ok number 616 track: case_main footprints 84 track segments 616 vias 121 zones 5 copper layers 4 outline mm 24.95 x 38.00
+ok number 121 vias: DIAG net 3V3 pin reachable cells 464 bbox x 121.80..122.70 y 87.20..88.55 via possible 0
+NO MATCH number 0.103 mm in notes line: Solder mask: opening 0.05 mm per side, mask-to-copper 0.05 mm (project defaults). The router keeps 0.103 mm between a tr
+ok number 17.7 mm: BOARD_D1 = BOARD_H / 2                     # unchanged end (antenna end), d = +17.7
+NO MATCH number 20.2 mm in notes line: PCB1 grew from 35.4 mm to 37.9 mm along the cavity: 2.5 mm, toward +y (the socket side, d negative); the antenna end did
+ok number 23.0 mm: # ---------------- PCB1 (case.py line 141: PCB1 = dict(x=23.0, y=35.4, t=1.0); case_params.json pcb1_x0)
+ok number 14 nets: 2026-11-12 23:48:22.510 INFO   [14E16A\AD9BED] Job '14E16A\AD9BED' finished with state: COMPLETED (elapsed: 8 minutes 44.51 seconds, finished at UTC: 2026-11-12
+ok number 100 KB: DIAG net USB_D- pin reachable cells 66 bbox x 119.30..119.95 y 100.25..100.45 via possible 0
+ok number 2.6 mm: - KiCad's own library models (path ${KICAD10_3DMODEL_DIR}/...): R 0402 (Resistor_SMD), C 0402 0603 0805 (Capacitor_SMD), U5 SOT-23-6, U2 QFN-24 4x4 EP 2.6 x 2.6
+ok number 2.1 mm: # board (v -15.6 .. 4.9); moved here by U1_OVERHANG + 2.1 toward -v. The cavity half width is 20.35 (case.py line 142 CAV_YH), the module end then is 0.65 mm fr
+ok number 0.95 mm: (descr "Chip 0603 (1608 metric), body 1.6 x 0.8 mm; pads 0.80 x 0.95 mm at 1.65 mm pitch (IPC-7351B nominal). Used for C 0603. Body size: Murata GRM188 outline 
+ok number 0.55 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+ok number 1.5 mm: Multilayer PCB: 560*1150mm | (min 3*3mm) | Any sizes beyond this dimension, please view the below "Advanced PCB" or contact sales rep. | Board Size Tolerance(Ou
+NO MATCH result: RESULT FAIL 1 check_boards case_main.kicad_pcb case_pins.kicad_pcb"). The brief asks for exit 0 on t
+ok result: RESULT PASS
+NO MATCH result: RESULT PASS (evidence/check_w5_sim.log).
+NO MATCH result: RESULT PASS (evidence/check_w5_sim.log). The boards were re-placed with the same placement, re-route
+ok result: RESULT PASS check_boards case_main.kicad_pcb case_pins.kicad_pcb
+ok result: RESULT PASS netlist netlist.csv
+NO MATCH result: RESULT line.
+NO MATCH result: RESULT: done, PCB1 rules check 0 violations and 0 unconnected items, PCB2 rules check 0 violations a
+NO MATCH result: RESULT: done. Both boards pass the rules check, and check_boards.py exits 0. Notes: <home>/nex
+ok result: exit 0
+ok result: exit 1
+INFO values stated for 'violations' in the notes: {'0': 15, '22': 1, '15': 1} (compare per board before accepting)
+INFO values stated for 'unconnected items' in the notes: {'0': 7, '28': 8, '40': 1, '29': 1} (compare per board before accepting)
+INFO values stated for 'unconnected' in the notes: {'0': 9, '28': 9, '40': 1, '29': 1, '1': 1} (compare per board before accepting)
+INFO values stated for 'vias' in the notes: {'2': 3, '9': 1, '106': 1, '121': 1} (compare per board before accepting)
+checked 260 claims, 30 without a match, 0 disagreements

@@ -1,0 +1,26 @@
+test_disk_write_fault_at_n
+diff -r modules/ring_rhw/src/sim_disk.c build-logs/step6/u0-editcheck/disk_fault_late/src/sim_disk.c
+195c195
+< 	} else if (fail_k > 0 && call - fail_base >= fail_from && call - fail_base < fail_from + fail_k) {
+---
+> 	} else if (fail_k > 0 && call - fail_base >= fail_from + 1 && call - fail_base < fail_from + 1 + fail_k) {
+test_disk_cut_after_sector
+diff -r modules/ring_rhw/src/sim_disk.c build-logs/step6/u0-editcheck/cut_keeps_tail/src/sim_disk.c
+199c199
+< 		keep = cut_k < count ? cut_k : count;
+---
+> 		keep = count;
+test_reboot_keeps_card_settings_retained
+diff -r modules/ring_rhw/src/sim_disk.c build-logs/step6/u0-editcheck/reboot_wipes_card/src/sim_disk.c
+236a237,238
+> 	memset(key_of, 0, sizeof(key_of));
+> 	used = 0;
+238,239d239
+< 		memset(key_of, 0, sizeof(key_of));
+< 		used = 0;
+test_mic_stop_delivering
+diff -r modules/ring_rhw/src/sim_mic.c build-logs/step6/u0-editcheck/mic_no_block_ignored/src/sim_mic.c
+148c148
+< 	if (stop_after >= 0 && delivered >= (uint32_t)stop_after) {
+---
+> 	if (stop_after < -1 && delivered >= (uint32_t)stop_after) {

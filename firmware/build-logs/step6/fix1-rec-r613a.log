@@ -1,0 +1,207 @@
+# remote.sh run 20261113-124856-fix1-rec-r613a
+# command: RING_OUT=/ws/out/fix1rec-r613a bash tests/factory/broken_run.sh vbat_read_at_0; echo broken_run exit $?; grep -h 'T-SCREEN stamps\|test_frame_sequence\|test_reads_and_timing' /ws/out/fix1rec-r613a/twister-*.log | cut -c1-200 | head -80
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 12:48:56 CET
+# free on the server's /: 31 GB
+# source firmware copied to /root/ring-os/src-u-fix6
+# started on the server as 20261113-124856-fix1-rec-r613a; server log /root/ring-os/logs/20261113-124856-fix1-rec-r613a.log
+##### broken copy: vbat_read_at_0
+diff -u -r /ws/firmware/modules/ring_factory/src/rfa_logic.c /ws/out/fix1rec-r613a/broken_ring_factory_vbat_read_at_0/src/rfa_logic.c
+--- /ws/firmware/modules/ring_factory/src/rfa_logic.c	2026-11-13 05:52:25.000000000 +0000
++++ /ws/out/fix1rec-r613a/broken_ring_factory_vbat_read_at_0/src/rfa_logic.c	2026-11-13 11:49:27.827170023 +0000
+@@ -305,7 +305,7 @@
+ 
+ uint32_t rfa_motor_read_delay_ms(void)
+ {
+-	return RREC_FAC_MOTOR_READ_MS;
++	return 0u;
+ }
+ 
+ int16_t rfa_motor_dip_mv(uint16_t before_mv, uint16_t during_mv)
+INFO    - 1/2 native_sim/native         ring_factory.sim                                   FAILED rc=1 (native 0.219s <host/gnu>)
+ PASS - test_fail_when_off_or_error in 0.021 seconds
+ PASS - test_0x11_bad_arg in 0.021 seconds
+ PASS - test_bad_arguments in 10.021 seconds
+ PASS - test_flag_rules in 0.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:230: factory_cmd_test_result_layout: o not equal to mot
+ FAIL - test_result_layout in 0.521 seconds
+TESTSUITE factory_cmd failed.
+ PASS - test_centre_reported_never_records in 6.021 seconds
+ PASS - test_directions_reported in 3.121 seconds
+ PASS - test_no_screen_no_mic in 2.044 seconds
+ PASS - test_rms_and_runs in 8.066 seconds
+ PASS - test_type_2_recording in 2.040 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_motor.c:34: factory_motor_test_reads_and_timing: (hi < s2 && s2 < lo is false)
+ FAIL - test_reads_and_timing in 0.521 seconds
+TESTSUITE factory_motor failed.
+ PASS - test_adv_parameters in 10.021 seconds
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_screen.c:206: factory_screen_test_frame_sequence: (fx_frame_ms[i] - fx_frame_ms[i - 1] not equal to 1000)
+ FAIL - test_frame_sequence in 6.021 seconds
+TESTSUITE factory_screen failed.
+ PASS - test_beacon_name in 0.021 seconds
+ PASS - test_beacon_window in 62.741 seconds
+ PASS - test_beacon_window_sample in 62.741 seconds
+ PASS - test_two_recordings_times in 3.044 seconds
+ PASS - test_area_write_read in 0.104 seconds
+ PASS - test_test_recordings_deleted in 3.563 seconds
+ PASS - test_ppm_arithmetic in 0.021 seconds
+SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+SUITE FAIL -  75.00% [factory_cmd]: pass = 3, fail = 1, skip = 0, total = 4 duration = 10.584 seconds
+ - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+ - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+ - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+ - FAIL - [factory_cmd.test_result_layout] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+ - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+ - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+ - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+ - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+ - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+SUITE FAIL -   0.00% [factory_motor]: pass = 0, fail = 1, skip = 0, total = 1 duration = 0.521 seconds
+ - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds
+SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+ - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+SUITE FAIL -   0.00% [factory_screen]: pass = 0, fail = 1, skip = 0, total = 1 duration = 6.021 seconds
+ - FAIL - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+ - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+ - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+ - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.044 seconds
+ - PASS - [factory_sign.test_two_recordings_times] duration = 3.044 seconds
+SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+ - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+ - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+ - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+PROJECT EXECUTION FAILED
+INFO    - 2/2 native_sim/native         ring_factory.screen                                FAILED rc=1 (native 0.156s <host/gnu>)
+twister exit code on the broken copy vbat_read_at_0, native_sim: 1 (log /ws/out/fix1rec-r613a/twister-vbat_read_at_0-native_sim.log)
+vbat_read_at_0 on native_sim: the named case failed, as required:  - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds (failed cases listed: 6)
+vbat_read_at_0 on native_sim: cases that failed: factory_cmd.test_result_layout factory_motor.test_reads_and_timing factory_screen.test_frame_sequence 
+INFO    - 1/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.sim                             FAILED rc=1 (native 0.197s <host/gnu>)
+d_00: @00:00:00.020193   PASS - test_fail_when_off_or_error in 0.021 seconds
+d_00: @00:00:00.040293   PASS - test_0x11_bad_arg in 0.021 seconds
+d_00: @00:00:10.060493   PASS - test_bad_arguments in 10.021 seconds
+d_00: @00:00:10.080593   PASS - test_flag_rules in 0.021 seconds
+d_00: @00:00:10.580693      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_cmd.c:230: factory_cmd_test_result_layout: o not equal to mot
+d_00: @00:00:10.600793   FAIL - test_result_layout in 0.521 seconds
+d_00: @00:00:10.600793  TESTSUITE factory_cmd failed.
+d_00: @00:00:16.620993   PASS - test_centre_reported_never_records in 6.021 seconds
+d_00: @00:00:19.741393   PASS - test_directions_reported in 3.121 seconds
+d_00: @00:00:21.784493   PASS - test_no_screen_no_mic in 2.044 seconds
+d_00: @00:00:29.849593   PASS - test_rms_and_runs in 8.066 seconds
+d_00: @00:00:31.889593   PASS - test_type_2_recording in 2.040 seconds
+d_00: @00:00:32.389693      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_motor.c:34: factory_motor_test_reads_and_timing: (hi < s2 && s2 < lo is false)
+d_00: @00:00:32.409793   FAIL - test_reads_and_timing in 0.521 seconds
+d_00: @00:00:32.409793  TESTSUITE factory_motor failed.
+d_00: @00:00:42.429993   PASS - test_adv_parameters in 10.021 seconds
+d_00: @00:00:48.430593      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_screen.c:206: factory_screen_test_frame_sequence: (fx_frame_ms[i] - fx_frame_ms[i - 1] not equal to 1000)
+d_00: @00:00:48.450693   FAIL - test_frame_sequence in 6.021 seconds
+d_00: @00:00:48.450693  TESTSUITE factory_screen failed.
+d_00: @00:00:48.470793   PASS - test_beacon_name in 0.021 seconds
+d_00: @00:01:51.211293   PASS - test_beacon_window in 62.741 seconds
+d_00: @00:02:53.951793   PASS - test_beacon_window_sample in 62.741 seconds
+d_00: @00:02:56.995093   PASS - test_two_recordings_times in 3.044 seconds
+d_00: @00:02:57.098893   PASS - test_area_write_read in 0.104 seconds
+d_00: @00:03:00.661893   PASS - test_test_recordings_deleted in 3.563 seconds
+d_00: @00:03:00.681993   PASS - test_ppm_arithmetic in 0.021 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_charge]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_charge.test_fail_when_off_or_error] duration = 0.021 seconds
+d_00: @00:03:00.681993  SUITE FAIL -  75.00% [factory_cmd]: pass = 3, fail = 1, skip = 0, total = 4 duration = 10.584 seconds
+d_00: @00:03:00.681993   - PASS - [factory_cmd.test_0x11_bad_arg] duration = 0.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_cmd.test_bad_arguments] duration = 10.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_cmd.test_flag_rules] duration = 0.021 seconds
+d_00: @00:03:00.681993   - FAIL - [factory_cmd.test_result_layout] duration = 0.521 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_input]: pass = 2, fail = 0, skip = 0, total = 2 duration = 9.142 seconds
+d_00: @00:03:00.681993   - PASS - [factory_input.test_centre_reported_never_records] duration = 6.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_input.test_directions_reported] duration = 3.121 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_mic]: pass = 3, fail = 0, skip = 0, total = 3 duration = 12.150 seconds
+d_00: @00:03:00.681993   - PASS - [factory_mic.test_no_screen_no_mic] duration = 2.044 seconds
+d_00: @00:03:00.681993   - PASS - [factory_mic.test_rms_and_runs] duration = 8.066 seconds
+d_00: @00:03:00.681993   - PASS - [factory_mic.test_type_2_recording] duration = 2.040 seconds
+d_00: @00:03:00.681993  SUITE FAIL -   0.00% [factory_motor]: pass = 0, fail = 1, skip = 0, total = 1 duration = 0.521 seconds
+d_00: @00:03:00.681993   - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_radio]: pass = 1, fail = 0, skip = 0, total = 1 duration = 10.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_radio.test_adv_parameters] duration = 10.021 seconds
+d_00: @00:03:00.681993  SUITE FAIL -   0.00% [factory_screen]: pass = 0, fail = 1, skip = 0, total = 1 duration = 6.021 seconds
+d_00: @00:03:00.681993   - FAIL - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_ship]: pass = 3, fail = 0, skip = 0, total = 3 duration = 125.503 seconds
+d_00: @00:03:00.681993   - PASS - [factory_ship.test_beacon_name] duration = 0.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_ship.test_beacon_window] duration = 62.741 seconds
+d_00: @00:03:00.681993   - PASS - [factory_ship.test_beacon_window_sample] duration = 62.741 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_sign]: pass = 1, fail = 0, skip = 0, total = 1 duration = 3.044 seconds
+d_00: @00:03:00.681993   - PASS - [factory_sign.test_two_recordings_times] duration = 3.044 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_store]: pass = 2, fail = 0, skip = 0, total = 2 duration = 3.667 seconds
+d_00: @00:03:00.681993   - PASS - [factory_store.test_area_write_read] duration = 0.104 seconds
+d_00: @00:03:00.681993   - PASS - [factory_store.test_test_recordings_deleted] duration = 3.563 seconds
+d_00: @00:03:00.681993  SUITE PASS - 100.00% [factory_xtal]: pass = 1, fail = 0, skip = 0, total = 1 duration = 0.021 seconds
+d_00: @00:03:00.681993   - PASS - [factory_xtal.test_ppm_arithmetic] duration = 0.021 seconds
+d_00: @00:03:00.681993  PROJECT EXECUTION FAILED
+INFO    - 2/2 nrf54lm20bsim/nrf54lm20a/cpuapp ring_factory.screen                          FAILED rc=1 (native 0.141s <host/gnu>)
+twister exit code on the broken copy vbat_read_at_0, nrf54lm20bsim/nrf54lm20a/cpuapp: 1 (log /ws/out/fix1rec-r613a/twister-vbat_read_at_0-nrf54lm20bsim_nrf54lm20a_cpuapp.log)
+vbat_read_at_0 on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:03:00.681993   - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds (failed cases listed: 6)
+vbat_read_at_0 on nrf54lm20bsim/nrf54lm20a/cpuapp: cases that failed: factory_cmd.test_result_layout factory_motor.test_reads_and_timing factory_screen.test_frame_sequence 
+RESULT PASS
+broken_run exit 0
+START - test_reads_and_timing
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_motor.c:34: factory_motor_test_reads_and_timing: (hi < s2 && s2 < lo is false)
+ FAIL - test_reads_and_timing in 0.521 seconds
+START - test_frame_sequence
+T-SCREEN stamps: frame 0 at 42429 ms, 424299 ticks (10000 ticks/s), spacing 0 ms
+T-SCREEN stamps: frame 1 at 43430 ms, 434300 ticks (10000 ticks/s), spacing 1001 ms
+T-SCREEN stamps: frame 2 at 44430 ms, 444301 ticks (10000 ticks/s), spacing 1000 ms
+T-SCREEN stamps: frame 3 at 45430 ms, 454302 ticks (10000 ticks/s), spacing 1000 ms
+T-SCREEN stamps: frame 4 at 46430 ms, 464303 ticks (10000 ticks/s), spacing 1000 ms
+T-SCREEN stamps: frame 5 at 47430 ms, 474304 ticks (10000 ticks/s), spacing 1000 ms
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_screen.c:206: factory_screen_test_frame_sequence: (fx_frame_ms[i] - fx_frame_ms[i - 1] not equal to 1000)
+ FAIL - test_frame_sequence in 6.021 seconds
+ - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds
+ - FAIL - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+START - test_reads_and_timing
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_motor.c:34: factory_motor_test_reads_and_timing: (hi < s2 && s2 < lo is false)
+ FAIL - test_reads_and_timing in 0.521 seconds
+START - test_frame_sequence
+T-SCREEN stamps: frame 0 at 42429 ms, 424299 ticks (10000 ticks/s), spacing 0 ms
+T-SCREEN stamps: frame 1 at 43430 ms, 434300 ticks (10000 ticks/s), spacing 1001 ms
+T-SCREEN stamps: frame 2 at 44430 ms, 444301 ticks (10000 ticks/s), spacing 1000 ms
+T-SCREEN stamps: frame 3 at 45430 ms, 454302 ticks (10000 ticks/s), spacing 1000 ms
+T-SCREEN stamps: frame 4 at 46430 ms, 464303 ticks (10000 ticks/s), spacing 1000 ms
+T-SCREEN stamps: frame 5 at 47430 ms, 474304 ticks (10000 ticks/s), spacing 1000 ms
+    Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_screen.c:206: factory_screen_test_frame_sequence: (fx_frame_ms[i] - fx_frame_ms[i - 1] not equal to 1000)
+ FAIL - test_frame_sequence in 6.021 seconds
+ - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds
+ - FAIL - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:00:31.889593  START - test_reads_and_timing
+d_00: @00:00:32.389693      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_motor.c:34: factory_motor_test_reads_and_timing: (hi < s2 && s2 < lo is false)
+d_00: @00:00:32.409793   FAIL - test_reads_and_timing in 0.521 seconds
+d_00: @00:00:42.429993  START - test_frame_sequence
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 0 at 42429 ms, 424299 ticks (10000 ticks/s), spacing 0 ms
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 1 at 43430 ms, 434300 ticks (10000 ticks/s), spacing 1001 ms
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 2 at 44430 ms, 444301 ticks (10000 ticks/s), spacing 1000 ms
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 3 at 45430 ms, 454302 ticks (10000 ticks/s), spacing 1000 ms
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 4 at 46430 ms, 464303 ticks (10000 ticks/s), spacing 1000 ms
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 5 at 47430 ms, 474304 ticks (10000 ticks/s), spacing 1000 ms
+d_00: @00:00:48.430593      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_screen.c:206: factory_screen_test_frame_sequence: (fx_frame_ms[i] - fx_frame_ms[i - 1] not equal to 1000)
+d_00: @00:00:48.450693   FAIL - test_frame_sequence in 6.021 seconds
+d_00: @00:03:00.681993   - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds
+d_00: @00:03:00.681993   - FAIL - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+d_00: @00:00:31.889593  START - test_reads_and_timing
+d_00: @00:00:32.389693      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_motor.c:34: factory_motor_test_reads_and_timing: (hi < s2 && s2 < lo is false)
+d_00: @00:00:32.409793   FAIL - test_reads_and_timing in 0.521 seconds
+d_00: @00:00:42.429993  START - test_frame_sequence
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 0 at 42429 ms, 424299 ticks (10000 ticks/s), spacing 0 ms
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 1 at 43430 ms, 434300 ticks (10000 ticks/s), spacing 1001 ms
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 2 at 44430 ms, 444301 ticks (10000 ticks/s), spacing 1000 ms
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 3 at 45430 ms, 454302 ticks (10000 ticks/s), spacing 1000 ms
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 4 at 46430 ms, 464303 ticks (10000 ticks/s), spacing 1000 ms
+d_00: @00:00:48.430593  T-SCREEN stamps: frame 5 at 47430 ms, 474304 ticks (10000 ticks/s), spacing 1000 ms
+d_00: @00:00:48.430593      Assertion failed at WEST_TOPDIR/firmware/tests/factory/src/test_screen.c:206: factory_screen_test_frame_sequence: (fx_frame_ms[i] - fx_frame_ms[i - 1] not equal to 1000)
+d_00: @00:00:48.450693   FAIL - test_frame_sequence in 6.021 seconds
+d_00: @00:03:06.703693   - FAIL - [factory_motor.test_reads_and_timing] duration = 0.521 seconds
+d_00: @00:03:06.703693   - FAIL - [factory_screen.test_frame_sequence] duration = 6.021 seconds
+# finished (Mac clock): 2026-11-13 12:51:33 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-124856-fix1-rec-r613a.log

@@ -1,0 +1,13 @@
+# remote.sh run 20261112-173531-r3-dk
+# command: west build -p always -b nrf54lm20dk/nrf54lm20a/cpuapp --sysbuild -d /ws/out/os-screens-r3dk -o=-j8 app > /ws/out/os-screens-r3dk.log 2>&1; echo build exit $?; grep -rhE ':(nav|enter_state|render|fill_frame|do_sign_start|draw_notif|rscr_sign_start|render_locked)[.a-z0-9_]*	' /ws/out/os-screens-r3dk --include=*.su | head -20; grep -rhc 'rscr' /ws/out/os-screens-r3dk --include=*.su | head -0
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 17:35:31 CET
+# free on the server's /: 47 GB
+# source firmware copied to /root/ring-os/src-os-screens
+# started on the server as 20261112-173531-r3-dk; server log /root/ring-os/logs/20261112-173531-r3-dk.log
+build exit 0
+/ws/firmware/modules/ring_screens/src/rscr.c:310:12:render_locked	32	static
+/ws/firmware/modules/ring_screens/src/rscr.c:427:5:rscr_sign_start	24	static
+# finished (Mac clock): 2026-11-12 17:37:52 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step4/20261112-173531-r3-dk.log

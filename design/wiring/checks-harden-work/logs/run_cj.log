@@ -1,0 +1,36 @@
+CASE check_joints/real_snapshot_as_it_stands   want_exit=1 got_exit=1 as expected | R6 weak-check: J-W027-A check names no pass value or pass condition: 'land B3, FACTORY ENTER and T-CHARGE pass at the end of the step; an open NTC lan'
+CASE check_joints/real_with_W027_check_amended want_exit=0 got_exit=0 as expected | 
+CASE check_joints/check_ok                     want_exit=1 got_exit=1 as expected | R6 weak-check: J-W054-A check names no method (what is measured or looked at): 'ok'
+CASE check_joints/check_looks_fine             want_exit=1 got_exit=1 as expected | R6 weak-check: J-W054-A check names no method (what is measured or looked at): 'looks fine, checked by the builder'
+CASE check_joints/check_measure_without_pass   want_exit=1 got_exit=1 as expected | R6 weak-check: J-W054-A check names no pass value or pass condition: 'ohmmeter at the foot, optical inspection at 20 times'
+CASE check_joints/check_pass_without_method    want_exit=1 got_exit=1 as expected | R6 weak-check: J-W054-A check names no method (what is measured or looked at): 'the result is good enough and less than 5 is fine'
+CASE check_joints/check_accept_rule_of_missing_step want_exit=1 got_exit=1 as expected | R6 weak-check: J-W054-A check names no pass value or pass condition: 'optical inspection; each joint passes the accept rules of step 99'
+CASE check_joints/check_file_line_past_end     want_exit=1 got_exit=1 as expected | R6 weak-check: J-W054-A check names no pass value or pass condition: 'optical inspection; accept rule design/mfg/assembly/process.md:99999'
+CASE check_joints/check_file_line_real_accepted want_exit=0 got_exit=0 as expected | 
+CASE check_joints/check_file_line_holds_no_pass_value want_exit=1 got_exit=1 as expected | R6 weak-check: J-W054-A check names no pass value or pass condition: 'optical inspection; accept rule design/mfg/assembly/process.md:100'
+CASE check_joints/check_file_line_other_text   want_exit=1 got_exit=1 as expected | R6 weak-check: J-W054-A check names no pass value or pass condition: 'optical inspection; accept rule design/mfg/assembly/process.md:1'
+CASE check_joints/check_accept_rule_step_real_accepted want_exit=0 got_exit=0 as expected | 
+CASE check_joints/check_number_unit_accepted   want_exit=0 got_exit=0 as expected | 
+CASE check_joints/heat_hot                     want_exit=1 got_exit=1 as expected | R7 weak-heat: J-W054-A heat names no value with a unit (C, s, N) and no profile with its file, and is not none with a reason: 'hot'
+CASE check_joints/heat_warm_no_value           want_exit=1 got_exit=1 as expected | R7 weak-heat: J-W054-A heat names no value with a unit (C, s, N) and no profile with its file, and is not none with a reason: 'warm enough to melt the solder'
+CASE check_joints/heat_value_without_unit      want_exit=1 got_exit=1 as expected | R7 weak-heat: J-W054-A heat names no value with a unit (C, s, N) and no profile with its file, and is not none with a reason: 'iron 340'
+CASE check_joints/heat_none_without_reason     want_exit=1 got_exit=1 as expected | R7 weak-heat: J-W054-A heat says none or no heat without a reason after a colon: 'none'
+CASE check_joints/heat_profile_without_file    want_exit=1 got_exit=1 as expected | R7 weak-heat: J-W054-A heat names no value with a unit (C, s, N) and no profile with its file, and is not none with a reason: 'P3 profile'
+CASE check_joints/heat_profile_missing_section want_exit=1 got_exit=1 as expected | R7 weak-heat: J-W054-A heat names no value with a unit (C, s, N) and no profile with its file, and is not none with a reason: 'P9 profile (process.md P9)'
+CASE check_joints/heat_value_no_tool_anywhere  want_exit=1 got_exit=1 as expected | R7 weak-heat: J-W054-A heat names a value but no tool or process (neither here nor in the tool field): '340 C, 7 s'
+CASE check_joints/heat_value_tool_in_tool_field_accepted want_exit=0 got_exit=0 as expected | 
+CASE check_joints/heat_profile_with_file_accepted want_exit=0 got_exit=0 as expected | 
+CASE check_joints/heat_none_with_reason_accepted want_exit=0 got_exit=0 as expected | 
+CASE check_joints/rev_check_ok                 want_exit=1 got_exit=1 as expected | R6 weak-check: J-W026-A check names no method (what is measured or looked at): 'ok'
+CASE check_joints/rev_heat_hot                 want_exit=1 got_exit=1 as expected | R7 weak-heat: J-W061-B heat names no value with a unit (C, s, N) and no profile with its file, and is not none with a reason: 'hot'
+CASE check_joints/rev_checkempty               want_exit=1 got_exit=1 as expected | 
+CASE check_joints/rev_checkok_file             want_exit=1 got_exit=1 as expected | R6 weak-check: J-W026-A check names no method (what is measured or looked at): 'ok'
+CASE check_joints/rev_heatok_file              want_exit=1 got_exit=1 as expected | R7 weak-heat: J-W061-B heat names no value with a unit (C, s, N) and no profile with its file, and is not none with a reason: 'hot'
+CASE check_joints/rev_dropped                  want_exit=1 got_exit=1 as expected | 
+CASE check_joints/rev_empty                    want_exit=1 got_exit=1 as expected | 
+CASE check_joints/rev_flood                    want_exit=1 got_exit=1 as expected | 
+CASE check_joints/rev_gap                      want_exit=1 got_exit=1 as expected | 
+CASE check_joints/rev_stepbad                  want_exit=1 got_exit=1 as expected | 
+CASE check_joints/rev_brokenpaste              want_exit=1 got_exit=1 as expected | 
+CASE check_joints/rev_nofile                   want_exit=1 got_exit=1 as expected | 
+SECTION check_joints ok=35 of 35

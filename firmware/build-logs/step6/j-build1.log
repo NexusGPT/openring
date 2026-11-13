@@ -1,0 +1,20 @@
+# remote.sh run 20261113-073316-j-build1
+# command: bash tests/recorder/short_run.sh native_sim CONFIG_RING_FACTORY=n build
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 07:33:16 CET
+# free on the server's /: 36 GB
+# source firmware copied to /root/ring-os/src-u-join
+# started on the server as 20261113-073316-j-build1; server log /root/ring-os/logs/20261113-073316-j-build1.log
+twister exit code on native_sim: 1 (log /ws/out/20261113-073316-j-build1-recorder-short/twister-native_sim.log)
+FAILED: [code=1] CMakeFiles/app.dir/src/test_actions.c.obj 
+/ws/zephyr/subsys/testsuite/ztest/include/zephyr/ztest_assert.h:183:25: error: ‘r.highlight_count’ may be used uninitialized [-Werror=maybe-uninitialized]
+[111/748] Building C object CMakeFiles/app.dir/src/test_boot.c.obj
+FAILED: [code=1] CMakeFiles/app.dir/src/rt.c.obj 
+/ws/firmware/tests/recorder/src/rt.c:533:13: error: ‘to_factory’ defined but not used [-Werror=unused-function]
+ninja: build stopped: subcommand failed.
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 0 failed, 1 errored, with no warnings in 21.37 seconds.
+INFO    - 1) ring_recorder.sim on native_sim/native error (Build failure - error: r.highlight_count may be used uninitialized [-Werror=maybe-uninitialized])
+SHORT RUN exit 1
+# finished (Mac clock): 2026-11-13 07:34:18 CET
+# remote exit code: 1
+# local log: firmware/build-logs/20261113-073316-j-build1.log

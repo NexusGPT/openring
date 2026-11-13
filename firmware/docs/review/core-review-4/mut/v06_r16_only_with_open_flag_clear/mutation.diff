@@ -1,0 +1,7 @@
+file src/core.c
+--- old
+if (ev == RC_EV_VBUS_OUT && c->facts.batt == RC_BATT_B2 &&
+	    rc_sm_find(&c->sm, RC_EV_BATT_B2, &c->facts) != NULL) {
++++ new
+if (ev == RC_EV_VBUS_OUT && !c->facts.open_flag && c->facts.batt == RC_BATT_B2 &&
+	    rc_sm_find(&c->sm, RC_EV_BATT_B2, &c->facts) != NULL) {

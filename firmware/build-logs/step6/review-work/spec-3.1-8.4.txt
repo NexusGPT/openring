@@ -1,0 +1,38 @@
+
+The motor is the Jinlong W0525AB001D (brushless coin, 5.0 mm diameter x 2.5 mm, 3.0 V, below 80 mA running, below 175 mA at each start, starts below 2.5 V [Jinlong spec S-525113 rev 0, architecture sections 2 and 17.16]) in the joystick-side shoulder of the band at -47.0 degrees on US 7 to -39.5 degrees on US 13 (-44.0 at US 9; architecture 17.26), joined by two lead wires to flex tail A (J_BAND_A pad 7 MOT+ on VMOT, pad 6 MOT- on GND, netlist.csv).
+- **Drive** (architecture 17.22; motor-drive.md section 2.1; netlist.csv): the motor runs from its own 3.0 V regulator U11 (Texas Instruments TLV75530PDQNR), whose input is the cell (net VBAT) and whose output is the net VMOT that feeds the motor. The pin MOTOR drives U11's EN pin (pin 3) through R61 100 ohm on the net MOT_EN, with R62 100 kilo-ohm from MOT_EN to ground, so the motor stays off while the chip starts and in `SHIP` and `OFF`. MOTOR high = motor on at 3.0 V (2.964 to 3.036 V for a cell at 3.15 V or more, motor-drive.md section 2.3); MOTOR low = U11 off. There is no PWM: the motor's maker rates it only for 2.7 to 3.3 V DC, and a pulse train would restart its own drive chip at each on time (an estimate of motor-drive.md section 3.2).
+- **Start delay**: from MOTOR high to power on VMOT takes up to 0.55 ms (U11 start-up 550 µs, motor-drive.md section 2.3); that is 2.2 % of the shortest pulse, MT of 25 ms [CALC: 0.55 / 25]. The pattern times below are MOTOR-pin times; the player does not lengthen them.
+- **Outside the power chip's battery limit**: the motor's current flows from the cell through U11 and never through the nPM1304's battery path, so the chip's battery current limit IBATLIM (section 8.7) does not see it (architecture 17.22).
+
+A `k_timer` plays each pattern; a new pattern replaces the one playing, except that M1, M2, M3 and MF are never cut short by MH or MT.
+
+| Id | Event | Pattern (on / off in ms) | Total ms |
+|---|---|---|---|
+| M1 | recording started | 80 on | 80 |
+| M2 | recording stopped by the user, by BLE, by case insertion | 80 on, 120 off, 80 on | 280 |
+| M3 | low battery (B15, B5), storage S30 or SFULL, an action refused | 80 on, 120 off, 80 on, 120 off, 80 on | 480 |
+| MH | highlight marked | 40 on | 40 |
+| MT | joystick move or select (only when screen is on) | 25 on | 25 |
+| MW | the centre held 500 ms, a start or stop is 500 ms away (warning, section 2.1) | 60 on | 60 |
+| MF | fault (storage, microphone, charger) | 300 on, 200 off, 300 on | 800 |
+
+- The 1, 2 and 3 pulse counts follow requirement U4 and architecture section 9. MW is new in F4: one 60 ms pulse **[CHOICE]**, between MT (25 ms) and M1 (80 ms), felt at the thumb that rests on the round cap; **[BENCH]** test F1 also judges it. It sounds only while the centre is held, so no other pattern can run at the same time.
+- A pulse draws below 80 mA while the motor runs and up to 175 mA at its start, from the cell through U11, outside the power chip's 100 mA battery limit (motor-drive.md). On the smallest cell, 17.6 mAh at US 7, that is 4.5 C running and 9.9 C at the start; on the largest, 31.9 mAh at US 13, 2.5 C and 5.5 C [CALC: 80 / 17.6 = 4.55, 175 / 17.6 = 9.94, 80 / 31.9 = 2.51, 175 / 31.9 = 5.49; architecture 17.16, 17.26]; whether the cell and its protection circuit allow it is hardware issue H7.
+- **Motor charge for the fuel gauge** (motor-drive.md section 2.8 change F3): the power chip measures the battery current inside its own path [NPM p99] and does not see the motor. The firmware adds, for every ON pulse of a pattern, the charge t_on x 80 mA + 10 ms x 175 mA (the second term is the start allowance, an **[ESTIMATE]** until bench step B-M3 of motor-drive.md section 2.9 measures the start; each pulse is counted as a start **[CHOICE]**: an over-count if the motor still turns after a gap of 120 ms or more, which no file states). Per pattern [CALC, `design/firmware-f5-notes.md`]: M1 8.15 mA.s, M2 16.30, M3 24.45, MH 4.95, MT 3.75, MW 6.55, MF 51.50 mA.s. How the sum enters the gauge is section 8.3.
+- Every motor pulse during audio capture is marked in the chunk headers, from MOTOR high to 50 ms after MOTOR low (section 4.7), so later cleanup can mute it. The pattern start time is also logged as an event.
+- MT follows the lock fact of section 3.3 (F7 part 4): the first direction from the dimmed SCR_REC_DIM only shows the full picture and gives no MT; in a control session a direction gives MT also when the screen is off, because it is acted on.
+- MT is the shortest pulse; whether 25 ms is felt is **[BENCH]** test F1 (wear test: 5 people feel or do not feel MT; if fewer than 4 feel it, MT becomes 40 ms).
+
+The nPM1304 enters ship mode through its task register TASKENTERSHIPMODE [NPM p118]. Its specification states: "When VBUS is not present, the device enters Ship mode immediately. The host software must wait until EVENTSVBUSIN0SET on page 136 to ensure VBUS is disconnected and discharged before writing to the register" [NPM p116]. EVENTSVBUSIN0SET holds the event EVENTVBUSREMOVED, "VBUS removed" [NPM p136]. There is no timer: the firmware does not use hibernate (TASKENTERHIBERNATE), and F4's timed hibernate is removed.
+
+Entry, in this order, for `SHIP` (FACTORY sub-commands SHIP_ENTER and SHIP_SAMPLE, section 9.3) and for `OFF` (menu "Power off", or B2):
+1. Close everything (recording, storage, USB, radio, screen); save the settings and the time in RRAM. SHIP_ENTER first clears the factory flag; SHIP_SAMPLE keeps it at 1.
+2. Write SHPHLDCONFIG with the default press time (96 ms) and trigger TASKSHPHLDCFGSTROBE: the specification requires both before ship mode [NPM p116, p118].
+3. If VBUS is present, wait for the event EVENTVBUSREMOVED (register EVENTSVBUSIN0SET, [NPM p136]), reported on PMIC_INT. While it waits the ring does nothing else: no screen, no radio, no storage, the USB stack is disabled on `UDC_EVT_VBUS_REMOVED` (section 8.6). Only the factory commands reach this step with VBUS present: every row into `OFF` starts from a state without VBUS (section 1.2).
+4. Write TASKENTERSHIPMODE = 1 [NPM p118]. The chip isolates the battery and the main chip loses its supply.
+5. If the main chip still runs 1 s after step 4 **[CHOICE]**, it logs the event and goes back to step 3 once; the jig of section 9.3 sees advertising stop or not and reports a fail.
+
+Exit: a voltage on VBUS above VBUSPOR, 3.9 V [NPM p17, p116]. Holding SHPHLD low for 96 ms also wakes the chip [NPM p116, p117], but SHPHLD sits on test pad TP19 (netlist.csv), which is closed under the board after assembly step 17, so in use only the case wakes the ring. After a wake the chip resets and sets the bit SHIPMODEEXIT in RSTCAUSE [NPM p146]; `BOOT` logs it (section 8.7).
+
+Current in ship mode: 370 nA typical for the nPM1304 [NPM p11] plus U11, at most 1 µA (motor-drive.md section 2.7). The cell protection circuit's own drain is not stated (S12).
+

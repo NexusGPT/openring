@@ -1,0 +1,29 @@
+# Checklist: ribbon paste layers and land numbers (lead brief, 2026-11-13, start 13:46:48 by `date`)
+
+- [x] 1. Snapshot of the 14 boards, fab folders and drawings as found (before/). evidence: before/ (61 files at first copy), logs/dump-before.log
+- [x] 2. Full rebuild by the committed generator reproduces the 14 boards. evidence: logs/compare-rebuild0.log, logs/sortedlines-rebuild0.log, logs/build_rows-cmp.log
+- [x] 3. C1: FLEX1 us7..us13: paste 1:1 on the 12 soldered switch lands 0.55 x 0.55, face F; none on the 8 unsoldered terminals (no land). evidence: logs/count_paste4.log, logs/compare-after4.log
+- [x] 4. C1: F_Paste Gerber in each of the 7 FLEX1 fab folders. evidence: logs/count_paste4.log
+- [x] 5. C2: FLEX2 us7..us13: 4 round 0.58 openings at 0.49 on the diagonals per disc land, clear of the via (gap 0.050). evidence: logs/count_paste4.log
+- [x] 6. C2: B_Paste Gerber in each of the 7 FLEX2 fab folders. evidence: logs/count_paste4.log
+- [x] 7. C13: 14 drawings show number and net of every land (8 and 7). evidence: logs/check_drawings4.log
+- [x] 8. C13: FLEX1 motor + mark. evidence: logs/check_drawings4.log (marks 1 of 1)
+- [x] 9. C13: FLEX2 tab names P+, NTC, P-. evidence: logs/check_drawings4.log (marks 3 of 3)
+- [x] 10. C13: text height stated and measured on paper. evidence: logs/text_scale4.log
+- [x] 11. C4: fab notes with the P7 panel instruction in each of 14 fab folders, and on the drawing. evidence: logs/make_fab4.log (14 lines notes ... 0)
+- [x] 12. No copper, outline or net change. evidence: logs/compare-after4.log, logs/compare-fab-final.log; control logs/ctl-compare-copper.log
+- [x] 13. kicad-cli drc in the band folder, 14 of 14: 0 and 0. evidence: logs/drc4.log
+- [x] 14. check_band.py `RESULT: PASS boards checked 14` (rewrote 14 drc rpt). evidence: logs/check_band4.log
+- [x] 15. Paste count from Gerber: 12 x 7, 16 x 7. evidence: logs/count_paste4.log
+- [x] 16. Paste control one less. evidence: logs/ctl-count-paste1.log (11), logs/ctl-count-paste2.log (15)
+- [x] 17. Drawing text check 14 of 14. evidence: logs/check_drawings4.log
+- [x] 18. Drawing control fails. evidence: logs/ctl-check-drawing.log
+- [x] 19. band-notes.md dated section. evidence: band-notes.md section "Change 2026-11-13: paste layers and land numbers"
+- [x] 20. band-interface.md edits inside lines, 148 lines kept. evidence: logs/final-audit.log (line counts)
+- [x] 21. Notes band-paste-notes.md complete, last line RESULT. evidence: logs/final-audit.log
+- [x] 22. Values cited (process.md P2, P7, P8; band-interface.md 2, 4, 5, 6). evidence: band-paste-notes.md table "What changed"
+- [x] 23. nice -n 19 on heavy commands, one at a time; long ones in background with exit files. evidence: logs/*.exit
+- [x] 24. No em dashes. evidence: logs/grep-emdash.log (grep exit 1)
+- [x] 25. Work folder under 50 MB. evidence: logs/du2.log (10792 KB); was 189336 KB before the PPM renders were removed (logs/du1.log, logs/ppm-removed-listing.log)
+- [x] 26. Nothing written outside design/ecad/band. evidence: all commands write in BAND; ring check_footprints.py run read-only (logs/ring_check_footprints_after.log)
+- [x] 27. Final reply under 3,500 characters, quotes last lines. evidence: final-reply.md, logs/final-audit.log

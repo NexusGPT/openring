@@ -1,0 +1,14 @@
+Read from design/bom.csv as it stands now (another helper writes it; I did not edit it). Names are copied from lead-decisions.md; no order code is added that a saved maker document does not show.
+
+1. RC1: no row (check_bom.py `FAIL designator RC1 ...`, before and after). The row text is in model-v9-notes.md section h. Resin Master Bond EP30Med, cast on its own (lead-decisions.md row 'resin radio corner RC1, how it is made').
+2. LNR1 (bom.csv line 81): "0.3 thick, 6.8 wide channel" must read 7.0 wide (model v8; the lead already has this row); resin Master Bond EP30Med (row 'liner resin (item 36, material)').
+3. MEM1, MEM2 (line 59): maker "Gore" must read Saati Acoustex 010a mesh disc, 2.0 mm, on a ring of tesa 61305 (50 um, 2.0 mm outside, 1.0 mm bore), stack 0.102 mm (row 'item 73'). The tesa 61305 ring is a second part of each membrane.
+4. GSK2, GSK3 (line 60): "PSA on both faces" must read no adhesive; Nitto SCF AN010 (0.10), SCF400T (0.2), SCF400 (0.3) (row 'item 74').
+5. SEAL1 (line 55): "die-cut adhesive ring" is tesa 61305 double-sided film, 50 um (row 'item 110').
+6. ADH1 (line 54): tesa 69404, optically clear, 100 um. FOAM1 (line 58): Nitto SCF AN010, 0.10 mm, no adhesive (row 'item 96, rest'); both can change with the screen cable study.
+7. GL1 (line 53): AGC Dragontrail Pro (rows 'items 107, 108, 109').
+8. HSG1 (line 52): coating Oerlikon Balzers BALINIT DLC, black, 1 to 3 um (row 'item 105'); FRM1 (line 83) the same coating.
+9. SEAL2 (line 57) and the floor slot sealant (no row in bom.csv; assembly.md section 6 row 2 asked for one): 3M Scotch-Weld DP420 Black, mixed 2:1 by volume, 50 ml cartridge, ordered by name (row 'item 45' and 'adhesive code, switch code, screw'; no 3M number in a saved document). The same adhesive bonds FRM1.
+10. PCB1 (line 50): "6 layer micro-via" and the test pads: 4 copper layers, 15 test pads in this pass's reading (design/ecad/ring/parts.csv holds TP1, TP3, TP4, TP5, TP6, TP8, TP9, TP11, TP12, TP14, TP15, TP17, TP18, TP19, TP21); bom.csv line 51 lists 11 of them (TP1, TP3, TP4, TP5, TP6, TP8, TP9, TP11, TP12, TP14, TP15), TP17, TP18, TP19 and TP21 are not on that line.
+11. C83, C84 (line 47): one row of 10 uF; C84 is 4.7 uF, Murata GRM155R61A475MEAAD (row 'sim finding 4, correction'); C83 stays 10 uF.
+12. RT1: lead-decisions.md row 34 (RT1 on the cell's protection circuit, FLEX2 land NTC 3) against assembly.md line 70 ("the owner decides") and step 9: not changed here (decision dated 23:42, before the rows of this pass); the lead decides whether the text pass covers it.

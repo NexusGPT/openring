@@ -1,0 +1,122 @@
+# remote.sh run 20261113-071747-u8-bsim-broken1
+# command: bash tests/bsim/factory/run.sh --broken
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 07:17:47 CET
+# free on the server's /: 40 GB
+# source firmware copied to /root/ring-os/src-u-factory
+# started on the server as 20261113-071747-u8-bsim-broken1; server log /root/ring-os/logs/20261113-071747-u8-bsim-broken1.log
+bsim-factory: firmware /ws/firmware/tests/bsim/factory, outputs /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory, broken 1
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+##### broken copy: connectable
+diff -u -r /ws/firmware/tests/bsim/factory/../../../modules/ring_factory/src/rfa.c /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory/broken-connectable/ring_factory/src/rfa.c
+--- /ws/firmware/tests/bsim/factory/../../../modules/ring_factory/src/rfa.c	2026-11-13 06:12:24.000000000 +0000
++++ /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory/broken-connectable/ring_factory/src/rfa.c	2026-11-13 06:18:26.145681903 +0000
+@@ -109,7 +109,7 @@
+ 
+ int rfa_ship_begin(void)
+ {
+-	return beacon_start(false); /* ship */
++	return beacon_start(true); /* ship */
+ }
+ 
+ void rfa_beacon_stop(void)
+=== build ring-connectable for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory/build-ring-connectable.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring-connectable ok
+=== test (broken-connectable): ring + scanner, 88 simulated seconds, 2026-11-13T06:19:07Z
+exit codes: phy 0, ring 0, scanner 0
+--- ring /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory/run-broken-connectable-ring.log
+d_00: @00:00:00.000200  RING CHECK bt_enable PASS (t=0)
+d_00: @00:00:00.000200  RING CHECK rfa_init PASS (t=0)
+d_00: @00:00:00.000200  RING CHECK device id PASS (t=0)
+d_00: @00:00:00.000200  RING BEACON NAME Ring0000
+d_00: @00:00:02.000300  RING CHECK SHIP_ENTER accepted PASS (t=2000)
+d_00: @00:00:02.000300  RING CHECK SHIP_ENTER cleared the flag PASS (t=2000)
+d_00: @00:00:02.000300  RING SHIP_ENTER ANSWERED t=2000
+d_00: @00:00:08.000400  RING VBUS REMOVED t=8000
+d_00: @00:00:08.000400  RING BEACON STOPPED t=8000
+d_00: @00:01:20.000626  RING CHECK T-RADIO answered pass PASS (t=80000)
+d_00: @00:01:20.000626  RING CHECK T-RADIO took 10 s PASS (t=80000)
+d_00: @00:01:20.000626  RING SCRIPT DONE t=80000
+d_00: @00:01:20.000626  RING RESULT PASS (7 checks)
+--- scanner /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory/run-broken-connectable-scanner.log
+d_01: @00:00:00.000174  HOST CHECK bt_enable PASS (t=0)
+d_01: @00:00:00.000200  HOST CHECK scan started PASS (t=0)
+d_01: @00:01:26.000300  HOST REPORTS 150
+d_01: @00:01:26.000300  HOST CHECK heard the ring PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK silent before SHIP_ENTER PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK beacon starts within 300 ms of the command PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK beacon heard while VBUS is on (at least 40 reports in 6 s) PASS (t=86000)
+d_01: @00:01:26.000300  HOST BEACON NAME Ring0000
+d_01: @00:01:26.000300  HOST CHECK name is Ring and 4 upper case hex digits PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK the same name in every report PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK every report is not connectable (ADV_NONCONN_IND) FAIL (t=86000)
+d_01: @00:01:26.000300  HOST MEDIAN GAP 105 ms of 55
+d_01: @00:01:26.000300  HOST CHECK interval about 100 ms (median gap 95 to 125 ms) PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK stopped within 1 s of VBUS removal PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK none for 60 s after the removal PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK radio test heard for 10 s (at least 80 reports) PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK radio test stops with the test PASS (t=86000)
+d_01: @00:01:26.000300  HOST RESULT FAIL (14 checks)
+names: ring 'Ring0000', scanner 'Ring0000'
+TEST RESULT FAIL (20 checks passed; infra: none; checks: scanner-result 1-failed-checks)
+broken connectable: the test failed on its named check, as required: d_01: @00:01:26.000300  HOST CHECK every report is not connectable (ADV_NONCONN_IND) FAIL (t=86000)
+##### broken copy: never_stops
+diff -u -r /ws/firmware/tests/bsim/factory/../../../modules/ring_factory/src/rfa.c /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory/broken-never_stops/ring_factory/src/rfa.c
+--- /ws/firmware/tests/bsim/factory/../../../modules/ring_factory/src/rfa.c	2026-11-13 06:12:24.000000000 +0000
++++ /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory/broken-never_stops/ring_factory/src/rfa.c	2026-11-13 06:19:08.684757320 +0000
+@@ -114,7 +114,6 @@
+ 
+ void rfa_beacon_stop(void)
+ {
+-	beacon_stop_now();
+ }
+ 
+ /* ------------------------------------------------------------------ init */
+=== build ring-never_stops for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory/build-ring-never_stops.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring-never_stops ok
+=== test (broken-never_stops): ring + scanner, 88 simulated seconds, 2026-11-13T06:19:41Z
+exit codes: phy 0, ring 0, scanner 0
+--- ring /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory/run-broken-never_stops-ring.log
+d_00: @00:00:00.000200  RING CHECK bt_enable PASS (t=0)
+d_00: @00:00:00.000200  RING CHECK rfa_init PASS (t=0)
+d_00: @00:00:00.000200  RING CHECK device id PASS (t=0)
+d_00: @00:00:00.000200  RING BEACON NAME Ring0000
+d_00: @00:00:02.000326  RING CHECK SHIP_ENTER accepted PASS (t=2000)
+d_00: @00:00:02.000326  RING CHECK SHIP_ENTER cleared the flag PASS (t=2000)
+d_00: @00:00:02.000326  RING SHIP_ENTER ANSWERED t=2000
+d_00: @00:00:08.000426  RING VBUS REMOVED t=8000
+d_00: @00:00:08.000426  RING BEACON STOPPED t=8000
+d_00: @00:01:20.000652  RING CHECK T-RADIO answered pass PASS (t=80000)
+d_00: @00:01:20.000652  RING CHECK T-RADIO took 10 s PASS (t=80000)
+d_00: @00:01:20.000652  RING SCRIPT DONE t=80000
+d_00: @00:01:20.000652  RING RESULT PASS (7 checks)
+--- scanner /ws/out/20261113-071747-u8-bsim-broken1-bsim-factory/run-broken-never_stops-scanner.log
+d_01: @00:00:00.000174  HOST CHECK bt_enable PASS (t=0)
+d_01: @00:00:00.000200  HOST CHECK scan started PASS (t=0)
+d_01: @00:01:26.000300  HOST REPORTS 733
+d_01: @00:01:26.000300  HOST CHECK heard the ring PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK silent before SHIP_ENTER PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK beacon starts within 300 ms of the command PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK beacon heard while VBUS is on (at least 40 reports in 6 s) PASS (t=86000)
+d_01: @00:01:26.000300  HOST BEACON NAME Ring0000
+d_01: @00:01:26.000300  HOST CHECK name is Ring and 4 upper case hex digits PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK the same name in every report PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK every report is not connectable (ADV_NONCONN_IND) PASS (t=86000)
+d_01: @00:01:26.000300  HOST MEDIAN GAP 106 ms of 56
+d_01: @00:01:26.000300  HOST CHECK interval about 100 ms (median gap 95 to 125 ms) PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK stopped within 1 s of VBUS removal FAIL (t=86000)
+d_01: @00:01:26.000300  HOST CHECK none for 60 s after the removal FAIL (t=86000)
+d_01: @00:01:26.000300  HOST CHECK radio test heard for 10 s (at least 80 reports) PASS (t=86000)
+d_01: @00:01:26.000300  HOST CHECK radio test stops with the test PASS (t=86000)
+d_01: @00:01:26.000300  HOST RESULT FAIL (14 checks)
+names: ring 'Ring0000', scanner 'Ring0000'
+TEST RESULT FAIL (19 checks passed; infra: none; checks: scanner-result 2-failed-checks)
+broken never_stops: the named check line did not say FAIL: HOST CHECK stopped within 1 s of VBUS removal .* FAIL
+RESULT FAIL never_stops(not-caught)
+# finished (Mac clock): 2026-11-13 07:20:21 CET
+# remote exit code: 1
+# local log: firmware/build-logs/20261113-071747-u8-bsim-broken1.log

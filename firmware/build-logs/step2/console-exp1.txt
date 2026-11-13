@@ -1,0 +1,23 @@
+# remote.sh run 20261111-132514-bsimExp1
+# command: T=tests/bsim/control; D=/ws/firmware/$T; RING_OUT=/ws/out/step2-exp-a CTRL_CONF=$D/sdc_multirole.conf $T/run.sh A > /ws/out/step2-exp-a.txt 2>&1; echo "exp multirole on nrf54lm20bsim: exit $?"; grep -E "^TEST|security|0x3d" /ws/out/step2-exp-a.txt | head -5; RING_OUT=/ws/out/step2-exp-b CTRL_BOARD=nrf52_bsim/native CTRL_CONF=$D/sdc.conf $T/run.sh A > /ws/out/step2-exp-b.txt 2>&1; echo "exp sdc on nrf52_bsim: exit $?"; grep -E "^TEST|0x3d|build" /ws/out/step2-exp-b.txt | head; grep -c "SoftDevice Controller build" /ws/out/step2-exp-b/run-A-ring.log
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 13:25:14 CET
+# free on the server's /: 55 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-132514-bsimExp1; server log /root/ring-os/logs/20261111-132514-bsimExp1.log
+exp multirole on nrf54lm20bsim: exit 1
+d_01: @00:00:09.541225  HOST H1 security failed err 9  (t=9541)
+d_01: @00:00:18.950242  HOST H1 security failed err 9  (t=18950)
+d_01: @00:00:28.338870  HOST H1 security failed err 9  (t=28338)
+d_01: @00:00:37.654554  HOST H1 security failed err 9  (t=37654)
+d_01: @00:00:46.976809  HOST H1 security failed err 9  (t=46976)
+exp sdc on nrf52_bsim: exit 0
+=== build ring for nrf52_bsim/native, log /ws/out/step2-exp-b/build-ring.log
+build ring ok
+=== build host for nrf52_bsim/native, log /ws/out/step2-exp-b/build-host.log
+build host ok
+TEST A RESULT PASS (67 checks passed)
+0
+# finished (Mac clock): 2026-11-11 13:27:37 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step2/20261111-132514-bsimExp1.log

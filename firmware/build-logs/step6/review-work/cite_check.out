@@ -1,0 +1,77 @@
+MATCH | rhw | rhw-notes l.409 final last result line 606 | u0-20261113-044107-u-rhw.log l.606 | UNIT PASS tests/rhw
+MATCH | rhw | rhw-notes l.409 last line local log | u0-20261113-044107-u-rhw.log l.609 | # local log: firmware/build-logs/20261113-044107-u-rhw.log
+MATCH | rhw | rhw-notes l.405 run 1 result | u0-20261113-043354-u-rhw.log l.238 | UNIT FAIL tests/rhw tests-native_sim tests-nrf54lm20bsim_nrf54lm20a_cpuapp broken-rhw
+MATCH | rhw | rhw-notes l.397 K14 line in run 2 | u0-20261113-043605-u-rhw.log l.333 | d_00: @00:00:01.696893  K14: sys_clock_hw_cycles_per_sec 1000000; k_cycle_get_32 advanced 100100 in 100 ms; rhw cycles advanced 100100; ms 100
+MATCH | rhw | rhw-notes l.415 223 defines, 196 found | u0-check-spec-lines.log l.236 | checked 223 defines with a number: 196 MATCH, 27 NOMATCH, 12 SKIP
+MATCH | rhw | rhw-notes l.407 42 of 42 (native_sim) | u0-20261113-044107-u-rhw.log l.22 | INFO    - 42 of 42 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | core | core-notes step6 count rows COUNT MATCH | u1-count-rows-1.log l.4 | COUNT MATCH
+MATCH | core | core-notes step6 host 221 pass | u1-host-2.log l.229 | RESULT PASS tests=221
+MATCH | core | core-notes step6 broken host 26 | u1-broken-host-1.log l.27 | BROKEN ALL PASS 26 copies
+MATCH | core | core-notes step6 unit-run2 line 60 | u1-unit-run2.stdout l.60 | UNIT PASS tests/core tests/screens tests/control tests/relay
+MATCH | core | core-notes step6 core-run1 last UNIT PASS | u1-core-run1.stdout l.21 | UNIT PASS tests/core
+MATCH | store | store-notes cited run l.1563 | u2-final10.console l.1563 | RESULT PASS
+MATCH | store | store-notes cited run l.1565 | u2-final10.console l.1565 | UNIT PASS tests/store
+MATCH | store | store-notes cited run l.1567 | u2-final10.console l.1567 | # remote exit code: 0
+MATCH | store | S2 test_rail_sequence l.214 | u2-cases10.console l.214 | PASS - test_rail_sequence in 0.002 seconds
+MATCH | store | S2 test_rail_sequence l.524 | u2-cases10.console l.524 | d_00: @00:00:27.481993   PASS - test_rail_sequence in 0.002 seconds
+MATCH | store | C3 test_s30_sfull_edges l.163 | u2-cases10.console l.163 | PASS - test_s30_sfull_edges in 0.000 seconds
+MATCH | store | S7 test_chunk_header_bytes l.366 | u2-cases10.console l.366 | d_00: @00:00:02.470193   PASS - test_chunk_header_bytes in 0.000 seconds
+MATCH | store | broken sfull_17 named case l.814 | u2-final10.console l.814 | sfull_17 on native_sim: the named case failed, as required: store_space.test_s30_sfull_edges (cases that failed: store_space.test_callbacks_once_per_crossing store_space.test_s30_sfull_edges ; 63 of 6
+MATCH | audio | audio-notes A15 ring_two l.1310 | u3-run1-final.log l.1310 | ring_two on native_sim: the build failed at the assertion, as required: /ws/zephyr/include/zephyr/toolchain/gcc.h:87:36: error: static assertion failed: "audio: the chunk ring must never be below the 
+MATCH | audio | audio-notes A15 ring_two l.1320 | u3-run1-final.log l.1320 | ring_two on nrf54lm20bsim/nrf54lm20a/cpuapp: the build failed at the assertion, as required: /ws/zephyr/include/zephyr/toolchain/gcc.h:87:36: error: static assertion failed: "audio: the chunk ring mus
+MATCH | audio | audio-notes C13 highlight_release_time l.540 | u3-run2-final.log l.540 | highlight_release_time on native_sim: the named case failed, as required:  - FAIL - [audio_chunk.test_highlight_frame_from_down_time] duration = 0.000 seconds (failed cases listed: 7)
+MATCH | audio | audio-notes C13 highlight_release_time l.602 | u3-run2-final.log l.602 | highlight_release_time on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required: d_00: @00:00:23.211693   - FAIL - [audio_chunk.test_highlight_frame_from_down_time] duration = 0.000 seco
+MATCH | audio | audio-notes run 2 46 of 46 | u3-run2-final.log l.22 | INFO    - 46 of 46 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | audio | audio-notes run 2 UNIT PASS | u3-run2-final.log l.1323 | UNIT PASS tests/audio
+MATCH | xfer | xfer-notes 47 of 47 | u4-20261113-065605-unit2.log l.23 | INFO    - 47 of 47 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | xfer | xfer-notes last line local log | u4-20261113-065605-unit2.log l.1438 | # local log: firmware/build-logs/step6/20261113-065605-u4-unit2.log
+MATCH | xfer | xfer-notes UNIT PASS | u4-20261113-065605-unit2.log l.1435 | UNIT PASS tests/xfer
+MATCH | xfer | xfer-notes C21 static checks 0 hits | u4-static-checks.log l.3 | RESULT C21 no core input call and no long press in the unit (module sources): 0 hits
+MATCH | xfer | xfer-notes K3c counts 0 usbh_xfer_alloc | 20261113-063327-u4-k3c.log l.50 | usbh_xfer_alloc 0
+MATCH | power | power-notes L line 22 | u5-run2.console l.22 | INFO    - 32 of 32 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | power | power-notes L line 44 | u5-run2.console l.44 | INFO    - 32 of 32 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | power | power-notes P19 L 69 test_pof_untouched | u5-run2.console l.69 | PASS - test_pof_untouched in 4.501 seconds
+MATCH | power | power-notes P2 cc copies L 1450 | u5-run2.console l.1450 | cc_unset on native_sim: the build failed with its own message, as required: "CHARGE_CURRENT is not set (FW l.894)" (lines in the log: 3)
+MATCH | power | power-notes UNIT PASS | u5-run2.console l.1637 | UNIT PASS tests/power
+MATCH | motor | motor-notes line 520 RESULT PASS | u6-unit-run1.log l.520 | RESULT PASS
+MATCH | motor | motor-notes line 522 last result | u6-unit-run1.log l.522 | UNIT PASS tests/motor
+MATCH | motor | motor-notes short run 28 of 28 | u6-short-run1.log l.22 | INFO    - 28 of 28 executed test cases passed (100.00%) on 2 out of total 1514 platforms (0.13%).
+MATCH | motor | motor-notes exit file 0 | u6-unit-run1.exit l.1 | 0
+MATCH | motor | motor-notes editcheck | u6-editcheck.log l.3 | motor_player.test_vibration_off_keeps_the_others
+MATCH | sys | sys-notes line 1169 UNIT PASS | u7-full1.log l.1169 | UNIT PASS tests/sys
+MATCH | sys | sys-notes line 1167 RESULT PASS | u7-full1.log l.1167 | RESULT PASS
+MATCH | sys | sys-notes 24 of 24 native_sim (lines 8 to 29) | u7-full1.log l.22 | INFO    - 24 of 24 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | sys | sys-notes exit file | u7-full1.exit l.1 | 0
+MATCH | sys | sys-notes editcheck RESULT PASS | u7-editcheck.log l.9 | RESULT PASS 8 variants checked
+MATCH | factory | factory-notes line 23 | u8-full1.console l.23 | INFO    - 41 of 41 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | factory | factory-notes line 46 | u8-full1.console l.46 | INFO    - 41 of 41 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | factory | factory-notes line 1462 RESULT PASS | u8-full1.console l.1462 | RESULT PASS
+MATCH | factory | factory-notes line 1464 UNIT PASS | u8-full1.console l.1464 | UNIT PASS tests/factory
+MATCH | factory | factory-notes bsim line 52 | u8-bsim-final.console l.52 | RESULT PASS
+MATCH | factory | factory-notes bsim broken line 119 | u8-bsim-broken-final.console l.119 | RESULT PASS
+MATCH | recorder | recorder-notes line 22 43 of 43 | j-unit1.log l.22 | INFO    - 43 of 43 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | recorder | recorder-notes line 44 43 of 43 | j-unit1.log l.44 | INFO    - 43 of 43 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | recorder | recorder-notes UNIT PASS tests/recorder | j-unit1.log l.562 | UNIT PASS tests/recorder
+MATCH | recorder | C1 j-cases1 l.19 | j-cases1.log l.19 | native_sim ring_recorder.sim.recorder_rows.mic_rail_only_in_recording passed
+MATCH | recorder | C4 j-cases1 l.29 | j-cases1.log l.29 | native_sim ring_recorder.sim.recorder_actions.close_order passed
+MATCH | recorder | broken mic_before_sign l.84 | j-unit1.log l.84 | mic_before_sign on native_sim: cases that failed (distinct): FAIL - [recorder_sign.test_start_draws_sign_before_mic]  (lines with FAIL: 1)
+MATCH | recorder | exit file j-unit1.exit | j-unit1.exit l.1 | 0
+MATCH | recorder | j-stages1 STAGES PASS | j-stages1.log l.2346 | STAGES PASS
+MATCH | screens | screens-notes u9 line 650 RESULT PASS | u9-unit-run2.log l.650 | RESULT PASS
+MATCH | screens | screens-notes u9 line 652 UNIT PASS | u9-unit-run2.log l.652 | UNIT PASS tests/screens
+MATCH | screens | screens-notes u9 line 22 56 of 56 | u9-unit-run2.log l.22 | INFO    - 56 of 56 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | screens | screens-notes u9 line 44 56 of 56 | u9-unit-run2.log l.44 | INFO    - 56 of 56 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+MATCH | screens | screens-notes compare RESULT EQUAL | j-compare-screens.txt l.4 | RESULT EQUAL
+---
+unit rhw: 6 of 6 citations match
+unit core: 5 of 5 citations match
+unit store: 8 of 8 citations match
+unit audio: 6 of 6 citations match
+unit xfer: 5 of 5 citations match
+unit power: 5 of 5 citations match
+unit motor: 5 of 5 citations match
+unit sys: 5 of 5 citations match
+unit factory: 6 of 6 citations match
+unit recorder: 8 of 8 citations match
+unit screens: 5 of 5 citations match
+TOTAL 64 of 64 citations match

@@ -1,0 +1,283 @@
+# remote.sh run 20261112-194711-s5-bsim-relay-2
+# command: tests/bsim/relay/run.sh H
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 19:47:11 CET
+# free on the server's /: 41 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261112-194711-s5-bsim-relay-2; server log /root/ring-os/logs/20261112-194711-s5-bsim-relay-2.log
+bsim-relay: firmware /ws/firmware/tests/bsim/relay, outputs /ws/out/20261112-194711-s5-bsim-relay-2-bsim-relay, scenarios H, broken 0
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-194711-s5-bsim-relay-2-bsim-relay/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== build ring for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-194711-s5-bsim-relay-2-bsim-relay/build-ring.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring ok
+=== test H (ok): ring + stand-in, 300 simulated seconds, 2026-11-12T18:48:42Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-194711-s5-bsim-relay-2-bsim-relay/run-ok-H-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK screens started (LVGL on the memory display) PASS (t=0)
+d_00: @00:00:01.780500  RING CHECK H: the first joystick event turns the screen on: SCR_STATUS PASS (t=1780)
+d_00: @00:00:02.560700  RING CHECK H: Right opens the menu PASS (t=2560)
+d_00: @00:00:05.681500  RING CHECK H: Pair device opens SCR_PAIR and the pairing window PASS (t=5681)
+d_00: @00:00:06.606516  RING PASSKEY slot 0 925850
+d_00: @00:00:06.626200  RING CHECK H: the passkey arrives from the pairing PASS (t=6626)
+d_00: @00:00:11.106429  RING EVENT paired slot 0
+d_00: @00:00:11.106429  RING EVENT link slot 0 up
+d_00: @00:00:11.108500  RING CHECK H: the stand-in paired and is the active device (slot 0) PASS (t=11108)
+d_00: @00:00:11.608602  RING CHECK H: after the pairing the screen shows SCR_DEVICES PASS (t=11608)
+d_00: @00:00:13.169002  RING CHECK H: back on the status screen PASS (t=13169)
+d_00: @00:00:13.169002  RING CHECK H: before the link was secure no frame of the stand-in reached the relay part (it tried to write, read and subscribe) PASS (t=13169)
+d_00: @00:00:13.169002  RING CHECK H: the iPhone part did not take the helper for an iPhone: no notification service found PASS (t=13169)
+d_00: @00:00:13.949202  RING CHECK H: Up opens the notification list (empty) PASS (t=13949)
+d_00: @00:00:13.949202  RING INFO stage 5 (t=13949)
+d_00: @00:00:14.009502  RING CHECK H: HELLO was accepted (READY went out) PASS (t=14009)
+d_00: @00:00:14.009502  RING CHECK H: before HELLO three frames were refused with code 2 and one HELLO with code 6, and the store stayed empty PASS (t=14009)
+d_00: @00:00:18.411102  RING CHECK H: four notifications arrive PASS (t=18411)
+d_00: @00:00:18.711202  RING CHECK H: 4 records stored in 40 pieces (11 data bytes per 20-byte frame; 6, 28, 5 and 5 frames) PASS (t=18711)
+d_00: @00:00:18.711202  RING CHECK H: the store holds the 4 notifications exactly, newest first: 1004 (flags silent), 1003, 1002 (title cut to 16 characters of 3 bytes, message cut to 80 of 2 bytes), 1001 PASS (t=18711)
+d_00: @00:00:18.711202  RING CHECK H: the iPhone part counts 4 relay puts and no iPhone event PASS (t=18711)
+d_00: @00:00:19.211302  RING CHECK H: the list screen follows the store (still SCR_NOTIFS) PASS (t=19211)
+d_00: @00:00:19.211302  RING CHECK H: the list with the notifications is another frame than the empty list PASS (t=19211)
+d_00: @00:00:21.551902  RING CHECK H: Right opens the detail of the third entry (1002) PASS (t=21551)
+d_00: @00:00:21.551902  RING CHECK H: the detail frame differs from the list frame PASS (t=21551)
+d_00: @00:00:21.551902  RING CHECK H: opening it set its read mark on the ring (and no other) PASS (t=21551)
+d_00: @00:00:22.332102  RING CHECK H: Centre goes back to the list PASS (t=22332)
+d_00: @00:00:22.332102  RING INFO stage 10 (t=22332)
+d_00: @00:00:22.915002  RING CHECK H: the replace of 1002 arrives (new category, flags and text) PASS (t=22915)
+d_00: @00:00:22.915002  RING CHECK H: the replace kept the place (third) and the read mark, and added no entry PASS (t=22915)
+d_00: @00:00:22.915002  RING INFO stage 20 (t=22915)
+d_00: @00:00:26.035802  RING CHECK H: the detail of 1004 (it has no action) opens PASS (t=26035)
+d_00: @00:00:27.596202  RING CHECK H: the screen did not call the iPhone part for either (no action flag) PASS (t=27596)
+d_00: @00:00:27.596202  RING CHECK H: a dismiss and a positive action for 1004 called directly are refused on the ring (-ENOTSUP) and send nothing PASS (t=27596)
+d_00: @00:00:27.596202  RING INFO stage 30 (t=27596)
+d_00: @00:00:30.611202  RING CHECK H: the stand-in confirmed it received nothing PASS (t=30611)
+d_00: @00:00:34.512202  RING CHECK H: the detail of 1003 (positive action only) opens PASS (t=34512)
+d_00: @00:00:35.292402  RING CHECK H: a dismiss on 1003 (it has no negative action) sends nothing PASS (t=35292)
+d_00: @00:00:35.292402  RING INFO stage 40 (t=35292)
+d_00: @00:00:38.307402  RING CHECK H: the stand-in confirmed it received nothing for the dismiss on 1003 PASS (t=38307)
+d_00: @00:00:39.087602  RING CHECK H: the positive action on 1003 went out through the relay part once PASS (t=39087)
+d_00: @00:00:39.087602  RING INFO stage 50 (t=39087)
+d_00: @00:00:39.107702  RING CHECK H: the stand-in received ACTION positive for 1003 PASS (t=39107)
+d_00: @00:00:39.107702  RING CHECK H: the positive action changed nothing in the store PASS (t=39107)
+d_00: @00:00:43.788902  RING CHECK H: the detail of 1002 opens PASS (t=43788)
+d_00: @00:00:44.569102  RING CHECK H: the dismiss went out through the relay part (2 actions in all) PASS (t=44569)
+d_00: @00:00:44.569102  RING INFO stage 60 (t=44569)
+d_00: @00:00:44.609302  RING CHECK H: the stand-in received ACTION negative for 1002 PASS (t=44609)
+d_00: @00:00:45.609402  RING CHECK H: the ring changed nothing: 1002 is still in the store until REMOVE PASS (t=45609)
+d_00: @00:00:45.609402  RING INFO stage 62 (t=45609)
+d_00: @00:00:45.709902  RING CHECK H: REMOVE arrived: 1002 left the store PASS (t=45709)
+d_00: @00:00:46.210002  RING CHECK H: the screens went back to the list and the store holds 1004, 1003, 1001 PASS (t=46210)
+d_00: @00:00:46.210002  RING INFO stage 70 (t=46210)
+d_00: @00:00:46.973802  RING CHECK H: the stand-in switched Out notifications off PASS (t=46973)
+d_00: @00:00:46.973802  RING CHECK H: with no subscription to Out an action is refused on the ring (-ENOTCONN) and sends nothing PASS (t=46973)
+d_00: @00:00:46.973802  RING INFO stage 80 (t=46973)
+d_00: @00:00:50.109402  RING CHECK H: the stand-in confirmed it received nothing, and subscribed again PASS (t=50109)
+d_00: @00:00:51.109602  RING EVENT recording start (t=51109)
+d_00: @00:00:52.009602  RING CHECK H: a long press starts a recording PASS (t=52009)
+d_00: @00:00:52.009602  RING INFO stage 90 (t=52009)
+d_00: @00:00:52.773402  RING CHECK H: the stand-in sent its frames during RECORDING PASS (t=52773)
+d_00: @00:00:54.273502  RING CHECK H: during RECORDING the relay frames were handled as usual (1 PUT stored, 1 REMOVE, a malformed PUT refused with code 5 and an unknown opcode with code 1) PASS (t=54273)
+d_00: @00:00:54.273502  RING CHECK H: the core is still RECORDING, no recording started or stopped by the relay frames PASS (t=54273)
+d_00: @00:00:55.273702  RING EVENT recording stop (t=55273)
+d_00: @00:00:56.173702  RING CHECK H: a long press stops the recording PASS (t=56173)
+d_00: @00:00:56.173702  RING INFO stage 110 (t=56173)
+d_00: @00:00:56.917402  RING CHECK H: the stand-in sent HELLO and three notifications PASS (t=56917)
+d_00: @00:00:56.917402  RING CHECK H: the store holds 2003, 2002, 2001 (HELLO emptied what was there) PASS (t=56917)
+d_00: @00:00:56.917402  RING INFO stage 120 (t=56917)
+d_00: @00:00:59.168602  RING CHECK H: the stand-in sent 21 malformed frames and got each refusal PASS (t=59168)
+d_00: @00:00:59.168602  RING CHECK H: 21 frames were refused: 7 with code 1, 3 with code 3, 3 with code 4, 6 with code 5, 2 with code 6, none with code 2 or 7 PASS (t=59168)
+d_00: @00:00:59.168602  RING CHECK H: the malformed frames changed nothing: no put, remove, clear or HELLO accepted, the store digest is the same PASS (t=59168)
+d_00: @00:00:59.168602  RING CHECK H: the one accepted first piece of the out of order test is counted as a piece PASS (t=59168)
+d_00: @00:00:59.168602  RING INFO stage 130 (t=59168)
+d_00: @00:00:59.409802  RING CHECK H: the stand-in sent two pieces of a record and no more PASS (t=59409)
+d_00: @00:00:59.409802  RING CHECK H: two more pieces were taken, nothing was stored PASS (t=59409)
+d_00: @00:00:59.409802  RING INFO stage 140 (t=59409)
+d_00: @00:00:59.556433  RING EVENT link slot 0 down
+d_00: @00:00:59.570602  RING CHECK H: the link dropped PASS (t=59570)
+d_00: @00:00:59.570602  RING CHECK H: the link dropped: the store is empty PASS (t=59570)
+d_00: @00:00:59.570602  RING CHECK H: the relay session ended with the link PASS (t=59570)
+d_00: @00:01:01.432067  RING EVENT link slot 0 up
+d_00: @00:01:06.987502  RING CHECK H: after the reconnect and a new HELLO the stand-in's notifications are rebuilt (7 entries) PASS (t=66987)
+d_00: @00:01:07.287602  RING CHECK H: the store was rebuilt exactly: 3007 (record of 2 bytes), 3006 (record of 512 bytes, texts cut), 3005 (title cut at 47 bytes before a 3-byte character), 1004, 1003, 1002, 1001 (flags with the pre-existing bit) PASS (t=67287)
+d_00: @00:01:07.287602  RING CHECK H: after the reconnect, before HELLO: two frames refused with code 2; after HELLO the dropped record's next piece with code 3 PASS (t=67287)
+d_00: @00:01:07.287602  RING INFO stage 150 (t=67287)
+d_00: @00:01:07.287602  RING SCRIPT DONE t=67287 checks=65 fails=0
+d_00: @00:01:07.287602  RING RESULT PASS
+--- stand-in /ws/out/20261112-194711-s5-bsim-relay-2-bsim-relay/run-ok-H-helper.log
+d_01: @00:00:00.000122  HELPER START scenario H
+d_01: @00:00:00.000174  HELPER CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:05.054919  HELPER CHECK H: connected to the ring PASS (t=5054)
+d_01: @00:00:06.156444  HELPER CHECK H: the relay service is found with In, Out (with its CCC) and Info (before the link is secure) PASS (t=6156)
+d_01: @00:00:06.256444  HELPER CHECK H: a write to In before security level 4 fails (ATT insufficient authentication or encryption) PASS (t=6256)
+d_01: @00:00:06.356444  HELPER CHECK H: a subscription to Out before security level 4 fails PASS (t=6356)
+d_01: @00:00:06.456444  HELPER CHECK H: a read of Info before security level 4 fails PASS (t=6456)
+d_01: @00:00:06.456444  HELPER CHECK H: nothing came on Out from those attempts PASS (t=6456)
+d_01: @00:00:06.656684  HELPER CHECK passkey read from the ring's display PASS (t=6656)
+d_01: @00:00:11.106428  HELPER CHECK pairing with the passkey completed and bonded PASS (t=11106)
+d_01: @00:00:11.106428  HELPER CHECK H: pairing with the passkey reaches security level 4 PASS (t=11106)
+d_01: @00:00:11.206520  HELPER CHECK H: Info is 6 bytes: version 1, store 16, application identifier 48, title 48, message 160, date 15 PASS (t=11206)
+d_01: @00:00:11.306532  HELPER CHECK H: Out notifications are on PASS (t=11306)
+d_01: @00:00:11.406984  HELPER OUT t=11406 op=0x83 len=6 02 6c 07 00 00 00
+d_01: @00:00:11.426628  HELPER CHECK H: PUT before HELLO: refused with ATT error 0x80 and ERROR code 2, id 1900 PASS (t=11426)
+d_01: @00:00:11.506952  HELPER OUT t=11506 op=0x83 len=6 02 6d 07 00 00 00
+d_01: @00:00:11.526596  HELPER CHECK H: REMOVE before HELLO: refused with ATT error 0x80 and ERROR code 2, id 1901 PASS (t=11526)
+d_01: @00:00:11.606968  HELPER OUT t=11606 op=0x83 len=6 02 00 00 00 00 00
+d_01: @00:00:11.626612  HELPER CHECK H: CLEAR before HELLO: refused with ATT error 0x80 and ERROR code 2, id 0 PASS (t=11626)
+d_01: @00:00:11.706916  HELPER OUT t=11706 op=0x83 len=6 06 00 00 00 00 00
+d_01: @00:00:11.726560  HELPER CHECK H: HELLO with version 2: refused with ATT error 0x80 and ERROR code 6, id 0 PASS (t=11726)
+d_01: @00:00:13.957660  HELPER INFO ring stage 5 seen (t=13957)
+d_01: @00:00:13.957660  HELPER CHECK H: the ring shows the list screen (stage 5) PASS (t=13957)
+d_01: @00:00:14.056444  HELPER CHECK H: HELLO: accepted PASS (t=14056)
+d_01: @00:00:14.056888  HELPER OUT t=14056 op=0x81 len=3 01 10 00 00 00 00
+d_01: @00:00:14.076544  HELPER CHECK H: HELLO: READY (version 1, store size 16) notified PASS (t=14076)
+d_01: @00:00:14.656444  HELPER CHECK H: PUT 1001 (59 bytes in 6 frames of at most 20 bytes) accepted PASS (t=14656)
+d_01: @00:00:17.456444  HELPER CHECK H: PUT 1002 (301 bytes in 28 frames of at most 20 bytes; title and message longer than their limits) accepted PASS (t=17456)
+d_01: @00:00:17.956444  HELPER CHECK H: PUT 1003 accepted PASS (t=17956)
+d_01: @00:00:18.456444  HELPER CHECK H: PUT 1004 accepted PASS (t=18456)
+d_01: @00:00:18.456444  HELPER CHECK H: nothing but READY and the 4 refusals came on Out so far PASS (t=18456)
+d_01: @00:00:22.375944  HELPER INFO ring stage 10 seen (t=22375)
+d_01: @00:00:22.375944  HELPER CHECK H: the ring opened 1002 (stage 10) PASS (t=22375)
+d_01: @00:00:22.956444  HELPER CHECK H: PUT 1002 again (a replace) accepted PASS (t=22956)
+d_01: @00:00:22.956444  HELPER INFO ring stage 20 seen (t=22956)
+d_01: @00:00:22.956444  HELPER CHECK H: the ring checked the replace (stage 20) PASS (t=22956)
+d_01: @00:00:27.619644  HELPER INFO ring stage 30 seen (t=27619)
+d_01: @00:00:27.619644  HELPER CHECK H: the ring pressed dismiss and positive on 1004 (stage 30) PASS (t=27619)
+d_01: @00:00:30.619744  HELPER CHECK H: no ACTION frame arrived for an action 1004 does not have PASS (t=30619)
+d_01: @00:00:30.619744  HELPER INFO stage 31 (t=30619)
+d_01: @00:00:35.323144  HELPER INFO ring stage 40 seen (t=35323)
+d_01: @00:00:35.323144  HELPER CHECK H: the ring pressed dismiss on 1003, which has no negative action (stage 40) PASS (t=35323)
+d_01: @00:00:38.323244  HELPER CHECK H: no ACTION frame arrived for the dismiss on 1003 PASS (t=38323)
+d_01: @00:00:38.323244  HELPER INFO stage 41 (t=38323)
+d_01: @00:00:38.356476  HELPER OUT t=38356 op=0x82 len=6 eb 03 00 00 00 00
+d_01: @00:00:39.107144  HELPER INFO ring stage 50 seen (t=39107)
+d_01: @00:00:39.107144  HELPER CHECK H: the ring pressed the positive action on 1003 (stage 50) PASS (t=39107)
+d_01: @00:00:39.107144  HELPER CHECK H: ACTION arrived: id 1003, positive (0) PASS (t=39107)
+d_01: @00:00:39.107144  HELPER INFO stage 51 (t=39107)
+d_01: @00:00:43.856476  HELPER OUT t=43856 op=0x82 len=6 ea 03 00 00 01 00
+d_01: @00:00:44.614544  HELPER INFO ring stage 60 seen (t=44614)
+d_01: @00:00:44.614544  HELPER CHECK H: the ring pressed dismiss on 1002 (stage 60) PASS (t=44614)
+d_01: @00:00:44.614544  HELPER CHECK H: ACTION arrived: id 1002, negative (1) PASS (t=44614)
+d_01: @00:00:44.614544  HELPER INFO stage 61 (t=44614)
+d_01: @00:00:45.659744  HELPER INFO ring stage 62 seen (t=45659)
+d_01: @00:00:45.659744  HELPER CHECK H: the ring saw the entry still in its store (stage 62) PASS (t=45659)
+d_01: @00:00:45.756444  HELPER CHECK H: REMOVE 1002: accepted PASS (t=45756)
+d_01: @00:00:46.258944  HELPER INFO ring stage 70 seen (t=46258)
+d_01: @00:00:46.258944  HELPER CHECK H: the ring saw the entry leave (stage 70) PASS (t=46258)
+d_01: @00:00:46.258944  HELPER CHECK H: Out notifications switched off PASS (t=46258)
+d_01: @00:00:46.959044  HELPER INFO stage 71 (t=46959)
+d_01: @00:00:47.019344  HELPER INFO ring stage 80 seen (t=47019)
+d_01: @00:00:47.019344  HELPER CHECK H: the ring tried an action with no subscription (stage 80) PASS (t=47019)
+d_01: @00:00:50.019444  HELPER CHECK H: nothing arrived: the ring refused the action itself PASS (t=50019)
+d_01: @00:00:50.106444  HELPER CHECK H: Out notifications are on again PASS (t=50106)
+d_01: @00:00:50.106444  HELPER INFO stage 81 (t=50106)
+d_01: @00:00:52.076244  HELPER INFO ring stage 90 seen (t=52076)
+d_01: @00:00:52.076244  HELPER CHECK H: the ring is recording (stage 90) PASS (t=52076)
+d_01: @00:00:52.456444  HELPER CHECK H: PUT 1005 during RECORDING accepted PASS (t=52456)
+d_01: @00:00:52.556444  HELPER CHECK H: REMOVE 1001 during RECORDING: accepted PASS (t=52556)
+d_01: @00:00:52.656916  HELPER OUT t=52656 op=0x83 len=6 05 ee 03 00 00 00
+d_01: @00:00:52.676560  HELPER CHECK H: a malformed PUT during RECORDING: refused with ATT error 0x80 and ERROR code 5, id 1006 PASS (t=52676)
+d_01: @00:00:52.756916  HELPER OUT t=52756 op=0x83 len=6 01 00 00 00 00 00
+d_01: @00:00:52.776560  HELPER CHECK H: an unknown opcode during RECORDING: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=52776)
+d_01: @00:00:52.776560  HELPER INFO stage 91 (t=52776)
+d_01: @00:00:56.213660  HELPER INFO ring stage 110 seen (t=56213)
+d_01: @00:00:56.213660  HELPER CHECK H: the ring stopped the recording (stage 110) PASS (t=56213)
+d_01: @00:00:56.306444  HELPER CHECK H: HELLO (a new session): accepted PASS (t=56306)
+d_01: @00:00:56.306888  HELPER OUT t=56306 op=0x81 len=3 01 10 00 00 00 00
+d_01: @00:00:56.326544  HELPER CHECK H: HELLO (a new session): READY (version 1, store size 16) notified PASS (t=56326)
+d_01: @00:00:56.506444  HELPER CHECK H: PUT 2001 accepted PASS (t=56506)
+d_01: @00:00:56.706444  HELPER CHECK H: PUT 2002 accepted PASS (t=56706)
+d_01: @00:00:56.906444  HELPER CHECK H: PUT 2003 accepted PASS (t=56906)
+d_01: @00:00:56.906444  HELPER INFO stage 111 (t=56906)
+d_01: @00:00:56.966744  HELPER INFO ring stage 120 seen (t=56966)
+d_01: @00:00:56.966744  HELPER CHECK H: the ring took its snapshot of the store (stage 120) PASS (t=56966)
+d_01: @00:00:57.056916  HELPER OUT t=57056 op=0x83 len=6 01 00 00 00 00 00
+d_01: @00:00:57.076560  HELPER CHECK H: M1 unknown opcode 0x7E: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=57076)
+d_01: @00:00:57.156916  HELPER OUT t=57156 op=0x83 len=6 01 00 00 00 00 00
+d_01: @00:00:57.176560  HELPER CHECK H: M2 HELLO of 1 byte: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=57176)
+d_01: @00:00:57.256916  HELPER OUT t=57256 op=0x83 len=6 01 00 00 00 00 00
+d_01: @00:00:57.276560  HELPER CHECK H: M3 HELLO of 3 bytes: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=57276)
+d_01: @00:00:57.356916  HELPER OUT t=57356 op=0x83 len=6 06 00 00 00 00 00
+d_01: @00:00:57.376560  HELPER CHECK H: M4 HELLO version 0: refused with ATT error 0x80 and ERROR code 6, id 0 PASS (t=57376)
+d_01: @00:00:57.456916  HELPER OUT t=57456 op=0x83 len=6 06 00 00 00 00 00
+d_01: @00:00:57.476560  HELPER CHECK H: M5 HELLO version 2: refused with ATT error 0x80 and ERROR code 6, id 0 PASS (t=57476)
+d_01: @00:00:57.556916  HELPER OUT t=57556 op=0x83 len=6 01 00 00 00 00 00
+d_01: @00:00:57.576560  HELPER CHECK H: M6 REMOVE of 4 bytes: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=57576)
+d_01: @00:00:57.656916  HELPER OUT t=57656 op=0x83 len=6 01 02 00 00 00 00
+d_01: @00:00:57.676560  HELPER CHECK H: M7 REMOVE of 6 bytes: refused with ATT error 0x80 and ERROR code 1, id 2 PASS (t=57676)
+d_01: @00:00:57.756916  HELPER OUT t=57756 op=0x83 len=6 01 00 00 00 00 00
+d_01: @00:00:57.776560  HELPER CHECK H: M8 CLEAR of 2 bytes: refused with ATT error 0x80 and ERROR code 1, id 0 PASS (t=57776)
+d_01: @00:00:57.856916  HELPER OUT t=57856 op=0x83 len=6 01 07 00 00 00 00
+d_01: @00:00:57.876560  HELPER CHECK H: M9 PUT with no data byte: refused with ATT error 0x80 and ERROR code 1, id 7 PASS (t=57876)
+d_01: @00:00:57.956916  HELPER OUT t=57956 op=0x83 len=6 04 08 00 00 00 00
+d_01: @00:00:57.976560  HELPER CHECK H: M10 PUT with total 1: refused with ATT error 0x80 and ERROR code 4, id 8 PASS (t=57976)
+d_01: @00:00:58.056916  HELPER OUT t=58056 op=0x83 len=6 04 09 00 00 00 00
+d_01: @00:00:58.076560  HELPER CHECK H: M11 PUT with total 513: refused with ATT error 0x80 and ERROR code 4, id 9 PASS (t=58076)
+d_01: @00:00:58.156916  HELPER OUT t=58156 op=0x83 len=6 04 0a 00 00 00 00
+d_01: @00:00:58.176560  HELPER CHECK H: M12 PUT with total 0: refused with ATT error 0x80 and ERROR code 4, id 10 PASS (t=58176)
+d_01: @00:00:58.256916  HELPER OUT t=58256 op=0x83 len=6 03 0b 00 00 00 00
+d_01: @00:00:58.276560  HELPER CHECK H: M13 PUT at offset 5 with no record in progress: refused with ATT error 0x80 and ERROR code 3, id 11 PASS (t=58276)
+d_01: @00:00:58.356444  HELPER CHECK H: M14a first piece of a record of 30 bytes: accepted PASS (t=58356)
+d_01: @00:00:58.456916  HELPER OUT t=58456 op=0x83 len=6 03 0c 00 00 00 00
+d_01: @00:00:58.476560  HELPER CHECK H: M14 next piece at offset 12 after 10 bytes (a gap): refused with ATT error 0x80 and ERROR code 3, id 12 PASS (t=58476)
+d_01: @00:00:58.556916  HELPER OUT t=58556 op=0x83 len=6 03 0d 00 00 00 00
+d_01: @00:00:58.576560  HELPER CHECK H: M15 6 bytes for a total of 5: refused with ATT error 0x80 and ERROR code 3, id 13 PASS (t=58576)
+d_01: @00:00:58.656916  HELPER OUT t=58656 op=0x83 len=6 05 0e 00 00 00 00
+d_01: @00:00:58.676560  HELPER CHECK H: M16 a field that runs past the end: refused with ATT error 0x80 and ERROR code 5, id 14 PASS (t=58676)
+d_01: @00:00:58.756916  HELPER OUT t=58756 op=0x83 len=6 05 0f 00 00 00 00
+d_01: @00:00:58.776560  HELPER CHECK H: M17 an unknown field type 9: refused with ATT error 0x80 and ERROR code 5, id 15 PASS (t=58776)
+d_01: @00:00:58.856916  HELPER OUT t=58856 op=0x83 len=6 05 10 00 00 00 00
+d_01: @00:00:58.876560  HELPER CHECK H: M18 a repeated field type: refused with ATT error 0x80 and ERROR code 5, id 16 PASS (t=58876)
+d_01: @00:00:58.956916  HELPER OUT t=58956 op=0x83 len=6 05 11 00 00 00 00
+d_01: @00:00:58.976560  HELPER CHECK H: M19 flag bit 5 set: refused with ATT error 0x80 and ERROR code 5, id 17 PASS (t=58976)
+d_01: @00:00:59.056916  HELPER OUT t=59056 op=0x83 len=6 05 d3 07 00 00 00
+d_01: @00:00:59.076560  HELPER CHECK H: M20 flag bit 7 set: refused with ATT error 0x80 and ERROR code 5, id 2003 PASS (t=59076)
+d_01: @00:00:59.156916  HELPER OUT t=59156 op=0x83 len=6 05 13 00 00 00 00
+d_01: @00:00:59.176560  HELPER CHECK H: M21 a field type with no length byte: refused with ATT error 0x80 and ERROR code 5, id 19 PASS (t=59176)
+d_01: @00:00:59.176560  HELPER CHECK H: nothing but those refusals came on Out PASS (t=59176)
+d_01: @00:00:59.176560  HELPER INFO stage 121 (t=59176)
+d_01: @00:00:59.216760  HELPER INFO ring stage 130 seen (t=59216)
+d_01: @00:00:59.216760  HELPER CHECK H: the ring wants the unfinished record (stage 130) PASS (t=59216)
+d_01: @00:00:59.406444  HELPER CHECK H: the first two pieces of a record of 301 bytes accepted PASS (t=59406)
+d_01: @00:00:59.406444  HELPER INFO stage 131 (t=59406)
+d_01: @00:00:59.466744  HELPER INFO ring stage 140 seen (t=59466)
+d_01: @00:00:59.466744  HELPER CHECK H: the ring is ready for the link to drop (stage 140) PASS (t=59466)
+d_01: @00:00:59.466744  HELPER CHECK H: the stand-in ends the link PASS (t=59466)
+d_01: @00:00:59.556432  HELPER CHECK H: the link is down PASS (t=59556)
+d_01: @00:00:59.980557  HELPER CHECK H: reconnect: connected to the ring PASS (t=59980)
+d_01: @00:01:01.082082  HELPER CHECK H: reconnect: the relay service is found with In, Out (with its CCC) and Info (before the link is secure) PASS (t=61082)
+d_01: @00:01:01.432066  HELPER CHECK H: reconnect: security level 4 again with the stored key (no passkey) PASS (t=61432)
+d_01: @00:01:01.532134  HELPER CHECK H: reconnect: Out notifications are on PASS (t=61532)
+d_01: @00:01:01.632642  HELPER OUT t=61632 op=0x83 len=6 02 b7 0b 00 00 00
+d_01: @00:01:01.652286  HELPER CHECK H: reconnect: PUT before the new HELLO: refused with ATT error 0x80 and ERROR code 2, id 2999 PASS (t=61652)
+d_01: @00:01:01.732606  HELPER OUT t=61732 op=0x83 len=6 02 b7 0b 00 00 00
+d_01: @00:01:01.752250  HELPER CHECK H: reconnect: the next piece of the old record before the new HELLO: refused with ATT error 0x80 and ERROR code 2, id 2999 PASS (t=61752)
+d_01: @00:01:01.832134  HELPER CHECK H: reconnect: HELLO: accepted PASS (t=61832)
+d_01: @00:01:01.832578  HELPER OUT t=61832 op=0x81 len=3 01 10 00 00 00 00
+d_01: @00:01:01.852234  HELPER CHECK H: reconnect: HELLO: READY (version 1, store size 16) notified PASS (t=61852)
+d_01: @00:01:01.932606  HELPER OUT t=61932 op=0x83 len=6 03 b7 0b 00 00 00
+d_01: @00:01:01.952250  HELPER CHECK H: reconnect: after HELLO the next piece of the old record (the unfinished record was dropped): refused with ATT error 0x80 and ERROR code 3, id 2999 PASS (t=61952)
+d_01: @00:01:02.532082  HELPER CHECK H: reconnect: PUT 1001 (pre-existing) accepted PASS (t=62532)
+d_01: @00:01:05.382082  HELPER CHECK H: reconnect: PUT 1002 (pre-existing) accepted PASS (t=65382)
+d_01: @00:01:05.882082  HELPER CHECK H: reconnect: PUT 1003 accepted PASS (t=65882)
+d_01: @00:01:06.382082  HELPER CHECK H: reconnect: PUT 1004 (pre-existing) accepted PASS (t=66382)
+d_01: @00:01:06.482090  HELPER INFO MTU exchange 0, MTU 247
+d_01: @00:01:06.482090  HELPER CHECK H: the ATT MTU is 247 after the exchange (frames of 244 bytes) PASS (t=66482)
+d_01: @00:01:06.582082  HELPER CHECK H: reconnect: PUT 3005 (title longer than its limit, cut inside a character) accepted PASS (t=66582)
+d_01: @00:01:06.582082  HELPER CHECK H: the large record is exactly 512 bytes PASS (t=66582)
+d_01: @00:01:06.882082  HELPER CHECK H: reconnect: PUT 3006 (512 bytes in frames of 244 bytes) accepted PASS (t=66882)
+d_01: @00:01:06.982082  HELPER CHECK H: reconnect: PUT 3007 (a record of exactly 2 bytes) accepted PASS (t=66982)
+d_01: @00:01:06.982082  HELPER CHECK H: nothing but the refusals and READY came on Out after the reconnect PASS (t=66982)
+d_01: @00:01:06.982082  HELPER INFO stage 141 (t=66982)
+d_01: @00:01:07.343882  HELPER INFO ring stage 150 seen (t=67343)
+d_01: @00:01:07.343882  HELPER CHECK H: the ring finished (stage 150) PASS (t=67343)
+d_01: @00:01:10.343982  HELPER EVAL t=70343
+d_01: @00:01:10.343982  HELPER CHECK every frame on Out was looked at PASS (t=70343)
+d_01: @00:01:10.343982  HELPER RESULT PASS checks=103 fails=0
+ring script done at 67287 ms, stand-in evaluated at 70343 ms
+TEST H RESULT PASS (168 checks passed)
+RESULT PASS
+# finished (Mac clock): 2026-11-12 19:48:53 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step5/20261112-194711-s5-bsim-relay-2.log

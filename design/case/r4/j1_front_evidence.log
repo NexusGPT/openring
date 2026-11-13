@@ -1,0 +1,83 @@
+== KiCad library footprint /Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Connector_USB.pretty/USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal.kicad_mod lines 60-120
+	(fp_line
+		(start -4.67 -0.1)
+		(end -4.67 -1.8)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "3e8369c7-5aa7-45a7-bf10-2ab128891993")
+	)
+	(fp_line
+		(start 4.67 -0.1)
+		(end 4.67 -1.8)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "ef2585f8-603b-4391-8d77-c60585673e72")
+	)
+	(fp_line
+		(start 5 3.675)
+		(end -5 3.675)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "Dwgs.User")
+		(uuid "1b0efba6-6f62-4b3b-9769-b406a0b4fcfd")
+	)
+	(fp_rect
+		(start -5.32 -4.76)
+		(end 5.32 4.18)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "73879f5c-77cd-46bf-b854-389e1069ccdc")
+	)
+	(fp_rect
+		(start -4.47 -3.675)
+		(end 4.47 3.675)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "15e5f594-7c56-466a-af18-f0519ee4643f")
+	)
+	(fp_text user "PCB Edge"
+		(at 0 3.1 0)
+		(unlocked yes)
+		(layer "Dwgs.User")
+		(uuid "c7ea6cd0-75e4-49f1-bf60-aaeb5b1ee23c")
+		(effects
+			(font
+				(size 0.5 0.5)
+				(thickness 0.1)
+== make_footprints.py J1 lines 302-321
+# ---------------------------------------------------------------- J1 USB4105-GF-A (case_usb4105.pdf p.1 drawing rev B4, 'Recommended PCB Layout')
+fp = new("USB4105-GF-A",
+         "GCT USB4105-GF-A USB Type-C receptacle, top mount, 16 contacts on 12 pads, 8.94 x 7.35 x 3.31 mm. Land pattern: case_usb4105.pdf p.1 'Recommended PCB Layout' "
+         "(rev B4, component side view): 12 pads 1.15 mm long at y = -3.68 mm; wide pads 0.6 mm (A1/B12 x -3.2, A4/B9 x -2.4, B4/A9 x +2.4, A12/B1 x +3.2), "
+         "narrow pads 0.3 mm (B8 -1.75, A5 -1.25, B7 -0.75, A6 -0.25, A7 +0.25, B6 +0.75, A8 +1.25, B5 +1.75); two holes dia 0.65 mm at x +-2.89 y -2.605; "
+         "four shell slots at x +-4.32: y -3.105 (pad 1.0 x 2.1 mm, drill 0.6 x 1.7) and y +1.075 (pad 1.0 x 1.8 mm, drill 0.6 x 1.4). "
+         "Pin table (p.1): A1, A12, B1, B12 GND, A4, A9, B4, B9 VBUS, A5 CC1, B5 CC2, A6 Dp1, A7 Dn1, B6 Dp2, B7 Dn2, A8 SBU1, B8 SBU2, SHELL (no number: the four shell pads are all numbered SH). "
+         "Two contacts share each wide pad, so both pad numbers sit on the same copper. Mating face at y = +4.18 mm (courtyard line of the drawing).",
+         "usb type-c receptacle gct usb4105")
+for num, x, w in (("A1", -3.2, 0.6), ("B12", -3.2, 0.6), ("A4", -2.4, 0.6), ("B9", -2.4, 0.6), ("B8", -1.75, 0.3), ("A5", -1.25, 0.3),
+                  ("B7", -0.75, 0.3), ("A6", -0.25, 0.3), ("A7", 0.25, 0.3), ("B6", 0.75, 0.3), ("A8", 1.25, 0.3), ("B5", 1.75, 0.3),
+                  ("B4", 2.4, 0.6), ("A9", 2.4, 0.6), ("B1", 3.2, 0.6), ("A12", 3.2, 0.6)):
+    smd(fp, num, x, -3.68, w, 1.15, rr=0.15)
+npth(fp, -2.89, -2.605, 0.65)
+npth(fp, 2.89, -2.605, 0.65)
+for sx in (-4.32, 4.32):
+    pth(fp, "SH", sx, -3.105, 1.0, (0.6, 1.7), oval=(1.0, 2.1))
+    pth(fp, "SH", sx, 1.075, 1.0, (0.6, 1.4), oval=(1.0, 1.8))
+rect(fp, pcbnew.F_Fab, -4.47, -3.17, 4.47, 4.18, 0.1)
+rect(fp, pcbnew.F_CrtYd, -5.32, -4.4, 5.32, 4.18, 0.05)

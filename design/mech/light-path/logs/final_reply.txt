@@ -1,0 +1,33 @@
+The light window has to move: from X -13.25, Y -4.7 to X -12.425, Y -2.95, a round window 0.4 mm across.
+
+Why: I measured the screen maker's drawing (display_TOH095XVT-01.pdf p5, logs/screen_ledge.log). The screen's flexible tail is bonded on the ledge from X -13.675 to -12.775, across Y -6.198 to +6.204. The v4 window sits on that bond. The ledge itself is only 2.951 mm long (X -13.675 to -10.724), not the model's 4.8.
+
+Recommended path (design/mech/light-path/light-path.md):
+- LED: Kingbright KPG-1005SURC-TT, top view, 1.0 x 0.5 x 0.2. Dominant 631 nm. Vf 1.767 V at 1.5 mA, read from the maker curve. It sits on the board's under face at X -9.70, Y -2.10, Z 1.230 to 1.430, and shines down.
+- Guide LG1: a moulded L with three aluminium-coated 45 degree mirrors. It runs along -Y, then -X, then up a 0.3 riser through a 0.5 non-plated board hole. Then come a 0.5 foam notch, the clear ledge glass, LP1 (0.4 cube) and the 0.4 print window. The cover glass is 0.959 thick there.
+- Wiring stays the same (VDD_3V0, R41, LED, Q2 to ground, gate on VDD_MIC). R41 becomes 820 ohm: 1.502 mA. The present 680 ohm gives 1.811 mA.
+- Polarity: the maker's pad 1 is the cathode. The netlist puts the anode on P1. This needs a fix.
+
+Fit: check_light_path.py reads placement.csv and layers.json. It checks both the v4 layout and the 17.19 microphones (mic-path.md line 58). check.log has 70 checks, 0 failed, last line RESULT PASS. Two broken copies end RESULT FAIL with exit 1. Rules: 0.10 clearance (thin-notes.md lines 35 and 69), the 0.2 board keep-out (architecture.md line 381), floor, height and pocket.
+
+My first layout passed v4 (logs/check_run1.log). It collided with the 17.19 microphone, so I replaced it. I sent you two messages on the way. The second one has the final X and Y.
+
+Rejected, with numbers in section 7:
+(a) Reverse mount (APTR3216SURCK): the lens ends 0.400 inside the screen.
+(b) Side view (APA1606SURCK): it needs 1.600 of room; there is 1.400 at most.
+(c) A 0.2 part on top of the board: only 0.100 of room. I found no LED under 0.2, but the searches hit a bot check.
+(d) A flex tail: the band tails never come above the board, and the screen tail has no free contacts.
+Second-best: a custom screen tail that carries the LED on the ledge.
+
+Open, and I did not settle it:
+- S-L1: the screen maker must confirm the ledge glass is clear at the light column. Its drawing tolerance (+-0.2) is larger than my 0.150 gap to the bond.
+- The KPG sheet is a 2013 preliminary copy. Whether the part can be ordered is unverified (DigiKey 403). Fallback: APHHS1005SURCK, not fit-checked.
+- The board hole is 0.100 from the J1 and U5 bodies. The board designer must check the copper.
+- Light at the surface is an estimate only: 0.08 to 3.80 mcd. A bench test is named in section 8.
+- The light is on the -Y side, not the thumb side of architecture.md line 243. The thumb side falls in the antenna keep-out. This is the owner's call.
+
+Change list: section 10, one line per file with the present text. Line numbers in architecture.md moved while I worked.
+
+Audit: logs/audit_final.log. Its unmatched items are 4 line numbers (checked by the citation lines), 2 dimension texts on a datasheet image, and 1 phrase of my own. 6 light_kb_*.pdf files in design/datasheets are HTML error pages. I kept them. No git, no install, no browser.
+
+RESULT: done, light-path.md and check.log written, check_light_path.py exit 0

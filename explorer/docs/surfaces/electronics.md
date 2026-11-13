@@ -1,0 +1,12 @@
+# Surface: Electronics
+
+picked-layout: L1 Stage (inherited) — owner: "L1 Stage (Recommended)", 2026-11-10, see docs/DESIGN.md
+picked-style: S1 Gallery (inherited) — owner: "S1 Gallery (Recommended)", 2026-11-10, see docs/DESIGN.md
+board: docs/boards/layouts.html (section L1) and docs/boards/styles.html (section S1)
+spec: docs/PRD.md, table "Screens", row "Electronics"
+anti-references (owner): "A cluttered dashboard, A wall of text, A toy"
+bar word (owner): "slick"
+
+change 2026-11-13 (owner: "you need to do the wiring on the ring explorer"; card answer "In the two existing screens, same look (Recommended)"): below the wiring tab, the connection map. Layout L1 Stage and style S1 Gallery unchanged. The nodes are quiet boxes (the boards with an ink border), the joints are lines with a small pill carrying the id; a joint no design file draws is dashed and carries the accent (the one attention colour). A map and a list of the same data; a click on a pill or a row shows the two ends, what it carries, how it is made, the rows from the band and case notes, and the files that prove it. A board end opens that board in Board. A connection the data does not hold says so in words.
+
+change 2026-11-13 (lane conductor-view; owner: "the connexions and wiring is far from being 100% i see"; the lead's reading: each connection lists its conductors one by one): in the detail of a connection, under the facts and above the proof files, a "Conductors" section. One row per conductor of `connection_map.connections[].conductor_lines`: id, signal (both when they differ), first terminal (part and pin), last terminal, carrier kind, state; hairline rows like the connection list, style S1 Gallery unchanged. A row opens to show the board, face and join at each end, the carrier text, the state reason, the length for the chosen ring size (a "Ring size" row of buttons holds the sizes the data gives; the first is chosen at the start) and the source line. A line without a conductor is shown apart under "No conductor" with its reason. Above the map the count line says "N of M conductors complete" for the whole product, read from `conductor_file`. Honest states: the file missing or unreadable (the note, no count, no rows), data without the fields (an older bundle: "not in the data yet"), a connection with no conductor line, a count of the connection that differs from the rows shown. Check ids conductor-view-C01..C13, C20..C22. Not seen by anyone: open http://localhost:8790/electronics?conn=R3 (scroll to "What is joined to what").

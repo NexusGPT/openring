@@ -1,0 +1,21 @@
+config RING_STORE
+	bool "Ring recorder storage: raw append-only log on the card (software step 6, unit U2)"
+	depends on RING_RHW
+	select CRC
+	help
+	  The recording store of design/firmware.md section 5: superblock, index records, event log records and chunks
+	  with CRC-32, the recovery scan, free space and deletion after a confirmed transfer. The pure files
+	  (rst_fmt.c, rst_layout.c, rst_log.c) make no kernel call; rst.c reaches the card, the storage bus and the
+	  VDD_SD rail only through ring_rhw.
+
+if RING_STORE
+
+config RING_STORE_STACK_SIZE
+	int "Stack of the storage thread (bytes)"
+	default 4096
+
+config RING_STORE_THREAD_PRIORITY
+	int "Priority of the storage thread"
+	default 5
+
+endif

@@ -1,0 +1,103 @@
+# server-cleanup.txt: folders created by my runs of step 5 on the server, removed one per command (2026-11-12 22:33:24 CET)
+# listing before: build-logs/step5/20261112-223300-s5-clean-list.log
+== removing /root/ring-os/ws/out/20261112-194421-s5-bsim-relay-1-bsim-relay
+ls: cannot access '/root/ring-os/ws/out/20261112-194421-s5-bsim-relay-1-bsim-relay': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/20261112-194711-s5-bsim-relay-2-bsim-relay
+ls: cannot access '/root/ring-os/ws/out/20261112-194711-s5-bsim-relay-2-bsim-relay': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/20261112-194918-s5-relay-broken-1-relay-broken
+ls: cannot access '/root/ring-os/ws/out/20261112-194918-s5-relay-broken-1-relay-broken': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/20261112-195552-s5-bsim-relay-broken-1-bsim-relay
+ls: cannot access '/root/ring-os/ws/out/20261112-195552-s5-bsim-relay-broken-1-bsim-relay': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/20261112-200649-s5-relay-broken-2-relay-broken
+ls: cannot access '/root/ring-os/ws/out/20261112-200649-s5-relay-broken-2-relay-broken': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/20261112-202031-s5-bsim-relay-3-bsim-relay
+ls: cannot access '/root/ring-os/ws/out/20261112-202031-s5-bsim-relay-3-bsim-relay': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/20261112-202231-s5-bsim-relay-broken-2-bsim-relay
+ls: cannot access '/root/ring-os/ws/out/20261112-202231-s5-bsim-relay-broken-2-bsim-relay': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/20261112-202445-s5-bsim-relay-4-bsim-relay
+ls: cannot access '/root/ring-os/ws/out/20261112-202445-s5-bsim-relay-4-bsim-relay': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/20261112-202622-s5-bsim-relay-broken-3-bsim-relay
+ls: cannot access '/root/ring-os/ws/out/20261112-202622-s5-bsim-relay-broken-3-bsim-relay': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/20261112-202935-os-relay
+ls: cannot access '/root/ring-os/ws/out/20261112-202935-os-relay': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/20261112-213132-os-relay
+ls: cannot access '/root/ring-os/ws/out/20261112-213132-os-relay': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/s5-a
+ls: cannot access '/root/ring-os/ws/out/s5-a': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/s5-reg1
+ls: cannot access '/root/ring-os/ws/out/s5-reg1': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/ws/out/s5-stages1
+ls: cannot access '/root/ring-os/ws/out/s5-stages1': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/src-os-relay (the copy of the source that remote.sh made for my runs; the last command)
+# command: cd /root/ring-os && rm -rf /root/ring-os/src-os-relay; echo 'listing of /root/ring-os after the removal:'; ls /root/ring-os; echo 'folders of /root/ring-os/ws/out with s5- or os-relay in the name:'; ls /root/ring-os/ws/out | grep -E 's5-|os-relay'; echo 'free disk:'; df -BG --output=avail / | tail -1
+# mode: host
+# started (Mac clock): 2026-11-12 22:35:40 CET
+# free on the server's /: 55 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261112-223540-s5-clean; server log /root/ring-os/logs/20261112-223540-s5-clean.log
+listing of /root/ring-os after the removal:
+logs
+runs
+src
+src-broken
+src-core
+src-failtest
+src-os-screens
+src-os-screens-chk
+src-skeleton
+ws
+folders of /root/ring-os/ws/out with s5- or os-relay in the name:
+free disk:
+  55G
+# finished (Mac clock): 2026-11-12 22:35:46 CET
+# remote exit code: 0
+# local log: <scratch>/clean-logs/20261112-223540-s5-clean.log
+
+# kept on purpose: the text files remote.sh writes for each run (/root/ring-os/logs/<run id>.log, .exit, .wrap.log and /root/ring-os/runs/<run id>.cmd, .wrap.sh).
+# They are small, they are the server side of the logs in this folder, and removing them would take one command per file.
+# the 15 remote.sh logs of the removal commands are in build-logs/step5/server-cleanup-logs/ (the one that removes src-os-relay re-copies the source first: remote.sh does that
+# for every command, and the same command removes the copy; the listing after it is above: no src-os-relay).
+# Free disk on the server: 41 GB before (s5-clean-list log), 55 GB after (the last command above).
+
+# second cleanup after the third full run (2026-11-12 23:47:38 CET); the second run's folder 20261112-213132-os-relay was removed above, the third run's is removed here, one per command
+== removing /root/ring-os/ws/out/20261112-225014-os-relay
+ls: cannot access '/root/ring-os/ws/out/20261112-225014-os-relay': No such file or directory
+# remote exit code: 2
+== removing /root/ring-os/src-os-relay (last command)
+# command: cd /root/ring-os && rm -rf /root/ring-os/src-os-relay; echo 'listing of /root/ring-os after the removal:'; ls /root/ring-os; echo 'folders of /root/ring-os/ws/out with s5- or os-relay in the name:'; ls /root/ring-os/ws/out | grep -E 's5-|os-relay'; echo 'free disk:'; df -BG --output=avail / | tail -1
+# mode: host
+# started (Mac clock): 2026-11-12 23:47:56 CET
+# free on the server's /: 48 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261112-234756-s5-clean; server log /root/ring-os/logs/20261112-234756-s5-clean.log
+listing of /root/ring-os after the removal:
+logs
+runs
+src
+src-broken
+src-core
+src-failtest
+src-os-screens
+src-os-screens-chk
+src-skeleton
+ws
+folders of /root/ring-os/ws/out with s5- or os-relay in the name:
+free disk:
+  48G
+# finished (Mac clock): 2026-11-12 23:48:02 CET
+# remote exit code: 0
+# local log: <scratch>/clean-logs/20261112-234756-s5-clean.log

@@ -1,0 +1,78 @@
+"""gen_round3.py <log>: writes docs/step3-round3.md; every LOG:n / file:n is found by searching the exact text."""
+import pathlib, re, sys
+FW = pathlib.Path((__import__("pathlib").Path(__file__).resolve().parents[3].as_posix() + "/firmware"))
+lp = pathlib.Path(sys.argv[1]); log = lp.read_text(errors="replace").split("\n"); rel = lp.relative_to(FW)
+cache = {}
+def S(r, t):
+    cache.setdefault(r, (FW / r).read_text(errors="replace").split("\n"))
+    for i, l in enumerate(cache[r]):
+        if t in l: return f"`{r}:{i+1}`"
+    raise SystemExit(f"not found {r}: {t!r}")
+def Ln(t, after=0):
+    for i, l in enumerate(log):
+        if i + 1 > after and t in l: return i + 1
+    raise SystemExit(f"log not found {t!r}")
+def L(t, after=0): return f"`LOG:{Ln(t, after)}`"
+si = Ln("=== stage bsim-iphone start"); sb = Ln("=== stage bsim-iphone-broken start"); sl = Ln("=== stage link-settings start")
+sbi = Ln("=== stage broken-iphone start")
+R = "modules/ring_iphone/src/rip.c"; P = "modules/ring_iphone/src/ripl.c"; RN = "tests/bsim/iphone/ring_app/src/main.c"
+HN = "tests/bsim/iphone/host_app/src/main.c"; ED = "tests/bsim/iphone/broken_edit.py"
+last = max(i + 1 for i, l in enumerate(log) if l == "RESULT PASS"); ex = next(l for l in reversed(log) if l.startswith("# remote exit code"))
+ends = [l for l in log if l.startswith("=== stage") and " end " in l]; bad = [l for l in ends if not l.endswith(" exit 0")]
+cnt = lambda k: re.search(r"[(](\d+) checks passed[)]", log[Ln("TEST " + k + " RESULT PASS", si) - 1]).group(1)
+o = []; w = o.append
+w("# Step 3, round 3: answers to the second review"); w("")
+w("Version: the files under `firmware/` at commit 1e7ccd8 (as the lead named it; I ran no git). Review: `docs/step3-review-2.md`. Paths are under `firmware/`.")
+w("")
+w(f"Bar command (my own run, own server copy `RING_REMOTE_SRC=/root/ring-os/src-step3r3d`): `sh firmware/tools/remote.sh os-iphone-r3 \"tools/build_all.sh\"`. Log: `{rel}`. The last line build_all printed is `RESULT PASS` (`LOG:{last}`); remote.sh then wrote `{ex}`. {len(ends)} stages ended, {len(bad)} with a non-zero exit. `LOG:n` is a line of that file.")
+w("")
+w("New in the log: scenarios Z and W (" + L("TEST Z RESULT PASS", si) + ", " + L("TEST W RESULT PASS", si) + "), scenario counts " + ", ".join(f"{k} {cnt(k)}" for k in "NRPLDZW") + " checks; five new Bluetooth broken copies (23 in all); two new logic broken copies; the extended `link-settings` stage (" + L("=== stage link-settings end") + ").")
+w("")
+w("## 1. The clock")
+w("")
+w("- **(a) No drift.** The iPhone part keeps, in a pure state `struct ripl_clock` (" + S("modules/ring_iphone/include/ring_iphone/ripl.h", "struct ripl_clock {") + "), the Current Time value with the uptime at which it ARRIVED. A zone read that returns changes the zone only; the clock is set from the stored time at the arrival uptime (" + S(P, "bool ripl_clock_apply") + ", used by " + S(R, "static bool clock_apply_locked") + "). The old code paired the stored time with the uptime of now (review part 3, point 1).")
+w("- **(b) A failed read keeps the zone.** " + S(P, "void ripl_clock_zone") + ": a read that failed or had the wrong length is counted (`zone_errors`, " + S(R, "st.zone_errors += ok ? 0 : 1;") + ") and changes nothing else. \"Zone not known\" follows only from unknown values or from a link without the characteristic (the clock state is reset at each link: " + S(R, "ripl_clock_init(&clk);") + ").")
+w("- **Logic tests** (both boards): `test_clock_no_drift_with_delayed_zone_read` (" + S("tests/iphone/src/test_iphone.c", "test_clock_no_drift_with_delayed_zone_read") + ": 100 time notifications, zone reads delayed 37 to 400 ms, exact to 1 ms at two moments each) and `test_clock_failed_zone_read_keeps_the_last_zone` (" + S("tests/iphone/src/test_iphone.c", "test_clock_failed_zone_read_keeps_the_last_zone") + "). Broken copies of the logic suite (stage `broken-iphone`, both boards, `tests/iphone/broken_run.sh`): `clock_drift` " + L("clock_drift on native_sim: the named case failed, as required", sbi) + " and " + L("clock_drift on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required", sbi) + "; `clock_failed_read` " + L("clock_failed_read on native_sim: the named case failed, as required", sbi) + " and " + L("clock_failed_read on nrf54lm20bsim/nrf54lm20a/cpuapp: the named case failed, as required", sbi) + ". The old `media_state` copy still fails on its case (" + L("media_state on native_sim: the named case failed, as required", sbi) + ").")
+w("- **Over Bluetooth.** The clock checks are tightened from 1 s to 100 ms (" + S(RN, "d > -100 && d < 100") + ", also in the new `clock_is_zone`). Scenario N, with a zone: " + L("RING CHECK the ring's clock equals the iPhone's time within 1 s, as UTC (the iPhone's zone +2 h taken off) PASS", si) + " (the name still says \"1 s\"; the tolerance in the code is 100 ms). A failed zone read after good ones, at 42.5 s: the stand-in refuses the read (" + L("PHONE INFO the Local Time Information read is refused", si) + ") and " + L("RING CHECK g: a zone read that failed changed nothing: the clock is still UTC (+2 h taken off) and the zone known PASS", si) + ". Zone change while linked, scenario Z: " + L("RING CHECK Z: zone +60 minutes: the clock shows UTC (within 100 ms) PASS", si) + ", " + L("RING CHECK Z: the zone changed to +180 minutes while linked and the local time moved by 2 h: the clock still shows the same UTC (within 100 ms) and the new zone PASS", si) + ", " + L("RING CHECK Z: the zone was read again PASS", si) + ". A stand-in without Local Time Information, scenario W (the service is registered with its first four attributes only, " + S(HN, "cts_svc_nolti") + "): " + L("RING CHECK W: no Local Time Information: the clock holds the iPhone's local time (within 100 ms) and says the zone is not known PASS", si) + ", " + L("RING CHECK W: the local time moved by 1 h: the clock follows (within 100 ms), the zone is still not known PASS", si) + ", " + L("RING CHECK W: no zone was read and no error was counted PASS", si) + ", stand-in side " + L("PHONE CHECK the ring subscribed to Current Time and never read Local Time Information (there is none) PASS", si) + ".")
+w("- **Broken copies over Bluetooth:** `zone_read_failed` (a failed read counts as a good one with unknown values; for the failed read) " + L("broken zone_read_failed: test N failed on its named check, as required", sb) + "; `zone_not_reread` (no zone read after a notification) " + L("broken zone_not_reread: test Z failed on its named check, as required", sb) + "; `no_lti_known` (a link without the characteristic is taken as zone known) " + L("broken no_lti_known: test W failed on its named check, as required", sb) + ". The drift copy is the logic copy `clock_drift` above: the Bluetooth clock check is 100 ms and a one-interval delay is below what one simulated run can show reliably, so the drift proof is the exact logic test.")
+w("- **Limit:** the real iPhone's zone-read delay and whether it serves Local Time Information are unproven (notes, section 3).")
+w("")
+w("## 2. The late answer lands inside a later request")
+w("")
+w("- **Test.** In scenario L the stand-in holds the answer for 401 for 3,500 ms and sends it twice, 200 ms apart, and holds every answer for 402 for 1,000 ms (" + S(HN, "hold[0].copies = 2;") + ", " + S(HN, "hold[1].ms = 1000;") + "). The ring has by then given up 401, asked again (the retry is answered at once), and gone on to 402, so the late bytes arrive while the request for 402 is in flight. The ring reports the bytes it skipped and the check requires more than 0: " + L("RING CHECK L: the late answers for 401 arrived inside later requests and the ring skipped their bytes PASS", si) + " (value: " + L("RING INFO L: skipped", si) + "). The four own-text checks: " + L("RING CHECK L: the four notifications all get their text, although the answer for the first is late PASS", si) + ", " + L("RING CHECK L: each of the four holds its own text (none shifted to its neighbour) PASS", si) + ".")
+w("- **Broken copy `late_parser`** (keeps the retry, restores the round 1 parser: both skip rules become errors, " + S(ED, '"late_parser"') + "): " + L("broken late_parser: test L failed on its named check, as required", sb) + " on the named \"own text\" check. The old copy `late_fragment` (retry removed too) stays: " + L("broken late_fragment: test L failed on its named check, as required", sb) + ".")
+w("")
+w("## 3. A broken copy for scenario D")
+w("")
+w("`dm_gone` removes the \"link gone\" test of the discovery answer (" + S(R, "bool gone = (link == NULL)") + " is replaced by `gone = false`; " + S(ED, '"dm_gone"') + "): " + L("broken dm_gone: test D failed on its named check, as required", sb) + " on \"no service was reported missing\".")
+w("")
+w("## 4. The settings check")
+w("")
+w("- `CONFIG_BT_GATT_DM_MAX_ATTRS` is compared too, and the MTU is pinned to at least 247: " + S("tools/check_link_settings.sh", "CONFIG_BT_GATT_DM_MAX_ATTRS; do") + ", " + S("tools/check_link_settings.sh", "-lt 247") + ". Self test with two equal wrong values (both sides MTU 23): " + L("link-settings: self test ok: two equal MTU values of 23 were refused", sl) + "; the first self test (one side changed) " + L("link-settings: self test ok: the changed MTU was refused", sl) + "; the product values, five per build: " + L("link-settings: dk-product CONFIG_BT_GATT_DM_MAX_ATTRS=35", sl) + ", " + L("link-settings: bsim-product CONFIG_BT_GATT_DM_MAX_ATTRS=35", sl) + ".")
+w("- **A build-time assert in the module:** " + S(R, "BUILD_ASSERT(CONFIG_BT_L2CAP_TX_MTU >= 247") + ". The stage builds the iPhone test ring with a copy of the shared file whose MTU is 100 (`-DRING_IPHONE_LINK_CONF=...`, a variable the test ring's CMakeLists now has for this; Zephyr itself refuses an MTU of 23 or a second value for the symbol, so 100 is the lowest valid test value I used) and requires that the build fails with the assert's text: " + L("link-settings: build refused: CONFIG_RING_IPHONE with MTU 100 does not build", sl) + " (the assert's own line: " + L("ring_iphone needs CONFIG_BT_L2CAP_TX_MTU >= 247", sl) + "). Stage end " + L("=== stage link-settings end") + ".")
+w("")
+w("## 5. The false header with notification id 0")
+w("")
+w("No rule can tell it from a real header without keeping about 300 bytes of the stream to read again; I did not build that. The stale answer's last bytes `05 00 00` plus the first byte of the answer for id 0 read as header, id 0, first attribute 0, length 0, and the parser goes wrong from there. It ends in an error (or, with other length bytes, a timeout), and the ring then asks again with a fresh parser state: the cost is one retry (at most the 3 s timeout), and it needs our id to be 0 together with a stale answer that ends in an empty date. Logic test showing both halves (the spoiled stream does not complete, the fresh start does): " + S("tests/iphone/src/test_iphone.c", "test_false_header_with_id_zero_recovers_by_retry") + ". iPhone ids are 32-bit values chosen by the iPhone; a 0 is possible but nothing says it is used. Said in the notes, section 6.")
+w("")
+w("## 6. Notes and comments")
+w("")
+w("The three false claims of `docs/iphone-notes.md` (round 2 lines 14, 28, 133), each re-read before the change:")
+w("- line 14 (bar c): it rested on `nactions == 2`; it now cites the stand-in's own witness (" + L("PHONE CHECK no action command arrived for a notification that does not have that action (every command is recorded before it can be refused) PASS", si) + ") and says so (`docs/iphone-notes.md`, bar c).")
+w("- line 28 (bar j): \"every Bluetooth test has a broken copy\" was false for D. D now has `dm_gone`, and Z and W have `zone_not_reread` and `no_lti_known`; the count in the notes is computed from the log (" + L("broken zone_not_reread", sb) + ").")
+w("- line 133: \"the fetch timeout stays 0\" and \"a link that ends during discovery\" are reached by no run: both are now reached (L and D); the section 6 text is rewritten with what is still unreached.")
+w("- `docs/step3-round2.md`: the two citations are corrected (`rip.c:319`; the round 1 log named by its file for line 4390) and a note says the line numbers of that file refer to the round 2 files.")
+w("- Stale comments: " + S("modules/ring_iphone/include/ring_iphone/ripl.h", "iPhone's local time. The zone (ripl_cts_zone) is taken off") + " and " + S(HN, "next to Current Time (scenario W leaves it out)") + " (the stand-in's header now says Local Time Information is served, and scenario W leaves it out).")
+w("")
+w("## Earlier looks in round 3")
+w("")
+w("In order: `console-r3-first.txt` (logic 40 of 40 pass; scenario L passed with 130 skipped bytes; Z failed its stand-in check `lti_reads >= 3`, which was my wrong count: the ring reads the zone at the start and after the one notification, so 2; changed); `console-r3-a.txt`, `console-r3-b.txt`, `console-r3-c.txt` (the new copies late_parser, zone_read_failed, dm_gone, zone_not_reread, no_lti_known and the logic copies each failed on their named check); `20261112-084253-os-iphone-r3.log` (a full run of the bar command that ended `RESULT FAIL link-settings`: my new MTU build test used `-DCONFIG_BT_L2CAP_TX_MTU=23`, which Zephyr refuses before the assert is reached, so the stage said so and failed; nothing else failed in that run); `console-r3-mtu.txt` (the same with a file copy: Zephyr refuses 23 as a value), `console-r3-mtu2.txt` (MTU 100: the build stops on the module's assert). The bar run of this file is the one after that fix.")
+w("")
+w("## What I could not do")
+w("")
+w("- A Bluetooth broken copy for the drift itself (point 1): the drift proof is the exact logic test and its copy; see point 1.")
+w("- The product's workqueue stack margin on the chip stays unmeasured; the false header with id 0 is not fixed (point 5); nothing ran on a real iPhone.")
+w("")
+w("RESULT: done, `sh firmware/tools/remote.sh os-iphone-r3 \"tools/build_all.sh\"` ends RESULT PASS and points 1 to 6 are fixed or answered above, with the false header for id 0 explained and not fixed.")
+(FW / "docs" / "step3-round3.md").write_text("\n".join(o) + "\n")
+print("written")

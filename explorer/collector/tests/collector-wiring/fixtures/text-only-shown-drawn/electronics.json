@@ -1,0 +1,1478 @@
+{
+ "connection_map": {
+  "source": {
+   "file": "design/wiring/connections.md",
+   "line": 42
+  },
+  "file_time": "2026-11-13 08:35",
+  "stated_count": 21,
+  "note": null,
+  "nodes": [
+   {
+    "id": "band-1",
+    "label": "Band circuit 1",
+    "kind": "board",
+    "board": "band-1",
+    "scope": null,
+    "part_ids": []
+   },
+   {
+    "id": "band-2",
+    "label": "Band circuit 2",
+    "kind": "board",
+    "board": "band-2",
+    "scope": null,
+    "part_ids": []
+   },
+   {
+    "id": "case-main",
+    "label": "Case main board",
+    "kind": "board",
+    "board": "case-main",
+    "scope": null,
+    "part_ids": []
+   },
+   {
+    "id": "case-pins",
+    "label": "Case pin board",
+    "kind": "board",
+    "board": "case-pins",
+    "scope": null,
+    "part_ids": []
+   },
+   {
+    "id": "ring",
+    "label": "Ring main board",
+    "kind": "board",
+    "board": "ring",
+    "scope": null,
+    "part_ids": []
+   },
+   {
+    "id": "case-cell",
+    "label": "Battery cell",
+    "kind": "part",
+    "board": null,
+    "scope": "case",
+    "part_ids": [
+     "case:BT1"
+    ]
+   },
+   {
+    "id": "case-spring-pins",
+    "label": "Spring pins",
+    "kind": "part",
+    "board": null,
+    "scope": "case",
+    "part_ids": [
+     "case:P1-P4"
+    ]
+   },
+   {
+    "id": "case-thermistor",
+    "label": "Thermistor",
+    "kind": "part",
+    "board": null,
+    "scope": "case",
+    "part_ids": [
+     "case:TH1"
+    ]
+   },
+   {
+    "id": "case-touch-electrode",
+    "label": "Touch electrode",
+    "kind": "part",
+    "board": null,
+    "scope": "case",
+    "part_ids": [
+     "case:E1"
+    ]
+   },
+   {
+    "id": "case-usb-socket",
+    "label": "USB-C socket",
+    "kind": "part",
+    "board": null,
+    "scope": "case",
+    "part_ids": [
+     "case:J1"
+    ]
+   },
+   {
+    "id": "ring-antenna",
+    "label": "Antenna",
+    "kind": "part",
+    "board": null,
+    "scope": "ring",
+    "part_ids": [
+     "ring:ANT1"
+    ]
+   },
+   {
+    "id": "ring-band-metal",
+    "label": "Band metal",
+    "kind": "part",
+    "board": null,
+    "scope": "ring",
+    "part_ids": []
+   },
+   {
+    "id": "ring-cell",
+    "label": "Battery cell",
+    "kind": "part",
+    "board": null,
+    "scope": "ring",
+    "part_ids": [
+     "ring:BT1"
+    ]
+   },
+   {
+    "id": "ring-cell-protection",
+    "label": "Cell protection circuit",
+    "kind": "part",
+    "board": null,
+    "scope": "ring",
+    "part_ids": [
+     "ring:PRT1"
+    ]
+   },
+   {
+    "id": "ring-charging-pads",
+    "label": "Charging pads",
+    "kind": "part",
+    "board": null,
+    "scope": "ring",
+    "part_ids": [
+     "ring:CP1",
+     "ring:CP2",
+     "ring:CP3",
+     "ring:CP4"
+    ]
+   },
+   {
+    "id": "ring-motor",
+    "label": "Vibration motor",
+    "kind": "part",
+    "board": null,
+    "scope": "ring",
+    "part_ids": [
+     "ring:M1"
+    ]
+   },
+   {
+    "id": "ring-screen",
+    "label": "Screen",
+    "kind": "part",
+    "board": null,
+    "scope": "ring",
+    "part_ids": [
+     "ring:DISP1"
+    ]
+   },
+   {
+    "id": "ring-switches",
+    "label": "Joystick switches",
+    "kind": "part",
+    "board": null,
+    "scope": "ring",
+    "part_ids": [
+     "ring:SW1",
+     "ring:SW2",
+     "ring:SW3",
+     "ring:SW4",
+     "ring:SW5"
+    ]
+   },
+   {
+    "id": "ring-thermistor",
+    "label": "Thermistor",
+    "kind": "part",
+    "board": null,
+    "scope": "ring",
+    "part_ids": [
+     "ring:RT1"
+    ]
+   }
+  ],
+  "connections": [
+   {
+    "id": "R1",
+    "signal": "JOY_UP (1), JOY_DOWN (2), JOY_LEFT (3), JOY_RIGHT (4), BTN_REC (5), GND (6), VMOT (7), GND (8)",
+    "ends": [
+     {
+      "node": "ring",
+      "text": "Ring board pad group J_BAND_A, pads 1 to 8"
+     },
+     {
+      "node": "band-1",
+      "text": "Flex tail A (FLEX1), board end"
+     }
+    ],
+    "how": {
+     "kind": "hot bar",
+     "text": "Flexible circuit, hot-bar soldered to board lands",
+     "conductors": "8"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn (13 Nov): RPCB lands J_BAND_A 1 to 8 (footprint J_BAND_A_BOARD) carry the RN nets; the 7 FLEX1 boards design/ecad/band/flex1-us7 to us13 carry the tail lands J_BAND_A_TAIL 1 to 8; hot bar (band-interface.md line 60). design/wiring/product-wiring.csv: the 10 lines that start at these lands are drawn and routed."
+    },
+    "details": [
+     {
+      "label": "J_BAND_A lands on the main board",
+      "value": "2 DOWN (JOY_DOWN) \u00b7 3 LEFT (JOY_LEFT) \u00b7 6 MOT- (GND) \u00b7 1 UP (JOY_UP) \u00b7 5 CENTRE (BTN_REC) \u00b7 7 MOT+ (VMOT) \u00b7 8 GND (GND) \u00b7 4 RIGHT (JOY_RIGHT)",
+      "source": {
+       "file": "design/ecad/band/band-interface.md",
+       "line": 43
+      }
+     }
+    ],
+    "proof": [
+     {
+      "file": "design/ecad/ring/netlist.csv",
+      "lines": [
+       10,
+       92,
+       93,
+       138,
+       141,
+       144
+      ],
+      "section": null
+     },
+     {
+      "file": "design/bom.csv",
+      "lines": [
+       78
+      ],
+      "section": null
+     },
+     {
+      "file": "design/mfg/assembly/assembly.md",
+      "lines": [
+       209
+      ],
+      "section": "Step 16. Solder the ribbon ends to the board (the cell connects here)"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 46
+    }
+   },
+   {
+    "id": "R2",
+    "signal": "VBAT (1), GND (2), NTC (3), VBUS (4), USB_DN (5), USB_DP (6), GND (7)",
+    "ends": [
+     {
+      "node": "ring",
+      "text": "Ring board pad group J_BAND_B, pads 1 to 7"
+     },
+     {
+      "node": "band-2",
+      "text": "Flex tail B (FLEX2), board end"
+     }
+    ],
+    "how": {
+     "kind": "hot bar",
+     "text": "Flexible circuit, hot-bar soldered",
+     "conductors": "7"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn (13 Nov): RPCB lands J_BAND_B 1 to 7 (footprint J_BAND_B_BOARD) carry the RN nets; the 7 FLEX2 boards flex2-us7 to us13 carry J_BAND_B_TAIL 1 to 7; hot bar. design/wiring/product-wiring.csv: the 7 lines that start at these lands are drawn and routed."
+    },
+    "details": [
+     {
+      "label": "J_BAND_B lands on the main board",
+      "value": "1 CELL+ (VBAT) \u00b7 3 NTC (NTC) \u00b7 2 CELL- (GND) \u00b7 7 GND (GND) \u00b7 6 D+ (USB_DP) \u00b7 5 D- (USB_DN) \u00b7 4 VBUS (VBUS)",
+      "source": {
+       "file": "design/ecad/band/band-interface.md",
+       "line": 30
+      }
+     }
+    ],
+    "proof": [
+     {
+      "file": "design/ecad/ring/netlist.csv",
+      "lines": [
+       94,
+       95,
+       189,
+       285,
+       289,
+       296
+      ],
+      "section": null
+     },
+     {
+      "file": "design/bom.csv",
+      "lines": [
+       79
+      ],
+      "section": null
+     },
+     {
+      "file": "design/mfg/assembly/assembly.md",
+      "lines": [
+       209
+      ],
+      "section": "Step 16. Solder the ribbon ends to the board (the cell connects here)"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 47
+    }
+   },
+   {
+    "id": "R3",
+    "signal": "JOY_UP (RN 148), JOY_DOWN (139), JOY_LEFT (142), JOY_RIGHT (145), BTN_REC (11)",
+    "ends": [
+     {
+      "node": "band-1",
+      "text": "Tail A pads 1 to 5"
+     },
+     {
+      "node": "ring-switches",
+      "text": "Switch terminal P1 of SW1 (up), SW3 (down), SW4 (toward hand), SW5 (toward fingertip), SW2 (centre)"
+     }
+    ],
+    "how": {
+     "kind": "soldered land",
+     "text": "Flex head, solder with reflow",
+     "conductors": "5"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn and routed (13 Nov) in the 7 FLEX1 boards: J_BAND_A lands 1 to 4 to terminal 3 of SW1, SW3, SW4, SW5, land 5 to SW2 terminals 1 and 3 (Alps numbers, band-interface.md section 4). Terminal 1 of SW1, SW3, SW4, SW5 is not soldered (joined to 3 inside the part). design/wiring/product-wiring.csv: 10 lines, all drawn and routed."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/mfg/assembly/assembly.md",
+      "lines": [
+       128
+      ],
+      "section": "Step 6. Solder the five joystick switches on the ribbon FLEX1"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 48
+    },
+    "conductors": {
+     "complete": 10,
+     "total": 10
+    }
+   },
+   {
+    "id": "R4",
+    "signal": "GND",
+    "ends": [
+     {
+      "node": "ring-switches",
+      "text": "Switch terminal P2 of SW1 to SW5"
+     },
+     {
+      "node": "band-1",
+      "text": "GND net on tail A (pads 6 and 8)"
+     }
+    ],
+    "how": {
+     "kind": "flex circuit line",
+     "text": "Flex head",
+     "conductors": "5"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn and routed (13 Nov) in the 7 FLEX1 boards: switch terminal 4 (and 2 of SW2) on a B.Cu GND star to J_BAND_A lands 6 and 8 (band-notes.md section g item 3). design/wiring/product-wiring.csv: 10 lines, all drawn and routed."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/ecad/ring/netlist.csv",
+      "lines": [
+       103,
+       107,
+       92,
+       93
+      ],
+      "section": null
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 49
+    },
+    "conductors": {
+     "complete": 10,
+     "total": 10
+    }
+   },
+   {
+    "id": "R5",
+    "signal": "VMOT, GND",
+    "ends": [
+     {
+      "node": "ring-motor",
+      "text": "Motor M1 red lead + (P1) and blue lead - (P2)"
+     },
+     {
+      "node": "band-1",
+      "text": "Tail A pad 7 (MOT+, VMOT) and pad 6 (MOT-, GND)"
+     }
+    ],
+    "how": {
+     "kind": "lead wire",
+     "text": "Lead wires, hand soldered to pads",
+     "conductors": "2"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn and routed (13 Nov): FLEX1 lands W0525AB001D_Lands 1 (VMOT) and 2 (GND) to J_BAND_A lands 7 and 6 in the 7 FLEX1 boards. The motor leads are specified and landed: red lead to land 1, blue to land 2, AWG32, cut length per size (band-interface.md section 6). design/wiring/product-wiring.csv: 2 copper lines drawn and routed, 2 lead lines specified and landed."
+    },
+    "details": [
+     {
+      "label": "Motor lead cut length, by ring size",
+      "value": "US 7 1.12 mm \u00b7 US 8 1.07 mm \u00b7 US 9 1.08 mm \u00b7 US 10 1.14 mm \u00b7 US 11 1.39 mm \u00b7 US 12 1.44 mm \u00b7 US 13 1.39 mm",
+      "source": {
+       "file": "design/ecad/band/band-interface.md",
+       "line": 129
+      }
+     }
+    ],
+    "proof": [
+     {
+      "file": "design/ecad/ring/netlist.csv",
+      "lines": [
+       364,
+       96,
+       363,
+       92
+      ],
+      "section": null
+     },
+     {
+      "file": "design/mfg/assembly/assembly.md",
+      "lines": [
+       136
+      ],
+      "section": "Step 7. Solder the motor's lead wires to FLEX1"
+     },
+     {
+      "file": "design/ecad/motor-drive/motor-drive.md",
+      "lines": [
+       26,
+       27
+      ],
+      "section": "2.1 Circuit (net by net)"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 50
+    },
+    "conductors": {
+     "complete": 4,
+     "total": 4
+    }
+   },
+   {
+    "id": "R6",
+    "signal": "VBAT, GND",
+    "ends": [
+     {
+      "node": "ring-cell",
+      "text": "Cell BT1 tab + (P1) and tab - (P2)"
+     },
+     {
+      "node": "band-2",
+      "text": "Tail B pad 1 (CELL+) and pad 2 (CELL-)"
+     }
+    ],
+    "how": {
+     "kind": "soldered land",
+     "text": "Cell tabs, hand soldered to flex lands",
+     "conductors": "2"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn and routed (13 Nov): FLEX2 lands PRT1_Tabs 1 (VBAT) and 2 (GND) to J_BAND_B lands 1 and 2 in the 7 FLEX2 boards. The tabs on these lands are the PRT1 output tabs (row R10). design/wiring/product-wiring.csv: 2 copper lines drawn and routed."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/ecad/ring/netlist.csv",
+      "lines": [
+       292,
+       40,
+       296,
+       94
+      ],
+      "section": null
+     },
+     {
+      "file": "design/mfg/assembly/assembly.md",
+      "lines": [
+       152
+      ],
+      "section": "Step 9. Join the cell, its protection circuit and the thermistor to FLEX2"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 51
+    },
+    "conductors": {
+     "complete": 2,
+     "total": 2
+    }
+   },
+   {
+    "id": "R7",
+    "signal": "NTC",
+    "ends": [
+     {
+      "node": "ring-thermistor",
+      "text": "Thermistor RT1 pin 1 (NTC)"
+     },
+     {
+      "node": "band-2",
+      "text": "Tail B pad 3 (NTC)"
+     }
+    ],
+    "how": {
+     "kind": "soldered land",
+     "text": "One flex line, hand soldered",
+     "conductors": "1"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn and routed (13 Nov): FLEX2 land PRT1_Tabs 3 (NTC) to J_BAND_B land 3 in the 7 FLEX2 boards. RT1 sits on the PRT1 board and reaches that land through tab NTC (row R10, text only). RT1 order code NCP15XH103F03RC (RP). design/wiring/product-wiring.csv: 1 line drawn and routed."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/ecad/ring/netlist.csv",
+      "lines": [
+       190,
+       189
+      ],
+      "section": null
+     },
+     {
+      "file": "design/bom.csv",
+      "lines": [
+       74
+      ],
+      "section": null
+     },
+     {
+      "file": "design/mfg/assembly/assembly.md",
+      "lines": [
+       152
+      ],
+      "section": "Step 9. Join the cell, its protection circuit and the thermistor to FLEX2"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 52
+    },
+    "conductors": {
+     "complete": 1,
+     "total": 1
+    }
+   },
+   {
+    "id": "R8",
+    "signal": "GND",
+    "ends": [
+     {
+      "node": "ring-thermistor",
+      "text": "Thermistor RT1 pin 2"
+     },
+     {
+      "node": "band-2",
+      "text": "GND net (tail B has GND on pads 2 and 7, no pad named for RT1)"
+     }
+    ],
+    "how": {
+     "kind": "not stated",
+     "text": "Not stated",
+     "conductors": "1"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Inside the purchased cell pack (13 Nov, lead's ruling 08:31: BT1 + PRT1 + RT1 is one part): RT1 pin 2 joined to tab P- on the PRT1 board (band-interface.md line 114). design/wiring/product-wiring.csv: 1 line specified and landed, carrier kind inside the part."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/ecad/ring/netlist.csv",
+      "lines": [
+       102
+      ],
+      "section": null
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 53
+    },
+    "conductors": {
+     "complete": 1,
+     "total": 1
+    }
+   },
+   {
+    "id": "R9",
+    "signal": "VBUS (CP1 RN 303, pad RN 304), USB_DN (CP2 RN 284, pad RN 285), USB_DP (CP3 RN 288, pad RN 289), GND (CP4 RN 85, pad RN 95)",
+    "ends": [
+     {
+      "node": "ring-charging-pads",
+      "text": "Charging pads CP1, CP2, CP3, CP4 (inside the band)"
+     },
+     {
+      "node": "band-2",
+      "text": "Tail B pads 4, 5, 6, 7"
+     }
+    ],
+    "how": {
+     "kind": "gold disc",
+     "text": "Gold disc on a flex land; how the pad is made is open",
+     "conductors": "4"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn and routed (13 Nov): CP1 to CP4 (CP_Pad_1.6, 1.6 mm disc lands on B.Cu) to J_BAND_B lands 4 to 7 in the 7 FLEX2 boards; RP rows CP1 to CP4 now say 1.6 mm. Gold disc soldered on each land (band-interface.md section 8). design/wiring/product-wiring.csv: 4 lines drawn and routed."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/mfg/assembly/assembly.md",
+      "lines": [
+       144
+      ],
+      "section": "Step 8. Make the charging pads on FLEX2"
+     },
+     {
+      "file": "design/bom.csv",
+      "lines": [
+       61
+      ],
+      "section": null
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 54
+    },
+    "conductors": {
+     "complete": 4,
+     "total": 4
+    }
+   },
+   {
+    "id": "R10",
+    "signal": "not stated",
+    "ends": [
+     {
+      "node": "ring-cell-protection",
+      "text": "Cell protection circuit PRT1 (output tabs)"
+     },
+     {
+      "node": "band-2",
+      "text": "Cell tabs, FLEX2 cell lands"
+     }
+    ],
+    "how": {
+     "kind": "soldered land",
+     "text": "Solder tabs, hand soldered at low heat",
+     "conductors": "not stated"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Specified and landed (13 Nov): the pack's three output tabs P+ (BT1 pin 1, VBAT), P- (BT1 pin 2, GND), NTC (RT1 pin 1) on FLEX2 lands PRT1_Tabs 1, 2, 3, which hold those nets in the 7 FLEX2 boards; nickel strip 0.30 x 0.10, hand soldered (band-interface.md section 5). design/wiring/product-wiring.csv: 3 tab lines specified and landed."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/bom.csv",
+      "lines": [
+       48
+      ],
+      "section": null
+     },
+     {
+      "file": "design/mfg/assembly/assembly.md",
+      "lines": [
+       152,
+       193
+      ],
+      "section": "Step 9. Join the cell, its protection circuit and the thermistor to FLEX2"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 55
+    },
+    "conductors": {
+     "complete": 3,
+     "total": 3
+    }
+   },
+   {
+    "id": "R11",
+    "signal": "RF_FEED, ANT1_NODE, ANT2_NODE, ANT3_NODE",
+    "ends": [
+     {
+      "node": "ring-antenna",
+      "text": "Antenna ANT1 pad 1 (FEED)"
+     },
+     {
+      "node": "ring",
+      "text": "Match chain: U1 pin C1 (ANT) through L2, C3, L3, C12, L4, C13"
+     }
+    ],
+    "how": {
+     "kind": "board track",
+     "text": "50 ohm board track, not routed",
+     "conductors": "1"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn (13 Nov) in RN and RPCB; the antenna is on its maker's land pattern on the board's under face, no notch (lead-decisions.md row W2). Whether the feed is routed follows the ring board, which is being routed again (round 3): design/wiring/product-wiring.csv gives the state at each build (rules check by build_wiring.py, design/wiring/wiring-work/drc/)."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/ecad/ring/netlist.csv",
+      "lines": [
+       3,
+       5,
+       9,
+       203,
+       205
+      ],
+      "section": null
+     },
+     {
+      "file": "design/ecad/ring/pcb/board-notes.md",
+      "lines": [
+       32
+      ],
+      "section": "c. Scripted copper (route_fixed.py, every piece locked)"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 56
+    },
+    "conductors": {
+     "complete": 1,
+     "total": 1
+    }
+   },
+   {
+    "id": "R12",
+    "signal": "GND",
+    "ends": [
+     {
+      "node": "ring-antenna",
+      "text": "Antenna ANT1 pads 2, 3, 4"
+     },
+     {
+      "node": "ring",
+      "text": "GND net on board"
+     }
+    ],
+    "how": {
+     "kind": "soldered land",
+     "text": "Terminations on board pads that stand in the board notch",
+     "conductors": "3"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn (13 Nov): ANT1 pads 2 and 3 on ANT_TRIM (to LT1, 0 ohm) and pad 4 on GND in RN and RPCB. Routed or not: as R11, the state of each build is in design/wiring/product-wiring.csv."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/ecad/ring/netlist.csv",
+      "lines": [
+       37,
+       39
+      ],
+      "section": null
+     },
+     {
+      "file": "design/ecad/ring/pcb/provisional-footprints.json",
+      "lines": [
+       3
+      ],
+      "section": null
+     },
+     {
+      "file": "design/ecad/ring/pcb/board-notes.md",
+      "lines": [
+       33
+      ],
+      "section": "c. Scripted copper (route_fixed.py, every piece locked)"
+     },
+     {
+      "file": "design/mfg/assembly/assembly.md",
+      "lines": [
+       98
+      ],
+      "section": "Step 2. Print paste, place the board parts on both faces, reflow twice (screen face first, then parts face)"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 57
+    },
+    "conductors": {
+     "complete": 3,
+     "total": 3
+    }
+   },
+   {
+    "id": "R13",
+    "signal": "ELVSS (1), ELVDD (2), VDD_3V0 (4), VDD_1V8 (5), SWIRE (6), LCD_TE (7), LCD_RST (8), LCD_CS (9), LCD_SCK (10), LCD_DCX (11), LCD_MOSI (12), GND (13 to 15)",
+    "ends": [
+     {
+      "node": "ring-screen",
+      "text": "Screen tail DISP1 pins 1, 2, 4 to 15 (pin 3 MTP not connected)"
+     },
+     {
+      "node": "ring",
+      "text": "Board connector J1 positions 1, 2, 4 to 15 (position 3 not connected)"
+     }
+    ],
+    "how": {
+     "kind": "connector",
+     "text": "Flexible screen tail inserted into a 15-way 0.3 mm FPC connector",
+     "conductors": "14"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn (13 Nov) in RN and RPCB: J1 pads 1 to 15 carry the RN nets; contact k on position k (RS line 38); DISP1 pins 3 and 4 closed by the Tailor table page 5 (RS line 309); pin 3 (MTP) carries no signal and has no line. At the build of 08:11 J1 stood on the screen face (B.Cu) and its pads were open in the main board's rules check (round 3 routing). design/wiring/product-wiring.csv: 14 lines, drawn, not routed until J1 is routed."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/ecad/ring/netlist.csv",
+      "lines": [
+       34,
+       29,
+       335,
+       319,
+       276,
+       165
+      ],
+      "section": null
+     },
+     {
+      "file": "design/bom.csv",
+      "lines": [
+       10,
+       11
+      ],
+      "section": null
+     },
+     {
+      "file": "design/mech/thin/placement.csv",
+      "lines": [
+       18,
+       25
+      ],
+      "section": null
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 58
+    },
+    "conductors": {
+     "complete": 14,
+     "total": 14
+    }
+   },
+   {
+    "id": "R15",
+    "signal": "Ring VBUS to case VRING; ring USB_DN to case USB_D-; ring USB_DP to case USB_D+; ring GND to case GND",
+    "ends": [
+     {
+      "node": "ring-charging-pads",
+      "text": "Charging pads CP1 to CP4 (ring)"
+     },
+     {
+      "node": "case-spring-pins",
+      "text": "Case spring pins P1 to P4 (case)"
+     }
+    ],
+    "how": {
+     "kind": "spring pin",
+     "text": "Gold pad pressed by a spring pin tip",
+     "conductors": "4"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Each end is drawn in its own files (CP1 to CP4 in the FLEX2 boards; P1 to P4 in case_pins.kicad_pcb); the pairing is text only until design/wiring/ring-case-contact.csv exists (lead's ruling 08:31: pairing by coordinates at 7 sizes, every in_range yes, maker range in design/case/pin-travel.md). design/wiring/product-wiring.csv: 4 lines stated in text only at the build of 08:33."
+    },
+    "details": [
+     {
+      "label": "Ring pad CP1 (pad_VBUS)",
+      "value": "to case pin P1 (Harwin P70-6000045R); ring net VBUS, case net VRING",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 174
+      }
+     },
+     {
+      "label": "Ring pad CP2 (pad_D-)",
+      "value": "to case pin P2; ring net USB_DN, case net USB_D-",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 174
+      }
+     },
+     {
+      "label": "Ring pad CP3 (pad_D+)",
+      "value": "to case pin P3; ring net USB_DP, case net USB_D+",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 174
+      }
+     },
+     {
+      "label": "Ring pad CP4 (pad_GND)",
+      "value": "to case pin P4; ring net GND, case net GND",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 174
+      }
+     }
+    ],
+    "proof": [
+     {
+      "file": "design/ecad/case/sch-notes.md",
+      "lines": [
+       17
+      ],
+      "section": "1. Block by block"
+     },
+     {
+      "file": "design/case/case-architecture.md",
+      "lines": [
+       108
+      ],
+      "section": "2. Block diagram"
+     },
+     {
+      "file": "design/case/case-bom.csv",
+      "lines": [
+       16
+      ],
+      "section": null
+     },
+     {
+      "file": "design/ecad/ring/netlist.csv",
+      "lines": [
+       85,
+       284,
+       288,
+       303
+      ],
+      "section": null
+     },
+     {
+      "file": "design/ecad/case/netlist.csv",
+      "lines": [
+       249,
+       238,
+       234,
+       87
+      ],
+      "section": null
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 60
+    },
+    "conductors": {
+     "complete": 4,
+     "total": 4
+    }
+   },
+   {
+    "id": "R16",
+    "signal": "RING_TOUCH on the case side only",
+    "ends": [
+     {
+      "node": "ring-band-metal",
+      "text": "Ring band metal (no wire)"
+     },
+     {
+      "node": "case-touch-electrode",
+      "text": "Case electrode E1 (copper 6 x 3 mm on PCB2 front face)"
+     }
+    ],
+    "how": {
+     "kind": "touch, no contact",
+     "text": "None. Capacitive touch through the band liner, 2.28 to 2.42 mm gap",
+     "conductors": "0"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Stated in text only (13 Nov; was NOT DRAWN): no conductor by design. E1 is drawn in case_pins.kicad_pcb (net RING_TOUCH); the band is 2.28 to 2.42 mm from PCB2's front face behind the 1.97 mm pin holder wall (CA lines 64 and 235). Row typed in design/wiring/system-joints.csv. design/wiring/product-wiring.csv: 1 line."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/case/case-architecture.md",
+      "lines": [
+       49,
+       110,
+       137
+      ],
+      "section": "Changes from C4 to C5b"
+     },
+     {
+      "file": "design/ecad/case/netlist.csv",
+      "lines": [
+       166,
+       168
+      ],
+      "section": null
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 61
+    }
+   },
+   {
+    "id": "C1",
+    "signal": "BAT",
+    "ends": [
+     {
+      "node": "case-cell",
+      "text": "Case cell BT1 lead + (P1)"
+     },
+     {
+      "node": "case-main",
+      "text": "Case board BAT net (U2 pins 13, 14) through wire W5"
+     }
+    ],
+    "how": {
+     "kind": "lead wire",
+     "text": "40 mm flying lead, soldered to the case board",
+     "conductors": "1"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn (13 Nov): case BT1 red lead + to PCB1 pad W5, cut 13.0 mm (case board-notes.md Round 2 wiring table); the cell's own lead as delivered, polarity measured before cutting (design/wiring/lead-decisions.md row 'case cell BT1 leads'). design/wiring/product-wiring.csv: 1 line specified and landed."
+    },
+    "details": [
+     {
+      "label": "Wire W5",
+      "value": "cut 13.0 mm, path 8.0 mm, case parts list says 40 mm",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 286
+      }
+     }
+    ],
+    "proof": [
+     {
+      "file": "design/ecad/case/netlist.csv",
+      "lines": [
+       25,
+       29,
+       27,
+       28
+      ],
+      "section": null
+     },
+     {
+      "file": "design/case/case-bom.csv",
+      "lines": [
+       28
+      ],
+      "section": null
+     },
+     {
+      "file": "design/case/case-architecture.md",
+      "lines": [
+       238
+      ],
+      "section": "7. Mechanical layout (built in case.py, checked by case_check.py)"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 62
+    },
+    "conductors": {
+     "complete": 1,
+     "total": 1
+    }
+   },
+   {
+    "id": "C2",
+    "signal": "GND",
+    "ends": [
+     {
+      "node": "case-cell",
+      "text": "Case cell BT1 lead - (P2)"
+     },
+     {
+      "node": "case-main",
+      "text": "Case board GND through wire W6"
+     }
+    ],
+    "how": {
+     "kind": "lead wire",
+     "text": "40 mm flying lead, soldered to the case board",
+     "conductors": "1"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn (13 Nov): case BT1 black lead - to PCB1 pad W6, cut 15.2 mm; own lead as delivered (design/wiring/lead-decisions.md row 'case cell BT1 leads'). design/wiring/product-wiring.csv: 1 line specified and landed."
+    },
+    "details": [
+     {
+      "label": "Wire W6",
+      "value": "cut 15.2 mm, path 10.2 mm, case parts list says 40 mm",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 287
+      }
+     }
+    ],
+    "proof": [
+     {
+      "file": "design/ecad/case/netlist.csv",
+      "lines": [
+       65,
+       135
+      ],
+      "section": null
+     },
+     {
+      "file": "design/case/case-bom.csv",
+      "lines": [
+       28
+      ],
+      "section": null
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 63
+    },
+    "conductors": {
+     "complete": 1,
+     "total": 1
+    }
+   },
+   {
+    "id": "C3",
+    "signal": "TS, GND",
+    "ends": [
+     {
+      "node": "case-thermistor",
+      "text": "Case NTC TH1 (pins 1 and 2)"
+     },
+     {
+      "node": "case-main",
+      "text": "TS net (U2 pin 11) and GND"
+     }
+    ],
+    "how": {
+     "kind": "not stated",
+     "text": "Not stated. Footprint \"NTC_wired\"",
+     "conductors": "2"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn (13 Nov): TH1 pins 1 (TS) and 2 (GND) to PCB1 plated holes TH1.1 and TH1.2 (footprint NTC_wired), either way round; bare 0.5 mm tin plated 42 alloy leads cut to 10 mm, joint 5 mm or more from the bead (design/wiring/lead-decisions.md row 'case thermistor TH1 leads'; design/case/lead-specs.md). design/wiring/product-wiring.csv: 2 lines specified and landed."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/ecad/case/netlist.csv",
+      "lines": [
+       224,
+       98
+      ],
+      "section": null
+     },
+     {
+      "file": "design/ecad/case/parts.csv",
+      "lines": [
+       31
+      ],
+      "section": null
+     },
+     {
+      "file": "design/case/case-bom.csv",
+      "lines": [
+       70
+      ],
+      "section": null
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 64
+    },
+    "conductors": {
+     "complete": 2,
+     "total": 2
+    }
+   },
+   {
+    "id": "C4",
+    "signal": "VRING, USB_D-, USB_D+, GND",
+    "ends": [
+     {
+      "node": "case-spring-pins",
+      "text": "Case spring pins P1 to P4"
+     },
+     {
+      "node": "case-pins",
+      "text": "Case PCB2 (solder)"
+     }
+    ],
+    "how": {
+     "kind": "spring pin",
+     "text": "SMT spring pin, soldered to PCB2",
+     "conductors": "4"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn (13 Nov) in case_pins.kicad_pcb: P1 to P4 (footprint HARWIN_P70_6000045R) with nets VRING, USB_D-, USB_D+, GND; soldered to PCB2 (CA line 238). In design/wiring/product-wiring.csv the spring pins are the carriers of the 4 R15 lines."
+    },
+    "details": [
+     {
+      "label": "Ring pad CP1 (pad_VBUS)",
+      "value": "to case pin P1 (Harwin P70-6000045R); ring net VBUS, case net VRING",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 174
+      }
+     },
+     {
+      "label": "Ring pad CP2 (pad_D-)",
+      "value": "to case pin P2; ring net USB_DN, case net USB_D-",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 174
+      }
+     },
+     {
+      "label": "Ring pad CP3 (pad_D+)",
+      "value": "to case pin P3; ring net USB_DP, case net USB_D+",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 174
+      }
+     },
+     {
+      "label": "Ring pad CP4 (pad_GND)",
+      "value": "to case pin P4; ring net GND, case net GND",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 174
+      }
+     }
+    ],
+    "proof": [
+     {
+      "file": "design/ecad/case/netlist.csv",
+      "lines": [
+       249,
+       238,
+       234,
+       87
+      ],
+      "section": null
+     },
+     {
+      "file": "design/case/case-architecture.md",
+      "lines": [
+       223
+      ],
+      "section": "7. Mechanical layout (built in case.py, checked by case_check.py)"
+     },
+     {
+      "file": "design/case/case-bom.csv",
+      "lines": [
+       16
+      ],
+      "section": null
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 65
+    }
+   },
+   {
+    "id": "C5",
+    "signal": "VRING, USB_D-, USB_D+, GND, RING_TOUCH",
+    "ends": [
+     {
+      "node": "case-pins",
+      "text": "PCB2 wires W1 to W4 and W7"
+     },
+     {
+      "node": "case-main",
+      "text": "Case PCB1: W1 VRING, W2 USB_D-, W3 USB_D+, W4 GND, W7 RING_TOUCH"
+     }
+    ],
+    "how": {
+     "kind": "lead wire",
+     "text": "30 AWG wire (W1 to W4: D+ and D- twisted)",
+     "conductors": "5"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn (13 Nov): WP1 to WP4 and WP7 on case_pins.kicad_pcb, W1 to W4 and W7 on case_main.kicad_pcb; 30 AWG stranded, red, white, green, black, yellow, cut 15.6 to 16.3 mm (design/wiring/lead-decisions.md row 'case wires W1 to W4 and W7: colour'). design/wiring/product-wiring.csv: 5 lines specified and landed."
+    },
+    "details": [
+     {
+      "label": "Wire W1",
+      "value": "cut 15.6 mm, path 10.6 mm, case parts list says 30 mm",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 281
+      }
+     },
+     {
+      "label": "Wire W2",
+      "value": "cut 16.3 mm, path 11.3 mm, case parts list says 30 mm",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 282
+      }
+     },
+     {
+      "label": "Wire W3",
+      "value": "cut 16.3 mm, path 11.3 mm, case parts list says 30 mm",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 283
+      }
+     },
+     {
+      "label": "Wire W4",
+      "value": "cut 15.6 mm, path 10.6 mm, case parts list says 30 mm",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 284
+      }
+     },
+     {
+      "label": "Wire W7",
+      "value": "cut 15.9 mm, path 10.9 mm, case parts list says 20 mm",
+      "source": {
+       "file": "design/ecad/case/pcb/board-notes.md",
+       "line": 285
+      }
+     }
+    ],
+    "proof": [
+     {
+      "file": "design/ecad/case/netlist.csv",
+      "lines": [
+       254,
+       241,
+       237,
+       134,
+       168
+      ],
+      "section": null
+     },
+     {
+      "file": "design/case/case-bom.csv",
+      "lines": [
+       26,
+       27
+      ],
+      "section": null
+     },
+     {
+      "file": "design/case/case-architecture.md",
+      "lines": [
+       221
+      ],
+      "section": "7. Mechanical layout (built in case.py, checked by case_check.py)"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 66
+    },
+    "conductors": {
+     "complete": 5,
+     "total": 5
+    }
+   },
+   {
+    "id": "C6",
+    "signal": "VBUS_IN, CC1, CC2, GND",
+    "ends": [
+     {
+      "node": "case-usb-socket",
+      "text": "USB-C socket J1 (USB4105): A4, A9, B4, B9 (VBUS); A5 (CC1); B5 (CC2); A1, A12, B1, B12 and shell (GND); A6 to A8, B6 to B8 (no connect)"
+     },
+     {
+      "node": "case-main",
+      "text": "Case PCB1 (surface mount on its top face)"
+     }
+    ],
+    "how": {
+     "kind": "soldered land",
+     "text": "Surface mount, no off-board joint",
+     "conductors": "11 with a net, 6 no connect"
+    },
+    "drawn": {
+     "state": "drawn",
+     "words": "Drawn (13 Nov) in CN and case_main.kicad_pcb (J1 USB4105 on PCB1). Not a conductor between boards or to an off-board part of the product: no line in design/wiring/product-wiring.csv."
+    },
+    "details": [],
+    "proof": [
+     {
+      "file": "design/ecad/case/netlist.csv",
+      "lines": [
+       243,
+       246,
+       35,
+       40,
+       82,
+       86
+      ],
+      "section": null
+     },
+     {
+      "file": "design/case/case-architecture.md",
+      "lines": [
+       228
+      ],
+      "section": "7. Mechanical layout (built in case.py, checked by case_check.py)"
+     }
+    ],
+    "source": {
+     "file": "design/wiring/connections.md",
+     "line": 67
+    }
+   }
+  ]
+ }
+}

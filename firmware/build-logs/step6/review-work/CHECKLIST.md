@@ -1,0 +1,31 @@
+# Step 6 review checklist (pinned: af085a68)
+
+- [x] 1. Brief has bar, path, version; no author verdict. evidence: brief; review "Independence" line
+- [x] 2. Artifact at af085a68; later HEAD 7f9fd031 changes 0 firmware/spec files. evidence: git-status-firmware.txt, pin-log.txt, pin-diff-code.txt
+- [x] 3. B2a long press only. evidence: grep-start-paths.txt, grep-posts.txt
+- [x] 4. B2b one VDD_MIC-on site after sign. evidence: b2-mic-and-misc.txt
+- [x] 5. B2c close order. evidence: review B2 table (rrec.c:231 to 236)
+- [x] 6. B2d watchdog. evidence: review B2 table; spec note R6-11
+- [x] 7. B2e update limits. evidence: sys-update-grep.txt, b1-test-excerpts.txt
+- [x] 8. B2f factory flag. evidence: review B2 table
+- [x] 9. B1 J rows 44 of 44. evidence: plan-rows-per-unit.txt, b1-test-excerpts.txt, review B1 table
+- [x] 10. U0: 4 of 4 fault cases. evidence: b1-test-excerpts.txt
+- [x] 11. U1: 2 of 2 rows. evidence: b1-test-excerpts.txt, core-broken-diffs.txt
+- [x] 12. U2: 9 of 37. evidence: b1-test-excerpts.txt
+- [x] 13. U3: 10 of 27. evidence: b1-test-excerpts.txt
+- [x] 14. U4: 10 of 28. evidence: b1-test-excerpts.txt
+- [x] 15. U5: 8 of 18. evidence: b1-test-excerpts.txt
+- [x] 16. U6: 8 of 11. evidence: b1-test-excerpts.txt
+- [x] 17. U7: 8 of 11. evidence: b1-test-excerpts.txt
+- [x] 18. U8: 9 of 15. evidence: b1-test-excerpts.txt
+- [x] 19. U9: 2 of 2. evidence: b1-test-excerpts.txt
+- [x] 20. B3: 37 copies, 11 units. evidence: broken-edits-sample.txt, core-broken-diffs.txt, edit files
+- [x] 21. B4: 64 of 64, >= 5 per unit. evidence: cite_check.out (earlier look cite_check.run1.out reported)
+- [x] 22. B5 seams. evidence: header-thread-rules.txt, seam-motor-isr.txt
+- [x] 23. F1 judged. evidence: review section "three findings"
+- [x] 24. F2 judged. evidence: j-prod1.log l.17 to 19
+- [x] 25. factory_screen note judged. evidence: anchor-lines.txt, u8-full1.console
+- [x] 26. Rulings done. evidence: rulings-check.txt, r23-names.txt
+- [x] 27. Review file written. evidence: firmware/docs/step6-review.md
+- [x] 28. Final audit. evidence: audit-final.out
+- [x] 29. Writes only in review-work and step6-review.md. evidence: final-status.txt

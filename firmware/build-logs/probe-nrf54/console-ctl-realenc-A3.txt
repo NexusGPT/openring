@@ -1,0 +1,172 @@
+# remote.sh run 20261111-212403-ctl-realenc-A3
+# command: CTRL_BOARD=nrf54lm20bsim/nrf54lm20a/cpuapp bash tests/bsim/probe-nrf54/run_ctl_realenc.sh A
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 21:24:03 CET
+# free on the server's /: 46 GB
+# source firmware copied to /root/ring-os/src-probe54
+# started on the server as 20261111-212403-ctl-realenc-A3; server log /root/ring-os/logs/20261111-212403-ctl-realenc-A3.log
+bsim-control: firmware /ws/firmware/tests/bsim/control, outputs /ws/out/probe54/ctl-realenc, scenarios A, broken 0
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/probe54/ctl-realenc/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== build ring for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/probe54/ctl-realenc/build-ring.log
+      1 /ws/firmware/modules/ring_control/src/rctl.c:79:31: warning: assignment to ‘bt_hids_conn_cp_evt_handler_t’ {aka ‘void (*)(enum bt_hids_cp_evt,  struct bt_conn *)’} from incompatible pointer type ‘void (*)(struct bt_conn *, enum bt_hids_cp_evt)’ [-Wincompatible-pointer-types]
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring ok
+=== test A (ok): ring + 1 host(s), 75 simulated seconds, 2026-11-11T20:25:01Z
+exit codes: phy 0, ring 0, hosts 0
+--- ring /ws/out/probe54/ctl-realenc/run-ok-A-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT paired slot 0
+d_00: @00:00:05.594822  RING EVENT active slot 0
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:10.307600  RING CHECK host pairs and its link is ready PASS (t=10307)
+d_00: @00:00:10.307600  RING CHECK passkey was shown once, six digits PASS (t=10307)
+d_00: @00:00:10.307600  RING CHECK paired callback once PASS (t=10307)
+d_00: @00:00:10.307600  RING CHECK slot 0 is active PASS (t=10307)
+d_00: @00:00:10.307600  RING CHECK control starts not active PASS (t=10307)
+d_00: @00:00:11.007800  RING CHECK control inactive: direction sends no report PASS (t=11007)
+d_00: @00:00:11.708000  RING CHECK media.centre sends 2 report(s) PASS (t=11708)
+d_00: @00:00:12.408200  RING CHECK media.up sends 2 report(s) PASS (t=12408)
+d_00: @00:00:13.108400  RING CHECK media.down sends 2 report(s) PASS (t=13108)
+d_00: @00:00:13.808600  RING CHECK media.left sends 2 report(s) PASS (t=13808)
+d_00: @00:00:14.508800  RING CHECK media.right sends 2 report(s) PASS (t=14508)
+d_00: @00:00:15.209000  RING CHECK presenter.centre sends 0 report(s) PASS (t=15209)
+d_00: @00:00:15.909200  RING CHECK presenter.up sends 2 report(s) PASS (t=15909)
+d_00: @00:00:16.609400  RING CHECK presenter.down sends 2 report(s) PASS (t=16609)
+d_00: @00:00:17.309600  RING CHECK presenter.left sends 2 report(s) PASS (t=17309)
+d_00: @00:00:18.009800  RING CHECK presenter.right sends 2 report(s) PASS (t=18009)
+d_00: @00:00:18.710000  RING CHECK pages presenter.centre sends 0 report(s) PASS (t=18710)
+d_00: @00:00:19.410200  RING CHECK pages presenter.up sends 2 report(s) PASS (t=19410)
+d_00: @00:00:20.110400  RING CHECK pages presenter.down sends 2 report(s) PASS (t=20110)
+d_00: @00:00:20.810600  RING CHECK pages presenter.left sends 2 report(s) PASS (t=20810)
+d_00: @00:00:21.510800  RING CHECK pages presenter.right sends 2 report(s) PASS (t=21510)
+d_00: @00:00:22.211000  RING CHECK pointer.centre sends 2 report(s) PASS (t=22211)
+d_00: @00:00:22.911200  RING CHECK pointer.up sends 1 report(s) PASS (t=22911)
+d_00: @00:00:23.611400  RING CHECK pointer.down sends 1 report(s) PASS (t=23611)
+d_00: @00:00:24.311600  RING CHECK pointer.left sends 1 report(s) PASS (t=24311)
+d_00: @00:00:25.011800  RING CHECK pointer.right sends 1 report(s) PASS (t=25011)
+d_00: @00:00:25.712000  RING CHECK agent.centre sends 2 report(s) PASS (t=25712)
+d_00: @00:00:26.412200  RING CHECK agent.up sends 2 report(s) PASS (t=26412)
+d_00: @00:00:27.112400  RING CHECK agent.down sends 2 report(s) PASS (t=27112)
+d_00: @00:00:27.812600  RING CHECK agent.left sends 2 report(s) PASS (t=27812)
+d_00: @00:00:28.512800  RING CHECK agent.right sends 2 report(s) PASS (t=28512)
+d_00: @00:00:30.213000  RING INFO held right 1100 ms sent 6 reports
+d_00: @00:00:30.213000  RING CHECK pointer held right repeats (at least 4 reports) PASS (t=30213)
+d_00: @00:00:30.213000  RING CHECK pointer held right repeats (at most 8 reports) PASS (t=30213)
+d_00: @00:00:30.913200  RING CHECK screen off: a direction sends no report PASS (t=30913)
+d_00: @00:00:32.023600  RING CHECK centre double press sends no report PASS (t=32023)
+d_00: @00:00:32.023600  RING CHECK no action was dropped PASS (t=32023)
+d_00: @00:00:40.094826  RING EVENT link slot 0 down
+d_00: @00:00:40.982069  RING EVENT link slot 0 up
+d_00: @00:00:41.000700  RING CHECK the drop was seen (link down) PASS (t=41000)
+d_00: @00:00:44.000800  RING CHECK reconnect after the drop, link ready PASS (t=44000)
+d_00: @00:00:44.701000  RING CHECK after the drop agent.centre sends 2 report(s) PASS (t=44701)
+d_00: @00:00:44.701000  RING SCRIPT DONE t=44701 checks=42 fails=0
+d_00: @00:00:44.701000  RING RESULT PASS
+--- host 1 /ws/out/probe54/ctl-realenc/run-ok-A-host1.log
+d_01: @00:00:00.000174  HOST H1 CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.643312  HOST H1 connected (t=643), bonded=0
+d_01: @00:00:01.144997  HOST H1 passkey entry asked, read ok (t=1144)
+d_01: @00:00:01.144997  HOST H1 CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  HOST H1 CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  HOST H1 security level 4 (t=5594)
+d_01: @00:00:05.594821  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:07.044845  HOST H1 INFO subscribed to 3 input reports (t=7044)
+d_01: @00:00:11.544853  HOST H1 REPORT t=11544 id=2 len=2 data=cd00
+d_01: @00:00:11.545293  HOST H1 REPORT t=11545 id=2 len=2 data=0000
+d_01: @00:00:11.794853  HOST H1 REPORT t=11794 id=2 len=2 data=e900
+d_01: @00:00:11.795293  HOST H1 REPORT t=11795 id=2 len=2 data=0000
+d_01: @00:00:12.494853  HOST H1 REPORT t=12494 id=2 len=2 data=ea00
+d_01: @00:00:12.495293  HOST H1 REPORT t=12495 id=2 len=2 data=0000
+d_01: @00:00:13.194853  HOST H1 REPORT t=13194 id=2 len=2 data=b600
+d_01: @00:00:13.195293  HOST H1 REPORT t=13195 id=2 len=2 data=0000
+d_01: @00:00:13.894853  HOST H1 REPORT t=13894 id=2 len=2 data=b500
+d_01: @00:00:13.895293  HOST H1 REPORT t=13895 id=2 len=2 data=0000
+d_01: @00:00:15.294877  HOST H1 REPORT t=15294 id=1 len=8 data=0000500000000000
+d_01: @00:00:15.295341  HOST H1 REPORT t=15295 id=1 len=8 data=0000000000000000
+d_01: @00:00:15.994877  HOST H1 REPORT t=15994 id=1 len=8 data=00004f0000000000
+d_01: @00:00:15.995341  HOST H1 REPORT t=15995 id=1 len=8 data=0000000000000000
+d_01: @00:00:16.694877  HOST H1 REPORT t=16694 id=1 len=8 data=0000500000000000
+d_01: @00:00:16.695341  HOST H1 REPORT t=16695 id=1 len=8 data=0000000000000000
+d_01: @00:00:17.394877  HOST H1 REPORT t=17394 id=1 len=8 data=00004f0000000000
+d_01: @00:00:17.395341  HOST H1 REPORT t=17395 id=1 len=8 data=0000000000000000
+d_01: @00:00:18.794877  HOST H1 REPORT t=18794 id=1 len=8 data=00004b0000000000
+d_01: @00:00:18.795341  HOST H1 REPORT t=18795 id=1 len=8 data=0000000000000000
+d_01: @00:00:19.494877  HOST H1 REPORT t=19494 id=1 len=8 data=00004e0000000000
+d_01: @00:00:19.495341  HOST H1 REPORT t=19495 id=1 len=8 data=0000000000000000
+d_01: @00:00:20.194877  HOST H1 REPORT t=20194 id=1 len=8 data=00004b0000000000
+d_01: @00:00:20.195341  HOST H1 REPORT t=20195 id=1 len=8 data=0000000000000000
+d_01: @00:00:20.894877  HOST H1 REPORT t=20894 id=1 len=8 data=00004e0000000000
+d_01: @00:00:20.895341  HOST H1 REPORT t=20895 id=1 len=8 data=0000000000000000
+d_01: @00:00:22.044857  HOST H1 REPORT t=22044 id=3 len=3 data=010000
+d_01: @00:00:22.045301  HOST H1 REPORT t=22045 id=3 len=3 data=000000
+d_01: @00:00:22.294857  HOST H1 REPORT t=22294 id=3 len=3 data=0000f0
+d_01: @00:00:22.994857  HOST H1 REPORT t=22994 id=3 len=3 data=000010
+d_01: @00:00:23.694857  HOST H1 REPORT t=23694 id=3 len=3 data=00f000
+d_01: @00:00:24.394857  HOST H1 REPORT t=24394 id=3 len=3 data=001000
+d_01: @00:00:25.544877  HOST H1 REPORT t=25544 id=1 len=8 data=0000280000000000
+d_01: @00:00:25.545341  HOST H1 REPORT t=25545 id=1 len=8 data=0000000000000000
+d_01: @00:00:25.794877  HOST H1 REPORT t=25794 id=1 len=8 data=0000520000000000
+d_01: @00:00:25.795341  HOST H1 REPORT t=25795 id=1 len=8 data=0000000000000000
+d_01: @00:00:26.494877  HOST H1 REPORT t=26494 id=1 len=8 data=0000510000000000
+d_01: @00:00:26.495341  HOST H1 REPORT t=26495 id=1 len=8 data=0000000000000000
+d_01: @00:00:27.194877  HOST H1 REPORT t=27194 id=1 len=8 data=0000290000000000
+d_01: @00:00:27.195341  HOST H1 REPORT t=27195 id=1 len=8 data=0000000000000000
+d_01: @00:00:27.894877  HOST H1 REPORT t=27894 id=1 len=8 data=0000280000000000
+d_01: @00:00:27.895341  HOST H1 REPORT t=27895 id=1 len=8 data=0000000000000000
+d_01: @00:00:28.594857  HOST H1 REPORT t=28594 id=3 len=3 data=001000
+d_01: @00:00:29.044857  HOST H1 REPORT t=29044 id=3 len=3 data=001000
+d_01: @00:00:29.194857  HOST H1 REPORT t=29194 id=3 len=3 data=001000
+d_01: @00:00:29.344857  HOST H1 REPORT t=29344 id=3 len=3 data=001000
+d_01: @00:00:29.494857  HOST H1 REPORT t=29494 id=3 len=3 data=001000
+d_01: @00:00:29.644857  HOST H1 REPORT t=29644 id=3 len=3 data=001000
+d_01: @00:00:40.094825  HOST H1 disconnected reason 0x16 (t=40094)
+d_01: @00:00:40.630467  HOST H1 connected (t=40630), bonded=1
+d_01: @00:00:40.982072  HOST H1 security level 4 (t=40982)
+d_01: @00:00:40.982072  HOST H1 CHECK link encrypted and authenticated (security level 4) PASS (t=40982)
+d_01: @00:00:42.532000  HOST H1 INFO subscribed to 3 input reports (t=42532)
+d_01: @00:00:44.532032  HOST H1 REPORT t=44532 id=1 len=8 data=0000280000000000
+d_01: @00:00:44.532496  HOST H1 REPORT t=44532 id=1 len=8 data=0000000000000000
+d_01: @00:01:10.000536  HOST H1 EVAL t=70000
+d_01: @00:01:10.000536  HOST H1 CHECK media.centre play/pause PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK media.up volume up PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK media.down volume down PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK media.left previous PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK media.right next PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK presenter.centre nothing PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK presenter.up previous slide (Left Arrow) PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK presenter.down next slide (Right Arrow) PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK presenter.left previous slide (Left Arrow) PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK presenter.right next slide (Right Arrow) PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK presenter pages.centre nothing PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK presenter pages.up (Page Up) PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK presenter pages.down (Page Down) PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK presenter pages.left (Page Up) PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK presenter pages.right (Page Down) PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK pointer.centre click PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK pointer.up PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK pointer.down PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK pointer.left PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK pointer.right PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK agent.centre Return PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK agent.up Up Arrow PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK agent.down Down Arrow PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK agent.left Escape PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK agent.right Return PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 INFO pointer held right: 6 reports
+d_01: @00:01:10.000536  HOST H1 CHECK pointer held right repeats (at least 4 reports) PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK pointer held right repeats (at most 8 reports) PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK after a drop and reconnect: agent.centre Return PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 CHECK no other report received PASS (t=70000)
+d_01: @00:01:10.000536  HOST H1 INFO 50 report(s) received in total
+d_01: @00:01:10.000536  HOST H1 RESULT PASS checks=34 fails=0
+ring script done at 44701 ms, host 1 evaluated at 70000 ms
+TEST A RESULT PASS (76 checks passed)
+RESULT PASS
+# finished (Mac clock): 2026-11-11 21:25:13 CET
+# remote exit code: 0
+# local log: firmware/build-logs/probe-nrf54/20261111-212403-ctl-realenc-A3.log

@@ -1,0 +1,24 @@
+/* Tokens only (src/styles/tokens.css): no literal colour here. */
+.svgv { position: relative; width: 100%; height: 100%; min-height: 240px; background: var(--bg); border: 1px solid var(--hairline); }
+.svgv-stage { position: absolute; inset: 0; overflow: hidden; touch-action: none; cursor: grab; outline: none; user-select: none; }
+.svgv-stage[data-moving='true'] { cursor: grabbing; }
+.svgv-stage:focus-visible { box-shadow: inset 0 0 0 1px var(--ink); }
+.svgv-layer { position: absolute; left: 50%; top: 50%; transform-origin: center; transition: transform var(--t-slow) var(--ease-settle); }
+.svgv-stage[data-moving='true'] .svgv-layer { transition: none; }
+.svgv-img { display: block; max-width: none; pointer-events: none; -webkit-user-drag: none; }
+.svgv-focus { position: absolute; pointer-events: none; box-sizing: border-box; border: 2px solid var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); transition: left var(--t-slow) var(--ease-settle), top var(--t-slow) var(--ease-settle), width var(--t-slow) var(--ease-settle), height var(--t-slow) var(--ease-settle); }
+.svgv-stage[data-moving='true'] .svgv-focus { transition: none; }
+.svgv-missing { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; cursor: default; }
+
+.svgv-bar { position: absolute; right: 12px; bottom: 12px; display: flex; align-items: stretch; background: var(--bg); border: 1px solid var(--hairline); font-family: var(--font-label); font-size: var(--label-size); letter-spacing: var(--label-tracking); text-transform: uppercase; color: var(--ink); }
+.svgv-bar > * { min-width: 36px; height: 36px; display: grid; place-items: center; padding: 0 10px; border: 0; border-left: 1px solid var(--hairline); background: transparent; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; }
+.svgv-bar > :first-child { border-left: 0; }
+.svgv-bar button { cursor: pointer; transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
+.svgv-bar button:hover:not(:disabled) { background: var(--hairline-2); }
+.svgv-bar button:focus-visible { outline: 1px solid var(--ink); outline-offset: -3px; }
+.svgv-bar button:disabled { color: var(--muted-2); cursor: default; }
+.svgv-bar output { min-width: 64px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  .svgv-layer, .svgv-focus, .svgv-bar button { transition: none; }
+}

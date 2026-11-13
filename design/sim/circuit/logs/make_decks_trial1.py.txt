@@ -1,0 +1,189 @@
+#!/usr/bin/env python3
+"""Writes one ngspice deck per test into decks/ from the circuit files netlist.csv and parts.csv.
+
+    python make_decks.py [--ring-dir DIR] [--case-dir DIR] [--out DIR] [--set REF=VALUE ...]
+
+--ring-dir / --case-dir : folder holding netlist.csv and parts.csv (default: design/ecad/ring and design/ecad/case).
+                          The three broken copies of the bench proof use this.
+--set REF=VALUE         : replace one part value for this run (for example C60=2.2uF for decision 24).
+Part values and connections come from the two files; the models and the stimulus come from models/ and from this script.
+Every deck lists the parts it included and the parts it left out (with the reason) in its last two comment lines.
+"""
+import argparse
+import json
+import os
+import re
+import sys
+
+import circuit_lib as cl
+from circuit_lib import Deck, node
+
+# ---------------------------------------------------------------------------------------------------
+# values taken from documents (each with its source); everything else comes from the netlist files
+# ---------------------------------------------------------------------------------------------------
+TMOT = 0.03   # s, time of the motor pin going high
+
+SRC = {
+    "motor_start_a": (0.175, "Jinlong W0525AB001D spec p6 item 3-1-5: starting current below 175 mA at 3.0 V, rotor held"),
+    "motor_run_a": (0.080, "Jinlong spec p6 item 3-1-4: rated current below 80 mA at 3.0 V"),
+    "motor_v": (3.0, "Jinlong spec p6 item 3-1-1: rated voltage 3.0 V"),
+    "motor_start_s": (0.010, "ESTIMATE of ecad/motor-drive/motor-drive.md line 153: start time 10 ms (the maker states none)"),
+    "motor_run_s": (0.080, "firmware.md 3.1 pattern M1: 80 ms on"),
+    "i_u1_a": (0.003, "architecture.md line 89: main chip 3.0 mA at 1.8 V, estimate"),
+    "i_mic_a": (0.00063, "firmware.md 8.5: SPK0641HT4H-1 draws 0.63 mA at 1.8 V"),
+    "i_sd_write_a": (0.025, "CS CSNP32GCR01-BOW datasheet p8 IOP write 25 mA max (motor-drive.md 2.4)"),
+    "i_vci_a": (0.0032, "architecture.md line 101: screen VCI 3.2 mA"),
+    "i_iovcc_a": (0.001, "architecture.md line 101: screen IOVCC 1 mA"),
+    "p_screen_w": (0.055, "architecture.md line 101: screen on, full white, about 55 mW"),
+}
+
+PORTS_NPM = ["VBUS", "VBUSOUT", "VSYS", "VBAT", "VOUT1", "VOUT2",
+             "LSIN1/VINLDO1", "LSOUT1/VOUTLDO1", "LSIN2/VINLDO2", "LSOUT2/VOUTLDO2", "VSET1", "VSET2",
+             "@ls1en", "@ls2en", "@chgen"]
+
+
+def ring_nets_power():
+    return ["VBAT", "VSYS", "VBUS", "VBUSOUT", "VDD_1V8", "VDD_3V0", "VDD_MIC", "VDD_SD", "VMOT", "MOT_EN", "MOTOR",
+            "VSET1", "VSET2"]
+
+
+def add_cell(dk, ocv, rcell, name="cell"):
+    """BT1 as an open-circuit voltage with a series resistance (cell.md has no resistance: it is swept)."""
+    d = dk.d
+    pos = node(d.net_of("BT1", "+"))
+    neg = node(d.net_of("BT1", "-"))
+    cap = re.search(r"([0-9.]+)\s*mAh min", d.parts["BT1"]["value"])
+    dk.add("* BT1 cell: %s ; capacity floor %s mAh (US 7) is read from parts.csv, open-circuit voltage and resistance are test parameters" % (d.parts["BT1"]["value"], cap.group(1) if cap else "?"))
+    dk.add("Vocv %s_i %s PWL(0 0 100u {ocv})" % (name, neg))
+    dk.add("Rcell %s_i %s {rcell}" % (name, pos))
+    dk.included.append(("BT1", "cell source + series resistance"))
+
+
+def add_npm(dk, params="", ls1="1", ls2="1", chg="0", pwl_ls=None):
+    dk.lib("npm1304.lib")
+    dk.ic("U2", "NPM1304" + (" params: " + params if params else ""), PORTS_NPM)
+
+
+def ring_rails_loads(dk, screen=True, sd=True, u1=True, mics=True):
+    """Recording loads on the rails, nets from the netlist (pins named in it)."""
+    d = dk.d
+    n18 = node(d.net_of("U1", "A4"))
+    n30 = node(d.net_of("U2", "LSIN2/VINLDO2"))
+    nmic = node(d.net_of("U5", "VDD"))
+    nsd = node(d.net_of("U3", "VCC"))
+    nbat = node(d.net_of("BT1", "+"))
+    if u1:
+        dk.add("Iu1 %s 0 %g ; %s" % (n18, SRC["i_u1_a"][0], SRC["i_u1_a"][1]))
+    if mics:
+        dk.add("Imic5 %s 0 %g ; U5 %s" % (nmic, SRC["i_mic_a"][0], SRC["i_mic_a"][1]))
+        dk.add("Imic6 %s 0 %g ; U6, same" % (nmic, SRC["i_mic_a"][0]))
+        dk.included += [("U5", "load"), ("U6", "load")]
+    if sd:
+        dk.add("Isd %s 0 %g ; U3 %s" % (nsd, SRC["i_sd_write_a"][0], SRC["i_sd_write_a"][1]))
+        dk.included.append(("U3", "load"))
+    if screen:
+        pw = SRC["p_screen_w"][0]
+        pv = SRC["i_vci_a"][0] * 2.8 + SRC["i_iovcc_a"][0] * 1.8
+        dk.add("Ivci %s 0 %g ; %s" % (n30, SRC["i_vci_a"][0], SRC["i_vci_a"][1]))
+        dk.add("Iiov %s 0 %g ; %s" % (n18, SRC["i_iovcc_a"][0], SRC["i_iovcc_a"][1]))
+        dk.add("Bscr %s 0 I = %g / max(v(%s), 1) ; U4 panel supply on VBAT: %s minus VCI and IOVCC power" % (nbat, pw - pv, nbat, SRC["p_screen_w"][1]))
+        dk.included += [("U4", "constant power load on PVIN"), ("DISP1", "loads VCI, IOVCC")]
+
+
+# ---------------------------------------------------------------------------------------------------
+# test 1: motor start
+# ---------------------------------------------------------------------------------------------------
+def deck_motor(ring):
+    dk = Deck(ring, "ring test 1: motor start 175 mA and run 80 mA with a recording running")
+    dk.add(".param ocv=3.45")
+    dk.add(".param rcell=1.9565")
+    dk.add(".param icl=0.56")
+    dk.add(".param rdo=0.65")
+    dk.lib("tlv755p30.lib")
+    nets = ring_nets_power()
+    dk.passives(nets)
+    add_cell(dk, 3.45, 1.9565)
+    # cell connects at t = 0 (ramp 100 us), the host enables the load switches at 5 ms and 10 ms
+    dk.add("Vvbus %s 0 DC 0 ; no case present" % node(ring.net_of("U2", "VBUS")))
+    dk.add("Vls1 ls1en 0 PWL(0 0 10m 0 10.001m 1)")
+    dk.add("Vls2 ls2en 0 PWL(0 0 5m 0 5.001m 1)")
+    dk.add("Vchg chgen 0 0")
+    add_npm(dk)
+    # U11 on its pins; the motor pin of U1 is a 1.8 V logic source that follows tmot
+    dk.ic("U11", "TLV755P30 params: icl={icl} rdo={rdo}", ["IN", "OUT", "EN", "GND"])
+    nmotor = node(ring.net_of("U1", "P3.01"))
+    dk.add("Vmotor %s 0 PWL(0 0 %g 0 %g 1.8 %g 1.8 %g 0)" % (nmotor, TMOT, TMOT + 1e-6, TMOT + SRC["motor_run_s"][0], TMOT + SRC["motor_run_s"][0] + 1e-6))
+    nvmot = node(ring.net_of("M1", "+"))
+    dk.add("* M1 motor: resistance = 3.0 V / 175 mA for the first %g s of the pulse, then 3.0 V / 80 mA (%s; %s)" % (SRC["motor_start_s"][0], SRC["motor_start_a"][1] if False else SRC["motor_start_a"][1], SRC["motor_start_s"][1]))
+    dk.add("Bm %s 0 I = v(%s) / ((time < %g) ? %g : %g)" % (nvmot, nvmot, TMOT + SRC["motor_start_s"][0], SRC["motor_v"][0] / SRC["motor_start_a"][0], SRC["motor_v"][0] / SRC["motor_run_a"][0]))
+    dk.included.append(("M1", "resistive load"))
+    ring_rails_loads(dk)
+    n = {k: node(v) for k, v in dict(vbat="VBAT", vsys="VSYS", v18="VDD_1V8", v30="VDD_3V0", vmot="VMOT", vsd="VDD_SD", vmic="VDD_MIC").items()}
+    dk.add(".tran 20u 0.14 uic")
+    dk.add(".control")
+    dk.add("run")
+    dk.add("meas tran vbat_min min v(%s) from=0.03 to=0.13" % n["vbat"])
+    dk.add("meas tran v18_min min v(%s) from=0.03 to=0.13" % n["v18"])
+    dk.add("meas tran v18_max max v(%s) from=0.03 to=0.13" % n["v18"])
+    dk.add("meas tran v30_min min v(%s) from=0.03 to=0.13" % n["v30"])
+    dk.add("meas tran v30_max max v(%s) from=0.03 to=0.13" % n["v30"])
+    dk.add("meas tran vmot_min min v(%s) from=0.0311 to=0.1099" % n["vmot"])
+    dk.add("meas tran vsys_min min v(%s) from=0.03 to=0.13" % n["vsys"])
+    dk.add("meas tran ibat_max max i(v.xu2.vsb) from=0.03 to=0.13")
+    dk.add("meas tran ildo_max max i(v.xu11.vs) from=0.03 to=0.13")
+    dk.add("meas tran icell_min min i(vocv) from=0.03 to=0.13")
+    dk.add("meas tran ibuck2_max max i(v.xu2.vsn2) from=0.03 to=0.13")
+    dk.add("meas tran vmot_max max v(%s) from=0.0 to=0.0299" % n["vmot"])
+    dk.add("echo RESULT motor.vbat_min = $&vbat_min")
+    dk.add("echo RESULT motor.v18_min = $&v18_min")
+    dk.add("echo RESULT motor.v18_max = $&v18_max")
+    dk.add("echo RESULT motor.v30_min = $&v30_min")
+    dk.add("echo RESULT motor.v30_max = $&v30_max")
+    dk.add("echo RESULT motor.vmot_min = $&vmot_min")
+    dk.add("echo RESULT motor.vsys_min = $&vsys_min")
+    dk.add("echo RESULT motor.ibatpath_max = $&ibat_max")
+    dk.add("echo RESULT motor.ildo_max = $&ildo_max")
+    dk.add("echo RESULT motor.icell_min = $&icell_min")
+    dk.add("echo RESULT motor.ibuck2_max = $&ibuck2_max")
+    dk.add("echo RESULT motor.vmot_before = $&vmot_max")
+    dk.add("wrdata @WAVE@ v(%s) v(%s) v(%s) v(%s) v(%s) v(%s)" % (n["vbat"], n["vsys"], n["v18"], n["v30"], n["vmot"], n["vsd"]))
+    dk.add("quit")
+    dk.add(".endc")
+    dk.add(".end")
+    return dk
+
+
+def build_all(ring, case, out):
+    os.makedirs(out, exist_ok=True)
+    decks = {}
+    decks["ring_motor"] = deck_motor(ring)
+    manifest = {}
+    for name, dk in decks.items():
+        path = os.path.join(out, name + ".cir")
+        with open(path, "w") as f:
+            f.write(dk.text())
+        manifest[name] = {"deck": path, "included": dk.included, "excluded": dk.excluded}
+    with open(os.path.join(out, "manifest.json"), "w") as f:
+        json.dump(manifest, f, indent=1)
+    return manifest
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--ring-dir", default=cl.RING_DIR)
+    ap.add_argument("--case-dir", default=cl.CASE_DIR)
+    ap.add_argument("--out", default=os.path.join(cl.HERE, "decks"))
+    ap.add_argument("--set", action="append", default=[])
+    a = ap.parse_args()
+    ov = dict(s.split("=", 1) for s in a.set)
+    ring_ov = {k: v for k, v in ov.items() if k in cl.Design(a.ring_dir).parts}
+    ring = cl.Design(a.ring_dir, ring_ov)
+    case = cl.Design(a.case_dir)
+    m = build_all(ring, case, a.out)
+    print("wrote %d decks to %s" % (len(m), a.out))
+    for name in m:
+        print(" ", name, "included %d, excluded %d" % (len(m[name]["included"]), len(m[name]["excluded"])))
+
+
+if __name__ == "__main__":
+    main()

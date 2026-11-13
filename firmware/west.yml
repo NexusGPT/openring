@@ -1,0 +1,34 @@
+# West manifest of the ring firmware, in the "workspace application" form:
+# this folder is the manifest repository, and it imports nRF Connect SDK
+# v3.4.2 (sdk-nrf), which in turn pins Zephyr ncs-v3.4.2 and its modules.
+#
+# Workspace layout on the build server (inside the container):
+#   /ws/firmware   this folder (manifest repository)
+#   /ws/nrf, /ws/zephyr, /ws/modules/..., /ws/tools/bsim   from west update
+
+manifest:
+  version: "0.13"
+
+  remotes:
+    - name: ncs
+      url-base: https://github.com/nrfconnect
+
+  # sdk-nrf filters out the babblesim group by default. The simulated
+  # chip boards (nrf54lm20bsim, nrf54l15bsim, nrf52_bsim) need BabbleSim,
+  # so it is enabled here.
+  group-filter:
+    - +babblesim
+
+  projects:
+    - name: nrf
+      remote: ncs
+      repo-path: sdk-nrf
+      revision: v3.4.2
+      import:
+        # Matter (sdk-connectedhomeip with its git submodules) is the largest
+        # project of the SDK and the ring does not use it.
+        name-blocklist:
+          - matter
+
+  self:
+    path: firmware

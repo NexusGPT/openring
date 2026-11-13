@@ -1,0 +1,5 @@
+file src/core.c
+--- old
+c->sm.state == RC_ST_STANDBY || c->sm.state == RC_ST_ERR_STORAGE_FAULT ||
++++ new
+c->sm.state == RC_ST_STANDBY || c->sm.state == RC_ST_ERR_STORAGE_FAULT && from != RC_ST_BOOT ||

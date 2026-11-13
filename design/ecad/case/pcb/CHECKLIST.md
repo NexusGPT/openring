@@ -1,0 +1,44 @@
+# W5 checklist (case boards). Opened 2026-11-12 23:37 CET. Closed at the end of the run; evidence names a saved file in design/ecad/case/pcb/evidence/ unless a path is given.
+
+- [x] 1. (a) Library OpenRingCase.pretty, 19 footprints, source named in each description, no word PROVISIONAL. evidence: make_footprints_final2.log; grep for the word returned nothing
+- [x] 2. (a) Every row of open-pins.csv closed (0 data rows; 12 rows in closed-pins.csv). evidence: design/ecad/case/closed-pins.csv
+- [x] 3. (a) Netlist scripts use real numbers; ERC 0 errors; check_netlist.py RESULT PASS. evidence: run_all_w5_final.out
+- [x] 4. (b) case_main.kicad_pcb and case_pins.kicad_pcb written by build_boards.py. evidence: board_counts_final.log
+- [x] 5. (b) Outline, connector and pin positions from the model, line or key named. evidence: board-notes.md part b, geom_final.log
+- [x] 6. (b) Every part on one of the two boards. evidence: check_boards_good.log "all 89 parts of parts.csv are on exactly one board"
+- [x] 7. (b) Each wire W1 to W7 has a named pad on each board it joins; cell leads and thermistor have pads. evidence: board-notes.md part f
+- [x] 8. (c) PCB1 fully routed: 0 violations, 0 unconnected (round 2; evidence drc_case_main_final.log)
+- [x] 9. (c) PCB2: 0 violations, 0 unconnected. evidence: drc_case_pins_final.log
+- [x] 10. (c) Power tracks sized for current. evidence: power_width.log
+- [x] 11. (c) USB pair on PCB1 within the round 2 limit 5.0 mm: 0.700 mm (r2_tune.log)
+- [x] 12. (c) Ground zone poured. evidence: board_counts_final.log (5 zones)
+- [x] 13. (d) check_boards.py exit 0 on the good boards (round 2; check_boards_good.log)
+- [x] 14. (d) exit 1 on wrong net. evidence: broken_wrongnet.log
+- [x] 15. (d) exit 1 on part outside. evidence: broken_outside.log
+- [x] 16. (d) exit 1 on deleted track. evidence: broken_notrack.log
+- [x] 17. (d) exit 1 on missing part. evidence: broken_nopart.log
+- [x] 18. (e) Gerber and drill files per board. evidence: fab/ listing in board-notes.md part e
+- [x] 19. (e) Position file per board
+- [x] 20. (e) Parts list per board with orderable part numbers (fab/case_main_parts.csv, fab/case_pins_parts.csv)
+- [x] 21. (e) PDF of each copper layer
+- [x] 22. (e) STEP of each board (no component bodies: listed under Not closed)
+- [x] 23. (e) fab folder 1.3 MB (limit 20 MB)
+- [x] 24. (f) wiring table. evidence: wire_table.csv, board-notes.md part f
+- [x] 25. (g) ring pad to case pin table. evidence: board-notes.md part g
+- [x] 26. (h) touch electrode: value, test, reading
+- [x] 27. (h) LED brightness: value, test, reading
+- [x] 28. (h) boost efficiency: value, test, reading
+- [x] 29. board-notes.md answers a to h and has the lists "Not closed" and "Changes other files need"; last line is RESULT
+- [x] 30. Two boards; PCB2 FR4 2 layers (conflict 1 in board-notes.md)
+- [x] 31. Spring pins Harwin P70-6000045R; parts.csv corrected
+- [x] 32. Conflicts between case files listed with both quotes (7 rows)
+- [x] 33. Board technology chosen and cited (JLCPCB capability page)
+- [x] 34. No browser; heavy tools on the server only (Freerouting); my own router ran on this Mac (small C++ program, binary of about 100 KB)
+- [x] 35. Nothing left to others except the items under Not closed (Round 2 section), each with its cause
+- [x] 36. No secret in any file (key used by path only in srv.sh)
+- [x] 37. No git command run
+- [x] 38. Dimensions cite a page or a model line
+- [x] 39. No file name starts with REPORT, SUMMARY, FINDINGS or ANALYSIS
+- [x] 40. Final audit: evidence/audit_final.log
+- [x] 41. Server folder /root/case-boards-route removed. evidence: server_cleanup_after.log
+- [x] 42. Final reply under 3,500 characters

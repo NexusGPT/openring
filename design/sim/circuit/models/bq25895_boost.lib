@@ -1,0 +1,11 @@
+* own model: Texas Instruments BQ25895 (case U2) in boost mode only (battery to PMID), built only from the maker's datasheet SLUSC88C (design/datasheets/case_bq25895.pdf, PDF pages). No public SPICE model exists for this part (TI offers only a spreadsheet, SLURAX7).
+* ports: bat pmid     params: vboost 5.126 V (BOOSTV default, p42), acc relative error (-0.03 to +0.03, p9 V(OTG_REG_ACC)), eta 0.93 (p1 "93% boost efficiency at 5 V at 1 A output"), rout output resistance (MODEL CHOICE 50 mohm, the sheet states none)
+* boost starts only with the battery above V(OTG_BAT) 2.6 to 2.9 V (p9); the model switches off below 2.9 V with a smooth 20 mV transition (keeps the solver stable)
+* not modelled: the output current range 3.1 A (p9; far above the limit of the TPS2553 behind it), over-voltage threshold 5.8 to 6.0 V (p9), switching
+.subckt BQ25895BOOST bat pmid params: vboost=5.126 acc=0 eta=0.93 rout=0.05
+Bon on 0 V = 0.5*(1+tanh((v(bat)-2.9)/0.02))
+Bo x 0 V = v(on) * vboost*(1+acc)
+Rout x pmid {rout}
+Bin bat 0 I = max((v(x)-v(pmid))/rout, 0) * max(v(pmid), 0) / (eta * max(v(bat), 0.5))
+Rl pmid 0 1e9
+.ends BQ25895BOOST

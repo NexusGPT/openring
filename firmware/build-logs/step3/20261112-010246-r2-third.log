@@ -1,0 +1,86 @@
+# remote.sh run 20261112-010246-r2-third
+# command: west twister -T tests/inbox -T tests/time -T tests/iphone -p native_sim -O /ws/out/r2-logic --inline-logs -v ; tests/bsim/iphone/run.sh D
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 01:02:46 CET
+# free on the server's /: 67 GB
+# source firmware copied to /root/ring-os/src-step3r2
+# started on the server as 20261112-010246-r2-third; server log /root/ring-os/logs/20261112-010246-r2-third.log
+Renaming previous output directory to /ws/out/r2-logic.2
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/r2-logic/testplan.json
+INFO    - JOBS: 32
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/3 native_sim/native         ring_time.logic                                    PASSED (native 0.007s <host/gnu>)
+INFO    - 2/3 native_sim/native         ring_inbox.logic                                   PASSED (native 0.011s <host/gnu>)
+INFO    - 3/3 native_sim/native         ring_iphone.logic                                  PASSED (native 0.010s <host/gnu>)
+
+INFO    - 3 test scenarios (3 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 3 of 3 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 17.26 seconds.
+INFO    - 37 of 37 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+INFO    - 3 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/r2-logic/twister.json
+INFO    - Writing xunit report /ws/out/r2-logic/twister.xml...
+INFO    - Writing xunit report /ws/out/r2-logic/twister_report.xml...
+INFO    - Run completed
+bsim-iphone: firmware /ws/firmware/tests/bsim/iphone, outputs /ws/out/20261112-010246-r2-third-bsim-iphone, scenarios D, broken 0
+=== build host for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-010246-r2-third-bsim-iphone/build-host.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build host ok
+=== build ring for nrf54lm20bsim/nrf54lm20a/cpuapp, log /ws/out/20261112-010246-r2-third-bsim-iphone/build-ring.log
+      1 warning: Experimental symbol BT_LL_SOFTDEVICE is enabled.
+build ring ok
+=== test D (ok): ring + stand-in iPhone, 90 simulated seconds, 2026-11-12T00:03:53Z
+exit codes: phy 0, ring 0, stand-in 0
+--- ring /ws/out/20261112-010246-r2-third-bsim-iphone/run-ok-D-ring.log
+d_00: @00:00:00.000122  RING CHECK HID service registered PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK Bluetooth up, devices ready PASS (t=0)
+d_00: @00:00:00.000252  RING CHECK pairing window opens PASS (t=0)
+d_00: @00:00:00.994793  RING PASSKEY slot 0 925850
+d_00: @00:00:05.594822  RING EVENT link slot 0 up
+d_00: @00:00:07.344826  RING EVENT link slot 0 down
+d_00: @00:00:07.364900  RING CHECK D: the first link ends (the stand-in ends it while the ring is discovering) PASS (t=7364)
+d_00: @00:00:07.565000  RING CHECK D: the ring counted a session that ended in discovery PASS (t=7565)
+d_00: @00:00:11.168376  RING EVENT link slot 0 up
+d_00: @00:00:14.528900  RING CHECK D: the three services are found in the next session PASS (t=14528)
+d_00: @00:00:16.132100  RING CHECK D: a notification sent in the next session arrives with its text PASS (t=16132)
+d_00: @00:00:16.132100  RING CHECK D: the Media and Current Time services were each subscribed once (in the next session), the Notification Center service at least once, and Service Changed was found PASS (t=16132)
+d_00: @00:00:16.132100  RING INFO D: missing 0/1/0 (ancs/ams/cts), dm_errors 0, dm_stale 0, sessions 2, ended in discovery 1
+d_00: @00:00:16.132100  RING CHECK D: a discovery was running when the link ended and its answer was dropped as stale FAIL (t=16132)
+d_00: @00:00:16.132100  RING CHECK D: no service was reported missing (the answer of the ended session's discovery was not counted) FAIL (t=16132)
+d_00: @00:00:16.132100  RING SCRIPT DONE t=16132 checks=10 fails=2
+d_00: @00:00:16.132100  RING RESULT FAIL
+--- stand-in iPhone /ws/out/20261112-010246-r2-third-bsim-iphone/run-ok-D-phone.log
+d_01: @00:00:00.000122  PHONE START scenario D
+d_01: @00:00:00.000174  PHONE CHECK Bluetooth up PASS (t=0)
+d_01: @00:00:00.000174  PHONE CHECK the three Apple services are registered PASS (t=0)
+d_01: @00:00:00.645537  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:01.144997  PHONE CHECK passkey read from the ring's display PASS (t=1144)
+d_01: @00:00:05.594821  PHONE CHECK pairing with the passkey completed and bonded PASS (t=5594)
+d_01: @00:00:05.594821  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=5594)
+d_01: @00:00:06.444957  PHONE INFO HID client subscribed to 3 input reports (t=6444)
+d_01: @00:00:07.254949  PHONE INFO the link is ended while the ring is discovering: Entity Update subscriptions 0, Current Time subscriptions 0 (t=7254)
+d_01: @00:00:10.918395  PHONE INFO MTU exchange 0, MTU 247
+d_01: @00:00:11.168379  PHONE CHECK link encrypted and authenticated (security level 4) PASS (t=11168)
+d_01: @00:00:12.118419  PHONE INFO HID client subscribed to 3 input reports (t=12118)
+d_01: @00:00:12.968315  PHONE INFO Notification Source subscribed (#1, security level 4, t=12968)
+d_01: @00:00:14.108415  PHONE INFO EU 0/1 '0,0.0,0.000' (0)
+d_01: @00:00:14.258419  PHONE INFO EU 2/0 'Queen' (0)
+d_01: @00:00:14.258419  PHONE INFO EU 2/2 'Bohemian Rhapsody' (0)
+d_01: @00:00:16.012019  PHONE INFO NS event 0 uid 301 flags 0x18 (0)
+d_01: @00:00:31.012159  PHONE EVAL t=31012
+d_01: @00:00:31.012159  PHONE CHECK the link ended before the ring had subscribed to Media and Time (the drop came during discovery) PASS (t=31012)
+d_01: @00:00:31.012159  PHONE CHECK in the next session the ring subscribed to the Notification Source, Entity Update and Current Time PASS (t=31012)
+d_01: @00:00:31.012159  PHONE CHECK the ring never wrote Entity Update before subscribing to it PASS (t=31012)
+d_01: @00:00:31.012159  PHONE RESULT PASS checks=9 fails=0
+ring script done at 16132 ms, stand-in evaluated at 31012 ms
+TEST D RESULT FAIL (17 checks passed; infra: none; checks: ring-result 2-failed-checks)
+RESULT FAIL D
+# finished (Mac clock): 2026-11-12 01:04:05 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step3/20261112-010246-r2-third.log

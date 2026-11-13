@@ -1,0 +1,161 @@
+# remote.sh run 20261112-161126-r2-brk
+# command: tests/screens/broken_run.sh "dim_brightness_zero blank_after_draw wrong_passkey_digit wrong_timer_digit no_title_app"
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 16:11:26 CET
+# free on the server's /: 58 GB
+# source firmware copied to /root/ring-os/src-os-screens
+# started on the server as 20261112-161126-r2-brk; server log /root/ring-os/logs/20261112-161126-r2-brk.log
+##### broken copy: dim_brightness_zero
+edited src/rscr_logic.c
+--- /ws/firmware/modules/ring_screens/src/rscr_logic.c	2026-11-12 14:55:02.000000000 +0000
++++ /ws/out/20261112-161126-r2-brk-screens-broken/dim_brightness_zero/ring_screens/src/rscr_logic.c	2026-11-12 15:11:33.665500660 +0000
+@@ -46,7 +46,7 @@
+ {
+ 	/* the three levels of the setting "Screen brightness" are 85, 170 and 255; SCR_REC_DIM is driven at the lowest of the three,
+ 	 * never at 0 (design/firmware.md 3.2) */
+-	return s->screen == SCR_REC_DIM ? RSCR_LEVEL_LOWEST : (uint8_t)(RSCR_LEVEL_LOWEST + RSCR_LEVEL_STEP * s->brightness);
++	return s->screen == SCR_REC_DIM ? 0 : (uint8_t)(RSCR_LEVEL_LOWEST + RSCR_LEVEL_STEP * s->brightness);
+ }
+ 
+ void rscr_init(struct rscr *s)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:543: screens_draw_test_04_recording_screens_and_sign: (m1.brightness not equal to 85)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:592: screens_draw_test_05_rsign_display_refusal_leaves_the_microphone_off: (m.blanked is false)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:628: screens_draw_test_06_notifications_list_and_detail: (s.screen not equal to SCR_NOTIFS)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:699: screens_draw_test_07_modes_and_the_four_control_screens: (s.screen not equal to SCR_MODES)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:790: screens_draw_test_08_devices_device_confirm: (s.screen not equal to SCR_MODES)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:854: screens_draw_test_09_pairing_passkey: (s.screen not equal to SCR_PAIR)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:1131: screens_draw_test_99_cross_check_and_memory: (scene_have[i] is false)
+TESTSUITE screens_draw failed.
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_table.c:988: screens_table_test_brightness_levels_and_the_dimmed_recording_screen: (rscr_brightness_level(&s) not equal to 85)
+TESTSUITE screens_table failed.
+ - FAIL - [screens_draw.test_04_recording_screens_and_sign] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_05_rsign_display_refusal_leaves_the_microphone_off] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_06_notifications_list_and_detail] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_07_modes_and_the_four_control_screens] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_08_devices_device_confirm] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_09_pairing_passkey] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_99_cross_check_and_memory] duration = 0.000 seconds
+ - FAIL - [screens_table.test_brightness_levels_and_the_dimmed_recording_screen] duration = 0.000 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 22.75 seconds.
+INFO    - 37 of 45 executed test cases passed (82.22%), 8 failed on 1 out of total 1514 platforms (0.07%).
+twister exit code on the broken copy dim_brightness_zero, native_sim: 1 (log /ws/out/20261112-161126-r2-brk-screens-broken/dim_brightness_zero/twister-native_sim.log)
+dim_brightness_zero on native_sim: the named case failed, as required:  FAIL - test_04_recording_screens_and_sign in 0.000 seconds
+##### broken copy: blank_after_draw
+edited src/rscr.c
+--- /ws/firmware/modules/ring_screens/src/rscr.c	2026-11-12 14:55:47.000000000 +0000
++++ /ws/out/20261112-161126-r2-brk-screens-broken/blank_after_draw/ring_screens/src/rscr.c	2026-11-12 15:11:58.537980025 +0000
+@@ -321,6 +321,9 @@
+ 			stats.sign_missing++;
+ 		}
+ 	}
++	if (frame.s.screen == SCR_REC_DIM) {
++		(void)rscr_panel(false, level);
++	}
+ 	if (want_on != panel_on_state || level != panel_level) {
+ 		int e = rscr_panel(want_on, level);
+ 
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:575: screens_draw_test_04_recording_screens_and_sign: (m1.blank_on not equal to m0.blank_on)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:592: screens_draw_test_05_rsign_display_refusal_leaves_the_microphone_off: (m.blanked is false)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:628: screens_draw_test_06_notifications_list_and_detail: (s.screen not equal to SCR_NOTIFS)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:699: screens_draw_test_07_modes_and_the_four_control_screens: (s.screen not equal to SCR_MODES)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:790: screens_draw_test_08_devices_device_confirm: (s.screen not equal to SCR_MODES)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:854: screens_draw_test_09_pairing_passkey: (s.screen not equal to SCR_PAIR)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:1131: screens_draw_test_99_cross_check_and_memory: (scene_have[i] is false)
+TESTSUITE screens_draw failed.
+TESTSUITE screens_table succeeded
+ - FAIL - [screens_draw.test_04_recording_screens_and_sign] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_05_rsign_display_refusal_leaves_the_microphone_off] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_06_notifications_list_and_detail] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_07_modes_and_the_four_control_screens] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_08_devices_device_confirm] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_09_pairing_passkey] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_99_cross_check_and_memory] duration = 0.000 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 26.58 seconds.
+INFO    - 38 of 45 executed test cases passed (84.44%), 7 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_screens.all on native_sim/native failed (rc=1)
+twister exit code on the broken copy blank_after_draw, native_sim: 1 (log /ws/out/20261112-161126-r2-brk-screens-broken/blank_after_draw/twister-native_sim.log)
+blank_after_draw on native_sim: the named case failed, as required:  FAIL - test_04_recording_screens_and_sign in 0.000 seconds
+##### broken copy: wrong_passkey_digit
+edited src/rscr_draw.c
+--- /ws/firmware/modules/ring_screens/src/rscr_draw.c	2026-11-12 14:56:18.000000000 +0000
++++ /ws/out/20261112-161126-r2-brk-screens-broken/wrong_passkey_digit/ring_screens/src/rscr_draw.c	2026-11-12 15:12:26.161401555 +0000
+@@ -411,7 +411,7 @@
+ 
+ 	text(r, "Pair", F14, C_GREY, MARGIN, 12);
+ 	if (f->s.pair_has_key) {
+-		snprintf(b, sizeof(b), "%03u %03u", (unsigned)(f->s.passkey / 1000), (unsigned)(f->s.passkey % 1000));
++		snprintf(b, sizeof(b), "%03u %03u", (unsigned)(f->s.passkey / 1000), (unsigned)(f->s.passkey % 1000) + 1);
+ 	} else {
+ 		snprintf(b, sizeof(b), "--- ---");
+ 	}
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:377: save: (scene_ok(i, pic) is false)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:1148: screens_draw_test_99_cross_check_and_memory: (own not equal to (int)NSCENES)
+TESTSUITE screens_draw failed.
+TESTSUITE screens_table succeeded
+ - FAIL - [screens_draw.test_09_pairing_passkey] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_99_cross_check_and_memory] duration = 0.000 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 22.49 seconds.
+INFO    - 43 of 45 executed test cases passed (95.56%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_screens.all on native_sim/native failed (rc=1)
+twister exit code on the broken copy wrong_passkey_digit, native_sim: 1 (log /ws/out/20261112-161126-r2-brk-screens-broken/wrong_passkey_digit/twister-native_sim.log)
+wrong_passkey_digit on native_sim: the named case failed, as required:  FAIL - test_09_pairing_passkey in 0.000 seconds
+##### broken copy: wrong_timer_digit
+edited src/rscr_draw.c
+--- /ws/firmware/modules/ring_screens/src/rscr_draw.c	2026-11-12 14:56:18.000000000 +0000
++++ /ws/out/20261112-161126-r2-brk-screens-broken/wrong_timer_digit/ring_screens/src/rscr_draw.c	2026-11-12 15:12:49.550911548 +0000
+@@ -168,7 +168,7 @@
+ 
+ static void hms(char *o, size_t n, uint32_t s)
+ {
+-	snprintf(o, n, "%02u:%02u:%02u", (unsigned)(s / 3600), (unsigned)((s / 60) % 60), (unsigned)(s % 60));
++	snprintf(o, n, "%02u:%02u:%02u", (unsigned)(s / 3600), (unsigned)((s / 60) % 60), (unsigned)((s % 60) + 1));
+ }
+ 
+ /* waveform: a few strands that swell off centre, drawn as polylines (a simple drawn line set: there is no live
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:377: save: (scene_ok(i, pic) is false)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:592: screens_draw_test_05_rsign_display_refusal_leaves_the_microphone_off: (m.blanked is false)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:628: screens_draw_test_06_notifications_list_and_detail: (s.screen not equal to SCR_NOTIFS)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:699: screens_draw_test_07_modes_and_the_four_control_screens: (s.screen not equal to SCR_MODES)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:790: screens_draw_test_08_devices_device_confirm: (s.screen not equal to SCR_MODES)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:854: screens_draw_test_09_pairing_passkey: (s.screen not equal to SCR_PAIR)
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:1131: screens_draw_test_99_cross_check_and_memory: (scene_have[i] is false)
+TESTSUITE screens_draw failed.
+TESTSUITE screens_table succeeded
+ - FAIL - [screens_draw.test_04_recording_screens_and_sign] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_05_rsign_display_refusal_leaves_the_microphone_off] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_06_notifications_list_and_detail] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_07_modes_and_the_four_control_screens] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_08_devices_device_confirm] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_09_pairing_passkey] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_99_cross_check_and_memory] duration = 0.000 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 22.19 seconds.
+INFO    - 38 of 45 executed test cases passed (84.44%), 7 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_screens.all on native_sim/native failed (rc=1)
+twister exit code on the broken copy wrong_timer_digit, native_sim: 1 (log /ws/out/20261112-161126-r2-brk-screens-broken/wrong_timer_digit/twister-native_sim.log)
+wrong_timer_digit on native_sim: the named case failed, as required:  FAIL - test_04_recording_screens_and_sign in 0.000 seconds
+##### broken copy: no_title_app
+edited src/rscr_draw.c
+--- /ws/firmware/modules/ring_screens/src/rscr_draw.c	2026-11-12 14:56:18.000000000 +0000
++++ /ws/out/20261112-161126-r2-brk-screens-broken/no_title_app/ring_screens/src/rscr_draw.c	2026-11-12 15:13:12.509430403 +0000
+@@ -500,7 +500,7 @@
+ 		return;
+ 	}
+ 	box(r, MARGIN, 12, 18, 18, 5, C_GREEN);   /* a generic icon square (no app artwork is drawn) */
+-	text_w(r, it->title[0] != '\0' ? it->title : "Notification", F16, C_WHITE, MARGIN + 26, 11, RSCR_W - 2 * MARGIN - 26,
++	text_w(r, it->title[0] != '\0' ? it->title : it->app, F16, C_WHITE, MARGIN + 26, 11, RSCR_W - 2 * MARGIN - 26,
+ 	       false, LV_TEXT_ALIGN_LEFT);
+ 	text_w(r, it->msg, F14, C_GREY, MARGIN, 36, RSCR_W - 2 * MARGIN, true, LV_TEXT_ALIGN_LEFT);
+ 	/* the two actions at the edges, as in the accepted design: dismiss left, the positive action right */
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:1105: screens_draw_test_16_notification_without_a_title_shows_the_word_notification: (vmatch(pic, &detail_title) is false)
+TESTSUITE screens_draw failed.
+TESTSUITE screens_table succeeded
+ - FAIL - [screens_draw.test_16_notification_without_a_title_shows_the_word_notification] duration = 0.000 seconds
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 22.71 seconds.
+INFO    - 44 of 45 executed test cases passed (97.78%), 1 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1) ring_screens.all on native_sim/native failed (rc=1)
+twister exit code on the broken copy no_title_app, native_sim: 1 (log /ws/out/20261112-161126-r2-brk-screens-broken/no_title_app/twister-native_sim.log)
+no_title_app on native_sim: the named case failed, as required:  FAIL - test_16_notification_without_a_title_shows_the_word_notification in 0.000 seconds
+RESULT PASS
+# finished (Mac clock): 2026-11-12 16:13:41 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step4/20261112-161126-r2-brk.log

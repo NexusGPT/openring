@@ -1,0 +1,20 @@
+config RING_DEVICES_LOGIC
+	bool "Ring devices logic: device list, switch decision"
+	help
+	  Pure logic with no kernel, driver or Bluetooth call.
+
+config RING_DEVICES
+	bool "Ring devices: pairing with a passkey, three paired devices, active device"
+	select RING_DEVICES_LOGIC
+	depends on BT_PERIPHERAL && BT_SMP && BT_ID_MAX >= 3
+	help
+	  One local Bluetooth identity per paired device, up to three devices,
+	  one active; switching, reconnect and removal of a pairing.
+
+config RING_DEVICES_FAST_ADV_S
+	int "Seconds of fast advertising (100 ms) after a drop or a switch"
+	default 30
+	depends on RING_DEVICES
+	help
+	  After that the ring advertises every 1,000 ms (FW 7.3). The pairing
+	  window always advertises every 100 ms.

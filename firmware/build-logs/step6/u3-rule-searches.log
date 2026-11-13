@@ -1,0 +1,64 @@
+# searches 2026-11-13 05:27 CET
+## 1 pure part: kernel or zephyr includes/calls in rau_chunk.c rau_chunk.h
+modules/ring_audio/src/rau_chunk.c:61:static void chunk_begin(struct rac *s, struct rst_chunk *c, const struct rac_facts *f)
+modules/ring_audio/src/rau_chunk.c:100:static void chunk_marks(struct rac *s, struct rst_chunk_hdr *h, int64_t c0, int64_t c1)
+modules/ring_audio/src/rau_chunk.c:159:static void chunk_finish(struct rac *s, bool last)
+modules/ring_audio/src/rau_chunk.c:171:	chunk_marks(s, h, c0, c0 + (int64_t)s->fill);
+modules/ring_audio/src/rau_chunk.c:206:			chunk_begin(s, c, &f);
+modules/ring_audio/src/rau_chunk.c:244:			chunk_finish(s, false);
+modules/ring_audio/src/rau_chunk.c:341:		chunk_finish(s, true);
+hits: modules/ring_audio/src/rau_chunk.c:7 modules/ring_audio/src/rau_chunk.h:0 
+## 2 rau.c: includes (hardware only through rhw.h)
+7:#include <errno.h>
+8:#include <string.h>
+10:#include <zephyr/kernel.h>
+11:#include <zephyr/sys/atomic.h>
+12:#include <zephyr/sys/util.h>
+14:#include <ring_audio/rau.h>
+15:#include <ring_rhw/rhw.h>
+17:#include <ring_rhw/rhw_sim.h>
+20:#include "rau_chunk.h"
+driver names in rau.c: 0
+## 3 chip pins by number in owned files
+hits: modules/ring_audio/src/rau_chunk.c:0 tests/audio/src/test_cfg.c:0 modules/ring_audio/src/rau_hw_real.c:0 modules/ring_audio/src/rau.c:0 tests/audio/src/test_chunk.c:0 tests/audio/src/common.c:0 tests/audio/src/test_motor.c:0 tests/audio/src/test_svc.c:0 
+## 4 number literals of 2+ digits in rau_chunk.c and rau.c outside comments (spec numbers typed twice?)
+modules/ring_audio/src/rau_chunk.c:11:#define RAC_NS_PER_SEC 1000000000u
+modules/ring_audio/src/rau_chunk.c:13:#define RAC_NS_PER_MS 1000000u
+modules/ring_audio/src/rau_chunk.c:14:#define RAC_MS_PER_SEC 1000u
+modules/ring_audio/src/rau.c:24:BUILD_ASSERT(RAU_RING_CHUNKS >= RREC_CHUNK_RING, "audio: the chunk ring must never be below the specified count (FW l.490)");
+modules/ring_audio/src/rau.c:30:#define RAU_EDGE_Q 16
+modules/ring_audio/src/rau.c:31:#define RAU_HL_Q 16
+## 5 rail calls in owned sources
+hits: modules/ring_audio/src/rau_chunk.c:0 modules/ring_audio/src/rau_hw_real.c:0 modules/ring_audio/src/rau.c:0 
+## 1b (redo of 1: the first pattern matched 'chunk_begin(' as 'k_begin('; this one anchors at a word start)
+hits: modules/ring_audio/src/rau_chunk.h:0 modules/ring_audio/src/rau_chunk.c:0 
+includes of the pure part:
+modules/ring_audio/src/rau_chunk.h:13:#include <stdbool.h>
+modules/ring_audio/src/rau_chunk.h:14:#include <stdint.h>
+modules/ring_audio/src/rau_chunk.h:16:#include <ring_rhw/rrec_spec.h>
+modules/ring_audio/src/rau_chunk.h:17:#include <ring_store/rst.h>
+modules/ring_audio/src/rau_chunk.c:5:#include <errno.h>
+modules/ring_audio/src/rau_chunk.c:6:#include <string.h>
+modules/ring_audio/src/rau_chunk.c:8:#include "rau_chunk.h"
+## 6 files changed outside Owns (newer than the run start, outside owned paths)
+./docs/core-notes.md
+./tests/store/CMakeLists.txt
+./tests/store/testcase.yaml
+./tests/store/prj.conf
+./tests/store/app.overlay
+./tests/store/broken_edit.py
+./tests/store/broken_run.sh
+./tests/store/boards/native_sim.conf
+./tests/store/src/test_recovery.c
+./tests/store/src/test_k2.c
+./tests/store/src/tst.c
+./tests/store/src/test_log.c
+./tests/store/src/test_delete.c
+./tests/store/src/test_space.c
+./tests/store/src/test_evlog.c
+./tests/store/src/tst.h
+./tests/store/src/test_layout.c
+./tests/store/src/test_index.c
+./tests/store/src/test_svc.c
+./tests/store/src/test_fmt.c
+(end of listing)

@@ -1,0 +1,30 @@
+design/architecture.md:705: e the circuit simulation, Murata GRM155R61A475MEAAD, 10 V, 0402; it was 10 uF); C84 is also the capacitor of 2 uF or more that the motor's maker asks across its le
+design/bom.csv:47: Capacitor 10 uF 0402 6.3 V,"C83,C84",2,U11 input and output; C84 is also the 2 uF or more across the motor that Jin
+design/bom-notes.md:83: e deleted; new lines U11 (TLV75530PDQNR, 3.0 V regulator from the cell) and C83,C84 (10 uF); M1's S21 is closed by the motor study; R61 and R62 texts follow.
+design/bench/bench-plan-faulty-passline.md:48: - Capacitors: 4 pieces 10 uF X5R 6.3 V (C83, C84 on CB-MOT, spares); 2 pieces 1 uF X5R 6.3 V (C31, C32 on CB-MIC); 2 pieces 100 
+design/bench/bench-plan-faulty-passline.md:100: | U11 | 1 OUT | VMOT, with C84 (10 uF to GND) |
+design/bench/bench-plan-faulty.md:48: - Capacitors: 4 pieces 10 uF X5R 6.3 V (C83, C84 on CB-MOT, spares); 2 pieces 1 uF X5R 6.3 V (C31, C32 on CB-MIC); 2 pieces 100 
+design/bench/bench-plan-faulty.md:100: | U11 | 1 OUT | VMOT, with C84 (10 uF to GND) |
+design/bench/bench-plan-faulty-light.md:48: - Capacitors: 4 pieces 10 uF X5R 6.3 V (C83, C84 on CB-MOT, spares); 2 pieces 1 uF X5R 6.3 V (C31, C32 on CB-MIC); 2 pieces 100 
+design/bench/bench-plan-faulty-light.md:100: | U11 | 1 OUT | VMOT, with C84 (10 uF to GND) |
+design/bench/bench-plan.md:48: - Capacitors: 4 pieces 10 uF X5R 6.3 V (C83, C84 on CB-MOT, spares); 2 pieces 1 uF X5R 6.3 V (C31, C32 on CB-MIC); 2 pieces 100 
+design/bench/bench-plan.md:100: | U11 | 1 OUT | VMOT, with C84 (10 uF to GND) |
+design/wiring/text-pass-notes.md:253:  | design/architecture.md | 705 | Two capacitors of 10 uF, C83 at the input and C84 at the output; C84 is also | Two capacitors, C83 of 10 uF at the input and C84 
+design/wiring/w7-facts.md:183: - B4: bom.csv line 46 (C83, C84, 10 uF). Made.
+design/ecad/motor-drive/reply.txt:3: BAT, output VMOT, EN from MOTOR through R61, with R62 as the pull-down. C83 and C84 are 10 uF 0402 Murata GRM155R60J106ME15. Q1 and D1 are removed. IBATLIM sits in
+design/ecad/motor-drive/motor-drive.md:37: | C84 | Murata | GRM155R60J106ME15 | 0402 (1.0 x 0.5 mm) | 10 uF, 6.3 V, X5R | as C83
+design/ecad/motor-drive/motor-drive.md:91: s OUT 1, GND 2, EN 3, IN 4); C83 10 uF GRM155R60J106ME15 0402 from VBAT to GND; C84 the same from VMOT to GND.
+design/ecad/motor-drive/motor-drive.md:97: lator from VBAT, TLV75530PDQNR (motor-drive.md)`, `C83,added,U11 input 10 uF`, `C84,added,U11 output and motor 10 uF (Jinlong 9-4 asks 2 uF or more)`.
+design/ecad/motor-drive/motor-drive.md:103: - B4. New row: `Capacitor 10 uF 0402 6.3 V,"C83,C84",2,"U11 input and output; C84 is also the 2 uF or more across the motor that Ji
+design/ecad/ring/additions.csv:11: C84,added,U11 output and motor 10 uF (Jinlong 9-4 asks 2 uF or more)
+design/ecad/ring/parts.csv:92: C84,C,10uF,GRM155R60J106ME15,OpenRing:Chip_0402,controls,no
+design/ecad/ring/check_netlist.py:330: bad2 += ['%s value %r' % (c, parts.get(c, {}).get('value')) for c in ('C83', 'C84') if parts.get(c, {}).get('value') != '10uF']
+design/ecad/ring/check_netlist.py:338: _EN, 4 IN VBAT, pad GND); R61 MOTOR-MOT_EN 100R, R62 MOT_EN-GND 100k; C83 VBAT, C84 VMOT 10uF; Q1, D1, MOTOR_DRV, MOTOR_G absent',
+design/ecad/ring/sch-notes.md:40: T_EN to ground; U11 IN (pin 4) on VBAT with C83 10 uF, OUT (pin 1) on VMOT with C84 10 uF, GND pin 2 and pad on ground. Q1 and D1 are removed. M1 is on the band sh
+design/ecad/ring/sch-notes.md:221: BAT, thermal pad drawn as pin EP on GND: TI gives the pad no number); C83 VBAT, C84 VMOT, 10 uF GRM155R60J106ME15 | make_netlist.py, symbols.csv, parts.csv, bom.cs
+design/ecad/ring/make_netlist.py:393: two('C84', 'C', '10uF', 'GRM155R60J106ME15', 'ring:C_0402', K, 'VMOT', 'GND')
+design/ecad/ring/make_netlist.py:430:     ('C84', 'U11 output and motor 10 uF (Jinlong 9-4 asks 2 uF or more)'),
+design/ecad/ring/pcb/fab/ring-pos.csv:58: "C84","10uF","Chip_0402",101.270000,-105.000000,90.000000,top
+design/ecad/ring/pcb/fab/ring-parts-list.csv:83: C84,10uF,Murata,GRM155R60J106ME15,0402,OpenRing:Chip_0402,yes,101.270000,-105.00000
+design/ecad/ring/pcb/fab/ring-pos-front.csv:37: "C84","10uF","Chip_0402",101.270000,-105.000000,90.000000,top
+design/case/look/c5d_placement_pads_at_band_middle.csv:21: motor_cap_out,C84,board,1.200,5.000,1.180,1.000,0.500,0.500,,True,"10 uF 0402 at U11's output (VM

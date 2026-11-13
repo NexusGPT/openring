@@ -1,0 +1,51 @@
+== limit quotes (grep -n output, produced 2026-11-13 11:41:29)
+--- wiring/ring-board-plan.md line 295
+- Line on L1, reference L2 (h 0.065 mm): **width 0.120 mm** (calculation gives 0.117 mm for 50.0 ohm; at 0.120, 49.3 ohm; effective dielectric constant 3.14). Copper of L1 beside it kept 0.200 mm away (more than 3 h = 0.195, so the formula of a plain microstrip holds). L2 solid ground under the whole line and 0.50 mm each side; no L2 track crosses under it. Ground stacks L1-L4 on both sides every 1.0 mm, 0.30 mm from the line edge.
+--- wiring/ring-board-plan.md line 301
+- Pair on L1, reference L2 solid: **track 0.100, gap 0.075 inside the pair: 91.5 ohm differential, 54.4 ohm each line** (zcalc.py). Target 90 ohm.
+--- wiring/ring-board-plan.md line 303
+- Length match inside the pair: 0.10 mm or less (my rule). No via in the pair. Stub to U9: through its pads (flow-through), no branch.
+--- wiring/ring-board-plan.md line 311
+- 32 MHz (X1 at 3.0, 3.0, PLACE): XC1 (A2) and XC2 (A1) on L3, between the L2 ground and the L4 plane, width 0.100, 0.20 mm from any other L3 copper, length 6.0 mm or less each, the two lengths within 0.5 mm. Path (a.3 rows A1, A2): south inside the body along X 2.698 and X 3.024, out through the H1 and H2 sites, into X1 pads 1 and 3 by stacked vias L3-L2-L1 in the X1 pads (about 3.5 to 4.5 mm). L1 copper under X1: ground only.
+--- wiring/ring-board-plan.md line 312
+- 32.768 kHz (X2 at 6.0, 3.0, moved from 5.5, h.1): XL1 (B6) and XL2 (B7) leave on L2 north (a.3), turn at Y -1.6, cross to L3 by a microvia L2-L3 0.3 mm outside the body, run east of the body and south on L3 to X2 pads 1 and 2 (stacked vias in the pads). Width 0.100, 0.20 mm from any other copper of the same layer, length 9 mm or less each.
+--- wiring/ring-board-plan.md line 489
+| Impedance | RF 50 ohm at 0.120 mm; USB 90 ohm at 0.100 / 0.075 (d) | TDR on the maker's coupons (one RF line, one pair, built with the board); if outside +-10 percent, the width is changed on the next lot by the ratio the coupon gives |
+--- wiring/ring-board-plan.md line 519
+1. **ANT1 at (-10.80, 5.25), rotation 180** (was (-11.50, 5.25)). Reason (builder's test build and my own check): at -11.50 the far-end edge land (X -13.50 to -12.50, Y 5.60 to 6.20) is cut by the board's 0.8 mm corner arc (centre (-12.80, 5.50); KiCad copper to edge 0.000). At -10.80 the land corner (-12.80, 6.20) is 0.70 mm from the arc centre: copper to edge exactly 0.10, the rule's value (`check_placement.py` passes it at equality, as KiCad's rules check does). Pins (library footprint, rotation 180, `probe_rot.py`): pin 1 FEED at (-9.30, 5.90); pin 4 GND at (-9.30, 4.60) with its ground stack at (-8.50, 4.20); pins 2 and 3 at X -12.30 to LT1.
+--- ecad/motor-drive/motor-drive.md line 11
+- The motor. Jinlong W0525AB001D: rated 3.0 V [W0525 p6, 3-1-1]; operating 2.7 to 3.3 V [W0525 p5, 2-3-1]; rated current below 80 mA [W0525 p6, 3-1-4]; starting current below 175 mA, rotor held, at operating voltage [W0525 p6, 3-1-5]; starting voltage below 2.5 V [W0525 p6, 3-1-6]; 0.25 G average on a 100 g jig at 3.0 V [W0525 p6, 3-2-1]. It has its own drive IC and Hall sensor [W0525 p8, circuit description and part list items 3 and 10]. The spec states no start time: a search of the whole text for time, ms, rise, start, pulse, PWM, frequency and duty gives 13 hits, the start current and voltage rows and the life, humidity and drop test times, none a start time (`search_w0525_time.log`).
+--- ecad/motor-drive/motor-drive.md line 46
+- U11 output 3.0 V, accuracy +-1.2 % in the DQN package [TLV755P p5]: 2.964 to 3.036 V [budget VMOT_MIN, VMOT_MAX], inside the motor's 2.7 to 3.3 V [W0525 p5]. No Q1 drop any more (today 0.7 ohm [bom.csv line 45] costs up to 0.12 V at a start, architecture 17.16).
+--- ecad/band/band-interface.md line 103
+- SW1, SW3, SW4, SW5 use only the two lands of one side (terminals 3 = signal, 4 = GND on the footprint). Terminals 1 and 2 are not soldered: Alps' circuit diagram joins 1 to 3 and 2 to 4 inside the part, so nothing is lost. Why: the head is 6.4 wide (thin.py line 67, stiffener 6.4 x 6.4) and the outer switch lands would lie 0.15 mm from the cut edge; the copper to edge rule is 0.30. The check script counts only the soldered terminals (check_band.py `present`).
+--- ecad/band/band-interface.md line 111
+- Tab P+ (PRT1 pad 1) = cell positive after protection = ring netlist BT1 pin 1, net VBAT, FLEX2 land 1 of J_BAND_B (CELL+).
+--- ecad/band/band-interface.md line 112
+- Tab P- (PRT1 pad 2) = cell negative after protection = ring netlist BT1 pin 2, net GND, FLEX2 land 2 (CELL-).
+--- ecad/band/band-interface.md line 113
+- Tab NTC (PRT1 pad 3) = RT1 pin 1, net NTC, FLEX2 land 3.
+--- ecad/band/band-interface.md line 132
+- Current: motor start 175 mA (motor-drive.md; Jinlong W0525 pages 5 and 6), the cell gives 227.5 mA at 3.30 V at a start with every other load on (motor-drive.md section 2.5). Lines VMOT and GND to the motor are 0.20 wide (12 um copper): 0.00717 ohm per mm (rho 1.72e-5 ohm mm / (0.20 x 0.012)). Longest size, US 13: VMOT 6.90 mm, drop 8.7 mV at 175 mA; GND 10.30 mm, drop 12.9 mV. Total at a start 21.6 mV, against the motor's 2.7 to 3.3 V window and U11's 3.0 V +-1.2 percent (motor-drive.md): the motor still gets 2.96 V minus 0.022 V = 2.94 V at worst. Current capacity: IPC-2221 external layer, 0.20 x 0.012 mm, 10 K rise: 0.343 A, which is 1.96 times the start current (band_calc.log). The lan
+--- ecad/band/band-interface.md line 133
+- Cell lines VBAT and GND on FLEX2, 0.20 wide, 227.5 mA: longest (US 13) 6.74 mm VBAT, drop 11.0 mV, GND 7.64 mm, 12.5 mV (band_calc.log).
+--- sim/circuit/pass-lines.md line 21
+| R1.7 | motor.vmot_min_spec | >= | 2.7 | V | Jinlong W0525AB001D spec p5 item 2-3-1 operating voltage 2.7 to 3.3 V (as read in ecad/motor-drive/motor-drive.md section 1) |
+--- sim/circuit/pass-lines.md line 45
+| R3.1 | charge.icc_min | >= | 0.0135 | A | nPM1304 p29 ICHG 15 mA set (lead decision 65) minus ICHGACC 10 percent; CC region = cell open-circuit 3.0 to 4.0 V, Rcell 0.5 to 3 ohm |
+--- sim/circuit/pass-lines.md line 50
+| R3.6 | charge.vbus_chip_min | >= | 4.0 | V | nPM1304 p13 Table 6 VBUSOP minimum 4.0 V, at the chip's VBUS balls, case VBUS 5.0 V, contact path resistance 0 to 2 ohm (stated range, no file gives it) |
+--- sim/circuit/pass-lines.md line 108
+| C1.3 | vring.ilimit_short_min | >= | 0.400 | A | current limit of U5 into a short, nominal R5 from parts.csv, IOSmin equation p17 of the TPS2553 sheet; the lead's brief names 401 mA, the equation gives 400.6 mA at exactly 59.0 kohm, so 0.400 is the whole-number floor |
+--- sim/circuit/pass-lines.md line 110
+| C1.5 | vring.v_at_load_min | >= | 4.0 | V | VRING with a 0.39 A load (just under the guaranteed limit) and the cell at 3.0 V; limit as C1.1 |
+--- sim/circuit/pass-lines.md line 113
+| C2.2 | charge.ichg_reg_default | <= | 0.350 | A | BQ25895 power-on charge current 2.048 A (p36) against the cell's allowed maximum 0.5 C = 350 mA (cell sheet p1) |
+--- sim/circuit/sim-notes.md line 70
+| case1 boost | cell (3.0 to 4.2 V, 60 mohm), BQ25895 boost (5.126 V, accuracy plus or minus 3 percent), U5 with R5 from parts.csv, C2, C3, C15, C16, R12, R13, U6 | VRING 4.972 V to 5.280 V at no load; 4.901 V with 0.39 A, cell 3.0 V; current into a short 400.6 mA (minimum corner), 445.8 mA (nominal), 497.4 mA (maximum corner): the "401 mA" of the brief is the minimum corner; VRING_SENSE 1.688 V |
+--- architecture.md line 45
+| Power chip | nPM1304, 35-ball CSP (package code CA) | Nordic | 3.1 x 2.4 | charger 4 to 100 mA in 0.5 mA steps, set to 15 mA; termination 3.6 to 4.65 V in 50 mV steps, 4.35 V used; the buck, load switch and ship mode figures below are those of the nPM1300 and are not confirmed for the nPM1304 (S18): 2 buck outputs 200 mA each, 1.0 to 3.3 V, load switches 100 mA, ship mode 370 nA | [SOURCED] section 17.13 (`design/parts/research-npm1304.md`); before 17.13: nPM1300 with a charger of 32 to 800 mA, which could not be set to 15 mA; pin table to read (action 12.2, S18). Nordic's reference configuration 1 sets the bucks to 1.8 V and 3.0 V with VSET1 47 kilo-ohm and VSET2 150 kilo-ohm |
+--- ecad/case/pcb/power_width.py line 3
+1 oz copper = 1.378 mil (35 um) outer, inner layers in the JLCPCB stack-up 0.5 oz default = 0.69 mil (page w5_jlcpcb_capabilities.html: 'Finished copper weight of inner layer is 0.5oz by default').
+--- ecad/case/pcb/build_boards.py line 61
+WIRE_ENDS = {"WP1": "W1", "WP2": "W2", "WP3": "W3", "WP4": "W4", "WP7": "W7"}

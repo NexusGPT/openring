@@ -1,0 +1,22 @@
+# remote.sh run 20261112-200754-s5-regress-1
+# command: mkdir -p /ws/out/s5-reg1 && for t in iphone screens control; do RING_OUT=/ws/out/s5-reg1/bsim-$t bash tests/bsim/$t/run.sh > /ws/out/s5-reg1/bsim-$t.log 2>&1; echo "bsim-$t exit $?"; tail -2 /ws/out/s5-reg1/bsim-$t.log; done; west twister -T tests -p native_sim -O /ws/out/s5-reg1/tw-native -j 8 --inline-logs -v > /ws/out/s5-reg1/tw-native.log 2>&1; echo "twister native_sim exit $?"; grep -E "executed test (cases|configurations)" /ws/out/s5-reg1/tw-native.log
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 20:07:54 CET
+# free on the server's /: 44 GB
+# source firmware copied to /root/ring-os/src-os-relay
+# started on the server as 20261112-200754-s5-regress-1; server log /root/ring-os/logs/20261112-200754-s5-regress-1.log
+bsim-iphone exit 0
+TEST W RESULT PASS (13 checks passed)
+RESULT PASS
+bsim-screens exit 0
+TEST S RESULT PASS (38 checks passed)
+RESULT PASS
+bsim-control exit 0
+TEST T RESULT PASS (22 checks passed)
+RESULT PASS
+twister native_sim exit 0
+INFO    - 9 of 9 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 68.37 seconds.
+INFO    - 345 of 345 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+# finished (Mac clock): 2026-11-12 20:14:32 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step5/20261112-200754-s5-regress-1.log

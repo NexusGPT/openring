@@ -1,0 +1,51 @@
+design/.venv/lib/python3.12/site-packages/fitz/__init__.py:17: FutureWarning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+  warnings.warn(
+FAIL section 7: LCD_TE ball D6 is on net None
+FAIL section 7: OLED_PWR_EN ball E9 is on net None
+FAIL section 7: SPARE_P1_02 ball F8 is on net None
+FAIL section 7: SPARE_P1_14 ball F4 is on net 'LCD_TE'
+FAIL section 7: SPARE_P1_30 ball F9 is on net 'OLED_PWR_EN'
+FAIL section 7 42 of 47
+ok   CP1 on VBUS
+ok   CP2 on USB_DN
+ok   CP3 on USB_DP
+ok   CP4 on GND
+ok   P3.05 (G4) is not connected (W2 round 2): None []
+info bom.csv now differs from the snapshot (not a failure): only in live ['C61', 'C71', 'C72', 'C73', 'C74', 'C75', 'C76', 'C77', 'C78', 'C79', 'C80', 'C81', 'C82', 'C83', 'C84', 'C85', 'C86', 'C87', 'C88', 'C89', 'CAP1', 'CP1', 'CP2', 'CP3', 'CP4', 'DAM1', 'FLEX1', 'FLEX2', 'FRM1', 'J_BAND_A', 'J_BAND_B', 'L71', 'L72', 'LNR1', 'LT1', 'PRT1', 'R61', 'R62', 'R63', 'R64', 'R65', 'R66', 'RT1', 'SEAL1', 'SEAL2', 'SW3', 'SW4', 'SW5', 'TP17', 'TP18', 'TP19', 'TP21', 'U10', 'U11', 'U9'], only in snapshot ['C33', 'C34', 'C37', 'C38', 'CBL1', 'D1', 'LED1', 'NPM-REF', 'Q1', 'Q2', 'R33', 'R34', 'R41', 'R51', 'R52', 'R53', 'R54', 'R55', 'R56', 'TP10', 'TP13', 'TP2', 'TP7', 'U7', 'U8', 'W1', 'W2', 'W3', 'W4']
+ok   designators: 96 bom electrical, 110 placed, 32 not placed (listed), 45 added
+ok   every pin of 110 parts appears exactly once (404 pin rows)
+ok   no single-pin net (84 nets)
+ok   rail VBAT source BT1.+
+ok   rail VDD_1V8 source U2.VOUT1
+ok   rail VDD_MIC source U2.LSOUT1/VOUTLDO1
+ok   rail VDD_3V0 source U2.VOUT2
+ok   rail VDD_SD source U2.LSOUT2/VOUTLDO2
+ok   rail ELVDD source U4.OVDD
+ok   rail ELVSS source U4.OVSS
+ok   rail VBUS source CP1.1
+ok   U5 SELECT on GND
+ok   U6 SELECT on VDD_MIC
+ok   H8 connects only to C10, to GND
+ok   A7-3 two SPK0641HT4H-1, 8 pins equal the Knowles table (1 DATA, 2 CLOCK, 3 SELECT, 4 Vdd, 5-8 GROUND all on GND), U5 SELECT GND, U6 SELECT VDD_MIC, CLOCK on MIC_A_CLK F1, DATA through R31 R32 to MIC_A_DATA F2, C31 C32 C35 C36, C35 C36 Class 1, no microphone pin open
+ok   A5-2 U7 U8 R33 R34 C33 C34 C37 C38 absent; E6 (MIC_B_CLK) not connected (W2) and D7 MIC_B_DATA reaches only test pad TP21
+ok   A5-3 no SKRHADE010; SW1 UP, SW3 DOWN, SW4 LEFT, SW5 RIGHT each line to GND, each line holds only U1, one flex tail and its switch (no pull-up, no protection part, as the old lines)
+ok   A5-4 JOY_CENTER (H4) not connected, TP22 removed (W2 round 2)
+ok   A5-5 SW2 SKTAAAE010 (joystick centre switch) BTN_REC (H2) to GND, no EVPAVAA1A, 5 SKTAAAE010 in all
+ok   A7-2 M1 W0525AB001D on VMOT and GND; U11 TLV75530PDQNR (1 OUT VMOT, 2 GND, 3 EN MOT_EN, 4 IN VBAT, pad GND); R61 MOTOR-MOT_EN 100R, R62 MOT_EN-GND 100k; C83 VBAT, C84 VMOT 10uF; Q1, D1, MOTOR_DRV, MOTOR_G absent
+ok   A5-7 U3 CSNP32GCR01-BOW, 8 pads numbered as the maker table (p5), W3 wiring and 4 pull-ups
+ok   A5-8 J1 FH35C-15S-0.3SHW(50) 15 positions = DISP1 15 contacts in the printed order ELVSS,ELVDD,MTP,VCI,IOVCC,SWIRE,TE,RESX,CS,SCL,RS,SDA,GND,GND,GND; pins 3 and 4 closed (Tailor drawing p5)
+ok   A6-9 J_BAND_A 8 pads and J_BAND_B 7 pads equal the BAND_SPLIT table; joystick lines, SW2 and VMOT on one tail, cell/NTC/VBUS/D-/D+ on the other, only GND on both, two GND pads on A; every pin of SW1-SW5, M1, BT1, RT1, CP1-CP4 is on a net with a tail pad; J2 J3 W1-W10 absent
+ok   A8-10 rev A8 (design v7) in 9 sheet files and on all 9 PDF pages
+ok   A7-1 U2 nPM1304-CAAA-R7: 35 balls equal npm1304-balls.csv (Table 33 p153), no P<n> placeholder, no GPIO4, no U2 row in open-pins.csv, every ball on its A6 net
+ok   A7-4 C71 1.0 uF 25 V on VBUS (not the 6.3 V part), C85 2.2 uF on VBAT, C86 1.0 uF on VDD_MIC, C87 1.0 uF on VDD_SD, three 10 uF on VSYS (C74, C75, C88)
+ok   A8-1 no LED1, R41, Q2, LG1, LP1 in parts, netlist, bom.csv, additions or open pins; no LED symbol, no LED_A/LED_K net, no test pad or spare pin for a light; VDD_MIC holds only U2, U5, U6, C31, C32, C35, C36, C86; no line names the light except lines saying "removed in v7"
+ok   A8-2 bom.csv: CAP1 round 4.40 mm cap in Makrolon 2407 901510 (custom moulded part), FRM1 Ti-6Al-4V frame 5.40/4.80/1.30 bonded with DP420, HSG1 round 5.6 mm opening, SW1 up, SW3 down, SW4 toward the hand, SW5 toward the fingertip, SW2 1.0 s long press; no older joystick shape (the shapes removed in v7)
+ok   A7-8 BT1 20 to 27 mAh at US 9 with 17.6 mAh at US 7 (netlist value and bom.csv key figures; architecture 17.26); only SW1 to SW5; U10, C81, C82 present (their wiring: A6-7)
+ok   A6-2 SW2 kept on BTN_REC; bom.csv keeps CAP1 and has no CAP2, record cap or record pill
+ok   A6-3 VBUS: the only source is the pad CP1 (the case); U2 VBUS and U1 (through R1) are inputs; VBUSOUT is a separate net not on a pad; D- and D+ hold only U1, U9, their pad and the tail (no resistor, no other driver)
+ok   A6-7 F07: SD_SCK, SD_MOSI, SD_CS, SD_MISO reach the card only through U10 (VCCA VDD_1V8, VCCB VDD_SD, DIR1-3 high, DIR4 low, OE low), pull-ups on the card side, U10 pin numbers equal the RSV column of the TI table
+ok   A7-6 microphone line names SPK0641HT4H-1 with SNR 64.5 dB(A) as the Knowles sheet 2 text, no IM68D128B
+ok   A6-5 no charge setting other than 15 mA and 4.35 V in bom.csv, parts.csv, additions.csv, open-pins.csv, netlist.csv, sch-notes.md (lines marked WAS: excepted)
+ok   KiCad export matches netlist.csv: 84 nets, 25 no-connect pins
+RESULT FAIL 6 netlist netlist.csv
+check_netlist exit 1

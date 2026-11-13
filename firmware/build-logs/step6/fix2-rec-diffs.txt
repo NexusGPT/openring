@@ -1,0 +1,599 @@
+##### modules/ring_recorder/src/rrec.c
+--- base/modules/ring_recorder/src/rrec.c
++++ modules/ring_recorder/src/rrec.c
+@@ -278,3 +278,8 @@
+  * the records must not lengthen the store's own work. */
++/* Fix round 2 (review 2, R2-01 to R2-03): these are written only under the glue's lock (inside a core step: the actions,
++ * rrec_glue_after; the retry is an empty core step, rrec_unmount_retry). */
+ static uint8_t unmount_tries;   /* tries made since the first failed one (0: none failed) */
++static int unmount_ep_err;      /* the last errno of this episode (R2-02); 0 outside an episode */
++static bool step_unmount_tried; /* this step already waited once for the unmount (R2-03) */
++static bool step_finish_waited; /* this step already waited once for the transfer command (R2-03) */
+ 
+@@ -296,2 +301,3 @@
+ 		unmount_tries = 0;
++		unmount_ep_err = 0;
+ 	}
+@@ -308,2 +314,3 @@
+ 	r = rst_unmount_wait(FINISH_WAIT_MS);
++	step_unmount_tried = true;
+ 	if (unmount_tries != 0 && unmount_tries < UINT8_MAX) {
+@@ -312,2 +319,3 @@
+ 	if (r == -EBUSY) {
++		unmount_ep_err = r;   /* this episode's last errno */
+ 		if (unmount_tries == 0) {
+@@ -323,3 +331,50 @@
+ 
+-static int unmount_last_err = -EBUSY;   /* the answer of the last try (rrec_unmount_retry) */
++/* ship mode's unmount (FW l.937, R2-04): outside a core step, so it uses no counter of the steps' episode. If the
++ * storage cannot be unmounted within its wait, USB is closed first and the unmount is tried once more; ship mode goes on
++ * in any case, with 0x0290 logged (try 1 at the failure, then the second try's answer with try 2). */
++static int ship_unmount(bool *usb_closed)
++{
++	int r;
++
++	*usb_closed = false;
++	if (!rst_mounted()) {
++		return 0;
++	}
++	r = rst_unmount_wait(FINISH_WAIT_MS);   /* ship: the first try */
++	if (r == -EBUSY) {
++		unmount_record(r, 1);
++		(void)rxf_stop(FINISH_WAIT_MS);  /* USB first: the command that holds the store is aborted */
++		*usb_closed = true;
++		r = rst_unmount_wait(FINISH_WAIT_MS);   /* ship: the second try, USB closed */
++		unmount_record(r, 2);
++	}
++	return r;
++}
++
++/* the wait for the screen in ship mode (FW l.937, R2-05): rscr_sync() on a work queue of its own, waited for at most
++ * RREC_SHIP_SCREEN_WAIT_MS; a stuck screens thread never stops ship mode */
++static K_THREAD_STACK_DEFINE(sync_stack, 1024);
++static struct k_work_q sync_q;
++static bool sync_q_started;
++static K_SEM_DEFINE(sync_done, 0, 1);
++
++static void sync_fn(struct k_work *w)
++{
++	ARG_UNUSED(w);
++	rscr_sync();
++	k_sem_give(&sync_done);
++}
++static K_WORK_DEFINE(sync_work, sync_fn);
++
++static int screen_wait(void)
++{
++	if (!sync_q_started) {
++		k_work_queue_init(&sync_q);
++		k_work_queue_start(&sync_q, sync_stack, K_THREAD_STACK_SIZEOF(sync_stack), CONFIG_RING_RECORDER_PRIO, NULL);
++		sync_q_started = true;
++	}
++	k_sem_reset(&sync_done);
++	(void)k_work_submit_to_queue(&sync_q, &sync_work);
++	return k_sem_take(&sync_done, K_MSEC(RREC_SHIP_SCREEN_WAIT_MS));
++}
+ 
+@@ -360,7 +415,15 @@
+ 	/* step 1 (FW l.937, R6-02): close everything: recording, storage, USB, radio, screen */
++	/* not reached in the product: every row into SHIP or OFF from RECORDING has "close" before "ship mode" (FW l.165),
++	 * so no recording is open here; kept as the last guard (review 2, note R2-11) */
+ 	if (rrec_st.recording) {
+-		(void)rrec_close(rhw_clock()->now_ms());   /* the rows close it before; kept as the last guard */
+-	}
+-	(void)unmount_now();                     /* storage closed (the queued log records are written first) */
+-	(void)rxf_stop(FINISH_WAIT_MS);          /* USB: the command aborted, the stack disabled */
++		(void)rrec_close(rhw_clock()->now_ms());
++	}
++	{
++		bool usb_closed;
++
++		(void)ship_unmount(&usb_closed);         /* storage closed (R2-04: USB first when it cannot be) */
++		if (!usb_closed) {
++			(void)rxf_stop(FINISH_WAIT_MS);  /* USB: the command aborted, the stack disabled */
++		}
++	}
+ 	if (rrec_st.usb_hfxo) {
+@@ -380,3 +443,3 @@
+ #endif
+-	rscr_sync();                             /* screen: the screens thread drew SCR_OFF (panel off) for SHIP or OFF */
++	(void)screen_wait();                     /* screen: SCR_OFF drawn for SHIP or OFF, waited for at most 1,000 ms */
+ #if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
+@@ -393,14 +456,22 @@
+ 
+-/* the recorder's thread: a failed unmount tried again (RREC_JOB_UNMOUNT) while the state still wants VDD_SD off */
++#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
++static void (*retry_hook)(void);
++
++void rrec_test_set_retry_hook(void (*fn)(void))
++{
++	retry_hook = fn;
++}
++#endif
++
++/* the recorder's thread: a failed unmount tried again (RREC_JOB_UNMOUNT). R2-01: the retry is an empty core step (an
++ * event the core ignores), so rrec_glue_after decides from the state and unmounts under the glue's lock; a step to
++ * RECORDING can never come between the decision and the unmount. */
+ void rrec_unmount_retry(void)
+ {
+-	enum rc_state s = rrec_core_state();
+-
+-	if (s == RC_ST_RECOVERY || s == RC_ST_RECORDING || s == RC_ST_TRANSFER || s == RC_ST_BOOT ||
+-	    s == RC_ST_FACTORY_TEST) {
+-		/* the state wants the card (or runs its own sequence): the tries end with the last errno */
+-		unmount_tries_end(unmount_last_err);
+-		return;
+-	}
+-	unmount_last_err = unmount_now();
++#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
++	if (retry_hook != NULL) {
++		retry_hook();
++	}
++#endif
++	rglue_event(RC_EV_COUNT);   /* the decision and the unmount in rails_follow_state, under the glue's lock */
+ }
+@@ -502,3 +573,6 @@
+ 	case RC_ACT_FINISH_COMMAND:
+-		(void)rxf_finish(FINISH_WAIT_MS);
++		if (!step_finish_waited) {       /* once per step (R2-03) */
++			step_finish_waited = true;
++			(void)rxf_finish(FINISH_WAIT_MS);
++		}
+ 		break;
+@@ -508,3 +582,6 @@
+ 		rxf_abort();
+-		(void)rxf_finish(FINISH_WAIT_MS);
++		if (!step_finish_waited) {       /* once per step (R2-03) */
++			step_finish_waited = true;
++			(void)rxf_finish(FINISH_WAIT_MS);
++		}
+ 		break;
+@@ -553,5 +630,9 @@
+ 		if (sd_wanted(s)) {
++			/* the state wants the card again: an open episode ends with its own last errno (R2-02) */
++			unmount_tries_end(unmount_ep_err);
+ 			(void)mount_now();
+-		} else if (rst_mounted()) {
+-			(void)unmount_now();
++		} else if (!rst_mounted()) {
++			unmount_tries_end(0);    /* unmounted meanwhile: the episode ended with VDD_SD off */
++		} else if (!step_unmount_tried) {
++			(void)unmount_now();     /* once per step: a failure is tried again by the retry job (R2-03) */
+ 		}
+@@ -663,2 +744,4 @@
+ 	}
++	step_unmount_tried = false;      /* the step ends: its waits are counted again in the next one (R2-03) */
++	step_finish_waited = false;
+ 	on = rscr_glue_after(a, last_event, state, t);
+@@ -792,3 +875,6 @@
+ 	unmount_tries = 0;
+-}
+-#endif
++	unmount_ep_err = 0;
++	step_unmount_tried = false;
++	step_finish_waited = false;
++}
++#endif
+##### modules/ring_recorder/src/rrec_bridge.c
+--- base/modules/ring_recorder/src/rrec_bridge.c
++++ modules/ring_recorder/src/rrec_bridge.c
+@@ -95,4 +95,10 @@
+ 		}
++		struct job j = latch_job[b];
++
++		if (b == LB_VBUS_OUT) {
++			/* R2-06: the VBUS level read now, so that a late VBUS job never undoes a later change */
++			j.arg = rhw_pmic()->vbus_present() ? RC_EV_VBUS_IN : RC_EV_VBUS_OUT;
++		}
+ 		(void)atomic_inc(&posted);
+-		if (k_msgq_put(&job_q, &latch_job[b], K_NO_WAIT) == 0) {
++		if (k_msgq_put(&job_q, &j, K_NO_WAIT) == 0) {
+ 			(void)atomic_and(&latched, ~BIT(b));
+##### modules/ring_recorder/src/rrec_int.h
+--- base/modules/ring_recorder/src/rrec_int.h
++++ modules/ring_recorder/src/rrec_int.h
+@@ -147,2 +147,4 @@
+ void rrec_test_set_ship_hook(void (*fn)(void));
++/* Called on the recorder's thread at the start of every unmount retry job (before its core step); NULL clears. */
++void rrec_test_set_retry_hook(void (*fn)(void));
+ /* rdev_stop() calls made by ship mode step 1 since boot (the radio, FW l.937), and the last one's answer */
+##### modules/ring_rhw/include/ring_rhw/rrec_spec.h
+--- base/modules/ring_rhw/include/ring_rhw/rrec_spec.h
++++ modules/ring_rhw/include/ring_rhw/rrec_spec.h
+@@ -307,2 +307,3 @@
+ #define RREC_SHIP_RETRY_MS            1000u       /* FW l.941: still running 1 s after the ship task: log, retry once */
++#define RREC_SHIP_SCREEN_WAIT_MS      1000u       /* FW l.937 [CHOICE]: the wait for the screen to blank in ship mode, at most */
+ #define RREC_ILIM_SCREEN_MS           10000u      /* FW l.992 */
+##### tests/recorder/broken_edit.py
+--- base/tests/recorder/broken_edit.py
++++ tests/recorder/broken_edit.py
+@@ -97,2 +97,40 @@
+         "\t\tr = rst_open(RREC_REC_TYPE_RECORDING, 0, &id);   /* type 1: wrong */\n"),
++    # ----- step 6 fix round 2 (review 2, findings R2-01 to R2-08), one copy each
++    # R2-01: the retry decides from the state, then unmounts outside the glue's lock (the code of round 1)
++    "retry_outside_lock": (REC, "recorder_unmount.test_retry_never_takes_the_card", "test_unmount",
++        "\tif (retry_hook != NULL) {\n\t\tretry_hook();\n\t}\n#endif\n"
++        "\trglue_event(RC_EV_COUNT);   /* the decision and the unmount in rails_follow_state, under the glue's lock */\n",
++        "\t{\n\t\tenum rc_state s = rrec_core_state();\n\n"
++        "\t\tif (s == RC_ST_RECOVERY || s == RC_ST_RECORDING || s == RC_ST_TRANSFER || s == RC_ST_BOOT ||\n"
++        "\t\t    s == RC_ST_FACTORY_TEST) {\n\t\t\treturn;\n\t\t}\n"
++        "\t\tif (retry_hook != NULL) {\n\t\t\tretry_hook();\n\t\t}\n\t\t(void)unmount_now();\n\t}\n#endif\n"),
++    # R2-02: the episode's errno is not kept: the end record carries a 0 left from before
++    "end_errno_stale": (REC, "recorder_unmount.test_episode_end_keeps_its_errno", "test_unmount",
++        "\t\tunmount_ep_err = r;   /* this episode's last errno */\n",
++        ""),
++    # R2-03: the rails' pass of the same step waits again for the unmount
++    "rails_tries_again": (REC, "recorder_unmount.test_one_wait_each_per_step", "test_unmount",
++        "\t\t} else if (!step_unmount_tried) {\n",
++        "\t\t} else if (true) {\n"),
++    # R2-04: ship mode closes the storage before USB and does not try again (the code of round 1)
++    "ship_storage_before_usb": (REC, "recorder_ship.test_ship_closes_usb_before_second_unmount", "test_ship",
++        "\t\tunmount_record(r, 1);\n\t\t(void)rxf_stop(FINISH_WAIT_MS);  /* USB first: the command that holds the store is aborted */\n"
++        "\t\t*usb_closed = true;\n\t\tr = rst_unmount_wait(FINISH_WAIT_MS);   /* ship: the second try, USB closed */\n\t\tunmount_record(r, 2);\n",
++        "\t\tunmount_record(r, 1);\n"),
++    # R2-05: the screen is waited for without a bound
++    "screen_wait_forever": (REC, "recorder_ship.test_ship_with_stuck_screens_goes_on", "test_ship",
++        "\treturn k_sem_take(&sync_done, K_MSEC(RREC_SHIP_SCREEN_WAIT_MS));\n",
++        "\treturn k_sem_take(&sync_done, K_FOREVER);\n"),
++    # R2-06: a latched VBUS job keeps the event it was latched with
++    "latched_vbus_stale": (BRIDGE, "recorder_actions.test_latched_vbus_follows_the_level", "test_actions",
++        "\t\t\tj.arg = rhw_pmic()->vbus_present() ? RC_EV_VBUS_IN : RC_EV_VBUS_OUT;\n",
++        "\t\t\t(void)j;\n"),
++    # R2-07: the factory's test recordings last twice as long (T-SIGN asks for 1 s)
++    "tsign_2s": (REC, "recorder_factory.test_tsign_reports_mic_times", "test_factory",
++        "\tk_sleep(K_MSEC(ms + RREC_DISCARD_MS));\n",
++        "\tk_sleep(K_MSEC(2 * ms + RREC_DISCARD_MS));\n"),
++    # R2-08: after "abort the command" the join does not wait for the command to end (FW l.179)
++    "abort_no_wait": (REC, "recorder_unmount.test_vbus_out_during_read_command", "test_unmount",
++        "\t\trxf_abort();\n\t\tif (!step_finish_waited) {       /* once per step (R2-03) */\n",
++        "\t\trxf_abort();\n\t\tif (false) {\n"),
+ }
+##### tests/recorder/src/rt.c
+--- base/tests/recorder/src/rt.c
++++ tests/recorder/src/rt.c
+@@ -92,3 +92,11 @@
+ 	n_steps++;
+-	return rrec_glue_after(a, ev, st, t);
++	{
++		uint32_t i = n_steps - 1;
++		bool r = rrec_glue_after(a, ev, st, t);
++
++		if (i < STEPS_MAX) {
++			steps[i].t_end_ms = k_uptime_get();
++		}
++		return r;
++	}
+ }
+##### tests/recorder/src/rt.h
+--- base/tests/recorder/src/rt.h
++++ tests/recorder/src/rt.h
+@@ -79,2 +79,3 @@
+ 	int64_t t_ms;
++	int64_t t_end_ms;         /* when the step's after-call (the join's rrec_glue_after) returned */
+ };
+##### tests/recorder/src/test_actions.c
+--- base/tests/recorder/src/test_actions.c
++++ tests/recorder/src/test_actions.c
+@@ -385,2 +385,28 @@
+ 	rt_fresh(NULL);
++	rt_long();
++	zassert_equal(rt_state(), RC_ST_RECORDING, "recording");
++	rt_steps_clear();
++	zassert_not_equal(fill_queue_then_post(RC_EV_MIC_NO_BLOCK), 0, "the queue was full");
++	rt_settle();
++	zassert_true(rt_row_seen(37), "row 37: no block reached the core (FW l.169)");
++	zassert_equal(rt_state(), RC_ST_ERR_MIC_FAULT, "ERR_MIC_FAULT");
++
++	rt_fresh(NULL);
++	rt_long();
++	zassert_equal(rt_state(), RC_ST_RECORDING, "recording");
++	rt_steps_clear();
++	zassert_not_equal(fill_queue_then_post(RC_EV_CHUNK_WRITE_FAILED), 0, "the queue was full");
++	rt_settle();
++	zassert_true(rt_row_seen(36), "row 36: the write fault reached the core (FW l.168)");
++	zassert_equal(rt_state(), RC_ST_ERR_STORAGE_FAULT, "ERR_STORAGE_FAULT");
++}
++
++/* Review 2, R2-06: a latched VBUS job is queued with the event of the VBUS level read when it is queued: VBUS out is
++ * latched (full queue), then VBUS comes back (its event finds the queue still full); the core must end with VBUS present
++ * (CHARGING, FW l.152), never with a late "VBUS removed" (row 40, FW l.172) while VBUS is there */
++ZTEST(recorder_actions, test_latched_vbus_follows_the_level)
++{
++	int r_in;
++
++	rt_fresh(NULL);
+ 	rt_vbus(true);
+@@ -388,24 +414,12 @@
+ 	rt_steps_clear();
+-	zassert_not_equal(fill_queue_then_post(RC_EV_VBUS_OUT), 0, "the queue was full");
+-	rt_settle();
+-	zassert_true(rt_row_seen(40), "row 40: VBUS removed reached the core (FW l.172)");
+-	zassert_equal(rt_state(), RC_ST_STANDBY, "STANDBY");
+-
+-	rt_fresh(NULL);
+-	rt_long();
+-	zassert_equal(rt_state(), RC_ST_RECORDING, "recording");
+-	rt_steps_clear();
+-	zassert_not_equal(fill_queue_then_post(RC_EV_MIC_NO_BLOCK), 0, "the queue was full");
+-	rt_settle();
+-	zassert_true(rt_row_seen(37), "row 37: no block reached the core (FW l.169)");
+-	zassert_equal(rt_state(), RC_ST_ERR_MIC_FAULT, "ERR_MIC_FAULT");
+-
+-	rt_fresh(NULL);
+-	rt_long();
+-	zassert_equal(rt_state(), RC_ST_RECORDING, "recording");
+-	rt_steps_clear();
+-	zassert_not_equal(fill_queue_then_post(RC_EV_CHUNK_WRITE_FAILED), 0, "the queue was full");
+-	rt_settle();
+-	zassert_true(rt_row_seen(36), "row 36: the write fault reached the core (FW l.168)");
+-	zassert_equal(rt_state(), RC_ST_ERR_STORAGE_FAULT, "ERR_STORAGE_FAULT");
++	zassert_not_equal(fill_queue_then_post(RC_EV_VBUS_OUT), 0, "the queue was full: VBUS out latched");
++	k_sched_lock();
++	r_in = rrec_post(RREC_JOB_EVENT, RC_EV_VBUS_IN);   /* VBUS is back (it never left the simulated chip) */
++	k_sched_unlock();
++	rt_settle();
++	TC_PRINT("latched VBUS: VBUS in posted %d, row 40 seen %d, state %s, VBUS present %d\n", r_in, rt_row_seen(40),
++		 rc_state_name(rt_state()), rhw_pmic()->vbus_present());
++	zassert_true(rhw_pmic()->vbus_present(), "VBUS present");
++	zassert_false(rt_row_seen(40), "no late VBUS removed (row 40)");
++	zassert_equal(rt_state(), RC_ST_CHARGING, "CHARGING with VBUS present");
+ }
+##### tests/recorder/src/test_factory.c
+--- base/tests/recorder/src/test_factory.c
++++ tests/recorder/src/test_factory.c
+@@ -119,5 +119,9 @@
+ 	}
+-	/* each 1 s long (FW l.1029), the second 1 s after the first ended (FW l.1029) */
+-	zassert_true(rep[1] - rep[0] >= 1000, "first recording 1 s (%lld ms)", rep[1] - rep[0]);
+-	zassert_true(rep[3] - rep[2] >= 1000, "second recording 1 s (%lld ms)", rep[3] - rep[2]);
++	/* each 1 s long (FW l.1029), the second 1 s after the first ended (FW l.1029). From above too (review 2, R2-07):
++	 * VDD_MIC stays on for the 1 s kept, the 50 ms dropped at the start (FW l.460) and the close (the join's allowance of
++	 * 100 ms: the specification gives no number for it), so under 1,150 ms */
++	zassert_true(rep[1] - rep[0] >= 1000 && rep[1] - rep[0] < 1000 + RREC_DISCARD_MS + 100, "first recording 1 s (%lld ms)",
++		     rep[1] - rep[0]);
++	zassert_true(rep[3] - rep[2] >= 1000 && rep[3] - rep[2] < 1000 + RREC_DISCARD_MS + 100, "second recording 1 s (%lld ms)",
++		     rep[3] - rep[2]);
+ 	zassert_true(rep[2] - rep[1] >= 1000, "1 s apart (%lld ms)", rep[2] - rep[1]);
+##### tests/recorder/src/test_ship.c
+--- base/tests/recorder/src/test_ship.c
++++ tests/recorder/src/test_ship.c
+@@ -6,2 +6,4 @@
+ #include <string.h>
++
++#include <ring_store/rst.h>
+ 
+@@ -150,2 +152,105 @@
+ 
++/* ------------------------------------------------------------------ fix round 2 (review 2: R2-04, R2-05) */
++/* a store call that holds the store (as a transfer command would): GET_LOG's read of the log, which first writes the
++ * queued records, on a card stalling each write */
++static K_THREAD_STACK_DEFINE(holder_stack, 4096);
++static struct k_thread holder;
++static uint8_t holder_buf[RREC_GET_LOG_MAX_MAX * RREC_LOG_RECORD_BYTES];
++
++static void holder_fn(void *p1, void *p2, void *p3)
++{
++	uint16_t n = 0;
++
++	ARG_UNUSED(p1);
++	ARG_UNUSED(p2);
++	ARG_UNUSED(p3);
++	(void)rst_log_read(1, RREC_GET_LOG_MAX_MAX, holder_buf, &n);
++}
++
++/* FW l.937 (rulings after review 2): the storage cannot be unmounted within its wait (a store call holds it): USB is
++ * closed first, the unmount is tried once more, ship mode goes on, 0x0290 logged (try 1, then the second try, try 2) */
++ZTEST(recorder_ship, test_ship_closes_usb_before_second_unmount)
++{
++#if defined(CONFIG_RING_FACTORY)
++	static uint8_t resp[64];
++	uint8_t a[4] = { 0 };
++	uint8_t st;
++	uint8_t sub = RREC_FAC_SHIP_ENTER;
++	struct rt_boot b = { .factory_flag = true };
++	struct rrec_tap_rec t;
++	int64_t t_usb_off = -1, t_try2 = -1;
++	int32_t i_usb, i_cfg;
++
++	rt_fresh(&b);
++	rt_vbus(true);
++	rt_usb_configured();
++	(void)rt_usb(RREC_OP_FACTORY, (const uint8_t[]){ RREC_FAC_ENTER }, 1, resp, sizeof(resp), &st);
++	zassert_equal(rt_state(), RC_ST_FACTORY_TEST, "FACTORY_TEST");
++	zassert_true(rt_sd(), "the card is mounted (from TRANSFER)");
++	rhw_sim_log_clear();
++	rrec_tap_clear();
++	rhw_sim_disk_stall_ms(4000);   /* 6 records of 4 s each: the store is held about 24 s */
++	for (int i = 0; i < 6; i++) {
++		a[0] = (uint8_t)i;
++		rrec_log(RREC_LOG_BATTERY, a, sizeof(a));
++	}
++	k_thread_create(&holder, holder_stack, K_THREAD_STACK_SIZEOF(holder_stack), holder_fn, NULL, NULL, NULL, 5, 0,
++			K_NO_WAIT);
++	rt_sleep(100);
++	memset(&at_ship, 0, sizeof(at_ship));
++	rrec_test_set_ship_hook(ship_hook);
++	(void)rt_usb_send(RREC_OP_FACTORY, &sub, 1);
++	for (int i = 0; i < 400 && !at_ship.called; i++) {
++		rt_sleep(100);
++	}
++	rrec_test_set_ship_hook(NULL);
++	i_usb = rt_find(RHW_EV_USB_DISABLE, -1, -1, 0);
++	i_cfg = rt_find(RHW_EV_PMIC_SHPHLD_CFG, -1, -1, 0);
++	for (uint32_t k = 0; rrec_tap_get(k, &t); k++) {
++		if (t.code == RREC_LOG_UNMOUNT_FAILED && t.args[5] == 2 && t.args[4] == RC_ST_SHIP) {
++			t_try2 = t.t_ms;
++		}
++	}
++	t_usb_off = rt_ev_us(i_usb) / 1000;
++	TC_PRINT("ship storage: step 1 ended %d, USB disable at %lld ms, second try's record at %lld ms, SHPHLDCONFIG %d\n",
++		 at_ship.called, t_usb_off, t_try2, i_cfg);
++	zassert_true(at_ship.called, "ship mode went on");
++	zassert_true(i_cfg >= 0, "SHPHLDCONFIG written");
++	zassert_true(i_usb >= 0 && t_try2 >= 0 && t_usb_off <= t_try2, "USB closed before the second try, 0x0290 logged");
++	rt_row_cleanup(70);
++	(void)k_thread_join(&holder, K_SECONDS(60));
++	rhw_sim_disk_stall_ms(0);
++	rt_settle();
++#else
++	ztest_test_skip();
++#endif
++}
++
++/* FW l.937 (rulings after review 2): the wait for the screen is at most 1,000 ms; a stuck screens thread (here: the draw
++ * lock held, so it cannot draw) never stops ship mode */
++ZTEST(recorder_ship, test_ship_with_stuck_screens_goes_on)
++{
++	int64_t t0, t_cfg = -1;
++	int32_t i_cfg = -1;
++
++	rt_fresh(NULL);
++	rhw_sim_log_clear();
++	rscr_draw_lock();
++	t0 = k_uptime_get();
++	rglue_event(RC_EV_MENU_POWER_OFF);
++	for (int i = 0; i < 300 && i_cfg < 0; i++) {
++		rt_sleep(10);
++		i_cfg = rt_find(RHW_EV_PMIC_SHPHLD_CFG, -1, -1, 0);
++	}
++	if (i_cfg >= 0) {
++		t_cfg = rt_ev_us(i_cfg) / 1000 - t0;
++	}
++	rscr_draw_unlock();
++	rt_settle();
++	TC_PRINT("stuck screens: SHPHLDCONFIG %d, %lld ms after the power off\n", i_cfg, t_cfg);
++	zassert_true(i_cfg >= 0, "ship mode went on (FW l.937)");
++	/* M2 280 ms + 100 ms (R6-01), the screen 1,000 ms (FW l.937), 300 ms for the rest of step 1 */
++	zassert_true(t_cfg < RREC_PAT_M2_MS + 100 + RREC_SHIP_SCREEN_WAIT_MS + 300, "within the 1,000 ms screen wait");
++}
++
+ static void *setup(void)
+##### tests/recorder/src/test_unmount.c
+--- base/tests/recorder/src/test_unmount.c
++++ tests/recorder/src/test_unmount.c
+@@ -80,3 +80,5 @@
+ {
+-	transfer_with_busy_store(400, 6);
++	/* fix round 2 (R2-08): GET_LOG holds the store about 6 s, longer than one 5,000 ms wait, so neither wait alone
++	 * (the abort's wait for the command, the waiting unmount) keeps VDD_SD from staying on */
++	transfer_with_busy_store(1000, 6);
+ 	rt_vbus(false);
+@@ -147,2 +149,116 @@
+ 
++/* ------------------------------------------------------------------ fix round 2 (review 2: R2-01, R2-02, R2-03) */
++static K_SEM_DEFINE(retry_seen, 0, 1);
++static K_SEM_DEFINE(retry_go, 0, 1);
++
++static void retry_hook(void)
++{
++	k_sem_give(&retry_seen);
++	(void)k_sem_take(&retry_go, K_SECONDS(30));
++}
++
++/* R2-01: VBUS removed while GET_LOG holds the store longer than both waits: the unmount fails, its retry is queued. The
++ * retry job is held at its start; meanwhile the wearer starts a recording (STANDBY -> RECORDING, FW l.144). When the
++ * retry goes on it must not take the card of the recording (it decides under the glue's lock, from the state then) */
++ZTEST(recorder_unmount, test_retry_never_takes_the_card)
++{
++	struct rrec_tap_rec t;
++	int n = 0;
++	int32_t err[4] = { 1, 1, 1, 1 };
++	uint8_t tries[4] = { 0 };
++
++	transfer_with_busy_store(2000, 6);
++	rrec_tap_clear();
++	rrec_test_set_retry_hook(retry_hook);
++	k_sem_reset(&retry_seen);
++	k_sem_reset(&retry_go);
++	rhw_sim_vbus(false);
++	zassert_equal(k_sem_take(&retry_seen, K_SECONDS(30)), 0, "the retry job came");
++	zassert_equal(rt_state(), RC_ST_STANDBY, "STANDBY (FW l.179)");
++	zassert_true(rt_sd(), "the unmount failed: VDD_SD still on");
++	for (int i = 0; i < 300 && rxf_busy(); i++) {
++		rt_sleep(100);
++	}
++	rglue_input(RC_SW_CENTRE, true);   /* the long press (FW l.128) while the retry waits */
++	rt_sleep(1100);
++	rglue_input(RC_SW_CENTRE, false);
++	rt_sleep(200);
++	zassert_equal(rt_state(), RC_ST_RECORDING, "RECORDING");
++	rrec_test_set_retry_hook(NULL);
++	k_sem_give(&retry_go);
++	rt_sleep(3000);
++	rt_settle();
++	for (uint32_t k = 0; rrec_tap_get(k, &t); k++) {
++		if (t.code == RREC_LOG_UNMOUNT_FAILED && n < 4) {
++			err[n] = (int32_t)sys_get_le32(t.args);
++			tries[n] = t.args[5];
++			n++;
++		}
++	}
++	TC_PRINT("retry: state %s, VDD_SD %d, records 0x0290 %d: (%d, try %u), (%d, try %u)\n", rc_state_name(rt_state()),
++		 rt_sd(), n, err[0], tries[0], err[1], tries[1]);
++	zassert_equal(rt_state(), RC_ST_RECORDING, "the recording goes on (its card was not taken)");
++	zassert_true(rt_sd(), "VDD_SD on in RECORDING (FW l.917)");
++	zassert_true(n >= 1 && err[0] == -EBUSY, "the failed try was logged (FW l.1234)");
++	rt_long();
++	command_ended();
++}
++
++/* R2-02: the episode starts in CHARGING (row 46 while GET_LOG holds the store), and while the store is still held the
++ * state wants the card again (TRANSFER, row 39, FW l.171): the end record carries this episode's last errno (-EBUSY),
++ * never a 0 (FW l.1234: "0 when the unmount then succeeded, else the last errno") */
++ZTEST(recorder_unmount, test_episode_end_keeps_its_errno)
++{
++	struct rrec_tap_rec t;
++	int n = 0;
++	int32_t err[4] = { 1, 1, 1, 1 };
++	uint8_t st[4] = { 0 };
++
++	transfer_with_busy_store(3000, 6);
++	rrec_tap_clear();
++	rglue_event(RC_EV_USB_UNCONFIGURED);   /* row 46: the finish and the unmount wait 5 s each, the unmount fails */
++	zassert_equal(rt_state(), RC_ST_CHARGING, "CHARGING");
++	zassert_true(rt_sd(), "VDD_SD still on (the store is held)");
++	rglue_event(RC_EV_USB_CONFIGURED);     /* row 39: TRANSFER wants the card again; the store is still held */
++	zassert_equal(rt_state(), RC_ST_TRANSFER, "TRANSFER");
++	for (uint32_t k = 0; rrec_tap_get(k, &t); k++) {
++		if (t.code == RREC_LOG_UNMOUNT_FAILED && n < 4) {
++			err[n] = (int32_t)sys_get_le32(t.args);
++			st[n] = t.args[4];
++			n++;
++		}
++	}
++	TC_PRINT("episode end: records 0x0290 %d: (%d, %s), (%d, %s), store busy %d\n", n, err[0],
++		 rc_state_name((enum rc_state)st[0]), err[1], rc_state_name((enum rc_state)st[1]), rxf_busy());
++	zassert_equal(n, 2, "the first failed try and the end of the episode");
++	zassert_equal(err[0], -EBUSY, "first: -EBUSY");
++	zassert_equal(err[1], -EBUSY, "end: the episode's last errno, not 0");
++	command_ended();
++}
++
++/* R2-03: one step waits at most once for the command (5,000 ms) and once for the unmount (5,000 ms): the glue's lock is
++ * free again within 10 s plus the unmount's own time, although the store is held about 20 s */
++ZTEST(recorder_unmount, test_one_wait_each_per_step)
++{
++	int64_t t0, held;
++
++	transfer_with_busy_store(3000, 7);
++	t0 = k_uptime_get();
++	rglue_event(RC_EV_USB_UNCONFIGURED);   /* row 46 on this thread: the step's finish wait times out, then its unmount */
++	held = -1;
++	for (uint32_t i = 0; i < rt_steps(); i++) {
++		if (rt_step_get(i).row == 46) {
++			held = rt_step_get(i).t_end_ms - t0;
++		}
++	}
++	TC_PRINT("one wait each: the step of row 46 held the glue's lock %lld ms\n", held);
++	zassert_true(held >= 0, "row 46 taken");
++	zassert_true(held < 10000 + 1500, "at most one wait for the command and one for the unmount (%lld ms)", held);
++	command_ended();
++	for (int i = 0; i < 100 && rt_sd(); i++) {
++		rt_sleep(100);
++	}
++	zassert_false(rt_sd(), "the retry job unmounted in the end");
++}
++
+ static void *setup(void)
+FILES CHANGED OR ADDED: 11
+rrec_spec.h lines removed: 0

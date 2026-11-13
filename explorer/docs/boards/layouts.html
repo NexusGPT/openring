@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ring Explorer: layout options</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; color:#111; font:14px/1.4 -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  header { padding:26px 30px 6px; }
+  h1 { font-size:24px; margin:0 0 6px; }
+  header p { margin:0; color:#555; max-width:900px; }
+  .opt { margin:26px 30px 34px; }
+  .opt h2 { font-size:18px; margin:0 0 2px; }
+  .opt .idea { color:#333; margin:0 0 4px; max-width:900px; }
+  .opt .worse { color:#777; margin:0 0 12px; font-size:13px; }
+  .frames { display:flex; gap:22px; flex-wrap:wrap; }
+  .frame { width:640px; }
+  .frame .cap { font-size:12px; color:#666; margin-bottom:6px; text-transform:uppercase; letter-spacing:.06em; }
+  .screen { border:2px solid #222; height:380px; display:grid; gap:6px; padding:6px; background:#fafafa; }
+  .z { border:1.5px dashed #888; background:#fff; display:flex; align-items:center; justify-content:center; text-align:center; padding:6px; color:#333; font-size:13px; }
+  .z b { display:block; }
+  .z small { color:#777; display:block; }
+  .dark { background:#ececec; }
+  /* L1 stage */
+  .l1 { grid-template-columns: 1.55fr 1fr; grid-template-rows: 40px 1fr 54px; }
+  .l1 .top { grid-column:1 / 3; }
+  .l1 .stage { grid-row:2 / 4; }
+  /* L2 pages */
+  .l2h { grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 40px 1.3fr 1fr; }
+  .l2h .top { grid-column:1 / 5; }
+  .l2h .hero { grid-column:1 / 5; }
+  .l2i { grid-template-columns: 170px 1fr 220px; grid-template-rows: 40px 1fr; }
+  .l2i .top { grid-column:1 / 4; }
+  /* L3 story */
+  .l3 { grid-template-columns: 150px 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+  .l3 .index { grid-row:1 / 4; }
+  .l3 .pin { grid-row:1 / 4; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Ring Explorer: three layout options</h1>
+  <p>Boxes only: no colours, no real content yet. Each option shows two screens, Home and Inside. They differ in one thing: where the 3D ring lives and how you move between the 8 areas. You pick the layout first; the look comes after.</p>
+</header>
+
+<section class="opt" id="L1">
+  <h2>L1 · Stage</h2>
+  <p class="idea">The 3D ring stays on screen at all times, large, on the left. The right side changes with the area you choose. Clicking a part in the 3D view and reading about it happen side by side.</p>
+  <p class="worse">Worse at: wide documents. The wiring diagram and the parts table get the narrower right side unless you expand them.</p>
+  <div class="frames">
+    <div class="frame"><div class="cap">Home</div>
+      <div class="screen l1">
+        <div class="z top dark"><span><b>Area tabs</b><small>Home · Look · Inside · Electronics · Board · Parts · Behaviour · Case · Open items</small></span></div>
+        <div class="z stage"><span><b>3D ring, always here</b><small>rotate, zoom</small></span></div>
+        <div class="z"><span><b>Key numbers + state of the 8 areas</b><small>click an area to go there</small></span></div>
+        <div class="z"><span><b>What is next for you</b></span></div>
+      </div>
+    </div>
+    <div class="frame"><div class="cap">Inside</div>
+      <div class="screen l1">
+        <div class="z top dark"><span><b>Area tabs</b></span></div>
+        <div class="z stage"><span><b>3D ring, opened in layers</b><small>slider “open it up”; click a part</small></span></div>
+        <div class="z"><span><b>Part card</b><small>what it is · why · order code · source</small></span></div>
+        <div class="z"><span><b>Part list of this layer</b></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="opt" id="L2">
+  <h2>L2 · Pages</h2>
+  <p class="idea">A top bar with the 9 screens. Each screen is its own full page with the layout that suits it: a big 3D view on Home, Look, Inside and Case; full-width documents on Electronics, Board and Parts.</p>
+  <p class="worse">Worse at: continuity. The ring leaves the screen when you open a document page, so the link between a part and its place in the ring takes one more click.</p>
+  <div class="frames">
+    <div class="frame"><div class="cap">Home</div>
+      <div class="screen l2h">
+        <div class="z top dark"><span><b>Top bar: the 9 screens</b></span></div>
+        <div class="z hero"><span><b>3D ring, full width</b><small>with the key numbers over it</small></span></div>
+        <div class="z"><span><b>Look</b><small>state</small></span></div>
+        <div class="z"><span><b>Inside</b><small>state</small></span></div>
+        <div class="z"><span><b>Electronics</b><small>state</small></span></div>
+        <div class="z"><span><b>… 5 more area tiles</b></span></div>
+      </div>
+    </div>
+    <div class="frame"><div class="cap">Inside</div>
+      <div class="screen l2i">
+        <div class="z top dark"><span><b>Top bar: the 9 screens</b></span></div>
+        <div class="z"><span><b>Layer list</b><small>glass, screen, board, cell, housing</small></span></div>
+        <div class="z"><span><b>3D ring, opened in layers</b><small>slider; click a part</small></span></div>
+        <div class="z"><span><b>Part card</b></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="opt" id="L3">
+  <h2>L3 · Story</h2>
+  <p class="idea">One long page you scroll, like a product page. The ring stays pinned in the middle and changes as you scroll: first the outside, then it opens up, then the electronics, the behaviour, the case. An index on the left jumps to any chapter. Details open as side sheets.</p>
+  <p class="worse">Worse at: going straight to one thing. Finding a single part or a file means scrolling or using the index and search, and the parts table lives in a side sheet.</p>
+  <div class="frames">
+    <div class="frame"><div class="cap">Top of the page (Home)</div>
+      <div class="screen l3">
+        <div class="z index dark"><span><b>Chapter index</b><small>Look · Inside · Electronics · Board · Parts · Behaviour · Case · Open items</small></span></div>
+        <div class="z pin"><span><b>3D ring, pinned</b><small>changes as you scroll</small></span></div>
+        <div class="z"><span><b>Chapter text: the ring at a glance</b><small>key numbers</small></span></div>
+        <div class="z"><span><b>State of the 8 areas</b></span></div>
+        <div class="z"><span><b>Scroll to continue ↓</b></span></div>
+      </div>
+    </div>
+    <div class="frame"><div class="cap">Scrolled to “Inside”</div>
+      <div class="screen l3">
+        <div class="z index dark"><span><b>Chapter index</b><small>“Inside” marked</small></span></div>
+        <div class="z pin"><span><b>3D ring, opening layer by layer</b><small>driven by the scroll; click a part</small></span></div>
+        <div class="z"><span><b>Layer explained in plain words</b></span></div>
+        <div class="z"><span><b>Part card (side sheet on click)</b></span></div>
+        <div class="z"><span><b>Next layer ↓</b></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>window.__ready = true;</script>
+</body>
+</html>

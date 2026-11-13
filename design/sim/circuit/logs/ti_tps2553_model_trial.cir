@@ -1,0 +1,21 @@
+tps2553 ti model trial 2
+.include design/sim/circuit/work/tps2553_ng.lib
+Vin in 0 5
+Ven en 0 5
+Rilim ilim 0 59k
+Xu in 0 en 0 flt ilim out TPS2553_TRANS
+Rf flt in 10k
+Cout out 0 10u
+Rl out 0 50
+.tran 10u 12m
+.control
+run
+meas tran vout find v(out) at=10m
+meas tran iin find i(vin) at=10m
+meas tran vflt find v(flt) at=10m
+echo RESULT vout = $&vout
+echo RESULT iin = $&iin
+echo RESULT vflt = $&vflt
+quit
+.endc
+.end

@@ -1,0 +1,14 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -432,7 +432,7 @@
+ 	k_mutex_lock(&lk, K_FOREVER);
+ 	lti_busy = false;
+ 	st.zone_reads++;
+-	zone_known = known;
++	zone_known = true;
+ 	zone_min = known ? m : 0;
+ 	have = have_ct;
+ 	copy = last_ct;
+MODULE=ring_iphone
+SCEN=R
+EXPECT=RING CHECK R: the iPhone gave no zone: the clock holds its local time and says the zone is not known FAIL

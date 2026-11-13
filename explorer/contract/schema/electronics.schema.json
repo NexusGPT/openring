@@ -1,0 +1,605 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "electronics.schema.json",
+  "type": "object",
+  "properties": {
+    "blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sheet": {
+            "type": "string",
+            "minLength": 1
+          },
+          "part_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/PartId"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "sheet",
+          "part_ids"
+        ],
+        "additionalProperties": false
+      },
+      "description": "The schematic sheets, each with its own title."
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "minLength": 1
+          },
+          "to": {
+            "type": "string",
+            "minLength": 1
+          },
+          "nets": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "nets"
+        ],
+        "additionalProperties": false
+      },
+      "description": "Nets spanning two or more sheets."
+    },
+    "pin_plan": {
+      "$ref": "common.schema.json#/$defs/Table"
+    },
+    "power_budget": {
+      "$ref": "common.schema.json#/$defs/Table"
+    },
+    "connection_map": {
+      "type": "object",
+      "description": "The connection map (optional): the boards and off-board parts as nodes, every joint between them as a connection. Read from design/wiring/connections.md; its count must equal the count that file states.",
+      "properties": {
+        "source": {
+          "$ref": "common.schema.json#/$defs/Source"
+        },
+        "file_time": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Date and time of connections.md, 'YYYY-MM-DD HH:MM'."
+        },
+        "stated_count": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The number of joints the file itself states."
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "A plain remark when the list cannot be read or its count differs from the stated one."
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "board",
+                  "part"
+                ]
+              },
+              "board": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "For a board node: its group id in board-files boards[].group."
+              },
+              "scope": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "ring",
+                      "case"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "part_ids": {
+                "type": "array",
+                "items": {
+                  "$ref": "common.schema.json#/$defs/PartId"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "label",
+              "kind",
+              "board",
+              "scope",
+              "part_ids"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "connections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "signal": {
+                "type": "string",
+                "description": "The nets or supplies the joint carries, as the file writes them."
+              },
+              "ends": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "node": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "The end in the file's words: part, land or pin."
+                    }
+                  },
+                  "required": [
+                    "node",
+                    "text"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "how": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "hot bar, soldered land, spring pin, lead wire, connector, ... or other."
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "conductors": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "text",
+                  "conductors"
+                ],
+                "additionalProperties": false
+              },
+              "drawn": {
+                "type": "object",
+                "properties": {
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "drawn",
+                      "text-only",
+                      "not-drawn"
+                    ]
+                  },
+                  "words": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "state",
+                  "words"
+                ],
+                "additionalProperties": false
+              },
+              "details": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "value": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "source": {
+                      "$ref": "common.schema.json#/$defs/Source"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "value",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "proof": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "file": {
+                      "$ref": "common.schema.json#/$defs/RelPath"
+                    },
+                    "lines": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "minimum": 1
+                      }
+                    },
+                    "section": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "file",
+                    "lines",
+                    "section"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "source": {
+                "$ref": "common.schema.json#/$defs/Source"
+              },
+              "conductors": {
+                "type": "object",
+                "description": "conductor lines of design/wiring/product-wiring.csv that carry this joint: how many are complete (drawn and routed, or specified and landed) of how many",
+                "properties": {
+                  "complete": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "total": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "complete",
+                  "total"
+                ],
+                "additionalProperties": false
+              },
+              "conductor_lines": {
+                "type": "array",
+                "description": "optional: each conductor of this joint, one by one, from design/wiring/product-wiring.csv (the lines whose joint column names this connection)",
+                "items": {
+                  "type": "object",
+                  "description": "one conductor line of design/wiring/product-wiring.csv",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "signal_a": {
+                      "type": "string"
+                    },
+                    "signal_b": {
+                      "type": "string"
+                    },
+                    "first": {
+                      "type": "object",
+                      "properties": {
+                        "board": {
+                          "type": "string"
+                        },
+                        "part": {
+                          "type": "string"
+                        },
+                        "pin": {
+                          "type": "string"
+                        },
+                        "face": {
+                          "type": "string"
+                        },
+                        "join": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "board",
+                        "part",
+                        "pin",
+                        "face",
+                        "join"
+                      ],
+                      "additionalProperties": false,
+                      "description": "one terminal of a conductor, each value as the line of product-wiring.csv writes it"
+                    },
+                    "last": {
+                      "type": "object",
+                      "properties": {
+                        "board": {
+                          "type": "string"
+                        },
+                        "part": {
+                          "type": "string"
+                        },
+                        "pin": {
+                          "type": "string"
+                        },
+                        "face": {
+                          "type": "string"
+                        },
+                        "join": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "board",
+                        "part",
+                        "pin",
+                        "face",
+                        "join"
+                      ],
+                      "additionalProperties": false,
+                      "description": "one terminal of a conductor, each value as the line of product-wiring.csv writes it"
+                    },
+                    "carrier": {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string"
+                        },
+                        "text": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "text"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "state_reason": {
+                      "type": "string"
+                    },
+                    "lengths": {
+                      "type": "array",
+                      "description": "the length per ring size the line gives: copper (track) or cut (wire or lead), in mm as the file writes it",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "size": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "copper",
+                              "cut"
+                            ]
+                          },
+                          "mm": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "size",
+                          "kind",
+                          "mm"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "source": {
+                      "$ref": "common.schema.json#/$defs/Source"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "signal_a",
+                    "signal_b",
+                    "first",
+                    "last",
+                    "carrier",
+                    "state",
+                    "state_reason",
+                    "lengths",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "no_conductor": {
+                "type": "array",
+                "description": "optional: lines of product-wiring.csv for this joint whose carrier_kind is none",
+                "items": {
+                  "type": "object",
+                  "description": "a line of product-wiring.csv whose carrier_kind is none: no conductor, with the reason the file gives",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "state_reason": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "$ref": "common.schema.json#/$defs/Source"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "reason",
+                    "state",
+                    "state_reason",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "signal",
+              "ends",
+              "how",
+              "drawn",
+              "details",
+              "proof",
+              "source"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "conductor_file": {
+          "type": "object",
+          "description": "optional: how design/wiring/product-wiring.csv was read, and the whole-product count of complete conductors out of the total",
+          "properties": {
+            "source": {
+              "$ref": "common.schema.json#/$defs/Source"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "ok",
+                "missing",
+                "unreadable"
+              ]
+            },
+            "note": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "complete": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "no_conductor": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "source",
+            "status",
+            "note",
+            "complete",
+            "total",
+            "no_conductor"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "source",
+        "file_time",
+        "stated_count",
+        "note",
+        "nodes",
+        "connections"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "blocks",
+    "links",
+    "pin_plan",
+    "power_budget"
+  ],
+  "additionalProperties": false,
+  "title": "Electronics",
+  "description": "electronics.json (DATA-MAP record \"blocks\"): blocks, links, pin plan and power budget."
+}

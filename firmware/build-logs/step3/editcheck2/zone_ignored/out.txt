@@ -1,0 +1,14 @@
+--- a/ring_iphone/src/rip.c
++++ b/ring_iphone/src/rip.c
+@@ -404,7 +404,7 @@
+ 		zm = zone_min;
+ 		k_mutex_unlock(&lk);
+ 		if (zk) {
+-			rtime_set(ms - (int64_t)zm * 60000, zm, true);
++			rtime_set(ms, zm, true);
+ 		} else {
+ 			rtime_set(ms, 0, false);
+ 		}
+MODULE=ring_iphone
+SCEN=N
+EXPECT=RING CHECK the ring's clock equals the iPhone's time within 1 s, as UTC \(the iPhone's zone \+2 h taken off\) FAIL

@@ -1,0 +1,21 @@
+# Checklist (checks-harden)
+
+- [x] 1. I1 check_wiring: states-net, states-face, states-tail, states-colour, states-cut, states-copper, rebuild; per field which way (notes section 1). evidence: final/notes-all.md section 1, logs/all-check_wiring.log
+- [x] 2. I1: the 5 reviewer copies fail each on its own line (wrong net, tail land 2, W040 and W029 faces, colours, 9.99). evidence: logs/cw/rev_wrongnet.log, rev_wrongtail.log, rev_wrongface_W040.log, rev_wrongface_W029.log, rev_colourswap.log, rev_cutwrong.log
+- [x] 3. I1: the other reviewer fakes still fail (10 re-run as files). evidence: logs/cw/rev_*.log
+- [x] 4. N2: generator no CR (build_wiring.py line 974), proof on a copy written into W. evidence: cr-proof.log
+- [x] 5. N2: check_wiring fails a CR or a newline in a field. evidence: logs/cw/cr_in_field.log, newline_in_field.log
+- [x] 6. I2 check_joints: rules as data, dry run without failing, list of rejected real rows. evidence: joints/dry-run-list-weak.log, final/check_joints-list-weak-snapshot1-final-rules.log
+- [x] 7. I2: check "ok" and heat "hot" fail. evidence: logs/cj/rev_check_ok.log, rev_heat_hot.log
+- [x] 8. I2: joints.csv not edited. evidence: notes head (read only)
+- [x] 9. I3 check_assembly: (a) paste on ribbon lands, (b) tab lands (and motor, disc), (c) citations with their token. evidence: logs/ca/*.log
+- [x] 10. I3: the 45 bom citations listed and rejected (41 of 45; 4 named with the measured reason). evidence: assembly/bom-cites-45-list.log
+- [-] 11. I3: all 45 rejected. not done: 4 of 45 not rejected, measured limit in assembly/bom-cites-45-list.log (long list, sentence without a part name, part named by words)
+- [x] 12. N7 check_board output option, header, run on a copy in W. evidence: logs/board/test-with_CHECK_BOARD_OUT.log
+- [x] 13. Each new rule has its own broken copy with the rejecting line; runner prints TESTS PASS n of n. evidence: logs/run_all_tests-final.log (142 of 142)
+- [x] 14. Existing tests of joint-table-work/tests pass. evidence: logs/all-joint_table_tests_existing_.log (18 of 18)
+- [x] 15. No existing rule loosened. evidence: notes section 7
+- [x] 16. Honest files at the end, every failing line classified. evidence: final/check_*-live.log, notes section 5
+- [x] 17. Notes with the required parts; last line RESULT. evidence: design/wiring/checks-harden-notes.md
+- [x] 18. W under 40 MB. evidence: final/du.log
+- [x] 19. Final audit run on the notes and the reply. evidence: final/audit-notes.log, final/audit-reply.log

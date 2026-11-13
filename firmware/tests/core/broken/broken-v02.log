@@ -1,0 +1,12 @@
+broken copy run 2026-11-13 04:15:34 CET, mutation v02
+change applied (diff of the copy against its original):
+124c124
+< 	if (ev == RC_EV_VBUS_OUT && c->facts.batt == RC_BATT_B2 &&
+---
+> 	if (ev == RC_EV_VBUS_OUT && c->facts.batt >= RC_BATT_B5 &&
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_round4.c:146: rc_core_state(&core) == RC_ST_ERR_STORAGE_FAULT (left 1, right 10)
+FAIL rc_round4.test_t1_r16_does_not_fire_at_b5
+suites=13 tests=221 pass=220 fail=1
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation v02, named case rc_round4.test_t1_r16_does_not_fire_at_b5 failed

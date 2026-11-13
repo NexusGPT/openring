@@ -1,0 +1,14 @@
+--- a/ring_iphone/src/ripl.c
++++ b/ring_iphone/src/ripl.c
+@@ -302,7 +302,7 @@
+ 		c->zone_errors++;
+ 		return;
+ 	}
+-	c->zone_known = known;
++	c->zone_known = true;
+ 	c->zone_min = known ? zone_min : 0;
+ }
+ 
+MODULE=ring_iphone
+SCEN=R
+EXPECT=RING CHECK R: the iPhone gave no zone: the clock holds its local time and says the zone is not known FAIL

@@ -1,0 +1,67 @@
+# remote.sh run 20261113-045401-k-audio
+# command: Z=/ws/zephyr; D=$Z/include/zephyr/audio/dmic.h; C=$Z/include/zephyr/drivers/clock_control/nrf_clock_control.h; P=$Z/include/zephyr/drivers/pinctrl.h; M=$Z/include/zephyr/pm/device.h; N=$Z/drivers/audio/dmic_nrfx_pdm.c
+for f in $D $C $P $M $N; do if [ -f $f ]; then echo "exists $f"; else echo "MISSING $f"; fi; done
+cnt() { echo "count $(basename $1) '$2' = $(grep -c -- "$2" $1)"; }
+for s in dmic_configure dmic_trigger DMIC_TRIGGER_START DMIC_TRIGGER_STOP dmic_read "struct dmic_cfg" dmic_build_channel_map DEVICE_API; do cnt $D "$s"; done
+for s in onoff nrf_clock_control_request nrf_clock_control_release z_nrf_clock_control_get_onoff NRF_CLOCK_CONTROL_SPEC_INIT CLOCK_CONTROL_NRF_TYPE_HFCLK; do cnt $C "$s"; done
+echo "clock_control files with nrf in name:"; ls $Z/drivers/clock_control | grep -i nrf
+echo "files in drivers/clock_control naming hfxo or hf: $(grep -l -i 'hfxo' $Z/drivers/clock_control/*.c | wc -l)"
+for s in pinctrl_apply_state PINCTRL_STATE_SLEEP PINCTRL_STATE_DEFAULT; do cnt $P "$s"; done
+for s in pm_device_action_run PM_DEVICE_ACTION_SUSPEND pm_device_runtime_get; do cnt $M "$s"; done
+for s in PM_DEVICE_ACTION_SUSPEND PM_DEVICE_ACTION_RESUME pm_device_driver_init PM_DEVICE_DT_INST_DEFINE pinctrl_apply_state PINCTRL_STATE_SLEEP PINCTRL_STATE_DEFAULT; do cnt $N "$s"; done
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 04:54:01 CET
+# free on the server's /: 31 GB
+# source firmware copied to /root/ring-os/src-u-audio
+# started on the server as 20261113-045401-k-audio; server log /root/ring-os/logs/20261113-045401-k-audio.log
+exists /ws/zephyr/include/zephyr/audio/dmic.h
+exists /ws/zephyr/include/zephyr/drivers/clock_control/nrf_clock_control.h
+exists /ws/zephyr/include/zephyr/drivers/pinctrl.h
+exists /ws/zephyr/include/zephyr/pm/device.h
+exists /ws/zephyr/drivers/audio/dmic_nrfx_pdm.c
+count dmic.h 'dmic_configure' = 1
+count dmic.h 'dmic_trigger' = 4
+count dmic.h 'DMIC_TRIGGER_START' = 1
+count dmic.h 'DMIC_TRIGGER_STOP' = 1
+count dmic.h 'dmic_read' = 1
+count dmic.h 'struct dmic_cfg' = 3
+count dmic.h 'dmic_build_channel_map' = 1
+count dmic.h 'DEVICE_API' = 0
+count nrf_clock_control.h 'onoff' = 10
+count nrf_clock_control.h 'nrf_clock_control_request' = 5
+count nrf_clock_control.h 'nrf_clock_control_release' = 1
+count nrf_clock_control.h 'z_nrf_clock_control_get_onoff' = 1
+count nrf_clock_control.h 'NRF_CLOCK_CONTROL_SPEC_INIT' = 0
+count nrf_clock_control.h 'CLOCK_CONTROL_NRF_TYPE_HFCLK' = 8
+clock_control files with nrf in name:
+Kconfig.nrf
+clock_control_nrf.c
+clock_control_nrf2_common.c
+clock_control_nrf2_common.h
+clock_control_nrf54h_hfxo.c
+clock_control_nrf_auxpll.c
+clock_control_nrf_fll16m.c
+clock_control_nrf_hsfll_global.c
+clock_control_nrf_hsfll_local.c
+clock_control_nrf_iron_hsfll_local.c
+clock_control_nrf_lfclk.c
+clock_control_nrfs_audiopll.c
+nrf_clock_calibration.c
+nrf_clock_calibration.h
+files in drivers/clock_control naming hfxo or hf: 4
+count pinctrl.h 'pinctrl_apply_state' = 3
+count pinctrl.h 'PINCTRL_STATE_SLEEP' = 1
+count pinctrl.h 'PINCTRL_STATE_DEFAULT' = 2
+count device.h 'pm_device_action_run' = 1
+count device.h 'PM_DEVICE_ACTION_SUSPEND' = 2
+count device.h 'pm_device_runtime_get' = 0
+count dmic_nrfx_pdm.c 'PM_DEVICE_ACTION_SUSPEND' = 0
+count dmic_nrfx_pdm.c 'PM_DEVICE_ACTION_RESUME' = 0
+count dmic_nrfx_pdm.c 'pm_device_driver_init' = 0
+count dmic_nrfx_pdm.c 'PM_DEVICE_DT_INST_DEFINE' = 0
+count dmic_nrfx_pdm.c 'pinctrl_apply_state' = 1
+count dmic_nrfx_pdm.c 'PINCTRL_STATE_SLEEP' = 0
+count dmic_nrfx_pdm.c 'PINCTRL_STATE_DEFAULT' = 1
+# finished (Mac clock): 2026-11-13 04:54:35 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-045401-k-audio.log

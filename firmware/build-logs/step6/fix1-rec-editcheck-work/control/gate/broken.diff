@@ -1,0 +1,25 @@
+--- a/ring_control/src/rctl_logic.c
++++ b/ring_control/src/rctl_logic.c
+@@ -164,9 +164,6 @@
+ 
+ bool rctl_core_filter(bool control_active, uint8_t rc_action, enum rctl_action *out)
+ {
+-	if (!control_active) {
+-		return false;
+-	}
+ 	return rctl_from_core(rc_action, out);
+ }
+ 
+--- a/ring_control/src/rctl.c
++++ b/ring_control/src/rctl.c
+@@ -241,10 +241,6 @@
+ 
+ 	k_mutex_lock(&send_lock, K_FOREVER);
+ 	stats.actions++;
+-	if (!active) {
+-		k_mutex_unlock(&send_lock);
+-		return -EPERM;
+-	}
+ 	flush_pending();
+ 	if (!rctl_wait_admit(&wait_state)) {
+ 		stats.dropped++;

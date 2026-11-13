@@ -1,0 +1,18 @@
+broken copy run 2026-11-13 04:15:33 CET, mutation r4b
+change applied (diff of the copy against its original):
+117c117
+< 		return !f->open_flag && f->batt < RC_BATT_B5 && !f->storage_full && !f->sign_not_drawn;
+---
+> 		return f->batt < RC_BATT_B5 && !f->storage_full && !f->sign_not_drawn;
+generated table: committed rows=72 checksum=0xe61dece0u, fresh rows=72 checksum=0xe61dece0u
+    assert failed firmware/tests/core/src/test_round2.c:195: out.last_row == 13 (left 12, right 13)
+FAIL rc_round2.test_r4b_long_press_with_open_flag_runs_recovery_first
+    assert failed firmware/tests/core/src/test_round3.c:36: rc_core_state(&core) == RC_ST_RECOVERY (left 5, right 3)
+FAIL rc_round3.test_r9_long_press_recovery_keeps_flag_until_scan_done
+    assert failed firmware/tests/core/src/test_rows.c:58: out.last_row == 13 (left 12, right 13)
+FAIL rc_rows.test_row_13
+    assert failed firmware/tests/core/src/test_rules.c:469: out.last_row == 13 (left 12, right 13)
+FAIL rc_rules.test_sign_hook_not_called_when_refused_otherwise
+suites=13 tests=221 pass=217 fail=4
+RESULT FAIL
+BROKEN COPY CAUGHT: the tests fail on mutation r4b, named case rc_rows.test_row_13 failed

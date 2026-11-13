@@ -1,0 +1,211 @@
+# remote.sh run 20261112-104234-spike3
+# command: mkdir -p /ws/out/os-screens-pics3 && env RING_PICS=/ws/out/os-screens-pics3 west twister -T tests/screens -p native_sim -O /ws/out/os-screens-spike3 --inline-logs -v
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-12 10:42:34 CET
+# free on the server's /: 49 GB
+# source firmware copied to /root/ring-os/src-os-screens
+# started on the server as 20261112-104234-spike3; server log /root/ring-os/logs/20261112-104234-spike3.log
+INFO    - Using Ninja..
+INFO    - Zephyr version: 9133dab6b066
+INFO    - Using 'zephyr/gnu' toolchain variant.
+INFO    - Building initial testsuite list...
+INFO    - Built testsuite list in 0.00 seconds
+INFO    - Writing JSON report /ws/out/os-screens-spike3/testplan.json
+INFO    - JOBS: 32
+INFO    - Adding tasks to the queue...
+INFO    - Added initial list of jobs to queue
+INFO    - 1/1 native_sim/native         ring_screens.all                                   FAILED rc=1 (native 0.442s <host/gnu>)
+INFO    - /ws/out/os-screens-spike3/native_sim_native/host_gnu/firmware/tests/screens/ring_screens.all/handler.log
+ERROR   - *** Booting nRF Connect SDK v3.4.2-f0b8ad4c7377 ***
+*** Using Zephyr OS v4.4.2-9133dab6b066 ***
+Running TESTSUITE screens_draw
+===================================================================
+START - test_01_status_from_the_clock
+SCREENPIC status | scene: STANDBY, screen off, short press of the centre; clock set to 2026-11-12 10:42 UTC (rtime_set) | 240x120 | hash f709d68c91f6ed7d | lit px 862 | files written
+ PASS - test_01_status_from_the_clock in 0.000 seconds
+===================================================================
+START - test_02_menu_highlight_moves_with_down
+SCREENPIC menu | scene: SCR_MENU, first item highlighted (Right from the status screen) | 240x120 | hash cd392cc16e7f0d94 | lit px 6050 | files written
+ PASS - test_02_menu_highlight_moves_with_down in 0.000 seconds
+===================================================================
+START - test_03_settings_screen
+SCREENPIC settings | scene: SCR_SETTINGS, Screen brightness highlighted | 240x120 | hash 0292214c06bb4840 | lit px 5870 | files written
+ PASS - test_03_settings_screen in 0.000 seconds
+===================================================================
+START - test_04_recording_screens_and_sign
+SCREENPIC recording-idle | scene: RECORDING, 3 s after the last input, 00:12:47 elapsed (SCR_REC_DIM) | 240x120 | hash d804611545d1514b | lit px 240 | files written
+SCREENPIC recording | scene: RECORDING, a joystick direction 0 s ago, 00:12:47 elapsed (SCR_RECORDING) | 240x120 | hash 68dba7571d8d57aa | lit px 2294 | files written
+SCREENPIC recording-highlight | scene: RECORDING, one highlight marked (short press), SCR_RECORDING with the count | 240x120 | hash 52385c20e5c78107 | lit px 2544 | files written
+ PASS - test_04_recording_screens_and_sign in 0.000 seconds
+===================================================================
+START - test_05_rsign_display_refusal_leaves_the_microphone_off
+ PASS - test_05_rsign_display_refusal_leaves_the_microphone_off in 0.000 seconds
+===================================================================
+START - test_06_notifications_list_and_detail
+SCREENPIC notifications-empty | scene: SCR_NOTIFS with an empty inbox | 240x120 | hash 4b9432db4ae47965 | lit px 567 | files written
+SCREENPIC notifications | scene: SCR_NOTIFS, two notifications in the inbox, newest first, the first highlighted | 240x120 | hash 65292800c4b1c55c | lit px 5297 | files written
+SCREENPIC notification | scene: SCR_NOTIF, 'Grace Lin' with both actions (dismiss left, positive right) | 240x120 | hash f134876382d8dcc6 | lit px 1488 | files written
+ PASS - test_06_notifications_list_and_detail in 0.000 seconds
+===================================================================
+START - test_07_modes_and_the_four_control_screens
+SCREENPIC modes | scene: SCR_MODES, Media highlighted (first time) | 240x120 | hash 88fc0f34e51e3d89 | lit px 5573 | files written
+SCREENPIC control-media | scene: SCR_CONTROL Media: track 'Night Drive', playing (decoder of ring_iphone) | 240x120 | hash d964f558e5079182 | lit px 1647 | files written
+SCREENPIC control-presenter | scene: SCR_CONTROL Presenter | 240x120 | hash a6d21eed16e385e8 | lit px 1512 | files written
+SCREENPIC control-pointer | scene: SCR_CONTROL Pointer | 240x120 | hash c1c5345ca1f42c05 | lit px 1019 | files written
+SCREENPIC control-agent | scene: SCR_CONTROL Agent, words Accept and Decline only | 240x120 | hash c470de6f3d37bf9f | lit px 1308 | files written
+ PASS - test_07_modes_and_the_four_control_screens in 0.000 seconds
+===================================================================
+START - test_08_devices_device_confirm
+SCREENPIC devices | scene: SCR_DEVICES, three devices iPhone, MacBook (active, light pill), Pixel; cursor on the first | 240x120 | hash 1b169dbb2e62fad5 | lit px 2560 | files written
+SCREENPIC device | scene: SCR_DEVICE, MacBook, 'Use' highlighted | 240x120 | hash 1bdfd86b499e18e9 | lit px 6351 | files written
+SCREENPIC confirm | scene: SCR_CONFIRM, 'Remove MacBook?' | 240x120 | hash 46025b5c67b14880 | lit px 1524 | files written
+ PASS - test_08_devices_device_confirm in 0.000 seconds
+===================================================================
+START - test_09_pairing_passkey
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_draw.c:822: screens_draw_test_09_pairing_passkey: (s.screen not equal to SCR_PAIR)
+pairing screen: SCR_MENU
+ FAIL - test_09_pairing_passkey in 0.000 seconds
+===================================================================
+START - test_10_charging_and_messages
+SCREENPIC charging | scene: CHARGING, 64 %, 38 min to full (VBUS in) | 240x120 | hash 030514ed798d13c1 | lit px 1259 | files written
+SCREENPIC message | scene: SCR_MESSAGE 'In case' (long press refused in CHARGING) | 240x120 | hash d778a8a69797908d | lit px 247 | files written
+SCREENPIC message-battery-low | scene: SCR_MESSAGE 'Battery low' (long press at B5) | 240x120 | hash cca8ad6585561432 | lit px 448 | files written
+ PASS - test_10_charging_and_messages in 0.000 seconds
+===================================================================
+TESTSUITE screens_draw failed.
+Running TESTSUITE screens_table
+===================================================================
+START - test_dim_pairs_with_lowest_lock_state
+ PASS - test_dim_pairs_with_lowest_lock_state in 0.000 seconds
+===================================================================
+START - test_double_press_without_session_does_nothing_on_a_menu
+ PASS - test_double_press_without_session_does_nothing_on_a_menu in 0.000 seconds
+===================================================================
+START - test_first_paired_device_becomes_active_a_later_one_only_through_use
+ PASS - test_first_paired_device_becomes_active_a_later_one_only_through_use in 0.000 seconds
+===================================================================
+START - test_geometry_turn
+ PASS - test_geometry_turn in 0.000 seconds
+===================================================================
+START - test_lock_first_event_only_wakes
+ PASS - test_lock_first_event_only_wakes in 0.000 seconds
+===================================================================
+START - test_long_press_does_not_close_a_session
+ PASS - test_long_press_does_not_close_a_session in 0.000 seconds
+===================================================================
+START - test_long_press_records_from_any_screen
+ PASS - test_long_press_records_from_any_screen in 0.000 seconds
+===================================================================
+START - test_menu_has_six_items_in_order
+ PASS - test_menu_has_six_items_in_order in 0.000 seconds
+===================================================================
+START - test_messages_last_3s
+ PASS - test_messages_last_3s in 0.000 seconds
+===================================================================
+START - test_notification_removed_by_the_phone_leaves_the_detail
+ PASS - test_notification_removed_by_the_phone_leaves_the_detail in 0.000 seconds
+===================================================================
+START - test_pair_with_three_devices_says_remove_first
+ PASS - test_pair_with_three_devices_says_remove_first in 0.000 seconds
+===================================================================
+START - test_pairing_window_60s_and_passkey
+ PASS - test_pairing_window_60s_and_passkey in 0.000 seconds
+===================================================================
+START - test_rsign_recording_never_dark
+SCREENS_TABLE rsign checks: 2411
+ PASS - test_rsign_recording_never_dark in 0.000 seconds
+===================================================================
+START - test_rsign_stop_returns_to_status_then_off
+ PASS - test_rsign_stop_returns_to_status_then_off in 0.000 seconds
+===================================================================
+START - test_session_closes_after_30_minutes_and_on_state_change_and_device_removal
+ PASS - test_session_closes_after_30_minutes_and_on_state_change_and_device_removal in 0.000 seconds
+===================================================================
+START - test_session_lock_does_not_apply_with_screen_off
+ PASS - test_session_lock_does_not_apply_with_screen_off in 0.000 seconds
+===================================================================
+START - test_session_open_and_double_press_closes
+ PASS - test_session_open_and_double_press_closes in 0.000 seconds
+===================================================================
+START - test_short_press_with_screen_off_shows_status_5s
+ PASS - test_short_press_with_screen_off_shows_status_5s in 0.000 seconds
+===================================================================
+START - test_state_screens
+ PASS - test_state_screens in 0.000 seconds
+===================================================================
+START - test_table_every_screen_every_action
+
+    Assertion failed at WEST_TOPDIR/firmware/tests/screens/src/test_table.c:283: screens_table_test_table_every_screen_every_action: (fx.e[0].kind not equal to r->fx)
+row 73: SCR_PAIR dir 2: first effect 0, expected 4
+ FAIL - test_table_every_screen_every_action in 0.000 seconds
+===================================================================
+TESTSUITE screens_table failed.
+
+------ TESTSUITE SUMMARY START ------
+
+SUITE FAIL -  90.00% [screens_draw]: pass = 9, fail = 1, skip = 0, total = 10 duration = 0.000 seconds
+ - PASS - [screens_draw.test_01_status_from_the_clock] duration = 0.000 seconds
+ - PASS - [screens_draw.test_02_menu_highlight_moves_with_down] duration = 0.000 seconds
+ - PASS - [screens_draw.test_03_settings_screen] duration = 0.000 seconds
+ - PASS - [screens_draw.test_04_recording_screens_and_sign] duration = 0.000 seconds
+ - PASS - [screens_draw.test_05_rsign_display_refusal_leaves_the_microphone_off] duration = 0.000 seconds
+ - PASS - [screens_draw.test_06_notifications_list_and_detail] duration = 0.000 seconds
+ - PASS - [screens_draw.test_07_modes_and_the_four_control_screens] duration = 0.000 seconds
+ - PASS - [screens_draw.test_08_devices_device_confirm] duration = 0.000 seconds
+ - FAIL - [screens_draw.test_09_pairing_passkey] duration = 0.000 seconds
+ - PASS - [screens_draw.test_10_charging_and_messages] duration = 0.000 seconds
+
+SUITE FAIL -  95.00% [screens_table]: pass = 19, fail = 1, skip = 0, total = 20 duration = 0.000 seconds
+ - PASS - [screens_table.test_dim_pairs_with_lowest_lock_state] duration = 0.000 seconds
+ - PASS - [screens_table.test_double_press_without_session_does_nothing_on_a_menu] duration = 0.000 seconds
+ - PASS - [screens_table.test_first_paired_device_becomes_active_a_later_one_only_through_use] duration = 0.000 seconds
+ - PASS - [screens_table.test_geometry_turn] duration = 0.000 seconds
+ - PASS - [screens_table.test_lock_first_event_only_wakes] duration = 0.000 seconds
+ - PASS - [screens_table.test_long_press_does_not_close_a_session] duration = 0.000 seconds
+ - PASS - [screens_table.test_long_press_records_from_any_screen] duration = 0.000 seconds
+ - PASS - [screens_table.test_menu_has_six_items_in_order] duration = 0.000 seconds
+ - PASS - [screens_table.test_messages_last_3s] duration = 0.000 seconds
+ - PASS - [screens_table.test_notification_removed_by_the_phone_leaves_the_detail] duration = 0.000 seconds
+ - PASS - [screens_table.test_pair_with_three_devices_says_remove_first] duration = 0.000 seconds
+ - PASS - [screens_table.test_pairing_window_60s_and_passkey] duration = 0.000 seconds
+ - PASS - [screens_table.test_rsign_recording_never_dark] duration = 0.000 seconds
+ - PASS - [screens_table.test_rsign_stop_returns_to_status_then_off] duration = 0.000 seconds
+ - PASS - [screens_table.test_session_closes_after_30_minutes_and_on_state_change_and_device_removal] duration = 0.000 seconds
+ - PASS - [screens_table.test_session_lock_does_not_apply_with_screen_off] duration = 0.000 seconds
+ - PASS - [screens_table.test_session_open_and_double_press_closes] duration = 0.000 seconds
+ - PASS - [screens_table.test_short_press_with_screen_off_shows_status_5s] duration = 0.000 seconds
+ - PASS - [screens_table.test_state_screens] duration = 0.000 seconds
+ - FAIL - [screens_table.test_table_every_screen_every_action] duration = 0.000 seconds
+
+------ TESTSUITE SUMMARY END ------
+
+===================================================================
+RunID: 2bfabe51983774c4b8af8df8d8b43b28
+PROJECT EXECUTION FAILED
+
+INFO    - /ws/out/os-screens-spike3/native_sim_native/host_gnu/firmware/tests/screens/ring_screens.all/handler.log
+
+INFO    - 1 test scenarios (1 configurations) selected, 0 configurations filtered (0 by static filter, 0 at runtime).
+INFO    - 0 of 1 executed test configurations passed (0.00%), 0 built (not run), 1 failed, 0 errored, with no warnings in 21.94 seconds.
+INFO    - 28 of 30 executed test cases passed (93.33%), 2 failed on 1 out of total 1514 platforms (0.07%).
+INFO    - 1 test configurations executed on platforms, 0 test configurations were only built.
+INFO    - Saving reports...
+INFO    - Writing JSON report /ws/out/os-screens-spike3/twister.json
+INFO    - Writing xunit report /ws/out/os-screens-spike3/twister.xml...
+INFO    - Writing xunit report /ws/out/os-screens-spike3/twister_report.xml...
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - The following issues were found (showing the top 10 items):
+INFO    - 1) ring_screens.all on native_sim/native failed (rc=1)
+INFO    - 
+INFO    - To rerun the tests, call twister using the following commandline:
+INFO    - west twister -p <PLATFORM> -s <TEST ID>, for example:
+INFO    - 
+INFO    - west twister -p native_sim/native -s ring_screens.all
+INFO    - or with west:
+INFO    - west build -p -b native_sim/native tests/screens -T ring_screens.all
+INFO    - -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+INFO    - Run completed
+# finished (Mac clock): 2026-11-12 10:43:15 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step4/20261112-104234-spike3.log

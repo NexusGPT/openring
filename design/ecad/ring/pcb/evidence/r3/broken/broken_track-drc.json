@@ -1,0 +1,92 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-13T11:00:39",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.8",
+    "schematic_parity": [],
+    "source": "broken_track.kicad_pcb",
+    "unconnected_items": [
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Blind via [MIC_A_DATA] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 113.1,
+                        "y": 94.7
+                    },
+                    "uuid": "d2a0e585-076b-4ffc-93b0-b2ed6a63da2d"
+                },
+                {
+                    "description": "Pad F2 [MIC_A_DATA] of U1 on F.Cu",
+                    "pos": {
+                        "x": 103.024,
+                        "y": 100.324
+                    },
+                    "uuid": "2646505e-79e2-40d6-b3f2-06a24a099dc7"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        }
+    ],
+    "violations": [
+        {
+            "description": "Via is not connected or connected on only one layer",
+            "items": [
+                {
+                    "description": "Blind via [MIC_A_DATA] on F.Cu - In1.Cu",
+                    "pos": {
+                        "x": 113.1,
+                        "y": 94.7
+                    },
+                    "uuid": "d2a0e585-076b-4ffc-93b0-b2ed6a63da2d"
+                }
+            ],
+            "severity": "warning",
+            "type": "via_dangling"
+        },
+        {
+            "description": "Track has unconnected end",
+            "items": [
+                {
+                    "description": "Track [MIC_A_DATA] on In1.Cu, length 0.2121 mm",
+                    "pos": {
+                        "x": 101.0,
+                        "y": 94.7
+                    },
+                    "uuid": "10f191f3-4145-451b-af8e-18d62673a787"
+                }
+            ],
+            "severity": "warning",
+            "type": "track_dangling"
+        }
+    ]
+}

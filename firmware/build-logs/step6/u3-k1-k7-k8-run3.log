@@ -1,0 +1,22 @@
+# remote.sh run 20261113-045522-k3-audio
+# command: Z=/ws/zephyr; K=$Z/drivers/clock_control
+echo "files naming nrf54l in drivers/clock_control:"; grep -l -i 'nrf54l' $K/*.c $K/Kconfig.nrf
+echo "files in drivers/clock_control that define nrf_clock_control_request or the onoff getter: $(grep -l 'z_nrf_clock_control_get_onoff' $K/*.c | tr '\n' ' ')"
+for f in $(grep -l -i 'nrf54l' $K/*.c); do echo "$(basename $f): z_nrf_clock_control_get_onoff=$(grep -c z_nrf_clock_control_get_onoff $f) HFCLK=$(grep -c HFCLK $f) TYPE_HFCLK=$(grep -c CLOCK_CONTROL_NRF_TYPE_HFCLK $f)"; done
+echo "nrf_clock_control.h: TYPE_HFCLK enum member count $(grep -c 'CLOCK_CONTROL_NRF_TYPE_HFCLK' $Z/include/zephyr/drivers/clock_control/nrf_clock_control.h), nrf_clock_control_request lines $(grep -c 'nrf_clock_control_request' $Z/include/zephyr/drivers/clock_control/nrf_clock_control.h)"
+echo "dmic.h lines with 'api' (count): $(grep -c -i 'api' $Z/include/zephyr/audio/dmic.h)"
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 04:55:22 CET
+# free on the server's /: 30 GB
+# source firmware copied to /root/ring-os/src-u-audio
+# started on the server as 20261113-045522-k3-audio; server log /root/ring-os/logs/20261113-045522-k3-audio.log
+files naming nrf54l in drivers/clock_control:
+/ws/zephyr/drivers/clock_control/clock_control_nrf.c
+/ws/zephyr/drivers/clock_control/Kconfig.nrf
+files in drivers/clock_control that define nrf_clock_control_request or the onoff getter: /ws/zephyr/drivers/clock_control/clock_control_nrf.c 
+clock_control_nrf.c: z_nrf_clock_control_get_onoff=6 HFCLK=52 TYPE_HFCLK=15
+nrf_clock_control.h: TYPE_HFCLK enum member count 8, nrf_clock_control_request lines 5
+dmic.h lines with 'api' (count): 12
+# finished (Mac clock): 2026-11-13 04:55:41 CET
+# remote exit code: 0
+# local log: firmware/build-logs/20261113-045522-k3-audio.log

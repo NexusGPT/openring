@@ -1,0 +1,22 @@
+# remote.sh run 20261111-212312-r2-ft
+# command: west twister -T /ws/firmware/tests/control -T /ws/firmware/tests/devices -p native_sim -O /ws/out/r2-logic --inline-logs -v 2>&1 | grep -E "PASSED|FAILED|passed|failed|Assert|error" ; for s in F T; do RING_OUT=/ws/out/r2-$s bash tests/bsim/control/run.sh $s > /ws/out/r2-$s.txt 2>&1; echo "run.sh $s exit $?"; grep -E "TEST|^RESULT|rror|FAIL|ring-no|SCRIPT" /ws/out/r2-$s.txt | cut -c1-200 | head -30; done
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-11 21:23:12 CET
+# free on the server's /: 46 GB
+# source firmware copied to /root/ring-os/src-step2
+# started on the server as 20261111-212312-r2-ft; server log /root/ring-os/logs/20261111-212312-r2-ft.log
+INFO    - 1/2 native_sim/native         ring_control.logic                                 PASSED (native 0.009s <host/gnu>)
+INFO    - 2/2 native_sim/native         ring_devices.logic                                 PASSED (native 0.008s <host/gnu>)
+INFO    - 2 of 2 executed test configurations passed (100.00%), 0 built (not run), 0 failed, 0 errored, with no warnings in 14.22 seconds.
+INFO    - 16 of 16 executed test cases passed (100.00%) on 1 out of total 1514 platforms (0.07%).
+run.sh F exit 0
+d_00: @00:00:36.601685  RING SCRIPT DONE t=36601 checks=10 fails=0
+TEST F RESULT PASS (22 checks passed)
+RESULT PASS
+run.sh T exit 0
+d_00: @00:00:46.001587  RING SCRIPT DONE t=46001 checks=8 fails=0
+TEST T RESULT PASS (22 checks passed)
+RESULT PASS
+# finished (Mac clock): 2026-11-11 21:25:50 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step2/20261111-212312-r2-ft.log

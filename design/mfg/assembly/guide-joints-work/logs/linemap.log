@@ -1,0 +1,399 @@
+1 -> 1 | same text | # Assembly procedure of the ring (review findings F10 and F11)
+2 -> None | None | 
+3 -> 3 | same first 25 characters, text changed | Basis: first written on design commit a0cf952 (2026-11-11, 00:50 to 01:00); brou
+4 -> None | None | 
+5 -> 5 | same text | Who this is for: the owner or a partner who builds the ring. Read sections 1 and
+6 -> None | None | 
+7 -> 7 | same text | ## 0. Words used here
+8 -> None | None | 
+9 -> 9 | same text | - BLOCK: the flat top part of the ring that holds the screen. BAND: the hoop rou
+10 -> 10 | same text | - BODY (HSG1): the one metal part that is both block and band (`design/architect
+11 -> 11 | same text | - CHANNEL: the open groove inside the band, 7.0 mm wide (6.8 before inside model
+12 -> 12 | same text | - LINER (LNR1): the 0.3 mm resin skin cast into the channel. It closes the chann
+13 -> 13 | same text | - RIBBON: a thin flexible circuit (FLEX1, FLEX2) that carries wires from the mai
+14 -> 14 | same text | - HARNESS: in this file, a ribbon with its band parts already soldered on (a wor
+15 -> 15 | same text | - REFLOW: soldering in an oven, where printed solder paste melts under every par
+16 -> 16 | same text | - SWD: the two-wire programming port of the main chip (SWDCLK, SWDIO), reached t
+17 -> 17 | same text | - SHIP MODE: a state of the power chip in which the battery is cut off from ever
+18 -> 18 | same text | - JIG: a holding fixture with spring pins that touch pads and connect a test com
+19 -> 19 | same text | - [PROPOSED]: this file proposes the process because no design file names one. T
+20 -> 20 | same text | - [CALC]: a figure worked here from sourced numbers; the working is in the text.
+21 -> 21 | same text | - Face names on the main board. The board has parts on BOTH faces. The PARTS FAC
+22 -> None | None | 
+23 -> 23 | same text | State of the files today (2026-11-13: the inside model is v9, `design/mech/thin/
+24 -> None | None | 
+25 -> 25 | same text | Ring sizes: version 1 has 7 sizes, US 7 to 13. Each size has its own body, liner
+26 -> None | None | 
+27 -> 27 | same text | ### What changes by ring size at assembly
+28 -> None | None | 
+29 -> 29 | same text | From the model v6 (`design/architecture.md:783` to `design/architecture.md:789`,
+30 -> None | None | 
+31 -> 31 | same text | | Size | Joystick angle | Motor angle | Protection circuit starts at | Floor slo
+32 -> 32 | same text | |---|---|---|---|---|---|---|---|
+33 -> 33 | same text | | US 7 | -84.0 deg | -47.0 deg | 43.8 deg | -0.20 | 10.0898 | +53.78 to -106.994
+34 -> 34 | same text | | US 8 | -81.0 | -45.5 | 41.5 | -0.20 | 10.4962 | +51.081 to -102.943 | 36.547 m
+35 -> 35 | same text | | US 9 | -78.0 | -44.0 | 39.5 | -0.23 | 10.9026 | +48.713 to -98.986 | 39.175 mm
+36 -> 36 | same text | | US 10 | -78.0 | -45.0 | 39.5 | -0.63 | 11.3090 | +48.372 to -98.111 | 40.914 m
+37 -> 37 | same text | | US 11 | -78.0 | -43.5 | 39.5 | -1.04 | 11.7154 | +48.055 to -97.308 | 42.651 m
+38 -> 38 | same text | | US 12 | -78.0 | -42.5 | 39.5 | -1.45 | 12.1218 | +47.76 to -96.567 | 44.387 mm
+39 -> 39 | same text | | US 13 | -78.0 | -42.5 | 39.5 | -1.85 | 12.5282 | +47.485 to -95.883 | 46.121 m
+40 -> None | None | 
+41 -> 41 | same text | Pad angles: the four pads stay 2.4 mm apart along the arc at every size, so thei
+42 -> None | None | 
+43 -> 43 | same first 25 characters, text changed | Steps this table touches: step 6 (ribbon FLEX1 length to the joystick head), ste
+44 -> None | None | 
+45 -> 45 | same text | ## 1. Parts and sub-assemblies that enter the ring
+46 -> None | None | 
+47 -> 47 | same text | Order of the table: where the part ends up, from the top of the block to the fin
+48 -> None | None | 
+49 -> 49 | same text | | Part | Ref | What it is | Source of its size and place | Step |
+50 -> None | None | |---|---|---|---|---|
+51 -> 51 | same text | | Cover glass `cover_glass` | GL1 | AGC Dragontrail Pro formed glass, 1.10 mm at
+52 -> 52 | same text | | Clear adhesive `clear_adhesive` | ADH1 | tesa 69404, 0.10 mm optically clear a
+53 -> 53 | table row by first cell, text changed | | Screen `screen`, `screen_tail` | DISP1 | 0.95 inch AMOLED with its own stock c
+54 -> 54 | table row by first cell, text changed | | Foam `foam` | FOAM1 | Nitto SCF AN010, 0.10 mm, no adhesive. It is NOT fitted 
+55 -> 55 | same text | | Main board `main_board` | PCB1 | 27.2 x 12.6 x 0.3 mm, 4 copper layers with la
+56 -> 56 | same text | | Board parts | all refs of step 2 | chips, passives, microphones, connector J1,
+57 -> 57 | same text | | Motor regulator `motor_regulator` and its capacitors `motor_cap_in`, `motor_ca
+58 -> 58 | same text | | Power chip capacitors | C85, C86, C87, C88 | VBAT 2.2 uF, two load switch outp
+59 -> 59 | same text | | Microphone gaskets | GSK2, GSK3 | Nitto SCF foam rings OD 1.8, bore 1.0, no ad
+60 -> 60 | same text | | Microphone membranes | MEM1, MEM2 | discs 2.0 mm of Saati Acoustex 010a mesh o
+61 -> 61 | same text | | Body `outer_body` | HSG1 | one metal body per size, with all cavities | `desig
+62 -> 62 | same text | | Radio corner | RC1 | resin corner of the body round the antenna, Master Bond E
+63 -> 63 | same text | | Joystick frame | FRM1 | round titanium ring, 5.40 outer diameter, 4.80 bore, 1
+64 -> 64 | same text | | Joystick cap `joystick_cap` | CAP1 | round moulded cap, shank 4.40, rim 1.400 
+65 -> 65 | same text | | Joystick dam `joystick_dam` | DAM1 | UV-cured dam frame round the switch head,
+66 -> 66 | same text | | Joystick switches `joy_sw_*` | SW1, SW2, SW3, SW4, SW5 | five Alps SKTAAAE010,
+67 -> 67 | same text | | Vibration motor `vibration_motor` | M1 | Jinlong W0525AB001D, 5.0 x 2.5 mm, tw
+68 -> 68 | same text | | Cell `cell` | BT1 | curved cell 1.6 x 6.0 mm, 39.175 mm at US 9, 33.936 to 46.
+69 -> 69 | same text | | Cell protection circuit `cell_protection` | PRT1 | 1.5 x 5 mm board on the cel
+70 -> 70 | same text | | Cell temperature sensor | RT1 | 10 k thermistor, inside the bought cell pack w
+71 -> 71 | same text | | Ribbon, joystick side `band_flex_thumb` | FLEX1 | 1.8 mm wide at the neck (2.5
+72 -> 72 | same text | | Ribbon, other side `band_flex_away` | FLEX2 | 1.8 mm wide at the neck (2.5 at 
+73 -> 73 | table row by first cell, text changed | | Charging pads `pad_VBUS`, `pad_D-`, `pad_D+`, `pad_GND` | CP1, CP2, CP3, CP4 |
+74 -> 74 | same text | | Liner `band_liner` | LNR1 | 0.3 mm cast resin skin, Master Bond EP30Med | `des
+75 -> 75 | same text | | Glass seal `glass_seal` | SEAL1 | die-cut ring of tesa 61305 double-sided film
+76 -> 76 | table row by first cell, text changed | | Floor slot sealant | none | 3M Scotch-Weld DP420 Black, the adhesive of the jo
+77 -> None | None | 
+78 -> 78 | same text | Not used: the record cap CAP2 and its opening (removed, `design/architecture.md:
+79 -> None | None | 
+80 -> 80 | same text | ## 2. Assembly order
+81 -> None | None | 
+82 -> 82 | same text | Every step has five fields: Join (what is joined to what, with which material or
+83 -> None | None | 
+84 -> 84 | same text | Steps that change because of the resin radio corner (`design/architecture.md:674
+85 -> None | None | 
+86 -> 86 | same text | ### Step 1. Accept the bare main board
+87 -> None | None | 
+88 -> 88 | same text | - **Join:** nothing is joined. The bare board PCB1 (`main_board`) is accepted fr
+89 -> 89 | same text | - **Locate:** the outline 27.2 x 12.6 mm and no notch (`design/mfg/specs/main-bo
+90 -> 90 | same text | - **Before:** the board files exist. The ring board is routed: the rules check p
+91 -> 91 | same text | - **Check:** the board maker's electrical test of every net, thickness, warp (`d
+92 -> 92 | same field of step 1 (was step 1) | - **After:** nothing irreversible.
+93 -> None | None | 
+94 -> 94 | same text | ### Step 2. Print paste, place the board parts on both faces, reflow twice (scre
+95 -> None | None | 
+96 -> 96 | same field of step 2 (was step 2) | - **Join:** the board parts of `design/bom.csv` to PCB1 in TWO solder passes, on
+97 -> 101 | same field of step 2 (was step 2) | - **Locate:** fiducials of the board file; each part's land pattern (from the ro
+98 -> 102 | same field of step 2 (was step 2) | - **Before:** step 1 passed. The antenna mount is decided: ANT1 is soldered on i
+99 -> 103 | same field of step 2 (was step 2) | - **Check:** after PASS 1, optical inspection of the screen face at 10 times: J1
+100 -> 104 | same field of step 2 (was step 2) | - **After:** reflow is not undone. A parts face part can be reworked by hand unt
+101 -> None | None | 
+102 -> 106 | same text | ### Step 3. Measure the microphone heights and choose the gaskets
+103 -> None | None | 
+104 -> 108 | same text | - **Join:** nothing is joined. The height of each microphone lid below the board
+105 -> 109 | same text | - **Locate:** the board's parts face as zero; the lid of U5 and of U6.
+106 -> 110 | same text | - **Before:** step 2 passed.
+107 -> 111 | same text | - **Check:** the gap g = lid Z - 0.300; gasket 0.10 (Nitto SCF AN010) if g is un
+108 -> 112 | same field of step 3 (was step 3) | - **After:** nothing irreversible.
+109 -> None | None | 
+110 -> 114 | same field of step 4 (was step 4) | ### Step 4. Clean and inspect both faces before the jig
+111 -> None | None | 
+112 -> 116 | same field of step 4 (was step 4) | - **Join:** nothing is joined. Both faces of PCB1 are cleaned of flux residue, t
+113 -> 117 | same field of step 4 (was step 4) | - **Locate:** the board on its outline in a cleaning carrier.
+114 -> 118 | same text | - **Before:** steps 2 and 3 passed.
+115 -> 119 | same field of step 4 (was step 4) | - **Check:** under a microscope at 10 times, no residue on any of the 12 test pa
+116 -> 120 | same field of step 4 (was step 4) | - **After:** nothing irreversible.
+117 -> None | None | 
+118 -> 122 | same text | ### Step 5. Program and test the board through its test pads (the only SWD acces
+119 -> None | None | 
+120 -> 124 | same text | - **Join:** nothing is joined. A jig touches the SCREEN FACE, where the 12 test 
+121 -> 125 | same field of step 5 (was step 5) | - **Locate:** the jig's pins on the 12 test pads and on the J_BAND_B lands; the 
+122 -> 126 | same text | - **Before:** step 4 passed. The signed image exists: MCUboot, the application, 
+123 -> 127 | same field of step 5 (was step 5) | - **Check:** SWD write and read-back of MCUboot and the image; then over USB: GE
+124 -> 128 | same field of step 5 (was step 5) | - **After:** this is the last moment the SWD pads can be reached with the screen
+125 -> None | None | 
+126 -> 130 | same text | ### Step 6. Solder the five joystick switches on the ribbon FLEX1
+127 -> None | None | 
+128 -> 132 | same field of step 6 (was step 6) | - **Join:** SW1 (up), SW3 (down), SW4 (toward the hand), SW5 (toward the fingert
+129 -> 134 | same field of step 6 (was step 6) | - **Locate:** the cross at 2.4 mm from the cap axis, SW2 at the centre, 0.30 mm 
+130 -> 135 | same field of step 6 (was step 6) | - **Before:** FLEX1 is made with its stiffener, in the length of its ring size (
+131 -> 136 | same field of step 6 (was step 6) | - **Check:** each switch closes its own line and no other, measured with an ohmm
+132 -> 137 | same field of step 6 (was step 6) | - **After:** nothing irreversible; a switch can be reworked until step 14.
+133 -> None | None | 
+134 -> 139 | same text | ### Step 7. Solder the motor's lead wires to FLEX1
+135 -> None | None | 
+136 -> 141 | same field of step 7 (was step 7) | - **Join:** M1 (`vibration_motor`, Jinlong W0525AB001D) to FLEX1, the red lead t
+137 -> 143 | same text | - **Locate:** the motor pads of FLEX1 beside the motor's place, 0.7 mm off the b
+138 -> 144 | same field of step 7 (was step 7) | - **Before:** step 6 passed. Cut each lead to the length of its ring size, measu
+139 -> 145 | same field of step 7 (was step 7) | - **Check:** apply 3.0 V through a 200 mA current limit to the ribbon's board en
+140 -> 146 | same text | - **After:** cut leads cannot be lengthened.
+141 -> None | None | 
+142 -> 148 | same text | ### Step 8. Make the charging pads on FLEX2
+143 -> None | None | 
+144 -> 150 | same field of step 8 (was step 8) | - **Join:** CP1 (`pad_VBUS`), CP2 (`pad_D-`), CP3 (`pad_D+`), CP4 (`pad_GND`) to
+145 -> 151 | same field of step 8 (was step 8) | - **How:** [PROPOSED: no design file names the method; the lead's workshop metho
+146 -> 152 | same field of step 8 (was step 8) | - **Locate:** four pads 2.4 mm apart along the arc, centred opposite the block, 
+147 -> 153 | same field of step 8 (was step 8) | - **Before:** FLEX2 is made. The outline exists: FLEX2 is drawn as a board for e
+148 -> 154 | same field of step 8 (was step 8) | - **Check:** each disc lies flat on its land and is centred on it, with no tilt 
+149 -> 155 | same field of step 8 (was step 8) | - **After:** nothing irreversible.
+150 -> None | None | 
+151 -> 157 | same text | ### Step 9. Join the cell, its protection circuit and the thermistor to FLEX2
+152 -> None | None | 
+153 -> 159 | same field of step 9 (was step 9) | - **Join:** the three output tabs of the bought cell pack (BT1 with PRT1 (`cell_
+154 -> 161 | same text | - **Locate:** at US 9 the cell's tab end lies at +48.713 degrees and PRT1 starts
+155 -> 162 | same field of step 9 (was step 9) | - **Before:** the cell BT1 (`cell`) of the right size is delivered, 33.936 mm (U
+156 -> 163 | same field of step 9 (was step 9) | - **Check:** the cell voltage appears on the cell lands at the ribbon's board en
+157 -> 164 | same field of step 9 (was step 9) | - **After:** from here the harness carries a live cell. The board end of FLEX2 m
+158 -> None | None | 
+159 -> 166 | same text | ### Step 10. Accept the body, and fit the radio corner
+160 -> None | None | 
+161 -> 168 | same text | - **Join:** nothing is joined in the one-piece design. The body HSG1 (`outer_bod
+162 -> 169 | same text | - **Locate:** the body drawing per size. The body files carry every pocket, one 
+163 -> 170 | same field of step 10 (was step 10) | - **Before:** the body has, per the model v6 (`design/mech/thin/thin-notes.md:27
+164 -> 171 | same field of step 10 (was step 10) | - **Check:** the inspection list of `design/mfg/specs/body.md:92`, plus: the slo
+165 -> 172 | same field of step 10 (was step 10) | - **After:** nothing irreversible.
+166 -> 173 | same text | - **Radio corner:** the resin corner RC1 is cast on its own in Master Bond EP30M
+167 -> None | None | 
+168 -> 175 | same text | ### Step 11. Bond the two microphone membranes into the underside seats
+169 -> None | None | 
+170 -> 177 | same text | - **Join:** MEM1 and MEM2 to the body, each a disc of woven acoustic mesh, Saati
+171 -> 178 | same text | - **Locate:** the 2.0 mm counterbore on the block's underside, coaxial with the 
+172 -> 179 | same text | - **Before:** step 10 passed; the seats are clean and dry.
+173 -> 180 | same text | - **Check:** each disc flush with the underside within 0.02 mm and without wrink
+174 -> 181 | same text | - **After:** a removed membrane is destroyed; a new one can be fitted until step
+175 -> None | None | 
+176 -> 183 | same text | ### Step 12. Place the two microphone gaskets on the pocket bottoms
+177 -> None | None | 
+178 -> 185 | same text | - **Join:** GSK2 and GSK3 (Nitto SCF foam rings OD 1.80, bore 1.00, no adhesive)
+179 -> 186 | same text | - **Locate:** centred on the 1.0 mm hole; bore equal to the hole (`design/mech/m
+180 -> 187 | same text | - **Before:** step 11 passed; the board is paired with this body by serial numbe
+181 -> 188 | same text | - **Check:** bore concentric with the hole, seen under a microscope through the 
+182 -> 189 | same text | - **After:** nothing irreversible until step 17 presses the gaskets.
+183 -> None | None | 
+184 -> 191 | same text | ### Step 13. Bond the frame FRM1 in the round opening, cure it, then fit the rou
+185 -> None | None | 
+186 -> 193 | same text | - **Join:** first the frame FRM1 (titanium grade 5, 5.40 outer diameter, 4.80 bo
+187 -> 194 | same text | - **Locate:** the opening at the joystick angle of the size (-84.0 at US 7, -81.
+188 -> 195 | same text | - **Before:** steps 10 to 12 passed. FRM1 and the body were coated in the same b
+189 -> 196 | same text | - **Check:** after the cure: the DP420 bead is closed all round the frame, seen 
+190 -> 197 | same field of step 13 (was step 13) | - **After:** the frame's bond cannot be undone. The cap can still be taken out t
+191 -> None | None | 
+192 -> 208 | same field of step 15 (was step 14) | ### Step 14. Lay the two harnesses in the band channel and thread their ends thr
+193 -> None | None | 
+194 -> 210 | same field of step 15 (was step 14) | - **Join:** FLEX1 with SW1 to SW5 and M1, and FLEX2 with the cell pack BT1 (PRT1
+195 -> 211 | same field of step 15 (was step 14) | - **Locate:** the flat switch head with its stiffener under the flange, the cent
+196 -> 212 | same field of step 15 (was step 14) | - **Before:** steps 6 to 13 passed; the cap CAP1 is already in its pocket and th
+197 -> 213 | same field of step 15 (was step 14) | - **Check:** the pads sit on the fixture's core at the right angles (gauge); the
+198 -> 214 | same field of step 15 (was step 14) | - **After:** nothing irreversible.
+199 -> None | None | 
+200 -> 216 | same field of step 16 (was step 15) | ### Step 15. Turn the screen, plug its cable into J1 on the screen face, and fol
+201 -> None | None | 
+202 -> 218 | same field of step 16 (was step 15) | - **Join:** DISP1 (`screen`) with its own cable (`screen_tail`, `design/mech/thi
+203 -> 220 | same text | - **Locate:** J1 by its land pattern on the screen face; the cable's neck, 4.8 m
+204 -> 221 | same field of step 16 (was step 15) | - **Before:** step 5 passed. The body has the pocket at its fingertip end for th
+205 -> 222 | same field of step 16 (was step 15) | - **Check:** (a) the latch is closed over the whole cable width, seen under a mi
+206 -> 223 | same text | - **After:** nothing irreversible; J1 can be opened until step 17.
+207 -> None | None | 
+208 -> 199 | same field of step 14 (was step 16) | ### Step 16. Solder the ribbon ends to the board (the cell connects here)
+209 -> None | None | 
+210 -> 201 | same field of step 14 (was step 16) | - **Join:** the board end of FLEX1 to J_BAND_A and of FLEX2 to J_BAND_B, on the 
+211 -> 203 | same field of step 14 (was step 16) | - **Locate:** the land rows of J_BAND_A (8 lands) and J_BAND_B (7 lands) (`desig
+212 -> 204 | same field of step 14 (was step 16) | - **Before:** steps 14 and 15 passed. The insulating tape of step 9 is removed j
+213 -> 205 | same field of step 14 (was step 16) | - **Check:** once FLEX2 is joined, the battery voltage reaches the power chip. A
+214 -> 206 | same field of step 14 (was step 16) | - **After:** the ring now runs on its own cell. It draws about 0.03 mA in STANDB
+215 -> None | None | 
+216 -> 225 | same field of step 17 (was step 17) | ### Step 17. Lower the board and screen into the block
+217 -> None | None | 
+218 -> 227 | same field of step 17 (was step 17) | - **Join:** PCB1 into the block cavity and DISP1 into the panel pocket (27.45 x 
+219 -> 228 | same text | - **Locate:** the panel pocket walls; the board on the block stack: floor 0.40, 
+220 -> 229 | same text | - **Before:** step 16 passed.
+221 -> 230 | same text | - **Check:** the screen lies flat and below the glass seat; seen from above, the
+222 -> 231 | same text | - **After:** the parts face with its ribbon joints, and the screen face with its
+223 -> None | None | 
+224 -> 233 | same text | ### Step 18. Test the open ring through the charging pads
+225 -> None | None | 
+226 -> 235 | same text | - **Join:** nothing is joined. The jig gives VBUS through CP1 to CP4. The ring g
+227 -> 236 | same text | - **Locate:** the jig's core in the bore, spring pins on the four pads.
+228 -> 237 | same text | - **Before:** step 17 passed; the factory flag is still 1.
+229 -> 238 | same field of step 18 (was step 18) | - **Check:** every factory test of section 9.3 (`design/firmware.md section 9.3,
+230 -> 239 | same text | - **After:** nothing irreversible. This is the last full test before steps 19 to
+231 -> None | None | 
+232 -> 241 | same field of step 19 (was step 19) | ### Step 19. Seal the two floor slots round the ribbons
+233 -> None | None | 
+234 -> 243 | same field of step 19 (was step 19) | - **Join:** a sealant into each floor slot, round the ribbon, applied from the c
+235 -> 244 | same field of step 19 (was step 19) | - **Locate:** the slot 2.1 x 0.6 mm (inside model v8, `design/mech/thin/thin-not
+236 -> 245 | same text | - **Before:** step 18 passed.
+237 -> 246 | same field of step 19 (was step 19) | - **Check:** the sealant fills the slot all round the ribbon, seen at 20 times f
+238 -> 247 | same text | - **After:** the slots are closed. The board cannot come out.
+239 -> None | None | 
+240 -> 249 | same text | ### Step 20. Dam the joystick pocket (DAM1)
+241 -> None | None | 
+242 -> 251 | same text | - **Join:** DAM1 (`joystick_dam`), a dispensed UV-cured dam frame round the swit
+243 -> 252 | same text | - **Locate:** inside the joystick pocket, round the five switch bases on the fla
+244 -> 253 | same field of step 20 (was step 20) | - **Before:** steps 13, 14 and 19 passed: the frame and the cap are in (step 13)
+245 -> 254 | same text | - **Check:** the dam is closed all round the head, seen from the bore at 20 time
+246 -> 255 | same text | - **After:** the switches cannot be reworked. The dam closes the pocket round it
+247 -> None | None | 
+248 -> 257 | same text | ### Step 21. Cast the resin liner
+249 -> None | None | 
+250 -> 259 | same field of step 21 (was step 21) | - **Join:** the liner LNR1 (`band_liner`), resin cast into the channel over the 
+251 -> 260 | same text | - **Locate:** the core sets the inner diameter; the band's two edge walls set th
+252 -> 261 | same field of step 21 (was step 21) | - **Before:** steps 19 and 20 passed (DAM1 cured). The cell never goes above 45 
+253 -> 262 | same field of step 21 (was step 21) | - **Check:** the cell's temperature during the cure, logged through the ring's o
+254 -> 263 | same text | - **After:** everything in the band is closed. Repair is not possible after cast
+255 -> None | None | 
+256 -> 265 | same text | ### Step 22. Clean and inspect the glass seat and the screen face before the bon
+257 -> None | None | 
+258 -> 267 | same text | - **Join:** nothing is joined. The body's glass seat and the screen's top face a
+259 -> 268 | same text | - **Locate:** the seat land between the panel pocket and the glass edge, 0.825 m
+260 -> 269 | same text | - **Before:** step 21 passed.
+261 -> 270 | same text | - **Check:** under a lamp at a low angle, no resin, dust or fibre on the seat or
+262 -> 271 | same field of step 22 (was step 22) | - **After:** nothing irreversible.
+263 -> None | None | 
+264 -> 273 | same text | ### Step 23. Bond the cover glass: to the screen with ADH1, and to the body with
+265 -> None | None | 
+266 -> 275 | same text | - **Join:** GL1 (`cover_glass`) to the screen through ADH1 (`clear_adhesive`, 0.
+267 -> 276 | same text | - **Locate:** the glass outline in the body's recess: the metal lip round the gl
+268 -> 277 | same text | - **Before:** step 22 passed. The seat is lowered 0.05 mm inside the body (`desi
+269 -> 278 | same text | - **Check:** no bubble anywhere under the glass, since ADH1 covers the whole fac
+270 -> 279 | same text | - **After:** the screen, J1 and the board are closed for good.
+271 -> 280 | same text | - **Radio corner:** part of the seat is the resin corner's top (`design/mech/ant
+272 -> None | None | 
+273 -> 282 | same text | ### Step 24. Cure and check the closed ring for leaks
+274 -> None | None | 
+275 -> 284 | same text | - **Join:** nothing is joined. The seal of step 23 reaches its full strength (ti
+276 -> 285 | same text | - **Locate:** none.
+277 -> 286 | same text | - **Before:** step 23 passed.
+278 -> 287 | same text | - **Check:** [PROPOSED] a pressure-decay leak test is not possible, because the 
+279 -> 288 | same field of step 24 (was step 24) | - **After:** nothing new.
+280 -> None | None | 
+281 -> 290 | same text | ### Step 25. Final test of the closed ring
+282 -> None | None | 
+283 -> 292 | same text | - **Join:** nothing is joined. Jig on the pads, FACTORY ENTER.
+284 -> 293 | same text | - **Locate:** the jig's core in the bore.
+285 -> 294 | same text | - **Before:** step 24 passed; the factory flag is still 1 (it is cleared only by
+286 -> 295 | same field of step 25 (was step 25) | - **Check:** every factory test again (section 9.3, `design/firmware.md section 
+287 -> 296 | same text | - **Water spray test (a pass line, the last test of this step):** the owner's go
+288 -> 297 | same field of step 25 (was step 25) | - **After:** nothing new.
+289 -> None | None | 
+290 -> 299 | same text | ### Step 26. First charge
+291 -> None | None | 
+292 -> 301 | same text | - **Join:** nothing is joined. VBUS on the pads; the charger runs at CHARGE_CURR
+293 -> 302 | same field of step 26 (was step 26) | - **Locate:** the jig's core.
+294 -> 303 | same text | - **Before:** step 25 passed.
+295 -> 304 | same text | - **Check:** T-CHARGE shows the charger on; the battery voltage (battery_mv in t
+296 -> 305 | same field of step 26 (was step 26) | - **After:** nothing new.
+297 -> None | None | 
+298 -> 307 | same text | ### Step 27. Put the ring in ship mode
+299 -> None | None | 
+300 -> 309 | same text | - **Join:** nothing is joined. The jig sends FACTORY sub-command SHIP_ENTER 0x7F
+301 -> 310 | same field of step 27 (was step 27) | - **Locate:** the jig's core.
+302 -> 311 | same text | - **Before:** step 26 passed.
+303 -> 312 | same text | - **Check:** while VBUS is still on, the jig's Bluetooth scanner receives the ri
+304 -> 313 | same text | - **After:** on a ring shipped with SHIP_ENTER the factory flag is clear: the fa
+305 -> None | None | 
+306 -> 315 | same text | ### Step 28. Pack
+307 -> None | None | 
+308 -> 317 | same text | - **Join:** nothing is joined. The ring goes into its case.
+309 -> 318 | same text | - **Locate:** the case pocket (`design/architecture.md:556`).
+310 -> 319 | same text | - **Before:** step 27 passed.
+311 -> 320 | same text | - **Check:** serial number, ring size and the test records of steps 5, 18, 21, 2
+312 -> 321 | same field of step 28 (was step 28) | - **After:** nothing new.
+313 -> None | None | 
+314 -> 323 | same text | ## 3. Order conflicts
+315 -> None | None | 
+316 -> 325 | same text | Each conflict names the files and lines that cause it, and gives at most one way
+317 -> None | None | 
+318 -> 327 | same text | | # | Conflict | Caused by | One way out (PROPOSAL) | Status (model v6) |
+319 -> None | None | |---|---|---|---|---|
+320 -> 329 | table row by first cell, text changed | | K-A1 | The board is testable through its test pads only before step 17. The 12
+321 -> 330 | same text | | K-A2 | The floor slots must be sealed before the cast, but no file names how. 
+322 -> 331 | same text | | K-A3 | The cast resin runs into the joystick pocket and locks the switches and
+323 -> 332 | same text | | K-A4 | No glass-to-body adhesive or seal existed, and the seat had no room for
+324 -> 333 | same text | | K-A5 | The liner is said to be cast in place over the parts (17.3, band-liner 
+325 -> 334 | table row by first cell, text changed | | K-A6 | Each ribbon has parts at its band end and a joint of 8 lands (FLEX1) or
+326 -> 335 | same text | | K-A7 | Ship mode must come last, but SHIP_ENTER cleared the factory flag, and 
+327 -> 336 | table row by first cell, text changed | | K-A8 | The cell is live from step 16 to the end, through the cast (step 21) an
+328 -> 337 | same text | | K-A9 | Before model v9: ANT1 could not be soldered in step 2 as drawn: its pad
+329 -> 338 | same text | | K-A10 | The body spec put the floor slots at X -4.7, outside the channel; the 
+330 -> 339 | same text | | K-A11 | CLOSED in v7: the light guide and the light plug are removed in v7, so
+331 -> 340 | same text | | K-A12 | NEW, the sources contradict each other: the dam DAM1 is drawn standing
+332 -> None | None | 
+333 -> 342 | same text | ## 4. Water and dust (F11)
+334 -> None | None | 
+335 -> 344 | same text | What IP65 asks, in plain words. The first digit 6 means dust-tight: "No ingress 
+336 -> None | None | 
+337 -> 346 | same text | | # | Opening or joint | Sealing means the design names today | What IP65 asks o
+338 -> None | None | |---|---|---|---|---|
+339 -> 348 | same text | | 1 | Cover glass to body, all round the block | the seal ring SEAL1, tesa 61305
+340 -> 349 | same text | | 2 | Joystick: the frame FRM1 seam and the cap CAP1 in its bore | the frame sea
+341 -> 350 | same text | | 3 | Two microphone holes, 1.0 mm, on the block's underside | a membrane of Saa
+342 -> 351 | same text | | 4 | Print of the cover glass | no opening: the print window is removed in v7 (
+343 -> 352 | same text | | 5 | Liner to band, along both band edges and at the two liner ends | the cast 
+344 -> 353 | same text | | 6 | The four pads in the liner | the cast resin round each pad (`design/archit
+345 -> 354 | same text | | 7 | The two floor slots for the ribbons | 3M Scotch-Weld DP420 Black from the 
+346 -> 355 | same text | | 8 | Screen, board and parts inside the block | behind rows 1 and 3 | nothing o
+347 -> 356 | same text | | 9 | Radio corner seams (RC1, the lead's default; the owner can overrule) | "tw
+348 -> None | None | 
+349 -> 359 | same first 25 characters, text changed | What can be claimed today: no water or dust rating (version 1 claims none, item 
+350 -> None | None | 
+351 -> 361 | same text | The test that would prove IP65 (to describe, not to order: bench purchases are o
+352 -> 362 | same text | 1. Before: all factory tests of step 25 pass, and the screen shows no mist.
+353 -> 363 | same text | 2. Dust (first digit 6): the dust chamber of IEC 60529 for the 6, with a vacuum 
+354 -> 364 | same text | 3. Water jets (second digit 5): the 6.3 mm nozzle, 12.5 litres per minute, 30 kP
+355 -> 365 | same text | 4. After: all factory tests pass again; no mist under the glass; then one ring i
+356 -> 366 | same text | A pass on all rings in both tests gives IP65. Water by immersion (IPX7 or IPX8) 
+357 -> None | None | 
+358 -> 368 | same text | ## 5. Who decides or supplies
+359 -> None | None | 
+360 -> 370 | same text | | Open material or process | Used in step | Who decides or supplies | Open item 
+361 -> None | None | |---|---|---|---|
+362 -> 372 | same text | | Glass seal SEAL1: fixed, tesa 61305, 50 um (the seat depth is set, 0.05 mm); i
+363 -> 373 | same text | | Clear adhesive ADH1: fixed, tesa 69404, 100 um (outline still open) | 23 | fix
+364 -> 374 | table row by first cell, text changed | | Foam FOAM1: material fixed, Nitto SCF AN010, 0.10 mm, no adhesive; NOT a close
+365 -> 375 | same text | | Casting resin of the liner: fixed, Master Bond EP30Med (no skin claim for vers
+366 -> 376 | same first 25 characters, text changed | | Sealant of the floor slots and of SEAL2: fixed, 3M Scotch-Weld DP420 Black | 1
+367 -> 377 | same text | | Dam DAM1: material, and how it stands before the cast (K-A12) | 20, 21 | the m
+368 -> 378 | same text | | Stiffener of the joystick head: polyimide 0.10 (`design/mfg/specs/band-flex-ta
+369 -> 379 | same text | | Adhesive of the joystick frame: fixed, 3M Scotch-Weld DP420 Black, 24 h at 22 
+370 -> 380 | same first 25 characters, text changed | | Places of U11, C83, C84 on the board | 2 | the layout engineer | S22 |
+371 -> 381 | same text | | Cap CAP1 and frame FRM1: fixed, Makrolon 2407 colour 901510 moulded; Ti-6Al-4V
+372 -> 382 | same text | | Microphone gasket foam: Nitto SCF AN010, SCF400T, SCF400, no adhesive; the thr
+373 -> 383 | same text | | Microphone membrane: Saati Acoustex 010a mesh on a ring of tesa 61305, stack 0
+374 -> None | None | | Charging pads: plated land or soldered disc | 8 | the design partner and the f
+375 -> 385 | table row by first cell, text changed | | Ribbon lengths per size and the fold's bend radius (K-A6); the ribbon outlines
+376 -> 386 | same first 25 characters, text changed | | Ribbon-to-board joint (hot bar) and the solder of the band parts | 7, 9, 16 | 
+377 -> 387 | same text | | Cell heat limit for soldering and for the cast (45 degrees C in assembly, `des
+378 -> 388 | same text | | Radio corner RC1: resin fixed, Master Bond EP30Med (cast on its own); its adhe
+379 -> 389 | same text | | Test jig (spring pins on the test pads, the pad core, speaker, camera) | 5, 18
+380 -> 390 | table row by first cell, text changed | | Motor pocket fix (free space to the body under 0.05 mm at US 9 to 13) | 7, 10,
+381 -> 392 | same text | | IP65 test house and sample size | section 4 | the owner | new |
+382 -> None | None | 
+383 -> 394 | same text | ## 6. Changes other files need (not made here)
+384 -> None | None | 
+385 -> 396 | same first 25 characters, text changed | The changes listed at the first issue of this file are made in the files they na
+386 -> None | None | 
+387 -> 398 | same text | | # | File and line | Present text | New text |
+388 -> None | None | |---|---|---|---|
+389 -> 400 | same text | | 1 | `requirements.md:26` | "IP65 or better" | DONE 2026-11-13: the line now re
+390 -> 401 | same first 25 characters, text changed | | 2 | `design/bom.csv` new row | none (no part for the floor slot sealant) | Flo
+391 -> 402 | same text | | 3 | `design/mech/thin/placement.csv:39` and `design/bom.csv:55` | "frame on th
+392 -> 403 | same first 25 characters, text changed | | 4 | `design/architecture.md:716` (17.23) | "its step 2 still lists the motor s
+393 -> 404 | same first 25 characters, text changed | | 5 | `design/architecture.md:524` (S26) | "how the liner is built with the ribb
+394 -> 405 | same text | | 6 | `design/mech/thin/placement.csv:32`, `design/mech/thin/placement.csv:33` |
+395 -> 406 | same text | | 7 | `design/mfg/tools/draw.py:40` | (done by the maker files v7) | sheets and 
+396 -> None | None | 
+397 -> 408 | same first 25 characters, text changed | RESULT: done, 28 numbered steps (numbers unchanged) brought to design version 7 
+398 -> None | None | 
+exit 0

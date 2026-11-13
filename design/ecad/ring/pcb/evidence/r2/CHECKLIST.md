@@ -1,0 +1,38 @@
+# Round 2 checklist (ring board routing), started 2026-11-13 04:22, closed 08:0x
+
+- [x] 1. Read board-notes.md first, then the named scripts. evidence: transcript order (first command printed board-notes.md)
+- [-] 2. 0 violations. not done: 5 (track_dangling) on the delivered board, full7/make_board.log, drc-report.txt
+- [-] 3. 0 unconnected. not done: 9, full7/make_board.log `Found 9 unconnected items`
+- [-] 4. check_board.py exit 0. not done: exit 1, full7/build-logs/5_check_board.log `RESULT: FAIL, 1 problems` (check 7 only)
+- [x] 5. Six broken copies each exit 1 on own fault. evidence: broken/check_*.log
+- [x] 6. New check broken copy: no new check added to check_board.py (notes step 10)
+- [x] 7. 4 layers, 0.30, same outline and rules: build_board.py stack, outline, rules unchanged (only placement source and override lists changed; before/build_board.py)
+- [x] 8. Open connections listed with ends and needs: board-notes-r2.md "Not closed"
+- [-] 9. Fab files. not done: board not at 0/0
+- [x] 10. Current plan table used: c_placement_step0.log
+- [x] 11. C21, C25, C26, C27 0402 with saved maker codes: a_make_netlist.log, edit_bom.log, b_check_footprints.log
+- [x] 12. TP2, TP13, TP16, TP22 removed, B5, B9, G4, H4 no-connect: netlist.csv, check_w2r2.log PASS, s8/check_escapes.log PASS
+- [x] 13. DBG_TX and SWD pads stay: make_netlist.py TPS list unchanged except TP_REMOVED
+- [-] 14. X2 beside B6/B7. not done: x2trial check_placement FAIL 4, capdist FAIL 2
+- [-] 15. Ruling d. not done: time, stopped at the 3/4 mark (08:04), runs 11 to 25 min
+- [x] 16. placement-final.csv written, both checks pass: s8/check_placement.log, s8/capdist.log
+- [x] 17. Plan files not edited (placement checks read them only)
+- [x] 18. VDD_1V8: join limit = groups + 4 (edit logs); VDD_1V8 not open in full7/open_nets.txt
+- [x] 19. Split J1 / others: notes Not closed (2 / 7)
+- [x] 20. Antenna zone, RF line, USB pair, band lands unchanged in route_fixed (geometry code moved, not changed)
+- [x] 21. Cited round 1 logs copied to PCB/evidence/r1 (32K); r2 3.0M
+- [x] 22. Notes step by step with runs and open lists
+- [x] 23. questions_for_owner and RESULT line
+- [x] 24. One heavy job at a time, nice -n 19 (run_full.sh); background runs
+- [x] 25. Piece trials s1 to s7 before full runs (runs 3 to 7 started directly; stated in notes)
+- [x] 26. Expected-value edits listed: check_netlist.py, check_escapes.py (ruling b)
+- [x] 27. Order codes from saved Murata sheets
+- [x] 28. No secret, no server used
+- [x] 29. No browser; scratch deleted (deleted_scratch*.txt)
+- [-] 30. Shell rules: one stderr redirect was refused by the harness before it ran; none ran
+- [x] 31. No REPORT/SUMMARY/FINDINGS/ANALYSIS names
+- [x] 32. No git
+- [-] 33. Must not touch band: check_band.py rewrote 14 band flex*-drc.rpt files (band_files_rewritten.txt), reported
+- [x] 34. Reply under 3,500 characters
+- [x] 35. Within 5 hours (04:22 to about 08:10)
+- [x] 36. check_netlist, check_footprints, check_bom (RC1 already there), ERC, band check rerun

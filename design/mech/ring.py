@@ -1,0 +1,744 @@
+#!/usr/bin/env python3
+# OLD BLOCK MODEL, replaced by the inside model in design/mech/thin/ (thin.py, model v9; notes design/mech/thin/model-v9-notes.md) with the exterior in design/look/s1/; the numbers below describe the one-block model of version A1 and are not edited.
+"""Parametric 3D model of the AI ring recorder (architecture.md version A1, section 6).
+
+Axes: X along the finger, Y across, Z up. Origin: centre of the block's underside.
+Every dimension sits in DIM_TABLE below. dimensions.csv is written from it.
+Override for tests (no file edit): RING_OVERRIDE="cell_t=5.6" python ring.py
+Running this file writes dimensions.csv, placement.csv and everything in out/.
+"""
+import os
+import sys
+import csv
+import math
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+OUT = HERE / "out"
+
+A = "architecture.md A1"
+# ---------------------------------------------------------------- DIMENSION TABLE
+# name, value_mm, source
+DIM_TABLE = [
+    # block and housing
+    ("block_x", 30.0, f"{A} s1 'One block, 30 x 20 x 9.5 mm'"),
+    ("block_y", 20.0, f"{A} s1"),
+    ("block_z", 9.5, f"{A} s1"),
+    ("corner_r", 2.4, "CHANGED round 2 from 3.0 (brief round 1): at 3.0 the screen-pocket corners left 0.325 mm of wall; 2.4 gives 0.6"),
+    ("wall", 1.0, f"{A} s6 'Top shell: walls 1.0 mm'"),
+    ("min_wall", 0.5, "ASSUMED: minimum wall, skin, lip, ledge or rib for printed nylon PA12 (lead round 2); to be confirmed by the printing service"),
+    ("top_plate", 1.0, "ASSUMED: top of the strip taken equal to the wall, 1.0 mm (brief: walls 1.0 mm)"),
+    ("floor_t", 0.8, f"{A} s6 'Floor of the base 0.80'"),
+    ("screen_zone_y0", -9.0, f"{A} s6 screen zone Y -9.0"),
+    ("screen_zone_y1", 3.9, f"{A} s6 screen zone to +3.9"),
+    ("strip_y0", 4.3, f"{A} s6 strip Y +4.3"),
+    ("strip_y1", 9.0, f"{A} s6 strip to +9.0"),
+    # layer stack
+    ("glass_t", 0.5, f"{A} s6 stack"),
+    ("adhesive_t", 0.1, f"{A} s6 stack"),
+    ("screen_t", 0.8, f"{A} s2 TOH095XVT-01 [DS] 12.8 x 27.35 x 0.8"),
+    ("foam_t", 0.2, f"{A} s6 stack 'Gap with foam pad 0.20'"),
+    ("board_t", 0.6, f"{A} s6 main board 0.6"),
+    ("cell_gap", 0.15, f"{A} s6 stack gap 0.15"),
+    ("swell_t", 0.5, f"{A} s6 'Room for cell swelling 0.50'"),
+    ("cell_t", 4.6, f"{A} s2 cell 4.6 x 13.0 x 25.0 max"),
+    ("cell_w", 13.0, f"{A} s2"),
+    ("cell_l", 25.0, f"{A} s2"),
+    ("cell_x0", -11.9, "CHANGED from -11.6 (s6): cell X -11.9 to 13.1; +X corner clears the 1.4 inner corner radius by 0.1, -X end leaves room for the contact-board ledge pad"),
+    ("cell_y0", -8.8, "CHANGED: cell 13.0 wide does not fit the 12.9 mm screen zone; chosen Y -8.8 to 4.2"),
+    # glass and screen
+    ("glass_x", 28.6, f"{A} s6 'cut to 28.6 x 13.6 mm'"),
+    ("glass_y", 13.3, "CHANGED round 2 from 13.6 (s6): the seat lip on the -Y side was 0.25; at 13.3 it is 0.55"),
+    ("glass_y0", -9.4, "CALC: glass +Y edge on the zone edge 3.9, so -Y edge = 3.9 - 13.3"),
+    ("glass_r_minus_y", 1.75, "CALC: covers the screen corner (margin 0.03) and leaves a 0.5 mm seat lip to the 2.4 outer corner"),
+    ("glass_r_plus_y", 0.5, "ASSUMED: inner corners of the glass (inside the outline, no outer corner there)"),
+    ("seat_clear", 0.05, "ASSUMED: glass seat and screen pocket clearance per side"),
+    ("screen_x", 27.35, f"{A} s2 [DS]"),
+    ("screen_y", 12.8, f"{A} s2 [DS]"),
+    ("screen_y0", -8.95, "CHOSEN: screen Y -8.95 to 3.85, so the screen corners stay under the r1.75 glass corners"),
+    ("fold_t", 0.6, f"{A} s6 'screen cable fold from +13.4 to +14.0'"),
+    ("fold_x0", 13.4, f"{A} s6"),
+    ("fold_w", 8.0, "ASSUMED: cable width; screen datasheet p.2 prints only the 4.8 mm tail length"),
+    ("fold_z0", 6.3, "CHOSEN: fold volume beside the board end, Z 6.3 to 7.9 (under the screen overhang; run3 showed overlap with the foam pad when it went to 8.1)"),
+    # main board
+    ("board_x", 27.0, f"{A} s6 main board 27.0 x 17.4"),
+    ("board_y", 17.4, f"{A} s6"),
+    ("board_x0", -13.6, "CHOSEN: board +X end at 13.4 so the cable fold (13.4 to 14.0) is free"),
+    ("board_corner_r", 1.5, "CHOSEN: board corners rounded to clear the 2.0 mm inner wall radius"),
+    ("notch_clear", 0.1, "ASSUMED: clearance around the joystick board in the main board notch"),
+    # joystick
+    ("joy_x", -6.0, f"{A} s6 joystick X centre -6.0"),
+    ("joy_w", 7.45, "Alps SKRH catalogue p.1 SKRHADE010 7.45 x 7.5 x 1.85 [DS]"),
+    ("joy_h", 7.5, "Alps SKRH catalogue p.1 [DS]"),
+    ("joy_t", 1.85, "Alps SKRH catalogue p.1 [DS]"),
+    ("joy_stem_h", 4.3, "Alps SKRH catalogue p.1 note 2 '4.3mm height from the bottom of the switch' [DS]"),
+    ("joy_stem_d", 2.5, "ASSUMED: stem drawing is an image only (parts/ui-pass2.md s4); confirm from Alps drawing No.4"),
+    ("joy_open_d", 5.0, f"{A} s6 '5.0 mm round opening in the wall'"),
+    ("joy_z", 4.65, "CHOSEN: stem axis height; joystick body Z 0.9 to 8.4 under the strip top"),
+    ("jb_x", 9.0, f"{A} s6 joystick board 9.0 x 8.0 x 0.6"),
+    ("jb_z", 8.0, f"{A} s6"),
+    ("jb_t", 0.6, f"{A} s6"),
+    # microphones
+    ("mic_x", 4.0, f"{A} s2 IM73D122 4.0 x 3.0 x 1.2 [DS]"),
+    ("mic_y", 3.0, f"{A} s2"),
+    ("mic_z", 1.2, f"{A} s2"),
+    ("mic1_x", -11.9, "CHANGED from -12.0 (s5/s6): at -12.0 the 4.0 mm body touches the wall at X -14.0"),
+    ("mic2_x", -5.5, f"{A} s5"),
+    ("mic3_x", 1.0, f"{A} s5"),
+    ("mic4_x", 7.5, f"{A} s5"),
+    ("mic_yc", 4.9, "CHOSEN round 2: openings 0.55 from the glass seat edge (3.95); port at the package centre ASSUMED"),
+    ("mic3_rotated", 1.0, "CHOSEN round 2: mic 3 turned 90 deg (3.0 along X) so it clears the record button at Y 4.9"),
+    ("mic_open_d", 0.8, f"{A} s5 '0.8 mm opening'"),
+    ("mic_open_x1", -12.0, "brief: openings at X -12.0, -5.5, +1.0, +7.5"),
+    # record button
+    ("btn_x", 2.8, f"{A} s2 EVPAVAA1A 2.8 x 2.3 x 1.95 [DS]"),
+    ("btn_y", 2.3, f"{A} s2"),
+    ("btn_z", 1.95, f"{A} s2"),
+    ("btn_plate", 0.35, "parts/ui-pass2.md: external 2.65 mm with push plate minus 2.30 body"),
+    ("btn_xc", 4.0, f"{A} s6 record button X +4.0"),
+    ("btn_recess", 0.3, "CHANGED round 2 from 0.8 (s6): the 0.8 recess left a 0.2 skin; now no recess pocket, the key face stands 0.3 below the wall face"),
+    ("btn_open_x", 2.0, "ASSUMED: through opening for the key, 2.0 x 1.4"),
+    ("btn_open_z", 1.4, "ASSUMED"),
+    ("key_x", 1.8, "ASSUMED: printed key in the opening, 1.8 x 1.2"),
+    ("key_z", 1.2, "ASSUMED"),
+    # light, antenna
+    ("led_x", 1.0, f"{A} s2 KPG-1005SURC-TT 1.0 x 0.5 x 0.2"),
+    ("led_y", 0.5, f"{A} s2"),
+    ("led_z", 0.2, f"{A} s2"),
+    ("led_xc", 4.0, f"{A} s6 light X +4.0"),
+    ("win_d", 2.0, "ASSUMED: clear window disc 2.0 mm"),
+    ("win_t", 0.4, "ASSUMED: clear window 0.4 mm (round 2: leaves a 0.6 plate under the recess)"),
+    ("led_hole_d", 1.0, "ASSUMED: light hole under the window"),
+    ("ant_x", 3.2, f"{A} s2 2450AT18D0100001E 3.2 x 1.6 x 1.2 [DS]"),
+    ("ant_y", 1.6, f"{A} s2"),
+    ("ant_z", 1.2, f"{A} s2"),
+    ("ant_xc", 12.0, f"{A} s6 antenna X +12.0"),
+    ("ko_x", 4.2, f"{A} s6 'no metal within 4.2 x 4.7 mm'"),
+    ("ko_y", 4.7, f"{A} s6"),
+    ("pocket_clear", 0.05, "ASSUMED: clearance of pockets in the top plate"),
+    # motor
+    ("mot_d", 3.2, f"{A} s2 3.2 dia, 11.6 long [DS]"),
+    ("mot_l", 11.6, f"{A} s2"),
+    ("sleeve", 0.3, "brief: 0.3 mm clearance sleeve"),
+    ("mot_gap_jb", 0.1, "CHOSEN: gap between the joystick body end and the motor sleeve"),
+    ("cradle_t", 0.55, "CHOSEN round 2: one rail on the +Y side, 0.55 wide (two 0.4 rails broke the 0.5 rule)"),
+    ("mot_yc", 6.5, "CHOSEN round 2: motor axis Y, sleeve Y 4.6 to 8.4, rail 8.4 to 8.95"),
+    # contact board
+    ("cb_x", 2.6, f"{A} s6 contact board X -13.9 to -11.3"),
+    ("cb_y", 10.0, f"{A} s6 10.0 x 2.6"),
+    ("cb_t", 0.4, "CHANGED round 2 from 0.6 (s6), lead instruction: 0.4 board, pads flush with the underside"),
+    ("cb_ledge", 0.4, "lead round 2: ledge 0.4 wide on the +Y and -Y sides"),
+    ("cb_ledge_x", 0.6, "CHOSEN round 2: -X ledge 0.6 wide; at 0.4 the raised pad above it was a 0.35 lip (check_fit r2_run1)"),
+    ("tvs_xc", -12.4, "CHOSEN round 2: chip centre X on the contact board, clear of the -X ledge and the cell"),
+    ("cb_pad_top", 0.95, "CHOSEN round 2: floor raised to Z 0.95 over X -13.9 to -12.0 so the ledge is 0.55 thick"),
+    ("tvs_x", 1.0, "lead round 2: TPD4E05U06 2.5 x 1.0"), ("tvs_y", 2.5, "lead round 2"), ("tvs_z", 0.5, "ASSUMED height (lead round 2)"),
+    ("fpc_conn_x", 3.2, "ASSUMED footprint (lead round 2): FH35C-15S-0.3SHW 5.2 x 3.2 x 0.9"), ("fpc_conn_y", 5.2, "ASSUMED"), ("fpc_conn_z", 0.9, "ASSUMED"),
+    ("wpad", 0.5, "ASSUMED: wire pad 0.5 x 0.5, copper 0.035"), ("wpad_t", 0.035, "ASSUMED"), ("wpad_pitch", 0.9, "ASSUMED"),
+    ("cb_xc", -12.6, f"{A} s6 X = -12.6"),
+    ("cb_clear", 0.05, "ASSUMED: window clearance"),
+    # chips (sizes from s2; positions chosen, see placement.csv)
+    ("mcu_x", 3.02, f"{A} s2"), ("mcu_y", 2.43, f"{A} s2"), ("mcu_z", 0.43, f"{A} s2"),
+    ("pmic_x", 3.1, f"{A} s2 (updated) nPM1300 WLCSP 3.1 x 2.4 [DS Nordic product page]"), ("pmic_y", 2.4, f"{A} s2 (updated) 3.1 x 2.4; lead correction 2026-11-10"),
+    ("pmic_z", 0.5, "lead brief: power chip 3.1 x 2.4 x 0.5"),
+    ("mem_x", 8.0, f"{A} s2 6.2 x 8.0"), ("mem_y", 6.2, f"{A} s2"), ("mem_z", 0.8, "brief: storage 0.8 thick"),
+    ("sup_x", 2.0, f"{A} s2"), ("sup_y", 2.0, f"{A} s2"), ("sup_z", 0.58, f"{A} s2"),
+    ("coil_x", 2.5, f"{A} s2"), ("coil_y", 2.0, f"{A} s2"), ("coil_z", 1.0, f"{A} s2"),
+    ("chip_row_y", -2.5, "CHOSEN: chips in one row at Y -2.5 under the board in the screen zone"),
+    # screws, gasket
+    ("screw_l", 3.0, f"{A} s6 'M1.2 x 3'"),
+    ("screw_core_d", 0.95, "ASSUMED: M1.2 core diameter, also the pilot hole in the shell"),
+    ("screw_clear_d", 1.3, "ASSUMED: clearance hole in the floor"),
+    ("screw_head_d", 2.0, "ASSUMED: wafer head 2.0 x 0.3"),
+    ("screw_head_t", 0.3, "ASSUMED round 2: 0.3 so the floor over the counterbore is 0.5"),
+    ("screw_x", 12.35, "CHANGED round 2: two screws only, at the +Y corners; at the X ends the pilot rib, the clearance hole and the gasket groove cannot all keep 0.5 mm"),
+    ("screw_y", 7.0, "CHOSEN round 2: counterbore 0.9 from the contact window, 0.55 from the gasket groove"),
+    ("boss_top", 3.8, "CHOSEN: boss height; pilot hole runs through it"),
+    ("boss_r", 1.0, "CHOSEN round 2: boss radius, 0.525 around the pilot"),
+    ("gasket_w", 0.5, "brief: 0.5 mm gasket groove"),
+    ("gasket_d", 0.25, "ASSUMED round 2: groove depth 0.25, floor under it 0.55"),
+    ("gasket_off", 0.55, "CHOSEN round 2: groove from 0.55 to 1.05 in from the outer edge, outer lip 0.55"),
+    # band
+    ("band_w", 8.0, "brief: band width 8.0 along X"),
+    ("band_wall", 2.0, "brief: band wall 2.0"),
+    ("ring_a", 11.63, "en.wikipedia.org/wiki/Ring_size (raw saved src_text/wikipedia_ring_size_raw.txt line 81): d_ISO = 0.8128 x s_NA + 11.63"),
+    ("ring_b", 0.8128, "same source"),
+    ("blend_r", 0.5, "ASSUMED: fillet between the band outer surface and the floor underside; 1.5 reaches past the floor edge at size 13"),
+]
+SIZES = list(range(5, 14))
+D = {}
+
+
+def load_dims():
+    D.clear()
+    for n, v, _ in DIM_TABLE:
+        if n in D:
+            raise SystemExit(f"duplicate dimension {n}")
+        D[n] = float(v)
+    ov = os.environ.get("RING_OVERRIDE", "")
+    for item in [s for s in ov.split(",") if s.strip()]:
+        k, v = item.split("=")
+        if k not in D:
+            raise SystemExit(f"unknown override {k}")
+        D[k] = float(v)
+        print(f"OVERRIDE {k} = {v}")
+    return D
+
+
+def ring_d(size):
+    return D["ring_a"] + D["ring_b"] * size
+
+
+# ---------------------------------------------------------------- geometry helpers
+from build123d import (Box, Cylinder, Pos, Rot, Rectangle, RectangleRounded, Circle,
+                       extrude, export_step, export_stl, Compound, Axis, Face, Polygon)
+
+
+def box(x0, x1, y0, y1, z0, z1):
+    return Pos((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2) * Box(x1 - x0, y1 - y0, z1 - z0)
+
+
+def cyl_x(cx, cy, cz, d, x0, x1):
+    return Pos((x0 + x1) / 2, cy, cz) * Rot(0, 90, 0) * Cylinder(d / 2, x1 - x0)
+
+
+def cyl_y(cx, cz, d, y0, y1):
+    return Pos(cx, (y0 + y1) / 2, cz) * Rot(90, 0, 0) * Cylinder(d / 2, y1 - y0)
+
+
+def cyl_z(cx, cy, d, z0, z1):
+    return Pos(cx, cy, (z0 + z1) / 2) * Cylinder(d / 2, z1 - z0)
+
+
+def rr_prism(w, h, r, z0, z1):
+    return extrude(Pos(0, 0, z0) * RectangleRounded(w, h, r), amount=z1 - z0)
+
+
+def rect_face_corners(x0, x1, y0, y1, r_lo, r_hi):
+    """Rectangle with radius r_lo on the two -Y corners and r_hi on the two +Y corners."""
+    f = Pos((x0 + x1) / 2, (y0 + y1) / 2) * Rectangle(x1 - x0, y1 - y0)
+    for cx, cy, sx, sy, r in ((x0, y0, -1, -1, r_lo), (x1, y0, 1, -1, r_lo),
+                              (x0, y1, -1, 1, r_hi), (x1, y1, 1, 1, r_hi)):
+        if r <= 0:
+            continue
+        sq = Pos(cx - sx * r / 2, cy - sy * r / 2) * Rectangle(r, r)
+        circ = Pos(cx - sx * r, cy - sy * r) * Circle(r)
+        f = (f - sq) + (circ & sq)
+    return f
+
+
+# ---------------------------------------------------------------- model
+def levels():
+    d = D
+    z = {}
+    z["glass1"] = d["block_z"]
+    z["glass0"] = z["glass1"] - d["glass_t"]
+    z["adh0"] = z["glass0"] - d["adhesive_t"]
+    z["scr0"] = z["adh0"] - d["screen_t"]
+    z["foam0"] = z["scr0"] - d["foam_t"]
+    z["board1"] = z["foam0"]
+    z["board0"] = z["board1"] - d["board_t"]
+    z["floor1"] = d["floor_t"]
+    z["cell0"] = z["floor1"]
+    z["cell1"] = z["cell0"] + d["cell_t"]
+    z["swell1"] = z["cell1"] + d["swell_t"]
+    z["cav_top"] = d["block_z"] - d["top_plate"]
+    return z
+
+
+def build_parts():
+    """Return list of dicts: name, solid, metal, center, size, rot, note."""
+    d, z = D, levels()
+    P = []
+
+    def add(name, solid, metal, rot="none", note=""):
+        bb = solid.bounding_box()
+        P.append(dict(name=name, solid=solid, metal=metal, rot=rot, note=note,
+                      center=((bb.min.X + bb.max.X) / 2, (bb.min.Y + bb.max.Y) / 2, (bb.min.Z + bb.max.Z) / 2),
+                      size=(bb.max.X - bb.min.X, bb.max.Y - bb.min.Y, bb.max.Z - bb.min.Z)))
+
+    gx0, gx1 = -d["glass_x"] / 2, d["glass_x"] / 2
+    gy0 = d["glass_y0"]
+    gy1 = gy0 + d["glass_y"]
+    gface = rect_face_corners(gx0, gx1, gy0, gy1, d["glass_r_minus_y"], d["glass_r_plus_y"])
+    add("cover_glass", extrude(Pos(0, 0, z["glass0"]) * gface, amount=d["glass_t"]), False,
+        note="corners r2.3 (-Y), r0.5 (+Y)")
+    sx0, sx1 = -d["screen_x"] / 2, d["screen_x"] / 2
+    sy0, sy1 = d["screen_y0"], d["screen_y0"] + d["screen_y"]
+    add("clear_adhesive", box(sx0, sx1, sy0, sy1, z["adh0"], z["glass0"]), False)
+    add("screen", box(sx0, sx1, sy0, sy1, z["scr0"], z["adh0"]), True)
+    add("foam_pad", box(sx0, sx1, sy0, sy1, z["foam0"], z["scr0"]), False)
+    # main board with notch
+    bx0 = d["board_x0"]
+    bx1 = bx0 + d["board_x"]
+    by0, by1 = -d["board_y"] / 2, d["board_y"] / 2
+    board = extrude(Pos((bx0 + bx1) / 2, 0, z["board0"]) * RectangleRounded(d["board_x"], d["board_y"], d["board_corner_r"]),
+                    amount=d["board_t"])
+    # joystick: body faces +Y, flush with the inner wall minus 0.1
+    jw = d["strip_y1"] - 0.1          # body outer face Y 8.9
+    jbody_y0 = jw - d["joy_t"]
+    jb_y1 = jbody_y0
+    jb_y0 = jb_y1 - d["jb_t"]
+    jx0 = d["joy_x"] - d["joy_w"] / 2
+    jx1 = d["joy_x"] + d["joy_w"] / 2
+    jbx1 = jx1                         # board flush with the body +X end (frees room for the motor)
+    jbx0 = jbx1 - d["jb_x"]
+    nc = d["notch_clear"]
+    notch = box(jbx0 - nc, jbx1 + nc, jb_y0 - nc, by1 + 1, z["board0"] - 1, z["board1"] + 1)
+    add("main_board", board - notch, False, note="27.0 x 17.4 x 0.6, notch for the joystick board")
+    add("joystick_board", box(jbx0, jbx1, jb_y0, jb_y1, z["floor1"], z["floor1"] + d["jb_z"]), False,
+        rot="upright, plane XZ, 9.0 along X, 8.0 along Z")
+    zc = d["joy_z"]
+    add("joystick_body", box(jx0, jx1, jbody_y0, jw, zc - d["joy_h"] / 2, zc + d["joy_h"] / 2), True,
+        rot="mounted on the upright board, stem along +Y")
+    add("joystick_stem", cyl_y(d["joy_x"], zc, d["joy_stem_d"], jw, jbody_y0 + d["joy_stem_h"]), False,
+        rot="axis Y", note="stem top 4.3 from the switch bottom")
+    # microphones under the board
+    for i, key in enumerate(("mic1_x", "mic2_x", "mic3_x", "mic4_x"), 1):
+        x = d[key]
+        mx, my = (d["mic_y"], d["mic_x"]) if (i == 3 and d["mic3_rotated"]) else (d["mic_x"], d["mic_y"])
+        add(f"mic{i}", box(x - mx / 2, x + mx / 2, d["mic_yc"] - my / 2, d["mic_yc"] + my / 2,
+                           z["board0"] - d["mic_z"], z["board0"]), True, rot="turned 90 deg" if mx < my else "none",
+            note="bottom port up through the board")
+    # record button, push plate toward +Y, key in the wall opening
+    bplate_y1 = d["strip_y1"] - 0.05
+    bplate_y0 = bplate_y1 - d["btn_plate"]
+    bb_y1 = bplate_y0
+    bb_y0 = bb_y1 - d["btn_y"]
+    bxc = d["btn_xc"]
+    bz0, bz1 = z["board0"] - d["btn_z"], z["board0"]
+    add("record_button", box(bxc - d["btn_x"] / 2, bxc + d["btn_x"] / 2, bb_y0, bb_y1, bz0, bz1), True)
+    add("record_button_plate", box(bxc - 0.6, bxc + 0.6, bplate_y0, bplate_y1, bz0 + 0.4, bz1 - 0.4), False,
+        note="push plate, 1.2 wide ASSUMED")
+    bzc = (bz0 + bz1) / 2
+    add("record_key", box(bxc - d["key_x"] / 2, bxc + d["key_x"] / 2, bplate_y1, d["strip_y1"] + d["wall"] - d["btn_recess"],
+                          bzc - d["key_z"] / 2, bzc + d["key_z"] / 2), False, note="printed key, ASSUMED")
+    # light and window
+    ly = (d["strip_y0"] + d["strip_y1"]) / 2
+    add("recording_light", box(d["led_xc"] - d["led_x"] / 2, d["led_xc"] + d["led_x"] / 2, ly - d["led_y"] / 2, ly + d["led_y"] / 2,
+                               z["board1"], z["board1"] + d["led_z"]), False)
+    add("clear_window", cyl_z(d["led_xc"], ly, d["win_d"], d["block_z"] - d["win_t"], d["block_z"]), False, note="ASSUMED part")
+    # antenna and keep-out
+    add("antenna", box(d["ant_xc"] - d["ant_x"] / 2, d["ant_xc"] + d["ant_x"] / 2, ly - d["ant_y"] / 2, ly + d["ant_y"] / 2,
+                       z["board0"] - d["ant_z"], z["board0"]), False, note="ceramic chip antenna, CHANGED round 2: under the board")
+    # motor along X, inboard sleeve end after the joystick body
+    s0 = jx1 + d["mot_gap_jb"]
+    sl = d["mot_l"] + 2 * d["sleeve"]
+    sd = d["mot_d"] + 2 * d["sleeve"]
+    mzc = z["floor1"] + sd / 2
+    myc = d["mot_yc"]
+    mx0 = s0 + d["sleeve"]
+    add("motor", cyl_x(0, myc, mzc, d["mot_d"], mx0, mx0 + d["mot_l"]), True, rot="axis X")
+    sleeve = cyl_x(0, myc, mzc, sd, s0, s0 + sl) - cyl_x(0, myc, mzc, d["mot_d"], mx0, mx0 + d["mot_l"])
+    add("motor_sleeve", sleeve, False, rot="axis X", note="0.3 mm clearance volume")
+    # cell and swelling
+    cx0, cy0 = d["cell_x0"], d["cell_y0"]
+    add("cell", box(cx0, cx0 + d["cell_l"], cy0, cy0 + d["cell_w"], z["cell0"], z["cell1"]), True)
+    add("cell_swelling", box(cx0, cx0 + d["cell_l"], cy0, cy0 + d["cell_w"], z["cell1"], z["swell1"]), False,
+        note="0.5 mm swelling volume")
+    # contact board in the floor window, pads face down
+    add("contact_board", box(d["cb_xc"] - d["cb_x"] / 2, d["cb_xc"] + d["cb_x"] / 2, -d["cb_y"] / 2, d["cb_y"] / 2, 0.0, d["cb_t"]), False)
+    # screen cable fold
+    fyc = (sy0 + sy1) / 2
+    add("screen_cable_fold", box(d["fold_x0"], d["fold_x0"] + d["fold_t"], fyc - d["fold_w"] / 2, fyc + d["fold_w"] / 2,
+                                 d["fold_z0"], z["foam0"]), False)
+    # chips under the board, one row at chip_row_y
+    ry = d["chip_row_y"]
+    zb = z["board0"]
+    chips = [("storage", -5.0, -5.0, "mem"), ("main_chip", 1.0, ry, "mcu"), ("power_chip", 5.0, ry, "pmic"),
+             ("screen_supply_chip", 8.5, ry, "sup"), ("screen_supply_coil", 12.0, ry, "coil")]
+    for name, x, y, k in chips:
+        if name == "storage":
+            y = ry - d["mem_y"] / 2 + 0.6   # storage spans the row (Y -8.1 to -1.9)
+        add(name, box(x - d[k + "_x"] / 2, x + d[k + "_x"] / 2, y - d[k + "_y"] / 2, y + d[k + "_y"] / 2, zb - d[k + "_z"], zb), True)
+    # gasket
+    add("gasket", gasket_ring(), False, note="silicone, in the base groove")
+    # screws
+    for i, (x, y) in enumerate(screw_xy(), 1):
+        s = cyl_z(x, y, d["screw_head_d"], 0.0, d["screw_head_t"]) + cyl_z(x, y, d["screw_core_d"], d["screw_head_t"], d["screw_head_t"] + d["screw_l"])
+        metal = x < 0
+        add(f"screw{i}", s, metal, note="M1.2 x 3, steel" if metal else "M1.2 x 3, NON-METAL (PEEK or nylon, ASSUMED available): inside the antenna keep-out")
+    # contact protection chip on the contact board (top side), in the floor opening
+    add("protection_chip_TPD4E05U06", box(d["tvs_xc"] - d["tvs_x"] / 2, d["tvs_xc"] + d["tvs_x"] / 2, -d["tvs_y"] / 2, d["tvs_y"] / 2,
+                                           d["cb_t"], d["cb_t"] + d["tvs_z"]), True, note="ASSUMED height 0.5")
+    # screen connector under the board near the cable fold
+    add("screen_connector_FH35C", box(12.7 - d["fpc_conn_y"], 12.7, -8.3, -8.3 + d["fpc_conn_x"], zb - d["fpc_conn_z"], zb), True,
+        rot="5.2 along X", note="ASSUMED footprint 5.2 x 3.2 x 0.9")
+    # six wire pads: on the main board top side along the notch, and on the joystick board inboard face
+    for k in range(6):
+        px = jbx0 + 0.9 + k * d["wpad_pitch"]
+        add(f"wire_pad_main_{k + 1}", box(px - d["wpad"] / 2, px + d["wpad"] / 2, jb_y0 - nc - 0.15 - d["wpad"], jb_y0 - nc - 0.15,
+                                          z["board1"], z["board1"] + d["wpad_t"]), True)
+        add(f"wire_pad_joy_{k + 1}", box(px - d["wpad"] / 2, px + d["wpad"] / 2, jb_y0 - d["wpad_t"], jb_y0,
+                                         z["board1"] + 0.2, z["board1"] + 0.2 + d["wpad"]), True)
+    return P
+
+
+def screw_xy():
+    d = D
+    return [(-d["screw_x"], d["screw_y"]), (d["screw_x"], d["screw_y"])]
+
+
+def gasket_ring():
+    d = D
+    o, i = d["gasket_off"], d["gasket_off"] + d["gasket_w"]
+    z0, z1 = d["floor_t"] - d["gasket_d"], d["floor_t"]
+    return (rr_prism(d["block_x"] - 2 * o, d["block_y"] - 2 * o, d["corner_r"] - o, z0, z1)
+            - rr_prism(d["block_x"] - 2 * i, d["block_y"] - 2 * i, d["corner_r"] - i, z0 - 0.1, z1 + 0.1))
+
+
+def part(P, name):
+    return next(p for p in P if p["name"] == name)
+
+
+def build_top_shell(P):
+    d, z = D, levels()
+    w = d["wall"]
+    outer = rr_prism(d["block_x"], d["block_y"], d["corner_r"], d["floor_t"], d["block_z"])
+    cav = rr_prism(d["block_x"] - 2 * w, d["block_y"] - 2 * w, d["corner_r"] - w, d["floor_t"] - 0.1, z["cav_top"])
+    shell = outer - cav
+    for x, y in screw_xy():
+        sgn = 1 if x > 0 else -1
+        boss = cyl_z(x, y, 2 * d["boss_r"], d["floor_t"], d["boss_top"])
+        boss = boss + box(min(x, sgn * 14.6), max(x, sgn * 14.6), y - 0.6, y + 0.6, d["floor_t"], d["boss_top"])
+        boss = boss + box(x - 0.6, x + 0.6, y, 9.6, d["floor_t"], d["boss_top"])
+        shell = shell + (boss & outer)
+    for x, y in screw_xy():
+        shell = shell - cyl_z(x, y, d["screw_core_d"], d["floor_t"] - 0.1, d["boss_top"] + 0.1)
+    c = d["seat_clear"]
+    gy0 = d["glass_y0"]
+    gface = rect_face_corners(-d["glass_x"] / 2 - c, d["glass_x"] / 2 + c, gy0 - c, gy0 + d["glass_y"] + c,
+                              d["glass_r_minus_y"] + c, d["glass_r_plus_y"] + c)
+    shell = shell - extrude(Pos(0, 0, z["glass0"]) * gface, amount=d["glass_t"] + 0.1)
+    sx = d["screen_x"] / 2 + c
+    shell = shell - box(-sx, sx, d["screen_y0"] - c, d["screen_y0"] + d["screen_y"] + c, z["foam0"] - 0.01, z["glass0"] + 0.01)
+    # microphone openings
+    for x in (d["mic_open_x1"], d["mic2_x"], d["mic3_x"], d["mic4_x"]):
+        shell = shell - cyl_z(x, d["mic_yc"], d["mic_open_d"], z["cav_top"] - 0.1, d["block_z"] + 0.1)
+    # light window
+    ly = (d["strip_y0"] + d["strip_y1"]) / 2
+    shell = shell - cyl_z(d["led_xc"], ly, d["win_d"], d["block_z"] - d["win_t"], d["block_z"] + 0.1)
+    shell = shell - cyl_z(d["led_xc"], ly, d["led_hole_d"], z["cav_top"] - 0.1, d["block_z"])
+    # joystick opening in the thumb wall
+    shell = shell - cyl_y(d["joy_x"], d["joy_z"], d["joy_open_d"], d["strip_y1"] - 0.2, d["block_y"] / 2 + 0.5)
+    # record button opening and recess
+    bzc = levels()["board0"] - d["btn_z"] / 2
+    shell = shell - box(d["btn_xc"] - d["btn_open_x"] / 2, d["btn_xc"] + d["btn_open_x"] / 2, d["strip_y1"] - 0.1, d["block_y"] / 2 + 0.1,
+                        bzc - d["btn_open_z"] / 2, bzc + d["btn_open_z"] / 2)
+    # pocket in the strip top for the joystick board (the antenna moved under the board in round 2)
+    pc = d["pocket_clear"]
+    for nm in ("joystick_board",):
+        bb = part(P, nm)["solid"].bounding_box()
+        shell = shell - box(bb.min.X - pc, bb.max.X + pc, bb.min.Y - pc, bb.max.Y + pc, z["cav_top"] - 0.1, bb.max.Z + pc)
+    return shell
+
+
+def build_base(size, P):
+    d = D
+    base = rr_prism(d["block_x"], d["block_y"], d["corner_r"], 0.0, d["floor_t"])
+    base = base - gasket_ring()
+    # contact board window with a ledge, wire hole above
+    c = d["cb_clear"]
+    wx0, wx1 = d["cb_xc"] - d["cb_x"] / 2 - c, d["cb_xc"] + d["cb_x"] / 2 + c
+    wy = d["cb_y"] / 2 + c
+    pad_x1 = d["cell_x0"] - 0.1
+    base = base + box(wx0, pad_x1, -wy - 0.6, wy + 0.6, d["floor_t"] - 0.01, d["cb_pad_top"])
+    base = base - box(wx0, wx1, -wy, wy, -0.1, d["cb_t"])
+    lg = d["cb_ledge"]
+    # opening above the board: ledge on -X, -Y and +Y where the raised pad is; open under the cell end
+    base = base - box(wx0 + d["cb_ledge_x"], pad_x1 + 0.01, -wy + lg, wy - lg, d["cb_t"] - 0.01, d["cb_pad_top"] + 0.1)
+    base = base - box(pad_x1, wx1, -wy, wy, d["cb_t"] - 0.01, d["floor_t"] + 0.1)
+    # screw holes
+    for x, y in screw_xy():
+        base = base - cyl_z(x, y, d["screw_clear_d"], -0.1, d["floor_t"] + 0.1)
+        base = base - cyl_z(x, y, d["screw_head_d"] + 0.2, -0.1, d["screw_head_t"])
+    # motor cradle: two rails, cut by the sleeve cylinder
+    sl = part(P, "motor_sleeve")["solid"].bounding_box()
+    myc, mzc, sd = (sl.min.Y + sl.max.Y) / 2, (sl.min.Z + sl.max.Z) / 2, sl.max.Y - sl.min.Y
+    t = d["cradle_t"]
+    for y0, y1 in ((sl.max.Y, sl.max.Y + t),):
+        rail = box(sl.min.X, sl.max.X, y0, y1, d["floor_t"] - 0.01, mzc)
+        base = base + (rail - cyl_x(0, myc, mzc, sd, sl.min.X - 1, sl.max.X + 1))
+    # band
+    r_in = ring_d(size) / 2
+    R = r_in + d["band_wall"]
+    zc = -r_in
+    prof = Pos(0, zc) * Circle(R)
+    # blend: fillet of radius blend_r in each concave corner between the floor underside (Z = 0) and the
+    # band's outer circle: fillet circle tangent to the plane Z = 0 and to the outer circle
+    rb = d["blend_r"]
+    fz = -rb
+    fy = math.sqrt((R + rb) ** 2 - (fz - zc) ** 2)
+    if fy > d["block_y"] / 2:
+        raise SystemExit(f"blend for size {size} reaches Y {fy:.2f}, beyond the floor edge")
+    tz = zc + (fz - zc) * R / (R + rb)             # Z of the tangent point on the outer circle
+    for sgn in (1, -1):
+        ty = fy * R / (R + rb)
+        poly = Polygon((0, 0.5), (sgn * fy, 0.5), (sgn * fy, fz), (sgn * ty, tz), (0, tz), align=None)
+        fill = poly - (Pos(sgn * fy, fz) * Circle(rb))
+        prof = prof + fill
+    face = prof
+    # profile lies in the XY plane of the sketch: map sketch X->model Y, sketch Y->model Z
+    band = extrude(face, amount=d["band_w"] / 2, both=True)          # along sketch Z
+    band = (Rot(0, 0, 90) * Rot(90, 0, 0)) * band                                      # sketch (x,y,z) -> model (y,z,x)
+    band = band - ((Rot(0, 0, 90) * Rot(90, 0, 0)) * extrude(Pos(0, zc) * Circle(r_in), amount=d["band_w"], both=True))
+    band = band & box(-d["band_w"] / 2, d["band_w"] / 2, -40, 40, -40, 0.0)
+    return base + band
+
+
+def build(size=9):
+    load_dims()
+    P = build_parts()
+    shell = build_top_shell(P)
+    bases = {s: build_base(s, P) for s in ([size] if size else SIZES)}
+    d = D
+    env = rr_prism(d["block_x"], d["block_y"], d["corner_r"], 0.0, d["block_z"])
+    js = part(P, "joystick_stem")["solid"].bounding_box()
+    env = env + cyl_y(d["joy_x"], d["joy_z"], d["joy_open_d"], d["block_y"] / 2 - 0.5, js.max.Y + 0.5)
+    ly = (d["strip_y0"] + d["strip_y1"]) / 2
+    kz0 = d["floor_t"]
+    keepout = box(d["ant_xc"] - d["ko_x"] / 2, d["ant_xc"] + d["ko_x"] / 2, d["strip_y0"], d["strip_y0"] + d["ko_y"], kz0, d["block_z"])
+    return dict(parts=P, top_shell=shell, bases=bases, envelope=env, keepout=keepout)
+
+
+# ---------------------------------------------------------------- outputs
+def write_tables(P):
+    with open(HERE / "dimensions.csv", "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["name", "value_mm", "source"])
+        for n, v, s in DIM_TABLE:
+            w.writerow([n, D[n], s])
+        for s in SIZES:
+            w.writerow([f"band_inner_d_size{s}", round(ring_d(s), 4), "CALC ring_a + ring_b x size"])
+    with open(HERE / "placement.csv", "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["part", "x", "y", "z", "size_x", "size_y", "size_z", "rotation", "metal", "note"])
+        for p in P:
+            c, s = p["center"], p["size"]
+            w.writerow([p["name"]] + [f"{v:.3f}" for v in c] + [f"{v:.3f}" for v in s] + [p["rot"], p["metal"], p["note"]])
+
+
+def export_all(model):
+    OUT.mkdir(exist_ok=True)
+    P = model["parts"]
+    shell = model["top_shell"]
+    shell.label = "top_shell"
+    export_stl(shell, str(OUT / "top-shell.stl"))
+    export_step(shell, str(OUT / "top-shell.step"))
+    for s, b in model["bases"].items():
+        b.label = f"base_size{s}"
+        export_stl(b, str(OUT / f"base-size{s}.stl"))
+        export_step(b, str(OUT / f"base-size{s}.step"))
+    kids = []
+    for p in P:
+        p["solid"].label = p["name"]
+        kids.append(p["solid"])
+    b9 = model["bases"][9]
+    asm = Compound(label="ring_assembly_size9", children=[shell, b9] + kids)
+    export_step(asm, str(OUT / "ring-assembly-size9.step"))
+
+
+# ---------------------------------------------------------------- drawings
+def label_for(name):
+    """Drawing label; the six wire pads of each board share one label."""
+    if name.startswith("wire_pad_"):
+        if not name.endswith("_1"):
+            return None
+        return "6 wire pads, " + ("main board top" if "main" in name else "joystick board face")
+    return name.replace("_", " ")
+
+
+def draw_all(model):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.collections import PolyCollection
+
+    P = model["parts"]
+    d, z = D, levels()
+    colors = {}
+    pal = plt.get_cmap("tab20")
+    for i, p in enumerate(P):
+        colors[p["name"]] = pal(i % 20)
+
+    def sec_faces(solid, axis, val):
+        big = 300
+        slab = {"x": Pos(val, 0, 0) * Box(0.002, big, big), "y": Pos(0, val, 0) * Box(big, 0.002, big),
+                "z": Pos(0, 0, val) * Box(big, big, 0.002)}[axis]
+        try:
+            inter = solid & slab
+        except Exception as e:
+            print(f"WARN section failed: {e}")
+            return []
+        out = []
+        for f in inter.faces():
+            n = f.normal_at()
+            comp = {"x": n.X, "y": n.Y, "z": n.Z}[axis]
+            cc = {"x": f.center().X, "y": f.center().Y, "z": f.center().Z}[axis]
+            if abs(comp) > 0.99 and cc > val:
+                out.append(f)
+        return out
+
+    def proj(v, axis):
+        return {"x": (v.Y, v.Z), "y": (v.X, v.Z), "z": (v.X, v.Y)}[axis]
+
+    def draw_faces(ax, faces, axis, fc, ec, alpha=0.85):
+        polys = []
+        for f in faces:
+            verts, tris = f.tessellate(0.005)
+            for t in tris:
+                polys.append([proj(verts[i], axis) for i in t])
+        if polys:
+            ax.add_collection(PolyCollection(polys, facecolors=fc, edgecolors=fc, linewidths=0.3 if alpha >= 0.99 else 0.0, alpha=alpha))
+        for f in faces:
+            for e in f.edges():
+                pts = [proj(e.position_at(i / 72), axis) for i in range(73)]
+                ax.plot([p[0] for p in pts], [p[1] for p in pts], color=ec, lw=0.6)
+
+    def place_labels(ax, items, xlim, ylim):
+        """items: (text, ax_x, ax_y). Labels in two columns outside the drawing, leader lines to the point."""
+        midx = (xlim[0] + xlim[1]) / 2
+        left = sorted([i for i in items if i[1] < midx], key=lambda t: -t[2])
+        right = sorted([i for i in items if i[1] >= midx], key=lambda t: -t[2])
+        for col, xs, ha in ((left, xlim[0], "right"), (right, xlim[1], "left")):
+            n = len(col)
+            if not n:
+                continue
+            ys = [ylim[1] - (ylim[1] - ylim[0]) * (k + 0.5) / n for k in range(n)]
+            for (txt, px, py), ty in zip(col, ys):
+                ax.annotate(txt, xy=(px, py), xytext=(xs, ty), ha=ha, va="center", fontsize=7.5,
+                            arrowprops=dict(arrowstyle="-", lw=0.5, color="0.3", shrinkA=1, shrinkB=0))
+                ax.plot([px], [py], marker="o", ms=2, color="k")
+
+    def dim(ax, p0, p1, text, off=(0, 0)):
+        ax.annotate("", xy=p0, xytext=p1, arrowprops=dict(arrowstyle="<->", lw=0.7, color="navy"))
+        ax.text((p0[0] + p1[0]) / 2 + off[0], (p0[1] + p1[1]) / 2 + off[1], text, ha="center", va="center",
+                fontsize=8, color="navy", bbox=dict(fc="white", ec="none", pad=0.5))
+
+    def finish(fig, ax, name, title):
+        ax.set_aspect("equal")
+        ax.set_title(title, fontsize=10)
+        ax.grid(True, lw=0.2, color="0.85")
+        ax.set_xlabel("mm")
+        for ext in ("png", "svg"):
+            fig.savefig(OUT / f"{name}.{ext}", dpi=220, bbox_inches="tight")
+        plt.close(fig)
+
+    def section(axis, val, name, title, part_filter=None):
+        fig, ax = plt.subplots(figsize=(15, 8.5))
+        for hn, hs in (("top shell", model["top_shell"]), ("base size 9", model["bases"][9])):
+            draw_faces(ax, sec_faces(hs, axis, val), axis, "0.80", "0.25", alpha=1.0)
+        items = []
+        for p in P:
+            fs = sec_faces(p["solid"], axis, val)
+            if not fs:
+                continue
+            draw_faces(ax, fs, axis, colors[p["name"]], "k", alpha=1.0)
+            bb = p["solid"].bounding_box()
+            c = proj(bb.center(), axis)
+            if label_for(p["name"]):
+                items.append((label_for(p["name"]), c[0], c[1]))
+        lo = -10.5 if axis == "x" else -15.5
+        hi = -lo
+        ax.set_xlim(lo - 9, hi + 9)
+        ax.set_ylim(-3.5, 11.5)
+        place_labels(ax, items, (lo - 2.5, hi + 2.0), (-2.5, 11.0))
+        # Z levels
+        for zz in (0.0, z["floor1"], z["cell1"], z["swell1"], z["board0"], z["board1"], z["scr0"], z["glass0"], z["glass1"]):
+            ax.plot([hi + 0.2, hi + 0.7], [zz, zz], color="navy", lw=0.6)
+        ax.text(hi + 0.1, -1.4, "Z: 0 | 0.8 floor | %.1f cell top | %.1f swell top | %.1f-%.1f board | %.1f screen | %.1f-%.1f glass"
+                % (z["cell1"], z["swell1"], z["board0"], z["board1"], z["scr0"], z["glass0"], z["glass1"]),
+                ha="right", fontsize=7, color="navy")
+        if axis == "x":
+            dim(ax, (-10, -0.6), (10, -0.6), "20.0")
+            dim(ax, (-11.4, 0), (-11.4, 9.5), "9.5", off=(-0.6, 0))
+        else:
+            dim(ax, (-15, -0.6), (15, -0.6), "30.0")
+            dim(ax, (-16.4, 0), (-16.4, 9.5), "9.5", off=(-0.6, 0))
+        ax.set_ylabel("Z, mm")
+        finish(fig, ax, name, title)
+
+    section("x", -6.0, "section-across-x-6", "Section across Y through X = -6.0 (looking -X; horizontal axis = Y), US size 9 base")
+    section("y", -2.5, "section-along-y-2.5", "Section along X through Y = -2.5 (horizontal axis = X): full layer stack")
+
+    # top view: outline of the top shell at the glass seat + all parts projected
+    def view(axis_drop, name, title):
+        fig, ax = plt.subplots(figsize=(15, 9))
+        if axis_drop == "z":
+            draw_faces(ax, sec_faces(model["top_shell"], "z", z["glass0"] + 0.25), "z", "0.85", "0.3", alpha=1.0)
+        else:
+            draw_faces(ax, sec_faces(model["top_shell"], "y", 0.0), "y", "0.85", "0.3", alpha=1.0)
+            draw_faces(ax, sec_faces(model["bases"][9], "y", 0.0), "y", "0.85", "0.3", alpha=1.0)
+            for s in (5, 9, 13):
+                dd = ring_d(s)
+                ax.plot([-4, 4, 4, -4, -4], [0, 0, -dd - 2 * d["band_wall"], -dd - 2 * d["band_wall"], 0], lw=0.5, ls=":", color="0.4")
+                ax.text(4.3, -dd - 2 * d["band_wall"], f"band size {s}: inner d {dd:.2f}, outer bottom Z {-dd - 2 * d['band_wall']:.2f}", fontsize=7, va="center", color="0.3")
+        items = []
+        for p in P:
+            if p["name"].startswith("screw") and axis_drop == "y":
+                continue
+            bb = p["solid"].bounding_box()
+            if axis_drop == "z":
+                x0, x1, y0, y1 = bb.min.X, bb.max.X, bb.min.Y, bb.max.Y
+            else:
+                x0, x1, y0, y1 = bb.min.X, bb.max.X, bb.min.Z, bb.max.Z
+            ax.add_patch(plt.Rectangle((x0, y0), x1 - x0, y1 - y0, fill=False, lw=0.8, ec=colors[p["name"]]))
+            if label_for(p["name"]):
+                items.append((label_for(p["name"]), (x0 + x1) / 2, (y0 + y1) / 2))
+        if axis_drop == "z":
+            ko = model["keepout"].bounding_box()
+            ax.add_patch(plt.Rectangle((ko.min.X, ko.min.Y), ko.max.X - ko.min.X, ko.max.Y - ko.min.Y, fill=False, hatch="///", ec="red", lw=0.6))
+            ax.text(ko.min.X, ko.max.Y + 0.25, "antenna keep-out 4.2 x 4.7 (full height)", color="red", fontsize=7)
+            ax.axhline(d["screen_zone_y1"], color="green", lw=0.5, ls="--")
+            ax.axhline(d["strip_y0"], color="green", lw=0.5, ls="--")
+            ax.text(-15, d["screen_zone_y1"] - 0.5, "screen zone to Y 3.9", color="green", fontsize=7)
+            ax.text(-15, d["strip_y0"] + 0.2, "thumb strip from Y 4.3", color="green", fontsize=7)
+            dim(ax, (-15, -11), (15, -11), "30.0")
+            dim(ax, (-16, -10), (-16, 10), "20.0", off=(-0.6, 0))
+            for x in (d["mic_open_x1"], d["mic2_x"], d["mic3_x"], d["mic4_x"]):
+                ax.text(x, d["mic_yc"] + 2.1, f"mic hole\nX {x:+.1f}", fontsize=6, ha="center")
+            place_labels(ax, items, (-17.5, 17.5), (-10.5, 10.5))
+            ax.set_xlim(-28, 28)
+            ax.set_ylim(-12.5, 12)
+            ax.set_ylabel("Y, mm (thumb side +Y)")
+        else:
+            dim(ax, (-15, 10.3), (15, 10.3), "30.0")
+            dim(ax, (-15.8, 0), (-15.8, 9.5), "9.5", off=(-0.6, 0))
+            dd = ring_d(9)
+            dim(ax, (6.5, 0), (6.5, -dd), f"size 9 inner d {dd:.2f}", off=(2.6, 0))
+            dim(ax, (-4, -ring_d(13) - 5.0), (4, -ring_d(13) - 5.0), "band 8.0")
+            place_labels(ax, items, (-17.5, 17.5), (-9, 11))
+            ax.set_xlim(-29, 29)
+            ax.set_ylim(-ring_d(13) - 6, 12)
+            ax.set_ylabel("Z, mm")
+        finish(fig, ax, name, title)
+
+    view("z", "top-view", "Top view: shell cut at Z 9.25 (glass seat, openings) + every part outline projected; X along the finger")
+    view("y", "side-view", "Side view (from +Y): shell and base cut at Y = 0, parts projected, band sizes 5 / 9 / 13 dotted")
+
+    # end view: base sections at X = 0 for sizes 5, 9, 13
+    fig, ax = plt.subplots(figsize=(10, 9))
+    for s, col in ((5, "tab:blue"), (9, "0.6"), (13, "tab:red")):
+        b = model["bases"][s] if s in model["bases"] else build_base(s, P)
+        draw_faces(ax, sec_faces(b, "x", 0.0), "x", col, "k", alpha=0.35)
+        dd = ring_d(s)
+        ax.text(0, -dd / 2, f"size {s}\ninner d {dd:.2f}", ha="center", fontsize=8)
+    draw_faces(ax, sec_faces(model["top_shell"], "x", 0.0), "x", "0.85", "0.3", alpha=1.0)
+    dim(ax, (-10, 10.2), (10, 10.2), "20.0")
+    ax.text(0, -ring_d(13) - 3.6, "band wall 2.0, width 8.0 along X, fillet r0.5 into the floor", ha="center", fontsize=8)
+    ax.set_xlim(-16, 16)
+    ax.set_ylim(-ring_d(13) - 5, 11.5)
+    ax.set_ylabel("Z, mm")
+    finish(fig, ax, "section-end-x0-bands", "End section at X = 0 (horizontal axis = Y): base with band, sizes 5, 9, 13")
+
+
+def main():
+    model = build(size=None)
+    write_tables(model["parts"])
+    export_all(model)
+    draw_all(model)
+    files = sorted(p.name for p in OUT.iterdir())
+    print(f"wrote {len(files)} files in out/: " + ", ".join(files))
+
+
+if __name__ == "__main__":
+    main()

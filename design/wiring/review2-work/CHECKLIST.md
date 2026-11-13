@@ -1,0 +1,30 @@
+# Checklist, review 2 (pinned 24587355)
+
+- [x] 1. Artifact at pinned version. evidence: status-at-start.log, judged-files-diff.log (empty at HEAD 7f9fd031), audit-3.log
+- [x] 2. M1 state: CLOSED. evidence: check_step2.log, check_guide_facts.log
+- [x] 3. M2 state: CLOSED. evidence: quotes of step 15 in wiring-review-2.md, check_guide_facts.log
+- [x] 4. m1 state: CLOSED. evidence: hand-derivations.txt item 1, check_guide_facts.log
+- [x] 5. m2 state: CLOSED. evidence: silk-case_pins.log
+- [x] 6. m3 state: PARTLY CLOSED. evidence: quotes.log (csv lines 64 to 68)
+- [x] 7. m4 state: CLOSED. evidence: check_parity.log
+- [x] 8. Read assembly.md sections 0 to 2 in full (lines 1 to 311 read). evidence: quotes.log, check_step2.log
+- [x] 9. Position files front/back vs guide. evidence: check_step2.log
+- [x] 10. B1. evidence: check_lines.log, fakes/run.log
+- [x] 11. B2 end nets. evidence: check_lines.log
+- [x] 12. B2 pairing 28. evidence: check_pairing.log
+- [x] 13. B3 DRC 17 of 17. evidence: drc/summary.log, broken/broken.rpt
+- [x] 14. B3 pad nets. evidence: check_parity.log, fakes/parity-fakes.log
+- [x] 15. B4. evidence: quotes.log, silk-case_main.log, pads/dumps.log
+- [x] 16. B5 J_BAND 14. evidence: check_lines.log, hand-derivations.txt item 2
+- [x] 17. B5 J1 turned 180. evidence: hand-derivations.txt item 1, png/disp200-05.png
+- [x] 18. B5 case wire pads. evidence: check_parity.log
+- [x] 19. Pin heights vs maker range. evidence: check_guide_facts.log
+- [x] 20. Depth gauge step. evidence: quotes.log (case-architecture.md 219)
+- [x] 21. product-wiring.pdf. evidence: png/pw-1.png, check_pdf.log
+- [x] 22. Steps 6 to 9, 14, 16, 18. evidence: quotes.log, check_guide_facts.log
+- [x] 23. board-notes wiring table. evidence: silk-case_main.log, silk-case_pins.log, pads/case_main.csv
+- [x] 24. Known-decided items. evidence: wiring-review-2.md N7, check_step2.log
+- [x] 25. Fakes caught. evidence: fakes/run.log, fakes/parity-fakes.log, broken/broken.rpt
+- [x] 26. Fixer notes read after forming view. evidence: grep in session, after check_pairing.log (12:01)
+- [x] 27. Work folder 3.8 MB; no design file changed. evidence: gitstatus-drc-diff.log, judged-files-diff.log
+- [x] 28. Final audit. evidence: audit-3.log ("claims checked 92 no match 0"); audit.log and audit-2.log are the earlier looks

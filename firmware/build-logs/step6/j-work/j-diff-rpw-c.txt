@@ -1,0 +1,71 @@
+27a28
+> 	EV_READ,                     /* addition of the join: a read now for rpw_sample_now / rpw_charger_now */
+347a349,357
+> 
+> /* ------------------------------------------------------------------ addition of the join: reads now (factory tests) */
+> K_MUTEX_DEFINE(rd_lock);             /* one read at a time */
+> K_SEM_DEFINE(rd_done, 0, 1);
+> static struct {
+> 	int rc;
+> 	struct rhw_pmic_sample s;
+> 	struct rhw_pmic_charge ch;
+> } rd;
+348a359,412
+> /* power thread: one sample and the charger status, for the caller waiting in read_now() */
+> static void do_read(void)
+> {
+> 	rd.rc = rhw_pmic()->sample(&rd.s);
+> 	if (rd.rc == 0) {
+> 		rd.rc = rhw_pmic()->charge_status(&rd.ch);
+> 	}
+> 	k_sem_give(&rd_done);
+> }
+> 
+> static int read_now(void)
+> {
+> 	struct ev e = { .type = EV_READ, .flag = false, .gen = (uint32_t)atomic_get(&gen) };
+> 	int r;
+> 
+> 	if (thr_up && k_current_get() == &thr) {
+> 		return -EDEADLK;
+> 	}
+> 	k_mutex_lock(&rd_lock, K_FOREVER);
+> 	k_sem_reset(&rd_done);
+> 	if (k_msgq_put(&ev_q, &e, K_NO_WAIT) != 0) {
+> 		r = -EBUSY;
+> 	} else if (k_sem_take(&rd_done, K_MSEC(RPW_READ_WAIT_MS)) != 0) {
+> 		r = -ETIMEDOUT;
+> 	} else {
+> 		r = rd.rc;
+> 	}
+> 	k_mutex_unlock(&rd_lock);
+> 	return r;
+> }
+> 
+> int rpw_sample_now(uint16_t *mv, int32_t *ua)
+> {
+> 	int r = read_now();
+> 
+> 	if (r == 0) {
+> 		*mv = rd.s.mv;
+> 		*ua = rd.s.ua;
+> 	}
+> 	return r;
+> }
+> 
+> int rpw_charger_now(uint8_t *state, uint8_t *err_reason, int32_t *ua)
+> {
+> 	int r = read_now();
+> 
+> 	if (r == 0) {
+> 		*state = rd.ch.state;
+> 		*err_reason = rd.ch.err_reason;
+> 		*ua = rd.s.ua;
+> 	}
+> 	return r;
+> }
+> 
+371a436,438
+> 			case EV_READ:
+> 				do_read();
+> 				break;
