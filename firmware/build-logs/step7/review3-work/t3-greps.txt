@@ -1,0 +1,36 @@
+## rpw_hw_real chan_to_ua / ua uses
+165:static int32_t chan_to_ua(const struct sensor_value *v)
+180:		rc = sensor_channel_get(charger, SENSOR_CHAN_GAUGE_AVG_CURRENT, &i);
+192:	out->ua = chan_to_ua(&i);
+305:	p.i0 = first->ua / 1000000.0f;
+316:	int rc = nrf_fuel_gauge_process(s->mv / 1000.0f, s->ua / 1000000.0f, s->temp_c_x10 / 10.0f,
+## rhw.h ua
+97:	int32_t ua;                      /* battery current inside the chip's path, µA, positive = discharge (this
+279:	/* One step: the sample, with the CURRENT ALREADY CORRECTED by the motor charge (I_fed, FW l.927, positive =
+280:	 * discharge as in struct rhw_pmic_sample), and the seconds since the last step in ms. Pure computation. */
+## sim pmic ua
+85:	chg_ua = ua;
+129:		int32_t ua = (int32_t)(base_ua + (rail[RHW_RAIL_MIC] ? mic_ua : 0) + (rail[RHW_RAIL_SD] ? sd_ua : 0));
+132:			ua = -(int32_t)chg_ua;
+144:		out->ua = ua;
+149:		out->ua = 3000;
+327:	base_ua = b;
+328:	mic_ua = m;
+329:	sd_ua = sd;
+429:	chg_ua = 0;
+## firmware.md 8.3
+14:2. **Vibration motor on its own regulator U11** (architecture 17.16 and 17.22; `design/ecad/motor-drive/motor-drive.md` section 2.8 changes F1 to F5): MOTOR enables U11 through R61 and R62 (net MOT_EN); U11 feeds the motor on VMOT from the cell; up to 0.55 ms from MOTOR high to power; no PWM (section 3.1). The fuel gauge does not see the motor's charge, so the firmware adds it (section 8.3). Factory test T-MOTOR reads the battery voltage dip (section 9.3).
+114:Battery thresholds (state of charge from the Nordic fuel gauge library, section 8.3, with the motor's charge added; voltage from the nPM1304 system monitor ADC [NPM p99], averaged over 10 s). Recomputed in F6 for the measured cells of ring sizes US 7 to 13, 17.6 to 31.9 mAh (architecture 17.26), and a recording current of 4.1 mA (section 8.5). A threshold protects a minimum of recording time, so its minutes are given on the smallest cell, 17.6 mAh at US 7 (architecture 17.26: "Every rule that protects a minimum of recording time uses the smallest cell: **17.6 mAh (US 7)**"):
+118:- The percentages stay 15, 5 and 2: they are shares of the cell, so the cell size changes what they mean in time, not their value. Capacity left on the smallest cell [CALC]: B15 2.64 mAh, B5 0.88 mAh, B2 0.35 mAh (17.6 mAh times 15, 5 and 2 %). Time left at 4.1 mA on 17.6 mAh [CALC: 2.64 / 4.1 x 60 = 38.6, 0.88 / 4.1 x 60 = 12.9, 0.352 / 4.1 x 60 = 5.2]: B15 39 min, B5 13 min, B2 5 min. On the largest cell, 31.9 mAh at US 13, the same shares give B15 70 min, B5 23 min, B2 9 min [CALC: 4.785, 1.595 and 0.638 mAh / 4.1 x 60 = 70.0, 23.3 and 9.3]. Recording time from full at 4.1 mA: 4.3 to 7.8 hours across US 7 to 13 (section 8.5). The share is the fuel gauge's, whose model of these cells is not verified (section 10.5, item 26).
+332:- **Motor charge for the fuel gauge** (motor-drive.md section 2.8 change F3): the power chip measures the battery current inside its own path [NPM p99] and does not see the motor. The firmware adds, for every ON pulse of a pattern, the charge t_on x 80 mA + 10 ms x 175 mA (the second term is the start allowance, an **[ESTIMATE]** until bench step B-M3 of motor-drive.md section 2.9 measures the start; each pulse is counted as a start **[CHOICE]**: an over-count if the motor still turns after a gap of 120 ms or more, which no file states). Per pattern [CALC, `design/firmware-f5-notes.md`]: M1 8.15 mA.s, M2 16.30, M3 24.45, MH 4.95, MT 3.75, MW 6.55, MF 51.50 mA.s. How the sum enters the gauge is section 8.3.
+374:| SCR_CHARGING | `CHARGING` (5 s after insertion, 5 s after any input) | battery % and icon, "Charging" or "Full", time to full in minutes from the fuel gauge |
+860:The power chip is the Nordic nPM1304, U2, order code nPM1304-CAAA-R7 (architecture 17.13 and 17.18). Drivers: the Zephyr nPM13xx family `drivers/mfd/mfd_npm13xx.c`, `drivers/regulator/regulator_npm13xx.c`, `drivers/sensor/nordic/npm13xx_charger/npm13xx_charger.c` [SRC 11]. Fuel gauge: nRF Connect SDK library `nrf_fuel_gauge` [SRC 12]. The only nPM1304 binding text on disk is the charger page as quoted in `design/parts/research-npm1304.md` [SRC 17]; it confirms the compatible `"nordic,npm1304-charger"` and the properties `current-microamp`, `term-microvolt` and `term-current-percent`. Every other property name below is the F4 name of the same nPM13xx driver family and is marked **TO CONFIRM**: the firmware designer reads the nPM1304 binding files of the nRF Connect SDK version the build pins before work item W1 (section 10.5, item 3). Where the chip function behind a property is confirmed by the specification, the page is given. No property is added that F4 did not have, except the charger's compatible, which [SRC 17] confirms.
+924:### 8.3 Battery measurement
+926:- The nPM1304's system monitor measures the battery voltage, the battery current and the thermistor [NPM p99, section 7.1]. The charger sensor driver gives voltage, current and temperature channels (`SENSOR_CHAN_GAUGE_VOLTAGE`, `SENSOR_CHAN_GAUGE_AVG_CURRENT`, `SENSOR_CHAN_GAUGE_TEMP`) [SRC 11; that the family driver serves the nPM1304 is TO CONFIRM, section 10.5 item 3]. Each sample feeds `nrf_fuel_gauge_process()`, which returns the state of charge [SRC 12]; `nrf_fuel_gauge_tte_get()` and `nrf_fuel_gauge_ttf_get()` give time to empty and to full [SRC 12].
+930:- The fuel gauge needs a battery model of the actual cells; Nordic makes it with its nPM PowerUP application [NPM p99]. One model per ring size or one for all is open (section 10.5, item 4).
+1077:| Fuel gauge | `nrf_fuel_gauge` library (nRF Connect SDK, nrfxlib) | SRC 12 |
+1096:| W8 | Power service | thresholds, fuel gauge loop with the motor's charge added (section 8.3), rail control, ship entry by TASKENTERSHIPMODE after VBUS removal (section 8.4), the battery current limit status and the reset causes (section 8.7) |
+1124:| SRC 12 | nrfxlib `nrf_fuel_gauge/include/nrf_fuel_gauge.h`, main |
+1139:4. The fuel gauge needs a battery model of the actual Grepow cells; Nordic makes it with the nPM PowerUP application [NPM p99]. Whether one model serves the seven cell lengths of US 7 to 13 or each needs its own: the firmware designer with the cell maker (S12).
+1149:14. Whether 25 ms motor pulses are felt (bench test F1), the motor spin-up time and the start allowance of 10 ms at 175 mA used for the fuel gauge (section 8.3): bench step B-M3 of motor-drive.md section 2.9. The T-MOTOR pass line of 20 mV is an estimate until bench step B-M5.
+1168:32. The sign the `nrf_fuel_gauge` library expects for a discharge current, and its call for an added current (section 8.3): the firmware designer, from SRC 12 at the pinned SDK version.

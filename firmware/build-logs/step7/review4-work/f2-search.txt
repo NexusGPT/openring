@@ -1,0 +1,179 @@
+firmware/modules/ring_motor/include/ring_motor/rmo.h:49:/* Stop at once, pin low (before ship mode). Any thread; never blocks. */
+firmware/modules/ring_screens/src/rscr.c:546:	/* step 6 fix round 1 (lead's ruling 4 on the recorder's ship mode): before rscr_start there is no screens thread to
+firmware/modules/ring_devices/include/ring_devices/rdev.h:87: * factory ship beacon) is not touched. 0, or the error of bt_conn_disconnect(). Any thread; does not wait for the
+firmware/modules/ring_devices/src/rdev.c:46:static bool stopped;   /* rdev_stop() (ship mode step 1): no advertising and no link from now on */
+firmware/modules/ring_devices/src/rdev.c:498:/* Step 6 fix round 1 (review finding R6-02, FW l.937 "close ... radio"): ship mode step 1. Advertising stops, the link
+firmware/modules/ring_devices/src/rdev.c:499: * is ended, and nothing advertises again (update_fn returns at once). Advertising of another part (the factory ship
+firmware/modules/ring_store/include/ring_store/rst.h:12: * Hardware only through rhw.h: rhw_disk(), rhw_sdbus(), rhw_pmic()->rail_set(RHW_RAIL_SD, ..., "rst_..."),
+firmware/modules/ring_store/src/rst.c:166:	(void)rhw_pmic()->rail_set(RHW_RAIL_SD, false, caller);
+firmware/modules/ring_store/src/rst.c:345:	if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+firmware/modules/ring_store/src/rst.c:485:	if (rhw_pmic()->rail_set(RHW_RAIL_SD, false, "rst_unmount") != 0) {              /* then rail off */
+firmware/modules/ring_core/tools/gen_table.py:77:    "VBUS removed, no ship command accepted": ("VBUS_OUT", "NONE"),
+firmware/modules/ring_core/include/ring_core/rc_types.h:117:	RC_ACT_SHIP_MODE,            /* enter ship mode, FW 8.4 */
+firmware/modules/ring_core/src/state_actions.c:23:	case 1:  /* line 133 SHIP, VBUS appears: chip leaves ship mode (hardware); charge on */
+firmware/modules/ring_core/src/state_actions.c:41:	case 7:  /* line 139: enter ship mode */
+firmware/modules/ring_core/src/state_actions.c:93:	case 19: /* line 151: save settings and time; M2; ship mode */
+firmware/modules/ring_core/src/state_actions.c:111:	case 23: /* line 155: save settings and time; ship mode */
+firmware/modules/ring_core/src/state_actions.c:150:	case 33: /* line 165: close; ship mode */
+firmware/modules/ring_core/src/state_actions.c:184:	case 42: /* line 174: save settings and time; ship mode (R10) */
+firmware/modules/ring_core/src/state_actions.c:228:	case 54: /* line 186: ship mode */
+firmware/modules/ring_core/src/state_actions.c:238:	case 57: /* line 189: save settings and time; ship mode */
+firmware/modules/ring_core/src/state_actions.c:255:	case 63: /* line 195: ship mode */
+firmware/modules/ring_core/src/state_actions.c:263:	case 66: /* line 198: save settings and time; ship mode (R15) */
+firmware/modules/ring_core/src/state_actions.c:269:	case 68: /* line 200: save settings and time; ship mode (R15) */
+firmware/modules/ring_core/src/state_actions.c:276:	case 70: /* line 202: clear the factory flag; ship mode */
+firmware/modules/ring_core/src/state_actions.c:280:	case 71: /* line 203: keep the factory flag; ship mode */
+firmware/modules/ring_core/src/state_table.inc:75:RC_ROW(72, 204, FACTORY_TEST, VBUS_OUT, NONE, BOOT, "VBUS removed, no ship command accepted")
+firmware/modules/ring_factory/Kconfig:7:	bool "Ring factory: the FACTORY sub-commands and the ship beacon (thin part, software step 6, unit U8)"
+firmware/modules/ring_factory/Kconfig:12:	  Runs the tests of design/firmware.md section 9.3 and the ship beacon of ruling R20. Reaches hardware only
+firmware/modules/ring_core/src/state_table.json:12:   "actions_text": "the nPM1304 leaves ship mode (VBUS above VBUSPOR, 3.9 V [NPM p17, p116]) and powers the bucks; the chip starts; charge on",
+firmware/modules/ring_core/src/state_table.json:72:   "actions_text": "enter ship mode (section 8.4)",
+firmware/modules/ring_core/src/state_table.json:192:   "actions_text": "save settings and time; M2; ship mode",
+firmware/modules/ring_core/src/state_table.json:232:   "actions_text": "save settings and time; ship mode",
+firmware/modules/ring_core/src/state_table.json:332:   "actions_text": "close; ship mode",
+firmware/modules/ring_core/src/state_table.json:422:   "actions_text": "save settings and time; ship mode (ruling R10)",
+firmware/modules/ring_core/src/state_table.json:542:   "actions_text": "ship mode",
+firmware/modules/ring_core/src/state_table.json:572:   "actions_text": "save settings and time; ship mode",
+firmware/modules/ring_core/src/state_table.json:632:   "actions_text": "ship mode",
+firmware/modules/ring_core/src/state_table.json:662:   "actions_text": "save settings and time; ship mode (ruling R15)",
+firmware/modules/ring_core/src/state_table.json:682:   "actions_text": "save settings and time; ship mode (ruling R15)",
+firmware/modules/ring_core/src/state_table.json:702:   "actions_text": "clear the factory flag; ship mode (waits for VBUS removal, section 8.4)",
+firmware/modules/ring_core/src/state_table.json:712:   "actions_text": "keep the factory flag; ship mode (waits for VBUS removal, section 8.4)",
+firmware/modules/ring_core/src/state_table.json:720:   "event_text": "VBUS removed, no ship command accepted",
+firmware/modules/ring_factory/include/ring_factory/rfa.h:3: * lead). The FACTORY sub-commands of design/firmware.md section 9.3 and the ship beacon of ruling R20 ("FW l.N" =
+firmware/modules/ring_factory/include/ring_factory/rfa.h:94:int rfa_ship_begin(void);
+firmware/modules/ring_factory/include/ring_factory/rfa.h:95:/* Stop the beacon: given to rpw_ship() as before_task, right before TASKENTERSHIPMODE (FW l.1057). */
+firmware/modules/ring_factory/src/rfa_logic.c:76:bool rfa_is_ship(uint8_t sub)
+firmware/modules/ring_factory/src/rfa_logic.h:51:/* true when the sub-command enters ship mode with the ship beacon (SHIP_ENTER and SHIP_SAMPLE, FW l.1034, l.1035). */
+firmware/modules/ring_factory/src/rfa_logic.h:52:bool rfa_is_ship(uint8_t sub);
+firmware/modules/ring_factory/src/rfa_logic.h:111:/* The ship beacon's name (FW l.1057): "Ring" and the last four hex digits (upper case) of the device id. out holds
+firmware/modules/ring_factory/src/rfa.c:110:int rfa_ship_begin(void)
+firmware/modules/ring_factory/src/rfa.c:112:	return beacon_start(false); /* ship */
+firmware/modules/ring_factory/src/rfa.c:433:		int rc = rfa_ship_begin();
+firmware/modules/ring_recorder/include/ring_recorder/rrec.h:29: * answer of 0, rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on"). Returns the sign's answer (0 = drawn and
+firmware/modules/ring_recorder/include/ring_recorder/rrec.h:31: * file may call rail_set(RHW_RAIL_MIC, true, ...) (full-run stage recorder-one-mic-path). */
+firmware/modules/ring_recorder/src/rrec.c:332:/* ship mode's unmount (FW l.937, R2-04): outside a core step, so it uses no counter of the steps' episode. If the
+firmware/modules/ring_recorder/src/rrec.c:333: * storage cannot be unmounted within its wait, USB is closed first and the unmount is tried once more; ship mode goes on
+firmware/modules/ring_recorder/src/rrec.c:335:static int ship_unmount(bool *usb_closed)
+firmware/modules/ring_recorder/src/rrec.c:343:	r = rst_unmount_wait(FINISH_WAIT_MS);   /* ship: the first try */
+firmware/modules/ring_recorder/src/rrec.c:348:		r = rst_unmount_wait(FINISH_WAIT_MS);   /* ship: the second try, USB closed */
+firmware/modules/ring_recorder/src/rrec.c:354:/* the wait for the screen in ship mode (FW l.937, R2-05): rscr_sync() on a work queue of its own, waited for at most
+firmware/modules/ring_recorder/src/rrec.c:355: * RREC_SHIP_SCREEN_WAIT_MS; a stuck screens thread never stops ship mode */
+firmware/modules/ring_recorder/src/rrec.c:381:/* ------------------------------------------------------------------ ship mode (FW 8.4, l.936 to l.941) */
+firmware/modules/ring_recorder/src/rrec.c:383:static void (*ship_hook)(void);
+firmware/modules/ring_recorder/src/rrec.c:387:void rrec_test_set_ship_hook(void (*fn)(void))
+firmware/modules/ring_recorder/src/rrec.c:389:	ship_hook = fn;
+firmware/modules/ring_recorder/src/rrec.c:403:/* The recorder's thread, after the step that asked for ship mode ended (RREC_JOB_SHIP): the screens were told the new
+firmware/modules/ring_recorder/src/rrec.c:405:void rrec_ship_now(void)
+firmware/modules/ring_recorder/src/rrec.c:416:	/* not reached in the product: every row into SHIP or OFF from RECORDING has "close" before "ship mode" (FW l.165),
+firmware/modules/ring_recorder/src/rrec.c:424:		(void)ship_unmount(&usb_closed);         /* storage closed (R2-04: USB first when it cannot be) */
+firmware/modules/ring_recorder/src/rrec.c:434:	r = rdev_stop();                         /* radio: this part's advertising and link; the ship beacon (R20) stays */
+firmware/modules/ring_recorder/src/rrec.c:446:	if (ship_hook != NULL) {
+firmware/modules/ring_recorder/src/rrec.c:447:		ship_hook();
+firmware/modules/ring_recorder/src/rrec.c:451:	(void)rpw_ship(rfa_beacon_stop);         /* steps 2 to 5; the beacon stops right before the ship task (R20) */
+firmware/modules/ring_recorder/src/rrec.c:453:	(void)rpw_ship(NULL);
+firmware/modules/ring_recorder/src/rrec.c:533:		rrec_st.ship_pending = true;     /* on the recorder's thread after this step (rrec_glue_after) */
+firmware/modules/ring_recorder/src/rrec.c:748:	if (rrec_st.ship_pending) {
+firmware/modules/ring_recorder/src/rrec.c:749:		/* ship mode after the screens learned SHIP or OFF (the screen closes, R6-02), on the recorder's thread (R6-10) */
+firmware/modules/ring_recorder/src/rrec.c:750:		rrec_st.ship_pending = false;
+firmware/modules/ring_recorder/src/rrec_bridge.c:205:			rrec_ship_now();
+firmware/modules/ring_recorder/src/rrec_int.h:48:	RREC_JOB_SHIP,           /* RC_ACT_SHIP_MODE, after the step that asked for it: ship mode steps 1 to 5 (FW 8.4) on
+firmware/modules/ring_recorder/src/rrec_int.h:86:	bool ship_pending;       /* RC_ACT_SHIP_MODE seen in this step: the ship job is posted after the screens were told */
+firmware/modules/ring_recorder/src/rrec_int.h:117:/* rrec.c, the recorder's thread: ship mode (RREC_JOB_SHIP): wait for M2 to end (bounded), step 1 (recording, storage,
+firmware/modules/ring_recorder/src/rrec_int.h:118: * USB, radio, screen closed), then rpw_ship() for steps 2 to 5 (FW 8.4). */
+firmware/modules/ring_recorder/src/rrec_int.h:119:void rrec_ship_now(void);
+firmware/modules/ring_recorder/src/rrec_int.h:146:/* Called on the recorder's thread at the end of ship mode step 1, right before rpw_ship() (SHPHLDCONFIG); NULL clears. */
+firmware/modules/ring_recorder/src/rrec_int.h:147:void rrec_test_set_ship_hook(void (*fn)(void));
+firmware/modules/ring_recorder/src/rrec_int.h:150:/* rdev_stop() calls made by ship mode step 1 since boot (the radio, FW l.937), and the last one's answer */
+firmware/modules/ring_recorder/src/rrec_mics.c:53:	return rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
+firmware/modules/ring_recorder/src/rrec_mics.c:58:	return rhw_pmic()->rail_set(RHW_RAIL_MIC, false, "rec_mics_off");
+firmware/modules/ring_power/Kconfig:2:	bool "Ring power: battery levels, charger, ship mode, reset causes (software step 6, unit U5)"
+firmware/modules/ring_power/include/ring_power/rpw.h:3: * lead). Battery levels, the charger, the gauge with the motor's charge, ship mode, reset causes, the current limit:
+firmware/modules/ring_power/include/ring_power/rpw.h:7: * off only, CHARGE_CURRENT and its build assertions, motor charge added, the current-limit decision, the ship steps as
+firmware/modules/ring_power/include/ring_power/rpw.h:15: * rhw_pmic()->rail_set(): VDD_SD by ring_store, VDD_MIC only by rec_mics_on() (FW l.342). (The plan's U5 offer "set a
+firmware/modules/ring_power/include/ring_power/rpw.h:72: * wait for VBUS removed doing nothing else (FW l.939); before_task() right before TASKENTERSHIPMODE (the ship beacon
+firmware/modules/ring_power/include/ring_power/rpw.h:76:int rpw_ship(void (*before_task)(void));
+firmware/modules/ring_power/include/ring_power/rpw.h:102: * did not answer (not started, or ship mode runs); the chip's errno. */
+firmware/modules/ring_power/src/rpw_logic.c:183:/* ------------------------------------------------------------------ ship mode */
+firmware/modules/ring_power/src/rpw_logic.c:184:void rpwl_ship_reset(struct rpwl_ship *s)
+firmware/modules/ring_power/src/rpw_logic.c:190:enum rpwl_ship_act rpwl_ship_next(struct rpwl_ship *s, bool vbus)
+firmware/modules/ring_power/src/rpw_logic.c:207:		return rpwl_ship_next(s, vbus);
+firmware/modules/ring_power/src/rpw_hw_real.c:72:static const struct device *const ldsw_mic = DEVICE_DT_GET(DT_ALIAS(ring_vdd_mic));
+firmware/modules/ring_power/src/rpw_hw_real.c:73:static const struct device *const ldsw_sd = DEVICE_DT_GET(DT_ALIAS(ring_vdd_sd));
+firmware/modules/ring_power/src/rpw_hw_real.c:91:static int r_rail_set(enum rhw_rail r, bool on, const char *caller)
+firmware/modules/ring_power/src/rpw_hw_real.c:100:	d = r == RHW_RAIL_MIC ? ldsw_mic : ldsw_sd;
+firmware/modules/ring_power/src/rpw_hw_real.c:101:	rc = on ? regulator_enable(d) : regulator_disable(d);
+firmware/modules/ring_power/src/rpw_hw_real.c:225:/* ------------------------------------------------------------------ ship mode (FW l.936 to l.941) */
+firmware/modules/ring_power/src/rpw_hw_real.c:239:static int r_ship_task(void)
+firmware/modules/ring_power/src/rpw_hw_real.c:286:	.rail_set = r_rail_set, .rail_get = r_rail_get, .charger_enable = r_chg_enable,
+firmware/modules/ring_power/src/rpw_hw_real.c:289:	.shphld_strobe = r_shphld_strobe, .ship_task = r_ship_task, .vbus_present = r_vbus_present,
+firmware/modules/ring_power/src/rpw_hw_real.c:339:	if (!device_is_ready(pmic) || !device_is_ready(charger) || !device_is_ready(ldsw_mic) ||
+firmware/modules/ring_power/src/rpw_hw_real.c:340:	    !device_is_ready(ldsw_sd)) {
+firmware/modules/ring_power/src/rpw_logic.h:96:/* ------------------------------------------------------------------ ship mode steps 2 to 5 (FW l.936 to l.941) */
+firmware/modules/ring_power/src/rpw_logic.h:97:enum rpwl_ship_act {
+firmware/modules/ring_power/src/rpw_logic.h:101:	RPWL_SHIP_BEFORE_TASK,    /* the caller's hook (the ship beacon stops), first try only */
+firmware/modules/ring_power/src/rpw_logic.h:107:enum rpwl_ship_state {
+firmware/modules/ring_power/src/rpw_logic.h:110:struct rpwl_ship {
+firmware/modules/ring_power/src/rpw_logic.h:111:	uint8_t st;               /* enum rpwl_ship_state */
+firmware/modules/ring_power/src/rpw_logic.h:114:void rpwl_ship_reset(struct rpwl_ship *s);
+firmware/modules/ring_power/src/rpw_logic.h:116:enum rpwl_ship_act rpwl_ship_next(struct rpwl_ship *s, bool vbus);
+firmware/modules/ring_power/src/rpw.c:74:static atomic_t shipping;
+firmware/modules/ring_power/src/rpw.c:104:	if (atomic_get(&shipping) != 0) {
+firmware/modules/ring_power/src/rpw.c:426:				if (atomic_get(&shipping) == 0) {
+firmware/modules/ring_power/src/rpw.c:494:	(void)atomic_set(&shipping, 0);
+firmware/modules/ring_power/src/rpw.c:598:/* ------------------------------------------------------------------ ship mode (FW l.936 to l.941) */
+firmware/modules/ring_power/src/rpw.c:599:int rpw_ship(void (*before_task)(void))
+firmware/modules/ring_power/src/rpw.c:601:	struct rpwl_ship ss;
+firmware/modules/ring_power/src/rpw.c:604:	rpwl_ship_reset(&ss);
+firmware/modules/ring_power/src/rpw.c:605:	(void)atomic_set(&shipping, 1);             /* "doing nothing else": no sampling while this runs */
+firmware/modules/ring_power/src/rpw.c:611:		switch (rpwl_ship_next(&ss, rhw_pmic()->vbus_present())) {
+firmware/modules/ring_power/src/rpw.c:627:			(void)rhw_pmic()->ship_task();
+firmware/modules/ring_power/src/rpw.c:647:	(void)atomic_set(&shipping, 0);
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:89: * rail_set also by ring_store (VDD_SD) and ring_recorder (VDD_MIC, only from rec_mics_on(), FW l.342) */
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:91:	RHW_RAIL_MIC = 0,                /* LDSW1, VDD_MIC (FW l.872, l.457) */
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:92:	RHW_RAIL_SD = 1,                 /* LDSW2, VDD_SD (FW l.874, l.506) */
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:117:	int (*rail_set)(enum rhw_rail rail, bool on, const char *caller);
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:140:	int (*ship_task)(void);
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:301:	/* Start advertising with this name (NUL-terminated, at most 29 bytes), interval and TX power. The ship beacon and
+firmware/modules/ring_rhw/include/ring_rhw/rhw_sim.h:16: *  - rhw_sim_reboot(): stands for a reset of the ring (power cycle, ship-mode wake, watchdog, FW_END). It calls every
+firmware/modules/ring_rhw/include/ring_rhw/rhw_sim.h:66:	RHW_EV_SHIP_REFUSED,        /* a driver call after the ship task: a0 the refused kind */
+firmware/modules/ring_rhw/include/ring_rhw/rhw_sim.h:222:/* true after the ship task until a reboot; then every driver call is refused (-ESHUTDOWN) and counted. */
+firmware/modules/ring_rhw/include/ring_rhw/rhw_sim.h:223:bool rhw_sim_shipped(void);
+firmware/modules/ring_rhw/include/ring_rhw/rhw_sim.h:224:uint32_t rhw_sim_ship_refused(void);
+firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h:307:#define RREC_SHIP_RETRY_MS            1000u       /* FW l.941: still running 1 s after the ship task: log, retry once */
+firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h:308:#define RREC_SHIP_SCREEN_WAIT_MS      1000u       /* FW l.937 [CHOICE]: the wait for the screen to blank in ship mode, at most */
+firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h:378:#define RREC_ADV_INTERVAL_MS          100u        /* FW l.1031 (T-RADIO), l.1057 (ship beacon) */
+firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h:443:	RREC_LOG_SHIP_RETRY = 0x0250,         /* still running 1 s after the ship task (FW l.941). args: try u8 */
+firmware/modules/ring_rhw/src/sim_core.c:2: * ring_rhw simulation: the event log, the two resets, the reboot hooks and the "shipped" state. Written for this
+firmware/modules/ring_rhw/src/sim_core.c:24:static bool shipped;
+firmware/modules/ring_rhw/src/sim_core.c:25:static uint32_t ship_refused;
+firmware/modules/ring_rhw/src/sim_core.c:141:	if (!shipped) {
+firmware/modules/ring_rhw/src/sim_core.c:144:	ship_refused++;
+firmware/modules/ring_rhw/src/sim_core.c:149:/* called by the simulated power chip's ship task */
+firmware/modules/ring_rhw/src/sim_core.c:150:void sim_set_shipped(void)
+firmware/modules/ring_rhw/src/sim_core.c:152:	shipped = true;
+firmware/modules/ring_rhw/src/sim_core.c:155:bool rhw_sim_shipped(void)
+firmware/modules/ring_rhw/src/sim_core.c:157:	return shipped;
+firmware/modules/ring_rhw/src/sim_core.c:160:uint32_t rhw_sim_ship_refused(void)
+firmware/modules/ring_rhw/src/sim_core.c:162:	return ship_refused;
+firmware/modules/ring_rhw/src/sim_core.c:202:	shipped = false;
+firmware/modules/ring_rhw/src/sim_core.c:203:	ship_refused = 0;
+firmware/modules/ring_rhw/src/sim_core.c:214:	shipped = false;
+firmware/modules/ring_rhw/src/sim_core.c:215:	ship_refused = 0;
+firmware/modules/ring_rhw/src/sim_int.h:14:/* the simulated power chip's ship task without VBUS: the ring has no supply from now on */
+firmware/modules/ring_rhw/src/sim_int.h:15:void sim_set_shipped(void);
+firmware/modules/ring_rhw/src/sim_int.h:17:/* true after the ship task: the call is refused (logged and counted); kind = the refused event kind */
+firmware/modules/ring_rhw/src/rhw.c:36:static int none_rail_set(enum rhw_rail r, bool on, const char *c) { ARG_UNUSED(r); ARG_UNUSED(on); ARG_UNUSED(c); return -ENODEV; }
+firmware/modules/ring_rhw/src/rhw.c:43:	.rail_set = none_rail_set, .rail_get = none_rail_get, .charger_enable = none_b, .charger_current = none_u32,
+firmware/modules/ring_rhw/src/rhw.c:45:	.reset_causes_clear = none_v, .shphld_config = none_u32, .shphld_strobe = none_v, .ship_task = none_v,
+firmware/modules/ring_rhw/src/sim_pmic.c:3: * causes, SHPHLD, ship task, VBUS) and the gauge. Written for this project; register names follow the nPM1304
+firmware/modules/ring_rhw/src/sim_pmic.c:46:static int p_rail_set(enum rhw_rail r, bool on, const char *caller)
+firmware/modules/ring_rhw/src/sim_pmic.c:58:	if (r == RHW_RAIL_SD) {
+firmware/modules/ring_rhw/src/sim_pmic.c:129:		int32_t ua = (int32_t)(base_ua + (rail[RHW_RAIL_MIC] ? mic_ua : 0) + (rail[RHW_RAIL_SD] ? sd_ua : 0));
+firmware/modules/ring_rhw/src/sim_pmic.c:212:static int p_ship(void)
+firmware/modules/ring_rhw/src/sim_pmic.c:221:		sim_set_shipped();
+firmware/modules/ring_rhw/src/sim_pmic.c:241:	.rail_set = p_rail_set, .rail_get = p_rail_get, .charger_enable = p_chg_enable,
+firmware/modules/ring_rhw/src/sim_pmic.c:244:	.shphld_strobe = p_shphld_strobe, .ship_task = p_ship, .vbus_present = p_vbus, .set_callbacks = p_set_cb,
+firmware/modules/ring_rhw/src/sim_disk.c:106:	if (!sim_pmic_rail(RHW_RAIL_SD) || (need_init && !inited)) {
+firmware/modules/ring_xfer/src/rxf_class.c:49:static atomic_t stopped;            /* rxf_stop() (ship mode step 1): the stack stays off until the next VBUS ready */
+firmware/modules/ring_xfer/src/rxf_class.c:353:/* Step 6 fix round 1 (review finding R6-02): ship mode step 1 closes USB (FW l.937). Nothing more is read or answered

@@ -1,0 +1,38 @@
+## REPLACED markers
+38:production configuration that disables `uart20` (and its pin state) is not written. **REPLACED 2026-11-14** (fix round 1): written and built, section "Fix ro
+74:| PMIC_INT | D8 | P1.28 | `ring_pmic` property `host-int-gpios` | kit mfd_npm13xx.c, i2c_nrfx_twim.c, and since fix round 1 rpw_hw_real.c (**REPLACED 2026-11
+75:| PMIC_SCL | E7 | P1.27 | `i2c22` pin control, function `TWIM_SCL` (default and sleep) | kit mfd_npm13xx.c, i2c_nrfx_twim.c, and since fix round 1 rpw_hw_rea
+76:| PMIC_SDA | B8 | P1.26 | `i2c22` pin control, function `TWIM_SDA` (default and sleep) | kit mfd_npm13xx.c, i2c_nrfx_twim.c, and since fix round 1 rpw_hw_rea
+150:**REPLACED 2026-11-14:** this section is the step 7 state. Fix round 1 fixed the three calls and turned the file on (`CONFIG_RING_POWER_REAL=y`, row S7-06 o
+199:**REPLACED 2026-11-14** (the list below is the step 7 state: `ring-ram` now prints every RAM symbol, `ring-pins-broken` has ten planted copies, and the stag
+208:**REPLACED 2026-11-14:** this section is the step 7 state (power part off, 80 largest symbols). The table with the power part on and every symbol is in "Fix
+258:**REPLACED 2026-11-14:** these are the step 7 bars (run `s7-full1`). Bar 2 said `rpw_hw_real.c` was not compiled; since fix round 1 it is compiled with real
+311:**REPLACED 2026-11-14:** the step 7 state. Since then: the power part's real file is on (fix round 1), the production configuration exists (fix round 1), th
+320:**REPLACED 2026-11-14:** the lead ruled every item of this list in `docs/step7-fix1-brief.md`; the power file is on since fix round 1. Open choices for the 
+327:(Step 7 result, **REPLACED 2026-11-14** by the fix rounds below.) RESULT (step 7): done, the ring board `ringrec/nrf54lm20a/cpuapp` builds with the real dri
+331:**REPLACED 2026-11-14 in part (fix round 2):** the S7-02 row's boot hook (`SYS_INIT(rst_hw_real_cs_boot, POST_KERNEL, 99)`) and its boot window are replaced
+## Fix round 2 mentions
+150:**REPLACED 2026-11-14:** this section is the step 7 state. Fix round 1 fixed the three calls and turned the file on (`CONFIG_RING_POWER_REAL=y`, row S7-06 o
+199:**REPLACED 2026-11-14** (the list below is the step 7 state: `ring-ram` now prints every RAM symbol, `ring-pins-broken` has ten planted copies, and the stag
+258:**REPLACED 2026-11-14:** these are the step 7 bars (run `s7-full1`). Bar 2 said `rpw_hw_real.c` was not compiled; since fix round 1 it is compiled with real
+311:**REPLACED 2026-11-14:** the step 7 state. Since then: the power part's real file is on (fix round 1), the production configuration exists (fix round 1), th
+331:**REPLACED 2026-11-14 in part (fix round 2):** the S7-02 row's boot hook (`SYS_INIT(rst_hw_real_cs_boot, POST_KERNEL, 99)`) and its boot window are replaced
+## hw_real lines in f2-full1
+29314:ring-drivers: rau_hw_real.c.obj text 536 bytes: real code
+29328:ring-drivers: rfa_hw_real.c.obj text 154 bytes: real code
+29332:ring-drivers: rmo_hw_real.c.obj text 108 bytes: real code
+29335:ring-drivers: rpw_hw_real.c.obj text 6836 bytes: real code
+29387:ring-drivers: rst_hw_real.c.obj text 382 bytes: real code
+29397:ring-drivers: rsy_hw_real.c.obj text 796 bytes: real code
+29418:ring-drivers: rxf_hw_real.c.obj text 848 bytes: real code
+## ring-drivers stage
+29310:=== stage ring-drivers start 2026-11-14T04:08:46Z log /ws/out/20261114-024705-f2-full1/ring-drivers.log
+29449:=== stage ring-drivers end 2026-11-14T04:08:47Z exit 0
+## rst_hw_real compiled / device_init symbols
+1205:[718/841] Building C object modules/ring_store/CMakeFiles/ring_store.dir/src/rst_hw_real.c.obj
+15199:rst_hw_real.c.obj
+28833:[745/879] Building C object modules/ring_store/CMakeFiles/ring_store.dir/src/rst_hw_real.c.obj
+29387:ring-drivers: rst_hw_real.c.obj text 382 bytes: real code
+29395:ring-drivers:   function rst_hw_real_register
+30118:2005f859 00000001 b bus_up	firmware/modules/ring_store/src/rst_hw_real.c:96
+31349:[744/876] Building C object modules/ring_store/CMakeFiles/ring_store.dir/src/rst_hw_real.c.obj

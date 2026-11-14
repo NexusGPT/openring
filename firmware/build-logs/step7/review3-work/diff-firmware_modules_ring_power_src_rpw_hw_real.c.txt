@@ -1,0 +1,47 @@
+diff --git a/firmware/modules/ring_power/src/rpw_hw_real.c b/firmware/modules/ring_power/src/rpw_hw_real.c
+index f7f13586..2f710395 100644
+--- a/firmware/modules/ring_power/src/rpw_hw_real.c
++++ b/firmware/modules/ring_power/src/rpw_hw_real.c
+@@ -159,8 +159,9 @@ static int32_t sv_to_micro(const struct sensor_value *v)
+ 	return v->val1 * 1000000 + v->val2;
+ }
+ 
+-/* The current in the interface's sign (positive = discharge). The sign of the kit's current channel against the
+- * library's expectation is kit fact K6, open: this one place converts. */
++/* The current in the interface's sign (positive = discharge). The kit's charger channel is negative while
++ * discharging (zephyr/drivers/sensor/nordic/npm13xx_charger/npm13xx_charger.c l.207 to 218: IBAT_STAT_DISCHARGE gives a
++ * negative full scale), so this negates it (step 7 fix round 2, S7R-06). */
+ static int32_t chan_to_ua(const struct sensor_value *v)
+ {
+ 	return -sv_to_micro(v);
+@@ -290,14 +291,18 @@ static const struct rhw_pmic_api real_pmic = {
+ };
+ 
+ /* ------------------------------------------------------------------ the kit's fuel gauge library (FW l.926, l.927).
+- * The library's current argument follows the kit's convention; the interface's positive-discharge current is
+- * converted in this one function (kit fact K6: the sign is open). */
++ * The library's current argument is positive while discharging (kit fact K6, settled in step 7 fix round 2 from the
++ * kit's sample, see g_start), the same sign as the interface's current, which is passed unchanged. */
+ static int g_start(const struct rhw_pmic_sample *first)
+ {
+ 	struct nrf_fuel_gauge_init_parameters p = { .model = &battery_model };
+ 
+ 	p.v0 = first->mv / 1000.0f;
+-	p.i0 = -(first->ua / 1000000.0f);
++	/* the library wants positive = discharge: Nordic's sample negates the charger channel before every call
++	 * (nrf/samples/pmic/native/npm13xx_fuel_gauge/src/fuel_gauge.c l.112 to 115 and l.212 to 216: "Zephyr sensor API
++	 * convention for Gauge current is negative=discharging, while nrf_fuel_gauge lib expects the opposite
++	 * negative=charging"); the interface's current is already positive = discharge, so it is passed as it is */
++	p.i0 = first->ua / 1000000.0f;
+ 	p.t0 = first->temp_c_x10 / 10.0f;
+ 	return nrf_fuel_gauge_init(&p, NULL);
+ }
+@@ -308,7 +313,7 @@ static int g_process(const struct rhw_pmic_sample *s, uint32_t dt_ms, struct rhw
+ 	 * l.498, ttf_get l.510): each returns 0 or a negative error and writes its value through a pointer; tte and ttf
+ 	 * may be NAN (the header's own words), which the "> 0" tests below turn into "unknown" (UINT32_MAX). */
+ 	float soc = 0.0f, tte = 0.0f, ttf = 0.0f;
+-	int rc = nrf_fuel_gauge_process(s->mv / 1000.0f, -(s->ua / 1000000.0f), s->temp_c_x10 / 10.0f,
++	int rc = nrf_fuel_gauge_process(s->mv / 1000.0f, s->ua / 1000000.0f, s->temp_c_x10 / 10.0f,
+ 					dt_ms / 1000.0f, &soc, NULL);
+ 
+ 	if (rc != 0) {

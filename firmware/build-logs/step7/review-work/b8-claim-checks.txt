@@ -1,0 +1,64 @@
+## who registers pmic ops
+firmware/modules/ring_power/src/rpw_hw_real.c:332:	if (rhw_register_pmic(&real_pmic) != 0) {
+static void none_mic_free(void *b) { ARG_UNUSED(b); }
+static const struct rhw_mic_api none_mic = {
+	.configure = none_mic_cfg, .start = none_v, .stop = none_v, .read = none_mic_read, .free_block = none_mic_free,
+	.pins_sleep = none_v, .pins_default = none_v,
+};
+
+static int none_rail_set(enum rhw_rail r, bool on, const char *c) { ARG_UNUSED(r); ARG_UNUSED(on); ARG_UNUSED(c); return -ENODEV; }
+static bool none_rail_get(enum rhw_rail r) { ARG_UNUSED(r); return false; }
+static int none_chg_st(struct rhw_pmic_charge *o) { ARG_UNUSED(o); return -ENODEV; }
+static int none_sample(struct rhw_pmic_sample *o) { ARG_UNUSED(o); return -ENODEV; }
+static int none_rst(uint8_t *a, uint8_t *b, uint8_t *c) { ARG_UNUSED(a); ARG_UNUSED(b); ARG_UNUSED(c); return -ENODEV; }
+static void none_pmic_cb(const struct rhw_pmic_cb *cb) { ARG_UNUSED(cb); }
+static const struct rhw_pmic_api none_pmic = {
+	.rail_set = none_rail_set, .rail_get = none_rail_get, .charger_enable = none_b, .charger_current = none_u32,
+	.charge_status = none_chg_st, .sample = none_sample, .ilim_active = none_v, .reset_causes = none_rst,
+	.reset_causes_clear = none_v, .shphld_config = none_u32, .shphld_strobe = none_v, .ship_task = none_v,
+	.vbus_present = none_false, .set_callbacks = none_pmic_cb,
+};
+
+static int none_hfxo_req(void (*cb)(void)) { ARG_UNUSED(cb); return -ENODEV; }
+static const struct rhw_hfxo_api none_hfxo = { .request = none_hfxo_req, .release = none_v, .running = none_false };
+static const struct rhw_motor_api none_motor = { .set = none_b };
+static const struct rhw_sdbus_api none_sdbus = { .suspend = none_v, .resume = none_v };
+
+static int none_usb_send(const uint8_t *d, size_t n, int32_t t) { ARG_UNUSED(d); ARG_UNUSED(n); ARG_UNUSED(t); return -ENODEV; }
+static enum rhw_usb_speed none_usb_speed(void) { return RHW_USB_FS; }
+static void none_usb_cb(const struct rhw_usb_cb *cb) { ARG_UNUSED(cb); }
+static const struct rhw_usb_api none_usb = {
+	.enable = none_v, .disable = none_v, .send = none_usb_send, .speed = none_usb_speed, .set_callbacks = none_usb_cb,
+};
+
+## ring-ram dev vs full
+cmp exit 0
+## stage end count
+48
+0
+## swap_move in ring stage
+1
+## build2 .config lines 1368-1390
+[18/18] Completed 'mcuboot'
+BUILD-EXIT 0
+CONFIG_NPM13XX_CHARGER=y
+# CONFIG_INPUT is not set
+CONFIG_PM_DEVICE=y
+CONFIG_ZMS=y
+# CONFIG_SETTINGS_ZMS_LEGACY is not set
+# CONFIG_RING_RHW_SIM is not set
+# CONFIG_RING_POWER_REAL is not set
+CONFIG_AUDIO_DMIC=y
+CONFIG_DISK_DRIVER_SDMMC=y
+CONFIG_MFD_NPM13XX=y
+# CONFIG_MIPI_DBI is not set
+CONFIG_REGULATOR_NPM13XX=y
+# CONFIG_RETAINED_MEM_MUTEX_FORCE_DISABLE is not set
+CONFIG_RETAINED_MEM_NRF_GPREGRET=y
+CONFIG_RETAINED_MEM_ZEPHYR_RAM=y
+CONFIG_MCUBOOT_IMG_MANAGER=y
+CONFIG_SETTINGS_ZMS=y
+# CONFIG_SETTINGS_ZMS_LL_CACHE is not set
+# CONFIG_SETTINGS_ZMS_FORCE_MOUNT is not set
+# CONFIG_SETTINGS_ZMS_CUSTOM_SECTOR_COUNT is not set
+# CONFIG_SETTINGS_ZMS_NO_LL_DELETE is not set

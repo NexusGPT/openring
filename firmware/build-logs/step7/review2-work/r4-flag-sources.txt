@@ -1,0 +1,11 @@
+--- FW l.82
+| Joystick (round, five switches; architecture 17.29) | GPIO with the chip's internal pull-up (`GPIO_PULL_UP \| GPIO_ACTIVE_LOW`, architecture W1), Zephyr `gpio-keys` input driver | BTN_REC P0.04 (SW2), JOY_UP P0.06 (SW1), JOY_DOWN P0.07 (SW3), JOY_LEFT P0.08 (SW4), JOY_RIGHT P1.31 (SW5) | `gpio-keys` has `debounce-interval-ms` [SRC 14]; BTN_REC is the net of the centre switch SW2 (net BTN_REC) under the round cap when `CENTRE_SOURCE` is `SW2`, and unused (left as an input with the pull-up) when it is `PAIR` |
+--- FW l.83
+| Motor | GPIO output, active high | MOTOR P3.01 | the pin switches the motor regulator U11 on and off through R61 (net MOT_EN), so patterns in ms need no PWM (motor-drive.md, regulator U11) |
+--- FW l.84
+| Screen extras | GPIO | LCD_RST P1.07 (output), LCD_TE P1.14 (input, rising edge), OLED_PWR_EN P1.30 (output) | ring board round 3: LCD_TE moved from ball D6 to P1.14 (ball F4), OLED_PWR_EN from ball E9 to P1.30 (ball F9); balls D6 and E9 not connected (architecture section 7) |
+--- FW l.381
+- On (Tailor sheet page 9): (1) LCD_RST low; VCI and IOVCC are already on (no order between them); (2) OLED_PWR_EN high (SG Micro allows AVDDEN before SWIRE); (3) wait 10 ms or more; (4) LCD_RST high, wait 10 ms or more; (5) send the vendor start-up code and DCS "sleep out", wait 120 ms or more; (6) DCS "display on"; the SH8501A starts SWIRE and ELVDD, ELVSS 66.7 ms or more after "display on": draw nothing that matters before that.
+--- FW l.865
+| | `host-int-gpios` | P1.28 (PMIC_INT), active high | TO CONFIRM |
+--- nfct/saadc compat in saved SDK reads

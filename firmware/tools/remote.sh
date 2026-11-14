@@ -15,6 +15,8 @@
 #   RING_LOG_DIR     local folder for the log (default firmware/build-logs)
 #
 # What it does, in order:
+#   0. refuses to run when firmware/boards/ringrec/netlist.csv differs from design/ecad/ring/netlist.csv (when that
+#      file exists two folders above firmware/; else says the comparison was skipped)
 #   1. copies firmware/ to /root/ring-os/src on the server with rsync
 #      (--delete acts only inside /root/ring-os/src; build-logs/ and build
 #      folders are not copied)
@@ -69,6 +71,31 @@ say "# remote.sh run $ID"
 say "# command: $CMD"
 say "# mode: $([ $HOST_MODE -eq 1 ] && echo host || echo container $IMAGE)"
 say "# started (Mac clock): $(date '+%Y-%m-%d %H:%M:%S %Z')"
+
+# 0. (step 7 fix round 1, ruling S7-01) the ring board's netlist copy must equal the design's netlist. The build server
+# receives firmware/ only, so the comparison happens here, before anything is copied: when design/ecad/ring/netlist.csv
+# exists two folders above firmware/, firmware/boards/ringrec/netlist.csv must be byte-identical (same sha256), else
+# the run is refused. In an export that holds only firmware/, one line says the comparison was skipped.
+NET_COPY="$FW_DIR/boards/ringrec/netlist.csv"
+NET_SRC="$FW_DIR/../design/ecad/ring/netlist.csv"
+if [ -f "$NET_SRC" ]; then
+	NET_A=$(shasum -a 256 "$NET_COPY" 2>&1 | cut -d' ' -f1)
+	NET_B=$(shasum -a 256 "$NET_SRC" 2>&1 | cut -d' ' -f1)
+	# fix round 2 (S7R-03): fail closed when shasum cannot run or prints no 64-character value for either file
+	for NET_V in "$NET_A" "$NET_B"; do
+		if ! printf '%s\n' "$NET_V" | grep -Eq '^[0-9a-f]{64}$'; then
+			say "# remote.sh: REFUSED: no sha256 value for the netlist copy or the design's netlist (shasum gave \"$NET_V\"); the comparison cannot be made"
+			exit 2
+		fi
+	done
+	if [ "$NET_A" != "$NET_B" ]; then
+		say "# remote.sh: REFUSED: the netlist copy $NET_COPY (sha256 $NET_A) differs from $NET_SRC (sha256 $NET_B); copy the design's file into the board folder, then run again"
+		exit 2
+	fi
+	say "# netlist copy equals design/ecad/ring/netlist.csv (sha256 $NET_B)"
+else
+	say "# netlist comparison skipped: no design/ecad/ring/netlist.csv two folders above firmware/ (an export of firmware/ only)"
+fi
 
 # 1. copy the source.
 ssh $SSH_OPTS "$SERVER" "mkdir -p $RSRC $R/logs $R/runs $R/ws" >>"$LOCAL_LOG" 2>&1 || {

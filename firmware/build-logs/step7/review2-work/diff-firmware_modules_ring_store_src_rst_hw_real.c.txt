@@ -1,0 +1,72 @@
+diff --git a/firmware/modules/ring_store/src/rst_hw_real.c b/firmware/modules/ring_store/src/rst_hw_real.c
+index 9bb56a83..274cdd52 100644
+--- a/firmware/modules/ring_store/src/rst_hw_real.c
++++ b/firmware/modules/ring_store/src/rst_hw_real.c
+@@ -10,6 +10,7 @@
+ 
+ #include <zephyr/device.h>
+ #include <zephyr/devicetree.h>
++#include <zephyr/drivers/gpio.h>
+ #include <zephyr/init.h>
+ #include <zephyr/pm/device.h>
+ #include <zephyr/storage/disk_access.h>
+@@ -51,13 +52,58 @@ static const struct rhw_disk_api real_disk = {
+ 	.init = r_init, .deinit = r_deinit, .read = r_read, .write = r_write, .sector_count = r_count,
+ };
+ 
++/* The card's chip select (FW l.506: no storage line driven high while VDD_SD is off). It is a GPIO of spi00
++ * (cs-gpios), outside spi00's pin states. The kit's SPIM driver (zephyr/drivers/spi/spi_nrfx_spim_common.c, SDK
++ * v3.4.2) drives it as an output at its inactive level (high) from its init (cs_init, l.678: GPIO_OUTPUT_INACTIVE) and
++ * leaves it so on suspend (pm_suspend applies the "sleep" pin state and only releases the GPIO port, cs_put l.571), so
++ * this file disconnects it (input buffer off, no pull) after each suspend and at boot, and drives it inactive again
++ * just before each resume. The storage part calls resume only after VDD_SD is on (rst.c l.345 to 349). */
++#if DT_NODE_HAS_PROP(DT_NODELABEL(spi00), cs_gpios)
++static const struct gpio_dt_spec sd_cs = GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(spi00), cs_gpios, 0);
++
++static int cs_release(void)
++{
++	return gpio_pin_configure_dt(&sd_cs, GPIO_DISCONNECTED);
++}
++
++static int cs_drive(void)
++{
++	return gpio_pin_configure_dt(&sd_cs, GPIO_OUTPUT_INACTIVE);
++}
++
++/* at boot, right after the kit's devices (spi00 at CONFIG_SPI_INIT_PRIORITY drove the line high): release it */
++static int rst_hw_real_cs_boot(void)
++{
++	return cs_release();
++}
++SYS_INIT(rst_hw_real_cs_boot, POST_KERNEL, 99);
++#else
++static int cs_release(void)
++{
++	return 0;
++}
++
++static int cs_drive(void)
++{
++	return 0;
++}
++#endif
++
+ static int b_suspend(void)
+ {
+-	return pm_device_action_run(DEVICE_DT_GET(DT_NODELABEL(spi00)), PM_DEVICE_ACTION_SUSPEND);
++	int r = pm_device_action_run(DEVICE_DT_GET(DT_NODELABEL(spi00)), PM_DEVICE_ACTION_SUSPEND);
++	int c = cs_release();
++
++	return r != 0 && r != -EALREADY ? r : c;
+ }
+ 
+ static int b_resume(void)
+ {
++	int c = cs_drive();
++
++	if (c != 0) {
++		return c;
++	}
+ 	return pm_device_action_run(DEVICE_DT_GET(DT_NODELABEL(spi00)), PM_DEVICE_ACTION_RESUME);
+ }
+ 

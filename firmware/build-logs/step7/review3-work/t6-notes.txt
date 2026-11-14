@@ -1,0 +1,55 @@
+### snapshot 148,158
+## 5. The power part's real file does not compile (finding for the power unit's owner)
+
+With the nPM1304 node present, `CONFIG_RING_POWER_REAL` turns on and `modules/ring_power/src/rpw_hw_real.c` fails:
+`rpw_hw_real.c:307:21: error: too few arguments to function 'nrf_fuel_gauge_process'`, the same at l.309
+(`nrf_fuel_gauge_tte_get`) and l.310 (`nrf_fuel_gauge_ttf_get`); the kit declares `int nrf_fuel_gauge_process(float v,
+float i, float T, float t_delta, float *soc, ...` (`nrf_fuel_gauge.h` l.475), `int nrf_fuel_gauge_tte_get(float *tte)`
+(l.498), `int nrf_fuel_gauge_ttf_get(float *ttf)` (l.510) (`s7-build1.console` l.1235 to 1253; exit 1). No other error
+in that file. Not edited (module). The ring `.conf` sets `CONFIG_RING_POWER_REAL=n` with the reason, so the ring build
+links; the nPM1304 nodes and the kit's drivers for them stay in. Who acts: the power unit's owner changes the three
+calls; then remove that line and add `CONFIG_NRF_FUEL_GAUGE=y`. The power unit's K6 counted the names only
+(`build-logs/step6/u5-k56d.console` l.25 to 28), not their arguments.
+### snapshot 199,202
+each real file's code size and functions; the kit drivers compiled for the ring's nodes), `ring-ram` (the 80 largest
+RAM symbols), `ring-pins`, `ring-pins-broken` (three planted copies of `boards/`, each configured with cmake only:
+MOTOR moved to P3.02, SD_MISO moved to P2.03 in the default state, LCD_TE's property removed; each must make the
+check exit 1 with the failing list being exactly that signal).
+### snapshot 225,225
+| Fuel gauge state | 1,024 | 0 (the power part's real file is off) | -1,024 |
+### snapshot 261,262
+   `rscr_real.c` (222). No empty stub. Not compiled: `rpw_hw_real.c` (l.29409), because it does not compile against
+   the kit's fuel gauge library (section 5) and the ring `.conf` turns it off (`# CONFIG_RING_POWER_REAL is not set`,
+### snapshot 305,306
+- Nothing has run on a ring. The power part's real file is off (section 5). No panel driver, no joystick driver, no
+  production (no UART) configuration. The cell model is a stand-in.
+### snapshot 312,312
+Open choices for the lead, in one list: K10 = ZMS (section 4); `CONFIG_RING_POWER_REAL=n` until the power file is fixed
+### snapshot 319,319
+RESULT: done, the ring board `ringrec/nrf54lm20a/cpuapp` builds with the real drivers (power's real file off: it does not compile with this kit's fuel gauge), its pins match the netlist, and the whole build_all.sh passes
+### Fix round 2 heading in working file and commit
+6:## 1. What was written
+27:## 2. Pins: netlist against design/firmware.md
+40:## 3. Table: every U1 signal (bar 5)
+109:## 4. What section 6 of recorder-notes.md asked for
+148:## 5. The power part's real file does not compile (finding for the power unit's owner)
+167:## 6. Memory layout (flash partitions)
+184:## 7. The pin check and the stages
+206:## 8. RAM
+256:## 9. Bar results
+284:## 10. Runs and looks, in order (all with `RING_REMOTE_SRC=/root/ring-os/src-s7`, logs in `build-logs/step7/`)
+309:## 11. Not done
+329:## Fix round 1 (review `docs/step7-review.md`, brief `docs/step7-fix1-brief.md`)
+6:## 1. What was written
+27:## 2. Pins: netlist against design/firmware.md
+40:## 3. Table: every U1 signal (bar 5)
+109:## 4. What section 6 of recorder-notes.md asked for
+148:## 5. The power part's real file does not compile (finding for the power unit's owner)
+167:## 6. Memory layout (flash partitions)
+184:## 7. The pin check and the stages
+206:## 8. RAM
+256:## 9. Bar results
+284:## 10. Runs and looks, in order (all with `RING_REMOTE_SRC=/root/ring-os/src-s7`, logs in `build-logs/step7/`)
+309:## 11. Not done
+329:## Fix round 1 (review `docs/step7-review.md`, brief `docs/step7-fix1-brief.md`)
+     437 firmware/docs/board-notes.md

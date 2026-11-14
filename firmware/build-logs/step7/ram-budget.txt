@@ -1,0 +1,40 @@
+| budget line of 4.6 | budget | measured | difference |
+|---|---|---|---|
+| PDM DMA blocks, pdm20, 8 x 1,024 | 8192 | 8192 | +0 |
+| Chunk ring, 3 x 33,280 | 99840 | 100296 | +456 |
+| USB read buffers, 2 x 16,384 | 32768 | 43060 | +10292 |
+| USB stack buffer pool | 8192 | 4212 | -3980 |
+| Bluetooth host and controller | 40960 | 18536 | -22424 |
+| Display draw buffers, 2 x 120 x 40 x 2 | 19200 | 23040 | +3840 |
+| Display library heap | 24576 | 32768 | +8192 |
+| Thread stacks (10 threads) | 24576 | 44352 | +19776 |
+| Kernel, drivers, C library data | 16384 | 0 | -16384 |
+| Log buffer | 4096 | 0 | -4096 |
+| Crash record, retained RAM | 1024 | 0 | -1024 |
+| Fuel gauge state | 1024 | 0 | -1024 |
+| Recordings list cache, 256 x 64 | 16384 | 14336 | -2048 |
+| System heap | 8192 | 2116 | -6076 |
+| (not in 4.6) memory display picture (stand-in for the panel) | 0 | 57600 | +57600 |
+| (not in 4.6) storage chunk-size work buffers scratch, scratch2 | 0 | 66560 | +66560 |
+| (not sorted) the other symbols of the 80 largest | 0 | 38640 | +38640 |
+| (not listed) every RAM symbol below the 80 largest | 0 | 17716 | +17716 |
+| **Total** (linker: RAM used) | 305408 | 471424 | +166016 |
+
+PDM DMA blocks, pdm20, 8 x 1,024: _k_mem_slab_buf_slab 8192
+Chunk ring, 3 x 33,280: ring 100296
+USB read buffers, 2 x 16,384: ctx 34828, buf_b 4116, buf_a 4116
+USB stack buffer pool: kheap_net_buf_mem_pool_udc_ep_pool 1024, udc_priv_0 896, _net_buf_udc_ep_pool 576, udc_dwc2_stack_0 512, ep_cfg_out 512, ep_cfg_in 512, udc_data_0 180
+Bluetooth host and controller: net_buf_data_hci_rx_pool 3072, sdc_mempool 2836, bt_lw_stack_area 2104, rx_thread_stack 2048, net_buf_data_att_pool 1548, bt_gatt_dm_wq_stack_area 1304, mpsl_work_stack 1024, bt_tx_processor_stack 1024, net_buf_data_acl_tx_pool 768, bt_gatt_dm_inst 372, bt_smp_pool 368, bt_dev 352, _net_buf_hci_rx_pool 336, net_buf_data_sync_evt_pool 258, rx_hci_msg 257, _net_buf_att_pool 240, net_buf_data_hci_cmd_pool 213, acl_conns 208, key_pool 204
+Display draw buffers, 2 x 120 x 40 x 2: vdb 11520, rot 11520
+Display library heap: lvgl_heap_mem 32768
+Thread stacks (10 threads): rscr_stack 8192, z_main_stack 4096, xfer_stack 4096, tick_stack 4096, thr_stack 4096, rrec_stack 4096, audio_stack 4096, sys_work_q_stack 3072, z_interrupt_stacks 2048, thr_stack 2048, motor_stack 2048, usbd_stack 1024, sync_stack 1024, z_idle_stacks 320
+Kernel, drivers, C library data: none in the 80 largest
+Log buffer: none in the 80 largest
+Crash record, retained RAM: none in the 80 largest
+Fuel gauge state: none in the 80 largest
+Recordings list cache, 256 x 64: rec_store 14336
+System heap: kheap__system_heap 2116
+memory display picture (stand-in for the panel): fb 57600
+storage chunk-size work buffers scratch, scratch2: scratch2 33280, scratch 33280
+other symbols of the 80 largest: frame 4936, inbox 4548, win_buf 3584, lbuf.1 3584, fbuf.0 3584, info.1 3072, info.0 3072, S 2912, pts.1 2280, global_data 708, rac 648, sess 524, sec 512, mbedtls_heap 512, lsec 512, ancs_c 484, lv_global 480, __compound_literal.0 480, ds 312, inp 280, hids_obj 268, eq 256, _k_fifo_buf_job_q 256, sdmmc_data_0 232, st 212, data1 196, data0 196
+ram_budget: 80 symbols read, 453708 bytes listed, total 471424

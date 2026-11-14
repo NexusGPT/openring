@@ -1,0 +1,37 @@
+row 181 before: LCD_TE,U1,F4,P1.14,bidirectional
+row 181 after:  LCD_TE,U1,F4,P1.15,bidirectional
+=== case A: one row of firmware/boards/ringrec/netlist.csv changed
+expected: exit 2, REFUSED, no FAKE-NETWORK-CALL
+# remote.sh run 20261114-022536-r1A
+# command: true
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-14 02:25:36 CET
+# remote.sh: REFUSED: the netlist copy firmware/build-logs/step7/review2-work/scratch/firmware/boards/ringrec/netlist.csv (sha256 3f319aeb7e6dd6d5f11659d4f747af3eb396fd10eb277e15cd457ab2af3cc95d) differs from firmware/build-logs/step7/review2-work/scratch/firmware/../design/ecad/ring/netlist.csv (sha256 2727a3c748c3b8ccd44eedc76c228453f04d9c1eb372d7d4179a63916cad5442); copy the design's file into the board folder, then run again
+exit=2 network_calls_before=0 network_calls_after=0
+=== case B: one row of design/ecad/ring/netlist.csv changed
+expected: exit 2, REFUSED, no FAKE-NETWORK-CALL
+# remote.sh run 20261114-022536-r1B
+# command: true
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-14 02:25:36 CET
+# remote.sh: REFUSED: the netlist copy firmware/build-logs/step7/review2-work/scratch/firmware/boards/ringrec/netlist.csv (sha256 2727a3c748c3b8ccd44eedc76c228453f04d9c1eb372d7d4179a63916cad5442) differs from firmware/build-logs/step7/review2-work/scratch/firmware/../design/ecad/ring/netlist.csv (sha256 3f319aeb7e6dd6d5f11659d4f747af3eb396fd10eb277e15cd457ab2af3cc95d); copy the design's file into the board folder, then run again
+exit=2 network_calls_before=0 network_calls_after=0
+=== case C: board copy missing
+expected: exit 2, REFUSED, no FAKE-NETWORK-CALL
+# remote.sh run 20261114-022536-r1C
+# command: true
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-14 02:25:36 CET
+# remote.sh: REFUSED: the netlist copy firmware/build-logs/step7/review2-work/scratch/firmware/boards/ringrec/netlist.csv (sha256 shasum:) differs from firmware/build-logs/step7/review2-work/scratch/firmware/../design/ecad/ring/netlist.csv (sha256 2727a3c748c3b8ccd44eedc76c228453f04d9c1eb372d7d4179a63916cad5442); copy the design's file into the board folder, then run again
+exit=2 network_calls_before=0 network_calls_after=0
+=== case D: one trailing byte added to the board copy
+expected: exit 2, REFUSED, no FAKE-NETWORK-CALL
+# remote.sh run 20261114-022536-r1D
+# command: true
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-14 02:25:36 CET
+# remote.sh: REFUSED: the netlist copy firmware/build-logs/step7/review2-work/scratch/firmware/boards/ringrec/netlist.csv (sha256 9e2598721a032e41da85a0b54b5bf218a09931cef223f5a81f29b34f836c6f37) differs from firmware/build-logs/step7/review2-work/scratch/firmware/../design/ecad/ring/netlist.csv (sha256 2727a3c748c3b8ccd44eedc76c228453f04d9c1eb372d7d4179a63916cad5442); copy the design's file into the board folder, then run again
+exit=2 network_calls_before=0 network_calls_after=0
+=== end; final network-calls file:
+cat: firmware/build-logs/step7/review2-work/network-calls.txt: No such file or directory
+script exit 1

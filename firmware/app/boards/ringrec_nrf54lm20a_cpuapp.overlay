@@ -1,0 +1,13 @@
+/* The ring (step 7, board ringrec in firmware/boards/ringrec). The panel driver does not exist: the screen stays drawn
+ * on the memory display (120 x 240) as on the development kit. The panel's bus and control pins are in the board's
+ * devicetree (node lcd-dbi on spi21); nothing here names a chip pin. */
+/ {
+	chosen {
+		zephyr,display = &ring_display;
+	};
+	ring_display: ring_display {
+		compatible = "ring,mem-display";
+		width = <120>;
+		height = <240>;
+	};
+};

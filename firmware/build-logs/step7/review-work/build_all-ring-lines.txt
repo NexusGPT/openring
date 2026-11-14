@@ -1,0 +1,118 @@
+2:# build_all.sh: build the ring firmware and run every test. Runs inside the
+3:# ring-os-toolchain container, with the firmware folder at /ws/firmware.
+13:#            "ring-os recorder: boot done, state STANDBY" (the product boots through the recorder on the
+18:#            BabbleSim: control, iphone = the ring against a stand-in iPhone, relay = the ring against a stand-in helper (step 5),
+19:#            screens = the same with the ring's screens), and the same
+23:#            and system workqueue stack as the iPhone test ring (tools/check_link_settings.sh); step 5: the same against the
+24:#            relay test ring, its other Bluetooth settings compared with the product's, and the relay service is in the product
+27:#   4d recorder-one-mic-path  step 6: only rec_mics_on() in modules/ring_recorder/src/rrec_mics.c switches the microphone rail
+30:#   4e recorder-no-start-path  step 6: the sources of ring_store, ring_audio, ring_xfer, ring_power, ring_motor, ring_sys and
+31:#            ring_factory never name rglue_input, rc_core_input or RC_EV_LONG_PRESS (design/firmware.md l.209: only a long
+47:#   6 ring   step 7: firmware/app for the ring itself, ringrec/nrf54lm20a/cpuapp (board files in firmware/boards/ringrec,
+49:#   6a ring-drivers  step 7: the ring build's .config has CONFIG_RING_RHW_SIM off and the recorder's test read-outs off;
+50:#            prints each real driver file the ring build compiled with its code size and functions ("real code" or
+52:#   6b ring-ram  step 7: the RAM symbols of the ring image, largest first (nm -S -l --size-sort -r)
+53:#   6c ring-pins  step 7: tools/check_ring_pins.py: the ring build's zephyr.dts against the netlist (rows of U1)
+54:#   6d ring-pins-broken  step 7: three planted copies of the board (MOTOR on another pin, SD_MISO on another pin in the
+67:START_LINE="ring-os start:"
+68:RECORDER_LINE="ring-os recorder: boot done, state STANDBY"
+96:echo "build_all: ring_core module $( [ -f "$FW/modules/ring_core/zephyr/module.yml" ] && echo present || echo absent )"
+121:	SIM_ID="ring_app_$$"
+167:		"$(find "$OUT/twister-native_sim" -path '*tests/screens/ring_screens.all/handler.log' | head -1)" \
+175:	if ! run_stage pictures-fakes pictures_fakes "$(find "$OUT/twister-native_sim" -path '*tests/screens/ring_screens.all/handler.log' | head -1)" \
+195:			H=$(find "$OUT/twister-$tag" -path '*tests/screens/ring_screens.all/handler.log' | head -1)
+226:# workqueue stack as the test ring that ran the iPhone tests (all three include
+227:# modules/ring_iphone/ring_iphone_link.conf). A self test first shows the check can fail: a copy of the test
+228:# ring's settings with the MTU changed must be refused.
+239:	local ring="$OUT/bsim-iphone/ring/zephyr/.config"
+241:	if [ ! -f "$ring" ]; then
+242:		echo "link-settings: no test ring settings file $ring"
+245:	sed 's/^CONFIG_BT_L2CAP_TX_MTU=.*/CONFIG_BT_L2CAP_TX_MTU=23/' "$ring" > "$OUT/ring-config-tampered"
+246:	if "$FW/tools/check_link_settings.sh" "$OUT/ring-config-tampered" "$ring" self-test-tampered > "$OUT/link-self-test.log" 2>&1; then
+254:	sed 's/^CONFIG_BT_L2CAP_TX_MTU=.*/CONFIG_BT_L2CAP_TX_MTU=23/' "$ring" > "$OUT/ring-config-both-23"
+255:	if "$FW/tools/check_link_settings.sh" "$OUT/ring-config-both-23" "$OUT/ring-config-both-23" self-test-both-23 > "$OUT/link-self-test2.log" 2>&1; then
+262:	sed 's/^CONFIG_BT_L2CAP_TX_MTU=.*/CONFIG_BT_L2CAP_TX_MTU=100/' "$FW/modules/ring_iphone/ring_iphone_link.conf" > "$OUT/ring_iphone_link_mtu100.conf"
+263:	if west build -p always -b "$BSIM_BOARD" --no-sysbuild -d "$OUT/mtu100" -o=-j"$JOBS" "$FW/tests/bsim/iphone/ring_app" -DRING_IPHONE_LINK_CONF="$OUT/ring_iphone_link_mtu100.conf" > "$OUT/mtu100-build.log" 2>&1; then
+267:	if ! grep -q "ring_iphone needs CONFIG_BT_L2CAP_TX_MTU >= 247" "$OUT/mtu100-build.log"; then
+271:	grep -m1 "ring_iphone needs CONFIG_BT_L2CAP_TX_MTU >= 247" "$OUT/mtu100-build.log"
+279:		"$FW/tools/check_link_settings.sh" "${p#*:}" "$ring" "${p%%:*}" || rc=1
+281:	# step 5: the relay test ring (tests/bsim/relay/ring_app) must hold the product's settings too
+282:	local relay="$OUT/bsim-relay/ring/zephyr/.config"
+284:		echo "link-settings: no relay test ring settings file $relay"
+289:		echo "link-settings: SELF TEST FAILED: a changed MTU of the relay test ring was not refused"
+293:	echo "link-settings: self test ok: a relay test ring with a changed MTU was refused"
+294:	"$FW/tools/check_link_settings.sh" "$relay" "$ring" relay-test-ring || rc=1
+296:		"$FW/tools/check_link_settings.sh" "${p#*:}" "$relay" "${p%%:*}-vs-relay-test-ring" || rc=1
+298:	# the Bluetooth settings the relay service depends on beyond the shared file: the same value in the product and in the relay test ring
+305:			echo "link-settings: ${p%%:*} $k=${pv:-unset} relay-test-ring $k=${rv:-unset}"
+311:				echo "link-settings: DIFFERENT $k (${p%%:*} ${pv:-unset}, relay test ring ${rv:-unset})"
+315:		# the test hooks of the relay (block the Out queue, hold the iPhone part's session start) are for the test ring only: the product must not have them
+338:	local pat='ring_(core|glue|devices|control|screens)|rglue_|rdev_|rctl_|rscr_|rc_core|rc_ev'
+339:	local d="$FW/modules/ring_relay"
+347:	echo '#include <ring_glue/rglue.h>' >> "$OUT/relay-no-core-fake/src/rrl_bt.c"
+361:STEP6_MODS="ring_rhw ring_store ring_audio ring_xfer ring_power ring_motor ring_sys ring_factory ring_recorder"
+363:# true or 1) appears once, in modules/ring_recorder/src/rrec_mics.c
+378:	where=$(printf '%s\n' "$hits" | grep -c -F "modules/ring_recorder/src/rrec_mics.c:")
+382:	cp -r "$FW/modules/ring_store/src" "$fake/"
+385:		echo "recorder-one-mic-path: SELF TEST FAILED: a second call in a copy of ring_store was not found"
+388:	echo "recorder-one-mic-path: self test ok: a second call in a copy of ring_store is found by the same search"
+400:	for m in ring_store ring_audio ring_xfer ring_power ring_motor ring_sys ring_factory; do
+409:	cp -r "$FW/modules/ring_xfer/src" "$fake/"
+415:	echo "recorder-no-start-path: self test ok: a copy of ring_xfer with rglue_input is found by the same search"
+512:# Step 7 (the ring's board files) begin. Stage 6: the application for the ring itself and its devicetree against the
+514:# firmware/ only); tools/check_ring_pins.py compares it with design/ecad/ring/netlist.csv wherever that file exists.
+515:RING_BOARD=ringrec/nrf54lm20a/cpuapp
+516:RING_NETLIST="$FW/boards/ringrec/netlist.csv"
+517:RING_NETLIST_SRC="$FW/../design/ecad/ring/netlist.csv"
+518:ring_drivers() {
+519:	local cfg="$OUT/ring/app/zephyr/.config" nm sz o t f
+521:		echo "ring-drivers: no settings file $cfg"
+524:	sim_guard "$cfg" ring-product off || return 1
+526:	nm=$(sed -n 's/^CMAKE_NM:FILEPATH=//p' "$OUT/ring/app/CMakeCache.txt")
+528:	echo "ring-drivers: real driver files compiled in the ring build (code size from $sz, functions from $nm):"
+529:	for o in $(find "$OUT/ring/app/modules" \( -name '*_hw_real.c.obj' -o -name 'rhw_clock_real.c.obj' -o -name 'rscr_real.c.obj' \) 2>&1 | sort); do
+532:			echo "ring-drivers: $(basename "$o") text $t bytes: real code"
+534:			echo "ring-drivers: $(basename "$o") text ${t:-0} bytes: empty stub (no code)"
+536:		"$nm" --defined-only "$o" | awk '$2 ~ /^[Tt]$/ {print "ring-drivers:   function " $3}'
+539:		if [ -z "$(find "$OUT/ring/app/modules" -name "$f.c.obj" 2>&1)" ]; then
+540:			echo "ring-drivers: $f.c not compiled in the ring build"
+543:	echo "ring-drivers: the kit's drivers compiled for the ring's nodes:"
+544:	find "$OUT/ring/app/zephyr" -name '*.c.obj' 2>&1 | sed 's|.*/||' | sort | grep -E \
+546:		sed 's/^/ring-drivers:   /'
+548:ring_ram() {
+549:	local nm elf="$OUT/ring/app/zephyr/zephyr.elf"
+550:	nm=$(sed -n 's/^CMAKE_NM:FILEPATH=//p' "$OUT/ring/app/CMakeCache.txt")
+551:	echo "# ring build: RAM symbols, largest first: address size type name file:line (nm -S -l --size-sort -r)"
+554:ring_pins() {
+555:	python3 "$FW/tools/check_ring_pins.py" "$OUT/ring/app/zephyr/zephyr.dts" "$RING_NETLIST" --source-netlist "$RING_NETLIST_SRC"
+557:# ring_pins_case <name> <signal> <file in boards/ringrec> <old text> <new text>: a copy of the board with the first
+559:ring_pins_case() {
+560:	local name=$1 sig=$2 file=$3 old=$4 new=$5 root="$OUT/ring-broken-$1-root" d="$OUT/ring-broken-$1" rc
+569:open(p, "w").write(s.replace(old, new, 1))' "$root/boards/ringrec/$file" "$old" "$new"; then
+572:	diff "$FW/boards/ringrec/$file" "$root/boards/ringrec/$file"
+574:		echo "ring-pins-broken: $name: the planted copy did not configure (see $d.log)"
+577:	python3 "$FW/tools/check_ring_pins.py" "$d/zephyr/zephyr.dts" "$RING_NETLIST" > "$d-check.log" 2>&1
+581:		echo "ring-pins-broken: $name: SELF TEST FAILED: the check exited $rc on the planted copy (1 wanted)"
+584:	if ! grep -q -E "^check_ring_pins: RESULT FAIL [0-9]+ signals checked; failing: $sig\$" "$d-check.log"; then
+585:		echo "ring-pins-broken: $name: SELF TEST FAILED: the check did not fail on exactly $sig"
+588:	echo "ring-pins-broken: $name: self test ok: the planted copy fails on $sig alone"
+592:ring_pins_broken() {
+594:	ring_pins_case motor MOTOR ringrec_nrf54lm20a_cpuapp.dts \
+596:	ring_pins_case sd-miso SD_MISO ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi \
+598:	ring_pins_case lcd-te LCD_TE ringrec_nrf54lm20a_cpuapp.dts \
+602:if run_stage ring west build -p always -b "$RING_BOARD" --sysbuild -d "$OUT/ring" -o=-j"$JOBS" "$FW/app" -- -DBOARD_ROOT="$FW"; then
+603:	echo "--- flash and RAM use, $RING_BOARD (linker memory report; images in build order, see $OUT/ring/domains.yaml)"
+604:	cat "$OUT/ring/domains.yaml" 2>&1
+606:	size_report "$OUT/ring.log" | tee "$OUT/ring-size.txt"
+607:	if [ ! -s "$OUT/ring-size.txt" ]; then
+608:		echo "build_all: no memory report found in $OUT/ring.log"
+609:		FAILED="$FAILED ring-size"
+611:	if ! run_stage ring-drivers ring_drivers; then
+612:		FAILED="$FAILED ring-drivers"
+614:	if ! run_stage ring-ram ring_ram; then
+615:		FAILED="$FAILED ring-ram"
+617:	if ! run_stage ring-pins ring_pins; then
+618:		FAILED="$FAILED ring-pins"
+620:	if ! run_stage ring-pins-broken ring_pins_broken; then
+621:		FAILED="$FAILED ring-pins-broken"
+624:	FAILED="$FAILED ring-build"

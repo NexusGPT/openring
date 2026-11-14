@@ -1,0 +1,27 @@
+=== stage recorder-one-mic-path start 2026-11-13T21:23:43Z log /ws/out/20261113-214232-s7-full1/recorder-one-mic-path.log
+recorder-one-mic-path: hits for /rail_set\([[:space:]]*RHW_RAIL_MIC[[:space:]]*,[[:space:]]*(true|1)[[:space:]]*,/ in /ws/firmware/modules/ring_rhw/src /ws/firmware/modules/ring_store/src /ws/firmware/modules/ring_audio/src /ws/firmware/modules/ring_xfer/src /ws/firmware/modules/ring_power/src /ws/firmware/modules/ring_motor/src /ws/firmware/modules/ring_sys/src /ws/firmware/modules/ring_factory/src /ws/firmware/modules/ring_recorder/src /ws/firmware/app/src: 1
+/ws/firmware/modules/ring_recorder/src/rrec_mics.c:53:	return rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
+recorder-one-mic-path: self test ok: a second call in a copy of ring_store is found by the same search
+=== stage recorder-one-mic-path end 2026-11-13T21:23:43Z exit 0
+=== stage recorder-no-start-path start 2026-11-13T21:23:43Z log /ws/out/20261113-214232-s7-full1/recorder-no-start-path.log
+recorder-no-start-path: hits for /rglue_input|rc_core_input|RC_EV_LONG_PRESS/ in /ws/firmware/modules/ring_store /ws/firmware/modules/ring_audio /ws/firmware/modules/ring_xfer /ws/firmware/modules/ring_power /ws/firmware/modules/ring_motor /ws/firmware/modules/ring_sys /ws/firmware/modules/ring_factory: 0
+recorder-no-start-path: self test ok: a copy of ring_xfer with rglue_input is found by the same search
+=== stage recorder-no-start-path end 2026-11-13T21:23:43Z exit 0
+=== stage recorder-no-raw-pins start 2026-11-13T21:23:43Z log /ws/out/20261113-214232-s7-full1/recorder-no-raw-pins.log
+recorder-no-raw-pins: hits for /(^|[^A-Za-z0-9_])P[0-9]\.[0-9]{1,2}([^0-9]|$)|NRF_GPIO_PIN_MAP|<&gpio[0-9]+[[:space:]]+[0-9]+/ in /ws/firmware/modules/ring_rhw /ws/firmware/modules/ring_store /ws/firmware/modules/ring_audio /ws/firmware/modules/ring_xfer /ws/firmware/modules/ring_power /ws/firmware/modules/ring_motor /ws/firmware/modules/ring_sys /ws/firmware/modules/ring_factory /ws/firmware/modules/ring_recorder /ws/firmware/tests/rhw /ws/firmware/tests/store /ws/firmware/tests/audio /ws/firmware/tests/xfer /ws/firmware/tests/power /ws/firmware/tests/motor /ws/firmware/tests/sys /ws/firmware/tests/factory /ws/firmware/tests/recorder /ws/firmware/app/src /ws/firmware/app/boards: 0
+recorder-no-raw-pins: self test ok: a planted overlay with <&gpio1 24 is found by the same search
+=== stage recorder-no-raw-pins end 2026-11-13T21:23:43Z exit 0
+=== stage recorder-product-drivers start 2026-11-13T21:23:43Z log /ws/out/20261113-214232-s7-full1/recorder-product-drivers.log
+recorder-product-drivers: dk-product CONFIG_RING_RHW_SIM is off
+recorder-product-drivers: bsim-product CONFIG_RING_RHW_SIM is on
+recorder-product-drivers: real driver files compiled in the kit build (decision D15):
+rau_hw_real.c.obj
+rfa_hw_real.c.obj
+rmo_hw_real.c.obj
+rst_hw_real.c.obj
+rsy_hw_real.c.obj
+rxf_hw_real.c.obj
+recorder-product-drivers: simulated driver files in the kit build: 0
+recorder-product-drivers: DIFFERENT CONFIG_RING_RHW_SIM is on in self-test-sim-on (the simulated drivers and the hooks of rhw_sim.h)
+recorder-product-drivers: self test ok: a kit settings file with CONFIG_RING_RHW_SIM=y was refused
+=== stage recorder-product-drivers end 2026-11-13T21:23:43Z exit 0

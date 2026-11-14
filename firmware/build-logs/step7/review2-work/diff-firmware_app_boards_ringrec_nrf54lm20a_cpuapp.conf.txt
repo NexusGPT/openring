@@ -1,0 +1,19 @@
+diff --git a/firmware/app/boards/ringrec_nrf54lm20a_cpuapp.conf b/firmware/app/boards/ringrec_nrf54lm20a_cpuapp.conf
+index 6638cea3..b12b638e 100644
+--- a/firmware/app/boards/ringrec_nrf54lm20a_cpuapp.conf
++++ b/firmware/app/boards/ringrec_nrf54lm20a_cpuapp.conf
+@@ -39,9 +39,8 @@ CONFIG_PM_DEVICE=y
+ CONFIG_I2C=y
+ CONFIG_REGULATOR=y
+ CONFIG_SENSOR=y
+-# The power part's real file (modules/ring_power/src/rpw_hw_real.c) does NOT compile with this kit: lines 307, 309 and
+-# 310 call nrf_fuel_gauge_process, nrf_fuel_gauge_tte_get and nrf_fuel_gauge_ttf_get with the arguments of an older
+-# library; in nRF Connect SDK v3.4.2 each takes more arguments (error "too few arguments", build-logs/step7/s7-build1).
+-# The file is the power unit's (not changed here): off until it is fixed, then remove this line and add
+-# CONFIG_NRF_FUEL_GAUGE=y (the cell model is the board's include/rpw_battery_model.h).
+-CONFIG_RING_POWER_REAL=n
++# the power part's real file (modules/ring_power/src/rpw_hw_real.c, CONFIG_RING_POWER_REAL, on by default where the
++# nPM1304 node exists) and the kit's fuel gauge library it calls; its calls were fixed to SDK v3.4.2 in step 7 fix
++# round 1. The cell model is the board's include/rpw_battery_model.h: NOT THE RING'S CELL (a stand-in).
++CONFIG_RING_POWER_REAL=y
++CONFIG_NRF_FUEL_GAUGE=y

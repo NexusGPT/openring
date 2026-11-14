@@ -1,0 +1,8 @@
+ring-lines-safe: SAME lines_safe: no condition, no device state; SD_CS GPIO_DISCONNECTED and spi00's sleep pin state: int c = gpio_pin_configure_dt(&sd_cs, GPIO_DISCONNECTED); int p = pinctrl_apply_state(spi00_pins, PINCTRL_STATE_SLEEP); return c != 0 ? c : p;
+ring-lines-safe: SAME b_suspend: one wrapper that always ends in lines_safe(): int r = suspend_inner(); int s = lines_safe(); return r != 0 ? r : s;
+ring-lines-safe: SAME b_resume: lines_safe() on every failure: int r = resume_inner(); if (r != 0) { (void)lines_safe(); } return r;
+ring-lines-safe: SAME suspend_inner: 2 occurrences (its definition and the one call in its wrapper: 2 wanted)
+ring-lines-safe: SAME resume_inner: 2 occurrences (its definition and the one call in its wrapper: 2 wanted)
+ring-lines-safe: SAME bus_first_init: called once, from resume_inner: 1 call(s)
+ring-lines-safe: SAME sdbus: the sdbus table names the two wrappers
+ring-lines-safe: RESULT PASS

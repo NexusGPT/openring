@@ -1,0 +1,164 @@
+--- flash and RAM use, ringrec/nrf54lm20a/cpuapp (linker memory report; images in build order, see /ws/out/20261114-001111-f1-full1/ring/domains.yaml)
+default: app
+build_dir: /ws/out/20261114-001111-f1-full1/ring
+domains:
+  - name: app
+    build_dir: /ws/out/20261114-001111-f1-full1/ring/app
+  - name: mcuboot
+    build_dir: /ws/out/20261114-001111-f1-full1/ring/mcuboot
+flash_order:
+  - mcuboot
+  - app
+image mcuboot (/ws/out/20261114-001111-f1-full1/ring/mcuboot/zephyr/zephyr.elf)
+Memory region         Used Size  Region Size  %age Used
+           FLASH:       45596 B        64 KB     69.57%
+             RAM:       22000 B       510 KB      4.21%
+     RetainedMem:           0 B         1 KB      0.00%
+        IDT_LIST:           0 B        32 KB      0.00%
+image app (/ws/out/20261114-001111-f1-full1/ring/app/zephyr/zephyr.elf)
+Memory region         Used Size  Region Size  %age Used
+           FLASH:      643092 B     982896 B     65.43%
+             RAM:      471896 B       510 KB     90.36%
+     RetainedMem:           0 B         1 KB      0.00%
+        IDT_LIST:           0 B        32 KB      0.00%
+=== stage ring-drivers start 2026-11-14T01:18:52Z log /ws/out/20261114-001111-f1-full1/ring-drivers.log
+recorder-product-drivers: ring-product CONFIG_RING_RHW_SIM is off
+CONFIG_RING_POWER_REAL=y
+ring-drivers: real driver files compiled in the ring build (code size from /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-size, functions from /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-nm):
+ring-drivers: rau_hw_real.c.obj text 536 bytes: real code
+ring-drivers:   function hf_done
+ring-drivers:   function pinctrl_apply_state.constprop.0
+ring-drivers:   function r_configure
+ring-drivers:   function r_free
+ring-drivers:   function r_hf_release
+ring-drivers:   function r_hf_request
+ring-drivers:   function r_hf_running
+ring-drivers:   function r_pins_default
+ring-drivers:   function r_pins_sleep
+ring-drivers:   function r_read
+ring-drivers:   function r_start
+ring-drivers:   function r_stop
+ring-drivers:   function rau_hw_real_init
+ring-drivers: rfa_hw_real.c.obj text 154 bytes: real code
+ring-drivers:   function real_start
+ring-drivers:   function real_stop
+ring-drivers:   function rfa_real_register
+ring-drivers: rmo_hw_real.c.obj text 108 bytes: real code
+ring-drivers:   function r_set
+ring-drivers:   function rmo_real_init
+ring-drivers: rpw_hw_real.c.obj text 6840 bytes: real code
+ring-drivers:   function evt_handler
+ring-drivers:   function g_process
+ring-drivers:   function g_start
+ring-drivers:   function r_chg_current
+ring-drivers:   function r_chg_enable
+ring-drivers:   function r_chg_status
+ring-drivers:   function r_ilim
+ring-drivers:   function r_rail_get
+ring-drivers:   function r_rail_set
+ring-drivers:   function r_rst
+ring-drivers:   function r_rst_clear
+ring-drivers:   function r_sample
+ring-drivers:   function r_set_callbacks
+ring-drivers:   function r_ship_task
+ring-drivers:   function r_shphld_config
+ring-drivers:   function r_shphld_strobe
+ring-drivers:   function r_vbus_present
+ring-drivers:   function rpw_real_init
+ring-drivers:   function sensor_channel_get.constprop.0
+ring-drivers: rhw_clock_real.c.obj text 118 bytes: real code
+ring-drivers:   function real_cycles
+ring-drivers:   function real_cycles_per_sec
+ring-drivers:   function real_device_id
+ring-drivers:   function real_now_ms
+ring-drivers: rscr_real.c.obj text 222 bytes: real code
+ring-drivers:   function cb_active
+ring-drivers:   function cb_hide
+ring-drivers:   function cb_link
+ring-drivers:   function cb_paired
+ring-drivers:   function cb_passkey
+ring-drivers:   function cb_removed
+ring-drivers:   function cb_window_closed
+ring-drivers:   function r_active
+ring-drivers:   function r_ams_ready
+ring-drivers:   function r_control_active
+ring-drivers:   function r_dev_remove
+ring-drivers:   function r_dev_use
+ring-drivers:   function r_dismiss
+ring-drivers:   function r_inbox_count
+ring-drivers:   function r_inbox_get
+ring-drivers:   function r_link_up
+ring-drivers:   function r_mark_read
+ring-drivers:   function r_media_get
+ring-drivers:   function r_pair_cancel
+ring-drivers:   function r_pair_open
+ring-drivers:   function r_paired_mask
+ring-drivers:   function r_positive
+ring-drivers:   function r_power_off
+ring-drivers:   function r_set_mode
+ring-drivers:   function r_vibration
+ring-drivers:   function rscr_dev_callbacks
+ring-drivers: rst_hw_real.c.obj text 326 bytes: real code
+ring-drivers:   function b_resume
+ring-drivers:   function b_suspend
+ring-drivers:   function r_count
+ring-drivers:   function r_deinit
+ring-drivers:   function r_init
+ring-drivers:   function r_read
+ring-drivers:   function r_write
+ring-drivers:   function rst_hw_real_cs_boot
+ring-drivers:   function rst_hw_real_register
+ring-drivers:   function z_impl_gpio_pin_configure
+ring-drivers: rsy_hw_real.c.obj text 796 bytes: real code
+ring-drivers:   function ps_load
+ring-drivers:   function ps_save
+ring-drivers:   function ps_set
+ring-drivers:   function ri_confirm
+ring-drivers:   function ri_erase
+ring-drivers:   function ri_is_confirmed
+ring-drivers:   function ri_read
+ring-drivers:   function ri_reboot
+ring-drivers:   function ri_request
+ring-drivers:   function ri_write
+ring-drivers:   function rr_clear
+ring-drivers:   function rr_gp_get
+ring-drivers:   function rr_gp_set
+ring-drivers:   function rr_read
+ring-drivers:   function rr_write
+ring-drivers:   function rsy_hw_register
+ring-drivers:   function rw_feed
+ring-drivers:   function rw_start
+ring-drivers:   function z_impl_retained_mem_read.constprop.0
+ring-drivers:   function z_impl_retained_mem_write.constprop.0
+ring-drivers: rxf_hw_real.c.obj text 848 bytes: real code
+ring-drivers:   function enqueue_out.isra.0
+ring-drivers:   function msg_cb
+ring-drivers:   function r_disable
+ring-drivers:   function r_enable
+ring-drivers:   function r_send
+ring-drivers:   function r_set_callbacks
+ring-drivers:   function r_speed
+ring-drivers:   function rxf_disable
+ring-drivers:   function rxf_enable
+ring-drivers:   function rxf_get_desc
+ring-drivers:   function rxf_hw_real_register
+ring-drivers:   function rxf_init
+ring-drivers:   function rxf_request
+ring-drivers: the kit's drivers compiled for the ring's nodes:
+ring-drivers:   dmic_nrfx_pdm.c.obj
+ring-drivers:   gpio_nrfx.c.obj
+ring-drivers:   i2c_nrfx_twim.c.obj
+ring-drivers:   mfd_npm13xx.c.obj
+ring-drivers:   npm13xx_charger.c.obj
+ring-drivers:   regulator_npm13xx.c.obj
+ring-drivers:   retained_mem_nrf_gpregret.c.obj
+ring-drivers:   retained_mem_zephyr_ram.c.obj
+ring-drivers:   sdhc_spi.c.obj
+ring-drivers:   sdmmc_subsys.c.obj
+ring-drivers:   settings_zms.c.obj
+ring-drivers:   spi_nrfx_spim.c.obj
+ring-drivers:   uart_nrfx_uarte.c.obj
+ring-drivers:   udc_dwc2.c.obj
+ring-drivers:   wdt_nrfx.c.obj
+ring-drivers:   zms.c.obj
+=== stage ring-drivers end 2026-11-14T01:18:52Z exit 0

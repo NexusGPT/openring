@@ -1,0 +1,232 @@
+== stage lines
+13:=== stage dk start 2026-11-14T08:02:49Z log /ws/out/s7-dev/f3stages/dk.log
+1343:=== stage dk end 2026-11-14T08:03:49Z exit 0
+1365:=== stage stack-report start 2026-11-14T08:03:49Z log /ws/out/s7-dev/f3stages/stack-report.log
+1416:=== stage stack-report end 2026-11-14T08:03:50Z exit 0
+1417:=== stage ring-lines-safe start 2026-11-14T08:03:50Z log /ws/out/s7-dev/f3stages/ring-lines-safe.log
+1426:=== stage ring-lines-safe end 2026-11-14T08:03:50Z exit 0
+1427:=== stage ring-lines-safe-broken start 2026-11-14T08:03:50Z log /ws/out/s7-dev/f3stages/ring-lines-safe-broken.log
+1468:=== stage ring-lines-safe-broken end 2026-11-14T08:03:50Z exit 0
+1469:=== stage ring start 2026-11-14T08:03:50Z log /ws/out/s7-dev/f3stages/ring.log
+2833:=== stage ring end 2026-11-14T08:04:55Z exit 0
+2857:=== stage ring-drivers start 2026-11-14T08:04:55Z log /ws/out/s7-dev/f3stages/ring-drivers.log
+2997:=== stage ring-drivers end 2026-11-14T08:04:55Z exit 0
+2998:=== stage ring-ram start 2026-11-14T08:04:55Z log /ws/out/s7-dev/f3stages/ring-ram.log
+3679:=== stage ring-ram end 2026-11-14T08:04:55Z exit 0
+3680:=== stage ring-pins start 2026-11-14T08:04:55Z log /ws/out/s7-dev/f3stages/ring-pins.log
+3767:=== stage ring-pins end 2026-11-14T08:04:56Z exit 0
+3768:=== stage ring-pins-broken start 2026-11-14T08:04:56Z log /ws/out/s7-dev/f3stages/ring-pins-broken.log
+3984:=== stage ring-pins-broken end 2026-11-14T08:06:00Z exit 0
+3985:=== stage ring-production start 2026-11-14T08:06:00Z log /ws/out/s7-dev/f3stages/ring-production.log
+5342:=== stage ring-production end 2026-11-14T08:07:03Z exit 0
+5356:=== stage ring-production-check start 2026-11-14T08:07:03Z log /ws/out/s7-dev/f3stages/ring-production-check.log
+5376:=== stage ring-production-check end 2026-11-14T08:07:03Z exit 0
+5377:=== stage ring-production-broken start 2026-11-14T08:07:03Z log /ws/out/s7-dev/f3stages/ring-production-broken.log
+5473:=== stage ring-production-broken end 2026-11-14T08:07:03Z exit 0
+== lines-safe
+1417:=== stage ring-lines-safe start 2026-11-14T08:03:50Z log /ws/out/s7-dev/f3stages/ring-lines-safe.log
+1418:ring-lines-safe: SAME lines_safe: no condition, no device state; SD_CS GPIO_DISCONNECTED and spi00's sleep pin state: int c = gpio_pin_configure_dt(&sd_cs, GPIO_DISCONNECTED); int p = pinctrl_apply_state(spi00_pins, PINCTRL_STATE_SLEEP); return c != 0 ? c : p;
+1419:ring-lines-safe: SAME b_suspend: one wrapper that always ends in lines_safe(): int r = suspend_inner(); int s = lines_safe(); return r != 0 ? r : s;
+1420:ring-lines-safe: SAME b_resume: lines_safe() on every failure: int r = resume_inner(); if (r != 0) { (void)lines_safe(); } return r;
+1421:ring-lines-safe: SAME suspend_inner: 2 occurrences (its definition and the one call in its wrapper: 2 wanted)
+1422:ring-lines-safe: SAME resume_inner: 2 occurrences (its definition and the one call in its wrapper: 2 wanted)
+1423:ring-lines-safe: SAME bus_first_init: called once, from resume_inner: 1 call(s)
+1424:ring-lines-safe: SAME sdbus: the sdbus table names the two wrappers
+1425:ring-lines-safe: RESULT PASS
+1426:=== stage ring-lines-safe end 2026-11-14T08:03:50Z exit 0
+1427:=== stage ring-lines-safe-broken start 2026-11-14T08:03:50Z log /ws/out/s7-dev/f3stages/ring-lines-safe-broken.log
+1433:ring-lines-safe: SAME lines_safe: no condition, no device state; SD_CS GPIO_DISCONNECTED and spi00's sleep pin state: int c = gpio_pin_configure_dt(&sd_cs, GPIO_DISCONNECTED); int p = pinctrl_apply_state(spi00_pins, PINCTRL_STATE_SLEEP); return c != 0 ? c : p;
+1434:ring-lines-safe: DIFFERENT b_suspend: one wrapper that always ends in lines_safe(): int r = suspend_inner(); if (r != 0) { return r; } int s = lines_safe(); return r != 0 ? r : s;
+1435:ring-lines-safe: SAME b_resume: lines_safe() on every failure: int r = resume_inner(); if (r != 0) { (void)lines_safe(); } return r;
+1436:ring-lines-safe: SAME suspend_inner: 2 occurrences (its definition and the one call in its wrapper: 2 wanted)
+1437:ring-lines-safe: SAME resume_inner: 2 occurrences (its definition and the one call in its wrapper: 2 wanted)
+1438:ring-lines-safe: SAME bus_first_init: called once, from resume_inner: 1 call(s)
+1439:ring-lines-safe: SAME sdbus: the sdbus table names the two wrappers
+1440:ring-lines-safe: RESULT FAIL failing: b_suspend
+1441:ring-lines-safe-broken: early-return: self test ok: the planted copy fails on b_suspend alone
+1446:ring-lines-safe: DIFFERENT lines_safe: no condition, no device state; SD_CS GPIO_DISCONNECTED and spi00's sleep pin state: if (!bus_up) { return 0; } int c = gpio_pin_configure_dt(&sd_cs, GPIO_DISCONNECTED); int p = pinctrl_apply_state(spi00_pins, PINCTRL_STATE_SLEEP); return c != 0 ? c : p;
+1447:ring-lines-safe: SAME b_suspend: one wrapper that always ends in lines_safe(): int r = suspend_inner(); int s = lines_safe(); return r != 0 ? r : s;
+1448:ring-lines-safe: SAME b_resume: lines_safe() on every failure: int r = resume_inner(); if (r != 0) { (void)lines_safe(); } return r;
+1449:ring-lines-safe: SAME suspend_inner: 2 occurrences (its definition and the one call in its wrapper: 2 wanted)
+1450:ring-lines-safe: SAME resume_inner: 2 occurrences (its definition and the one call in its wrapper: 2 wanted)
+1451:ring-lines-safe: SAME bus_first_init: called once, from resume_inner: 1 call(s)
+1452:ring-lines-safe: SAME sdbus: the sdbus table names the two wrappers
+1453:ring-lines-safe: RESULT FAIL failing: lines_safe
+1454:ring-lines-safe-broken: gated: self test ok: the planted copy fails on lines_safe alone
+1459:ring-lines-safe: SAME lines_safe: no condition, no device state; SD_CS GPIO_DISCONNECTED and spi00's sleep pin state: int c = gpio_pin_configure_dt(&sd_cs, GPIO_DISCONNECTED); int p = pinctrl_apply_state(spi00_pins, PINCTRL_STATE_SLEEP); return c != 0 ? c : p;
+1460:ring-lines-safe: SAME b_suspend: one wrapper that always ends in lines_safe(): int r = suspend_inner(); int s = lines_safe(); return r != 0 ? r : s;
+1461:ring-lines-safe: DIFFERENT b_resume: lines_safe() on every failure: int r = resume_inner(); if (r != 0) { (void)0; } return r;
+1462:ring-lines-safe: SAME suspend_inner: 2 occurrences (its definition and the one call in its wrapper: 2 wanted)
+1463:ring-lines-safe: SAME resume_inner: 2 occurrences (its definition and the one call in its wrapper: 2 wanted)
+1464:ring-lines-safe: SAME bus_first_init: called once, from resume_inner: 1 call(s)
+1465:ring-lines-safe: SAME sdbus: the sdbus table names the two wrappers
+1466:ring-lines-safe: RESULT FAIL failing: b_resume
+1467:ring-lines-safe-broken: resume-no-safe: self test ok: the planted copy fails on b_resume alone
+1468:=== stage ring-lines-safe-broken end 2026-11-14T08:03:50Z exit 0
+== prod-broken
+3766:check_ring_pins: RESULT PASS 36 signals checked, every pin as in the netlist, no unexpected pin
+3789:check_ring_pins: RESULT FAIL 36 signals checked; failing: MOTOR
+3811:check_ring_pins: RESULT FAIL 36 signals checked; failing: SD_MISO
+3833:check_ring_pins: RESULT FAIL 36 signals checked; failing: LCD_TE
+3855:check_ring_pins: RESULT FAIL 36 signals checked; failing: PMIC_INT
+3876:check_ring_pins: RESULT FAIL 36 signals checked; failing: JOY_LEFT
+3896:check_ring_pins: RESULT FAIL 36 signals checked; failing: JOY_DOWN
+3916:check_ring_pins: RESULT FAIL 36 signals checked; failing: unexpected-pins(1)
+3938:check_ring_pins: RESULT FAIL 36 signals checked; failing: JOY_UP
+3960:check_ring_pins: RESULT FAIL 36 signals checked; failing: NEWNET
+3982:check_ring_pins: RESULT FAIL 36 signals checked; failing: LCD_RST
+5357:ring-production: /ws/out/s7-dev/f3stages/ring-prod/app/zephyr/.config # CONFIG_SERIAL is not set
+5358:ring-production: /ws/out/s7-dev/f3stages/ring-prod/mcuboot/zephyr/.config # CONFIG_SERIAL is not set
+5359:ring-production: SAME DBG_TX netlist P1.15 devicetree hog /soc/peripheral@50000000/gpio@d8200/dbg_tx_pulldown input, GPIO_PULL_DOWN (design/firmware.md l.1061)
+5360:ring-production: NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+5361:ring-production: NO NODE BY NATURE DECA A8 DECA: decoupling
+5362:ring-production: NO NODE BY NATURE DECA B2 DECRF: decoupling
+5363:ring-production: NO NODE BY NATURE DECD A6 DECD: decoupling
+5364:ring-production: NO NODE BY NATURE GND A7 VSS: ground
+5365:ring-production: NO NODE BY NATURE GND D3 VSS: ground
+5366:ring-production: NO NODE BY NATURE GND E1 VSS: ground
+5367:ring-production: NO NODE BY NATURE GND F10 VSS: ground
+5368:ring-production: NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+5369:ring-production: NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+5370:ring-production: NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+5371:ring-production: NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+5372:ring-production: NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+5373:ring-production: NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+5374:ring-production: NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+5375:ring-production: check_ring_pins: RESULT PASS 36 signals checked, every pin as in the netlist, no unexpected pin
+5377:=== stage ring-production-broken start 2026-11-14T08:07:03Z log /ws/out/s7-dev/f3stages/ring-production-broken.log
+5379:ring-production: /ws/out/s7-dev/f3stages/ring-prod-broken-uart/app/.config # CONFIG_SERIAL is not set
+5380:ring-production: /ws/out/s7-dev/f3stages/ring-prod-broken-uart/app/.config CONFIG_SERIAL=y
+5381:ring-production: DIFFERENT a UART is on in /ws/out/s7-dev/f3stages/ring-prod-broken-uart/app/.config
+5382:ring-production: /ws/out/s7-dev/f3stages/ring-prod-broken-uart/mcuboot/.config # CONFIG_SERIAL is not set
+5383:ring-production: SAME DBG_TX netlist P1.15 devicetree hog /soc/peripheral@50000000/gpio@d8200/dbg_tx_pulldown input, GPIO_PULL_DOWN (design/firmware.md l.1061)
+5384:ring-production: NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+5385:ring-production: NO NODE BY NATURE DECA A8 DECA: decoupling
+5386:ring-production: NO NODE BY NATURE DECA B2 DECRF: decoupling
+5387:ring-production: NO NODE BY NATURE DECD A6 DECD: decoupling
+5388:ring-production: NO NODE BY NATURE GND A7 VSS: ground
+5389:ring-production: NO NODE BY NATURE GND D3 VSS: ground
+5390:ring-production: NO NODE BY NATURE GND E1 VSS: ground
+5391:ring-production: NO NODE BY NATURE GND F10 VSS: ground
+5392:ring-production: NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+5393:ring-production: NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+5394:ring-production: NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+5395:ring-production: NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+5396:ring-production: NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+5397:ring-production: NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+5398:ring-production: NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+5399:ring-production: check_ring_pins: RESULT PASS 36 signals checked, every pin as in the netlist, no unexpected pin
+5400:ring-production-broken: uart: self test ok: refused with "ring-production: DIFFERENT a UART is on in"
+5402:ring-production: /ws/out/s7-dev/f3stages/ring-prod-broken-pulldown/app/.config # CONFIG_SERIAL is not set
+5403:ring-production: /ws/out/s7-dev/f3stages/ring-prod-broken-pulldown/mcuboot/.config # CONFIG_SERIAL is not set
+5404:ring-production: DIFFERENT FLAGS DBG_TX hog /soc/peripheral@50000000/gpio@d8200/dbg_tx_pulldown input flags 0x0, design/firmware.md l.1061 wants an input with GPIO_PULL_DOWN
+5405:ring-production: NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+5406:ring-production: NO NODE BY NATURE DECA A8 DECA: decoupling
+5407:ring-production: NO NODE BY NATURE DECA B2 DECRF: decoupling
+5408:ring-production: NO NODE BY NATURE DECD A6 DECD: decoupling
+5409:ring-production: NO NODE BY NATURE GND A7 VSS: ground
+5410:ring-production: NO NODE BY NATURE GND D3 VSS: ground
+5411:ring-production: NO NODE BY NATURE GND E1 VSS: ground
+5412:ring-production: NO NODE BY NATURE GND F10 VSS: ground
+5413:ring-production: NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+5414:ring-production: NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+5415:ring-production: NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+5416:ring-production: NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+5417:ring-production: NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+5418:ring-production: NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+5419:ring-production: NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+5420:ring-production: check_ring_pins: RESULT FAIL 36 signals checked; failing: DBG_TX
+5421:ring-production: DIFFERENT the pin check in production mode exited 1
+5422:ring-production-broken: pulldown: self test ok: refused with "failing=DBG_TX"
+5424:ring-production: MISSING input file /ws/out/s7-dev/f3stages/ring-prod-broken-missing/mcuboot/.config
+5425:ring-production-broken: missing: self test ok: refused with "ring-production: MISSING input file"
+5427:ring-production: /ws/out/s7-dev/f3stages/ring-prod-broken-uart-mcuboot/app/.config # CONFIG_SERIAL is not set
+5428:ring-production: /ws/out/s7-dev/f3stages/ring-prod-broken-uart-mcuboot/mcuboot/.config # CONFIG_SERIAL is not set
+5429:ring-production: /ws/out/s7-dev/f3stages/ring-prod-broken-uart-mcuboot/mcuboot/.config CONFIG_UART_CONSOLE=y
+5430:ring-production: DIFFERENT a UART is on in /ws/out/s7-dev/f3stages/ring-prod-broken-uart-mcuboot/mcuboot/.config
+5431:ring-production: SAME DBG_TX netlist P1.15 devicetree hog /soc/peripheral@50000000/gpio@d8200/dbg_tx_pulldown input, GPIO_PULL_DOWN (design/firmware.md l.1061)
+5432:ring-production: NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+5433:ring-production: NO NODE BY NATURE DECA A8 DECA: decoupling
+5434:ring-production: NO NODE BY NATURE DECA B2 DECRF: decoupling
+5435:ring-production: NO NODE BY NATURE DECD A6 DECD: decoupling
+5436:ring-production: NO NODE BY NATURE GND A7 VSS: ground
+5437:ring-production: NO NODE BY NATURE GND D3 VSS: ground
+5438:ring-production: NO NODE BY NATURE GND E1 VSS: ground
+5439:ring-production: NO NODE BY NATURE GND F10 VSS: ground
+5440:ring-production: NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+5441:ring-production: NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+5442:ring-production: NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+5443:ring-production: NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+5444:ring-production: NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+5445:ring-production: NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+5446:ring-production: NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+5447:ring-production: check_ring_pins: RESULT PASS 36 signals checked, every pin as in the netlist, no unexpected pin
+5448:ring-production-broken: uart-mcuboot: self test ok: refused with "ring-production: DIFFERENT a UART is on in /ws/out/s7-dev/f3stages/ring-prod-broken-uart-mcuboot/mcuboot/.config"
+5450:ring-production: /ws/out/s7-dev/f3stages/ring-prod-broken-uart20-on/app/.config # CONFIG_SERIAL is not set
+5451:ring-production: /ws/out/s7-dev/f3stages/ring-prod-broken-uart20-on/mcuboot/.config # CONFIG_SERIAL is not set
+5452:ring-production: SAME DBG_TX netlist P1.15 devicetree hog /soc/peripheral@50000000/gpio@d8200/dbg_tx_pulldown input, GPIO_PULL_DOWN (design/firmware.md l.1061)
+5453:ring-production: NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+5454:ring-production: NO NODE BY NATURE DECA A8 DECA: decoupling
+5455:ring-production: NO NODE BY NATURE DECA B2 DECRF: decoupling
+5456:ring-production: NO NODE BY NATURE DECD A6 DECD: decoupling
+5457:ring-production: NO NODE BY NATURE GND A7 VSS: ground
+5458:ring-production: NO NODE BY NATURE GND D3 VSS: ground
+5459:ring-production: NO NODE BY NATURE GND E1 VSS: ground
+5460:ring-production: NO NODE BY NATURE GND F10 VSS: ground
+5461:ring-production: NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+5462:ring-production: NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+5463:ring-production: NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+5464:ring-production: NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+5465:ring-production: NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+5466:ring-production: NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+5467:ring-production: NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+5468:ring-production: UNEXPECTED uart20/default/UART_TX P1.15 (netlist net DBG_TX)
+5469:ring-production: UNEXPECTED uart20/sleep/UART_TX P1.15 (netlist net DBG_TX)
+5470:ring-production: check_ring_pins: RESULT FAIL 36 signals checked; failing: unexpected-pins(2)
+5471:ring-production: DIFFERENT the pin check in production mode exited 1
+5472:ring-production-broken: uart20-on: self test ok: refused with "failing=unexpected-pins(2)"
+5473:=== stage ring-production-broken end 2026-11-14T08:07:03Z exit 0
+== real code / FLASH / RAM
+480:           FLASH:       45656 B        62 KB     71.91%
+481:             RAM:       21968 B       511 KB      4.20%
+1332:           FLASH:      585128 B     974704 B     60.03%
+1333:             RAM:      461528 B       511 KB     88.20%
+1357:           FLASH:       45656 B        62 KB     71.91%
+1358:             RAM:       21968 B       511 KB      4.20%
+1362:           FLASH:      585128 B     974704 B     60.03%
+1363:             RAM:      461528 B       511 KB     88.20%
+1930:           FLASH:       45596 B        64 KB     69.57%
+1931:             RAM:       22000 B       510 KB      4.21%
+2821:           FLASH:      643288 B     982896 B     65.45%
+2822:             RAM:      471904 B       510 KB     90.36%
+2847:           FLASH:       45596 B        64 KB     69.57%
+2848:             RAM:       22000 B       510 KB      4.21%
+2853:           FLASH:      643288 B     982896 B     65.45%
+2854:             RAM:      471904 B       510 KB     90.36%
+2861:ring-drivers: rau_hw_real.c.obj text 536 bytes: real code
+2875:ring-drivers: rfa_hw_real.c.obj text 154 bytes: real code
+2879:ring-drivers: rmo_hw_real.c.obj text 108 bytes: real code
+2882:ring-drivers: rpw_hw_real.c.obj text 6836 bytes: real code
+2902:ring-drivers: rhw_clock_real.c.obj text 118 bytes: real code
+2907:ring-drivers: rscr_real.c.obj text 222 bytes: real code
+2934:ring-drivers: rst_hw_real.c.obj text 522 bytes: real code
+2945:ring-drivers: rsy_hw_real.c.obj text 796 bytes: real code
+2966:ring-drivers: rxf_hw_real.c.obj text 848 bytes: real code
+5031:           FLASH:      642456 B     982896 B     65.36%
+5032:             RAM:      471888 B       510 KB     90.36%
+5334:           FLASH:       44480 B        64 KB     67.87%
+5335:             RAM:       21984 B       510 KB      4.21%
+5346:           FLASH:      642456 B     982896 B     65.36%
+5347:             RAM:      471888 B       510 KB     90.36%
+5352:           FLASH:       44480 B        64 KB     67.87%
+5353:             RAM:       21984 B       510 KB      4.21%
+== last lines
+STAGES7 FAILED:none
+# finished (Mac clock): 2026-11-14 09:07:11 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step7/fix3/20261114-090231-f3-stages3.log
+== exit
+0
+== cmd
+set -u; S=/ws/firmware/tools/build_all.sh; FW=/ws/firmware; JOBS=${RING_JOBS:-8}; OUT=/ws/out/s7-dev/f3stages; rm -rf /ws/out/s7-dev; mkdir -p "$OUT"; FAILED=""; sed -n '/^DK_BOARD=/,/^START_LINE=/p' "$S" > "$OUT/head.sh"; sed -n '/^run_stage() {/,/^}/p;/^size_report() {/,/^}/p;/^sim_guard() {/,/^}/p' "$S" >> "$OUT/head.sh"; sed -n '/^# Stage 1: development kit build./,/^# Stage 2: simulated chip build/p' "$S" > "$OUT/stage1.sh"; sed -n '/^# Step 7 (the ring/,/^# Step 7 end/p' "$S" > "$OUT/step7.sh"; wc -l "$OUT/head.sh" "$OUT/stage1.sh" "$OUT/step7.sh"; source "$OUT/head.sh"; source "$OUT/stage1.sh"; source "$OUT/step7.sh"; echo "STAGES7 FAILED:${FAILED:-none}"; [ -z "$FAILED" ]
+== pm

@@ -1,0 +1,17 @@
+# remote.sh run 20261114-000012-lead-b3-probe
+# command: bash tools/b3_probe.sh
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-14 00:00:12 CET
+# free on the server's /: 31 GB
+# source <scratch>/export-b3/firmware copied to /root/ring-os/src-leadb3
+# started on the server as 20261114-000012-lead-b3-probe; server log /root/ring-os/logs/20261114-000012-lead-b3-probe.log
+CASE base: check exit 0: check_ring_pins: RESULT PASS 36 signals checked, every pin as in the netlist, no unexpected pin
+CASE wrong-port: check exit 1: NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)|NO NODE BY NATURE DECA A8 DECA: decoupling|NO NODE BY NATURE DECA B2 DECRF: decoupling|NO NODE BY NATURE DECD A6 DECD: decoupling|NO NODE BY NATURE GND A7 VSS: ground|NO NODE BY NATURE  check_ring_pins: RESULT FAIL 36 signals checked; failing: MOTOR
+CASE disabled-node: check exit 1: NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)|NO NODE BY NATURE DECA A8 DECA: decoupling|NO NODE BY NATURE DECA B2 DECRF: decoupling|NO NODE BY NATURE DECD A6 DECD: decoupling|NO NODE BY NATURE GND A7 VSS: ground|NO NODE BY NATURE  check_ring_pins: RESULT FAIL 36 signals checked; failing: MOTOR
+CASE extra-pin: check exit 1: NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)|NO NODE BY NATURE DECA A8 DECA: decoupling|NO NODE BY NATURE DECA B2 DECRF: decoupling|NO NODE BY NATURE DECD A6 DECD: decoupling|NO NODE BY NATURE GND A7 VSS: ground|NO NODE BY NATURE  check_ring_pins: RESULT FAIL 36 signals checked; failing: unexpected-pins(1)
+CASE wrong-flag: check exit 0: NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)|NO NODE BY NATURE DECA A8 DECA: decoupling|NO NODE BY NATURE DECA B2 DECRF: decoupling|NO NODE BY NATURE DECD A6 DECD: decoupling|NO NODE BY NATURE GND A7 VSS: ground|NO NODE BY NATURE  check_ring_pins: RESULT PASS 36 signals checked, every pin as in the netlist, no unexpected pin
+CASE changed-netlist: check exit 1: NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)|NO NODE BY NATURE DECA A8 DECA: decoupling|NO NODE BY NATURE DECA B2 DECRF: decoupling|NO NODE BY NATURE DECD A6 DECD: decoupling|NO NODE BY NATURE GND A7 VSS: ground|NO NODE BY NATURE  check_ring_pins: RESULT FAIL 36 signals checked; failing: MOTOR
+PROBE END
+# finished (Mac clock): 2026-11-14 00:01:21 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step7/20261114-000012-lead-b3-probe.log

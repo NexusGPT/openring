@@ -7,7 +7,8 @@ man = json.load(open(W + "/copies/cw/manifest.json"))
 man.append({"name": "LIVE_list_as_it_stands", "csv": ROOT + "/design/wiring/product-wiring.csv", "want_exit": 0, "want_tag": None, "want_id": None})
 RV = ROOT + "/design/wiring/review4-work/fakes-cw/"
 for nm, f, tag, i in [("rev_honest_copy(has the CRs)", "honest", "field-newline", "W054"), ("rev_wrongnet", "wrongnet", "states-net", "W001"),
-        ("rev_wrongtail", "wrongtail", "states-tail", "W001"), ("rev_wrongface_W040", "wrongface", "states-face", "W040"),
+        ("rev_wrongtail", "wrongtail", "states-tail", "W001"), ("rev_wrongface_W040", "wrongface", None, None),  # board A2 (2026-11-13): the reviewer's fake states J1 on F.Cu, now true; still exit 1 by its W029 fault (was "states-face", "W040")
+       
         ("rev_wrongface_W029", "wrongface", "states-face", "W029"), ("rev_colourswap", "colourswap", "states-colour", "W023"),
         ("rev_cutwrong", "cutwrong", "states-cut", "W023"), ("rev_empty", "empty", None, None), ("rev_flood", "flood", None, None),
         ("rev_oneline", "oneline", None, None), ("rev_nomark", "nomark", None, None), ("rev_nocut", "nocut", None, None),

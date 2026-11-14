@@ -1,0 +1,28 @@
+diff --git a/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts b/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts
+index 213e03e5..e3895d27 100644
+--- a/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts
++++ b/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts
+@@ -261,6 +261,9 @@ zephyr_udc0: &usbhs {
+ /* The SD NAND card over SPI (design/firmware.md 5.1): 16 MHz, disk "SD" */
+ &spi00 {
+ 	status = "okay";
++	/* not initialised at boot (fix round 2, S7R-01): the storage part's real file initialises it with device_init()
++	 * at the card's first power-on, so SD_CS is never driven while VDD_SD is off before that */
++	zephyr,deferred-init;
+ 	cs-gpios = <&gpio2 5 GPIO_ACTIVE_LOW>;                                  /* SD_CS */
+ 	pinctrl-0 = <&spi00_default>;
+ 	pinctrl-1 = <&spi00_sleep>;
+@@ -271,11 +274,13 @@ zephyr_udc0: &usbhs {
+ 		reg = <0>;
+ 		spi-max-frequency = <16000000>;
+ 		status = "okay";
++		zephyr,deferred-init;
+ 
+ 		ring_sd: mmc {
+ 			compatible = "zephyr,sdmmc-disk";
+ 			disk-name = "SD";
+ 			status = "okay";
++			zephyr,deferred-init;
+ 		};
+ 	};
+ };

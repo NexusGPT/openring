@@ -1,0 +1,19 @@
+## 6. The development kit build and what step 7 (the ring's board files) must add
+
+The kit build (`nrf54lm20dk/nrf54lm20a/cpuapp`, sysbuild with MCUboot) compiles with the recorder parts and the real files
+(section 8 cites the run). `app/boards/nrf54lm20dk_nrf54lm20a_cpuapp.conf` now sets `CONFIG_RING_RHW_SIM=n`,
+`CONFIG_USB_DEVICE_STACK_NEXT`, `CONFIG_WATCHDOG`, `CONFIG_RETAINED_MEM`, `CONFIG_STREAM_FLASH`, `CONFIG_IMG_MANAGER`,
+`CONFIG_MCUBOOT_IMG_MANAGER`. Each real file compiles only where its node exists (D15), so most of them are empty stubs on
+the kit. Step 7 must add, for the real drivers to exist at all:
+- `pdm20` enabled with a `default` and a `sleep` pin state (the microphone clock and data; `rau_hw_real.c`, FW l.465);
+- `spi00` with the SD card slot (`zephyr,sdhc-spi-slot`, `zephyr,sdmmc-disk` "SD", 16 MHz, FW l.504, l.505) and
+  `CONFIG_DISK_ACCESS` (`rst_hw_real.c` compiles only with both);
+- the nPM1304 nodes (mfd, regulators with the two load switches, charger, FW l.862 to l.890; `CONFIG_RING_POWER_REAL`
+  depends on them) and a lithium cell model for the fuel gauge (power notes, K6);
+- the alias `ring-motor` (the MOTOR pin, `rmo_hw_real.c`);
+- `wdt31` enabled, the partition `slot1_partition`, the alias `crashram` (a `zephyr,retained-ram` node of 1,024 bytes),
+  the alias `gpregret1` (`rsy_hw_real.c`, sys notes section 6), and the settings back end on the RRAM (K10, not settled);
+- the USB controller node the transfer part names (`zephyr_udc0`) and the product's vendor and product id (section 9);
+- a start-of-frame count for T-XTAL (section 4, gap 4);
+- the main chip's reset reason for `RREC_LOG_MAIN_RESET` (section 2, item 12).
+

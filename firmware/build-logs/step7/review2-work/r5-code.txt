@@ -1,0 +1,73 @@
+	ring_pins_net_case unknown-net NEWNET ',U1,E6,P1.24,no_connect' 'NEWNET,U1,E6,P1.24,bidirectional' || rc=1
+	ring_pins_net_case netlist-row LCD_RST 'LCD_RST,U1,H5,P1.07,' 'LCD_RST,U1,H5,P1.08,' || rc=1
+	return $rc
+}
+# ring-production (fix round 1, design/firmware.md l.1061): the ring's production settings, no UART output: compile only
+ring_production_check() {
+	local a="$OUT/ring-prod/app/zephyr" m="$OUT/ring-prod/mcuboot/zephyr" rc=0 f
+	for f in "$a/.config" "$m/.config"; do
+		grep -E '^(# )?CONFIG_(SERIAL|UART_CONSOLE)[ =]' "$f" 2>&1 | sed "s|^|ring-production: ${f#$OUT/} |"
+		if grep -q -E '^CONFIG_(SERIAL|UART_CONSOLE)=y' "$f"; then
+			echo "ring-production: DIFFERENT a UART is on in ${f#$OUT/}"
+			rc=1
+		fi
+	done
+	if grep -q -E 'uart@c6000 \{' "$a/zephyr.dts" && awk '/uart20: uart@c6000 \{/{p=1} p&&/status =/{print; exit}' "$a/zephyr.dts" | grep -q okay; then
+		echo "ring-production: DIFFERENT uart20 is enabled in the production devicetree"
+		rc=1
+	fi
+	grep -n -A3 'dbg_tx_pulldown' "$a/zephyr.dts" 2>&1
+	return $rc
+}
+if run_stage ring west build -p always -b "$RING_BOARD" --sysbuild -d "$OUT/ring" -o=-j"$JOBS" "$FW/app" -- -DBOARD_ROOT="$FW"; then
+	echo "--- flash and RAM use, $RING_BOARD (linker memory report; images in build order, see $OUT/ring/domains.yaml)"
+	cat "$OUT/ring/domains.yaml" 2>&1
+	echo
+	size_report "$OUT/ring.log" | tee "$OUT/ring-size.txt"
+	if [ ! -s "$OUT/ring-size.txt" ]; then
+		echo "build_all: no memory report found in $OUT/ring.log"
+		FAILED="$FAILED ring-size"
+	fi
+	if ! run_stage ring-drivers ring_drivers; then
+		FAILED="$FAILED ring-drivers"
+	fi
+	if ! run_stage ring-ram ring_ram; then
+		FAILED="$FAILED ring-ram"
+	fi
+	if ! run_stage ring-pins ring_pins; then
+		FAILED="$FAILED ring-pins"
+	fi
+	if ! run_stage ring-pins-broken ring_pins_broken; then
+		FAILED="$FAILED ring-pins-broken"
+	fi
+else
+	FAILED="$FAILED ring-build"
+fi
+if run_stage ring-production west build -p always -b "$RING_BOARD" --sysbuild -d "$OUT/ring-prod" -o=-j"$JOBS" "$FW/app" -- \
+	-DBOARD_ROOT="$FW" -Dapp_EXTRA_CONF_FILE="$FW/app/ringrec_production.conf" \
+	-Dapp_EXTRA_DTC_OVERLAY_FILE="$FW/boards/ringrec/ringrec_production.overlay" \
+	-Dmcuboot_EXTRA_CONF_FILE="$FW/boards/ringrec/ringrec_production_mcuboot.conf" \
+	-Dmcuboot_EXTRA_DTC_OVERLAY_FILE="$FW/boards/ringrec/ringrec_production.overlay"; then
+	echo "--- flash and RAM use, $RING_BOARD production settings (linker memory report)"
+	size_report "$OUT/ring-production.log" | tee "$OUT/ring-prod-size.txt"
+	if [ ! -s "$OUT/ring-prod-size.txt" ]; then
+		FAILED="$FAILED ring-production-size"
+	fi
+	if ! run_stage ring-production-check ring_production_check; then
+		FAILED="$FAILED ring-production-check"
+	fi
+else
+	FAILED="$FAILED ring-production"
+fi
+--- FW 1059-1066
+### 9.4 Logging and crash capture
+
+- Development builds: Zephyr logging to `uart20` on DBG_TX P1.15 at 115,200 baud, send only (pin P1.16, the former DBG_RX, has no pad on the ring board). Production builds: no UART output; DBG_TX is an input with pull-down.
+- Event log (both builds): each state change, fault, battery threshold and transfer command becomes a 512-byte record: magic 0x474C5252 ("RRLG") u32, record seq u32, uptime_ns u64, utc_ms i64, code u16, state u8, reserved u8, 16 bytes of arguments, crash block (below, zero when not a crash), CRC-32 in the last 4 bytes. Records wait in the 4 KB RAM log buffer (8 records) and are written to the log area (LBA 2 to 2,047) at the next time VDD_SD is on; when the buffer is full, the oldest unwritten record is dropped and a "dropped" count is kept. The codes are listed in the section "Event log codes" near the end of this document (ruling R23).
+- Crash capture: `k_sys_fatal_error_handler()` is overridden to write a crash block (fault reason u32, PC u32, LR u32, PSR u32, thread name 16 bytes, 64 words of the faulting stack) into 1 KB of retained RAM (`zephyr,retained-ram`, `drivers/retained_mem/retained_mem_zephyr_ram.c` [SRC 10]) and the reset reason code into `gpregret1` [SRC 1], then reboot. `BOOT` copies a valid crash block into the event log and clears it.
+- Power-chip reset causes: `BOOT` writes the nPM1304's RSTCAUSE and charger error log into the event log, then clears them (section 8.7).
+- Watchdog: `wdt31`, 8 s timeout, fed every 1 s by a work item on the system work queue (the product has no main loop). While a recording runs it is fed only when the audio and storage threads have both reported progress in the last 2 s; with no recording it is fed at every turn. A stalled system work queue, or a recording thread without progress, ends in a reset after 8 s.
+
+--- netlist DBG
+18:DBG_TX,TP1,1,1,passive
+19:DBG_TX,U1,B4,P1.15,bidirectional

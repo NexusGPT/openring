@@ -1,0 +1,56 @@
+## ring_screens/Kconfig
+30:config RING_SCREENS_CAPTURE
+31-	bool "Ring screens: test hook that reads the frame back and writes PNG files (host builds only)"
+32-	depends on RING_SCREENS
+33-
+34-config RING_SCREENS_SIGN_WAIT_MS
+35-	int "How long rscr_sign_start waits for the screens thread (ms)"
+36-	default 5000
+## ring_recorder/Kconfig
+21:config RING_RECORDER_TEST_HOOKS
+22-	bool "Test read-outs of the recorder (the event log tap); simulated builds only"
+23-	depends on RING_RECORDER && RING_RHW_SIM
+24-	help
+25-	  For tests/recorder only: keeps a copy of every event log record the recorder queues, and lets a test start the
+26-	  boot sequence again after rhw_sim_reboot(). Never in the product.
+## ring_relay/Kconfig
+17:config RING_RELAY_TEST_HOOKS
+18-	bool "Ring relay test hooks (tests only)"
+19-	depends on RING_RELAY
+20-	default n
+21-	help
+22-	  Lets a test block the Out queue. Never set in the product (tools/build_all.sh checks the product's settings).
+## ring_control/Kconfig
+17:config RING_CONTROL_TEST_HOOKS
+18-	bool "Ring control test hooks (failing releases, sending to a given link)"
+19-	depends on RING_CONTROL
+20-	help
+21-	  For the two-device tests only. Off in the product.
+## ring_rhw/Kconfig
+7:config RING_RHW_SIM
+8-	bool "Simulated drivers of the recorder parts (tests and simulated boards only)"
+9-	depends on RING_RHW
+10-	help
+11-	  Every driver kind runs on a simulated driver written for this project (card, microphone input, power
+12-	  chip, gauge, HFXO, motor pin, storage bus, USB transport, image store, settings, retained memory,
+13-	  watchdog, clock, beacon), with one ordered event log and the faults of rhw_sim.h. Never set in the
+--
+18:config RING_RHW_SIM_DISK_POOL
+19-	int "Sectors the simulated card can hold"
+20-	default 4096
+21-	help
+22-	  Written sectors take memory (512 bytes each); unwritten ones read as zero.
+23-
+24:config RING_RHW_SIM_LOG_SIZE
+25-	int "Entries of the simulated drivers' event log"
+26-	default 4096
+27-
+28:config RING_RHW_SIM_REBOOT_HOOKS
+29-	int "Reboot hooks the units can register"
+30-	default 32
+31-
+32:config RING_RHW_SIM_USB_HOST_BYTES
+33-	int "Bytes the simulated USB host buffers before it stops taking packets"
+34-	default 70000
+35-
+36-endif

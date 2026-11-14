@@ -1,0 +1,11 @@
+modules/ring_store/src/rst.c:166:	(void)rhw_pmic()->rail_set(RHW_RAIL_SD, false, caller);
+modules/ring_store/src/rst.c:345:	if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+modules/ring_store/src/rst.c:485:	if (rhw_pmic()->rail_set(RHW_RAIL_SD, false, "rst_unmount") != 0) {              /* then rail off */
+modules/ring_recorder/src/rrec_mics.c:53:	return rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
+modules/ring_recorder/src/rrec_mics.c:58:	return rhw_pmic()->rail_set(RHW_RAIL_MIC, false, "rec_mics_off");
+modules/ring_power/src/rpw_hw_real.c:91:static int r_rail_set(enum rhw_rail r, bool on, const char *caller)
+modules/ring_rhw/src/sim_pmic.c:46:static int p_rail_set(enum rhw_rail r, bool on, const char *caller)
+modules/ring_rhw/src/sim_pmic.c:58:	if (r == RHW_RAIL_SD) {
+modules/ring_rhw/src/sim_pmic.c:129:		int32_t ua = (int32_t)(base_ua + (rail[RHW_RAIL_MIC] ? mic_ua : 0) + (rail[RHW_RAIL_SD] ? sd_ua : 0));
+modules/ring_rhw/src/rhw.c:36:static int none_rail_set(enum rhw_rail r, bool on, const char *c) { ARG_UNUSED(r); ARG_UNUSED(on); ARG_UNUSED(c); return -ENODEV; }
+modules/ring_rhw/src/sim_disk.c:106:	if (!sim_pmic_rail(RHW_RAIL_SD) || (need_init && !inited)) {

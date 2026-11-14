@@ -1,0 +1,81 @@
+== rpw_hw_real.c 85-110
+{
+	return mfd_npm13xx_reg_write(pmic, base, off, v);
+}
+
+/* ------------------------------------------------------------------ load switches (FW l.342: ring_store and
+ * rec_mics_on() only; this file only carries the call out) */
+static int r_rail_set(enum rhw_rail r, bool on, const char *caller)
+{
+	const struct device *d;
+	int rc;
+
+	ARG_UNUSED(caller);
+	if (r >= RHW_RAIL_COUNT) {
+		return -EINVAL;
+	}
+	d = r == RHW_RAIL_MIC ? ldsw_mic : ldsw_sd;
+	rc = on ? regulator_enable(d) : regulator_disable(d);
+	if (rc == 0) {
+		rail_state[r] = on;
+	}
+	return rc;
+}
+
+static bool r_rail_get(enum rhw_rail r)
+{
+	return r < RHW_RAIL_COUNT && rail_state[r];
+== 220-260
+static int r_rst_clear(void)
+{
+	return wr(REG_BASE_ERRLOG, REG_TASKCLRERRLOG, 1);
+}
+
+/* ------------------------------------------------------------------ ship mode (FW l.936 to l.941) */
+static int r_shphld_config(uint32_t press_ms)
+{
+	if (press_ms != 96u) {
+		return -EINVAL;             /* only the default press time is used (FW l.938) */
+	}
+	return wr(REG_BASE_SHIP, REG_SHPHLDCONFIG, SHPHLDTIM_96MS);
+}
+
+static int r_shphld_strobe(void)
+{
+	return wr(REG_BASE_SHIP, REG_TASKSHPHLDCFGSTROBE, 1);
+}
+
+static int r_ship_task(void)
+{
+	return wr(REG_BASE_SHIP, REG_TASKENTERSHIPMODE, 1);
+}
+
+/* ------------------------------------------------------------------ VBUS and events (FW l.977 to l.979):
+ * an input only; there is deliberately no call that drives it. */
+static bool vbus_now;
+
+static bool r_vbus_present(void)
+{
+	return vbus_now;
+}
+
+static void evt_handler(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
+{
+	ARG_UNUSED(dev);
+	ARG_UNUSED(cb);
+	if (pins & BIT(NPM13XX_EVENT_VBUS_DETECTED)) {
+		vbus_now = true;
+		if (cbs.vbus != NULL) {
+			cbs.vbus(true);
+== rpw.c rpw_ship
+599:int rpw_ship(void (*before_task)(void))
+627:			(void)rhw_pmic()->ship_task();
+== poweroff
+firmware/modules/ring_sys/src/rsy_hw_real.c:80:	sys_reboot(SYS_REBOOT_COLD);
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:232:	/* sys_reboot(); the simulated store records it and returns 0 (the test then calls rhw_sim_reboot()). */
+== rhw sdbus register
+52:static const struct rhw_sdbus_api none_sdbus = { .suspend = none_v, .resume = none_v };
+101:static const struct rhw_sdbus_api *act_sdbus = START(sdbus);
+121:GETTER(sdbus)
+156:REGISTER(sdbus)
+168:	&none_disk, &none_mic, &none_pmic, &none_hfxo, &none_motor, &none_sdbus, &none_usb, &none_image,

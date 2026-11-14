@@ -1,0 +1,188 @@
+firmware/modules/ring_audio/include/ring_audio/rau.h:14: * VDD_SD off) with the stop of FW l.463:
+firmware/modules/ring_audio/include/ring_audio/rau.h:18: *   rec_mics_off() (VDD_MIC off), rau_release() (HFXO, after VDD_MIC, FW l.463), rst_unmount() (VDD_SD off)
+firmware/modules/ring_store/include/ring_store/rst.h:12: * Hardware only through rhw.h: rhw_disk(), rhw_sdbus(), rhw_pmic()->rail_set(RHW_RAIL_SD, ..., "rst_..."),
+firmware/modules/ring_store/include/ring_store/rst.h:128: * rhw_sdbus()->suspend()). VDD_SD stays off. Once, at boot, before every other call. cb may be NULL. */
+firmware/modules/ring_store/include/ring_store/rst.h:131:/* Mount (FW l.135 to l.138, l.506, l.507): VDD_SD on ("rst_mount"), wait RREC_SD_RAIL_WAIT_MS, resume the bus, card
+firmware/modules/ring_store/include/ring_store/rst.h:135: * 0 with *out filled; -EIO after the 3rd failed init, with VDD_SD switched off again (bus suspended first).
+firmware/modules/ring_store/include/ring_store/rst.h:139:/* Unmount (FW l.506): disk deinit, bus suspend, VDD_SD off ("rst_unmount"), in this order. Waits for queued chunks
+firmware/modules/ring_store/include/ring_store/rst.h:144: * round 1, review finding R6-03: VDD_SD off after an aborted or finished transfer command, FW l.178, l.179). 0, -EIO
+firmware/modules/ring_store/include/ring_store/rst.h:165: * the open flag clear. VDD_SD stays on (the join switches it off with rst_unmount after VDD_MIC, FW l.125). 0, -EIO.
+firmware/modules/ring_store/include/ring_store/rst.h:197: * VDD_SD is on (mount, or at once when mounted). Any thread (not an interrupt); never blocks. */
+firmware/modules/ring_store/src/rst.c:4: * It reaches the card, the storage bus, the VDD_SD rail and the clock only through ring_rhw (rhw.h); the formats,
+firmware/modules/ring_store/src/rst.c:165:	(void)rhw_sdbus()->suspend();
+firmware/modules/ring_store/src/rst.c:166:	(void)rhw_pmic()->rail_set(RHW_RAIL_SD, false, caller);
+firmware/modules/ring_store/src/rst.c:314:	(void)rhw_sdbus()->suspend();                 /* FW l.506: the sleep state at boot, before any SPI use */
+firmware/modules/ring_store/src/rst.c:345:	if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+firmware/modules/ring_store/src/rst.c:349:	(void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+firmware/modules/ring_store/src/rst.c:484:	(void)rhw_sdbus()->suspend();                                                    /* then suspend, */
+firmware/modules/ring_store/src/rst.c:485:	if (rhw_pmic()->rail_set(RHW_RAIL_SD, false, "rst_unmount") != 0) {              /* then rail off */
+firmware/modules/ring_store/src/rst_hw_real.c:55:/* The card's chip select (FW l.506: no storage line driven high while VDD_SD is off). It is a GPIO of spi00
+firmware/modules/ring_store/src/rst_hw_real.c:60: * just before each resume. The storage part calls resume only after VDD_SD is on (rst.c l.345 to 349). */
+firmware/modules/ring_core/include/ring_core/rc_types.h:98:	RC_ACT_OPEN,                 /* "open": VDD_SD on, mount, superblock open, VDD_MIC on, start PDM */
+firmware/modules/ring_core/include/ring_core/rc_types.h:99:	RC_ACT_CLOSE,                /* "close": partial chunk, CLOSE record, superblock clear, stop PDM, clocks low, VDD_MIC off, VDD_SD off */
+firmware/modules/ring_core/include/ring_core/rc_types.h:111:	RC_ACT_SD_ON,                /* VDD_SD on (row 4: "keep VDD_SD on"; row 34: "VDD_SD on") */
+firmware/modules/ring_core/src/state_actions.c:27:	case 3:  /* line 135: VDD_SD off */
+firmware/modules/ring_core/src/state_actions.c:30:	case 4:  /* line 136: keep VDD_SD on */
+firmware/modules/ring_core/src/state_actions.c:33:	case 5:  /* line 137: VDD_SD off; charge on */
+firmware/modules/ring_core/src/state_actions.c:44:	case 8:  /* line 140: VDD_SD off; M3 (R13) */
+firmware/modules/ring_core/src/state_actions.c:48:	case 9:  /* line 141: CLOSE record RECOVERED; clear open flag; VDD_SD off */
+firmware/modules/ring_core/src/state_actions.c:68:	case 13: /* line 145: no recording starts (R4b); VDD_SD on; mount; RECOVERY scans */
+firmware/modules/ring_core/src/state_actions.c:177:	case 39: /* line 171: VDD_SD on; mount; charge on stays */
+firmware/modules/ring_core/src/state_actions.c:199:	case 46: /* line 178: finish the current command; VDD_SD off; charge on */
+firmware/modules/ring_core/src/state_actions.c:204:	case 47: /* line 179: abort the command; VDD_SD off */
+firmware/modules/ring_core/src/state_actions.c:248:	case 60: /* line 192: keep VDD_SD on; RECOVERY scans (R9) */
+firmware/modules/ring_recorder/src/rrec.c:149:	r = rst_mount(false, &mi);   /* VDD_SD on, mount (FW l.126, l.506) */
+firmware/modules/ring_recorder/src/rrec.c:243:	(void)rst_unmount();                     /* VDD_SD off */
+firmware/modules/ring_recorder/src/rrec.c:272:/* ------------------------------------------------------------------ VDD_SD off (FW l.178, l.179, l.912 to l.920) */
+firmware/modules/ring_recorder/src/rrec.c:311:		unmount_tries_end(0);   /* unmounted meanwhile: the tries ended with VDD_SD off */
+firmware/modules/ring_recorder/src/rrec.c:580:		/* FW l.179: abort the command, then wait for it to end (bounded as rxf_finish) so that VDD_SD goes off in this
+firmware/modules/ring_recorder/src/rrec.c:595:/* VDD_SD per state (FW l.912 to l.920): on in RECOVERY, RECORDING, TRANSFER; BOOT runs its own sequence and
+firmware/modules/ring_recorder/src/rrec.c:635:			unmount_tries_end(0);    /* unmounted meanwhile: the episode ended with VDD_SD off */
+firmware/modules/ring_power/include/ring_power/rpw.h:14: * The rails: ring_power does NOT switch VDD_MIC or VDD_SD. They are switched only through
+firmware/modules/ring_power/include/ring_power/rpw.h:15: * rhw_pmic()->rail_set(): VDD_SD by ring_store, VDD_MIC only by rec_mics_on() (FW l.342). (The plan's U5 offer "set a
+firmware/modules/ring_rhw/include/ring_rhw/rhw_sim.h:41:	RHW_EV_DISK_REFUSED,        /* a call while VDD_SD is off or the card is not initialised: a0 the refused kind */
+firmware/modules/ring_rhw/include/ring_rhw/rhw_sim.h:159:/* Calls refused because VDD_SD was off or the card not initialised (FW l.506). */
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:38:	/* DISK_IOCTL_CTRL_INIT after VDD_SD is on and the bus resumed (FW l.506, l.507). Blocks up to the card's start-up
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:41:	/* DISK_IOCTL_CTRL_DEINIT before VDD_SD goes off (FW l.506). Does not block. */
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:89: * rail_set also by ring_store (VDD_SD) and ring_recorder (VDD_MIC, only from rec_mics_on(), FW l.342) */
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:92:	RHW_RAIL_SD = 1,                 /* LDSW2, VDD_SD (FW l.874, l.506) */
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:167:	/* Suspend spi00 so its sleep pin state applies (lines inputs, no pull) BEFORE VDD_SD goes off; also at boot
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:170:	/* Resume spi00 (default pin state) 1 ms after VDD_SD came on, before init (FW l.506). */
+firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h:186:#define RREC_SD_RAIL_WAIT_MS          1u          /* FW l.506: wait 1 ms after VDD_SD on */
+firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h:449:	RREC_LOG_UNMOUNT_FAILED = 0x0290,     /* storage not unmounted when a row asked for VDD_SD off (FW l.178, l.179); at
+firmware/modules/ring_rhw/src/sim_int.h:32:void sim_disk_rail_changed(bool on);   /* VDD_SD went on or off: the card loses its init when off */
+firmware/modules/ring_rhw/src/sim_pmic.c:58:	if (r == RHW_RAIL_SD) {
+firmware/modules/ring_rhw/src/sim_pmic.c:129:		int32_t ua = (int32_t)(base_ua + (rail[RHW_RAIL_MIC] ? mic_ua : 0) + (rail[RHW_RAIL_SD] ? sd_ua : 0));
+firmware/modules/ring_rhw/src/sim_disk.c:103:/* the rail rule: no call while VDD_SD is off (FW l.506); no transfer before init */
+firmware/modules/ring_rhw/src/sim_disk.c:106:	if (!sim_pmic_rail(RHW_RAIL_SD) || (need_init && !inited)) {
+---rst.c 155-175
+		rst_evbuf_pop(&S.ev);
+		k_spin_unlock(&st_lock, k);
+	}
+}
+
+static void power_down(bool deinit, const char *caller)
+{
+	if (deinit) {
+		(void)rhw_disk()->deinit();
+	}
+	(void)rhw_sdbus()->suspend();
+	(void)rhw_pmic()->rail_set(RHW_RAIL_SD, false, caller);
+}
+
+static bool op_take(void)
+{
+	return k_mutex_lock(&op_lock, K_NO_WAIT) == 0;
+}
+
+static void drain_chunks(void)
+{
+---rst.c 300-375
+
+#ifdef CONFIG_RING_RHW_SIM
+static void sim_reboot_hook(void)
+{
+	reset_state();
+}
+#endif
+
+int rst_init(const struct rst_cb *cb)
+{
+	reset_state();
+	if (cb != NULL) {
+		S.cb = *cb;
+	}
+	(void)rhw_sdbus()->suspend();                 /* FW l.506: the sleep state at boot, before any SPI use */
+	if (!thr_started) {
+		thr_started = true;
+		k_thread_create(&thr, thr_stack, K_THREAD_STACK_SIZEOF(thr_stack), store_thread, NULL, NULL, NULL,
+				CONFIG_RING_STORE_THREAD_PRIORITY, 0, K_NO_WAIT);
+		k_thread_name_set(&thr, "rst");
+#ifdef CONFIG_RING_RHW_SIM
+		(void)rhw_sim_add_reboot_hook(sim_reboot_hook);
+#endif
+	}
+	S.inited = true;
+	return 0;
+}
+
+/* ------------------------------------------------------------------ mount, unmount */
+
+static void fill_info(struct rst_mount_info *out)
+{
+	memset(out, 0, sizeof(*out));
+	out->open_flag = S.sb.open_flag != 0;
+	out->open_recording_id = S.sb.open_flag ? S.sb.open_recording_id : 0;
+	out->boot_count = S.sb.boot_count;
+	out->card_sectors = S.sb.card_sectors;
+	out->recordings = S.recs.live_total;
+	out->space = S.space;
+}
+
+static int card_up(void)
+{
+	int r = -EIO;
+
+	if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+		return -EIO;
+	}
+	k_msleep(RREC_SD_RAIL_WAIT_MS);                                                  /* wait 1 ms */
+	(void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+	for (uint32_t i = 0; i < RREC_INIT_TRIES; i++) {                                 /* FW l.138 */
+		r = rhw_disk()->init();
+		if (r == 0) {
+			break;
+		}
+		if (i + 1 < RREC_INIT_TRIES) {
+			k_msleep(RREC_INIT_GAP_MS);
+		}
+	}
+	if (r != 0) {
+		power_down(false, "rst_mount");
+		return -EIO;
+	}
+	return 0;
+}
+
+static int mount_body(bool boot, struct rst_mount_info *out)
+{
+	uint8_t *ca = scratch, *cb = scratch + RREC_SECTOR_BYTES;
+	uint32_t sectors = 0;
+	bool read_error = false, formatted = false;
+	struct rst_sb picked;
+	int which;
+
+	if (rhw_disk()->sector_count(&sectors) != 0) {                                   /* FW l.507 */
+		return -EIO;
+---rst.c 470-500
+	int r = 0;
+
+	if (!S.mounted) {
+		k_mutex_unlock(&op_lock);
+		return 0;
+	}
+	drain_chunks();
+	k_mutex_lock(&io_lock, K_FOREVER);
+	if (flush_log() != 0) {
+		r = -EIO;
+	}
+	if (rhw_disk()->deinit() != 0) {                                                 /* FW l.506: deinit, */
+		r = -EIO;
+	}
+	(void)rhw_sdbus()->suspend();                                                    /* then suspend, */
+	if (rhw_pmic()->rail_set(RHW_RAIL_SD, false, "rst_unmount") != 0) {              /* then rail off */
+		r = -EIO;
+	}
+	S.mounted = false;
+	S.op.active = false;
+	S.closing = false;
+	k_mutex_unlock(&io_lock);
+	k_mutex_unlock(&op_lock);
+	return r;
+}
+
+int rst_unmount(void)
+{
+	if (!op_take()) {
+		return -EBUSY;
+	}

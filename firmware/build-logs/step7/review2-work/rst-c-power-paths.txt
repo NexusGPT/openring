@@ -1,0 +1,14 @@
+2: * rst.c: the storage part's thin layer (software step 6, unit U2): the storage thread, the rail sequence of
+4: * It reaches the card, the storage bus, the VDD_SD rail and the clock only through ring_rhw (rhw.h); the formats,
+160:static void power_down(bool deinit, const char *caller)
+162:	if (deinit) {
+163:		(void)rhw_disk()->deinit();
+165:	(void)rhw_sdbus()->suspend();
+166:	(void)rhw_pmic()->rail_set(RHW_RAIL_SD, false, caller);
+314:	(void)rhw_sdbus()->suspend();                 /* FW l.506: the sleep state at boot, before any SPI use */
+345:	if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+349:	(void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+351:		r = rhw_disk()->init();
+481:	if (rhw_disk()->deinit() != 0) {                                                 /* FW l.506: deinit, */
+484:	(void)rhw_sdbus()->suspend();                                                    /* then suspend, */
+485:	if (rhw_pmic()->rail_set(RHW_RAIL_SD, false, "rst_unmount") != 0) {              /* then rail off */

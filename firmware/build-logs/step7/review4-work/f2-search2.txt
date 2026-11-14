@@ -1,0 +1,26 @@
+firmware/modules/ring_store/include/ring_store/rst.h:128: * rhw_sdbus()->suspend()). VDD_SD stays off. Once, at boot, before every other call. cb may be NULL. */
+firmware/modules/ring_store/src/rst.c:160:static void power_down(bool deinit, const char *caller)
+firmware/modules/ring_store/src/rst.c:165:	(void)rhw_sdbus()->suspend();
+firmware/modules/ring_store/src/rst.c:314:	(void)rhw_sdbus()->suspend();                 /* FW l.506: the sleep state at boot, before any SPI use */
+firmware/modules/ring_store/src/rst.c:349:	(void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+firmware/modules/ring_store/src/rst.c:360:		power_down(false, "rst_mount");
+firmware/modules/ring_store/src/rst.c:459:			power_down(true, "rst_mount");
+firmware/modules/ring_store/src/rst.c:484:	(void)rhw_sdbus()->suspend();                                                    /* then suspend, */
+firmware/modules/ring_power/src/rpw_hw_real.c:36:#if !DT_NODE_EXISTS(DT_ALIAS(ring_vdd_mic)) || !DT_NODE_EXISTS(DT_ALIAS(ring_vdd_sd))
+firmware/modules/ring_power/src/rpw_hw_real.c:73:static const struct device *const ldsw_sd = DEVICE_DT_GET(DT_ALIAS(ring_vdd_sd));
+firmware/modules/ring_power/src/rpw_hw_real.c:100:	d = r == RHW_RAIL_MIC ? ldsw_mic : ldsw_sd;
+firmware/modules/ring_power/src/rpw_hw_real.c:101:	rc = on ? regulator_enable(d) : regulator_disable(d);
+firmware/modules/ring_power/src/rpw_hw_real.c:340:	    !device_is_ready(ldsw_sd)) {
+----
+37:		ring-vdd-mic = &ring_ldsw_mic;       /* modules/ring_power/src/rpw_hw_real.c, load switch 1 */
+38:		ring-vdd-sd = &ring_ldsw_sd;         /* modules/ring_power/src/rpw_hw_real.c, load switch 2 */
+338:				regulator-boot-on;
+339:				regulator-always-on;
+348:				regulator-boot-on;
+349:				regulator-always-on;
+354:			ring_ldsw_mic: LDO1 {
+355:				regulator-initial-mode = <NPM13XX_LDSW_MODE_LDSW>;
+358:				regulator-boot-off;
+362:			ring_ldsw_sd: LDO2 {
+363:				regulator-initial-mode = <NPM13XX_LDSW_MODE_LDSW>;
+366:				regulator-boot-off;

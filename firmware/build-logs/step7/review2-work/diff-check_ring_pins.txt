@@ -1,0 +1,156 @@
+diff --git a/firmware/tools/check_ring_pins.py b/firmware/tools/check_ring_pins.py
+index deda58e0..144a2b65 100644
+--- a/firmware/tools/check_ring_pins.py
++++ b/firmware/tools/check_ring_pins.py
+@@ -13,8 +13,16 @@ signal:
+   NO NODE <signal> netlist <pin>: <why>                        (fails: the node, the property or the function is missing,
+                                                                  or the node is not enabled)
+   NO NODE BY NATURE <net> <ball> <pin name>: <why>             (power, ground, decoupling, debug, reset: no devicetree node)
++for a GPIO-kind signal also its flags (active level, pull) against the table FLAGS and the source it names:
++  SAME FLAGS / DIFFERENT FLAGS (fails) / FLAGS ... no source (no source states them: printed, not compared)
+ and, the other way round, every GPIO and pin-control pin of an enabled node that the table does not name:
+-  UNEXPECTED <where> <pin> (netlist net <net or none>)           (fails)
++  UNEXPECTED <where> <pin> (netlist net <net or none>)           (fails; also a gpio hog, and a property ending in
++                                                                 "gpios" that cannot be read as GPIOs)
++  UNSEEN <node>                                                  (fails: an enabled ADC, comparator or NFC node, whose
++                                                                 pins this check cannot see)
++Not seen: a pin a driver selects in code without the devicetree. The fixed-function pins (crystals, USB, antenna)
++come from the chip, not from the devicetree, which names no pin for them; the check proves only that their node is
++enabled.
+ A U1 row whose net is in no list fails too (UNLISTED). Last line: "check_ring_pins: RESULT PASS ..." (exit 0) or
+ "check_ring_pins: RESULT FAIL ..." (exit 1). Exit 2: the inputs could not be read.
+ 
+@@ -90,6 +98,47 @@ NO_NODE_BY_NATURE = {
+ }
+ 
+ 
++# expected GPIO flags of the GPIO-kind signals: (names of the gpio.h flags that must be set, source); None = no source
++# states the flags, printed as "no source" and not compared. Only ACTIVE_LOW, PULL_UP and PULL_DOWN are compared.
++FLAGS = {
++    "BTN_REC": (("GPIO_PULL_UP", "GPIO_ACTIVE_LOW"), "design/firmware.md l.82"),
++    "JOY_UP": (("GPIO_PULL_UP", "GPIO_ACTIVE_LOW"), "design/firmware.md l.82"),
++    "JOY_DOWN": (("GPIO_PULL_UP", "GPIO_ACTIVE_LOW"), "design/firmware.md l.82"),
++    "JOY_LEFT": (("GPIO_PULL_UP", "GPIO_ACTIVE_LOW"), "design/firmware.md l.82"),
++    "JOY_RIGHT": (("GPIO_PULL_UP", "GPIO_ACTIVE_LOW"), "design/firmware.md l.82"),
++    "MOTOR": ((), "design/firmware.md l.83 (output, active high)"),
++    "PMIC_INT": ((), "design/firmware.md l.865 (active high)"),
++    "OLED_PWR_EN": ((), "design/firmware.md l.381 (high = screen supply on)"),
++    "LCD_RST": (("GPIO_ACTIVE_LOW",), "design/firmware.md l.381 (low = reset, high = run)"),
++    "LCD_TE": ((), "design/firmware.md l.84 (input, rising edge)"),
++    "SD_CS": (("GPIO_ACTIVE_LOW",), "design/firmware.md l.506 (SD_CS high when idle)"),
++    "LCD_CS": None,
++    "LCD_DCX": None,
++    "MIC_B_DATA": None,
++    "SPARE_P1_00": None,
++    "SPARE_P2_00": None,
++    "SPARE_P3_03": None,
++    "SPARE_P3_04": None,
++}
++COMPARED_FLAGS = ("GPIO_ACTIVE_LOW", "GPIO_PULL_UP", "GPIO_PULL_DOWN")
++# enabled nodes whose pins this check cannot see (analog inputs, NFC pads): any of them fails the check
++UNSEEN_COMPATS = ("nordic,nrf-saadc", "nordic,nrf-comp", "nordic,nrf-lpcomp", "nordic,nrf-nfct")
++
++
++def load_gpio_flags():
++    hdr = os.path.join(ZEPHYR_BASE, "include", "zephyr", "dt-bindings", "gpio", "gpio.h")
++    vals = {}
++    with open(hdr) as f:
++        for line in f:
++            m = re.match(r"#define\s+(GPIO_ACTIVE_LOW|GPIO_PULL_UP|GPIO_PULL_DOWN)\s+\(1 << (\d+)\)", line)
++            if m:
++                vals[m.group(1)] = 1 << int(m.group(2))
++    for k in COMPARED_FLAGS:
++        if k not in vals:
++            raise RuntimeError("%s not found in %s" % (k, hdr))
++    return vals
++
++
+ def load_netlist(path):
+     """U1 rows: list of (net, ball, pin_name, pin_type)."""
+     rows = []
+@@ -205,6 +254,7 @@ def main(argv):
+         dt = dtlib.DT(dts_path)
+         rows = load_netlist(net_path)
+         hdr, mac = load_psel_macros()
++        gflags = load_gpio_flags()
+     except Exception as e:  # inputs unreadable: not a pass and not a pin failure
+         print("check_ring_pins: cannot read the inputs: %s" % e)
+         return 2
+@@ -272,8 +322,8 @@ def main(argv):
+                     print("DIFFERENT %s netlist %s devicetree %s (fixed function) %s" % (net, npin, node_name(node), what))
+                     failures.append(net)
+                 else:
+-                    print("SAME %s netlist %s devicetree %s (fixed function of the chip, enabled) %s" %
+-                          (net, npin, node_name(node), what))
++                    print("SAME %s netlist %s devicetree %s enabled; pin %s from the chip's fixed function (the "
++                          "devicetree names no pin for this node)" % (net, npin, node_name(node), what))
+                 continue
+             if kind == "gpio":
+                 prop = node.props.get(what)
+@@ -292,6 +342,24 @@ def main(argv):
+                     failures.append(net)
+                 else:
+                     print("SAME %s netlist %s devicetree %s %s (flags 0x%x)" % (net, npin, place, dpin, flags))
++                exp = FLAGS.get(net)
++                mask = 0
++                for k in COMPARED_FLAGS:
++                    mask |= gflags[k]
++                if exp is None:
++                    print("FLAGS %s 0x%x: no source" % (net, flags & mask))
++                else:
++                    want = 0
++                    for k in exp[0]:
++                        want |= gflags[k]
++                    names = lambda v: "|".join(k for k in COMPARED_FLAGS if v & gflags[k]) or "ACTIVE_HIGH, no pull"
++                    if flags & mask != want:
++                        print("DIFFERENT FLAGS %s devicetree %s, %s wants %s" % (net, names(flags & mask), exp[1],
++                                                                              names(want)))
++                        if net not in failures:
++                            failures.append(net)
++                    else:
++                        print("SAME FLAGS %s %s (%s)" % (net, names(want), exp[1]))
+                 continue
+             # psel
+             states = psel_states(dt, node)
+@@ -304,9 +372,8 @@ def main(argv):
+             for sname, ents in states.items():
+                 pins = [pin_text(po, pi) for (fn, po, pi) in map(decode, ents) if fn == what]
+                 if not pins:
+-                    if sname == "default":
+-                        print("NO NODE %s netlist %s: state %s of %s has no %s" % (net, npin, sname, where, what))
+-                        ok = False
++                    print("NO NODE %s netlist %s: state %s of %s has no %s" % (net, npin, sname, where, what))
++                    ok = False
+                     continue
+                 seen = True
+                 for dpin in pins:
+@@ -327,11 +394,28 @@ def main(argv):
+     for node in dt.node_iter():
+         if not enabled(node):
+             continue
++        compats = node.props["compatible"].to_strings() if "compatible" in node.props else []
++        for c in compats:
++            if c in UNSEEN_COMPATS:
++                print("UNSEEN %s (%s) is enabled: its pins (analog inputs or NFC pads) are not checked" %
++                      (node_name(node), c))
++                unexpected += 1
++        if "gpio-hog" in node.props:
++            port = gpio_port(node.parent)
++            cells = node.props["gpios"].to_nums() if "gpios" in node.props else []
++            n = node.parent.props["#gpio-cells"].to_num()
++            for k in range(0, len(cells), n):
++                dpin = pin_text(port, cells[k])
++                print("UNEXPECTED %s gpio-hog %s (netlist net %s)" % (node.path, dpin, pin_to_net.get(dpin) or "none"))
++                unexpected += 1
++            continue
+         for pname, prop in node.props.items():
+             if pname.endswith("gpios") and not pname.startswith("#") and pname != "ngpios":
+                 try:
+                     ents = gpio_entries(dt, prop)
+-                except Exception:
++                except Exception as exc:
++                    print("UNEXPECTED %s/%s cannot be read as GPIOs: %s" % (node_name(node), pname, exc))
++                    unexpected += 1
+                     continue
+                 for ctl, pin, flags in ents:
+                     port = gpio_port(ctl)

@@ -1,0 +1,165 @@
+		if (S.sb.log_head - S.log_committed >= RREC_LOG_RING_RECORDS / 2u) {
+			/* the superblock's log_head may lag by less than a lap, so the scan at mount finds the head */
+			(void)sb_write();
+		}
+		k = k_spin_lock(&st_lock);
+		rst_evbuf_pop(&S.ev);
+		k_spin_unlock(&st_lock, k);
+	}
+}
+
+static void power_down(bool deinit, const char *caller)
+{
+	if (deinit) {
+		(void)rhw_disk()->deinit();
+	}
+	(void)rhw_sdbus()->suspend();
+	(void)rhw_pmic()->rail_set(RHW_RAIL_SD, false, caller);
+}
+
+static bool op_take(void)
+{
+	return k_mutex_lock(&op_lock, K_NO_WAIT) == 0;
+}
+
+static void drain_chunks(void)
+{
+	for (;;) {
+		k_spinlock_key_t k = k_spin_lock(&st_lock);
+		uint32_t n = S.qn + S.cbs;
+
+		k_spin_unlock(&st_lock, k);
+---- 300-370
+
+#ifdef CONFIG_RING_RHW_SIM
+static void sim_reboot_hook(void)
+{
+	reset_state();
+}
+#endif
+
+int rst_init(const struct rst_cb *cb)
+{
+	reset_state();
+	if (cb != NULL) {
+		S.cb = *cb;
+	}
+	(void)rhw_sdbus()->suspend();                 /* FW l.506: the sleep state at boot, before any SPI use */
+	if (!thr_started) {
+		thr_started = true;
+		k_thread_create(&thr, thr_stack, K_THREAD_STACK_SIZEOF(thr_stack), store_thread, NULL, NULL, NULL,
+				CONFIG_RING_STORE_THREAD_PRIORITY, 0, K_NO_WAIT);
+		k_thread_name_set(&thr, "rst");
+#ifdef CONFIG_RING_RHW_SIM
+		(void)rhw_sim_add_reboot_hook(sim_reboot_hook);
+#endif
+	}
+	S.inited = true;
+	return 0;
+}
+
+/* ------------------------------------------------------------------ mount, unmount */
+
+static void fill_info(struct rst_mount_info *out)
+{
+	memset(out, 0, sizeof(*out));
+	out->open_flag = S.sb.open_flag != 0;
+	out->open_recording_id = S.sb.open_flag ? S.sb.open_recording_id : 0;
+	out->boot_count = S.sb.boot_count;
+	out->card_sectors = S.sb.card_sectors;
+	out->recordings = S.recs.live_total;
+	out->space = S.space;
+}
+
+static int card_up(void)
+{
+	int r = -EIO;
+
+	if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+		return -EIO;
+	}
+	k_msleep(RREC_SD_RAIL_WAIT_MS);                                                  /* wait 1 ms */
+	(void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+	for (uint32_t i = 0; i < RREC_INIT_TRIES; i++) {                                 /* FW l.138 */
+		r = rhw_disk()->init();
+		if (r == 0) {
+			break;
+		}
+		if (i + 1 < RREC_INIT_TRIES) {
+			k_msleep(RREC_INIT_GAP_MS);
+		}
+	}
+	if (r != 0) {
+		power_down(false, "rst_mount");
+		return -EIO;
+	}
+	return 0;
+}
+
+static int mount_body(bool boot, struct rst_mount_info *out)
+{
+	uint8_t *ca = scratch, *cb = scratch + RREC_SECTOR_BYTES;
+	uint32_t sectors = 0;
+	bool read_error = false, formatted = false;
+---- 440-500
+		return -ENODEV;
+	}
+	if (!op_take()) {
+		return -EBUSY;
+	}
+	if (S.mounted) {
+		fill_info(out);
+		k_mutex_unlock(&op_lock);
+		return 0;
+	}
+	S.fault = false;                       /* a new mount starts clean; the open flag on the card still leads to RECOVERY */
+	S.closing = false;
+	S.op.active = false;
+	r = card_up();
+	if (r == 0) {
+		k_mutex_lock(&io_lock, K_FOREVER);
+		r = mount_body(boot, out);
+		if (r != 0) {
+			rst_recs_init(&S.recs, rec_store, RREC_LIST_CACHE);
+			power_down(true, "rst_mount");
+		}
+		k_mutex_unlock(&io_lock);
+	}
+	k_mutex_unlock(&op_lock);
+	return r;
+}
+
+/* the body of rst_unmount and rst_unmount_wait, with op_lock held by the caller */
+static int unmount_locked(void)
+{
+	int r = 0;
+
+	if (!S.mounted) {
+		k_mutex_unlock(&op_lock);
+		return 0;
+	}
+	drain_chunks();
+	k_mutex_lock(&io_lock, K_FOREVER);
+	if (flush_log() != 0) {
+		r = -EIO;
+	}
+	if (rhw_disk()->deinit() != 0) {                                                 /* FW l.506: deinit, */
+		r = -EIO;
+	}
+	(void)rhw_sdbus()->suspend();                                                    /* then suspend, */
+	if (rhw_pmic()->rail_set(RHW_RAIL_SD, false, "rst_unmount") != 0) {              /* then rail off */
+		r = -EIO;
+	}
+	S.mounted = false;
+	S.op.active = false;
+	S.closing = false;
+	k_mutex_unlock(&io_lock);
+	k_mutex_unlock(&op_lock);
+	return r;
+}
+
+int rst_unmount(void)
+{
+	if (!op_take()) {
+		return -EBUSY;
+	}

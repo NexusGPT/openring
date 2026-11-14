@@ -1,0 +1,30 @@
+== design/wiring/ring-board-plan-work/placement-plan.csv
+4:C5,OpenRing:Chip_0201,F,1.247,0.522,270,R3,101.247,100.522
+5:C1,OpenRing:Chip_0201,F,6.010,0.350,90,Z4,106.010,100.350
+6:C2,OpenRing:Chip_0201,F,6.670,0.660,90,Z4,106.670,100.660
+9:FB1,OpenRing:Chip_0201,F,1.697,1.522,180,R3,101.697,101.522
+10:C7,OpenRing:Chip_0201,F,1.950,0.522,270,R3,101.950,100.522
+11:C14,OpenRing:Chip_0201,F,6.010,-0.840,90,Z4,106.010,99.160
+44:R71,OpenRing:Chip_0201,F,6.670,-0.520,90,Z4,106.670,99.480
+45:R72,OpenRing:Chip_0201,F,6.670,-1.700,90,Z4,106.670,98.300
+78:J1,OpenRing:FPC_Hirose_FH35C-15S-0.3SHW,F,-11.650,-0.150,270,Z13,88.350,99.850
+== design/mech/thin/out/v10/before/placement.csv
+18:screen_connector,J1,board,-11.650,-0.150,0.980,3.350,6.100,0.900,,True,"Hirose FH35C-15S-0.3SHW: closed housing 6.10 along the contact row x 3.35 (w1_hirose_
+== design/mech/thin/placement.csv
+18:screen_connector,J1,board,-11.650,-0.150,0.980,3.350,6.100,0.900,,True,"Hirose FH35C-15S-0.3SHW: closed housing 6.10 along the contact row x 3.35 (w1_hirose_
+== assembly.md screen-face sentences
+3:Basis: first written on design commit a0cf952 (2026-11-11, 00:50 to 01:00); brought to the inside model v6 and architecture 17.22 to 17.26 on the working tree at commit 6ccb258 or later (2026-11-11,
+21:- Face names on the main board. The board has parts on BOTH faces. The PARTS FACE is the KiCad face F.Cu, called "top" in `design/ecad/ring/pcb/fab/ring-pos-front.csv:1`; it carries 72 parts (the c
+53:| Screen `screen`, `screen_tail` | DISP1 | 0.95 inch AMOLED with its own stock cable (15 contacts). The screen is turned 180 degrees; the cable is bent back under the panel at the fingertip end and
+55:| Main board `main_board` | PCB1 | 27.2 x 12.6 x 0.3 mm, 4 copper layers with laser microvias, parts on both faces: 72 parts and the ribbon lands on the parts face, J1, 8 small parts and the 12 tes
+94:### Step 2. Print paste, place the board parts on both faces, reflow twice (screen face first, then parts face)
+96:- **Join:** the board parts of `design/bom.csv` to PCB1 in TWO solder passes, one per face, each with its own paste stencil and its own reflow. The board has parts on both faces (`design/ecad/ring/
+100:- **Never a third reflow:** J1 accepts at most 2 reflow cycles, and the two passes use both. Hirose's drawing says "Number of reflow cycles:2 cycles MAX." (`design/datasheets/w1_hirose_fh35c-15s-0
+103:- **Check:** every joint of each pass is judged by these accept rules, under the 10 times magnifier (the lead's wording, after the common workmanship practice for class 2 electronics, `design/wiri
+104:- **After:** reflow is not undone, and the board never sees an oven again. A parts face part can be reworked by hand until step 15, when the board goes into the block. A screen face part can be re
+124:- **Join:** nothing is joined. A jig touches the SCREEN FACE, where the 12 test pads are, and the PARTS FACE, where the ribbon lands J_BAND_B are (J_BAND_B: `design/ecad/ring/pcb/placement-final.c
+125:- **Locate:** the jig's pins on the 12 test pads and on the J_BAND_B lands; the board sits on its outline, the screen face toward the pad pins. The J_BAND_B pins touch the solder domes of step 2, 
+128:- **After:** this is the last moment the SWD pads can be reached with the screen face open. They lie on the screen face. From step 16 the screen's cable and its panel lie over them, and the cable 
+203:- **Locate:** the fixture `design/mfg/assembly/hotbar-fixture.svg`: a base with a board pocket 27.30 x 12.70 mm and 0.30 deep, so the parts face lies flush with the base top; a relief channel 6.60
+204:- **Before:** steps 5 to 9 passed. The cell voltage of step 9 and the motor's meter reading of step 7 are recorded. The parts face stencil of step 2 had its 15 ribbon land openings (`design/mfg/as
+210:- **Join:** nothing is soldered. The board with its two harnesses (step 14) goes into the body (`design/wiring/lead-decisions.md:81`). Each of the two floor slots is opened through the block's lon

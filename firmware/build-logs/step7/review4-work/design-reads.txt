@@ -1,0 +1,21 @@
+- Rule (sch-notes section 9 item 6; pull-ups R60, R63 to R65 go to VDD_SD, architecture W3): **no storage line is driven high while VDD_SD is off.** Before VDD_SD goes off: `DISK_IOCTL_CTRL_DEINIT`, then `spi00` is suspended so its pin sleep state applies, in which SD_SCK, SD_MOSI, SD_CS and SD_MISO are inputs with no pull (disconnected). After VDD_SD comes on: wait 1 ms, resume `spi00` (default pin state: SD_CS output high, SD_SCK and SD_MOSI outputs low), then `DISK_IOCTL_CTRL_INIT`. At boot the sleep state is applied before any SPI use. The development kit already has a `spi00_sleep` state [SRC 9]; the suspend call is listed in section 10.5.
+----
+
+| From | Event | To | Actions |
+|---|---|---|---|
+| `SHIP` | VBUS appears (case contact) | `BOOT` | the nPM1304 leaves ship mode (VBUS above VBUSPOR, 3.9 V [NPM p17, p116]) and powers the bucks; the chip starts; charge on |
+| `OFF` | VBUS appears | `BOOT` | as above, including charge on |
+| `BOOT` | init done, superblock open flag clear, no VBUS, battery above B5 | `STANDBY` | VDD_SD off |
+| `BOOT` | init done, superblock open flag set | `RECOVERY` | keep VDD_SD on |
+| `BOOT` | init done, VBUS present | `CHARGING` | VDD_SD off; charge on |
+| `BOOT` | storage init fails 3 times, 200 ms apart | `ERR_STORAGE_FAULT` | log event; MF |
+| `BOOT` | battery at B2 and no VBUS | `OFF` | enter ship mode (section 8.4) |
+| `BOOT` | battery at B5 and no VBUS | `ERR_BATTERY_LOW` | VDD_SD off; M3 (ruling R13) |
+| `RECOVERY` | scan done, no VBUS | `STANDBY` | write index CLOSE record with state RECOVERED; clear open flag; VDD_SD off |
+| `RECOVERY` | scan done, VBUS present | `CHARGING` | same actions; charge on |
+----
+138:| `BOOT` | storage init fails 3 times, 200 ms apart | `ERR_STORAGE_FAULT` | log event; MF |
+216:- **Order at "init done" (rulings R4, R5, R12, correction R4b):** battery events that arrive in `BOOT` before "init done" are not applied at once: the level is kept and this order decides; at B2 (no VBUS) the row "battery at B2 and no VBUS" (to `OFF`, no recovery: the open flag stays set and the next start-up recovers); else a start-up with an unfinished recording takes the row "init done, superblock open flag set" first (`RECOVERY`); at the end of the scan the battery rule applies: "scan done, VBUS present" goes to `CHARGING`, "scan done, no VBUS" enters `STANDBY` through rule R-STB (at B5 to `ERR_BATTERY_LOW`); else at B5 (no VBUS) the row "battery at B5 and no VBUS" (to `ERR_BATTERY_LOW`); else the row "init done, superblock open flag clear, no VBUS, battery above B5" or "init done, VBUS present". If the storage init fails instead (row "storage init fails 3 times"), a kept B2 with no VBUS runs the row "`ERR_STORAGE_FAULT`, battery reaches B2" (to `OFF`) on entering `ERR_STORAGE_FAULT` (ruling R15).
+343:- **Start of the sign in the screens part (F7 part 4, software step 4):** the function `rscr_sign_start()` is the call that `rec_mics_on()` makes for the first frame. The screens thread draws the frame and the caller waits for the answer, 5 s at most. An answer of 0 means the panel accepted the frame with the red dot. A call that times out is cancelled: its frame is never drawn later, and a later call never receives its answer. The call is refused on the screens thread itself and when the screens did not start; it may be made while the core step runs. Until software step 6 nothing calls it.
+643:- **Write retries:** a failed chunk write is retried 2 times at once (3 tries); then `ERR_STORAGE_FAULT`.
+749:| Control | `a3c10001-5b7e-4f2a-9c1d-7e2b6f4d8a90` | write with response | opcode u8: 0x01 highlight (only in `RECORDING`); no arguments. Bluetooth cannot start or stop a recording (owner, F2: only a long press does). A refused command returns ATT error 0x80 (application error) |

@@ -1,0 +1,63 @@
+--- build_all 584-593
+	fi
+	got=$(sed -n 's/^check_ring_pins: RESULT FAIL [0-9]* signals checked; failing: //p' "$log")
+	if [ "$got" != "$sig" ]; then
+		echo "ring-pins-broken: $name: SELF TEST FAILED: the check failed on \"$got\", not on exactly \"$sig\""
+		return 1
+	fi
+	echo "ring-pins-broken: $name: self test ok: the planted copy fails on $sig alone"
+	return 0
+}
+# ring_pins_case <name> <signal> <file in boards/ringrec> <old text> <new text>: a copy of the board with the first
+--- build_all 645-659 numbered
+645: ring_production_check() {
+646: 	local a="$OUT/ring-prod/app/zephyr" m="$OUT/ring-prod/mcuboot/zephyr" rc=0 f
+647: 	for f in "$a/.config" "$m/.config"; do
+648: 		grep -E '^(# )?CONFIG_(SERIAL|UART_CONSOLE)[ =]' "$f" 2>&1 | sed "s|^|ring-production: ${f#$OUT/} |"
+649: 		if grep -q -E '^CONFIG_(SERIAL|UART_CONSOLE)=y' "$f"; then
+650: 			echo "ring-production: DIFFERENT a UART is on in ${f#$OUT/}"
+651: 			rc=1
+652: 		fi
+653: 	done
+654: 	if grep -q -E 'uart@c6000 \{' "$a/zephyr.dts" && awk '/uart20: uart@c6000 \{/{p=1} p&&/status =/{print; exit}' "$a/zephyr.dts" | grep -q okay; then
+655: 		echo "ring-production: DIFFERENT uart20 is enabled in the production devicetree"
+656: 		rc=1
+657: 	fi
+658: 	grep -n -A3 'dbg_tx_pulldown' "$a/zephyr.dts" 2>&1
+659: 	return $rc
+--- dts 348-362
+348: 			/* load switch 1: VDD_MIC (LSOUT1, ball A4); only rec_mics_on() switches it on (FW l.342, l.457) */
+349: 			ring_ldsw_mic: LDO1 {
+350: 				regulator-initial-mode = <NPM13XX_LDSW_MODE_LDSW>;
+351: 				soft-start-microamp = <25000>;
+352: 				active-discharge;
+353: 				regulator-boot-off;
+354: 			};
+355: 
+356: 			/* load switch 2: VDD_SD (LSOUT2, ball A5) */
+357: 			ring_ldsw_sd: LDO2 {
+358: 				regulator-initial-mode = <NPM13XX_LDSW_MODE_LDSW>;
+359: 				soft-start-microamp = <50000>;
+360: 				active-discharge;
+361: 				regulator-boot-off;
+362: 			};
+--- README 66-84
+66: What exists: the Zephyr board `ringrec/nrf54lm20a/cpuapp` (folder `boards/ringrec`: devicetree with every pin of the
+67: main chip from `design/ecad/ring/netlist.csv`, the power chip nPM1304 with its two load switches and charger, the SD
+68: card on `spi00`, the microphones on `pdm20`, the screen's bus on `spi21`, USB, watchdog, the 1 KB crash record in
+69: retained RAM, the flash layout of `design/firmware.md` 9.2; a cell model for the fuel gauge that is NOT THE RING'S
+70: CELL (Nordic's 20 mAh sample, a stand-in); a copy of the netlist, which `tools/remote.sh` compares with
+71: `design/ecad/ring/netlist.csv` before every run, refusing to run when they differ), the application's settings for it
+72: (`app/boards/ringrec_nrf54lm20a_cpuapp.conf` and `.overlay`), the production settings without the debug port
+73: (`app/ringrec_production.conf`, `boards/ringrec/ringrec_production.overlay` and `_mcuboot.conf`), and
+74: `tools/check_ring_pins.py`, which compares the built devicetree with the netlist. Notes: `docs/board-notes.md`.
+75: 
+76: How to build it: `tools/build_all.sh` stage 6 (`ring`, then `ring-drivers`, `ring-ram`, `ring-pins`,
+77: `ring-pins-broken`, `ring-production`, `ring-production-check`). By hand, in the container:
+78: `west build -b ringrec/nrf54lm20a/cpuapp --sysbuild -d <out> app -- -DBOARD_ROOT=/ws/firmware`.
+79: 
+80: What is unproven: everything that needs a ring. It compiles and its pins match the netlist; no ring has run it. The
+81: power part's real file compiles and is on (`CONFIG_RING_POWER_REAL=y`), with a cell model that is NOT THE RING'S CELL;
+82: the screen has no panel driver (the memory display stands in); the joystick has no driver. MCUboot is signed with the
+83: SDK's debug key ("for debug use only and is not secure"): NOT FOR SHIPPING; the production key is made at the factory
+84: step (no key is changed here).

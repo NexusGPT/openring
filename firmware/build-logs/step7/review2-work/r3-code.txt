@@ -1,0 +1,99 @@
+- The nPM1304's system monitor measures the battery voltage, the battery current and the thermistor [NPM p99, section 7.1]. The charger sensor driver gives voltage, current and temperature channels (`SENSOR_CHAN_GAUGE_VOLTAGE`, `SENSOR_CHAN_GAUGE_AVG_CURRENT`, `SENSOR_CHAN_GAUGE_TEMP`) [SRC 11; that the family driver serves the nPM1304 is TO CONFIRM, section 10.5 item 3]. Each sample feeds `nrf_fuel_gauge_process()`, which returns the state of charge [SRC 12]; `nrf_fuel_gauge_tte_get()` and `nrf_fuel_gauge_ttf_get()` give time to empty and to full [SRC 12].
+--- rpw_hw_real.c 155-200, 285-330
+
+/* ------------------------------------------------------------------ system monitor sample (FW l.926) */
+static int32_t sv_to_micro(const struct sensor_value *v)
+{
+	return v->val1 * 1000000 + v->val2;
+}
+
+/* The current in the interface's sign (positive = discharge). The sign of the kit's current channel against the
+ * library's expectation is kit fact K6, open: this one place converts. */
+static int32_t chan_to_ua(const struct sensor_value *v)
+{
+	return -sv_to_micro(v);
+}
+
+static int r_sample(struct rhw_pmic_sample *out)
+{
+	struct sensor_value v, i, t, d;
+	int rc = sensor_sample_fetch(charger);
+
+	if (rc != 0) {
+		return rc;
+	}
+	rc = sensor_channel_get(charger, SENSOR_CHAN_GAUGE_VOLTAGE, &v);
+	if (rc == 0) {
+		rc = sensor_channel_get(charger, SENSOR_CHAN_GAUGE_AVG_CURRENT, &i);
+	}
+	if (rc == 0) {
+		rc = sensor_channel_get(charger, SENSOR_CHAN_GAUGE_TEMP, &t);
+	}
+	if (rc == 0) {
+		rc = sensor_channel_get(charger, SENSOR_CHAN_DIE_TEMP, &d);
+	}
+	if (rc != 0) {
+		return rc;
+	}
+	out->mv = (uint16_t)(sv_to_micro(&v) / 1000);
+	out->ua = chan_to_ua(&i);
+	out->temp_c_x10 = (int16_t)(sv_to_micro(&t) / 100000);
+	out->die_c_x10 = (int16_t)(sv_to_micro(&d) / 100000);
+	return 0;
+}
+
+static int r_ilim(void)
+{
+	uint8_t v = 0;
+	int rc = rd(REG_BASE_CHARGER, REG_BCHGILIMSTATUS, &v);
+	.rail_set = r_rail_set, .rail_get = r_rail_get, .charger_enable = r_chg_enable,
+	.charger_current = r_chg_current, .charge_status = r_chg_status, .sample = r_sample, .ilim_active = r_ilim,
+	.reset_causes = r_rst, .reset_causes_clear = r_rst_clear, .shphld_config = r_shphld_config,
+	.shphld_strobe = r_shphld_strobe, .ship_task = r_ship_task, .vbus_present = r_vbus_present,
+	.set_callbacks = r_set_callbacks,
+};
+
+/* ------------------------------------------------------------------ the kit's fuel gauge library (FW l.926, l.927).
+ * The library's current argument follows the kit's convention; the interface's positive-discharge current is
+ * converted in this one function (kit fact K6: the sign is open). */
+static int g_start(const struct rhw_pmic_sample *first)
+{
+	struct nrf_fuel_gauge_init_parameters p = { .model = &battery_model };
+
+	p.v0 = first->mv / 1000.0f;
+	p.i0 = -(first->ua / 1000000.0f);
+	p.t0 = first->temp_c_x10 / 10.0f;
+	return nrf_fuel_gauge_init(&p, NULL);
+}
+
+static int g_process(const struct rhw_pmic_sample *s, uint32_t dt_ms, struct rhw_gauge_out *out)
+{
+	/* nRF Connect SDK v3.4.2 signatures (nrfxlib/nrf_fuel_gauge/include/nrf_fuel_gauge.h: process l.475, tte_get
+	 * l.498, ttf_get l.510): each returns 0 or a negative error and writes its value through a pointer; tte and ttf
+	 * may be NAN (the header's own words), which the "> 0" tests below turn into "unknown" (UINT32_MAX). */
+	float soc = 0.0f, tte = 0.0f, ttf = 0.0f;
+	int rc = nrf_fuel_gauge_process(s->mv / 1000.0f, -(s->ua / 1000000.0f), s->temp_c_x10 / 10.0f,
+					dt_ms / 1000.0f, &soc, NULL);
+
+	if (rc != 0) {
+		return rc;
+	}
+	if (nrf_fuel_gauge_tte_get(&tte) != 0) {
+		tte = 0.0f;
+	}
+	if (nrf_fuel_gauge_ttf_get(&ttf) != 0) {
+		ttf = 0.0f;
+	}
+
+	out->soc_x10 = (uint16_t)(soc * 10.0f + 0.5f);
+	out->tte_s = tte > 0.0f ? (uint32_t)tte : UINT32_MAX;
+	out->ttf_s = ttf > 0.0f ? (uint32_t)ttf : UINT32_MAX;
+	return 0;
+}
+
+static const struct rhw_gauge_api real_gauge = { .start = g_start, .process = g_process };
+
+static int rpw_real_init(void)
+{
+	if (!device_is_ready(pmic) || !device_is_ready(charger) || !device_is_ready(ldsw_mic) ||
+	    !device_is_ready(ldsw_sd)) {

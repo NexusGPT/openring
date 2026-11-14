@@ -1,0 +1,32 @@
+- `review2-work/version-compare.txt`: `SAME firmware/build-logs/step7/lead-full5.exit`
+- `review2-work/diffstat.txt`: ` 90 files changed, 34558 insertions(+), 60 deletions(-)`
+- `review2-work/r1-refusal.console`: `script exit 1`
+- `review2-work/r1-shasum-missing.console`: `exit 0`
+- `review2-work/remote-sh-redacted.txt`: ` 174 exit "$EXIT_CODE"`
+- `review2-work/r2-paths.txt`: `	}`
+- `review2-work/r2-more-paths.txt`: `--- mcuboot SPI config in ring build log`
+- `review2-work/r2-mcuboot-spi-count.txt`: `[234/297] Building C object zephyr/drivers/gpio/CMakeFiles/drivers__gpio.dir/gpio_nrfx.c.obj`
+- `review2-work/r2-pinctrl-spi00.txt`: `	spi21_default: spi21_default {`
+- `review2-work/fw-506.txt`: `- **Write speed:** one 65-sector multi-block write (CMD25) per chunk, sequential addresses, no table updates in between.`
+- `review2-work/r3-units.txt`: `326:	out->ttf_s = ttf > 0.0f ? (uint32_t)ttf : UINT32_MAX;`
+- `review2-work/r3-code.txt`: `	    !device_is_ready(ldsw_sd)) {`
+- `review2-work/r3-rail-path.txt`: `firmware/modules/ring_power/Kconfig-25-endif`
+- `review2-work/r3-ring-drivers-stage.txt`: `=== stage ring-drivers end 2026-11-14T01:18:52Z exit 0`
+- `review2-work/r4-log-lines.txt`: `30436:=== stage ring-pins-broken end 2026-11-14T01:19:58Z exit 0`
+- `review2-work/r4-ringpins-flags.txt`: `SAME XL2 netlist P1.21 devicetree lfxo enabled; pin P1.21 from the chip's fixed function (the devicetree names no pin for this node)`
+- `review2-work/r4-flag-sources.txt`: `--- nfct/saadc compat in saved SDK reads`
+- `review2-work/r5-log.txt`: `47:warning: BOOT_MAX_IMG_SECTORS (defined at /ws/bootloader/mcuboot/boot/zephyr/Kconfig:974) was`
+- `review2-work/r5-code.txt`: `19:DBG_TX,U1,B4,P1.15,bidirectional`
+- `review2-work/r5-uart-addr.txt`: `654:	if grep -q -E 'uart@c6000 \{' "$a/zephyr.dts" && awk '/uart20: uart@c6000`
+- `review2-work/r6-notes-line-check.txt`: `30502:  WARNING: Using default MCUboot signing key file, this file is for debug use`
+- `review2-work/r6-readme-claims.txt`: `firmware/build-logs/step7/fix1/20261114-001111-f1-full1.log`
+- `review2-work/r7-stage-compare.txt`: `FIX ring-production-check                              exit 0 line 31816`
+- `review2-work/r7-touch.txt`: `diff --git a/firmware/modules/ring_store/src/rst_hw_real.c b/firmware/modules/ring_store/src/rst_hw_real.c`
+- `review2-work/mtimes.txt`: `2026-11-14 02:23:48 firmware/docs/board-notes.md`
+- `review2-work/board-notes-read-time.txt`: `017302877ec81862b1585cc79cf95f111d9286d7a4c986bcf172bc47203aa3f8  firmware/docs/board-notes.md`
+- `review2-work/secret-scan.txt`: `grep exit 1`
+- `review2-work/scratch-remote-removed.txt`: `sam. 14 nov. 2026 02:31:42 CET`
+- `fix1/f1-full1.console`: `# local log: firmware/build-logs/step7/fix1/20261114-001111-f1-full1.log`
+- `fix1/f1-explore1.console`: `# local log: firmware/build-logs/step7/fix1/20261114-000014-f1-explore1.log`
+- `fix1/f1-explore3.console`: `# local log: firmware/build-logs/step7/fix1/20261114-000128-f1-explore3.log`
+- `fix1/f1-explore4.console`: `# local log: firmware/build-logs/step7/fix1/20261114-000152-f1-explore4.log`

@@ -1,0 +1,44 @@
+# remote.sh run 20261114-024555-f2-assert
+# command: set -u; O=/ws/out/s7-dev/f2stages; echo '##### deferred in built devicetree (app, mcuboot)'; grep -n -B2 'zephyr,deferred-init' $O/ring/app/zephyr/zephyr.dts | grep -v '^--$'; grep -c 'zephyr,deferred-init' $O/ring/mcuboot/zephyr/zephyr.dts; echo '##### gpio_nrfx init'; grep -n -A12 'static int gpio_nrfx_init' /ws/zephyr/drivers/gpio/gpio_nrfx.c | head -20; echo '##### assert scratch'; R=/ws/out/s7-dev/f2assert-root; rm -rf $R /ws/out/s7-dev/f2assert; mkdir -p $R && cp -r /ws/firmware/boards $R/boards && python3 -c 'import sys
+p=sys.argv[1]; s=open(p).read(); old="disk-name = \"SD\";\n\t\t\tstatus = \"okay\";\n\t\t\tzephyr,deferred-init;"
+assert old in s, "not found"; open(p,"w").write(s.replace(old, "disk-name = \"SD\";\n\t\t\tstatus = \"okay\";", 1)); print("planted: mmc without zephyr,deferred-init")' $R/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts && diff /ws/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts $R/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts; west build -p always -b ringrec/nrf54lm20a/cpuapp --no-sysbuild -d /ws/out/s7-dev/f2assert -o=-j8 /ws/firmware/app -- -DBOARD_ROOT=$R > /ws/out/s7-dev/f2assert.log 2>&1; echo "assert-scratch build exit $?"; grep -n 'static assertion failed\|must be too\|error:' /ws/out/s7-dev/f2assert.log | head -5
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-14 02:45:55 CET
+# netlist copy equals design/ecad/ring/netlist.csv (sha256 2727a3c748c3b8ccd44eedc76c228453f04d9c1eb372d7d4179a63916cad5442)
+# free on the server's /: 30 GB
+# source firmware copied to /root/ring-os/src-s7
+# started on the server as 20261114-024555-f2-assert; server log /root/ring-os/logs/20261114-024555-f2-assert.log
+##### deferred in built devicetree (app, mcuboot)
+333-				rx-delay = < 0x1 >;             /* in zephyr/dts/vendor/nordic/nrf54lm20_a_b.dtsi:203 */
+334-				status = "okay";                /* in firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts:263 */
+335:				zephyr,deferred-init;           /* in firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts:266 */
+346-					spi-max-frequency = < 0xf42400 >;    /* in firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts:275 */
+347-					status = "okay";                     /* in firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts:276 */
+348:					zephyr,deferred-init;                /* in firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts:277 */
+353-						disk-name = "SD";                 /* in firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts:281 */
+354-						status = "okay";                  /* in firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts:282 */
+355:						zephyr,deferred-init;             /* in firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts:283 */
+3
+##### gpio_nrfx init
+634:static int gpio_nrfx_init(const struct device *port)
+635-{
+636-	const struct gpio_nrfx_cfg *cfg = get_port_cfg(port);
+637-	int err;
+638-
+639-	if (!use_gpiote(cfg)) {
+640-		goto pm_init;
+641-	}
+642-
+643-	if (nrfx_gpiote_init_check(cfg->gpiote)) {
+644-		goto pm_init;
+645-	}
+646-
+##### assert scratch
+planted: mmc without zephyr,deferred-init
+283d282
+< 			zephyr,deferred-init;
+assert-scratch build exit 1
+829:/ws/zephyr/include/zephyr/toolchain/gcc.h:87:36: error: static assertion failed: "spi00 is zephyr,deferred-init: its zephyr,sdhc-spi-slot and zephyr,sdmmc-disk nodes must be too"
+# finished (Mac clock): 2026-11-14 02:46:53 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step7/fix2/20261114-024555-f2-assert.log

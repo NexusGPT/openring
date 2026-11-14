@@ -1,0 +1,18 @@
+diff --git a/firmware/tools/remote.sh b/firmware/tools/remote.sh
+index b60b9c34..0350fd1a 100755
+--- a/firmware/tools/remote.sh
++++ b/firmware/tools/remote.sh
+@@ -81,6 +81,13 @@ NET_SRC="$FW_DIR/../design/ecad/ring/netlist.csv"
+ if [ -f "$NET_SRC" ]; then
+ 	NET_A=$(shasum -a 256 "$NET_COPY" 2>&1 | cut -d' ' -f1)
+ 	NET_B=$(shasum -a 256 "$NET_SRC" 2>&1 | cut -d' ' -f1)
++	# fix round 2 (S7R-03): fail closed when shasum cannot run or prints no 64-character value for either file
++	for NET_V in "$NET_A" "$NET_B"; do
++		if ! printf '%s\n' "$NET_V" | grep -Eq '^[0-9a-f]{64}$'; then
++			say "# remote.sh: REFUSED: no sha256 value for the netlist copy or the design's netlist (shasum gave \"$NET_V\"); the comparison cannot be made"
++			exit 2
++		fi
++	done
+ 	if [ "$NET_A" != "$NET_B" ]; then
+ 		say "# remote.sh: REFUSED: the netlist copy $NET_COPY (sha256 $NET_A) differs from $NET_SRC (sha256 $NET_B); copy the design's file into the board folder, then run again"
+ 		exit 2

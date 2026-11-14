@@ -1,0 +1,85 @@
+	uart20_sleep: uart20_sleep {
+		group1 {
+			psels = <NRF_PSEL(UART_TX, 1, 15)>;          /* DBG_TX */
+			low-power-enable;
+		};
+	};
+
+	/* storage card (design/firmware.md 5.1). Default: SCK and MOSI driven (low when idle). Sleep: SD_SCK, SD_MOSI and
+	 * SD_MISO inputs with no pull (disconnected), part of the FW 5.1 rule that no line is driven high while VDD_SD is
+	 * off (the pull-ups R60, R63 to R65 go to VDD_SD). The fourth line, SD_CS, is a GPIO (cs-gpios of spi00) and in no
+	 * pin state: the kit's SPI driver keeps it an output; modules/ring_store/src/rst_hw_real.c disconnects it after each
+	 * suspend and at boot and drives it again before each resume (firmware/docs/board-notes.md, fix round 1, S7-02). */
+	spi00_default: spi00_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 2, 1)>,          /* SD_SCK */
+				<NRF_PSEL(SPIM_MOSI, 2, 2)>,         /* SD_MOSI */
+				<NRF_PSEL(SPIM_MISO, 2, 4)>;         /* SD_MISO */
+		};
+	};
+
+	spi00_sleep: spi00_sleep {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 2, 1)>,          /* SD_SCK */
+				<NRF_PSEL(SPIM_MOSI, 2, 2)>,         /* SD_MOSI */
+				<NRF_PSEL(SPIM_MISO, 2, 4)>;         /* SD_MISO */
+			low-power-enable;
+		};
+	};
+
+	/* screen bus, write only (no MISO on the panel connector J1) */
+	spi21_default: spi21_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 1, 3)>,          /* LCD_SCK */
+				<NRF_PSEL(SPIM_MOSI, 1, 4)>;         /* LCD_MOSI */
+		};
+	};
+----
+
+/* USB through the four pads (design/firmware.md 6.1); the transfer part names zephyr_udc0 */
+zephyr_udc0: &usbhs {
+	status = "okay";
+};
+
+/* The SD NAND card over SPI (design/firmware.md 5.1): 16 MHz, disk "SD" */
+&spi00 {
+	status = "okay";
+	/* not initialised at boot (fix round 2, S7R-01): the storage part's real file initialises it with device_init()
+	 * at the card's first power-on, so SD_CS is never driven while VDD_SD is off before that */
+	zephyr,deferred-init;
+	cs-gpios = <&gpio2 5 GPIO_ACTIVE_LOW>;                                  /* SD_CS */
+	pinctrl-0 = <&spi00_default>;
+	pinctrl-1 = <&spi00_sleep>;
+	pinctrl-names = "default", "sleep";
+
+	ring_sdhc: sdhc@0 {
+		compatible = "zephyr,sdhc-spi-slot";
+		reg = <0>;
+		spi-max-frequency = <16000000>;
+		status = "okay";
+		zephyr,deferred-init;
+
+		ring_sd: mmc {
+			compatible = "zephyr,sdmmc-disk";
+			disk-name = "SD";
+			status = "okay";
+			zephyr,deferred-init;
+		};
+	};
+};
+
+/* The screen's bus (design/firmware.md: spi21, at most 8 Mbit/s); its chip select LCD_CS */
+&spi21 {
+	status = "okay";
+	cs-gpios = <&gpio1 5 GPIO_ACTIVE_LOW>;                                  /* LCD_CS */
+	pinctrl-0 = <&spi21_default>;
+	pinctrl-1 = <&spi21_sleep>;
+	pinctrl-names = "default", "sleep";
+};
+
+/* The microphones: one PDM instance, two channels (design/firmware.md 4.1): PCLK32M, 8 blocks */
+&pdm20 {
+	status = "okay";
+	pinctrl-0 = <&pdm20_default>;
+----
+46:#   psel: the node's pin-control states: the <function> in every state (default, sleep) must name the pin

@@ -1,0 +1,30 @@
+36:static int none_rail_set(enum rhw_rail r, bool on, const char *c) { ARG_UNUSED(r); ARG_UNUSED(on); ARG_UNUSED(c); return -ENODEV; }
+42:static const struct rhw_pmic_api none_pmic = {
+43:	.rail_set = none_rail_set, .rail_get = none_rail_get, .charger_enable = none_b, .charger_current = none_u32,
+98:static const struct rhw_pmic_api *act_pmic = START(pmic);
+--- rpw_hw_real.c
+36:#if !DT_NODE_EXISTS(DT_ALIAS(ring_vdd_mic)) || !DT_NODE_EXISTS(DT_ALIAS(ring_vdd_sd))
+38:#endif
+39:#if !__has_include("rpw_battery_model.h")
+41:#endif
+72:static const struct device *const ldsw_mic = DEVICE_DT_GET(DT_ALIAS(ring_vdd_mic));
+73:static const struct device *const ldsw_sd = DEVICE_DT_GET(DT_ALIAS(ring_vdd_sd));
+91:static int r_rail_set(enum rhw_rail r, bool on, const char *caller)
+100:	d = r == RHW_RAIL_MIC ? ldsw_mic : ldsw_sd;
+101:	rc = on ? regulator_enable(d) : regulator_disable(d);
+285:	.rail_set = r_rail_set, .rail_get = r_rail_get, .charger_enable = r_chg_enable,
+334:	if (!device_is_ready(pmic) || !device_is_ready(charger) || !device_is_ready(ldsw_mic) ||
+335:	    !device_is_ready(ldsw_sd)) {
+344:	if (rhw_register_pmic(&real_pmic) != 0) {
+347:	return rhw_register_gauge(&real_gauge);
+350:SYS_INIT(rpw_real_init, APPLICATION, 50);
+--- Kconfig RING_POWER_REAL
+firmware/modules/ring_power/Kconfig:17:config RING_POWER_REAL
+firmware/modules/ring_power/Kconfig-18-	bool "The real driver file: nPM1304 chip, charger and the kit's fuel gauge (development kit build only)"
+firmware/modules/ring_power/Kconfig-19-	depends on DT_HAS_NORDIC_NPM1304_ENABLED && !RING_RHW_SIM
+firmware/modules/ring_power/Kconfig-20-	default y
+firmware/modules/ring_power/Kconfig-21-	help
+firmware/modules/ring_power/Kconfig-22-	  Compiles src/rpw_hw_real.c, which registers the real power chip and gauge with ring_rhw. Never in a
+firmware/modules/ring_power/Kconfig-23-	  simulated build; not proven without hardware (plan section 7).
+firmware/modules/ring_power/Kconfig-24-
+firmware/modules/ring_power/Kconfig-25-endif

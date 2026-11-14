@@ -1,0 +1,389 @@
+/*
+ * The ring (software step 7): board description of the AI ring recorder, application core (cpuapp) of its nRF54LM20A.
+ *
+ * Source of every pin: design/ecad/ring/netlist.csv (rows of U1, the main chip), which already holds the pin changes
+ * of design/ecad/ring-route-f/pin-changes.md (LCD_TE on P1.14 ball F4, OLED_PWR_EN on P1.30 ball F9; balls F8, D6,
+ * E9 with no net). Peripheral instances: design/firmware.md, peripheral table (lines 72 to 89). Power chip settings:
+ * design/firmware.md 8.1. Memory layout: design/firmware.md 9.2. tools/check_ring_pins.py compares the built
+ * devicetree (zephyr.dts) with the netlist; firmware/docs/board-notes.md lists every U1 signal and its node.
+ *
+ * NOT PROVEN ON HARDWARE: it compiles (tools/build_all.sh, stage ring); no ring has run it.
+ */
+
+/dts-v1/;
+
+#include <nordic/nrf54lm20a_cpuapp.dtsi>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/regulator/npm13xx.h>
+#include <zephyr/dt-bindings/i2c/i2c.h>
+#include "ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi"
+
+/ {
+	compatible = "ring,ringrec-nrf54lm20a-cpuapp";
+	model = "AI ring recorder nRF54LM20A Application MCU";
+
+	chosen {
+		zephyr,console = &uart20;
+		zephyr,shell-uart = &uart20;
+		zephyr,flash-controller = &rram_controller;
+		zephyr,flash = &cpuapp_rram;
+		zephyr,code-partition = &slot0_partition;
+		zephyr,sram = &cpuapp_sram;
+	};
+
+	aliases {
+		/* names the real driver files look for (firmware/docs/recorder-notes.md section 6) */
+		ring-motor = &ring_motor;            /* modules/ring_motor/src/rmo_hw_real.c */
+		ring-vdd-mic = &ring_ldsw_mic;       /* modules/ring_power/src/rpw_hw_real.c, load switch 1 */
+		ring-vdd-sd = &ring_ldsw_sd;         /* modules/ring_power/src/rpw_hw_real.c, load switch 2 */
+		crashram = &ring_crashram;           /* modules/ring_sys/src/rsy_hw_real.c, crash record */
+		gpregret1 = &gpregret1;              /* modules/ring_sys/src/rsy_hw_real.c */
+		watchdog0 = &wdt31;
+	};
+
+	/* The joystick (design/firmware.md 2.2): five switches to ground, the chip's pull-up, 20 ms debounce (FW l.237).
+	 * No joystick driver exists yet (app/src/main.c: "the driver calls rglue_input()"), so these nodes are read by
+	 * nothing; they hold the pins. */
+	ring_joystick: joystick {
+		compatible = "gpio-keys";
+		debounce-interval-ms = <20>;
+
+		ring_btn_rec: btn_rec {
+			gpios = <&gpio0 4 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;      /* BTN_REC, SW2 centre */
+			zephyr,code = <INPUT_KEY_ENTER>;
+		};
+
+		ring_joy_up: joy_up {
+			gpios = <&gpio0 6 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;      /* JOY_UP, SW1 */
+			zephyr,code = <INPUT_KEY_UP>;
+		};
+
+		ring_joy_down: joy_down {
+			gpios = <&gpio0 7 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;      /* JOY_DOWN, SW3 */
+			zephyr,code = <INPUT_KEY_DOWN>;
+		};
+
+		ring_joy_left: joy_left {
+			gpios = <&gpio0 8 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;      /* JOY_LEFT, SW4 toward the hand */
+			zephyr,code = <INPUT_KEY_LEFT>;
+		};
+
+		ring_joy_right: joy_right {
+			gpios = <&gpio1 31 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;     /* JOY_RIGHT, SW5 toward the fingertip */
+			zephyr,code = <INPUT_KEY_RIGHT>;
+		};
+	};
+
+	/* MOTOR: high enables the motor regulator U11 through R61 (net MOT_EN); a plain level, no PWM (FW 3.1) */
+	ring_outputs: outputs {
+		compatible = "gpio-leds";
+
+		ring_motor: motor {
+			gpios = <&gpio3 1 GPIO_ACTIVE_HIGH>;                       /* MOTOR */
+			label = "MOTOR, enable of the motor regulator U11";
+		};
+	};
+
+	/* The screen's bus and control pins (design/firmware.md 3.3, peripheral table). No panel driver exists: the
+	 * application's overlay keeps the memory display as the screen's stand-in (zephyr,display). A panel driver adds
+	 * its node as a child of this MIPI DBI node. */
+	ring_lcd_dbi: lcd-dbi {
+		compatible = "zephyr,mipi-dbi-spi";
+		spi-dev = <&spi21>;
+		dc-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;                         /* LCD_DCX (RS: high = data) */
+		reset-gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;                       /* LCD_RST (RESX) */
+		te-gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>;                        /* LCD_TE (input, rising edge) */
+		write-only;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+	/* Pins with no driver: the screen supply enable, and the pins the firmware never configures (test pads).
+	 * They are listed so the devicetree holds every signal of U1 (tools/check_ring_pins.py). */
+	zephyr,user {
+		oled-pwr-en-gpios = <&gpio1 30 GPIO_ACTIVE_HIGH>;              /* OLED_PWR_EN: U4 AVDDEN (screen supply) */
+		mic-b-data-gpios = <&gpio1 25 0>;                              /* MIC_B_DATA: test pad, unused (FW l.77) */
+		spare-p1-00-gpios = <&gpio1 0 0>;                              /* SPARE_P1_00: test pad TP6 */
+		spare-p2-00-gpios = <&gpio2 0 0>;                              /* SPARE_P2_00: test pad TP12 */
+		spare-p3-03-gpios = <&gpio3 3 0>;                              /* SPARE_P3_03: test pad TP14 */
+		spare-p3-04-gpios = <&gpio3 4 0>;                              /* SPARE_P3_04: test pad TP15 */
+	};
+
+	/* Crash record (design/firmware.md 4.6 "Crash record, retained RAM" 1,024 bytes; firmware/docs/sys-notes.md
+	 * section 6): the top 1 KB of the application's RAM, taken out of cpuapp_sram below, kept over a warm reset. */
+	ring_retained: memory@2007f800 {
+		compatible = "zephyr,memory-region", "mmio-sram";
+		reg = <0x2007f800 0x400>;
+		ranges = <0x0 0x2007f800 0x400>;
+		zephyr,memory-region = "RetainedMem";
+		status = "okay";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		ring_crashram: retainedmem {
+			compatible = "zephyr,retained-ram";
+			status = "okay";
+			ranges;
+			#address-cells = <1>;
+			#size-cells = <1>;
+		};
+	};
+};
+
+/* 511 KB of the secure build (the kit's cpuapp_sram) less the 1 KB crash record above */
+&cpuapp_sram {
+	reg = <0x20000000 DT_SIZE_K(510)>;
+	ranges = <0x0 0x20000000 DT_SIZE_K(510)>;
+	status = "okay";
+};
+
+/* The memory layout of design/firmware.md 9.2 (RRAM 2,036 KB): MCUboot 64 KB, slot 0 976 KB, slot 1 976 KB,
+ * settings 20 KB. modules/ring_rhw/include/ring_rhw/rrec_spec.h holds the same addresses (RREC_FLASH_*). */
+&cpuapp_rram {
+	partitions {
+		ranges;
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		boot_partition: partition@0 {
+			compatible = "zephyr,mapped-partition";
+			label = "mcuboot";
+			reg = <0x0 DT_SIZE_K(64)>;
+		};
+
+		slot0_partition: partition@10000 {
+			compatible = "zephyr,mapped-partition";
+			label = "image-0";
+			reg = <0x10000 DT_SIZE_K(976)>;
+		};
+
+		slot1_partition: partition@104000 {
+			compatible = "zephyr,mapped-partition";
+			label = "image-1";
+			reg = <0x104000 DT_SIZE_K(976)>;
+		};
+
+		storage_partition: partition@1f8000 {
+			compatible = "zephyr,mapped-partition";
+			label = "storage";
+			reg = <0x1f8000 DT_SIZE_K(20)>;
+		};
+	};
+};
+
+&uicr {
+	bl_storage: uicr@500 {
+		reg = <0x500 0x460>;
+	};
+};
+
+/* The 32 MHz crystal X1 (Kyocera CX2016DB, 8 pF) and the 32.768 kHz crystal X2 (TXC 9HT11, 9 pF), no load
+ * capacitors on the board (netlist: XC1, XC2, XL1, XL2 reach only X1 and X2), so the chip's internal ones
+ * (design/architecture.md lines 53, 54). */
+&hfxo {
+	load-capacitors = "internal";
+	load-capacitance-femtofarad = <8000>;
+};
+
+&lfxo {
+	load-capacitors = "internal";
+	load-capacitance-femtofarad = <9000>;
+};
+
+&hfpll {
+	clock-frequency = <DT_FREQ_M(128)>;
+};
+
+/* L1 (4.7 uH) on DCC: the chip's DC/DC converter */
+&vregmain {
+	status = "okay";
+	regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+&vregusb {
+	status = "okay";
+};
+
+&grtc {
+	owned-channels = <0 1 2 3 4 5 6 7 8 9 10 11>;
+	/* as the kit: channels 7 to 11 for zero latency interrupts, 3 and 4 for the FLPR core (not used) */
+	child-owned-channels = <3 4 7 8 9 10 11>;
+	status = "okay";
+};
+
+&clock {
+	status = "okay";
+};
+
+&radio {
+	status = "okay";
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+&gpio2 {
+	status = "okay";
+};
+
+&gpio3 {
+	status = "okay";
+};
+
+&gpiote20 {
+	status = "okay";
+};
+
+&gpiote30 {
+	status = "okay";
+};
+
+/* debug log, send only (design/firmware.md: uart20, DBG_TX; the former DBG_RX pin has no net) */
+&uart20 {
+	status = "okay";
+	current-speed = <115200>;
+	disable-rx;
+	pinctrl-0 = <&uart20_default>;
+	pinctrl-1 = <&uart20_sleep>;
+	pinctrl-names = "default", "sleep";
+};
+
+/* USB through the four pads (design/firmware.md 6.1); the transfer part names zephyr_udc0 */
+zephyr_udc0: &usbhs {
+	status = "okay";
+};
+
+/* The SD NAND card over SPI (design/firmware.md 5.1): 16 MHz, disk "SD" */
+&spi00 {
+	status = "okay";
+	/* not initialised at boot (fix round 2, S7R-01): the storage part's real file initialises it with device_init()
+	 * at the card's first power-on, so SD_CS is never driven while VDD_SD is off before that */
+	zephyr,deferred-init;
+	cs-gpios = <&gpio2 5 GPIO_ACTIVE_LOW>;                                  /* SD_CS */
+	pinctrl-0 = <&spi00_default>;
+	pinctrl-1 = <&spi00_sleep>;
+	pinctrl-names = "default", "sleep";
+
+	ring_sdhc: sdhc@0 {
+		compatible = "zephyr,sdhc-spi-slot";
+		reg = <0>;
+		spi-max-frequency = <16000000>;
+		status = "okay";
+		zephyr,deferred-init;
+
+		ring_sd: mmc {
+			compatible = "zephyr,sdmmc-disk";
+			disk-name = "SD";
+			status = "okay";
+			zephyr,deferred-init;
+		};
+	};
+};
+
+/* The screen's bus (design/firmware.md: spi21, at most 8 Mbit/s); its chip select LCD_CS */
+&spi21 {
+	status = "okay";
+	cs-gpios = <&gpio1 5 GPIO_ACTIVE_LOW>;                                  /* LCD_CS */
+	pinctrl-0 = <&spi21_default>;
+	pinctrl-1 = <&spi21_sleep>;
+	pinctrl-names = "default", "sleep";
+};
+
+/* The microphones: one PDM instance, two channels (design/firmware.md 4.1): PCLK32M, 8 blocks */
+&pdm20 {
+	status = "okay";
+	pinctrl-0 = <&pdm20_default>;
+	pinctrl-1 = <&pdm20_sleep>;
+	pinctrl-names = "default", "sleep";
+	clock-source = "PCLK32M";
+	queue-size = <8>;
+};
+
+&wdt31 {
+	status = "okay";
+};
+
+&gpregret1 {
+	status = "okay";
+};
+
+/* The power chip nPM1304 (U2) on i2c22 at 400 kHz, address 0x6B (design/firmware.md 8.1) */
+&i2c22 {
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_FAST>;
+	pinctrl-0 = <&i2c22_default>;
+	pinctrl-1 = <&i2c22_sleep>;
+	pinctrl-names = "default", "sleep";
+
+	ring_pmic: pmic@6b {
+		compatible = "nordic,npm1304";
+		reg = <0x6b>;
+		host-int-gpios = <&gpio1 28 GPIO_ACTIVE_HIGH>;                  /* PMIC_INT, from the chip's GPIO0 */
+		pmic-int-pin = <0>;
+		ship-to-active-time-ms = <96>;
+
+		ring_pmic_regulators: regulators {
+			compatible = "nordic,npm1304-regulator";
+
+			/* VDD_1V8: 1.8 V, set in hardware by VSET1 (47 kilo-ohm) */
+			ring_buck1: BUCK1 {
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <1800000>;
+				regulator-init-microvolt = <1800000>;
+				regulator-boot-on;
+				regulator-always-on;
+				regulator-initial-mode = <NPM13XX_BUCK_MODE_AUTO>;
+			};
+
+			/* VDD_3V0: 3.0 V, set in hardware by VSET2 (150 kilo-ohm) */
+			ring_buck2: BUCK2 {
+				regulator-min-microvolt = <3000000>;
+				regulator-max-microvolt = <3000000>;
+				regulator-init-microvolt = <3000000>;
+				regulator-boot-on;
+				regulator-always-on;
+				regulator-initial-mode = <NPM13XX_BUCK_MODE_AUTO>;
+			};
+
+			/* load switch 1: VDD_MIC (LSOUT1, ball A4); only rec_mics_on() switches it on (FW l.342, l.457) */
+			ring_ldsw_mic: LDO1 {
+				regulator-initial-mode = <NPM13XX_LDSW_MODE_LDSW>;
+				soft-start-microamp = <25000>;
+				active-discharge;
+				regulator-boot-off;
+			};
+
+			/* load switch 2: VDD_SD (LSOUT2, ball A5) */
+			ring_ldsw_sd: LDO2 {
+				regulator-initial-mode = <NPM13XX_LDSW_MODE_LDSW>;
+				soft-start-microamp = <50000>;
+				active-discharge;
+				regulator-boot-off;
+			};
+		};
+
+		ring_charger: charger {
+			compatible = "nordic,npm1304-charger";
+			term-microvolt = <4350000>;
+			term-warm-microvolt = <4100000>;
+			current-microamp = <15000>;                             /* CHARGE_CURRENT (FW l.878) */
+			term-current-percent = <10>;
+			trickle-microvolt = <2900000>;
+			vbus-limit-microamp = <500000>;
+			thermistor-ohms = <10000>;
+			thermistor-beta = <3380>;
+			thermistor-cold-millidegrees = <0>;
+			thermistor-cool-millidegrees = <10000>;
+			thermistor-warm-millidegrees = <40000>;
+			thermistor-hot-millidegrees = <45000>;
+			dietemp-stop-millidegrees = <90000>;
+			dietemp-resume-millidegrees = <80000>;
+			charging-enable;
+		};
+	};
+};

@@ -1,0 +1,30 @@
+# Checklist, review 2 of step 7 fix round 1
+
+- [x] 0. Version proof evidence: diffstat.txt, version-compare.txt (17 SAME, 1 DIFFERS board-notes), mtimes.txt
+- [x] 1a. R1 refusal before first ssh (read) evidence: remote-sh-redacted.txt l.79-91 vs l.94
+- [x] 1b. R1 refusal run in scratch, 4 cases evidence: r1-refusal.console (network trap: 0 calls)
+- [x] 1c. R1 unchanged case (read only) evidence: remote-sh-redacted.txt l.88; f1-full1.console l.5
+- [x] 1d. R1 rules not weakened evidence: diff-firmware_tools_remote.sh.txt (additions only)
+- [x] 1e. R1 attacks: missing copy (case C), one byte (case D), shasum missing (stand-in) evidence: r1-refusal.console, r1-shasum-missing.console; design file missing: read only (brief)
+- [x] 2a. R2 every VDD_SD path evidence: r2-paths.txt, r2-more-paths.txt, r2-mcuboot-spi-count.txt
+- [x] 2b. R2 SD_CS state evidence: rst_hw_real.c read; boot window S7R-01
+- [x] 2c. R2 pinctrl comment evidence: r2-pinctrl-spi00.txt
+- [x] 2d. R2 hardware-only list evidence: review file R2 row
+- [x] 3a. R3 signatures evidence: f1-explore1.console l.104-139, r3-units.txt
+- [x] 3b. R3 units evidence: r3-units.txt; sign: not done: no source for the library's sign convention in saved reads (S7R-06)
+- [x] 3c. R3 POWER_REAL=y evidence: diff-firmware_app_boards_ringrec_nrf54lm20a_cpuapp.conf.txt, f1-full1 l.29312
+- [x] 3d. R3 driver list evidence: r3-ring-drivers-stage.txt
+- [x] 3e. R3 rail switch evidence: r3-rail-path.txt
+- [x] 4a. R4 flags evidence: r4-ringpins-flags.txt
+- [x] 4b. R4 fixed-function evidence: r4-ringpins-flags.txt
+- [x] 4c. R4 unparsable property evidence: check_ring_pins.py l.414-419 (read only, never planted)
+- [x] 4d. R4 broken copies 10 of 10 evidence: r4-log-lines.txt
+- [x] 4e. R4 blind spots evidence: review S7R-08
+- [x] 5a. R5 conf and overlay evidence: r5-code.txt, production files read
+- [x] 5b. R5 stages and check evidence: r5-log.txt, r5-code.txt, r5-uart-addr.txt
+- [x] 5c. R5 dev console evidence: r2-r5-config.txt, r3-ring-drivers-stage.txt
+- [x] 6. R6 evidence: diff-firmware_README.md.txt, r6-notes-line-check.txt, r6-readme-claims.txt, board-notes-as-read.md
+- [x] 7a. R7 evidence: r7-touch.txt, r7-diff-tests.txt
+- [x] 7b. R7 evidence: r7-stage-compare.txt
+- [x] 8. R8 evidence: review R8 table
+- [x] 9. Findings, counts, verdict, could-not-check, audit evidence: audit-output-3.txt

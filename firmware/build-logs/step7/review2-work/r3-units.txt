@@ -1,0 +1,52 @@
+--- header line mapping
+2:# command: cd /ws/zephyr; echo '##### fg header'; sed -n 380,520p /ws/nrfxlib/nrf_fuel_gauge/include/nrf_fuel_gauge.h; echo '##### spim cs'; grep -n 'cs_\|_cs\|CS' drivers/spi/spi_nrfx_spim.c | head -60; echo '##### spi_context cs'; grep -n -A14 'static inline void spi_context_cs_put_all\|static inline int spi_context_cs_get_all\|static inline int spi_context_cs_configure_all\|static inline void _spi_context_cs_control' drivers/spi/spi_context.h | head -120; echo '##### spim pm'; grep -n -B3 -A30 'static int spim_suspend\|static void spim_resume\|static int spim_resume\|static int spim_nrfx_pm_action\|static int spi_nrfx_pm_action' drivers/spi/spi_nrfx_spim.c | head -150
+8:##### fg header
+150:##### spim cs
+154:##### spi_context cs
+202:##### spim pm
+--- FW 8.3
+### 8.3 Battery measurement
+
+- The nPM1304's system monitor measures the battery voltage, the battery current and the thermistor [NPM p99, section 7.1]. The charger sensor driver gives voltage, current and temperature channels (`SENSOR_CHAN_GAUGE_VOLTAGE`, `SENSOR_CHAN_GAUGE_AVG_CURRENT`, `SENSOR_CHAN_GAUGE_TEMP`) [SRC 11; that the family driver serves the nPM1304 is TO CONFIRM, section 10.5 item 3]. Each sample feeds `nrf_fuel_gauge_process()`, which returns the state of charge [SRC 12]; `nrf_fuel_gauge_tte_get()` and `nrf_fuel_gauge_ttf_get()` give time to empty and to full [SRC 12].
+- **The motor's charge is added.** The chip measures the battery current inside its own path [NPM p99]; the motor draws from the cell through U11, outside that path (section 3.1). The motor player sums the charge of every pulse since the last sample (t_on x 80 mA + 10 ms x 175 mA per pulse, section 3.1; the allowance is an **[ESTIMATE]** until bench step B-M3 measures the start). The current fed to the gauge is I_fed = I_measured + Q_motor / t_sample, counted as a discharge [CALC example: one MF, 51.50 mA.s, in a 1 s sample adds 51.5 mA to that sample]. The sign the library expects for a discharge is TO CONFIRM (section 10.5, item 32). U11 is a linear regulator, so its input current equals the motor current within its own small ground current (motor-drive.md section 2.5).
+- Sampling: every 1 s in the recording states (thresholds use the mean of the last 10), every 60 s in the other awake states (thresholds use the single sample). Every sample also reads the battery current limit status (section 8.7).
+- The battery current during a discharge has a full scale of 140 mA [NPM p99]; the chip path stays at or under 55.7 mA with every load on (architecture 17.22).
+- The fuel gauge needs a battery model of the actual cells; Nordic makes it with its nPM PowerUP application [NPM p99]. One model per ring size or one for all is open (section 10.5, item 4).
+
+--- rhw.h sample/gauge
+96:	uint16_t mv;                     /* battery voltage, mV */
+97:	int32_t ua;                      /* battery current inside the chip's path, µA, positive = discharge (this
+99:	int16_t temp_c_x10;              /* thermistor temperature, 0.1 °C */
+100:	int16_t die_c_x10;               /* die temperature, 0.1 °C (chunk field temp_c_x10, FW l.568) */
+121:	int (*charger_current)(uint32_t ua);
+272:	uint16_t soc_x10;                /* state of charge, 0.1 % (0 to 1000) */
+273:	uint32_t tte_s;                  /* time to empty in s, UINT32_MAX when unknown (charging) */
+274:	uint32_t ttf_s;                  /* time to full in s, UINT32_MAX when unknown (not charging) */
+--- rpw_hw_real.c ua/sign
+4: * NOT PROVEN, no hardware (plan section 7). Written for this project from design/firmware.md section 8 and
+5: * design/datasheets/npm1304_datasheet_v1_0.txt (register names and offsets as that file lists them); it calls the
+39:#if !__has_include("rpw_battery_model.h")
+40:#error "rpw_battery_model.h (the battery model of the cell, made with nPM PowerUP) is missing: FW l.930, open item"
+42:#include "rpw_battery_model.h"
+119:static int r_chg_current(uint32_t ua)
+121:	return wr(REG_BASE_CHARGER, REG_BCHGISET, (uint8_t)(ua / 500u));
+162:/* The current in the interface's sign (positive = discharge). The sign of the kit's current channel against the
+164:static int32_t chan_to_ua(const struct sensor_value *v)
+179:		rc = sensor_channel_get(charger, SENSOR_CHAN_GAUGE_AVG_CURRENT, &i);
+191:	out->ua = chan_to_ua(&i);
+293: * The library's current argument follows the kit's convention; the interface's positive-discharge current is
+294: * converted in this one function (kit fact K6: the sign is open). */
+297:	struct nrf_fuel_gauge_init_parameters p = { .model = &battery_model };
+300:	p.i0 = -(first->ua / 1000000.0f);
+307:	/* nRF Connect SDK v3.4.2 signatures (nrfxlib/nrf_fuel_gauge/include/nrf_fuel_gauge.h: process l.475, tte_get
+308:	 * l.498, ttf_get l.510): each returns 0 or a negative error and writes its value through a pointer; tte and ttf
+310:	float soc = 0.0f, tte = 0.0f, ttf = 0.0f;
+311:	int rc = nrf_fuel_gauge_process(s->mv / 1000.0f, -(s->ua / 1000000.0f), s->temp_c_x10 / 10.0f,
+312:					dt_ms / 1000.0f, &soc, NULL);
+317:	if (nrf_fuel_gauge_tte_get(&tte) != 0) {
+318:		tte = 0.0f;
+320:	if (nrf_fuel_gauge_ttf_get(&ttf) != 0) {
+321:		ttf = 0.0f;
+324:	out->soc_x10 = (uint16_t)(soc * 10.0f + 0.5f);
+325:	out->tte_s = tte > 0.0f ? (uint32_t)tte : UINT32_MAX;
+326:	out->ttf_s = ttf > 0.0f ? (uint32_t)ttf : UINT32_MAX;

@@ -9,17 +9,17 @@
   },
   "inside": {
    "state": "in progress",
-   "why": "the inside model shown here is v9 (thin block, resin radio corner); its fit check passes at the seven ring sizes. It still holds the stock screen and the earlier glass. Its rebuild for the custom full-face panel, the flat glass, the side slits for the two ribbons and the sealed opening where one slit meets the motor's pocket waits on the new exterior and on the main board's new screen connection. The model for the 4.17 mm block (v10) is kept as a fallback in design/mech/thin/fallback-417",
+   "why": "the inside model shown here is v9 (thin block, resin radio corner); its fit check passes at the seven ring sizes. It still holds the stock screen and the earlier glass. Its rebuild for the custom full-face panel, the flat glass, the side slits for the two ribbons and the sealed opening where one slit meets the motor's pocket waits on the new exterior (the main board for it is routed). The model for the 4.17 mm block (v10) is kept as a fallback in design/mech/thin/fallback-417",
    "who": "lead"
   },
   "electronics": {
    "state": "in progress",
-   "why": "the circuit is complete in its files (netlist, schematic, parts) and its check passes; a circuit simulation of 13 tests passes (power paths, motor start, charge path, level shifter, case charger and status light). Every conductor of the ring and its case is in one list: 66 conductors, each with both ends, its carrier and its cut length per ring size, checked against the boards and the netlists. An independent review of 13 November found the list true and failed the build guide on 3 points (design/wiring/wiring-review-4.md). Two are fixed in the guide (the ground joints of the ribbons, the test of the case's thermistor joints); the third, the body files, waits on the thin ring's new exterior and inside model. A requirement page for the custom screen panel is written for panel makers (design/mfg/specs/screen-panel-custom.md); no maker has answered",
+   "why": "the circuit is complete in its files (netlist, schematic, parts) and its check passes; a circuit simulation of 13 tests passes (power paths, motor start, charge path, level shifter, case charger and status light). Every conductor of the ring and its case is in one list: 66 conductors, each with both ends, its carrier and its cut length per ring size, checked against the boards and the netlists. An independent review of 13 November found the list true and failed the build guide on 3 points (design/wiring/wiring-review-4.md). Two are fixed in the guide (the ground joints of the ribbons, the test of the case's thermistor joints); the third, the body files, waits on the thin ring's new exterior and inside model. The build guide and its joint table still describe a second soldering pass for the board's screen face, which the thin ring's board no longer needs: their rework is open. A requirement page for the custom screen panel is written for panel makers (design/mfg/specs/screen-panel-custom.md); no maker has answered",
    "who": "lead"
   },
   "board": {
    "state": "in progress",
-   "why": "all 17 boards are routed: the ring's main board (4 layers), 14 band circuits (2 per ring size) and the 2 case boards; the design rules check gives 0 violations and 0 unconnected on each. Fabrication files, solder paste layers and drawings are generated. The main board as routed carries the screen connector and eight small parts on its screen face, which suits the 4.17 mm fallback only: in the thin block the connector must move to the under face, and the eight parts can stay only under a panel of 0.5 mm or less. That new routing is in work and not finished. Nothing is built or measured; four values need a measurement on the first ring (antenna match, 32 MHz clock accuracy, case input current, USB through the spring pins)",
+   "why": "all 17 boards are routed: the ring's main board (4 layers), 14 band circuits (2 per ring size) and the 2 case boards; the design rules check gives 0 violations and 0 unconnected on each. Since the evening of 13 November the ring's main board is the thin ring's board: the screen connector sits on the under face at the hand end and no soldered part is left on the screen face, so a screen panel of up to 0.80 mm lies 0.10 mm over the board. Its 8 limits for the antenna, crystal and USB lines are met. One supply capacitor sits 3.9 mm from its chip pin because no nearer place is free; its effect is measured on the first board. Fabrication files, solder paste layers and drawings are regenerated for it; the board for the 4.17 mm fallback is kept in design/ecad/ring/pcb/fallback-417. Nothing is built or measured; four values need a measurement on the first ring (antenna match, 32 MHz clock accuracy, case input current, USB through the spring pins)",
    "who": "lead"
   },
   "parts": {
@@ -39,7 +39,7 @@
   },
   "open": {
    "state": "waiting on a supplier",
-   "why": "open on 13 November: the thin ring's new exterior, the main board's new screen connection, then the inside model, the body maker files, the build guide and the case fit on them; the panel maker's answers (thickness, lit area, cable); four measurements on the first ring; supplier questions and bench tests of the architecture (sections 12, 13, 16.9, 17.6, 17.9, open items S12 to S30)",
+   "why": "open on 13 November: the thin ring's new exterior, then the inside model, the body maker files, the build guide and the case fit on them; the panel maker's answers (thickness, lit area, cable); four measurements on the first ring; supplier questions and bench tests of the architecture (sections 12, 13, 16.9, 17.6, 17.9, open items S12 to S30)",
    "who": "owner"
   }
  },

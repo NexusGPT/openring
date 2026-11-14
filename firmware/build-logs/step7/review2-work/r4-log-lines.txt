@@ -1,0 +1,231 @@
+15110:link-settings: self test ok: the changed MTU was refused
+15113:link-settings: self test ok: two equal MTU values of 23 were refused
+15128:link-settings: self test ok: a relay test ring with a changed MTU was refused
+15171:link-settings: self test ok: a product settings file with the relay test hooks on was refused
+15175:relay-no-core: self test ok: a copy with a glue include is found by the same search
+15180:recorder-one-mic-path: self test ok: a second call in a copy of ring_store is found by the same search
+15184:recorder-no-start-path: self test ok: a copy of ring_xfer with rglue_input is found by the same search
+15188:recorder-no-raw-pins: self test ok: a planted overlay with <&gpio1 24 is found by the same search
+15202:recorder-product-drivers: self test ok: a kit settings file with CONFIG_RING_RHW_SIM=y was refused
+30132:=== stage ring-pins start 2026-11-14T01:18:52Z log /ws/out/20261114-001111-f1-full1/ring-pins.log
+30133:ring-pins: netlist copy /ws/firmware/boards/ringrec/netlist.csv sha256 2727a3c748c3b8ccd44eedc76c228453f04d9c1eb372d7d4179a63916cad5442
+30134:ring-pins: the copy was compared with design/ecad/ring/netlist.csv on the Mac by tools/remote.sh before this copy was sent (its refusal rule, ruling S7-01); design/ is not here
+30135:check_ring_pins: devicetree /ws/out/20261114-001111-f1-full1/ring/app/zephyr/zephyr.dts
+30136:check_ring_pins: netlist /ws/firmware/boards/ringrec/netlist.csv sha256 2727a3c748c3b8ccd44eedc76c228453f04d9c1eb372d7d4179a63916cad5442, 61 rows of U1
+30141:SAME FLAGS BTN_REC GPIO_ACTIVE_LOW|GPIO_PULL_UP (design/firmware.md l.82)
+30144:NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+30145:NO NODE BY NATURE DECA A8 DECA: decoupling
+30146:NO NODE BY NATURE DECA B2 DECRF: decoupling
+30147:NO NODE BY NATURE DECD A6 DECD: decoupling
+30148:NO NODE BY NATURE GND A7 VSS: ground
+30149:NO NODE BY NATURE GND D3 VSS: ground
+30150:NO NODE BY NATURE GND E1 VSS: ground
+30151:NO NODE BY NATURE GND F10 VSS: ground
+30153:SAME FLAGS JOY_DOWN GPIO_ACTIVE_LOW|GPIO_PULL_UP (design/firmware.md l.82)
+30155:SAME FLAGS JOY_LEFT GPIO_ACTIVE_LOW|GPIO_PULL_UP (design/firmware.md l.82)
+30157:SAME FLAGS JOY_RIGHT GPIO_ACTIVE_LOW|GPIO_PULL_UP (design/firmware.md l.82)
+30159:SAME FLAGS JOY_UP GPIO_ACTIVE_LOW|GPIO_PULL_UP (design/firmware.md l.82)
+30161:FLAGS LCD_CS 0x1: no source
+30163:FLAGS LCD_DCX 0x0: no source
+30167:SAME FLAGS LCD_RST GPIO_ACTIVE_LOW (design/firmware.md l.381 (low = reset, high = run))
+30171:SAME FLAGS LCD_TE ACTIVE_HIGH, no pull (design/firmware.md l.84 (input, rising edge))
+30177:FLAGS MIC_B_DATA 0x0: no source
+30179:SAME FLAGS MOTOR ACTIVE_HIGH, no pull (design/firmware.md l.83 (output, active high))
+30180:NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+30182:SAME FLAGS OLED_PWR_EN ACTIVE_HIGH, no pull (design/firmware.md l.381 (high = screen supply on))
+30184:SAME FLAGS PMIC_INT ACTIVE_HIGH, no pull (design/firmware.md l.865 (active high))
+30190:SAME FLAGS SD_CS GPIO_ACTIVE_LOW (design/firmware.md l.506 (SD_CS high when idle))
+30198:FLAGS SPARE_P1_00 0x0: no source
+30200:FLAGS SPARE_P2_00 0x0: no source
+30202:FLAGS SPARE_P3_03 0x0: no source
+30204:FLAGS SPARE_P3_04 0x0: no source
+30205:NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+30206:NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+30207:NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+30211:NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+30212:NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+30213:NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+30218:check_ring_pins: RESULT PASS 36 signals checked, every pin as in the netlist, no unexpected pin
+30219:=== stage ring-pins end 2026-11-14T01:18:52Z exit 0
+30220:=== stage ring-pins-broken start 2026-11-14T01:18:52Z log /ws/out/20261114-001111-f1-full1/ring-pins-broken.log
+30225:NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+30226:NO NODE BY NATURE DECA A8 DECA: decoupling
+30227:NO NODE BY NATURE DECA B2 DECRF: decoupling
+30228:NO NODE BY NATURE DECD A6 DECD: decoupling
+30229:NO NODE BY NATURE GND A7 VSS: ground
+30230:NO NODE BY NATURE GND D3 VSS: ground
+30231:NO NODE BY NATURE GND E1 VSS: ground
+30232:NO NODE BY NATURE GND F10 VSS: ground
+30233:DIFFERENT MOTOR netlist P3.01 devicetree ring_motor/gpios P3.02
+30234:NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+30235:NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+30236:NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+30237:NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+30238:NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+30239:NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+30240:NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+30241:check_ring_pins: RESULT FAIL 36 signals checked; failing: MOTOR
+30242:ring-pins-broken: motor: self test ok: the planted copy fails on MOTOR alone
+30247:NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+30248:NO NODE BY NATURE DECA A8 DECA: decoupling
+30249:NO NODE BY NATURE DECA B2 DECRF: decoupling
+30250:NO NODE BY NATURE DECD A6 DECD: decoupling
+30251:NO NODE BY NATURE GND A7 VSS: ground
+30252:NO NODE BY NATURE GND D3 VSS: ground
+30253:NO NODE BY NATURE GND E1 VSS: ground
+30254:NO NODE BY NATURE GND F10 VSS: ground
+30255:NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+30256:DIFFERENT SD_MISO netlist P2.04 devicetree spi00/default/SPIM_MISO P2.03
+30257:NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+30258:NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+30259:NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+30260:NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+30261:NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+30262:NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+30263:check_ring_pins: RESULT FAIL 36 signals checked; failing: SD_MISO
+30264:ring-pins-broken: sd-miso: self test ok: the planted copy fails on SD_MISO alone
+30269:NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+30270:NO NODE BY NATURE DECA A8 DECA: decoupling
+30271:NO NODE BY NATURE DECA B2 DECRF: decoupling
+30272:NO NODE BY NATURE DECD A6 DECD: decoupling
+30273:NO NODE BY NATURE GND A7 VSS: ground
+30274:NO NODE BY NATURE GND D3 VSS: ground
+30275:NO NODE BY NATURE GND E1 VSS: ground
+30276:NO NODE BY NATURE GND F10 VSS: ground
+30277:NO NODE LCD_TE netlist P1.14: node ring_lcd_dbi has no property te-gpios
+30278:NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+30279:NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+30280:NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+30281:NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+30282:NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+30283:NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+30284:NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+30285:check_ring_pins: RESULT FAIL 36 signals checked; failing: LCD_TE
+30286:ring-pins-broken: lcd-te: self test ok: the planted copy fails on LCD_TE alone
+30291:NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+30292:NO NODE BY NATURE DECA A8 DECA: decoupling
+30293:NO NODE BY NATURE DECA B2 DECRF: decoupling
+30294:NO NODE BY NATURE DECD A6 DECD: decoupling
+30295:NO NODE BY NATURE GND A7 VSS: ground
+30296:NO NODE BY NATURE GND D3 VSS: ground
+30297:NO NODE BY NATURE GND E1 VSS: ground
+30298:NO NODE BY NATURE GND F10 VSS: ground
+30299:NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+30300:DIFFERENT PMIC_INT netlist P1.28 devicetree ring_pmic/host-int-gpios P2.28
+30301:NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+30302:NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+30303:NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+30304:NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+30305:NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+30306:NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+30307:check_ring_pins: RESULT FAIL 36 signals checked; failing: PMIC_INT
+30308:ring-pins-broken: port: self test ok: the planted copy fails on PMIC_INT alone
+30312:NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+30313:NO NODE BY NATURE DECA A8 DECA: decoupling
+30314:NO NODE BY NATURE DECA B2 DECRF: decoupling
+30315:NO NODE BY NATURE DECD A6 DECD: decoupling
+30316:NO NODE BY NATURE GND A7 VSS: ground
+30317:NO NODE BY NATURE GND D3 VSS: ground
+30318:NO NODE BY NATURE GND E1 VSS: ground
+30319:NO NODE BY NATURE GND F10 VSS: ground
+30320:NO NODE JOY_LEFT netlist P0.08: no node ring_joy_left in the devicetree
+30321:NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+30322:NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+30323:NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+30324:NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+30325:NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+30326:NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+30327:NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+30328:check_ring_pins: RESULT FAIL 36 signals checked; failing: JOY_LEFT
+30329:ring-pins-broken: node-removed: self test ok: the planted copy fails on JOY_LEFT alone
+30332:NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+30333:NO NODE BY NATURE DECA A8 DECA: decoupling
+30334:NO NODE BY NATURE DECA B2 DECRF: decoupling
+30335:NO NODE BY NATURE DECD A6 DECD: decoupling
+30336:NO NODE BY NATURE GND A7 VSS: ground
+30337:NO NODE BY NATURE GND D3 VSS: ground
+30338:NO NODE BY NATURE GND E1 VSS: ground
+30339:NO NODE BY NATURE GND F10 VSS: ground
+30340:NO NODE JOY_DOWN netlist P0.07: node ring_joy_down is not enabled
+30341:NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+30342:NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+30343:NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+30344:NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+30345:NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+30346:NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+30347:NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+30348:check_ring_pins: RESULT FAIL 36 signals checked; failing: JOY_DOWN
+30349:ring-pins-broken: node-disabled: self test ok: the planted copy fails on JOY_DOWN alone
+30352:NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+30353:NO NODE BY NATURE DECA A8 DECA: decoupling
+30354:NO NODE BY NATURE DECA B2 DECRF: decoupling
+30355:NO NODE BY NATURE DECD A6 DECD: decoupling
+30356:NO NODE BY NATURE GND A7 VSS: ground
+30357:NO NODE BY NATURE GND D3 VSS: ground
+30358:NO NODE BY NATURE GND E1 VSS: ground
+30359:NO NODE BY NATURE GND F10 VSS: ground
+30360:NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+30361:NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+30362:NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+30363:NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+30364:NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+30365:NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+30366:NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+30367:UNEXPECTED /zephyr,user/extra-test-gpios P1.24 (netlist net none)
+30368:check_ring_pins: RESULT FAIL 36 signals checked; failing: unexpected-pins(1)
+30369:ring-pins-broken: extra-pin: self test ok: the planted copy fails on unexpected-pins(1) alone
+30374:NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+30375:NO NODE BY NATURE DECA A8 DECA: decoupling
+30376:NO NODE BY NATURE DECA B2 DECRF: decoupling
+30377:NO NODE BY NATURE DECD A6 DECD: decoupling
+30378:NO NODE BY NATURE GND A7 VSS: ground
+30379:NO NODE BY NATURE GND D3 VSS: ground
+30380:NO NODE BY NATURE GND E1 VSS: ground
+30381:NO NODE BY NATURE GND F10 VSS: ground
+30382:DIFFERENT FLAGS JOY_UP devicetree GPIO_ACTIVE_LOW, design/firmware.md l.82 wants GPIO_ACTIVE_LOW|GPIO_PULL_UP
+30383:NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+30384:NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+30385:NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+30386:NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+30387:NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+30388:NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+30389:NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+30390:check_ring_pins: RESULT FAIL 36 signals checked; failing: JOY_UP
+30391:ring-pins-broken: flag: self test ok: the planted copy fails on JOY_UP alone
+30396:NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+30397:NO NODE BY NATURE DECA A8 DECA: decoupling
+30398:NO NODE BY NATURE DECA B2 DECRF: decoupling
+30399:NO NODE BY NATURE DECD A6 DECD: decoupling
+30400:NO NODE BY NATURE GND A7 VSS: ground
+30401:NO NODE BY NATURE GND D3 VSS: ground
+30402:NO NODE BY NATURE GND E1 VSS: ground
+30403:NO NODE BY NATURE GND F10 VSS: ground
+30404:UNLISTED NEWNET E6 P1.24: a U1 net this check has no rule for
+30405:NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+30406:NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+30407:NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+30408:NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+30409:NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+30410:NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+30411:NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+30412:check_ring_pins: RESULT FAIL 36 signals checked; failing: NEWNET
+30413:ring-pins-broken: unknown-net: self test ok: the planted copy fails on NEWNET alone
+30418:NO NODE BY NATURE DCC A5 DCC: the DC/DC converter's inductor L1 (vregmain's mode is set in the devicetree, no pin)
+30419:NO NODE BY NATURE DECA A8 DECA: decoupling
+30420:NO NODE BY NATURE DECA B2 DECRF: decoupling
+30421:NO NODE BY NATURE DECD A6 DECD: decoupling
+30422:NO NODE BY NATURE GND A7 VSS: ground
+30423:NO NODE BY NATURE GND D3 VSS: ground
+30424:NO NODE BY NATURE GND E1 VSS: ground
+30425:NO NODE BY NATURE GND F10 VSS: ground
+30426:DIFFERENT LCD_RST netlist P1.08 devicetree ring_lcd_dbi/reset-gpios P1.07
+30427:NO NODE BY NATURE NRESET E2 nRESET: reset, test pad TP5
+30428:NO NODE BY NATURE SWDCLK D5 SWDCLK: debug, test pad TP3
+30429:NO NODE BY NATURE SWDIO E4 SWDIO: debug, test pad TP4
+30430:NO NODE BY NATURE TXRTUNE G6 TXRTUNE: radio tuning resistor R2
+30431:NO NODE BY NATURE VDD_1V8 A4 VDD: supply
+30432:NO NODE BY NATURE VDD_1V8 E10 VDD: supply
+30433:NO NODE BY NATURE VDD_USB_3V3 H8 DECUSB: the chip's USB regulator output (DECUSB), a capacitor only
+30434:check_ring_pins: RESULT FAIL 36 signals checked; failing: LCD_RST
+30435:ring-pins-broken: netlist-row: self test ok: the planted copy fails on LCD_RST alone
+30436:=== stage ring-pins-broken end 2026-11-14T01:19:58Z exit 0

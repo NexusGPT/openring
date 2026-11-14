@@ -1,0 +1,42 @@
+Board A2 is done: all 8 of the eight screen-face parts (C1, C2, C5, C7, C14, FB1, R71, R72) now sit on the under face, and the board passes. The rules check prints `Found 0 violations` and `Found 0 unconnected items`. compare2.py against A1 ends with `RESULT PASS`.
+
+Board: design/ecad/ring-route-h/pcb/ring-thin-a2.kicad_pcb. Its .kicad_pro and .kicad_dru are byte copies of A1's. To rerun every check from ROOT: `design/ecad/ring-route-h/scripts/check_final.sh`. Step-by-step notes: design/ecad/ring-route-h/notes.md
+
+**The bar**
+1. Rules check (logs/final-drc.log): `Found 0 violations`, `Found 0 unconnected items`, `drc exit 0`.
+2. Screen face and placement (logs/final-compare.log): check 2b reads `footprints on the screen face (B.Cu): 12`, all test pads. Check 2a: the eight are on F.Cu with their A1 pad nets. Check 2c: their courtyards are clear and outside both fold zones and the antenna zone.
+3. compare2.py (route-g's script, extended) ends with `RESULT PASS`:
+   - The 91 other footprints, J1 included, are unchanged.
+   - Antenna nets (35 items) and the USB pair (30 items) match A1 item for item.
+   - Rule areas, outline, layers, stack, rules file and project file are unchanged.
+4. Broken copy with C7 put back on the screen face (logs/final-broken-C7.log): `RESULT FAIL 2: 2a 2b`, and C7 is named.
+
+**Where the parts went** (signal pad to its ball, plan view, both on the under face)
+
+| Part | Place | Distance to ball |
+|---|---|---|
+| C1 | (6.150, 0.250) | 0.852 mm to U1 E10 |
+| C2 | (6.950, 1.100) | 1.055 mm to U2 E4 |
+| C5 | (-0.550, -0.250) | 3.922 mm to U1 A4 |
+| C7 | (7.050, -1.950) | 2.328 mm to U1 A8 (limit 3.0) |
+| C14 | (1.050, 0.350) | 1.964 mm to U1 B2 |
+| FB1 | (1.150, 1.400) | 3.534 mm to U1 A6 (DECD pad) |
+| R71 | (9.150, -2.750) | 2.282 mm to U2 E2 |
+| R72 | (8.150, -5.700) | 4.450 mm to U2 E1 |
+
+- **C5:** no legal spot was within 3.0 mm of A4.
+- **R72:** I moved it to free the spot that C7 now uses.
+
+**How it was done**
+- The parts could not move straight down: at their A1 X, Y on the under face, the pads land on U1 and U2 escapes (logs/drc-probe-flipall2.list: `Found 132 violations`).
+- For each part I searched for free spots, then tried them in order. Each try moved the part, removed the dangling old copper, routed with route-f's router, added a ground via to any isolated ground area and ran the rules check. The first try to close was kept.
+- Copper changed on DECA, DECD, GND, VDD_1V8, VSET1 and VSET2 only (logs/all-items-a1-to-a2.txt: `removed 73 added 217`). The only GND change is one added via. XL1 and XL2 are unchanged (+0.000). Added track length: DECA +8.428 mm, VDD_1V8 +3.444 mm.
+
+**Read with care**
+- C5 and R72 sit where there was free space, not near their balls. C5's decoupling path runs through the routed VDD_1V8 copper.
+- KiCad's Python save rewrote the project file once and voided one probe. Since then every edit goes through kp.sh, which puts the project file back.
+- I stopped three placement runs by pid after finding faults in my own scripts, and reran them. All of this is in logs/chain.log.
+
+questions_for_owner: none
+
+RESULT: done, 8 of 8 parts on the under face, rules check 0 violations / 0 unconnected (logs/final-drc.log), compare2.py RESULT PASS, broken copy names C7.

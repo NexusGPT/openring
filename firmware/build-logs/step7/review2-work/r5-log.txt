@@ -1,0 +1,35 @@
+30437:=== stage ring-production start 2026-11-14T01:19:58Z log /ws/out/20261114-001111-f1-full1/ring-production.log
+Generating files from /ws/out/20261114-001111-f1-full1/ring-prod/mcuboot/zephyr/zephyr.elf for board: ringrec/nrf54lm20a/cpuapp
+[15/18] Generating ../dfu_application.zip
+[17/18] No install step for 'mcuboot'
+[18/18] Completed 'mcuboot'
+=== stage ring-production end 2026-11-14T01:21:03Z exit 0
+--- flash and RAM use, ringrec/nrf54lm20a/cpuapp production settings (linker memory report)
+image app (/ws/out/20261114-001111-f1-full1/ring-prod/app/zephyr/zephyr.elf)
+Memory region         Used Size  Region Size  %age Used
+           FLASH:      642260 B     982896 B     65.34%
+             RAM:      471888 B       510 KB     90.36%
+     RetainedMem:           0 B         1 KB      0.00%
+        IDT_LIST:           0 B        32 KB      0.00%
+image mcuboot (/ws/out/20261114-001111-f1-full1/ring-prod/mcuboot/zephyr/zephyr.elf)
+Memory region         Used Size  Region Size  %age Used
+           FLASH:       44480 B        64 KB     67.87%
+             RAM:       21984 B       510 KB      4.21%
+     RetainedMem:           0 B         1 KB      0.00%
+        IDT_LIST:           0 B        32 KB      0.00%
+=== stage ring-production-check start 2026-11-14T01:21:03Z log /ws/out/20261114-001111-f1-full1/ring-production-check.log
+ring-production: ring-prod/app/zephyr/.config # CONFIG_SERIAL is not set
+ring-production: ring-prod/mcuboot/zephyr/.config # CONFIG_SERIAL is not set
+880:				/* node '/soc/peripheral@50000000/gpio@d8200/dbg_tx_pulldown' defined in firmware/boards/ringrec/ringrec_production.overlay:19 */
+881:				ring_dbg_tx_pulldown: dbg_tx_pulldown {
+882-					gpio-hog;             /* in firmware/boards/ringrec/ringrec_production.overlay:20 */
+883-					gpios = < 0xf 0x20 >; /* in firmware/boards/ringrec/ringrec_production.overlay:21 */
+884-					input;                /* in firmware/boards/ringrec/ringrec_production.overlay:22 */
+=== stage ring-production-check end 2026-11-14T01:21:03Z exit 0
+build_all: logs in /ws/out/20261114-001111-f1-full1
+RESULT PASS
+# finished (Mac clock): 2026-11-14 02:21:29 CET
+# remote exit code: 0
+# local log: firmware/build-logs/step7/fix1/20261114-001111-f1-full1.log
+--- uart20 address in ring dev build log / dts
+47:warning: BOOT_MAX_IMG_SECTORS (defined at /ws/bootloader/mcuboot/boot/zephyr/Kconfig:974) was

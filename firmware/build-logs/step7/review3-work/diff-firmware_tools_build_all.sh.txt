@@ -1,0 +1,106 @@
+diff --git a/firmware/tools/build_all.sh b/firmware/tools/build_all.sh
+index b7331aa4..7e09c3fb 100755
+--- a/firmware/tools/build_all.sh
++++ b/firmware/tools/build_all.sh
+@@ -58,7 +58,9 @@
+ #            netlist (an unknown net, LCD_RST's row changed): each must fail, naming exactly its signal
+ #   6e ring-production  fix round 1: the ring with its production settings (app/ringrec_production.conf,
+ #            boards/ringrec/ringrec_production.overlay and _mcuboot.conf: no UART output, design/firmware.md l.1061),
+-#            sysbuild, compile only; memory report; ring-production-check: no UART in either image, uart20 disabled
++#            sysbuild, compile only; memory report; ring-production-check: no UART in either image, the pin check in
++#            production mode (DBG_TX a hog with pull-down); ring-production-broken (fix round 2): three planted copies
++#            (a UART on, DBG_TX without pull-down, a missing input file) must each be refused
+ # Last line: "RESULT PASS" (exit 0) or "RESULT FAIL <stages>" (exit 1).
+ 
+ set -u
+@@ -641,21 +643,72 @@ ring_pins_broken() {
+ 	ring_pins_net_case netlist-row LCD_RST 'LCD_RST,U1,H5,P1.07,' 'LCD_RST,U1,H5,P1.08,' || rc=1
+ 	return $rc
+ }
+-# ring-production (fix round 1, design/firmware.md l.1061): the ring's production settings, no UART output: compile only
+-ring_production_check() {
+-	local a="$OUT/ring-prod/app/zephyr" m="$OUT/ring-prod/mcuboot/zephyr" rc=0 f
++# ring-production (fix round 1, design/firmware.md l.1061): the ring's production settings, no UART output: compile only.
++# ring_production_verdict <app zephyr dir> <mcuboot zephyr dir> <pin check log> (fix round 2, S7R-02 and S7R-08): 0 when
++# both .config files and the app's zephyr.dts exist, no UART is on in either image, and the pin check in production
++# mode passes on the app's devicetree (DBG_TX a hog, input with pull-down; uart20 naming no pin)
++ring_production_verdict() {
++	local a=$1 m=$2 log=$3 rc=0 f
++	for f in "$a/.config" "$m/.config" "$a/zephyr.dts"; do
++		if [ ! -s "$f" ]; then
++			echo "ring-production: MISSING input file $f"
++			return 1
++		fi
++	done
+ 	for f in "$a/.config" "$m/.config"; do
+-		grep -E '^(# )?CONFIG_(SERIAL|UART_CONSOLE)[ =]' "$f" 2>&1 | sed "s|^|ring-production: ${f#$OUT/} |"
++		grep -E '^(# )?CONFIG_(SERIAL|UART_CONSOLE)[ =]' "$f" 2>&1 | sed "s|^|ring-production: $f |"
+ 		if grep -q -E '^CONFIG_(SERIAL|UART_CONSOLE)=y' "$f"; then
+-			echo "ring-production: DIFFERENT a UART is on in ${f#$OUT/}"
++			echo "ring-production: DIFFERENT a UART is on in $f"
+ 			rc=1
+ 		fi
+ 	done
+-	if grep -q -E 'uart@c6000 \{' "$a/zephyr.dts" && awk '/uart20: uart@c6000 \{/{p=1} p&&/status =/{print; exit}' "$a/zephyr.dts" | grep -q okay; then
+-		echo "ring-production: DIFFERENT uart20 is enabled in the production devicetree"
++	python3 "$FW/tools/check_ring_pins.py" --production "$a/zephyr.dts" "$RING_NETLIST" > "$log" 2>&1
++	f=$?
++	grep -E '^(SAME DBG_TX|DIFFERENT|NO NODE |UNEXPECTED|UNLISTED|UNSEEN)|RESULT' "$log" | sed 's|^|ring-production: |'
++	if [ $f -ne 0 ]; then
++		echo "ring-production: DIFFERENT the pin check in production mode exited $f"
+ 		rc=1
+ 	fi
+-	grep -n -A3 'dbg_tx_pulldown' "$a/zephyr.dts" 2>&1
++	return $rc
++}
++ring_production_check() {
++	ring_production_verdict "$OUT/ring-prod/app/zephyr" "$OUT/ring-prod/mcuboot/zephyr" "$OUT/ring-prod-pins.log"
++}
++# ring_production_case <name> <expected line> <how>: a copy of the production build's three input files, changed by
++# <how> (uart: CONFIG_SERIAL=y in the app's .config; pulldown: DBG_TX's hog without its pull-down; missing: no MCUboot
++# .config); 0 when the verdict fails and prints <expected line>
++ring_production_case() {
++	local name=$1 want=$2 how=$3 d="$OUT/ring-prod-broken-$1" rc
++	rm -rf "$d"
++	mkdir -p "$d/app" "$d/mcuboot"
++	cp "$OUT/ring-prod/app/zephyr/.config" "$OUT/ring-prod/app/zephyr/zephyr.dts" "$d/app/"
++	cp "$OUT/ring-prod/mcuboot/zephyr/.config" "$d/mcuboot/"
++	case "$how" in
++	uart) echo "CONFIG_SERIAL=y" >> "$d/app/.config"; grep -n '^CONFIG_SERIAL=y' "$d/app/.config" || return 1 ;;
++	pulldown)
++		ring_pins_plant "$d/app/zephyr.dts" 'gpios = < 0xf 0x20 >;' 'gpios = < 0xf 0x0 >;' || return 1
++		grep -n 'gpios = < 0xf 0x0 >;' "$d/app/zephyr.dts" || return 1 ;;
++	missing) rm "$d/mcuboot/.config"; [ ! -e "$d/mcuboot/.config" ] && echo "planted: $d/mcuboot/.config removed" ;;
++	esac
++	ring_production_verdict "$d/app" "$d/mcuboot" "$d/pins.log" > "$d/verdict.log" 2>&1
++	rc=$?
++	cat "$d/verdict.log"
++	if [ $rc -ne 1 ]; then
++		echo "ring-production-broken: $name: SELF TEST FAILED: the verdict exited $rc (1 wanted)"
++		return 1
++	fi
++	if ! grep -q -F "$want" "$d/verdict.log"; then
++		echo "ring-production-broken: $name: SELF TEST FAILED: no line \"$want\""
++		return 1
++	fi
++	echo "ring-production-broken: $name: self test ok: refused with \"$want\""
++	return 0
++}
++ring_production_broken() {
++	local rc=0
++	ring_production_case uart "ring-production: DIFFERENT a UART is on in" uart || rc=1
++	ring_production_case pulldown "failing: DBG_TX" pulldown || rc=1
++	ring_production_case missing "ring-production: MISSING input file" missing || rc=1
+ 	return $rc
+ }
+ if run_stage ring west build -p always -b "$RING_BOARD" --sysbuild -d "$OUT/ring" -o=-j"$JOBS" "$FW/app" -- -DBOARD_ROOT="$FW"; then
+@@ -695,6 +748,9 @@ if run_stage ring-production west build -p always -b "$RING_BOARD" --sysbuild -d
+ 	if ! run_stage ring-production-check ring_production_check; then
+ 		FAILED="$FAILED ring-production-check"
+ 	fi
++	if ! run_stage ring-production-broken ring_production_broken; then
++		FAILED="$FAILED ring-production-broken"
++	fi
+ else
+ 	FAILED="$FAILED ring-production"
+ fi

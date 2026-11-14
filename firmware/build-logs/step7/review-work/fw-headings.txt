@@ -1,0 +1,64 @@
+1:# AI ring recorder: firmware architecture
+91:## 1. State machine
+93:### 1.1 States
+122:### 1.2 Transitions
+221:## 2. Controls
+223:### 2.1 Record gesture: the centre press of the joystick (the one control; architecture 17.11)
+269:### 2.2 Joystick (the round joystick of architecture 17.29, five switches under one round cap: SW1 up JOY_UP P0.06, SW3 down JOY_DOWN P0.07, SW4 toward the hand JOY_LEFT P0.08, SW5 toward the fingertip JOY_RIGHT P1.31, SW2 the centre (net BTN_REC); the centre press comes from SW2 or from an opposite pair, section 2.1; the JOY_CENTER pin is unused)
+309:## 3. Feedback
+311:### 3.1 Motor (MOTOR, P3.01, high = on)
+337:### 3.2 Recording sign on the screen (architecture 17.30)
+348:### 3.3 Screen
+386:### 3.4 Control session and device screens (F7 part 3, ruling R17)
+398:## 4. Audio pipeline
+400:### 4.1 PDM settings
+425:### 4.2 Channel alignment (one PDM instance)
+432:### 4.3 Buffers
+445:### 4.4 Recording start and stop timing
+451:### 4.5 Microphone power sequencing
+467:### 4.6 RAM budget
+492:### 4.7 Motor noise in the audio
+500:## 5. Storage
+502:### 5.1 Driver stack
+509:### 5.2 Layout: raw, append-only log (no file system)
+533:### 5.3 Recording format, byte by byte
+585:### 5.4 Superblock and index records
+638:### 5.5 Write strategy and power loss
+648:### 5.6 Free-space accounting
+656:### 5.7 Deletion after confirmed transfer
+663:## 6. Transfer protocol over USB (in the case)
+665:### 6.1 Device class
+675:### 6.2 Message layout
+692:### 6.3 Commands
+713:### 6.4 Resume and integrity
+720:## 7. Bluetooth
+724:### 7.1 Stack and role
+730:### 7.2 Services and characteristics
+758:### 7.3 Advertising
+772:### 7.4 Pairing, bonding, security
+782:### 7.5 Control modes
+800:### 7.6 Apple's services (the iPhone part)
+817:### 7.7 Relay service (notifications from a helper app; F7 part 5, software step 5)
+856:## 8. Power management
+858:### 8.1 nPM1304 settings (devicetree, Zephyr nPM13xx drivers)
+910:### 8.2 What is on in each state
+924:### 8.3 Battery measurement
+932:### 8.4 Ship mode entry and exit (nPM1304 ship task after VBUS removal, [NPM p116])
+947:### 8.5 Expected current per state (architecture 17.15, 17.19 and 17.26, the current ring)
+974:### 8.6 Pads on the inside of the band touch the skin (architecture 17.12)
+986:### 8.7 Battery current limit and reset causes of the nPM1304
+999:## 9. Time keeping, firmware update, factory test, logging
+1001:### 9.1 Time keeping
+1007:### 9.2 Firmware update over USB, with rollback
+1017:### 9.3 Factory test mode
+1059:### 9.4 Logging and crash capture
+1067:## 10. Work breakdown
+1069:### 10.1 What exists in the SDK
+1085:### 10.2 What must be written
+1105:### 10.3 Order of work
+1109:### 10.4 Sources read for this document
+1134:### 10.5 Facts not verified from a primary source
+1172:### 10.6 What `firmware-check.py` checks
+1176:## Hardware issues found
+1202:## Event log codes (ruling R23, software step 6)
+1237:## questions_for_owner

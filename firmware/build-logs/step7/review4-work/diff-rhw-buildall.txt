@@ -1,0 +1,172 @@
+diff --git a/firmware/modules/ring_rhw/include/ring_rhw/rhw.h b/firmware/modules/ring_rhw/include/ring_rhw/rhw.h
+index 0395adde..61937ffe 100644
+--- a/firmware/modules/ring_rhw/include/ring_rhw/rhw.h
++++ b/firmware/modules/ring_rhw/include/ring_rhw/rhw.h
+@@ -94,8 +94,10 @@ enum rhw_rail {
+ };
+ struct rhw_pmic_sample {                 /* one system monitor sample (FW l.926) */
+ 	uint16_t mv;                     /* battery voltage, mV */
+-	int32_t ua;                      /* battery current inside the chip's path, µA, positive = discharge (this
+-	                                  * interface's sign; the real file converts, kit fact K6) */
++	int32_t ua;                      /* battery current inside the chip's path, µA, positive = discharge. The real
++	                                  * file negates the kit's charger channel (negative while discharging) and
++	                                  * gives this value unchanged to the fuel gauge library, which wants
++	                                  * positive = discharge (kit fact K6, settled in step 7 fix round 2) */
+ 	int16_t temp_c_x10;              /* thermistor temperature, 0.1 °C */
+ 	int16_t die_c_x10;               /* die temperature, 0.1 °C (chunk field temp_c_x10, FW l.568) */
+ };
+diff --git a/firmware/tools/build_all.sh b/firmware/tools/build_all.sh
+index 7e09c3fb..15ceaa68 100755
+--- a/firmware/tools/build_all.sh
++++ b/firmware/tools/build_all.sh
+@@ -60,7 +60,10 @@
+ #            boards/ringrec/ringrec_production.overlay and _mcuboot.conf: no UART output, design/firmware.md l.1061),
+ #            sysbuild, compile only; memory report; ring-production-check: no UART in either image, the pin check in
+ #            production mode (DBG_TX a hog with pull-down); ring-production-broken (fix round 2): three planted copies
+-#            (a UART on, DBG_TX without pull-down, a missing input file) must each be refused
++#            (a UART on, DBG_TX without pull-down, a missing input file) must each be refused; fix round 3: also a UART
++#            console in MCUboot and uart20 enabled; the pin check's failing list is compared whole
++#   6f ring-lines-safe  fix round 3: static check that rst_hw_real.c's b_suspend always ends in lines_safe(), b_resume
++#            calls it on every failure, lines_safe reads no state; ring-lines-safe-broken: three planted copies
+ # Last line: "RESULT PASS" (exit 0) or "RESULT FAIL <stages>" (exit 1).
+ 
+ set -u
+@@ -678,7 +681,7 @@ ring_production_check() {
+ # <how> (uart: CONFIG_SERIAL=y in the app's .config; pulldown: DBG_TX's hog without its pull-down; missing: no MCUboot
+ # .config); 0 when the verdict fails and prints <expected line>
+ ring_production_case() {
+-	local name=$1 want=$2 how=$3 d="$OUT/ring-prod-broken-$1" rc
++	local name=$1 want=$2 how=$3 d="$OUT/ring-prod-broken-$1" rc got
+ 	rm -rf "$d"
+ 	mkdir -p "$d/app" "$d/mcuboot"
+ 	cp "$OUT/ring-prod/app/zephyr/.config" "$OUT/ring-prod/app/zephyr/zephyr.dts" "$d/app/"
+@@ -689,6 +692,17 @@ ring_production_case() {
+ 		ring_pins_plant "$d/app/zephyr.dts" 'gpios = < 0xf 0x20 >;' 'gpios = < 0xf 0x0 >;' || return 1
+ 		grep -n 'gpios = < 0xf 0x0 >;' "$d/app/zephyr.dts" || return 1 ;;
+ 	missing) rm "$d/mcuboot/.config"; [ ! -e "$d/mcuboot/.config" ] && echo "planted: $d/mcuboot/.config removed" ;;
++	uart-mcuboot) echo "CONFIG_UART_CONSOLE=y" >> "$d/mcuboot/.config"; grep -n '^CONFIG_UART_CONSOLE=y' "$d/mcuboot/.config" || return 1 ;;
++	uart20-on)
++		# fix round 3 (S7T-04): uart20 enabled in the devicetree, the path that replaced the old "uart20 is enabled" test
++		python3 -c 'import sys
++p = sys.argv[1]
++s = open(p).read()
++i = s.index("uart20: uart@c6000 {")
++j = s.index("status = \"disabled\";", i)
++open(p, "w").write(s[:j] + "status = \"okay\";" + s[j + len("status = \"disabled\";"):])' "$d/app/zephyr.dts" || return 1
++		awk '/uart20: uart@c6000 \{/{p=1} p&&/status =/{print "planted: uart20 " $0; exit}' "$d/app/zephyr.dts" | grep -q okay || return 1
++		echo "planted: uart20 status okay" ;;
+ 	esac
+ 	ring_production_verdict "$d/app" "$d/mcuboot" "$d/pins.log" > "$d/verdict.log" 2>&1
+ 	rc=$?
+@@ -697,20 +711,106 @@ ring_production_case() {
+ 		echo "ring-production-broken: $name: SELF TEST FAILED: the verdict exited $rc (1 wanted)"
+ 		return 1
+ 	fi
+-	if ! grep -q -F "$want" "$d/verdict.log"; then
+-		echo "ring-production-broken: $name: SELF TEST FAILED: no line \"$want\""
+-		return 1
+-	fi
++	case "$want" in
++	failing=*)
++		# fix round 3 (S7T-04): the pin check's whole failing list, not a substring
++		got=$(sed -n 's/^ring-production: check_ring_pins: RESULT FAIL [0-9]* signals checked; failing: //p' "$d/verdict.log")
++		if [ "$got" != "${want#failing=}" ]; then
++			echo "ring-production-broken: $name: SELF TEST FAILED: the pin check failed on \"$got\", not on exactly \"${want#failing=}\""
++			return 1
++		fi ;;
++	*)
++		if ! grep -q -F "$want" "$d/verdict.log"; then
++			echo "ring-production-broken: $name: SELF TEST FAILED: no line \"$want\""
++			return 1
++		fi ;;
++	esac
+ 	echo "ring-production-broken: $name: self test ok: refused with \"$want\""
+ 	return 0
+ }
+ ring_production_broken() {
+ 	local rc=0
+ 	ring_production_case uart "ring-production: DIFFERENT a UART is on in" uart || rc=1
+-	ring_production_case pulldown "failing: DBG_TX" pulldown || rc=1
++	ring_production_case pulldown "failing=DBG_TX" pulldown || rc=1
+ 	ring_production_case missing "ring-production: MISSING input file" missing || rc=1
++	ring_production_case uart-mcuboot "ring-production: DIFFERENT a UART is on in $OUT/ring-prod-broken-uart-mcuboot/mcuboot/.config" uart-mcuboot || rc=1
++	ring_production_case uart20-on "failing=unexpected-pins(2)" uart20-on || rc=1
++	return $rc
++}
++# ring-lines-safe (fix round 3, S7T-01): a static check of modules/ring_store/src/rst_hw_real.c: lines_safe() reads no
++# state and makes SD_CS disconnected and applies spi00's sleep pin state; b_suspend() and b_resume() have exactly the
++# wrapper shapes that end in lines_safe() (b_suspend on every return, b_resume on every failure); suspend_inner,
++# resume_inner and bus_first_init are called only through those wrappers; the sdbus table names the two wrappers. It sees
++# the text of the file only: not what the called kit functions do, not the hardware.
++# ring_lines_check <file>: prints SAME or DIFFERENT per rule and "failing: <rules>"; 0 when every rule holds
++ring_lines_check() {
++	python3 - "$1" <<'PYCHECK'
++import re, sys
++src = open(sys.argv[1]).read()
++code = re.sub(r"/\*.*?\*/", " ", src, flags=re.S)
++def body(name):
++    m = re.search(r"static int " + name + r"\(void\)\s*\{(.*?)\n\}", code, flags=re.S)
++    return " ".join(m.group(1).split()) if m else None
++fail = []
++def rule(name, ok, what):
++    print("ring-lines-safe: %s %s: %s" % ("SAME" if ok else "DIFFERENT", name, what))
++    if not ok and name not in fail:
++        fail.append(name)
++ls = body("lines_safe")
++rule("lines_safe", ls is not None and "GPIO_DISCONNECTED" in ls and "pinctrl_apply_state(spi00_pins, PINCTRL_STATE_SLEEP)" in ls
++     and not re.search(r"\b(if|bus_up|device_is_ready|pm_device_action_run|return 0)\b", ls),
++     "no condition, no device state; SD_CS GPIO_DISCONNECTED and spi00's sleep pin state: %s" % ls)
++bs = body("b_suspend")
++rule("b_suspend", bs == "int r = suspend_inner(); int s = lines_safe(); return r != 0 ? r : s;",
++     "one wrapper that always ends in lines_safe(): %s" % bs)
++br = body("b_resume")
++rule("b_resume", br == "int r = resume_inner(); if (r != 0) { (void)lines_safe(); } return r;",
++     "lines_safe() on every failure: %s" % br)
++for f, n in (("suspend_inner", 2), ("resume_inner", 2)):
++    c = len(re.findall(r"\b" + f + r"\(", code))
++    rule(f, c == n, "%d occurrences (its definition and the one call in its wrapper: %d wanted)" % (c, n))
++ri = body("resume_inner") or ""
++calls = len(re.findall(r"\bbus_first_init\(\)\s*;", code))
++rule("bus_first_init", "return bus_first_init();" in ri and calls == 1,
++     "called once, from resume_inner: %d call(s)" % calls)
++rule("sdbus", ".suspend = b_suspend, .resume = b_resume" in code, "the sdbus table names the two wrappers")
++if fail:
++    print("ring-lines-safe: RESULT FAIL failing: " + " ".join(fail))
++    sys.exit(1)
++print("ring-lines-safe: RESULT PASS")
++PYCHECK
++}
++ring_lines_case() {
++	local name=$1 sig=$2 old=$3 new=$4 f="$OUT/ring-lines-broken-$1.c" got rc
++	cp "$FW/modules/ring_store/src/rst_hw_real.c" "$f"
++	ring_pins_plant "$f" "$old" "$new" || return 1
++	diff "$FW/modules/ring_store/src/rst_hw_real.c" "$f"
++	ring_lines_check "$f" > "$f.log" 2>&1
++	rc=$?
++	cat "$f.log"
++	got=$(sed -n 's/^ring-lines-safe: RESULT FAIL failing: //p' "$f.log")
++	if [ $rc -ne 1 ] || [ "$got" != "$sig" ]; then
++		echo "ring-lines-safe-broken: $name: SELF TEST FAILED: exit $rc, failing \"$got\" (wanted exit 1, \"$sig\")"
++		return 1
++	fi
++	echo "ring-lines-safe-broken: $name: self test ok: the planted copy fails on $sig alone"
++}
++ring_lines_safe() {
++	ring_lines_check "$FW/modules/ring_store/src/rst_hw_real.c"
++}
++ring_lines_safe_broken() {
++	local rc=0
++	ring_lines_case early-return b_suspend 'int r = suspend_inner();' $'int r = suspend_inner();\n\n\tif (r != 0) {\n\t\treturn r;\n\t}' || rc=1
++	ring_lines_case gated lines_safe $'static int lines_safe(void)\n{\n' $'static int lines_safe(void)\n{\n\tif (!bus_up) {\n\t\treturn 0;\n\t}\n' || rc=1
++	ring_lines_case resume-no-safe b_resume '(void)lines_safe();' '(void)0;' || rc=1
+ 	return $rc
+ }
++if ! run_stage ring-lines-safe ring_lines_safe; then
++	FAILED="$FAILED ring-lines-safe"
++fi
++if ! run_stage ring-lines-safe-broken ring_lines_safe_broken; then
++	FAILED="$FAILED ring-lines-safe-broken"
++fi
+ if run_stage ring west build -p always -b "$RING_BOARD" --sysbuild -d "$OUT/ring" -o=-j"$JOBS" "$FW/app" -- -DBOARD_ROOT="$FW"; then
+ 	echo "--- flash and RAM use, $RING_BOARD (linker memory report; images in build order, see $OUT/ring/domains.yaml)"
+ 	cat "$OUT/ring/domains.yaml" 2>&1

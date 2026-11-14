@@ -1,0 +1,6 @@
+# remote.sh run 20261113-234541-s7-ramall
+# command: R=/ws/out/20261113-214232-s7-full1; NM=$(sed -n 's/^CMAKE_NM:FILEPATH=//p' $R/ring/app/CMakeCache.txt); echo RAM-BEGIN; $NM -S -l --size-sort -r $R/ring/app/zephyr/zephyr.elf | awk '$1 ~ /^2/' | sed 's|/ws/||'; echo RAM-END; grep -E '^CONFIG_(LOG|LOG_BUFFER_SIZE|HEAP_MEM_POOL_SIZE|LV_Z_MEM_POOL_SIZE)=' $R/ring/app/zephyr/.config; rm -rf $R; ls /ws/out | grep -c s7-full1
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 23:45:41 CET
+# free on the server's /: 18 GB
+# remote.sh: less than 25 GB free on the server; stop

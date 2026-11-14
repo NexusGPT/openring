@@ -1,0 +1,155 @@
+review l.8 README.md:42 ->    Step 4 adds: the screens' pictures (`RING_PICS`) are checked as PNG files and
+review l.8 README.md:32 -> 3. twister on every test under `tests/` on `native_sim`, and on each simulated
+review l.8 s7-full1.console:4 -> # started (Mac clock): 2026-11-13 21:42:32 CET
+review l.8 build_all.sh:42 -> #            and listed in $OUT/pictures/manifest-<board>.md (tools/pictures_manifest.py)
+review l.8 build_all.sh:17 -> #   4 bsim-<name>  every firmware/tests/bsim/<name>/run.sh (two-device tests with
+review l.8 board-notes.md:48 -> | BTN_REC | H2 | P0.04 | `ring_btn_rec` property `gpios` | none: no joystick driver exists (app/src/main.c l.13-14: "the driver calls rglue_input()", 
+review l.8 board-notes.md:4 -> (every file named below is there unless a path says otherwise). Server copy used: `/root/ring-os/src-s7` only.
+review l.13 dts:188 -> &lfxo {
+review l.15 dts:183 -> &hfxo {
+review l.15 dts:218 -> &radio {
+review l.15 dts:257 -> zephyr_udc0: &usbhs {
+review l.16 pinctrl.dtsi:79 -> 			psels = <NRF_PSEL(PDM_CLK, 1, 13)>,          /* MIC_A_CLK */
+review l.16 pinctrl.dtsi:80 -> 				<NRF_PSEL(PDM_DIN, 1, 11)>;          /* MIC_A_DATA */
+review l.16 pinctrl.dtsi:86 -> 			psels = <NRF_PSEL(PDM_CLK, 1, 13)>;          /* MIC_A_CLK */
+review l.16 pinctrl.dtsi:90 -> 			psels = <NRF_PSEL(PDM_DIN, 1, 11)>;          /* MIC_A_DATA */
+review l.16 dts:105 -> 		mic-b-data-gpios = <&gpio1 25 0>;                              /* MIC_B_DATA: test pad, unused (FW l.77) */
+review l.16 pinctrl.dtsi:27 -> 			psels = <NRF_PSEL(SPIM_SCK, 2, 1)>,          /* SD_SCK */
+review l.16 pinctrl.dtsi:29 -> 				<NRF_PSEL(SPIM_MISO, 2, 4)>;         /* SD_MISO */
+review l.16 pinctrl.dtsi:35 -> 			psels = <NRF_PSEL(SPIM_SCK, 2, 1)>,          /* SD_SCK */
+review l.16 dts:264 -> 	cs-gpios = <&gpio2 5 GPIO_ACTIVE_LOW>;                                  /* SD_CS */
+review l.16 pinctrl.dtsi:45 -> 			psels = <NRF_PSEL(SPIM_SCK, 1, 3)>,          /* LCD_SCK */
+review l.16 pinctrl.dtsi:46 -> 				<NRF_PSEL(SPIM_MOSI, 1, 4)>;         /* LCD_MOSI */
+review l.16 dts:286 -> 	cs-gpios = <&gpio1 5 GPIO_ACTIVE_LOW>;                                  /* LCD_CS */
+review l.16 dts:93 -> 		dc-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;                         /* LCD_DCX (RS: high = data) */
+review l.16 dts:95 -> 		te-gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>;                        /* LCD_TE (input, rising edge) */
+review l.16 dts:104 -> 		oled-pwr-en-gpios = <&gpio1 30 GPIO_ACTIVE_HIGH>;              /* OLED_PWR_EN: U4 AVDDEN (screen supply) */
+review l.16 dts:82 -> 			gpios = <&gpio3 1 GPIO_ACTIVE_HIGH>;                       /* MOTOR */
+review l.16 dts:52 -> 			gpios = <&gpio0 4 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;      /* BTN_REC, SW2 centre */
+review l.16 dts:72 -> 			gpios = <&gpio1 31 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;     /* JOY_RIGHT, SW5 toward the fingertip */
+review l.16 pinctrl.dtsi:61 -> 			psels = <NRF_PSEL(TWIM_SDA, 1, 26)>,         /* PMIC_SDA */
+review l.16 pinctrl.dtsi:62 -> 				<NRF_PSEL(TWIM_SCL, 1, 27)>;         /* PMIC_SCL */
+review l.16 dts:321 -> 		host-int-gpios = <&gpio1 28 GPIO_ACTIVE_HIGH>;                  /* PMIC_INT, from the chip's GPIO0 */
+review l.17 netlist.csv:181 -> LCD_TE,U1,F4,P1.14,bidirectional
+review l.17 netlist.csv:205 -> OLED_PWR_EN,U1,F9,P1.30,bidirectional
+review l.17 netlist.csv:390 -> ,U1,D6,P1.22,no_connect
+review l.17 netlist.csv:394 -> ,U1,E9,P1.29,no_connect
+review l.17 netlist.csv:395 -> ,U1,F8,P1.02,no_connect
+review l.23 s7-full1.console:29577 -> check_ring_pins: RESULT PASS 36 signals checked, every pin as in the netlist, no unexpected pin
+review l.24 s7-full1.console:29515 -> check_ring_pins: source netlist /ws/firmware/../design/ecad/ring/netlist.csv not present here (the build server receives firmware/ only): the copy's s
+review l.26 s7-explore3.console:113 -> properties:
+review l.26 s7-explore3.console:402 ->       When die temperature falls below this threshold, charging will be permitted.
+review l.27 FW:1010 -> - RRAM layout, 2,036 KB in total [SRC 1]: MCUboot 64 KB at 0x00000000; slot 0 (running image) 976 KB at 0x00010000; slot 1 (update) 976 KB at 0x001040
+review l.27 s7-full1.console:29298 ->            FLASH:      621112 B     982896 B     63.19%
+review l.27 s7-full1.console:29304 ->            FLASH:       45596 B        64 KB     69.57%
+review l.27 s7-full1.console:29128 -> [151/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/swap_move.c.obj
+review l.27 dts:302 -> &wdt31 {
+review l.27 dts:40 -> 		gpregret1 = &gpregret1;              /* modules/ring_sys/src/rsy_hw_real.c */
+review l.27 dts:306 -> &gpregret1 {
+review l.27 dts:39 -> 		crashram = &ring_crashram;           /* modules/ring_sys/src/rsy_hw_real.c, crash record */
+review l.27 dts:123 -> 		ring_crashram: retainedmem {
+review l.27 dts:115 -> 		compatible = "zephyr,memory-region", "mmio-sram";
+review l.27 sys-notes.md:72 -> - Devicetree: `wdt31` enabled, partition `slot1_partition`, alias `crashram` (a `zephyr,retained-ram` node of 1,024 bytes), alias `gpregret1`. The `ki
+review l.28 .conf:42 -> # The power part's real file (modules/ring_power/src/rpw_hw_real.c) does NOT compile with this kit: lines 307, 309 and
+review l.28 .conf:47 -> CONFIG_RING_POWER_REAL=n
+review l.28 s7-build1.console:1236 -> /ws/firmware/modules/ring_power/src/rpw_hw_real.c:307:21: error: too few arguments to function 'nrf_fuel_gauge_process'
+review l.28 s7-build1.console:1243 -> /ws/firmware/modules/ring_power/src/rpw_hw_real.c:309:21: error: too few arguments to function 'nrf_fuel_gauge_tte_get'
+review l.28 s7-build1.console:1249 -> /ws/firmware/modules/ring_power/src/rpw_hw_real.c:310:21: error: too few arguments to function 'nrf_fuel_gauge_ttf_get'
+review l.28 s7-full1.console:29309 -> recorder-product-drivers: ring-product CONFIG_RING_RHW_SIM is off
+review l.28 recorder-notes.md:139 -> the kit. Step 7 must add, for the real drivers to exist at all:
+review l.28 recorder-notes.md:150 -> - the main chip's reset reason for `RREC_LOG_MAIN_RESET` (section 2, item 12).
+review l.29 rrec_mics.c:53 -> 	return rhw_pmic()->rail_set(RHW_RAIL_MIC, true, "rec_mics_on");
+review l.29 s7-build2.console:1371 -> # CONFIG_INPUT is not set
+review l.29 test_gesture.c:279 -> 	/* line 233: BTN_REC P0.04 is unused in case PAIR */
+review l.30 README:77 -> What is unproven: everything that needs a ring. It compiles and its pins match the netlist; no ring has run it. The
+review l.30 README:80 -> the joystick has no driver; the cell model is Nordic's 20 mAh sample, not the ring's cell.
+review l.30 README:96 -> | `modules/ring_store/`, `ring_audio/`, `ring_xfer/`, `ring_power/`, `ring_motor/`, `ring_sys/`, `ring_factory/` | step 6: storage, microphones, USB t
+review l.30 board-notes:189 -> does not account for (UNEXPECTED) and on a U1 net it has no rule for (UNLISTED). The netlist copy: when
+review l.32 FW:8 -> 3. **Charge**: `CHARGE_CURRENT` stays 15,000 µA, 0.85 C of 17.6 mAh; the compile limit (1 C of the smallest cell) becomes 17,600 µA (before: 18,200); 
+review l.32 FW:864 -> | Power chip node | `compatible`, bus, address | compatible of the MFD node TO CONFIRM; on `i2c22` at 400 kHz; 7-bit address 0x6B (110 1011) | address
+review l.32 FW:890 -> | Battery discharge limit | none | the nPM1304 has no setting for it: its battery current limit IBATLIM is fixed (section 8.7). F4's discharge-limit r
+review l.32 FW:988 -> - **The limit is fixed.** The nPM1304 limits the current it draws from the battery: IBATLIM, "Discharging battery current limit", 100 mA in the minimu
+review l.32 FW:997 -> - **Power-fail warning: not used** **[CHOICE]**. POFCONFIG stays at its reset value (warning off) and VSYSPOF at its default falling threshold, 2.7 V 
+review l.37 s7-explore3.console:102 -> compatible: "nordic,npm1304"
+review l.37 s7-explore3.console:276 -> compatible: "nordic,npm1304-charger"
+review l.64 build_all.sh:517 -> RING_NETLIST_SRC="$FW/../design/ecad/ring/netlist.csv"
+review l.64 build_all.sh:555 -> 	python3 "$FW/tools/check_ring_pins.py" "$OUT/ring/app/zephyr/zephyr.dts" "$RING_NETLIST" --source-netlist "$RING_NETLIST_SRC"
+review l.64 build_all.sh:577 -> 	python3 "$FW/tools/check_ring_pins.py" "$d/zephyr/zephyr.dts" "$RING_NETLIST" > "$d-check.log" 2>&1
+review l.64 check_ring_pins.py:216 ->     if src is not None:
+review l.64 check_ring_pins.py:227 ->                   "the copy's sha256 above is the one checked" % src)
+review l.64 s7-full1.console:29515 -> check_ring_pins: source netlist /ws/firmware/../design/ecad/ring/netlist.csv not present here (the build server receives firmware/ only): the copy's s
+review l.65 ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi:33 -> 	spi00_sleep: spi00_sleep {
+review l.65 ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi:40 -> 	};
+review l.65 ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi:22 -> 	/* storage card (design/firmware.md 5.1). Default: SCK and MOSI driven (low when idle); the chip select is a GPIO
+review l.65 ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi:24 -> 	 * VDD_SD is off (FW 5.1 rule; the pull-ups R60, R63 to R65 go to VDD_SD). */
+review l.65 ringrec_nrf54lm20a_cpuapp.dts:264 -> 	cs-gpios = <&gpio2 5 GPIO_ACTIVE_LOW>;                                  /* SD_CS */
+review l.65 firmware.md:506 -> - Rule (sch-notes section 9 item 6; pull-ups R60, R63 to R65 go to VDD_SD, architecture W3): **no storage line is driven high while VDD_SD is off.** B
+review l.65 pinctrl.dtsi:23 -> 	 * (cs-gpios of spi00). Sleep: every line an input with no pull (disconnected), so no line is driven high while
+review l.66 check_ring_pins.py:285 ->                 ctl, pin, flags = ents[0]
+review l.66 check_ring_pins.py:294 ->                     print("SAME %s netlist %s devicetree %s %s (flags 0x%x)" % (net, npin, place, dpin, flags))
+review l.66 check_ring_pins.py:68 ->     "XL1": ("fixed", "lfxo", "P1.20"),
+review l.66 check_ring_pins.py:75 ->     "ANT1_NODE": ("fixed", "radio", "ANT"),
+review l.66 check_ring_pins.py:331 ->             if pname.endswith("gpios") and not pname.startswith("#") and pname != "ngpios":
+review l.66 check_ring_pins.py:335 ->                     continue
+review l.66 check_ring_pins.py:345 ->         for sname, ents in psel_states(dt, node).items():
+review l.66 check_ring_pins.py:306 ->                 if not pins:
+review l.66 check_ring_pins.py:310 ->                     continue
+review l.66 board-notes.md:189 -> does not account for (UNEXPECTED) and on a U1 net it has no rule for (UNLISTED). The netlist copy: when
+review l.66 board-notes.md:189 -> does not account for (UNEXPECTED) and on a U1 net it has no rule for (UNLISTED). The netlist copy: when
+review l.67 build_all.sh:594 -> 	ring_pins_case motor MOTOR ringrec_nrf54lm20a_cpuapp.dts \
+review l.67 build_all.sh:599 -> 		'te-gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>;' '' || rc=1
+review l.68 README.md:96 -> | `modules/ring_store/`, `ring_audio/`, `ring_xfer/`, `ring_power/`, `ring_motor/`, `ring_sys/`, `ring_factory/` | step 6: storage, microphones, USB t
+review l.68 s7-full1.console:29311 -> ring-drivers: real driver files compiled in the ring build (code size from /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-z
+review l.68 s7-full1.console:29408 -> ring-drivers:   function rxf_request
+review l.69 README.md:77 -> What is unproven: everything that needs a ring. It compiles and its pins match the netlist; no ring has run it. The
+review l.69 README.md:80 -> the joystick has no driver; the cell model is Nordic's 20 mAh sample, not the ring's cell.
+review l.69 board-notes.md:148 -> ## 5. The power part's real file does not compile (finding for the power unit's owner)
+review l.69 board-notes.md:158 -> (`build-logs/step6/u5-k56d.console` l.25 to 28), not their arguments.
+review l.69 rhw.c:36 -> static int none_rail_set(enum rhw_rail r, bool on, const char *c) { ARG_UNUSED(r); ARG_UNUSED(on); ARG_UNUSED(c); return -ENODEV; }
+review l.69 dts:353 -> 				regulator-boot-off;
+review l.69 dts:361 -> 				regulator-boot-off;
+review l.70 s7-full1.console:27986 ->   WARNING: Using default MCUboot signing key file, this file is for debug use
+review l.70 firmware.md:1013 -> - Sequence: the case sends FW_BEGIN (erase slot 1), FW_DATA blocks of 4,096 bytes, FW_END. The ring checks the image CRC-32, calls `boot_request_upgra
+review l.70 s7-full1.console:73 ->   WARNING: Using default MCUboot signing key file, this file is for debug use
+review l.71 s7-explore3.console:302 ->   dischg-limit-microamp:
+review l.71 s7-explore3.console:307 ->       Discharge current limit in uA. Fixed to 125 mA on nPM1304.
+review l.71 firmware.md:988 -> - **The limit is fixed.** The nPM1304 limits the current it draws from the battery: IBATLIM, "Discharging battery current limit", 100 mA in the minimu
+review l.72 ringrec_nrf54lm20a_cpuapp.dts:247 -> &uart20 {
+review l.72 ringrec_nrf54lm20a_cpuapp.dts:254 -> };
+review l.72 firmware.md:1061 -> - Development builds: Zephyr logging to `uart20` on DBG_TX P1.15 at 115,200 baud, send only (pin P1.16, the former DBG_RX, has no pad on the ring boar
+review l.72 board-notes:36 -> One reading against firmware.md that is not a pin: l.1061 says production builds have no UART output and DBG_TX an
+review l.72 board-notes:36 -> One reading against firmware.md that is not a pin: l.1061 says production builds have no UART output and DBG_TX an
+review l.72 board-notes:38 -> production configuration that disables `uart20` (and its pin state) is not written.
+review l.80 FW:87 -> | 32.768 kHz crystal | LFXO | XL1 P1.20, XL2 P1.21 | |
+evidence b1-dropped-spares.txt exists; last line: grep exit 1
+evidence b1-pins.txt exists; last line: exit 0
+evidence b1_pins.py exists; last line: print("pin uses read: %d, match %d, problems %d" % (len(uses), ok, bad))
+evidence b2-cmp.txt exists; last line: 2727a3c748c3b8ccd44eedc76c228453f04d9c1eb372d7d4179a63916cad5442  design/ecad/ring/netlist.csv
+evidence b2-drift-checkers.txt exists; last line: check_ring_pins: source netlist /ws/firmware/../design/ecad/ring/netlist.csv not present here (the build server receives firmware/ only): the copy's s
+evidence b5-layout.txt exists; last line: exit 0
+evidence b5-swap-move.txt exists; last line: 29128:[151/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/swap_move.c.obj
+evidence b7-input-paths.txt exists; last line: ## end
+evidence b7-raw-pins-code-only.txt exists; last line: exit 0
+evidence b7-test-switch-defaults.txt exists; last line: 36-endif
+evidence b7-test-switches.txt exists; last line:      1	SB_CONFIG_BOOTLOADER_MCUBOOT=y
+evidence b8-claim-checks.txt exists; last line: # CONFIG_SETTINGS_ZMS_NO_LL_DELETE is not set
+evidence board-notes-as-read.md exists; last line: RESULT: done, the ring board `ringrec/nrf54lm20a/cpuapp` builds with the real drivers (power's real file off: it does not compile with this kit's fuel
+evidence board-notes-read-time.txt exists; last line: Nov 13 23:48:04 2026
+evidence local-dtlib.txt exists; last line: 2026-11-13 23:52:09.226 mdfind[3751:595044220] [UserQueryParser] Loading keywords and predicates for locale "fr"
+evidence log-ring-drivers.txt exists; last line: 20016ec0 000187c8 b ring	firmware/modules/ring_audio/src/rau.c:38
+evidence log-safety-stages.txt exists; last line: === stage recorder-product-drivers end 2026-11-13T21:23:43Z exit 0
+evidence mtimes.txt exists; last line: Nov 13 21:34:40 2026 firmware/app/boards/ringrec_nrf54lm20a_cpuapp.conf
+evidence netlist-u1.txt exists; last line: 61
+evidence rpw-build1-errors.txt exists; last line: 1249:/ws/firmware/modules/ring_power/src/rpw_hw_real.c:310:21: error: too few arguments to function 'nrf_fuel_gauge_ttf_get'
+evidence sd-cs-store.txt exists; last line: grep exit 1
+evidence signing-key-mentions.txt exists; last line: firmware/docs/board-notes.md:0
+evidence version-check.txt exists; last line: EQUAL firmware/README.md
+== recounts
+EQUAL lines: 17
+stage end lines: 48 not exit 0: 0
+ring-pins NO NODE BY NATURE rows: 15
+ring-pins SAME signals: 36
+severity counts in findings table: {'blocker': 0, 'major': 2, 'minor': 5, 'note': 2}
+bar verdicts: [('B1', 'PASS'), ('B2', 'FAIL'), ('B3', 'NOT PROVEN'), ('B4', 'PASS'), ('B5', 'PASS'), ('B6', 'PASS'), ('B7', 'PASS'), ('B8', 'FAIL')]
+claims checked: 146
+exit 0

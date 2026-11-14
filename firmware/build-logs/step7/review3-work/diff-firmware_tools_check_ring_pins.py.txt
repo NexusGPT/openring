@@ -1,0 +1,75 @@
+diff --git a/firmware/tools/check_ring_pins.py b/firmware/tools/check_ring_pins.py
+index 144a2b65..bbc3446f 100644
+--- a/firmware/tools/check_ring_pins.py
++++ b/firmware/tools/check_ring_pins.py
+@@ -26,6 +26,9 @@ enabled.
+ A U1 row whose net is in no list fails too (UNLISTED). Last line: "check_ring_pins: RESULT PASS ..." (exit 0) or
+ "check_ring_pins: RESULT FAIL ..." (exit 1). Exit 2: the inputs could not be read.
+ 
++--production: the production build (fix round 2, S7R-08): DBG_TX must be a gpio hog on its netlist pin, an input with
++the chip's pull-down and no other compared flag (design/firmware.md l.1061), and uart20 must not name it.
++
+ --source-netlist: when that file exists (the design copy, design/ecad/ring/netlist.csv, present on the Mac but not on
+ the build server, which receives firmware/ only), the given netlist must be byte-identical to it, else the check fails.
+ """
+@@ -240,6 +243,10 @@ def psel_states(dt, node):
+ 
+ def main(argv):
+     args = [a for a in argv[1:] if not a.startswith("--")]
++    production = "--production" in argv
++    signals = dict(SIGNALS)
++    if production:
++        signals["DBG_TX"] = ("hog", "gpio-hog", "input, GPIO_PULL_DOWN")
+     src = None
+     if "--source-netlist" in argv:
+         src = argv[argv.index("--source-netlist") + 1]
+@@ -302,11 +309,38 @@ def main(argv):
+             if net in NO_NODE_BY_NATURE:
+                 print("NO NODE BY NATURE %s %s %s: %s" % (net, ball, pname, NO_NODE_BY_NATURE[net]))
+                 continue
+-            if net not in SIGNALS:
++            if net not in signals:
+                 print("UNLISTED %s %s %s: a U1 net this check has no rule for" % (net, ball, pname))
+                 failures.append(net)
+                 continue
+-            kind, where, what = SIGNALS[net]
++            kind, where, what = signals[net]
++            if kind == "hog":
++                checked += 1
++                hogs = []
++                for hn in dt.node_iter():
++                    if "gpio-hog" in hn.props and enabled(hn):
++                        hport = gpio_port(hn.parent)
++                        hcells = hn.props["gpios"].to_nums() if "gpios" in hn.props else []
++                        hn_cells = hn.parent.props["#gpio-cells"].to_num()
++                        for k in range(0, len(hcells), hn_cells):
++                            if pin_text(hport, hcells[k]) == npin:
++                                hogs.append((hn, hcells[k + 1] if hn_cells > 1 else 0))
++                if len(hogs) != 1:
++                    print("NO NODE %s netlist %s: %d gpio hogs on this pin (1 wanted)" % (net, npin, len(hogs)))
++                    failures.append(net)
++                    continue
++                hn, hflags = hogs[0]
++                expected_places.add((hn.path, "gpio-hog", npin))
++                mask = gflags["GPIO_ACTIVE_LOW"] | gflags["GPIO_PULL_UP"] | gflags["GPIO_PULL_DOWN"]
++                if "input" not in hn.props or hflags & mask != gflags["GPIO_PULL_DOWN"]:
++                    print("DIFFERENT FLAGS %s hog %s %s flags 0x%x, design/firmware.md l.1061 wants an input with "
++                          "GPIO_PULL_DOWN" % (net, hn.path, "input" if "input" in hn.props else "not input",
++                                               hflags & mask))
++                    failures.append(net)
++                else:
++                    print("SAME %s netlist %s devicetree hog %s input, GPIO_PULL_DOWN (design/firmware.md l.1061)" %
++                          (net, npin, hn.path))
++                continue
+             node = find_node(dt, where)
+             checked += 1
+             if node is None:
+@@ -406,6 +440,8 @@ def main(argv):
+             n = node.parent.props["#gpio-cells"].to_num()
+             for k in range(0, len(cells), n):
+                 dpin = pin_text(port, cells[k])
++                if (node.path, "gpio-hog", dpin) in expected_places:
++                    continue
+                 print("UNEXPECTED %s gpio-hog %s (netlist net %s)" % (node.path, dpin, pin_to_net.get(dpin) or "none"))
+                 unexpected += 1
+             continue

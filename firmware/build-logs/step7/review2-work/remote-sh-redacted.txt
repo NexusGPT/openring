@@ -1,0 +1,174 @@
+   1 #!/bin/sh
+   2 # remote.sh: run one command for the ring firmware on the Linux build server.
+   3 #
+   4 # Usage: sh firmware/tools/remote.sh [-H] <name> "<command>"
+   5 #   <name>     a short name for the run (letters, digits, dot, dash, underscore)
+   6 #   <command>  run with bash in /ws/firmware inside the ring-os-toolchain
+   7 #              container, for example "tools/build_all.sh"
+   8 #   -H         run <command> on the server itself (not in the container), in
+   9 #              /root/ring-os/src; used for tools/setup_server.sh
+  10 #
+  11 # Optional environment:
+  12 #   RING_REMOTE_SRC  server folder for the copy (default /root/ring-os/src);
+  13 #                    must be under /root/ring-os/; used to run a test copy
+  14 #                    without touching the shared copy
+  15 #   RING_LOG_DIR     local folder for the log (default firmware/build-logs)
+  16 #
+  17 # What it does, in order:
+  18 #   0. refuses to run when firmware/boards/ringrec/netlist.csv differs from design/ecad/ring/netlist.csv (when that
+  19 #      file exists two folders above firmware/; else says the comparison was skipped)
+  20 #   1. copies firmware/ to /root/ring-os/src on the server with rsync
+  21 #      (--delete acts only inside /root/ring-os/src; build-logs/ and build
+  22 #      folders are not copied)
+  23 #   2. starts the command detached on the server at nice 19, with at most
+  24 #      8 parallel build jobs (container --cpus 8, CMAKE_BUILD_PARALLEL_LEVEL=8,
+  25 #      RING_JOBS=8), its output in /root/ring-os/logs/<id>.log
+  26 #   3. polls that log with short ssh calls and streams it here
+  27 #   4. saves it to firmware/build-logs/<date-time>-<name>.log
+  28 #   5. exits with the remote command's exit code (255 if the server could not
+  29 #      be reached for 10 minutes in a row)
+  30 #
+  31 # The ssh key stays on this Mac: it is named by path and never copied.
+  32 
+  33 set -u
+  34 
+  35 HOST_MODE=0
+  36 if [ "${1:-}" = "-H" ]; then
+  37 	HOST_MODE=1
+  38 	shift
+  39 fi
+  40 if [ $# -ne 2 ]; then
+  41 	echo "usage: sh firmware/tools/remote.sh [-H] <name> \"<command>\"" >&2
+  42 	exit 2
+  43 fi
+  44 NAME=$(printf '%s' "$1" | tr -c 'A-Za-z0-9._-' '_')
+  45 CMD=$2
+  46 
+  47 FW_DIR=$(cd "$(dirname "$0")/.." && pwd)
+  48 <line withheld: server address or key path>
+  49 <line withheld: server address or key path>
+  50 SSH_OPTS="-i $KEY -o BatchMode=yes -o ConnectTimeout=10 -o ServerAliveInterval=15"
+  51 IMAGE=ring-os-toolchain:v3.4.2
+  52 R=/root/ring-os
+  53 RSRC=${RING_REMOTE_SRC:-$R/src}
+  54 case "$RSRC" in
+  55 $R/src*) ;;
+  56 *) echo "remote.sh: RING_REMOTE_SRC must start with $R/src" >&2; exit 2 ;;
+  57 esac
+  58 
+  59 STAMP=$(date +%Y%m%d-%H%M%S)
+  60 ID="$STAMP-$NAME"
+  61 LOG_DIR=${RING_LOG_DIR:-$FW_DIR/build-logs}
+  62 mkdir -p "$LOG_DIR"
+  63 LOCAL_LOG="$LOG_DIR/$ID.log"
+  64 PART="$LOG_DIR/.$ID.part"
+  65 
+  66 say() {
+  67 	printf '%s\n' "$*" | tee -a "$LOCAL_LOG"
+  68 }
+  69 
+  70 say "# remote.sh run $ID"
+  71 say "# command: $CMD"
+  72 say "# mode: $([ $HOST_MODE -eq 1 ] && echo host || echo container $IMAGE)"
+  73 say "# started (Mac clock): $(date '+%Y-%m-%d %H:%M:%S %Z')"
+  74 
+  75 # 0. (step 7 fix round 1, ruling S7-01) the ring board's netlist copy must equal the design's netlist. The build server
+  76 # receives firmware/ only, so the comparison happens here, before anything is copied: when design/ecad/ring/netlist.csv
+  77 # exists two folders above firmware/, firmware/boards/ringrec/netlist.csv must be byte-identical (same sha256), else
+  78 # the run is refused. In an export that holds only firmware/, one line says the comparison was skipped.
+  79 NET_COPY="$FW_DIR/boards/ringrec/netlist.csv"
+  80 NET_SRC="$FW_DIR/../design/ecad/ring/netlist.csv"
+  81 if [ -f "$NET_SRC" ]; then
+  82 	NET_A=$(shasum -a 256 "$NET_COPY" 2>&1 | cut -d' ' -f1)
+  83 	NET_B=$(shasum -a 256 "$NET_SRC" 2>&1 | cut -d' ' -f1)
+  84 	if [ "$NET_A" != "$NET_B" ]; then
+  85 		say "# remote.sh: REFUSED: the netlist copy $NET_COPY (sha256 $NET_A) differs from $NET_SRC (sha256 $NET_B); copy the design's file into the board folder, then run again"
+  86 		exit 2
+  87 	fi
+  88 	say "# netlist copy equals design/ecad/ring/netlist.csv (sha256 $NET_B)"
+  89 else
+  90 	say "# netlist comparison skipped: no design/ecad/ring/netlist.csv two folders above firmware/ (an export of firmware/ only)"
+  91 fi
+  92 
+  93 # 1. copy the source.
+  94 ssh $SSH_OPTS "$SERVER" "mkdir -p $RSRC $R/logs $R/runs $R/ws" >>"$LOCAL_LOG" 2>&1 || {
+  95 	say "# remote.sh: cannot reach the server"
+  96 	exit 255
+  97 }
+  98 # The owner's rule: stop when less than 25 GB are free on the server's /.
+  99 FREE_GB=$(ssh -n $SSH_OPTS "$SERVER" "df -BG --output=avail / | tail -1 | tr -dc 0-9" 2>>"$LOCAL_LOG")
+ 100 say "# free on the server's /: ${FREE_GB:-unknown} GB"
+ 101 case "$FREE_GB" in
+ 102 '' | *[!0-9]*) say "# remote.sh: could not read free disk; stop"; exit 255 ;;
+ 103 esac
+ 104 if [ "$FREE_GB" -lt 25 ]; then
+ 105 	say "# remote.sh: less than 25 GB free on the server; stop"
+ 106 	exit 255
+ 107 fi
+ 108 rsync -a --delete \
+ 109 	--exclude '/build-logs/' --exclude 'build/' --exclude '/build-*/' \
+ 110 	--exclude 'twister-out*/' --exclude '.DS_Store' \
+ 111 	-e "ssh $SSH_OPTS" "$FW_DIR/" "$SERVER:$RSRC/" >>"$LOCAL_LOG" 2>&1
+ 112 RC=$?
+ 113 if [ $RC -ne 0 ]; then
+ 114 	say "# remote.sh: rsync failed with exit $RC"
+ 115 	exit 255
+ 116 fi
+ 117 say "# source $FW_DIR copied to $RSRC"
+ 118 
+ 119 # 2. write the run files on the server and start the run detached.
+ 120 if [ $HOST_MODE -eq 1 ]; then
+ 121 	RUN_LINE="cd $RSRC && nice -n 19 bash $R/runs/$ID.cmd"
+ 122 else
+ 123 	RUN_LINE="nice -n 19 docker run --rm --name ring-os-run-$ID --cpus 8 \
+ 124 -v $R/ws:/ws -v $RSRC:/ws/firmware -v $R/runs:/runs:ro -w /ws/firmware \
+ 125 -e BSIM_OUT_PATH=/ws/tools/bsim -e BSIM_COMPONENTS_PATH=/ws/tools/bsim/components \
+ 126 -e CMAKE_BUILD_PARALLEL_LEVEL=8 -e RING_JOBS=8 -e RING_RUN_ID=$ID \
+ 127 $IMAGE 'nice -n 19 bash /runs/$ID.cmd'"
+ 128 fi
+ 129 
+ 130 printf '%s\n' "$CMD" | ssh $SSH_OPTS "$SERVER" "cat > $R/runs/$ID.cmd" >>"$LOCAL_LOG" 2>&1
+ 131 printf '#!/bin/sh\n{ %s ; } > %s/logs/%s.log 2>&1\necho $? > %s/logs/%s.exit\n' \
+ 132 	"$RUN_LINE" "$R" "$ID" "$R" "$ID" |
+ 133 	ssh $SSH_OPTS "$SERVER" "cat > $R/runs/$ID.wrap.sh" >>"$LOCAL_LOG" 2>&1
+ 134 ssh -n $SSH_OPTS "$SERVER" \
+ 135 	"touch $R/logs/$ID.log && setsid -f sh $R/runs/$ID.wrap.sh > $R/logs/$ID.wrap.log 2>&1" \
+ 136 	>>"$LOCAL_LOG" 2>&1 || {
+ 137 	say "# remote.sh: could not start the run"
+ 138 	exit 255
+ 139 }
+ 140 say "# started on the server as $ID; server log $R/logs/$ID.log"
+ 141 
+ 142 # 3. poll and stream.
+ 143 OFF=0
+ 144 MISSES=0
+ 145 EXIT_CODE=""
+ 146 while :; do
+ 147 	# Read the exit file first: if it exists, the log is complete before
+ 148 	# the tail below reads it.
+ 149 	DONE=$(ssh -n $SSH_OPTS "$SERVER" "cat $R/logs/$ID.exit 2>&1 || true" 2>&1)
+ 150 	SSH_RC=$?
+ 151 	if ssh -n $SSH_OPTS "$SERVER" "tail -c +$((OFF + 1)) $R/logs/$ID.log" >"$PART" 2>&1 && [ $SSH_RC -eq 0 ]; then
+ 152 		MISSES=0
+ 153 		N=$(wc -c <"$PART" | tr -d ' ')
+ 154 		if [ "$N" -gt 0 ]; then
+ 155 			cat "$PART" | tee -a "$LOCAL_LOG"
+ 156 			OFF=$((OFF + N))
+ 157 		fi
+ 158 		case "$DONE" in
+ 159 		[0-9]*) EXIT_CODE=$DONE; break ;;
+ 160 		esac
+ 161 	else
+ 162 		MISSES=$((MISSES + 1))
+ 163 		if [ $MISSES -ge 60 ]; then
+ 164 			say "# remote.sh: server unreachable for 60 polls; the run may still be going: $R/logs/$ID.log"
+ 165 			exit 255
+ 166 		fi
+ 167 	fi
+ 168 	sleep 10
+ 169 done
+ 170 
+ 171 say "# finished (Mac clock): $(date '+%Y-%m-%d %H:%M:%S %Z')"
+ 172 say "# remote exit code: $EXIT_CODE"
+ 173 say "# local log: $LOCAL_LOG"
+ 174 exit "$EXIT_CODE"

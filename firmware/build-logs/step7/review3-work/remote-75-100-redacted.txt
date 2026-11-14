@@ -1,0 +1,26 @@
+1:# 0. (step 7 fix round 1, ruling S7-01) the ring board's netlist copy must equal the design's netlist. The build server
+2:# receives firmware/ only, so the comparison happens here, before anything is copied: when design/ecad/ring/netlist.csv
+3:# exists two folders above firmware/, firmware/boards/ringrec/netlist.csv must be byte-identical (same sha256), else
+4:# the run is refused. In an export that holds only firmware/, one line says the comparison was skipped.
+5:NET_COPY="$FW_DIR/boards/ringrec/netlist.csv"
+6:NET_SRC="$FW_DIR/../design/ecad/ring/netlist.csv"
+7:if [ -f "$NET_SRC" ]; then
+8:	NET_A=$(shasum -a 256 "$NET_COPY" 2>&1 | cut -d' ' -f1)
+9:	NET_B=$(shasum -a 256 "$NET_SRC" 2>&1 | cut -d' ' -f1)
+10:	# fix round 2 (S7R-03): fail closed when shasum cannot run or prints no 64-character value for either file
+11:	for NET_V in "$NET_A" "$NET_B"; do
+12:		if ! printf '%s\n' "$NET_V" | grep -Eq '^[0-9a-f]{64}$'; then
+13:			say "# remote.sh: REFUSED: no sha256 value for the netlist copy or the design's netlist (shasum gave \"$NET_V\"); the comparison cannot be made"
+14:			exit 2
+15:		fi
+16:	done
+17:	if [ "$NET_A" != "$NET_B" ]; then
+18:		say "# remote.sh: REFUSED: the netlist copy $NET_COPY (sha256 $NET_A) differs from $NET_SRC (sha256 $NET_B); copy the design's file into the board folder, then run again"
+19:		exit 2
+20:	fi
+21:	say "# netlist copy equals design/ecad/ring/netlist.csv (sha256 $NET_B)"
+22:else
+23:	say "# netlist comparison skipped: no design/ecad/ring/netlist.csv two folders above firmware/ (an export of firmware/ only)"
+24:fi
+25:
+26:# 1. copy the source.

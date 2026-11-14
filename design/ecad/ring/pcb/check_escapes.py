@@ -38,6 +38,7 @@ for t in b.GetTracks():
         segs.append(((ToMM(t.GetStart().x) - OX, ToMM(t.GetStart().y) - OY), (ToMM(t.GetEnd().x) - OX, ToMM(t.GetEnd().y) - OY), LN[b.GetLayerName(t.GetLayer())], t.GetNetname(), t.IsLocked()))
 
 fails, n = [], 0
+A2_ROUTER_ESCAPE = {("U2", "E1"), ("U2", "E2")}   # declared exception, board A2 (see check() below)
 def check(chip, rows):
     global n
     for row in rows:
@@ -64,6 +65,11 @@ def check(chip, rows):
         # round 3 (lead's decision of 2026-11-13, pin changes for routing): F4 (LCD_TE) and F9 (OLED_PWR_EN) have no scripted
         # escape; the router's track joins the via in the land. Pad net, via span, one via and via net are checked above.
         if esc.startswith("router joins the via"):
+            continue
+        # board A2 (lead's decision of 2026-11-13, thin ring): R71 and R72 moved to the under face away from U2, so the plan's
+        # locked L1 escapes of U2 E1 (VSET2) and E2 (VSET1) were replaced by router copper that meets the land at its edge.
+        # Pad net and "no via in the land" are checked above; the rules check (check 7) proves the land is connected.
+        if (chip, ball) in A2_ROUTER_ESCAPE:
             continue
         on = [s for s in ts if s[2] == layer and s[4]]
         if not on:

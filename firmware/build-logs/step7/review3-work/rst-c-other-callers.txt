@@ -1,0 +1,51 @@
+    72	static uint8_t scratch[RREC_CHUNK_BYTES];         /* chunk reads and the recovery scan */
+    73	static uint8_t scratch2[RREC_CHUNK_BYTES];        /* T-STORE's read back */
+    74	
+    75	/* ------------------------------------------------------------------ small helpers */
+    76	
+    77	static int dread(void *ctx, uint32_t lba, uint8_t *buf, uint32_t count)
+    78	{
+    79		ARG_UNUSED(ctx);
+    80		return rhw_disk()->read(lba, buf, count);
+    81	}
+    82	
+    83	/* one write call, RREC_WRITE_TRIES tries at once (FW l.643) */
+    84	static int dwrite(uint32_t lba, const uint8_t *buf, uint32_t count)
+    85	{
+    86		int r = -EIO;
+    87	
+    88		for (uint32_t i = 0; i < RREC_WRITE_TRIES && r != 0; i++) {
+    89			r = rhw_disk()->write(lba, buf, count);
+    90		}
+    91		return r == 0 ? 0 : -EIO;
+    92	}
+    93	
+    94	static void space_update(void)
+    95	{
+---
+  1100		int r = 0;
+  1101	
+  1102		if (!op_take()) {
+  1103			return -EBUSY;
+  1104		}
+  1105		k_mutex_lock(&io_lock, K_FOREVER);
+  1106		if (!S.mounted) {
+  1107			r = -ENODEV;
+  1108		} else {
+  1109			for (uint32_t i = 0; i < RREC_FACTORY_SECTORS * RREC_SECTOR_BYTES; i++) {
+  1110				scratch[i] = (uint8_t)(i * 31u + (i >> 8));
+  1111			}
+  1112			uint64_t t0 = ck->cycles();
+  1113	
+  1114			r = rhw_disk()->write(RREC_LBA_FACTORY_FIRST, scratch, RREC_FACTORY_SECTORS);
+  1115			uint64_t t1 = ck->cycles();
+  1116	
+  1117			if (r == 0) {
+  1118				r = rhw_disk()->read(RREC_LBA_FACTORY_FIRST, scratch2, RREC_FACTORY_SECTORS);
+  1119			}
+  1120			uint64_t t2 = ck->cycles();
+  1121	
+  1122			if (r == 0) {
+  1123				out->equal = rst_fmt_crc32(scratch, RREC_FACTORY_SECTORS * RREC_SECTOR_BYTES) ==
+  1124					     rst_fmt_crc32(scratch2, RREC_FACTORY_SECTORS * RREC_SECTOR_BYTES);
+  1125				out->write_us = cps != 0 ? (uint32_t)(((t1 - t0) * 1000000u) / cps) : 0;

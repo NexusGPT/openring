@@ -1,0 +1,123 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-13T21:53:05",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.8",
+    "schematic_parity": [],
+    "source": "work.kicad_pcb",
+    "unconnected_items": [
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 1 [DECA] of C14 on F.Cu",
+                    "pos": {
+                        "x": 101.285,
+                        "y": 100.35
+                    },
+                    "uuid": "d8b4d3b2-eb95-486d-af8b-3b58e51982f7"
+                },
+                {
+                    "description": "Track [DECA] on In2.Cu, length 0.4000 mm",
+                    "pos": {
+                        "x": 101.275,
+                        "y": 100.35
+                    },
+                    "uuid": "883e24e9-2155-43ab-a9fc-1bed96070a19"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        }
+    ],
+    "violations": [
+        {
+            "description": "Clearance violation (zone clearance 0.1000 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Pad 1 [DECA] of C14 on F.Cu",
+                    "pos": {
+                        "x": 101.285,
+                        "y": 100.35
+                    },
+                    "uuid": "d8b4d3b2-eb95-486d-af8b-3b58e51982f7"
+                },
+                {
+                    "description": "Zone 'GND_F.Cu' [GND] on F.Cu, priority 0",
+                    "pos": {
+                        "x": 86.4,
+                        "y": 93.7
+                    },
+                    "uuid": "37341fdc-a5be-451e-b7b3-2f02e5fd10fd"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Front solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Pad 1 [DECA] of C14 on F.Cu",
+                    "pos": {
+                        "x": 101.285,
+                        "y": 100.35
+                    },
+                    "uuid": "d8b4d3b2-eb95-486d-af8b-3b58e51982f7"
+                },
+                {
+                    "description": "Zone 'GND_F.Cu' [GND] on F.Cu, priority 0",
+                    "pos": {
+                        "x": 86.4,
+                        "y": 93.7
+                    },
+                    "uuid": "37341fdc-a5be-451e-b7b3-2f02e5fd10fd"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Via is not connected or connected on only one layer",
+            "items": [
+                {
+                    "description": "Blind via [DECA] on In2.Cu - B.Cu",
+                    "pos": {
+                        "x": 106.1,
+                        "y": 99.575
+                    },
+                    "uuid": "5d15d423-d555-4499-bf43-f94d7aeeb0bc"
+                }
+            ],
+            "severity": "warning",
+            "type": "via_dangling"
+        }
+    ]
+}

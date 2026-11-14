@@ -1,0 +1,6 @@
+Lead's rerun of review 3 bar T5 (2026-11-14 08:48), tools/remote.sh of commit 8bb60559 on a scratch copy, ssh, rsync and scp replaced by stand-ins that log each call
+case 1, shasum cannot run, files equal: exit 2, REFUSED lines 1, network calls 0
+case 2, real shasum, one row added to the copy: exit 2, REFUSED lines 1, network calls 0
+control, real shasum, files equal: exit 255, REFUSED lines 0, network calls 1 (NETWORK CALL ssh): the stand-in sees a call when the tool goes on
+The scratch copy of remote.sh is deleted.
+# remote.sh: REFUSED: no sha256 value for the netlist copy or the design's netlist (shasum gave ""); the comparison cannot be made

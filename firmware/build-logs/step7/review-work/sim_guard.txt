@@ -1,0 +1,23 @@
+457:sim_guard() {
+458-	# <.config> <name> <want: on|off>: 0 when CONFIG_RING_RHW_SIM is as wanted (and the test read-outs are off)
+459-	local on=0
+460-	grep -q '^CONFIG_RING_RHW_SIM=y' "$1" && on=1
+461-	if grep -q '^CONFIG_RING_RECORDER_TEST_HOOKS=y' "$1"; then
+462-		echo "recorder-product-drivers: DIFFERENT the recorder's test read-outs are on in $2"
+463-		return 1
+464-	fi
+465-	if [ "$3" = "off" ] && [ $on -eq 1 ]; then
+466-		echo "recorder-product-drivers: DIFFERENT CONFIG_RING_RHW_SIM is on in $2 (the simulated drivers and the hooks of rhw_sim.h)"
+467-		return 1
+468-	fi
+469-	if [ "$3" = "on" ] && [ $on -eq 0 ]; then
+470-		echo "recorder-product-drivers: DIFFERENT CONFIG_RING_RHW_SIM is off in $2"
+471-		return 1
+472-	fi
+473-	echo "recorder-product-drivers: $2 CONFIG_RING_RHW_SIM is $3"
+474-	return 0
+475-}
+476-recorder_product_drivers() {
+477-	local dk="$OUT/dk/app/zephyr/.config" bs="$OUT/bsim/zephyr/.config" rc=0 f
+478-	for f in "$dk" "$bs"; do
+479-		if [ ! -f "$f" ]; then

@@ -1,0 +1,15 @@
+diff --git a/firmware/app/ringrec_production.conf b/firmware/app/ringrec_production.conf
+new file mode 100644
+index 00000000..5e889b1e
+--- /dev/null
++++ b/firmware/app/ringrec_production.conf
+@@ -0,0 +1,9 @@
++# The ring's production settings (step 7 fix round 1; design/firmware.md l.1061: "Production builds: no UART output;
++# DBG_TX is an input with pull-down"). Added on top of the ring's development settings
++# (boards/ringrec_nrf54lm20a_cpuapp.conf) with -Dapp_EXTRA_CONF_FILE, together with the devicetree overlay
++# firmware/boards/ringrec/ringrec_production.overlay (uart20 off, DBG_TX an input with pull-down) and, for MCUboot,
++# firmware/boards/ringrec/ringrec_production_mcuboot.conf. tools/build_all.sh stage ring-production builds it (compile
++# only). The development build keeps its console.
++CONFIG_SERIAL=n
++CONFIG_CONSOLE=n
++CONFIG_UART_CONSOLE=n

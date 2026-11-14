@@ -1,0 +1,23 @@
+#!/bin/bash
+export REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/../../../.." && pwd)"  # the repository root, found from this script
+# fixislands.sh board tag : for each GND fill outline with no GND via (islands.py), find a legal GND via spot inside its box (viaspot2.py,
+# spans tried in order) and add it (edit.py, refill); repeat up to 3 rounds. Prints the rules-check result after.
+H=$REPO_ROOT/design/ecad/ring-route-i; B=$1; T=$2
+for round in 1 2 3; do
+  cd $H/scripts && nice -n 19 ./run_kipy.sh $H/scripts/islands.py $B > $H/logs/$T-isl$round.log 2>&1
+  grep "GND vias   0" $H/logs/$T-isl$round.log > $H/logs/$T-isl$round-zero.log
+  [ -s $H/logs/$T-isl$round-zero.log ] || break
+  : > $H/logs/$T-isl$round-plan.txt
+  while read lay o idx a area mm g v n bb x xr y yr; do
+    x0=${xr%..*}; x1=${xr#*..}; y0=${yr%..*}; y1=${yr#*..}
+    case $lay in F.Cu) SP="F-In1 F-In2 F-B";; B.Cu) SP="In2-B In1-B F-B";; In1.Cu) SP="F-In1 In1-In2 In1-B F-In2 F-B";; In2.Cu) SP="In1-In2 In2-B F-In2 In1-B F-B";; esac
+    for sp in $SP; do
+      P=$(cd $H/scripts && nice -n 19 ./run_kipy.sh $H/scripts/viaspot2.py $B $x0 $y0 $x1 $y1 $sp GND 2>&1 | grep "^  (" | head -1 | tr -d ' ()' )
+      echo "$lay box $x0 $y0 $x1 $y1 span $sp -> ${P:-none}" >> $H/logs/$T-isl$round-search.log
+      if [ -n "$P" ]; then echo "VIA GND ${P%%d*} ${sp%-*} ${sp#*-}" | sed 's/,/ /' >> $H/logs/$T-isl$round-plan.txt; break; fi
+    done
+  done < $H/logs/$T-isl$round-zero.log
+  [ -s $H/logs/$T-isl$round-plan.txt ] || break
+  $H/scripts/kp.sh $B $B $H/scripts/edit.py $H/logs/$T-isl$round-plan.txt > $H/logs/$T-isl$round-edit.log 2>&1
+done
+$H/scripts/drc.sh $B $T-isl | head -2

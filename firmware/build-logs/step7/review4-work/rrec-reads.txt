@@ -1,0 +1,158 @@
+	(void)rsy_wdt_start();                            /* fed while no recording runs (FW l.1065) */
+	rrec_st.fact_factory = rsy_factory_flag();
+	rrec_st.fact_factory_pending = true;
+
+	/* FW l.893: with VBUS the charger is on BEFORE the storage is mounted (rpw_start does charge on) */
+	pr = rpw_start(rrec_power_cb());
+	mr = rst_mount(true, &mi);
+
+	vbus = rhw_pmic()->vbus_present();
+	selftest = rsy_selftest_start(vbus) == 1;
+	if (pr == 0) {
+		rpw_values(&v);
+		rglue_battery((enum rc_batt)v.level);     /* in BOOT the level is kept; "init done" decides (R12) */
+	}
+	if (vbus) {
+		rglue_event(RC_EV_VBUS_IN);               /* the fact (and charge on, R8) */
+	}
+	if (mr != 0) {
+		sys_put_le32((uint32_t)mr, args);
+		rrec_log(RREC_LOG_FAULT_STORAGE_INIT, args, 4);
+		rglue_event(RC_EV_STORAGE_INIT_FAILED);  /* row FW l.138 */
+		return mr;
+	}
+	rrec_st.boot_count = mi.boot_count;
+	rrec_st.card_sectors = mi.card_sectors;
+	rrec_st.fact_open = mi.open_flag;
+---- rrec.c 330-460
+}
+
+/* ship mode's unmount (FW l.937, R2-04): outside a core step, so it uses no counter of the steps' episode. If the
+ * storage cannot be unmounted within its wait, USB is closed first and the unmount is tried once more; ship mode goes on
+ * in any case, with 0x0290 logged (try 1 at the failure, then the second try's answer with try 2). */
+static int ship_unmount(bool *usb_closed)
+{
+	int r;
+
+	*usb_closed = false;
+	if (!rst_mounted()) {
+		return 0;
+	}
+	r = rst_unmount_wait(FINISH_WAIT_MS);   /* ship: the first try */
+	if (r == -EBUSY) {
+		unmount_record(r, 1);
+		(void)rxf_stop(FINISH_WAIT_MS);  /* USB first: the command that holds the store is aborted */
+		*usb_closed = true;
+		r = rst_unmount_wait(FINISH_WAIT_MS);   /* ship: the second try, USB closed */
+		unmount_record(r, 2);
+	}
+	return r;
+}
+
+/* the wait for the screen in ship mode (FW l.937, R2-05): rscr_sync() on a work queue of its own, waited for at most
+ * RREC_SHIP_SCREEN_WAIT_MS; a stuck screens thread never stops ship mode */
+static K_THREAD_STACK_DEFINE(sync_stack, 1024);
+static struct k_work_q sync_q;
+static bool sync_q_started;
+static K_SEM_DEFINE(sync_done, 0, 1);
+
+static void sync_fn(struct k_work *w)
+{
+	ARG_UNUSED(w);
+	rscr_sync();
+	k_sem_give(&sync_done);
+}
+static K_WORK_DEFINE(sync_work, sync_fn);
+
+static int screen_wait(void)
+{
+	if (!sync_q_started) {
+		k_work_queue_init(&sync_q);
+		k_work_queue_start(&sync_q, sync_stack, K_THREAD_STACK_SIZEOF(sync_stack), CONFIG_RING_RECORDER_PRIO, NULL);
+		sync_q_started = true;
+	}
+	k_sem_reset(&sync_done);
+	(void)k_work_submit_to_queue(&sync_q, &sync_work);
+	return k_sem_take(&sync_done, K_MSEC(RREC_SHIP_SCREEN_WAIT_MS));
+}
+
+/* ------------------------------------------------------------------ ship mode (FW 8.4, l.936 to l.941) */
+#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
+static void (*ship_hook)(void);
+static uint32_t radio_stops;
+static int radio_stop_rc;
+
+void rrec_test_set_ship_hook(void (*fn)(void))
+{
+	ship_hook = fn;
+}
+
+uint32_t rrec_test_radio_stops(void)
+{
+	return radio_stops;
+}
+
+int rrec_test_radio_stop_rc(void)
+{
+	return radio_stop_rc;
+}
+#endif
+
+/* The recorder's thread, after the step that asked for ship mode ended (RREC_JOB_SHIP): the screens were told the new
+ * state (SHIP or OFF) in that step, the menu's power off no longer holds the screens thread (R6-10). */
+void rrec_ship_now(void)
+{
+	int64_t end = rhw_clock()->now_ms() + RREC_PAT_M2_MS + SHIP_M2_MARGIN_MS;
+	int r;
+
+	/* the M2 of FW l.151 is felt whole (R6-01), then no motor while the chip is cut */
+	while (rmo_playing() && rhw_clock()->now_ms() < end) {
+		k_sleep(K_MSEC(5));
+	}
+	rmo_stop();
+	/* step 1 (FW l.937, R6-02): close everything: recording, storage, USB, radio, screen */
+	/* not reached in the product: every row into SHIP or OFF from RECORDING has "close" before "ship mode" (FW l.165),
+	 * so no recording is open here; kept as the last guard (review 2, note R2-11) */
+	if (rrec_st.recording) {
+		(void)rrec_close(rhw_clock()->now_ms());
+	}
+	{
+		bool usb_closed;
+
+		(void)ship_unmount(&usb_closed);         /* storage closed (R2-04: USB first when it cannot be) */
+		if (!usb_closed) {
+			(void)rxf_stop(FINISH_WAIT_MS);  /* USB: the command aborted, the stack disabled */
+		}
+	}
+	if (rrec_st.usb_hfxo) {
+		(void)rhw_hfxo()->release();
+		rrec_st.usb_hfxo = false;
+	}
+#if defined(CONFIG_RING_DEVICES)
+	r = rdev_stop();                         /* radio: this part's advertising and link; the ship beacon (R20) stays */
+#else
+	r = 0;
+#endif
+#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
+	radio_stops++;
+	radio_stop_rc = r;
+#else
+	ARG_UNUSED(r);
+#endif
+	(void)screen_wait();                     /* screen: SCR_OFF drawn for SHIP or OFF, waited for at most 1,000 ms */
+#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
+	if (ship_hook != NULL) {
+		ship_hook();
+	}
+#endif
+#if defined(CONFIG_RING_FACTORY)
+	(void)rpw_ship(rfa_beacon_stop);         /* steps 2 to 5; the beacon stops right before the ship task (R20) */
+#else
+	(void)rpw_ship(NULL);
+#endif
+}
+
+#if defined(CONFIG_RING_RECORDER_TEST_HOOKS)
+static void (*retry_hook)(void);
+
+void rrec_test_set_retry_hook(void (*fn)(void))

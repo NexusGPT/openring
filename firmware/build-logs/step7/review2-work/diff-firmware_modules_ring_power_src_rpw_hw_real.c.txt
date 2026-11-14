@@ -1,0 +1,31 @@
+diff --git a/firmware/modules/ring_power/src/rpw_hw_real.c b/firmware/modules/ring_power/src/rpw_hw_real.c
+index b240004e..f7f13586 100644
+--- a/firmware/modules/ring_power/src/rpw_hw_real.c
++++ b/firmware/modules/ring_power/src/rpw_hw_real.c
+@@ -304,10 +304,22 @@ static int g_start(const struct rhw_pmic_sample *first)
+ 
+ static int g_process(const struct rhw_pmic_sample *s, uint32_t dt_ms, struct rhw_gauge_out *out)
+ {
+-	float soc = nrf_fuel_gauge_process(s->mv / 1000.0f, -(s->ua / 1000000.0f), s->temp_c_x10 / 10.0f,
+-					   dt_ms / 1000.0f, NULL);
+-	float tte = nrf_fuel_gauge_tte_get();
+-	float ttf = nrf_fuel_gauge_ttf_get();
++	/* nRF Connect SDK v3.4.2 signatures (nrfxlib/nrf_fuel_gauge/include/nrf_fuel_gauge.h: process l.475, tte_get
++	 * l.498, ttf_get l.510): each returns 0 or a negative error and writes its value through a pointer; tte and ttf
++	 * may be NAN (the header's own words), which the "> 0" tests below turn into "unknown" (UINT32_MAX). */
++	float soc = 0.0f, tte = 0.0f, ttf = 0.0f;
++	int rc = nrf_fuel_gauge_process(s->mv / 1000.0f, -(s->ua / 1000000.0f), s->temp_c_x10 / 10.0f,
++					dt_ms / 1000.0f, &soc, NULL);
++
++	if (rc != 0) {
++		return rc;
++	}
++	if (nrf_fuel_gauge_tte_get(&tte) != 0) {
++		tte = 0.0f;
++	}
++	if (nrf_fuel_gauge_ttf_get(&ttf) != 0) {
++		ttf = 0.0f;
++	}
+ 
+ 	out->soc_x10 = (uint16_t)(soc * 10.0f + 0.5f);
+ 	out->tte_s = tte > 0.0f ? (uint32_t)tte : UINT32_MAX;

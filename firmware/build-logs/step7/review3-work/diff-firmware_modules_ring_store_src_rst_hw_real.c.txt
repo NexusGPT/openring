@@ -1,0 +1,102 @@
+diff --git a/firmware/modules/ring_store/src/rst_hw_real.c b/firmware/modules/ring_store/src/rst_hw_real.c
+index 274cdd52..3d6281e8 100644
+--- a/firmware/modules/ring_store/src/rst_hw_real.c
++++ b/firmware/modules/ring_store/src/rst_hw_real.c
+@@ -54,10 +54,15 @@ static const struct rhw_disk_api real_disk = {
+ 
+ /* The card's chip select (FW l.506: no storage line driven high while VDD_SD is off). It is a GPIO of spi00
+  * (cs-gpios), outside spi00's pin states. The kit's SPIM driver (zephyr/drivers/spi/spi_nrfx_spim_common.c, SDK
+- * v3.4.2) drives it as an output at its inactive level (high) from its init (cs_init, l.678: GPIO_OUTPUT_INACTIVE) and
+- * leaves it so on suspend (pm_suspend applies the "sleep" pin state and only releases the GPIO port, cs_put l.571), so
+- * this file disconnects it (input buffer off, no pull) after each suspend and at boot, and drives it inactive again
+- * just before each resume. The storage part calls resume only after VDD_SD is on (rst.c l.345 to 349). */
++ * v3.4.2) drives it as an output at its inactive level (high) from its init (spi_nrfx_spim_common_init l.771 calls
++ * cs_init, l.678: GPIO_OUTPUT_INACTIVE) and leaves it so on suspend (pm_suspend applies the "sleep" pin state and only
++ * releases the GPIO port, cs_put l.571).
++ *
++ * Step 7 fix round 2 (S7R-01): on the ring, spi00, its SD slot and its disk carry `zephyr,deferred-init` (the kernel
++ * skips them at boot: kernel/init.c l.242), so nothing configures the line before the card's first power-on. The first
++ * resume (after VDD_SD is on and 1 ms, rst.c l.345 to 349) initialises the three in order with device_init(); from then
++ * on this file disconnects the line (input buffer off, no pull) after each suspend and drives it inactive again just
++ * before each resume. Where spi00 is not deferred (another board), a hook releases the line after the kit's devices. */
+ #if DT_NODE_HAS_PROP(DT_NODELABEL(spi00), cs_gpios)
+ static const struct gpio_dt_spec sd_cs = GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(spi00), cs_gpios, 0);
+ 
+@@ -70,13 +75,6 @@ static int cs_drive(void)
+ {
+ 	return gpio_pin_configure_dt(&sd_cs, GPIO_OUTPUT_INACTIVE);
+ }
+-
+-/* at boot, right after the kit's devices (spi00 at CONFIG_SPI_INIT_PRIORITY drove the line high): release it */
+-static int rst_hw_real_cs_boot(void)
+-{
+-	return cs_release();
+-}
+-SYS_INIT(rst_hw_real_cs_boot, POST_KERNEL, 99);
+ #else
+ static int cs_release(void)
+ {
+@@ -89,8 +87,52 @@ static int cs_drive(void)
+ }
+ #endif
+ 
++#if DT_PROP_OR(DT_NODELABEL(spi00), zephyr_deferred_init, 0)
++#define RST_SLOT_NODE DT_COMPAT_GET_ANY_STATUS_OKAY(zephyr_sdhc_spi_slot)
++#define RST_DISK_NODE DT_COMPAT_GET_ANY_STATUS_OKAY(zephyr_sdmmc_disk)
++/* the slot and the disk need spi00 at their init (sdhc_spi_init: device_is_ready(spi_dev)), so they must wait too */
++BUILD_ASSERT(DT_PROP_OR(RST_SLOT_NODE, zephyr_deferred_init, 0) && DT_PROP_OR(RST_DISK_NODE, zephyr_deferred_init, 0),
++	     "spi00 is zephyr,deferred-init: its zephyr,sdhc-spi-slot and zephyr,sdmmc-disk nodes must be too");
++static bool bus_up;
++
++static int bus_first_init(void)
++{
++	const struct device *const devs[] = {
++		DEVICE_DT_GET(DT_NODELABEL(spi00)), DEVICE_DT_GET(RST_SLOT_NODE), DEVICE_DT_GET(RST_DISK_NODE),
++	};
++
++	for (size_t i = 0; i < ARRAY_SIZE(devs); i++) {
++		int r = device_init(devs[i]);
++
++		if (r != 0 && r != -EALREADY) {
++			return r;
++		}
++	}
++	bus_up = true;
++	return 0;
++}
++#else
++static bool bus_up = true;
++
++static int bus_first_init(void)
++{
++	return 0;
++}
++
++/* not deferred: the kit's spi00 init drove the line high at boot; release it right after the kit's devices */
++static int rst_hw_real_cs_boot(void)
++{
++	return cs_release();
++}
++SYS_INIT(rst_hw_real_cs_boot, POST_KERNEL, 99);
++#endif
++
+ static int b_suspend(void)
+ {
++	if (!bus_up) {
++		return 0;   /* never initialised: the line is still in its reset state */
++	}
++
+ 	int r = pm_device_action_run(DEVICE_DT_GET(DT_NODELABEL(spi00)), PM_DEVICE_ACTION_SUSPEND);
+ 	int c = cs_release();
+ 
+@@ -99,6 +141,10 @@ static int b_suspend(void)
+ 
+ static int b_resume(void)
+ {
++	if (!bus_up) {
++		return bus_first_init();   /* first power-on: spi00's init drives the line (VDD_SD is on now) */
++	}
++
+ 	int c = cs_drive();
+ 
+ 	if (c != 0) {

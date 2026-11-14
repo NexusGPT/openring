@@ -1,0 +1,22 @@
+Verdict: FAIL. One major is open: at every boot, SD_CS is driven high while VDD_SD is off. There are no blockers. Bar: 4 of 8 PASS (R1, R4, R5, R7); R2, R6 and R8 FAIL; R3 NOT PROVEN.
+
+Review: firmware/docs/step7-review-2.md
+Raw outputs: firmware/build-logs/step7/review2-work/
+
+- Version: 17 of the 18 changed artifact files equal 08820c32. The exception is board-notes.md, which is still being written; I read it last (sha256 0173028...).
+- R1 PASS: the refusal comes before the first ssh (remote.sh l.79 to 91, ssh at l.94). I ran 4 scratch cases with ssh and rsync replaced by a trap (board row changed, design row changed, copy missing, one byte added). Each exited 2 and printed REFUSED, with 0 network calls (r1-refusal.console). The other rules are unchanged: the diff adds 20 lines and changes none.
+- R2 FAIL, S7R-01 (major): rst_hw_real.c releases SD_CS after every suspend and drives it before resume, and every path that turns VDD_SD off suspends first. But from spi00's init until SYS_INIT POST_KERNEL 99, the kit drives SD_CS high at every boot while VDD_SD is off. The file's comment (l.74) and board-notes (l.331) admit this; how long it lasts was never measured. MCUboot builds no SPI driver.
+- R3 NOT PROVEN: all three calls match the header from SDK 3.4.2 (l.475, 498, 510), argument by argument, and the units match. POWER_REAL=y; rpw_hw_real.c is built with real code, 6840 bytes (f1-full1 l.29335); the rail switch reaches regulator_enable. The sign of the current passed to the library is still open (K6, S7R-06).
+- R4 PASS: flags are compared for 11 signals and 7 print "no source". All 10 planted broken copies fail on their own signal only (f1-full1 l.30241 to 30434). Remaining blind spots are listed in S7R-08.
+- R5 PASS: the production conf and overlay turn the UART off, and the check reads both .config files. Minor S7R-02: the check was never shown failing, does not enforce DBG_TX's pull-down, and passes if its input files are missing.
+- R6 FAIL (minors): README l.100 "most of them empty there" has no log behind it (S7R-05). Older sections of board-notes still say the power file is off, among other outdated statements (S7R-04).
+- R7 PASS: no test changed, and only the two module files did. The fix run has 50 stages against 48 before, none missing, all exit 0; last line RESULT PASS (l.31818).
+- R8 FAIL: S7-02 is only partly closed. Seven of the other findings are closed and S7-08 is ruled.
+- Minor S7R-03: if shasum cannot run, remote.sh lets different netlists through (shown with a stand-in copy of the rule, not remote.sh itself).
+
+Counts: blocker 0, major 1, minor 4, note 4. Audit: 122 claims checked, 0 problems.
+Note: the brief asked for a scratch copy of firmware/ at about 10 MB, but it measured 120 MB without build-logs. I copied tools, boards, app, modules, README and west.yml (1.6 MB). After the test I deleted the scratch remote.sh, because it contains the server address and key path (scratch-remote-removed.txt).
+
+questions_for_owner:
+1. Ruling S7-02 says SD_CS is "driven again before VDD_SD comes on", but FW l.506 says to drive it at resume, 1 ms after VDD_SD is on. The code follows FW. Which one stands (S7R-07)?
+2. Does the boot window of S7R-01 have to be closed, or is it accepted until hardware measures it?

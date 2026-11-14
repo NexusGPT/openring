@@ -1,0 +1,113 @@
+FILE board-notes-as-read.md                   firmware/build-logs/step7/review2-work
+FILE board-notes-read-time.txt                firmware/build-logs/step7/review2-work
+FILE check_ring_pins.py                       MISSING
+FILE diff-firmware_tools_remote.sh.txt        firmware/build-logs/step7/review2-work
+FILE diffstat.txt                             firmware/build-logs/step7/review2-work
+FILE f1-explore1.console                      firmware/build-logs/step7/fix1
+FILE f1-explore4.console                      firmware/build-logs/step7/fix1
+FILE f1-full1.console                         firmware/build-logs/step7/fix1
+FILE f1-full1.exit                            firmware/build-logs/step7/fix1
+FILE local-dtlib.txt                          firmware/build-logs/step7/review-work
+FILE ls-step7.txt                             firmware/build-logs/step7/review2-work
+FILE mtimes.txt                               firmware/build-logs/step7/review2-work
+FILE r1-refusal.console                       firmware/build-logs/step7/review2-work
+FILE r1-shasum-missing.console                firmware/build-logs/step7/review2-work
+FILE r2-mcuboot-spi-count.txt                 firmware/build-logs/step7/review2-work
+FILE r2-more-paths.txt                        firmware/build-logs/step7/review2-work
+FILE r2-paths.txt                             firmware/build-logs/step7/review2-work
+FILE r2-pinctrl-spi00.txt                     firmware/build-logs/step7/review2-work
+FILE r3-rail-path.txt                         firmware/build-logs/step7/review2-work
+FILE r3-ring-drivers-stage.txt                firmware/build-logs/step7/review2-work
+FILE r4-flag-sources.txt                      firmware/build-logs/step7/review2-work
+FILE r4-ringpins-flags.txt                    firmware/build-logs/step7/review2-work
+FILE r5-code.txt                              firmware/build-logs/step7/review2-work
+FILE r5-uart-addr.txt                         firmware/build-logs/step7/review2-work
+FILE r6-notes-line-check.txt                  firmware/build-logs/step7/review2-work
+FILE r6-readme-claims.txt                     firmware/build-logs/step7/review2-work
+FILE r7-diff-tests.txt                        firmware/build-logs/step7/review2-work
+FILE r7-stage-compare.txt                     firmware/build-logs/step7/review2-work
+FILE r7-touch.txt                             firmware/build-logs/step7/review2-work
+FILE remote-sh-redacted.txt                   firmware/build-logs/step7/review2-work
+FILE remote.sh                                MISSING
+FILE s7-explore4.console                      firmware/build-logs/step7
+FILE step7-fix1-brief.md                      firmware/docs
+FILE version-compare.txt                      firmware/build-logs/step7/review2-work
+LOG l.29312: CONFIG_RING_POWER_REAL=y
+LOG l.29335: ring-drivers: rpw_hw_real.c.obj text 6840 bytes: real code
+LOG l.31794: === stage ring-production end 2026-11-14T01:21:03Z exit 0
+LOG l.27985:   WARNING: Using default MCUboot signing key file, this file is for debug use
+LOG l.30502:   WARNING: Using default MCUboot signing key file, this file is for debug use
+LOG l.31818: RESULT PASS
+LOG l.29312: CONFIG_RING_POWER_REAL=y
+LOG l.29335: ring-drivers: rpw_hw_real.c.obj text 6840 bytes: real code
+LOG l.30241: check_ring_pins: RESULT FAIL 36 signals checked; failing: MOTOR
+LOG l.30263: check_ring_pins: RESULT FAIL 36 signals checked; failing: SD_MISO
+LOG l.30285: check_ring_pins: RESULT FAIL 36 signals checked; failing: LCD_TE
+LOG l.30307: check_ring_pins: RESULT FAIL 36 signals checked; failing: PMIC_INT
+LOG l.30328: check_ring_pins: RESULT FAIL 36 signals checked; failing: JOY_LEFT
+LOG l.30348: check_ring_pins: RESULT FAIL 36 signals checked; failing: JOY_DOWN
+LOG l.30368: check_ring_pins: RESULT FAIL 36 signals checked; failing: unexpected-pins(1)
+LOG l.30390: check_ring_pins: RESULT FAIL 36 signals checked; failing: JOY_UP
+LOG l.30412: check_ring_pins: RESULT FAIL 36 signals checked; failing: NEWNET
+LOG l.30434: check_ring_pins: RESULT FAIL 36 signals checked; failing: LCD_RST
+LOG l.31794: === stage ring-production end 2026-11-14T01:21:03Z exit 0
+LOG l.31809: ring-production: ring-prod/app/zephyr/.config # CONFIG_SERIAL is not set
+LOG l.31812: 881:				ring_dbg_tx_pulldown: dbg_tx_pulldown {
+LOG l.31816: === stage ring-production-check end 2026-11-14T01:21:03Z exit 0
+LOG l.29314: ring-drivers: rau_hw_real.c.obj text 536 bytes: real code
+LOG l.31818: RESULT PASS
+LOG l.30134: ring-pins: the copy was compared with design/ecad/ring/netlist.csv on the Mac by tools/remote.sh before this copy was sent (its refusal rule, ruling S
+CITE tools/remote.sh:79: NET_COPY="$FW_DIR/boards/ringrec/netlist.csv"
+CITE tools/remote.sh:91: fi
+CITE rst.c:481: if (rhw_disk()->deinit() != 0) {                                                 /* FW l.506: deinit, */
+CITE rst.c:360: power_down(false, "rst_mount");
+CITE rst.c:345: if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+CITE rst.c:314: (void)rhw_sdbus()->suspend();                 /* FW l.506: the sleep state at boot, before any SPI use */
+CITE rst_hw_real.c:79: SYS_INIT(rst_hw_real_cs_boot, POST_KERNEL, 99);
+CITE rst_hw_real.c:66: return gpio_pin_configure_dt(&sd_cs, GPIO_DISCONNECTED);
+CITE rst.c:166: (void)rhw_pmic()->rail_set(RHW_RAIL_SD, false, caller);
+CITE rpw.c:627: (void)rhw_pmic()->ship_task();
+CITE rsy_hw_real.c:80: sys_reboot(SYS_REBOOT_COLD);
+CITE rpw_hw_real.c:311: int rc = nrf_fuel_gauge_process(s->mv / 1000.0f, -(s->ua / 1000000.0f), s->temp_c_x10 / 10.0f,
+CITE rhw.h:272: uint16_t soc_x10;                /* state of charge, 0.1 % (0 to 1000) */
+CITE rhw.h:273: uint32_t tte_s;                  /* time to empty in s, UINT32_MAX when unknown (charging) */
+CITE rpw_hw_real.c:344: if (rhw_register_pmic(&real_pmic) != 0) {
+CITE rpw_hw_real.c:162: /* The current in the interface's sign (positive = discharge). The sign of the kit's current channel against the
+CITE check_ring_pins.py:103: FLAGS = {
+CITE check_ring_pins.py:122: }
+CITE build_all.sh:585: got=$(sed -n 's/^check_ring_pins: RESULT FAIL [0-9]* signals checked; failing: //p' "$log")
+CITE build_all.sh:591: return 0
+CITE app/ringrec_production.conf:7: CONFIG_SERIAL=n
+CITE app/ringrec_production.conf:9: CONFIG_UART_CONSOLE=n
+CITE ringrec_production.overlay:9: /delete-property/ zephyr,console;
+CITE build_all.sh:649: if grep -q -E '^CONFIG_(SERIAL|UART_CONSOLE)=y' "$f"; then
+CITE build_all.sh:656: rc=1
+CITE dts:26: zephyr,console = &uart20;
+CITE prj.conf:2: CONFIG_CONSOLE=y
+CITE modules/ring_store/src/rst_hw_real.c:74: /* at boot, right after the kit's devices (spi00 at CONFIG_SPI_INIT_PRIORITY drove the line high): release it */
+CITE modules/ring_store/src/rst_hw_real.c:79: SYS_INIT(rst_hw_real_cs_boot, POST_KERNEL, 99);
+CITE dts:264: cs-gpios = <&gpio2 5 GPIO_ACTIVE_LOW>;                                  /* SD_CS */
+CITE dts:361: regulator-boot-off;
+CITE tools/build_all.sh:645: ring_production_check() {
+CITE tools/build_all.sh:659: return $rc
+CITE tools/remote.sh:82: NET_A=$(shasum -a 256 "$NET_COPY" 2>&1 | cut -d' ' -f1)
+CITE tools/remote.sh:84: if [ "$NET_A" != "$NET_B" ]; then
+CITE docs/board-notes.md:148: ## 5. The power part's real file does not compile (finding for the power unit's owner)
+CITE docs/board-notes.md:158: (`build-logs/step6/u5-k56d.console` l.25 to 28), not their arguments.
+CITE firmware/README.md:100: | `modules/ring_store/`, `ring_audio/`, `ring_xfer/`, `ring_power/`, `ring_motor/`, `ring_sys/`, `ring_factory/` | step 6: storage, micropho
+CITE remote.sh:89: else
+CITE remote.sh:90: say "# netlist comparison skipped: no design/ecad/ring/netlist.csv two folders above firmware/ (an export of firmware/ only)"
+CITE modules/ring_power/src/rpw_hw_real.c:162: /* The current in the interface's sign (positive = discharge). The sign of the kit's current channel against the
+CITE modules/ring_power/src/rpw_hw_real.c:167: }
+CITE modules/ring_store/src/rst.c:345: if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+CITE modules/ring_store/src/rst.c:349: (void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+CITE tools/check_ring_pins.py:335: ctl, pin, flags = ents[0]
+CITE docs/board-notes.md:354: 3. S7-01 refusal: `s01-selftest/s01-refuse2.console`, quoted in row S7-01. A first attempt (`s01-refuse.console`) did not
+CITE docs/board-notes.md:358: removed from my output folder (`s01-selftest/remote-copy-removed.txt`).
+BAR verdicts: [('R1', 'PASS'), ('R2', 'FAIL'), ('R3', 'NOT PROVEN'), ('R4', 'PASS'), ('R5', 'PASS'), ('R6', 'FAIL'), ('R7', 'PASS'), ('R8', 'FAIL')]
+Traceback (most recent call last):
+  File "firmware/build-logs/step7/review2-work/audit.py", line 70, in <module>
+    print("BAR count in text:", m.groups(), "from table:", npass, len(bar))
+                                ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'groups'
+exit 1

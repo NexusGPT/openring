@@ -94,8 +94,10 @@ enum rhw_rail {
 };
 struct rhw_pmic_sample {                 /* one system monitor sample (FW l.926) */
 	uint16_t mv;                     /* battery voltage, mV */
-	int32_t ua;                      /* battery current inside the chip's path, µA, positive = discharge (this
-	                                  * interface's sign; the real file converts, kit fact K6) */
+	int32_t ua;                      /* battery current inside the chip's path, µA, positive = discharge. The real
+	                                  * file negates the kit's charger channel (negative while discharging) and
+	                                  * gives this value unchanged to the fuel gauge library, which wants
+	                                  * positive = discharge (kit fact K6, settled in step 7 fix round 2) */
 	int16_t temp_c_x10;              /* thermistor temperature, 0.1 °C */
 	int16_t die_c_x10;               /* die temperature, 0.1 °C (chunk field temp_c_x10, FW l.568) */
 };

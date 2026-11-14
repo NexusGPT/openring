@@ -1,0 +1,1270 @@
+# remote.sh run 20261113-213300-s7-build1
+# command: west build -p always -b ringrec/nrf54lm20a/cpuapp --sysbuild -d /ws/out/s7-dev/ring -o=-j8 /ws/firmware/app -- -DBOARD_ROOT=/ws/firmware
+# mode: container ring-os-toolchain:v3.4.2
+# started (Mac clock): 2026-11-13 21:33:00 CET
+# free on the server's /: 34 GB
+# source firmware copied to /root/ring-os/src-s7
+# started on the server as 20261113-213300-s7-build1; server log /root/ring-os/logs/20261113-213300-s7-build1.log
+-- west build: generating a build system
+Loading Zephyr module(s) (Zephyr base): sysbuild_default
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: ringrec, qualifiers: nrf54lm20a/cpuapp
+Parsing /ws/zephyr/share/sysbuild/Kconfig
+Loaded configuration '/ws/out/s7-dev/ring/_sysbuild/empty.conf'
+Merged configuration '/ws/firmware/app/sysbuild.conf'
+Configuration saved to '/ws/out/s7-dev/ring/zephyr/.config'
+Kconfig header saved to '/ws/out/s7-dev/ring/_sysbuild/autoconf.h'
+-- Sysbuild assigned MCUboot image IDs:
+   * Application: 0
+-- 
+   *****************************
+   * Running CMake for mcuboot *
+   *****************************
+
+Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/bootloader/mcuboot/boot/zephyr
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: ringrec, qualifiers: nrf54lm20a/cpuapp
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts
+-- Found devicetree overlay: /ws/bootloader/mcuboot/boot/zephyr/app.overlay
+-- Generated zephyr.dts: /ws/out/s7-dev/ring/mcuboot/zephyr/zephyr.dts
+-- Generated pickled edt: /ws/out/s7-dev/ring/mcuboot/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /ws/out/s7-dev/ring/mcuboot/zephyr/include/generated/zephyr/devicetree_generated.h
+
+warning: BOOT_MAX_IMG_SECTORS (defined at /ws/bootloader/mcuboot/boot/zephyr/Kconfig:974) was
+assigned the value '256' but got the value ''. Check these unsatisfied dependencies:
+(!BOOT_MAX_IMG_SECTORS_AUTO) (=n). See
+http://docs.zephyrproject.org/latest/kconfig.html#CONFIG_BOOT_MAX_IMG_SECTORS and/or look up
+BOOT_MAX_IMG_SECTORS in the menuconfig/guiconfig interface. The Application Development Primer,
+Setting Configuration Values, and Kconfig - Tips and Best Practices sections of the manual might be
+helpful too.
+
+
+warning: Deprecated symbol NRF_PLATFORM_LUMOS is enabled.
+
+Parsing /ws/bootloader/mcuboot/boot/zephyr/Kconfig
+Loaded configuration '/ws/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp_defconfig'
+Merged configuration '/ws/bootloader/mcuboot/boot/zephyr/prj.conf'
+Merged configuration '/ws/bootloader/mcuboot/boot/zephyr/socs/nrf54lm20a_cpuapp.conf'
+Merged configuration '/ws/out/s7-dev/ring/mcuboot/zephyr/.config.sysbuild'
+Configuration saved to '/ws/out/s7-dev/ring/mcuboot/zephyr/.config'
+Kconfig header saved to '/ws/out/s7-dev/ring/mcuboot/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/arm-zephyr-eabi/bin/ld.bfd (found version "2.43.1")
+-- The C compiler identification is GNU 14.3.0
+-- The CXX compiler identification is GNU 14.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc
+-- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+-- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+MCUBoot bootloader key file: /ws/bootloader/mcuboot/root-ed25519.pem
+CMake Warning at CMakeLists.txt:466 (message):
+  WARNING: Using default MCUboot signing key file, this file is for debug use
+  only and is not secure!
+
+
+Calculated maximum number of sectors: 244
+-- Configuring done (6.6s)
+-- Generating done (0.2s)
+-- Build files have been written to: /ws/out/s7-dev/ring/mcuboot
+-- 
+   *************************
+   * Running CMake for app *
+   *************************
+
+-- ring_core module: added from /ws/firmware/app/../modules/ring_core
+-- ring_devices module: added from /ws/firmware/app/../modules/ring_devices
+-- ring_control module: added from /ws/firmware/app/../modules/ring_control
+-- ring_inbox module: added from /ws/firmware/app/../modules/ring_inbox
+-- ring_time module: added from /ws/firmware/app/../modules/ring_time
+-- ring_iphone module: added from /ws/firmware/app/../modules/ring_iphone
+-- ring_relay module: added from /ws/firmware/app/../modules/ring_relay
+-- ring_glue module: added from /ws/firmware/app/../modules/ring_glue
+-- ring_screens module: added from /ws/firmware/app/../modules/ring_screens
+-- ring_rhw module: added from /ws/firmware/app/../modules/ring_rhw
+-- ring_store module: added from /ws/firmware/app/../modules/ring_store
+-- ring_audio module: added from /ws/firmware/app/../modules/ring_audio
+-- ring_xfer module: added from /ws/firmware/app/../modules/ring_xfer
+-- ring_power module: added from /ws/firmware/app/../modules/ring_power
+-- ring_motor module: added from /ws/firmware/app/../modules/ring_motor
+-- ring_sys module: added from /ws/firmware/app/../modules/ring_sys
+-- ring_factory module: added from /ws/firmware/app/../modules/ring_factory
+-- ring_recorder module: added from /ws/firmware/app/../modules/ring_recorder
+Loading Zephyr default modules (Zephyr base).
+-- Application: /ws/firmware/app
+-- CMake version: 4.2.1
+-- Found Python3: /opt/ncs/toolchains/197d1ad490/usr/local/bin/python3.12 (found suitable version "3.12.4", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /ws/zephyr/.cache
+-- Zephyr version: 4.4.2 (/ws/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: ringrec, qualifiers: nrf54lm20a/cpuapp
+-- Found host-tools: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found toolchain: zephyr 1.0.1 (/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk)
+-- Found Dtc: /opt/ncs/toolchains/197d1ad490/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6")
+-- Found BOARD.dts: /ws/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp.dts
+-- Found devicetree overlay: /ws/firmware/app/boards/ringrec_nrf54lm20a_cpuapp.overlay
+-- Generated zephyr.dts: /ws/out/s7-dev/ring/app/zephyr/zephyr.dts
+-- Generated pickled edt: /ws/out/s7-dev/ring/app/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /ws/out/s7-dev/ring/app/zephyr/include/generated/zephyr/devicetree_generated.h
+
+warning: Deprecated symbol NRF_PLATFORM_LUMOS is enabled.
+
+Parsing /ws/firmware/app/Kconfig
+Loaded configuration '/ws/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp_defconfig'
+Merged configuration '/ws/firmware/app/prj.conf'
+Merged configuration '/ws/firmware/app/boards/ringrec_nrf54lm20a_cpuapp.conf'
+Merged configuration '/ws/firmware/app/../modules/ring_iphone/ring_iphone_link.conf'
+Merged configuration '/ws/out/s7-dev/ring/app/zephyr/.config.sysbuild'
+Configuration saved to '/ws/out/s7-dev/ring/app/zephyr/.config'
+Kconfig header saved to '/ws/out/s7-dev/ring/app/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/arm-zephyr-eabi/bin/ld.bfd (found version "2.43.1")
+-- The C compiler identification is GNU 14.3.0
+-- The CXX compiler identification is GNU 14.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc
+CMake Warning at /ws/nrf/cmake/version_app.cmake:19 (message):
+  APP_VERSION: git rev-parse failed: fatal: not a git repository (or any
+  parent up to mount point /)
+
+  Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+Call Stack (most recent call first):
+  /ws/nrf/CMakeLists.txt:26 (include)
+
+
+-- Using ccache: /opt/ncs/toolchains/197d1ad490/usr/bin/ccache
+-- Found gen_kobject_list: /ws/zephyr/scripts/build/gen_kobject_list.py
+CMake Warning at /ws/zephyr/CMakeLists.txt:1081 (message):
+  No SOURCES given to Zephyr library: drivers__display
+
+  Excluding target from build.
+
+
+-- Including signing script: /ws/nrf/cmake/sysbuild/image_signing.cmake
+-- Configuring done (6.9s)
+-- Generating done (0.4s)
+-- Build files have been written to: /ws/out/s7-dev/ring/app
+-- Configuring done (17.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /ws/out/s7-dev/ring
+-- west build: building application
+[1/18] Creating directories for 'mcuboot'
+[2/18] Creating directories for 'app'
+[3/18] No download step for 'mcuboot'
+[4/18] No download step for 'app'
+[5/18] No update step for 'mcuboot'
+[6/18] No update step for 'app'
+[7/18] No patch step for 'mcuboot'
+[8/18] No patch step for 'app'
+[9/18] No configure step for 'mcuboot'
+[9/18] Performing build step for 'mcuboot'
+[1/297] Preparing syscall dependency handling
+
+[2/297] Generating ../../zephyr/include/generated/ncs_commit.h
+[3/297] Generating ../../zephyr/include/generated/zephyr_commit.h
+[4/297] Generating include/generated/zephyr/app_version.h
+[5/297] Generating ../../zephyr/include/generated/app_commit.h
+[6/297] Generating ../../zephyr/include/generated/ncs_version.h
+[7/297] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.2 (/ws/zephyr), build: 9133dab6b066
+[8/297] Generating misc/generated/syscalls_subdirs.trigger
+[9/297] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[10/297] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[11/297] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[12/297] Generating include/generated/zephyr/driver-validation.h
+[13/297] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[14/297] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[15/297] Generating ../../include/generated/zephyr/heap_constants.h
+[16/297] Building C object zephyr/CMakeFiles/offsets.dir/arch/arm/core/offsets/offsets.c.obj
+[17/297] Generating include/generated/zephyr/offsets.h
+[18/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_mutexes.c.obj
+[19/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_mem_helpers.c.obj
+[20/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_core.c.obj
+[21/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_events.c.obj
+[22/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/cmac.c.obj
+[23/297] Linking C static library modules/nrf/subsys/nrf_security/src/libnrf_security_utils.a
+[24/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/chachapoly.c.obj
+[25/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/keyref.c.obj
+[26/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/cmdma.c.obj
+[27/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/blkcipher.c.obj
+[28/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/aead.c.obj
+[29/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/cmmask.c.obj
+[30/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/interface/sxbuf/sxbufops.c.obj
+[31/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/blind.c.obj
+[32/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/ed448.c.obj
+[33/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/ed25519.c.obj
+[34/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/hash.c.obj
+[35/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/hmac.c.obj
+[36/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/mac.c.obj
+[37/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/montgomery.c.obj
+[38/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/platform/baremetal/cmdma_hw.c.obj
+[39/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/sha3.c.obj
+[40/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/trng.c.obj
+[41/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/iomem.c.obj
+[42/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/platform/baremetal/interrupts.c.obj
+[43/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/ba414_status.c.obj
+[44/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/statuscodes.c.obj
+[45/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/cmddefs_ecjpake.c.obj
+[46/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/cracen_rndinrange.c.obj
+[47/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/ec_helpers.c.obj
+[48/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/ec_curves.c.obj
+[49/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/baremetal_ba414e_with_ik/pk_baremetal.c.obj
+[50/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/cmddefs_ecc.c.obj
+[51/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/cmddefs_modmath.c.obj
+[52/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/pkhardware_ba414e.c.obj
+[53/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa.c.obj
+[54/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/cracen_hmac.c.obj
+[55/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecc_keygen.c.obj
+[56/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/hardware/hardware.c.obj
+[57/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/common.c.obj
+[58/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_sign_verify.c.obj
+[59/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecc_key_management.c.obj
+[60/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/prng_pool.c.obj
+[61/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_eddsa_ed25519.c.obj
+[62/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecdsa.c.obj
+[63/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/lib_kmu.c.obj
+[64/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_eddsa_ed448.c.obj
+[65/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/rsa/cracen_rsa_signature.c.obj
+[66/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecc_signature.c.obj
+[67/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_hash.c.obj
+[68/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_ikg.c.obj
+[69/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecc_helpers.c.obj
+[70/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_key_management.c.obj
+[71/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/pake/cracen_spake2p_key_management.c.obj
+[72/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/rsa/cracen_rsa_key_management.c.obj
+[73/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_ctr_drbg.c.obj
+[74/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/pake/cracen_wpa3_key_management.c.obj
+[75/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/pake/cracen_srp_key_management.c.obj
+[76/297] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/platform/platform.c.obj
+[77/297] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/platform/platform_util.c.obj
+[78/297] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/utilities/constant_time.c.obj
+[79/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracen_sw/src/cracen_sw_cipher.c.obj
+[80/297] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto_client.c.obj
+[81/297] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto_storage.c.obj
+[82/297] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/nrf/subsys/nrf_security/src/mbedtls_psa_platform.c.obj
+[83/297] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto_slot_management.c.obj
+[84/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/platform/memory_buffer_alloc.c.obj
+[85/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/asn1parse.c.obj
+[86/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/asn1write.c.obj
+[87/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/oid.c.obj
+[88/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/pem.c.obj
+[89/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/pkcs5.c.obj
+[90/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/base64.c.obj
+[91/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracen_sw/src/cracen_sw_common.c.obj
+[92/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/ecp_curves.c.obj
+[93/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/md.c.obj
+[94/297] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_kmu.c.obj
+[95/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/psa_util_internal.c.obj
+[96/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/ecp.c.obj
+[97/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/nist_kw.c.obj
+[98/297] Linking C static library modules/nrf/subsys/nrf_security/src/drivers/cracen/libcracen_psa_driver.a
+[99/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk.c.obj
+[100/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk_ecc.c.obj
+[101/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/bignum_core.c.obj
+[102/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk_rsa.c.obj
+[103/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pkparse.c.obj
+[104/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk_wrap.c.obj
+[105/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pkwrite.c.obj
+[106/297] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/nrf/subsys/nrf_security/src/psa_crypto_driver_wrappers.c.obj
+[107/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_util.c.obj
+[108/297] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/bignum.c.obj
+[109/297] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto.c.obj
+[110/297] Linking C static library modules/nrf/subsys/nrf_security/src/core/nrf_oberon/libpsa_core.a
+[111/297] Linking C static library modules/nrf/subsys/nrf_security/src/libmbedcrypto.a
+[112/297] Building C object zephyr/arch/common/CMakeFiles/isr_tables.dir/isr_tables.c.obj
+[113/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/libc/validate_libc.c.obj
+[114/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/clock.c.obj
+[115/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/printk.c.obj
+[116/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/sem.c.obj
+[117/297] Generating zephyr/autogen-pubkey.c
+[118/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_packaged.c.obj
+[119/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/dec.c.obj
+[120/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/hex.c.obj
+[121/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/heap/heap.c.obj
+[122/297] Building C object CMakeFiles/app.dir/keys.c.obj
+[123/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/thread_entry.c.obj
+[124/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_nano.c.obj
+[125/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/assert.c.obj
+[126/297] Building C object CMakeFiles/app.dir/os.c.obj
+[127/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/bootutil_img_security_cnt.c.obj
+[128/297] Building C object CMakeFiles/app.dir/flash_map_extended.c.obj
+[129/297] Building C object CMakeFiles/app.dir/main.c.obj
+[130/297] Building C object CMakeFiles/app.dir/io.c.obj
+[131/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/encrypted.c.obj
+[132/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/bootutil_find_key.c.obj
+[133/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/image_validate.c.obj
+[134/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/bootutil_img_hash.c.obj
+[135/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/mcuboot_manifest.c.obj
+[136/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/image_ecdsa.c.obj
+[137/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/image_rsa_nrf.c.obj
+[138/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/fault_injection_hardening.c.obj
+[139/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/tlv.c.obj
+[140/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/caps.c.obj
+[141/297] Building C object CMakeFiles/app.dir/ws/modules/crypto/oberon-psa-crypto/utilities/asn1parse.c.obj
+[142/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/bootutil_misc.c.obj
+[143/297] Building C object CMakeFiles/app.dir/zephyr/autogen-pubkey.c.obj
+[144/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/image_ed25519.c.obj
+[145/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/bootutil_loader.c.obj
+[146/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/bootutil_area.c.obj
+[147/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/swap_misc.c.obj
+[148/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/set.c.obj
+[149/297] Building C object CMakeFiles/app.dir/cleanup/arm_cortex_m.c.obj
+[150/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/loader.c.obj
+[151/297] Building C object CMakeFiles/app.dir/flash_check.c.obj
+[152/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/ed25519_psa.c.obj
+[153/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/timeutil.c.obj
+[154/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitmask.c.obj
+[155/297] Building C object CMakeFiles/app.dir/ws/bootloader/mcuboot/boot/bootutil/src/swap_move.c.obj
+[156/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/rb.c.obj
+[157/297] Building C object CMakeFiles/app.dir/nrf_cleanup.c.obj
+[158/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/last_section_id.c.obj
+[159/297] Building C object zephyr/CMakeFiles/zephyr.dir/misc/generated/configs.c.obj
+[160/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitarray.c.obj
+[161/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/notify.c.obj
+[162/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt_common.c.obj
+[163/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt.c.obj
+[164/297] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/onoff.c.obj
+[165/297] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/storage/flash_map/flash_map_layout.c.obj
+[166/297] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/mem_mgmt/mem_attr.c.obj
+[167/297] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/storage/flash_map/flash_map.c.obj
+[168/297] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_minimal.c.obj
+[169/297] Generating linker_zephyr_pre0.cmd
+[170/297] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/random/random_psa.c.obj
+[171/297] Linking C static library zephyr/arch/common/libisr_tables.a
+[172/297] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/init.c.obj
+[173/297] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/storage/flash_map/flash_map_default.c.obj
+[174/297] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/tracing/tracing_none.c.obj
+[175/297] Building ASM object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/nmi_on_reset.S.obj
+[176/297] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/sw_isr_common.c.obj
+[177/297] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/lib/boot_banner/banner.c.obj
+[178/297] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/fault_s.S.obj
+[179/297] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/xip.c.obj
+[180/297] Building C object zephyr/CMakeFiles/zephyr.dir/drivers/flash/flash_util.c.obj
+[181/297] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/reset.S.obj
+[182/297] Building C object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/nmi.c.obj
+[183/297] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/vector_table.S.obj
+[184/297] Building C object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/fatal.c.obj
+[185/297] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/svc.S.obj
+[186/297] Building C object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/tls.c.obj
+[187/297] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/fpu.c.obj
+[188/297] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/scb.c.obj
+[189/297] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/irq_manage.c.obj
+[190/297] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/swap_helper.S.obj
+[191/297] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/prep_c.c.obj
+[192/297] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/thread.c.obj
+[193/297] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/fault.c.obj
+[194/297] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/cpu_idle.c.obj
+[195/297] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/exc_exit.c.obj
+[196/297] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/__aeabi_read_tp.S.obj
+[197/297] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/thread_abort.c.obj
+[198/297] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/irq_init.c.obj
+[199/297] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/isr_wrapper.c.obj
+[200/297] Building C object zephyr/arch/arch/arm/core/mpu/CMakeFiles/arch__arm__core__mpu.dir/arm_mpu_regions.c.obj
+[201/297] Building C object zephyr/arch/arch/arm/core/cortex_m/cmse/CMakeFiles/arch__arm__core__cortex_m__cmse.dir/arm_core_cmse.c.obj
+[202/297] Building C object zephyr/arch/arch/arm/core/mpu/CMakeFiles/arch__arm__core__mpu.dir/arm_core_mpu.c.obj
+[203/297] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/assert.c.obj
+[204/297] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/cbprintf.c.obj
+[205/297] Building C object zephyr/arch/arch/arm/core/mpu/CMakeFiles/arch__arm__core__mpu.dir/arm_mpu.c.obj
+[206/297] Building C object zephyr/lib/libc/common/CMakeFiles/lib__libc__common.dir/source/time/time.c.obj
+[207/297] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/chk_fail.c.obj
+[208/297] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/errno_wrap.c.obj
+[209/297] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/exit.c.obj
+[210/297] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/locks.c.obj
+[211/297] Building C object zephyr/lib/posix/c_lib_ext/CMakeFiles/lib__posix__c_lib_ext.dir/fnmatch.c.obj
+[212/297] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/stdio.c.obj
+[213/297] Building C object zephyr/lib/libc/common/CMakeFiles/lib__libc__common.dir/source/stdlib/abort.c.obj
+[214/297] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/validate_rram_partitions.c.obj
+[215/297] Building C object zephyr/lib/libc/common/CMakeFiles/lib__libc__common.dir/source/stdlib/malloc.c.obj
+[216/297] Building C object zephyr/lib/posix/c_lib_ext/CMakeFiles/lib__posix__c_lib_ext.dir/getentropy.c.obj
+[217/297] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/validate_binding_headers.c.obj
+[218/297] Building C object zephyr/lib/posix/c_lib_ext/CMakeFiles/lib__posix__c_lib_ext.dir/getopt_shim.c.obj
+[219/297] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/validate_enabled_instances.c.obj
+[220/297] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/validate_base_addresses.c.obj
+[221/297] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/nrf54l/soc.c.obj
+[222/297] Building C object zephyr/drivers/flash/CMakeFiles/drivers__flash.dir/flash_page_layout.c.obj
+[223/297] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/common/reboot.c.obj
+[224/297] Building C object zephyr/drivers/pinctrl/CMakeFiles/drivers__pinctrl.dir/common.c.obj
+[225/297] Building C object zephyr/drivers/console/CMakeFiles/drivers__console.dir/uart_console.c.obj
+[226/297] Building C object zephyr/drivers/cache/CMakeFiles/drivers__cache.dir/cache_nrf.c.obj
+[227/297] Building C object zephyr/drivers/clock_control/CMakeFiles/drivers__clock_control.dir/clock_control_nrf.c.obj
+[228/297] Building C object zephyr/drivers/flash/CMakeFiles/drivers__flash.dir/soc_flash_nrf_rram.c.obj
+[229/297] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/common/gpiote_nrfx.c.obj
+[230/297] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/sys_clock_init.c.obj
+[231/297] Building C object zephyr/drivers/pinctrl/CMakeFiles/drivers__pinctrl.dir/pinctrl_nrf.c.obj
+[232/297] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/nrf_grtc_timer.c.obj
+[233/297] Building C object modules/nrf/subsys/nrf_security/src/zephyr/CMakeFiles/mbedtls_zephyr.dir/mbedtls_heap.c.obj
+[234/297] Building C object zephyr/drivers/gpio/CMakeFiles/drivers__gpio.dir/gpio_nrfx.c.obj
+[235/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/bsp/stable/mdk/system_nrf54l.c.obj
+[236/297] Building C object modules/nrf/subsys/nrf_security/src/zephyr/CMakeFiles/mbedtls_zephyr.dir/psa_crypto_init.c.obj
+[237/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/helpers/nrfx_flag32_allocator.c.obj
+[238/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/helpers/nrfx_ram_ctrl.c.obj
+[239/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/nrfx_glue.c.obj
+[240/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_hfclk.c.obj
+[241/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_hfclkaudio.c.obj
+[242/297] Building C object modules/mcuboot/boot/bootutil/zephyr/CMakeFiles/mcuboot_util.dir/ws/bootloader/mcuboot/boot/bootutil/src/bootutil_public.c.obj
+[243/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock.c.obj
+[244/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_hfclk192m.c.obj
+[245/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_lfclk.c.obj
+[246/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_xo24m.c.obj
+[247/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_clock_xo.c.obj
+[248/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/main_weak.c.obj
+[249/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_rramc.c.obj
+[250/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/banner.c.obj
+[251/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/busy_wait.c.obj
+[252/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/device.c.obj
+[253/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/errno.c.obj
+[254/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_grtc.c.obj
+[255/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/version.c.obj
+[256/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/fatal.c.obj
+[257/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/kheap.c.obj
+[258/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mem_slab.c.obj
+[259/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/init.c.obj
+[260/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/float.c.obj
+[261/297] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_gpiote.c.obj
+[262/297] Linking C static library app/libapp.a
+[263/297] Linking C static library zephyr/libzephyr.a
+[264/297] Building C object zephyr/CMakeFiles/zephyr_pre0.dir/misc/empty_file.c.obj
+[265/297] Linking C static library zephyr/arch/common/libarch__common.a
+[266/297] Linking C static library zephyr/arch/arch/arm/core/libarch__arm__core.a
+[267/297] Linking C static library zephyr/arch/arch/arm/core/cortex_m/cmse/libarch__arm__core__cortex_m__cmse.a
+[268/297] Linking C static library zephyr/arch/arch/arm/core/cortex_m/libarch__arm__core__cortex_m.a
+[269/297] Linking C static library zephyr/arch/arch/arm/core/mpu/libarch__arm__core__mpu.a
+[270/297] Linking C static library zephyr/lib/libc/picolibc/liblib__libc__picolibc.a
+[271/297] Linking C static library zephyr/lib/libc/common/liblib__libc__common.a
+[272/297] Linking C static library zephyr/lib/posix/c_lib_ext/liblib__posix__c_lib_ext.a
+[273/297] Linking C static library zephyr/soc/soc/nrf54lm20a/libsoc__nordic.a
+[274/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/nothread.c.obj
+[275/297] Linking C static library zephyr/drivers/cache/libdrivers__cache.a
+[276/297] Linking C static library zephyr/drivers/console/libdrivers__console.a
+[277/297] Linking C static library zephyr/drivers/clock_control/libdrivers__clock_control.a
+[278/297] Linking C static library zephyr/drivers/flash/libdrivers__flash.a
+[279/297] Linking C static library zephyr/drivers/gpio/libdrivers__gpio.a
+[280/297] Linking C static library zephyr/drivers/pinctrl/libdrivers__pinctrl.a
+[281/297] Linking C static library zephyr/drivers/timer/libdrivers__timer.a
+[282/297] Linking C static library modules/nrf/subsys/nrf_security/src/zephyr/libmbedtls_zephyr.a
+[283/297] Linking C static library modules/mcuboot/boot/bootutil/zephyr/libmcuboot_util.a
+[284/297] Linking C static library modules/hal_nordic/modules/hal_nordic/nrfx/libnrfx.a
+[285/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/dynamic_disabled.c.obj
+[286/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mempool.c.obj
+[287/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timeout.c.obj
+[288/297] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timer.c.obj
+[289/297] Linking C static library zephyr/kernel/libkernel.a
+[290/297] Building C object zephyr/drivers/serial/CMakeFiles/drivers__serial.dir/uart_nrfx_uarte.c.obj
+[291/297] Linking C static library zephyr/drivers/serial/libdrivers__serial.a
+[292/297] Linking C executable zephyr/zephyr_pre0.elf; Logical command for additional byproducts on target: zephyr_pre0
+[293/297] Generating linker.cmd
+[294/297] Generating isr_tables.c, isr_tables_vt.ld, isr_tables_swi.ld
+[295/297] Building C object zephyr/CMakeFiles/zephyr_final.dir/misc/empty_file.c.obj
+[296/297] Building C object zephyr/CMakeFiles/zephyr_final.dir/isr_tables.c.obj
+[297/297] Linking C executable zephyr/zephyr.elf
+Memory region         Used Size  Region Size  %age Used
+           FLASH:       45596 B        64 KB     69.57%
+             RAM:       22000 B       510 KB      4.21%
+     RetainedMem:           0 B         1 KB      0.00%
+        IDT_LIST:           0 B        32 KB      0.00%
+Generating files from /ws/out/s7-dev/ring/mcuboot/zephyr/zephyr.elf for board: ringrec/nrf54lm20a/cpuapp
+[10/18] No configure step for 'app'
+[11/18] Performing build step for 'app'
+[1/879] Preparing syscall dependency handling
+
+[2/879] Generating include/generated/zephyr/app_version.h
+-- git describe failed: fatal: not a git repository (or any parent up to mount point /)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[3/879] Generating ../../zephyr/include/generated/ncs_commit.h
+[4/879] Generating ../../zephyr/include/generated/zephyr_commit.h
+[5/879] Generating ../../zephyr/include/generated/ncs_version.h
+[6/879] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.2 (/ws/zephyr), build: 9133dab6b066
+[7/879] Generating misc/generated/syscalls_subdirs.trigger
+[8/879] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[9/879] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[10/879] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[11/879] Generating include/generated/zephyr/driver-validation.h
+[12/879] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[13/879] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[14/879] Generating ../../include/generated/zephyr/heap_constants.h
+[15/879] Building C object zephyr/CMakeFiles/offsets.dir/arch/arm/core/offsets/offsets.c.obj
+[16/879] Generating include/generated/zephyr/offsets.h
+[17/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_mem_helpers.c.obj
+[18/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_core.c.obj
+[19/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_mutexes.c.obj
+[20/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/nrf_security_utils.dir/utils/nrf_security_events.c.obj
+[21/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/cmac.c.obj
+[22/879] Linking C static library modules/nrf/subsys/nrf_security/src/libnrf_security_utils.a
+[23/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/chachapoly.c.obj
+[24/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/keyref.c.obj
+[25/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/blkcipher.c.obj
+[26/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/aead.c.obj
+[27/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/cmdma.c.obj
+[28/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/cmmask.c.obj
+[29/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/hmac.c.obj
+[30/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/hash.c.obj
+[31/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/interface/sxbuf/sxbufops.c.obj
+[32/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/mac.c.obj
+[33/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/sha3.c.obj
+[34/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/blind.c.obj
+[35/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/trng.c.obj
+[36/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/ed448.c.obj
+[37/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/platform/baremetal/cmdma_hw.c.obj
+[38/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/platform/baremetal/interrupts.c.obj
+[39/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/ed25519.c.obj
+[40/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/montgomery.c.obj
+[41/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/ba414_status.c.obj
+[42/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/statuscodes.c.obj
+[43/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/src/iomem.c.obj
+[44/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/cmddefs_ecjpake.c.obj
+[45/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/cracen_rndinrange.c.obj
+[46/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/ec_helpers.c.obj
+[47/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/cmddefs_ecc.c.obj
+[48/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/ec_curves.c.obj
+[49/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/cmddefs_modmath.c.obj
+[50/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/hw/ba414/pkhardware_ba414e.c.obj
+[51/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/silexpk/target/baremetal_ba414e_with_ik/pk_baremetal.c.obj
+[52/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa.c.obj
+[53/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/hardware/hardware.c.obj
+[54/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/common.c.obj
+[55/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecc_keygen.c.obj
+[56/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecc_key_management.c.obj
+[57/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_hash.c.obj
+[58/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_ikg.c.obj
+[59/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/prng_pool.c.obj
+[60/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_key_management.c.obj
+[61/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/common/src/cracen/lib_kmu.c.obj
+[62/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/rsa/cracen_rsa_key_management.c.obj
+[63/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/pake/cracen_spake2p_key_management.c.obj
+[64/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/pake/cracen_wpa3_key_management.c.obj
+[65/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/pake/cracen_srp_key_management.c.obj
+[66/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_montgomery.c.obj
+[67/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecc_helpers.c.obj
+[68/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_eddsa_ed25519.c.obj
+[69/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_ecdsa.c.obj
+[70/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_ctr_drbg.c.obj
+[71/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecc/cracen_eddsa_ed448.c.obj
+[72/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecdh/cracen_ecdh_montgomery.c.obj
+[73/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/ecdh/cracen_ecdh_weierstrass.c.obj
+[74/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/internal/key_derivation/cracen_kdf_common.c.obj
+[75/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_key_derivation.c.obj
+[76/879] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/platform/platform.c.obj
+[77/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracen_sw/src/cracen_sw_mac.c.obj
+[78/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracen_sw/src/cracen_sw_mac_cmac.c.obj
+[79/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracen_sw/src/cracen_sw_cipher.c.obj
+[80/879] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/utilities/constant_time.c.obj
+[81/879] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto_client.c.obj
+[82/879] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto_storage.c.obj
+[83/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen_psa_kmu.c.obj
+[84/879] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracen_sw/src/cracen_sw_common.c.obj
+[85/879] Linking C static library modules/nrf/subsys/nrf_security/src/drivers/cracen/libcracen_psa_driver.a
+[86/879] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/nrf/subsys/nrf_security/src/threading/threading_alt.c.obj
+[87/879] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/platform/platform_util.c.obj
+[88/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/asn1parse.c.obj
+[89/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/asn1write.c.obj
+[90/879] Building C object zephyr/arch/common/CMakeFiles/isr_tables.dir/isr_tables.c.obj
+[91/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/pem.c.obj
+[92/879] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto_slot_management.c.obj
+[93/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/base64.c.obj
+[94/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/oid.c.obj
+[95/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/utilities/pkcs5.c.obj
+[96/879] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/nrf/subsys/nrf_security/src/mbedtls_psa_platform.c.obj
+[97/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/ecp_curves.c.obj
+[98/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/psa_util_internal.c.obj
+[99/879] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/nrf/subsys/nrf_security/src/psa_crypto_driver_wrappers.c.obj
+[100/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/platform/memory_buffer_alloc.c.obj
+[101/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/nist_kw.c.obj
+[102/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/md.c.obj
+[103/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/bignum_core.c.obj
+[104/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk_rsa.c.obj
+[105/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk_ecc.c.obj
+[106/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk_wrap.c.obj
+[107/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pkwrite.c.obj
+[108/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/bignum.c.obj
+[109/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pkparse.c.obj
+[110/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/extras/pk.c.obj
+[111/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/hash/hash_func32_murmur3.c.obj
+[112/879] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_crypto.c.obj
+[113/879] Linking C static library modules/nrf/subsys/nrf_security/src/core/nrf_oberon/libpsa_core.a
+[114/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/libc/validate_libc.c.obj
+[115/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/legacy_sub/src/ecp.c.obj
+[116/879] Building C object CMakeFiles/app.dir/src/main.c.obj
+[117/879] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/ws/modules/crypto/oberon-psa-crypto/core/psa_util.c.obj
+[118/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/heap/heap_info.c.obj
+[119/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/heap/heap.c.obj
+[120/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_packaged.c.obj
+[121/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/dec.c.obj
+[122/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/clock.c.obj
+[123/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/sem.c.obj
+[124/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/printk.c.obj
+[125/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/hex.c.obj
+[126/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/thread_entry.c.obj
+[127/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/set.c.obj
+[128/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/assert.c.obj
+[129/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_complete.c.obj
+[130/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitmask.c.obj
+[131/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/timeutil.c.obj
+[132/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/reboot.c.obj
+[133/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/last_section_id.c.obj
+[134/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/ring_buffer.c.obj
+[135/879] Building C object zephyr/CMakeFiles/zephyr.dir/misc/generated/configs.c.obj
+[136/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/rb.c.obj
+[137/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt.c.obj
+[138/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt_common.c.obj
+[139/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/notify.c.obj
+[140/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitarray.c.obj
+[141/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/onoff.c.obj
+[142/879] Building C object zephyr/CMakeFiles/zephyr.dir/lib/uuid/uuid.c.obj
+[143/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/storage/flash_map/flash_map.c.obj
+[144/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/storage/flash_map/flash_map_layout.c.obj
+[145/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/mem_mgmt/mem_attr.c.obj
+[146/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/pm/device.c.obj
+[147/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/pm/device_system_managed.c.obj
+[148/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/storage/flash_map/flash_map_default.c.obj
+[149/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/storage/stream/stream_flash.c.obj
+[150/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/tracing/tracing_none.c.obj
+[151/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/kvss/zms/zms.c.obj
+[152/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/bluetooth/services/gap_svc.c.obj
+[153/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/disk/disk_access.c.obj
+[154/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/dfu/img_util/flash_img.c.obj
+[155/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/settings/src/settings_store.c.obj
+[156/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/settings/src/settings.c.obj
+[157/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/settings/src/settings_init.c.obj
+[158/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/settings/src/settings_line.c.obj
+[159/879] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/settings/src/settings_zms.c.obj
+[160/879] Building C object zephyr/CMakeFiles/zephyr.dir/drivers/flash/flash_util.c.obj
+[161/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/lib/boot_banner/banner.c.obj
+[162/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/gatt_pool.c.obj
+[163/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/conn_ctx.c.obj
+[164/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/hci_vs_sdc.c.obj
+[165/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/gatt_dm.c.obj
+[166/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/services/ams_client.c.obj
+[167/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/services/ancs_attr_parser.c.obj
+[168/879] Generating linker_zephyr_pre0.cmd
+[169/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/services/ancs_app_attr_get.c.obj
+[170/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/services/ancs_client.c.obj
+[171/879] Linking C static library zephyr/arch/common/libisr_tables.a
+[172/879] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/init.c.obj
+[173/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/services/cts_client.c.obj
+[174/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/services/gattp.c.obj
+[175/879] Building ASM object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/nmi_on_reset.S.obj
+[176/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/host_extensions/host_extensions.c.obj
+[177/879] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/fault_s.S.obj
+[178/879] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/sw_isr_common.c.obj
+[179/879] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/xip.c.obj
+[180/879] Building C object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/fatal.c.obj
+[181/879] Building C object zephyr/CMakeFiles/zephyr.dir/ws/nrf/subsys/bluetooth/services/hids.c.obj
+[182/879] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/reset.S.obj
+[183/879] Building C object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/nmi.c.obj
+[184/879] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/vector_table.S.obj
+[185/879] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/svc.S.obj
+[186/879] Building C object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/tls.c.obj
+[187/879] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/fpu.c.obj
+[188/879] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/fault.c.obj
+[189/879] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/scb.c.obj
+[190/879] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/swap_helper.S.obj
+[191/879] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/irq_manage.c.obj
+[192/879] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/prep_c.c.obj
+[193/879] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/__aeabi_read_tp.S.obj
+[194/879] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/thread.c.obj
+[195/879] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/cpu_idle.c.obj
+[196/879] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/exc_exit.c.obj
+[197/879] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/thread_abort.c.obj
+[198/879] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/irq_init.c.obj
+[199/879] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/isr_wrapper.c.obj
+[200/879] Building C object zephyr/arch/arch/arm/core/cortex_m/cmse/CMakeFiles/arch__arm__core__cortex_m__cmse.dir/arm_core_cmse.c.obj
+[201/879] Building C object zephyr/arch/arch/arm/core/mpu/CMakeFiles/arch__arm__core__mpu.dir/arm_core_mpu.c.obj
+[202/879] Building C object zephyr/arch/arch/arm/core/mpu/CMakeFiles/arch__arm__core__mpu.dir/arm_mpu_regions.c.obj
+[203/879] Building C object zephyr/arch/arch/arm/core/mpu/CMakeFiles/arch__arm__core__mpu.dir/arm_mpu.c.obj
+[204/879] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/assert.c.obj
+[205/879] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/cbprintf.c.obj
+[206/879] Building C object zephyr/lib/libc/common/CMakeFiles/lib__libc__common.dir/source/time/time.c.obj
+[207/879] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/chk_fail.c.obj
+[208/879] Building C object zephyr/lib/posix/c_lib_ext/CMakeFiles/lib__posix__c_lib_ext.dir/fnmatch.c.obj
+[209/879] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/errno_wrap.c.obj
+[210/879] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/exit.c.obj
+[211/879] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/locks.c.obj
+[212/879] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/stdio.c.obj
+[213/879] Building C object zephyr/lib/libc/common/CMakeFiles/lib__libc__common.dir/source/stdlib/abort.c.obj
+[214/879] Building C object zephyr/lib/libc/common/CMakeFiles/lib__libc__common.dir/source/stdlib/malloc.c.obj
+[215/879] Building C object zephyr/lib/posix/c_lib_ext/CMakeFiles/lib__posix__c_lib_ext.dir/getentropy.c.obj
+[216/879] Building C object zephyr/lib/posix/c_lib_ext/CMakeFiles/lib__posix__c_lib_ext.dir/getopt_shim.c.obj
+[217/879] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/validate_rram_partitions.c.obj
+[218/879] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/validate_binding_headers.c.obj
+[219/879] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/validate_base_addresses.c.obj
+[220/879] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/validate_enabled_instances.c.obj
+[221/879] Building C object zephyr/lib/net_buf/CMakeFiles/lib__net_buf.dir/buf.c.obj
+[222/879] Building C object zephyr/lib/net_buf/CMakeFiles/lib__net_buf.dir/buf_simple.c.obj
+[223/879] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/nrf54l/soc.c.obj
+[224/879] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/common/reboot.c.obj
+[225/879] Building C object zephyr/subsys/random/CMakeFiles/subsys__random.dir/random_entropy_device.c.obj
+[226/879] Building C object zephyr/subsys/sd/CMakeFiles/subsys__sd.dir/sd.c.obj
+[227/879] Building C object zephyr/subsys/sd/CMakeFiles/subsys__sd.dir/sdmmc.c.obj
+[228/879] Building C object zephyr/subsys/usb/device_next/CMakeFiles/subsys__usb__device_next.dir/usbd_device.c.obj
+[229/879] Building C object zephyr/subsys/sd/CMakeFiles/subsys__sd.dir/sd_ops.c.obj
+[230/879] Building C object zephyr/subsys/usb/device_next/CMakeFiles/subsys__usb__device_next.dir/usbd_desc.c.obj
+[231/879] Building C object zephyr/soc/soc/nrf54lm20a/CMakeFiles/soc__nordic.dir/common/gpiote_nrfx.c.obj
+[232/879] Building C object zephyr/subsys/usb/device_next/CMakeFiles/subsys__usb__device_next.dir/usbd_core.c.obj
+[233/879] Building C object zephyr/subsys/usb/device_next/CMakeFiles/subsys__usb__device_next.dir/usbd_ch9.c.obj
+[234/879] Building C object zephyr/subsys/bluetooth/common/CMakeFiles/subsys__bluetooth__common.dir/addr.c.obj
+[235/879] Building C object zephyr/subsys/usb/device_next/CMakeFiles/subsys__usb__device_next.dir/usbd_init.c.obj
+[236/879] Building C object zephyr/subsys/usb/device_next/CMakeFiles/subsys__usb__device_next.dir/usbd_config.c.obj
+[237/879] Building C object zephyr/subsys/usb/device_next/CMakeFiles/subsys__usb__device_next.dir/usbd_interface.c.obj
+[238/879] Building C object zephyr/subsys/usb/device_next/CMakeFiles/subsys__usb__device_next.dir/usbd_class.c.obj
+[239/879] Building C object zephyr/subsys/usb/device_next/CMakeFiles/subsys__usb__device_next.dir/usbd_endpoint.c.obj
+[240/879] Building C object zephyr/subsys/usb/device_next/CMakeFiles/subsys__usb__device_next.dir/usbd_msg.c.obj
+[241/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/addr.c.obj
+[242/879] Building C object zephyr/subsys/bluetooth/common/CMakeFiles/subsys__bluetooth__common.dir/dummy.c.obj
+[243/879] Building C object zephyr/subsys/bluetooth/common/CMakeFiles/subsys__bluetooth__common.dir/bt_str.c.obj
+[244/879] Building C object zephyr/subsys/bluetooth/common/CMakeFiles/subsys__bluetooth__common.dir/rpa.c.obj
+[245/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/long_wq.c.obj
+[246/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/uuid.c.obj
+[247/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/settings.c.obj
+[248/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/buf.c.obj
+[249/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/data.c.obj
+[250/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/hci_common.c.obj
+[251/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/adv.c.obj
+[252/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/ecc.c.obj
+[253/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/id.c.obj
+[254/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/l2cap.c.obj
+[255/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/hci_core.c.obj
+[256/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/gatt_gap_svc_validate.c.obj
+[257/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/conn.c.obj
+[258/879] Building C object zephyr/subsys/crc/CMakeFiles/subsys__crc.dir/crc4_sw.c.obj
+[259/879] Building C object zephyr/subsys/crc/CMakeFiles/subsys__crc.dir/crc8_sw.c.obj
+[260/879] Building C object zephyr/subsys/crc/CMakeFiles/subsys__crc.dir/crc16_sw.c.obj
+[261/879] Building C object zephyr/subsys/crc/CMakeFiles/subsys__crc.dir/crc7_sw.c.obj
+[262/879] Building C object zephyr/subsys/crc/CMakeFiles/subsys__crc.dir/crc24_sw.c.obj
+[263/879] Building C object zephyr/subsys/crc/CMakeFiles/subsys__crc.dir/crc32c_sw.c.obj
+[264/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/keys.c.obj
+[265/879] Building C object zephyr/subsys/crc/CMakeFiles/subsys__crc.dir/crc32_sw.c.obj
+[266/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/att.c.obj
+[267/879] Building C object zephyr/subsys/crc/CMakeFiles/subsys__crc.dir/crc32k_4_2_sw.c.obj
+[268/879] Building C object zephyr/subsys/bluetooth/crypto/CMakeFiles/subsys__bluetooth__crypto.dir/bt_crypto_psa.c.obj
+[269/879] Building C object zephyr/subsys/bluetooth/crypto/CMakeFiles/subsys__bluetooth__crypto.dir/bt_crypto.c.obj
+[270/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/smp.c.obj
+[271/879] Building C object zephyr/drivers/disk/CMakeFiles/drivers__disk.dir/sdmmc_subsys.c.obj
+[272/879] Building C object zephyr/subsys/dfu/boot/CMakeFiles/subsys__dfu__boot.dir/mcuboot.c.obj
+[273/879] Building C object zephyr/drivers/usb/common/buf/CMakeFiles/drivers__usb__common__buf.dir/usb_buf.c.obj
+[274/879] Building C object zephyr/drivers/usb/udc/CMakeFiles/drivers__usb__udc.dir/udc_common.c.obj
+[275/879] Building C object zephyr/drivers/usb/common/nordic/CMakeFiles/drivers__usb__common__nordic.dir/nrf_usbhs_wrapper.c.obj
+[276/879] Building C object zephyr/subsys/bluetooth/host/CMakeFiles/subsys__bluetooth__host.dir/gatt.c.obj
+[277/879] Building C object zephyr/drivers/flash/CMakeFiles/drivers__flash.dir/flash_page_layout.c.obj
+[278/879] Building C object zephyr/drivers/entropy/CMakeFiles/drivers__entropy.dir/entropy_psa_crypto.c.obj
+[279/879] Building C object zephyr/drivers/audio/CMakeFiles/drivers__audio.dir/dmic_nrfx_pdm.c.obj
+[280/879] Building C object zephyr/drivers/cache/CMakeFiles/drivers__cache.dir/cache_nrf.c.obj
+[281/879] Building C object zephyr/drivers/console/CMakeFiles/drivers__console.dir/uart_console.c.obj
+[282/879] Building C object zephyr/drivers/clock_control/CMakeFiles/drivers__clock_control.dir/clock_control_nrf.c.obj
+[283/879] Building C object zephyr/drivers/flash/CMakeFiles/drivers__flash.dir/soc_flash_nrf_rram.c.obj
+[284/879] Building C object zephyr/drivers/usb/udc/CMakeFiles/drivers__usb__udc.dir/udc_dwc2.c.obj
+[285/879] Building C object zephyr/drivers/hwinfo/CMakeFiles/drivers__hwinfo.dir/hwinfo_weak_impl.c.obj
+[286/879] Building C object zephyr/drivers/hwinfo/CMakeFiles/drivers__hwinfo.dir/hwinfo_nrf.c.obj
+[287/879] Building C object zephyr/drivers/pinctrl/CMakeFiles/drivers__pinctrl.dir/common.c.obj
+[288/879] Building C object zephyr/drivers/i2c/CMakeFiles/drivers__i2c.dir/i2c_common.c.obj
+[289/879] Building C object zephyr/drivers/i2c/CMakeFiles/drivers__i2c.dir/i2c_nrfx_twim_common.c.obj
+[290/879] Building C object zephyr/drivers/i2c/CMakeFiles/drivers__i2c.dir/i2c_nrfx_twim.c.obj
+[291/879] Building C object zephyr/drivers/gpio/CMakeFiles/drivers__gpio.dir/gpio_nrfx.c.obj
+[292/879] Building C object zephyr/drivers/mfd/CMakeFiles/drivers__mfd.dir/mfd_npm13xx.c.obj
+[293/879] Building C object zephyr/drivers/regulator/CMakeFiles/drivers__regulator.dir/regulator_common.c.obj
+[294/879] Building C object zephyr/drivers/regulator/CMakeFiles/drivers__regulator.dir/regulator_nrf_vregusb.c.obj
+[295/879] Building C object zephyr/drivers/regulator/CMakeFiles/drivers__regulator.dir/regulator_npm13xx.c.obj
+[296/879] Building C object zephyr/drivers/retained_mem/CMakeFiles/drivers__retained_mem.dir/retained_mem_nrf_gpregret.c.obj
+[297/879] Building C object zephyr/drivers/retained_mem/CMakeFiles/drivers__retained_mem.dir/retained_mem_zephyr_ram.c.obj
+[298/879] Building C object zephyr/drivers/pinctrl/CMakeFiles/drivers__pinctrl.dir/pinctrl_nrf.c.obj
+[299/879] Building C object zephyr/drivers/sensor/nordic/npm13xx_charger/CMakeFiles/drivers__sensor__nordic__npm13xx_charger.dir/npm13xx_charger.c.obj
+[300/879] Building C object zephyr/drivers/sdhc/CMakeFiles/drivers__sdhc.dir/sdhc_spi.c.obj
+[301/879] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/sys_clock_init.c.obj
+[302/879] Building C object zephyr/drivers/watchdog/CMakeFiles/drivers__watchdog.dir/wdt_nrfx.c.obj
+[303/879] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/nrf_grtc_timer.c.obj
+[304/879] Building C object modules/nrf/lib/multithreading_lock/CMakeFiles/..__nrf__lib__multithreading_lock.dir/multithreading_lock.c.obj
+[305/879] Building C object zephyr/drivers/spi/CMakeFiles/drivers__spi.dir/spi_nrfx_spim.c.obj
+[306/879] Linking C static library modules/nrf/subsys/nrf_security/src/libmbedcrypto.a
+[307/879] Building C object zephyr/drivers/spi/CMakeFiles/drivers__spi.dir/spi_nrfx_spim_common.c.obj
+[308/879] Building C object modules/nrf/subsys/bluetooth/controller/CMakeFiles/..__nrf__subsys__bluetooth__controller.dir/hci_internal_wrappers.c.obj
+[309/879] Building C object modules/nrf/subsys/bluetooth/controller/CMakeFiles/..__nrf__subsys__bluetooth__controller.dir/crypto.c.obj
+[310/879] Building C object modules/nrf/subsys/bluetooth/controller/CMakeFiles/..__nrf__subsys__bluetooth__controller.dir/hci_driver.c.obj
+[311/879] Building C object modules/nrf/subsys/bluetooth/controller/CMakeFiles/..__nrf__subsys__bluetooth__controller.dir/hci_internal.c.obj
+[312/879] Building C object modules/nrf/subsys/mpsl/fem/CMakeFiles/..__nrf__subsys__mpsl__fem.dir/api_init/mpsl_fem_api_init.c.obj
+[313/879] Building C object modules/nrf/subsys/nrf_security/src/zephyr/CMakeFiles/mbedtls_zephyr.dir/mbedtls_heap.c.obj
+[314/879] Building C object modules/nrf/subsys/nrf_security/src/zephyr/CMakeFiles/mbedtls_zephyr.dir/psa_crypto_init.c.obj
+[315/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/bsp/stable/mdk/system_nrf54l.c.obj
+[316/879] Building C object modules/mcuboot/boot/bootutil/zephyr/CMakeFiles/mcuboot_util.dir/ws/bootloader/mcuboot/boot/bootutil/src/bootutil_public.c.obj
+[317/879] Building C object modules/nrf/drivers/mpsl/clock_control/CMakeFiles/..__nrf__drivers__mpsl__clock_control.dir/nrfx_clock_mpsl.c.obj
+[318/879] Building C object modules/nrf/subsys/mpsl/hwres/CMakeFiles/..__nrf__subsys__mpsl__hwres.dir/mpsl_hwres.c.obj
+[319/879] Building C object modules/nrf/drivers/mpsl/flash_sync/CMakeFiles/..__nrf__drivers__mpsl__flash_sync.dir/flash_sync_mpsl.c.obj
+[320/879] Building C object modules/nrf/subsys/mpsl/init/CMakeFiles/..__nrf__subsys__mpsl__init.dir/mpsl_init.c.obj
+[321/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/nrfx_glue.c.obj
+[322/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/helpers/nrfx_flag32_allocator.c.obj
+[323/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/helpers/nrfx_ram_ctrl.c.obj
+[324/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_rramc.c.obj
+[325/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_grtc.c.obj
+[326/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_pdm.c.obj
+[327/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_wdt.c.obj
+[328/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_group.c.obj
+[329/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_obj_class.c.obj
+[330/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_obj_draw.c.obj
+[331/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_obj.c.obj
+[332/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_twim.c.obj
+[333/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_twi_twim.c.obj
+[334/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_obj_event.c.obj
+[335/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_obj_id_builtin.c.obj
+[336/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_obj_property.c.obj
+[337/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_spim.c.obj
+[338/879] Building C object modules/hal_nordic/modules/hal_nordic/nrfx/CMakeFiles/nrfx.dir/ws/modules/hal/nordic/nrfx/drivers/src/nrfx_gpiote.c.obj
+[339/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_obj_scroll.c.obj
+[340/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_obj_style_gen.c.obj
+[341/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_obj_tree.c.obj
+[342/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/debugging/monkey/lv_monkey.c.obj
+[343/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/debugging/test/lv_test_display.c.obj
+[344/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_obj_pos.c.obj
+[345/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/debugging/test/lv_test_fs.c.obj
+[346/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/debugging/sysmon/lv_sysmon.c.obj
+[347/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_obj_style.c.obj
+[348/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/debugging/test/lv_test_helpers.c.obj
+[349/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/debugging/test/lv_test_indev.c.obj
+[350/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/debugging/test/lv_test_indev_gesture.c.obj
+[351/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/debugging/test/lv_test_screenshot_compare.c.obj
+[352/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/debugging/vg_lite_tvg/vg_lite_matrix.c.obj
+[353/879] Building C object zephyr/drivers/serial/CMakeFiles/drivers__serial.dir/uart_nrfx_uarte.c.obj
+[354/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/convert/helium/lv_draw_buf_convert_helium.c.obj
+[355/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/convert/neon/lv_draw_buf_convert_neon.c.obj
+[356/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/dma2d/lv_draw_dma2d.c.obj
+[357/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/dma2d/lv_draw_dma2d_fill.c.obj
+[358/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/convert/lv_draw_buf_convert.c.obj
+[359/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_refr.c.obj
+[360/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/dma2d/lv_draw_dma2d_img.c.obj
+[361/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/espressif/ppa/lv_draw_ppa_buf.c.obj
+[362/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/espressif/ppa/lv_draw_ppa.c.obj
+[363/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/espressif/ppa/lv_draw_ppa_fill.c.obj
+[364/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/espressif/ppa/lv_draw_ppa_img.c.obj
+[365/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/eve/lv_draw_eve_arc.c.obj
+[366/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/eve/lv_draw_eve.c.obj
+[367/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/eve/lv_draw_eve_fill.c.obj
+[368/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/eve/lv_draw_eve_letter.c.obj
+[369/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/eve/lv_draw_eve_line.c.obj
+[370/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/eve/lv_draw_eve_ram_g.c.obj
+[371/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/eve/lv_draw_eve_triangle.c.obj
+[372/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/eve/lv_eve.c.obj
+[373/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/core/lv_observer.c.obj
+[374/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/eve/lv_draw_eve_image.c.obj
+[375/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw_3d.c.obj
+[376/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw_blur.c.obj
+[377/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw_arc.c.obj
+[378/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw_line.c.obj
+[379/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw_image.c.obj
+[380/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/display/lv_display.c.obj
+[381/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw_mask.c.obj
+[382/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw.c.obj
+[383/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw_buf.c.obj
+[384/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw_label.c.obj
+[385/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_3d.c.obj
+[386/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw_vector.c.obj
+[387/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_arc.c.obj
+[388/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw_triangle.c.obj
+[389/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_border.c.obj
+[390/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_draw_rect.c.obj
+[391/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_box_shadow.c.obj
+[392/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_fill.c.obj
+[393/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg.c.obj
+[394/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_grad.c.obj
+[395/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_image.c.obj
+[396/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_label.c.obj
+[397/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_layer.c.obj
+[398/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_line.c.obj
+[399/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_triangle.c.obj
+[400/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_vector.c.obj
+[401/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_nanovg_fbo_cache.c.obj
+[402/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/lv_image_decoder.c.obj
+[403/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_nanovg_image_cache.c.obj
+[404/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx_arc.c.obj
+[405/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_draw_nanovg_mask_rect.c.obj
+[406/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx_border.c.obj
+[407/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx_fill.c.obj
+[408/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx_img.c.obj
+[409/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nanovg/lv_nanovg_utils.c.obj
+[410/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx_label.c.obj
+[411/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx_layer.c.obj
+[412/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx_line.c.obj
+[413/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx_stm32_hal.c.obj
+[414/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx_triangle.c.obj
+[415/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx.c.obj
+[416/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx_utils.c.obj
+[417/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_draw_nema_gfx_vector.c.obj
+[418/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/g2d/lv_draw_buf_g2d.c.obj
+[419/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/g2d/lv_draw_g2d.c.obj
+[420/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/g2d/lv_draw_g2d_fill.c.obj
+[421/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/g2d/lv_draw_g2d_img.c.obj
+[422/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/g2d/lv_g2d_utils.c.obj
+[423/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/pxp/lv_draw_buf_pxp.c.obj
+[424/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nema_gfx/lv_nema_gfx_path.c.obj
+[425/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/pxp/lv_draw_pxp.c.obj
+[426/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/pxp/lv_draw_pxp_fill.c.obj
+[427/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/pxp/lv_draw_pxp_layer.c.obj
+[428/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/g2d/lv_g2d_buf_map.c.obj
+[429/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/pxp/lv_pxp_cfg.c.obj
+[430/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/pxp/lv_pxp_osa.c.obj
+[431/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/pxp/lv_pxp_utils.c.obj
+[432/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/nxp/pxp/lv_draw_pxp_img.c.obj
+[433/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/opengles/lv_draw_opengles.c.obj
+[434/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/renesas/dave2d/lv_draw_dave2d_arc.c.obj
+[435/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/renesas/dave2d/lv_draw_dave2d_border.c.obj
+[436/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/renesas/dave2d/lv_draw_dave2d.c.obj
+[437/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/renesas/dave2d/lv_draw_dave2d_fill.c.obj
+[438/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/renesas/dave2d/lv_draw_dave2d_image.c.obj
+[439/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/renesas/dave2d/lv_draw_dave2d_label.c.obj
+[440/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/renesas/dave2d/lv_draw_dave2d_line.c.obj
+[441/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/renesas/dave2d/lv_draw_dave2d_mask_rectangle.c.obj
+[442/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/renesas/dave2d/lv_draw_dave2d_triangle.c.obj
+[443/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/renesas/dave2d/lv_draw_dave2d_utils.c.obj
+[444/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/snapshot/lv_snapshot.c.obj
+[445/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/lv_draw_sw_blend.c.obj
+[446/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/lv_draw_sw_blend_to_a8.c.obj
+[447/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/lv_draw_sw_blend_to_argb8888_premultiplied.c.obj
+[448/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/lv_draw_sw_blend_to_al88.c.obj
+[449/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/lv_draw_sw_blend_to_l8.c.obj
+[450/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/neon/lv_draw_sw_blend_neon_to_rgb565.c.obj
+[451/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/neon/lv_draw_sw_blend_neon_to_rgb888.c.obj
+[452/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/lv_draw_sw_blend_to_i1.c.obj
+[453/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/riscv_v/lv_draw_sw_blend_riscv_v_to_rgb888.c.obj
+[454/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/lv_draw_sw_blend_to_argb8888.c.obj
+[455/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_arc.c.obj
+[456/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_border.c.obj
+[457/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw.c.obj
+[458/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/lv_draw_sw_blend_to_rgb565.c.obj
+[459/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/lv_draw_sw_blend_to_rgb888.c.obj
+[460/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_blur.c.obj
+[461/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/blend/lv_draw_sw_blend_to_rgb565_swapped.c.obj
+[462/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_grad.c.obj
+[463/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_box_shadow.c.obj
+[464/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_fill.c.obj
+[465/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_letter.c.obj
+[466/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_mask_rect.c.obj
+[467/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_line.c.obj
+[468/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_buf_vg_lite.c.obj
+[469/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_triangle.c.obj
+[470/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_vector.c.obj
+[471/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite_arc.c.obj
+[472/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite_border.c.obj
+[473/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_utils.c.obj
+[474/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite_box_shadow.c.obj
+[475/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite.c.obj
+[476/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite_fill.c.obj
+[477/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_img.c.obj
+[478/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite_img.c.obj
+[479/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite_layer.c.obj
+[480/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite_label.c.obj
+[481/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite_line.c.obj
+[482/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite_mask_rect.c.obj
+[483/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite_triangle.c.obj
+[484/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_draw_vg_lite_vector.c.obj
+[485/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_vg_lite_bitmap_font_cache.c.obj
+[486/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_vg_lite_decoder.c.obj
+[487/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_vg_lite_grad.c.obj
+[488/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_vg_lite_math.c.obj
+[489/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_mask.c.obj
+[490/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_vg_lite_path.c.obj
+[491/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_vg_lite_pending.c.obj
+[492/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_vg_lite_stroke.c.obj
+[493/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/vg_lite/lv_vg_lite_utils.c.obj
+[494/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/draw/sw/lv_draw_sw_transform.c.obj
+[495/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/font_manager/lv_font_manager_recycle.c.obj
+[496/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/font_manager/lv_font_manager.c.obj
+[497/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font.c.obj
+[498/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/fmt_txt/lv_font_fmt_txt.c.obj
+[499/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/imgfont/lv_imgfont.c.obj
+[500/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_10.c.obj
+[501/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/binfont_loader/lv_binfont_loader.c.obj
+[502/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_dejavu_16_persian_hebrew.c.obj
+[503/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_12.c.obj
+[504/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_14.c.obj
+[505/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_14_aligned.c.obj
+[506/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_16.c.obj
+[507/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_18.c.obj
+[508/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_20.c.obj
+[509/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_24.c.obj
+[510/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_22.c.obj
+[511/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_26.c.obj
+[512/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_28_compressed.c.obj
+[513/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_28.c.obj
+[514/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_30.c.obj
+[515/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_32.c.obj
+[516/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_34.c.obj
+[517/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_36.c.obj
+[518/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_38.c.obj
+[519/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_40.c.obj
+[520/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_42.c.obj
+[521/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_44.c.obj
+[522/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_46.c.obj
+[523/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/indev/lv_indev_gesture.c.obj
+[524/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_8.c.obj
+[525/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_montserrat_48.c.obj
+[526/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_unscii_16.c.obj
+[527/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/indev/lv_gridnav.c.obj
+[528/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_source_han_sans_sc_14_cjk.c.obj
+[529/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_unscii_8.c.obj
+[530/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/font/lv_font_source_han_sans_sc_16_cjk.c.obj
+[531/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/indev/lv_indev.c.obj
+[532/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/indev/lv_indev_scroll.c.obj
+[533/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/ffmpeg/lv_ffmpeg.c.obj
+[534/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/layouts/lv_layout.c.obj
+[535/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/freetype/lv_freetype.c.obj
+[536/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/layouts/grid/lv_grid.c.obj
+[537/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/layouts/flex/lv_flex.c.obj
+[538/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/bin_decoder/lv_bin_decoder.c.obj
+[539/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/frogfs/src/decomp_raw.c.obj
+[540/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/barcode/code128.c.obj
+[541/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/barcode/lv_barcode.c.obj
+[542/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/frogfs/src/frogfs.c.obj
+[543/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/fsdrv/lv_fs_cbfs.c.obj
+[544/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/bmp/lv_bmp.c.obj
+[545/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/freetype/lv_freetype_glyph.c.obj
+[546/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/freetype/lv_freetype_image.c.obj
+[547/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/freetype/lv_ftsystem.c.obj
+[548/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/freetype/lv_freetype_outline.c.obj
+[549/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/fsdrv/lv_fs_littlefs.c.obj
+[550/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/fsdrv/lv_fs_frogfs.c.obj
+[551/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/fsdrv/lv_fs_fatfs.c.obj
+[552/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/FT800-FT813/EVE_commands.c.obj
+[553/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/FT800-FT813/EVE_supplemental.c.obj
+[554/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/gif/gif.c.obj
+[555/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/fsdrv/lv_fs_memfs.c.obj
+[556/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/gltf/gltf_environment/lv_gltf_ibl_sampler.c.obj
+[557/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/gltf/math/lv_3dmath.c.obj
+[558/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/gstreamer/lv_gstreamer.c.obj
+[559/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/fsdrv/lv_fs_stdio.c.obj
+[560/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/fsdrv/lv_fs_posix.c.obj
+[561/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/lz4/lz4.c.obj
+[562/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/fsdrv/lv_fs_uefi.c.obj
+[563/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/fsdrv/lv_fs_win32.c.obj
+[564/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/nanovg/nanovg.c.obj
+[565/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/rle/lv_rle.c.obj
+[566/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/qrcode/lv_qrcode.c.obj
+[567/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/svg/lv_svg.c.obj
+[568/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/libjpeg_turbo/lv_libjpeg_turbo.c.obj
+[569/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/libpng/lv_libpng.c.obj
+[570/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/lodepng/lodepng.c.obj
+[571/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/libwebp/lv_libwebp.c.obj
+[572/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/svg/lv_svg_parser.c.obj
+[573/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/svg/lv_svg_token.c.obj
+[574/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/lodepng/lv_lodepng.c.obj
+[575/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/tjpgd/tjpgd.c.obj
+[576/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/qrcode/qrcodegen.c.obj
+[577/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/vg_lite_driver/lv_vg_lite_hal/lv_vg_lite_hal.c.obj
+[578/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/vg_lite_driver/lv_vg_lite_hal/vg_lite_os.c.obj
+[579/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/vg_lite_driver/VGLiteKernel/vg_lite_kernel.c.obj
+[580/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/rlottie/lv_rlottie.c.obj
+[581/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/vg_lite_driver/VGLite/vg_lite.c.obj
+[582/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/vg_lite_driver/VGLite/vg_lite_image.c.obj
+[583/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/vg_lite_driver/VGLite/vg_lite_matrix.c.obj
+[584/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/vg_lite_driver/VGLite/vg_lite_path.c.obj
+[585/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/vg_lite_driver/VGLite/vg_lite_stroke.c.obj
+[586/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/svg/lv_svg_decoder.c.obj
+[587/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/cache/class/lv_cache_lru_ll.c.obj
+[588/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/cache/class/lv_cache_lru_rb.c.obj
+[589/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/cache/class/lv_cache_sc_da.c.obj
+[590/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/lv_init.c.obj
+[591/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/tjpgd/lv_tjpgd.c.obj
+[592/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/svg/lv_svg_render.c.obj
+[593/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/cache/instance/lv_image_cache.c.obj
+[594/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/libs/tiny_ttf/lv_tiny_ttf.c.obj
+[595/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/cache/lv_cache_entry.c.obj
+[596/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/cache/lv_cache.c.obj
+[597/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/cache/instance/lv_image_header_cache.c.obj
+[598/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_async.c.obj
+[599/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_array.c.obj
+[600/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_bidi.c.obj
+[601/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_anim_timeline.c.obj
+[602/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_color_op.c.obj
+[603/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_circle_buf.c.obj
+[604/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_grad.c.obj
+[605/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_color.c.obj
+[606/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_area.c.obj
+[607/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_iter.c.obj
+[608/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_log.c.obj
+[609/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_anim.c.obj
+[610/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_event.c.obj
+[611/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_matrix.c.obj
+[612/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_lru.c.obj
+[613/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_palette.c.obj
+[614/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_ll.c.obj
+[615/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_templ.c.obj
+[616/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_pending.c.obj
+[617/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_fs.c.obj
+[618/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_rb.c.obj
+[619/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_math.c.obj
+[620/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_text_ap.c.obj
+[621/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_tree.c.obj
+[622/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_style.c.obj
+[623/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_style_gen.c.obj
+[624/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_utils.c.obj
+[625/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_timer.c.obj
+[626/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/osal/lv_os.c.obj
+[627/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_text.c.obj
+[628/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/others/translation/lv_translation.c.obj
+[629/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/others/fragment/lv_fragment.c.obj
+[630/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/stdlib/builtin/lv_tlsf.c.obj
+[631/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/others/file_explorer/lv_file_explorer.c.obj
+[632/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/others/fragment/lv_fragment_manager.c.obj
+[633/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/stdlib/clib/lv_sprintf_clib.c.obj
+[634/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/stdlib/clib/lv_string_clib.c.obj
+[635/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/3dtexture/lv_3dtexture.c.obj
+[636/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/stdlib/lv_mem.c.obj
+[637/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/misc/lv_profiler_builtin.c.obj
+[638/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/tick/lv_tick.c.obj
+[639/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/animimage/lv_animimage.c.obj
+[640/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/button/lv_button.c.obj
+[641/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/arclabel/lv_arclabel.c.obj
+[642/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/themes/mono/lv_theme_mono.c.obj
+[643/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/bar/lv_bar.c.obj
+[644/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/themes/lv_theme.c.obj
+[645/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/arc/lv_arc.c.obj
+[646/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/calendar/lv_calendar_chinese.c.obj
+[647/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/themes/simple/lv_theme_simple.c.obj
+[648/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/calendar/lv_calendar_header_arrow.c.obj
+[649/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/calendar/lv_calendar_header_dropdown.c.obj
+[650/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/canvas/lv_canvas.c.obj
+[651/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/buttonmatrix/lv_buttonmatrix.c.obj
+[652/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/checkbox/lv_checkbox.c.obj
+[653/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/themes/default/lv_theme_default.c.obj
+[654/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/imagebutton/lv_imagebutton.c.obj
+[655/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/ime/lv_ime_pinyin.c.obj
+[656/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/keyboard/lv_keyboard.c.obj
+[657/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/dropdown/lv_dropdown.c.obj
+[658/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/calendar/lv_calendar.c.obj
+[659/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/led/lv_led.c.obj
+[660/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/image/lv_image.c.obj
+[661/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/lottie/lv_lottie.c.obj
+[662/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/line/lv_line.c.obj
+[663/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/objx_templ/lv_objx_templ.c.obj
+[664/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/chart/lv_chart.c.obj
+[665/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/list/lv_list.c.obj
+[666/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_animimage_properties.c.obj
+[667/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/msgbox/lv_msgbox.c.obj
+[668/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_arc_properties.c.obj
+[669/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_bar_properties.c.obj
+[670/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/label/lv_label.c.obj
+[671/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_buttonmatrix_properties.c.obj
+[672/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/menu/lv_menu.c.obj
+[673/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_chart_properties.c.obj
+[674/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_checkbox_properties.c.obj
+[675/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_dropdown_properties.c.obj
+[676/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_image_properties.c.obj
+[677/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_keyboard_properties.c.obj
+[678/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_label_properties.c.obj
+[679/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_led_properties.c.obj
+[680/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_line_properties.c.obj
+[681/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_menu_properties.c.obj
+[682/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_obj_properties.c.obj
+[683/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_roller_properties.c.obj
+[684/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_scale_properties.c.obj
+[685/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_slider_properties.c.obj
+[686/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_spinner_properties.c.obj
+[687/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_style_properties.c.obj
+[688/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_span_properties.c.obj
+[689/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_spinbox_properties.c.obj
+[690/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_switch_properties.c.obj
+[691/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_table_properties.c.obj
+[692/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_tabview_properties.c.obj
+[693/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/property/lv_textarea_properties.c.obj
+[694/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/spinner/lv_spinner.c.obj
+[695/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/switch/lv_switch.c.obj
+[696/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/slider/lv_slider.c.obj
+[697/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/spinbox/lv_spinbox.c.obj
+[698/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/roller/lv_roller.c.obj
+[699/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/tileview/lv_tileview.c.obj
+[700/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/span/lv_span.c.obj
+[701/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/scale/lv_scale.c.obj
+[702/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/table/lv_table.c.obj
+[703/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/textarea/lv_textarea.c.obj
+[704/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/tabview/lv_tabview.c.obj
+[705/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/ws/modules/lib/gui/lvgl/src/widgets/win/lv_win.c.obj
+[706/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/lvgl.c.obj
+[707/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/lvgl_display.c.obj
+[708/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/lvgl_display_8bit.c.obj
+[709/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/lvgl_display_mono.c.obj
+[710/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/lvgl_display_16bit.c.obj
+[711/879] Building C object modules/ring_core/CMakeFiles/ring_core.dir/src/state_table.c.obj
+[712/879] Building C object modules/ring_core/CMakeFiles/ring_core.dir/src/state_actions.c.obj
+[713/879] Building C object modules/ring_core/CMakeFiles/ring_core.dir/src/gesture.c.obj
+[714/879] Building C object modules/ring_devices/CMakeFiles/ring_devices.dir/src/rdev_logic.c.obj
+[715/879] Building C object modules/ring_core/CMakeFiles/ring_core.dir/src/core.c.obj
+[716/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/lvgl_display_24bit.c.obj
+[717/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/lvgl_display_32bit.c.obj
+[718/879] Building C object modules/ring_control/CMakeFiles/ring_control.dir/src/rctl_logic.c.obj
+[719/879] Building C object modules/ring_time/CMakeFiles/ring_time.dir/src/rtime_logic.c.obj
+[720/879] Building C object modules/ring_inbox/CMakeFiles/ring_inbox.dir/src/rinbox.c.obj
+[721/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/lvgl_zephyr_osal.c.obj
+[722/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/lvgl_mem.c.obj
+[723/879] Building C object modules/ring_iphone/CMakeFiles/ring_iphone.dir/src/ripl.c.obj
+[724/879] Building C object modules/ring_relay/CMakeFiles/ring_relay.dir/src/rrl.c.obj
+[725/879] Building C object modules/ring_time/CMakeFiles/ring_time.dir/src/rtime.c.obj
+[726/879] Building C object modules/ring_screens/CMakeFiles/ring_screens.dir/src/rscr_logic.c.obj
+[727/879] Building C object modules/ring_control/CMakeFiles/ring_control.dir/src/rctl.c.obj
+[728/879] Building C object modules/ring_devices/CMakeFiles/ring_devices.dir/src/rdev.c.obj
+[729/879] Building C object modules/ring_relay/CMakeFiles/ring_relay.dir/src/rrl_bt.c.obj
+[730/879] Building C object modules/ring_glue/CMakeFiles/ring_glue.dir/src/rglue.c.obj
+[731/879] Building C object modules/ring_iphone/CMakeFiles/ring_iphone.dir/src/rip.c.obj
+[732/879] Building C object modules/lvgl/CMakeFiles/modules__lvgl.dir/input/lvgl_common_input.c.obj
+[733/879] Building C object modules/ring_store/CMakeFiles/ring_store.dir/src/rst_fmt.c.obj
+[734/879] Building C object modules/ring_screens/CMakeFiles/ring_screens.dir/src/rscr_real.c.obj
+[735/879] Building C object modules/ring_screens/CMakeFiles/ring_mem_display.dir/src/memdisplay.c.obj
+[736/879] Building C object modules/ring_store/CMakeFiles/ring_store.dir/src/rst_layout.c.obj
+[737/879] Building C object modules/ring_screens/CMakeFiles/ring_screens.dir/src/rscr.c.obj
+[738/879] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/rhw.c.obj
+[739/879] Building C object modules/ring_store/CMakeFiles/ring_store.dir/src/rst_log.c.obj
+[740/879] Building C object modules/ring_rhw/CMakeFiles/ring_rhw.dir/src/rhw_clock_real.c.obj
+[741/879] Building C object modules/ring_audio/CMakeFiles/ring_audio.dir/src/rau_chunk.c.obj
+[742/879] Building C object modules/ring_xfer/CMakeFiles/ring_xfer.dir/src/rxf_desc.c.obj
+[743/879] Building C object modules/ring_xfer/CMakeFiles/ring_xfer.dir/src/rxf_proto.c.obj
+[744/879] Building C object modules/ring_power/CMakeFiles/ring_power.dir/src/rpw_logic.c.obj
+[745/879] Building C object modules/ring_store/CMakeFiles/ring_store.dir/src/rst_hw_real.c.obj
+[746/879] Building C object modules/ring_audio/CMakeFiles/ring_audio.dir/src/rau_hw_real.c.obj
+[747/879] Building C object modules/ring_motor/CMakeFiles/ring_motor.dir/src/rmo_logic.c.obj
+[748/879] Building C object modules/ring_audio/CMakeFiles/ring_audio.dir/src/rau.c.obj
+[749/879] Building C object modules/ring_xfer/CMakeFiles/ring_xfer.dir/src/rxf_class.c.obj
+[750/879] Building C object modules/ring_store/CMakeFiles/ring_store.dir/src/rst.c.obj
+[751/879] Building C object modules/ring_xfer/CMakeFiles/ring_xfer.dir/src/rxf_hw_real.c.obj
+[752/879] Building C object modules/ring_sys/CMakeFiles/ring_sys.dir/src/rsy_logic.c.obj
+[753/879] Building C object modules/ring_screens/CMakeFiles/ring_screens.dir/src/rscr_draw.c.obj
+[754/879] Building C object modules/ring_power/CMakeFiles/ring_power.dir/src/rpw_hw_real.c.obj
+FAILED: [code=1] modules/ring_power/CMakeFiles/ring_power.dir/src/rpw_hw_real.c.obj 
+ccache /opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc -DKERNEL -DK_HEAP_MEM_POOL_SIZE=2048 -DLV_CONF_INCLUDE_SIMPLE=1 -DLV_CONF_PATH=\"/ws/zephyr/modules/lvgl/include/lv_conf.h\" -DNRF54LM20A_XXAA -DNRF_APPLICATION -DNRF_CONFIG_CPU_FREQ_MHZ=128 -DPICOLIBC_LONG_LONG_PRINTF_SCANF -DTF_PSA_CRYPTO_CONFIG_FILE=\"nrf-psa-crypto-config.h\" -DTF_PSA_CRYPTO_USER_CONFIG_FILE=\"nrf-psa-crypto-user-config.h\" -D_POSIX_THREAD_SAFE_FUNCTIONS=200809L -D__LINUX_ERRNO_EXTENSIONS__ -D__PROGRAM_START -D__ZEPHYR__=1 -I/ws/nrf/drivers/mpsl/clock_control -I/ws/out/s7-dev/ring/app/zephyr/include/generated/zephyr -I/ws/zephyr/include -I/ws/out/s7-dev/ring/app/zephyr/include/generated -I/ws/zephyr/soc/nordic -I/ws/zephyr/lib/libc/picolibc/include -I/ws/zephyr/lib/posix/c_lib_ext/getopt -I/ws/zephyr/soc/nordic/nrf54l/. -I/ws/zephyr/soc/nordic/common/. -I/ws/firmware/boards/ringrec/include -I/ws/zephyr/subsys/bluetooth -I/ws/zephyr/subsys/settings/include -I/ws/zephyr/drivers/usb/common/nordic/. -I/ws/nrf/include -I/ws/nrf/lib/multithreading_lock/. -I/ws/nrf/subsys/bluetooth/controller/. -I/ws/nrf/subsys/settings/include -I/ws/zephyr/drivers/flash -I/ws/nrf/tests/include -I/ws/nrf/modules/hal_nordic/. -I/ws/modules/hal/nordic/nrfx -I/ws/modules/hal/nordic/nrfx/drivers/include -I/ws/modules/hal/nordic/nrfx/bsp/stable -I/ws/modules/hal/nordic/nrfx/bsp/stable/templates -I/ws/zephyr/modules/hal_nordic/nrfx/. -I/ws/modules/hal/cmsis_6/CMSIS/Core/Include -I/ws/zephyr/modules/cmsis_6/. -I/ws/modules/lib/gui/lvgl/src -I/ws/zephyr/modules/lvgl/include -I/ws/firmware/modules/ring_core/include -I/ws/firmware/modules/ring_devices/include -I/ws/firmware/modules/ring_control/include -I/ws/firmware/modules/ring_inbox/include -I/ws/firmware/modules/ring_time/include -I/ws/firmware/modules/ring_iphone/include -I/ws/firmware/modules/ring_relay/include -I/ws/firmware/modules/ring_glue/include -I/ws/firmware/modules/ring_screens/include -I/ws/firmware/modules/ring_screens/../ring_rhw/include -I/ws/firmware/modules/ring_rhw/include -I/ws/firmware/modules/ring_store/include -I/ws/firmware/modules/ring_audio/include -I/ws/firmware/modules/ring_audio/../ring_store/include -I/ws/firmware/modules/ring_xfer/include -I/ws/firmware/modules/ring_power/include -I/ws/firmware/modules/ring_power/src -I/ws/firmware/modules/ring_power/../ring_core/include -I/ws/firmware/modules/ring_motor/include -I/ws/firmware/modules/ring_sys/include -I/ws/firmware/modules/ring_factory/include -I/ws/firmware/modules/ring_recorder/include -I/ws/firmware/modules/ring_recorder/src -I/ws/nrfxlib/softdevice_controller/include -I/ws/nrfxlib/mpsl/fem/common/include -I/ws/nrfxlib/mpsl/fem/nrf21540_gpio/include -I/ws/nrfxlib/mpsl/fem/nrf21540_gpio_spi/include -I/ws/nrfxlib/mpsl/fem/nrf2220/include -I/ws/nrfxlib/mpsl/fem/nrf2240/include -I/ws/nrfxlib/mpsl/fem/nrf22xx/include -I/ws/nrfxlib/mpsl/fem/simple_gpio/include -I/ws/nrfxlib/mpsl/fem/include -I/ws/nrfxlib/mpsl/fem/include/protocol -I/ws/nrfxlib/mpsl/include -I/ws/nrfxlib/mpsl/include/protocol -I/ws/nrfxlib/nrf_fuel_gauge/include -I/ws/out/s7-dev/ring/app/generated/library_nrf_security_psa -I/ws/nrf/subsys/nrf_security/include -I/ws/modules/crypto/oberon-psa-crypto/drivers/oberon -I/ws/nrf/subsys/nrf_security/src/threading/include -I/ws/nrf/subsys/nrf_security/src/utils -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/sxsymcrypt/include -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/target -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/silexpk/include -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/common/include -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/cracenpsa/include -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/cracen_sw/ext -I/ws/nrf/subsys/nrf_security/src/drivers/cracen/cracen_sw/include -I/ws/modules/crypto/oberon-psa-crypto/include -I/ws/modules/crypto/oberon-psa-crypto/core -I/ws/modules/crypto/oberon-psa-crypto/dispatch -I/ws/modules/crypto/oberon-psa-crypto/platform -isystem /ws/zephyr/lib/libc/common/include -fno-strict-aliasing -Os -imacros /ws/out/s7-dev/ring/app/zephyr/include/generated/zephyr/autoconf.h -fno-printf-return-value -fno-common -g -gdwarf-4 -fdiagnostics-color=always -mcpu=cortex-m33 -mthumb -mabi=aapcs -mfp16-format=ieee -mtp=soft --sysroot=/opt/ncs/toolchains/197d1ad490/opt/zephyr-sdk/gnu/arm-zephyr-eabi/arm-zephyr-eabi -imacros /ws/zephyr/include/zephyr/toolchain/zephyr_stdint.h -Wall -Wformat -Wformat-security -Wno-format-zero-length -Wdouble-promotion -Wno-pointer-sign -Wpointer-arith -Wexpansion-to-defined -Wno-unused-but-set-variable -Werror=implicit-int -fno-pic -fno-pie -fno-asynchronous-unwind-tables -ftls-model=local-exec -fno-reorder-functions --param=min-pagesize=0 -fno-defer-pop -fstack-usage -fmacro-prefix-map=/ws/firmware/app=CMAKE_SOURCE_DIR -fmacro-prefix-map=/ws/zephyr=ZEPHYR_BASE -fmacro-prefix-map=/ws=WEST_TOPDIR -ffunction-sections -fdata-sections -specs=picolibc.specs -std=c17 -MD -MT modules/ring_power/CMakeFiles/ring_power.dir/src/rpw_hw_real.c.obj -MF modules/ring_power/CMakeFiles/ring_power.dir/src/rpw_hw_real.c.obj.d -o modules/ring_power/CMakeFiles/ring_power.dir/src/rpw_hw_real.c.obj -c /ws/firmware/modules/ring_power/src/rpw_hw_real.c
+/ws/firmware/modules/ring_power/src/rpw_hw_real.c: In function 'g_process':
+/ws/firmware/modules/ring_power/src/rpw_hw_real.c:307:21: error: too few arguments to function 'nrf_fuel_gauge_process'
+  307 |         float soc = nrf_fuel_gauge_process(s->mv / 1000.0f, -(s->ua / 1000000.0f), s->temp_c_x10 / 10.0f,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~
+In file included from /ws/firmware/modules/ring_power/src/rpw_hw_real.c:27:
+/ws/nrfxlib/nrf_fuel_gauge/include/nrf_fuel_gauge.h:475:5: note: declared here
+  475 | int nrf_fuel_gauge_process(float v, float i, float T, float t_delta, float *soc,
+      |     ^~~~~~~~~~~~~~~~~~~~~~
+/ws/firmware/modules/ring_power/src/rpw_hw_real.c:309:21: error: too few arguments to function 'nrf_fuel_gauge_tte_get'
+  309 |         float tte = nrf_fuel_gauge_tte_get();
+      |                     ^~~~~~~~~~~~~~~~~~~~~~
+/ws/nrfxlib/nrf_fuel_gauge/include/nrf_fuel_gauge.h:498:5: note: declared here
+  498 | int nrf_fuel_gauge_tte_get(float *tte);
+      |     ^~~~~~~~~~~~~~~~~~~~~~
+/ws/firmware/modules/ring_power/src/rpw_hw_real.c:310:21: error: too few arguments to function 'nrf_fuel_gauge_ttf_get'
+  310 |         float ttf = nrf_fuel_gauge_ttf_get();
+      |                     ^~~~~~~~~~~~~~~~~~~~~~
+/ws/nrfxlib/nrf_fuel_gauge/include/nrf_fuel_gauge.h:510:5: note: declared here
+  510 | int nrf_fuel_gauge_ttf_get(float *ttf);
+      |     ^~~~~~~~~~~~~~~~~~~~~~
+[755/879] Building C object modules/ring_factory/CMakeFiles/ring_factory.dir/src/rfa_logic.c.obj
+[756/879] Building C object modules/ring_power/CMakeFiles/ring_power.dir/src/rpw.c.obj
+[757/879] Building C object modules/ring_motor/CMakeFiles/ring_motor.dir/src/rmo.c.obj
+[758/879] Building C object modules/ring_motor/CMakeFiles/ring_motor.dir/src/rmo_hw_real.c.obj
+[759/879] Building C object modules/ring_sys/CMakeFiles/ring_sys.dir/src/rsy_fatal.c.obj
+[760/879] Building C object modules/ring_sys/CMakeFiles/ring_sys.dir/src/rsy.c.obj
+[761/879] Building C object modules/ring_sys/CMakeFiles/ring_sys.dir/src/rsy_hw_real.c.obj
+ninja: build stopped: subcommand failed.
+[13/18] Completed 'mcuboot'
+FAILED: [code=1] _sysbuild/sysbuild/images/app-prefix/src/app-stamp/app-build /ws/out/s7-dev/ring/_sysbuild/sysbuild/images/app-prefix/src/app-stamp/app-build 
+cd /ws/out/s7-dev/ring/app && /opt/ncs/toolchains/197d1ad490/usr/local/bin/cmake --build .
+ninja: build stopped: subcommand failed.
+FATAL ERROR: command exited with status 1: /opt/ncs/toolchains/197d1ad490/usr/local/bin/cmake --build /ws/out/s7-dev/ring --
+# finished (Mac clock): 2026-11-13 21:34:11 CET
+# remote exit code: 1
+# local log: firmware/build-logs/step7/20261113-213300-s7-build1.log

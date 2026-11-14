@@ -1,0 +1,103 @@
+## Kconfig symbols with TEST/HOOK/CAPTURE/SIM/FAKE/STANDIN in names (modules, app)
+firmware/modules/ring_screens/Kconfig:30:config RING_SCREENS_CAPTURE
+firmware/modules/ring_recorder/Kconfig:21:config RING_RECORDER_TEST_HOOKS
+firmware/modules/ring_relay/Kconfig:17:config RING_RELAY_TEST_HOOKS
+firmware/modules/ring_control/Kconfig:17:config RING_CONTROL_TEST_HOOKS
+firmware/modules/ring_rhw/Kconfig:7:config RING_RHW_SIM
+firmware/modules/ring_rhw/Kconfig:18:config RING_RHW_SIM_DISK_POOL
+firmware/modules/ring_rhw/Kconfig:24:config RING_RHW_SIM_LOG_SIZE
+firmware/modules/ring_rhw/Kconfig:28:config RING_RHW_SIM_REBOOT_HOOKS
+firmware/modules/ring_rhw/Kconfig:32:config RING_RHW_SIM_USB_HOST_BYTES
+## app/prj.conf
+     1	CONFIG_PRINTK=y
+     2	CONFIG_CONSOLE=y
+     3	
+     4	# Step 2: devices and control. Bluetooth peripheral with the HID service,
+     5	# one local identity per paired device (three), pairing with a displayed passkey.
+     6	CONFIG_MAIN_STACK_SIZE=4096
+     7	CONFIG_HEAP_MEM_POOL_SIZE=2048
+     8	
+     9	CONFIG_BT=y
+    10	CONFIG_BT_PERIPHERAL=y
+    11	CONFIG_BT_DEVICE_NAME="Ring"
+    12	CONFIG_BT_DEVICE_APPEARANCE=961
+    13	CONFIG_BT_MAX_CONN=1
+    14	CONFIG_BT_MAX_PAIRED=3
+    15	CONFIG_BT_ID_MAX=3
+    16	CONFIG_BT_ATT_TX_COUNT=6
+    17	# the Apple and Nordic guidance: no automatic security request, no automatic PHY update
+    18	CONFIG_BT_GATT_AUTO_SEC_REQ=n
+    19	CONFIG_BT_AUTO_PHY_UPDATE=n
+    20	CONFIG_BT_TX_PROCESSOR_STACK_SIZE=1024
+    21	CONFIG_BT_SMP=y
+    22	CONFIG_BT_SMP_APP_PAIRING_ACCEPT=y
+    23	CONFIG_BT_SMP_SC_ONLY=y
+    24	
+    25	CONFIG_BT_CONN_CTX=y
+    26	CONFIG_BT_HIDS=y
+    27	CONFIG_BT_HIDS_INPUT_REP_MAX=3
+    28	CONFIG_BT_HIDS_OUTPUT_REP_MAX=0
+    29	CONFIG_BT_HIDS_FEATURE_REP_MAX=0
+    30	CONFIG_BT_HIDS_ATTR_MAX=24
+    31	CONFIG_BT_HIDS_MAX_CLIENT_COUNT=1
+    32	CONFIG_BT_HIDS_DEFAULT_PERM_RW_AUTHEN=y
+    33	CONFIG_BT_GATT_UUID16_POOL_SIZE=40
+    34	CONFIG_BT_GATT_CHRC_POOL_SIZE=20
+    35	
+    36	CONFIG_RING_CORE=y
+    37	CONFIG_RING_DEVICES=y
+    38	CONFIG_RING_CONTROL=y
+    39	CONFIG_RING_GLUE=y
+    40	
+    41	# Step 3: the iPhone part. The kit's clients for Apple's Notification Center, Media and Current Time
+    42	# services and the GATT service (Service Changed) are selected by CONFIG_RING_IPHONE.
+    43	CONFIG_RING_INBOX=y
+    44	CONFIG_RING_TIME=y
+    45	CONFIG_RING_IPHONE=y
+    46	# link and stack settings of the iPhone part: modules/ring_iphone/ring_iphone_link.conf (EXTRA_CONF_FILE, app/CMakeLists.txt)
+    47	
+    48	# Step 5: the relay service: a Bluetooth service of the ring that takes notifications from a helper app on an Android phone
+    49	# (design/firmware.md 7.7) and puts them in the same store as the iPhone's. Needs no setting of its own: the link settings above are shared.
+    50	CONFIG_RING_RELAY=y
+    51	
+    52	# Step 4: the screens. LVGL (the kit's copy) draws in a 240 x 120 frame; the display is the memory display of
+    53	# ring_screens (devicetree overlay in boards/) until the panel driver exists.
+    54	CONFIG_RING_SCREENS=y
+    55	CONFIG_RING_SCREENS_REAL=y
+    56	CONFIG_LVGL=y
+    57	CONFIG_LV_Z_AUTO_INIT=n
+    58	CONFIG_LV_COLOR_DEPTH_16=y
+    59	CONFIG_LV_FONT_MONTSERRAT_14=y
+    60	CONFIG_LV_FONT_MONTSERRAT_16=y
+    61	CONFIG_LV_FONT_MONTSERRAT_28=y
+    62	CONFIG_LV_FONT_MONTSERRAT_32=y
+    63	CONFIG_LV_Z_MEM_POOL_SIZE=32768
+    64	CONFIG_RING_SCREENS_STACK_SIZE=8192
+    65	
+    66	# round 2: static stack frame sizes (-fstack-usage) for tools/stack_report.py
+    67	CONFIG_STACK_USAGE=y
+    68	
+    69	# round 2: stacks sized from the static chains of tools/stack_report.py plus a margin (no runtime peak exists: simulated builds run on host stacks)
+    70	# step 6: the glue's thread also carries out the recorder's actions (card, sign wait): 4096 (tools/stack_report.py, stage stack-report)
+    71	CONFIG_RING_GLUE_STACK_SIZE=4096
+    72	CONFIG_BT_RX_STACK_SIZE=2048
+    73	
+    74	# Step 6: the recorder parts and the recorder (design/firmware.md sections 4, 5, 6, 8, 9). The drivers behind them are chosen per
+    75	# board (decision D11b): CONFIG_RING_RHW_SIM in boards/nrf54lm20bsim_nrf54lm20a_cpuapp.conf (simulated drivers) and off in the
+    76	# development kit build (the real files, unproven: firmware/docs/recorder-notes.md).
+    77	CONFIG_RING_RHW=y
+    78	CONFIG_RING_STORE=y
+    79	CONFIG_RING_AUDIO=y
+    80	CONFIG_RING_XFER=y
+    81	CONFIG_RING_POWER=y
+    82	CONFIG_RING_MOTOR=y
+    83	CONFIG_RING_SYS=y
+    84	CONFIG_RING_FACTORY=y
+    85	CONFIG_RING_RECORDER=y
+    86	# the factory part's ship beacon and T-RADIO at 0 dBm (FW l.1031, l.1057), its name from the device id (factory-notes.md section 7)
+    87	CONFIG_BT_CTLR_TX_PWR_0=y
+    88	CONFIG_HWINFO=y
+    89	# USB identity: the vendor and product id in modules/ring_xfer/src/rxf_hw_real.c (0x2fe3, 0x0100) are the kit's test pair,
+    90	# NOT FOR SHIPPING; the owner chooses the product's pair (questions_for_owner in docs/recorder-notes.md).
+## sysbuild.conf
+     1	SB_CONFIG_BOOTLOADER_MCUBOOT=y

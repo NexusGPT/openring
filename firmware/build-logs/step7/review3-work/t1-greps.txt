@@ -1,0 +1,58 @@
+## deferred-init in firmware (excluding build-logs)
+(eval):1: no matches found: --include=*.dts
+## spi00 / sdbus / device users in modules
+firmware/modules/ring_audio/src/rau_hw_real.c:28:static const struct device *const pdm = DEVICE_DT_GET(PDM_NODE);
+firmware/modules/ring_screens/src/rscr_draw.c:71:	disp_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
+firmware/modules/ring_screens/src/rscr_draw.c:72:	if (!device_is_ready(disp_dev)) {
+firmware/modules/ring_store/include/ring_store/rst.h:12: * Hardware only through rhw.h: rhw_disk(), rhw_sdbus(), rhw_pmic()->rail_set(RHW_RAIL_SD, ..., "rst_..."),
+firmware/modules/ring_store/include/ring_store/rst.h:128: * rhw_sdbus()->suspend()). VDD_SD stays off. Once, at boot, before every other call. cb may be NULL. */
+firmware/modules/ring_store/src/rst_hw_real.c:4: * any test of step 6 (plan section 7, item 1). Where the devicetree has no `spi00` node the file registers nothing and
+firmware/modules/ring_store/src/rst_hw_real.c:21:#if DT_NODE_EXISTS(DT_NODELABEL(spi00)) && defined(CONFIG_DISK_ACCESS)
+firmware/modules/ring_store/src/rst_hw_real.c:55:/* The card's chip select (FW l.506: no storage line driven high while VDD_SD is off). It is a GPIO of spi00
+firmware/modules/ring_store/src/rst_hw_real.c:56: * (cs-gpios), outside spi00's pin states. The kit's SPIM driver (zephyr/drivers/spi/spi_nrfx_spim_common.c, SDK
+firmware/modules/ring_store/src/rst_hw_real.c:61: * Step 7 fix round 2 (S7R-01): on the ring, spi00, its SD slot and its disk carry `zephyr,deferred-init` (the kernel
+firmware/modules/ring_store/src/rst_hw_real.c:65: * before each resume. Where spi00 is not deferred (another board), a hook releases the line after the kit's devices. */
+firmware/modules/ring_store/src/rst_hw_real.c:66:#if DT_NODE_HAS_PROP(DT_NODELABEL(spi00), cs_gpios)
+firmware/modules/ring_store/src/rst_hw_real.c:67:static const struct gpio_dt_spec sd_cs = GPIO_DT_SPEC_GET_BY_IDX(DT_NODELABEL(spi00), cs_gpios, 0);
+firmware/modules/ring_store/src/rst_hw_real.c:90:#if DT_PROP_OR(DT_NODELABEL(spi00), zephyr_deferred_init, 0)
+firmware/modules/ring_store/src/rst_hw_real.c:93:/* the slot and the disk need spi00 at their init (sdhc_spi_init: device_is_ready(spi_dev)), so they must wait too */
+firmware/modules/ring_store/src/rst_hw_real.c:95:	     "spi00 is zephyr,deferred-init: its zephyr,sdhc-spi-slot and zephyr,sdmmc-disk nodes must be too");
+firmware/modules/ring_store/src/rst_hw_real.c:101:		DEVICE_DT_GET(DT_NODELABEL(spi00)), DEVICE_DT_GET(RST_SLOT_NODE), DEVICE_DT_GET(RST_DISK_NODE),
+firmware/modules/ring_store/src/rst_hw_real.c:122:/* not deferred: the kit's spi00 init drove the line high at boot; release it right after the kit's devices */
+firmware/modules/ring_store/src/rst_hw_real.c:136:	int r = pm_device_action_run(DEVICE_DT_GET(DT_NODELABEL(spi00)), PM_DEVICE_ACTION_SUSPEND);
+firmware/modules/ring_store/src/rst_hw_real.c:145:		return bus_first_init();   /* first power-on: spi00's init drives the line (VDD_SD is on now) */
+firmware/modules/ring_store/src/rst_hw_real.c:153:	return pm_device_action_run(DEVICE_DT_GET(DT_NODELABEL(spi00)), PM_DEVICE_ACTION_RESUME);
+firmware/modules/ring_store/src/rst_hw_real.c:156:static const struct rhw_sdbus_api real_sdbus = { .suspend = b_suspend, .resume = b_resume };
+firmware/modules/ring_store/src/rst_hw_real.c:162:	return r != 0 ? r : rhw_register_sdbus(&real_sdbus);
+firmware/modules/ring_store/src/rst.c:165:	(void)rhw_sdbus()->suspend();
+firmware/modules/ring_store/src/rst.c:314:	(void)rhw_sdbus()->suspend();                 /* FW l.506: the sleep state at boot, before any SPI use */
+firmware/modules/ring_store/src/rst.c:349:	(void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+firmware/modules/ring_store/src/rst.c:484:	(void)rhw_sdbus()->suspend();                                                    /* then suspend, */
+firmware/modules/ring_power/src/rpw_hw_real.c:70:static const struct device *const pmic = DEVICE_DT_GET(PMIC_NODE);
+firmware/modules/ring_power/src/rpw_hw_real.c:71:static const struct device *const charger = DEVICE_DT_GET(CHARGER_NODE);
+firmware/modules/ring_power/src/rpw_hw_real.c:72:static const struct device *const ldsw_mic = DEVICE_DT_GET(DT_ALIAS(ring_vdd_mic));
+firmware/modules/ring_power/src/rpw_hw_real.c:73:static const struct device *const ldsw_sd = DEVICE_DT_GET(DT_ALIAS(ring_vdd_sd));
+firmware/modules/ring_power/src/rpw_hw_real.c:339:	if (!device_is_ready(pmic) || !device_is_ready(charger) || !device_is_ready(ldsw_mic) ||
+firmware/modules/ring_power/src/rpw_hw_real.c:340:	    !device_is_ready(ldsw_sd)) {
+firmware/modules/ring_sys/src/rsy_hw_real.c:30:#define SLOT1_DEV  DEVICE_DT_GET(DT_MTD_FROM_FIXED_PARTITION(SLOT1_NODE))
+firmware/modules/ring_sys/src/rsy_hw_real.c:155:static const struct device *const crash_dev = DEVICE_DT_GET(DT_ALIAS(crashram));
+firmware/modules/ring_sys/src/rsy_hw_real.c:173:static const struct device *const gp_dev = DEVICE_DT_GET(DT_ALIAS(gpregret1));
+firmware/modules/ring_sys/src/rsy_hw_real.c:207:static const struct device *const wdt_dev = DEVICE_DT_GET(DT_NODELABEL(wdt31));
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:165:/* ================================================================== storage bus (spi00 power management, FW l.506). Owner: ring_store */
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:166:struct rhw_sdbus_api {
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:167:	/* Suspend spi00 so its sleep pin state applies (lines inputs, no pull) BEFORE VDD_SD goes off; also at boot
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:170:	/* Resume spi00 (default pin state) 1 ms after VDD_SD came on, before init (FW l.506). */
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:317:const struct rhw_sdbus_api *rhw_sdbus(void);
+firmware/modules/ring_rhw/include/ring_rhw/rhw.h:334:int rhw_register_sdbus(const struct rhw_sdbus_api *api);
+firmware/modules/ring_rhw/include/ring_rhw/rhw_sim.h:238:bool rhw_sim_sdbus_suspended(void);
+firmware/modules/ring_rhw/src/rhw.c:52:static const struct rhw_sdbus_api none_sdbus = { .suspend = none_v, .resume = none_v };
+firmware/modules/ring_rhw/src/rhw.c:101:static const struct rhw_sdbus_api *act_sdbus = START(sdbus);
+firmware/modules/ring_rhw/src/rhw.c:121:GETTER(sdbus)
+firmware/modules/ring_rhw/src/rhw.c:156:REGISTER(sdbus)
+firmware/modules/ring_rhw/src/rhw.c:168:	&none_disk, &none_mic, &none_pmic, &none_hfxo, &none_motor, &none_sdbus, &none_usb, &none_image,
+firmware/modules/ring_rhw/src/sim_int.h:41:extern const struct rhw_sdbus_api rhw_sim_sdbus_api;
+firmware/modules/ring_xfer/src/rxf_hw_real.c:48:USBD_DEVICE_DEFINE(rxf_usbd, DEVICE_DT_GET(DT_NODELABEL(zephyr_udc0)), RXF_VID, RXF_PID);
+firmware/modules/ring_rhw/src/sim_misc.c:60:const struct rhw_sdbus_api rhw_sim_sdbus_api = { .suspend = sb_suspend, .resume = sb_resume };
+firmware/modules/ring_rhw/src/sim_misc.c:62:bool rhw_sim_sdbus_suspended(void)
+## PM config in app confs
+firmware/app/boards/ringrec_nrf54lm20a_cpuapp.conf:36:CONFIG_PM_DEVICE=y

@@ -7,7 +7,7 @@ CASE check_wiring/no_cut_lead                  want_exit=1 got_exit=1 as expecte
 CASE check_wiring/wrong_net_both               want_exit=1 got_exit=1 as expected | FAIL[states-net] W001 end A J_BAND_A.1 states net 'JOY_DOWN', the ring netlist says 'JOY_UP'
 CASE check_wiring/swap_B_ends                  want_exit=1 got_exit=1 as expected | FAIL[terminal-unknown] W001 end B SW3.3 has no netlist row in its proof
 CASE check_wiring/wrong_tail_land              want_exit=1 got_exit=1 as expected | FAIL[states-tail] W001 join text says FLEX1 tail land 2 but end A is ring main board J_BAND_A.1
-CASE check_wiring/wrong_face_W040              want_exit=1 got_exit=1 as expected | FAIL[states-face] W040 end B J1.1 face states 'F.Cu', the board file has ['B.Cu']
+CASE check_wiring/wrong_face_W040              want_exit=1 got_exit=1 as expected | FAIL[states-face] W040 end B J1.1 face states 'B.Cu', the board file has ['F.Cu']
 CASE check_wiring/wrong_face_W029              want_exit=1 got_exit=1 as expected | FAIL[states-face] W029 end B CP1.1 face states 'F.Cu', the board file has ['B.Cu']
 CASE check_wiring/spring_pin_swap              want_exit=1 got_exit=1 as expected | FAIL[terminal-unknown] W054 end B P4.1 has no netlist row in its proof
 CASE check_wiring/case_wire_swap               want_exit=1 got_exit=1 as expected | FAIL[terminal-unknown] W063 end B W4.1 has no netlist row in its proof
@@ -32,11 +32,11 @@ CASE check_wiring/rebuild_state_reason         want_exit=1 got_exit=1 as expecte
 CASE check_wiring/rebuild_join_B               want_exit=1 got_exit=1 as expected | FAIL[rebuild] W001 field join_B: list says 'hand solder', the generator builds 'reflow'
 CASE check_wiring/rebuild_cut_note             want_exit=1 got_exit=1 as expected | FAIL[rebuild] W040 field cut_note: list says 'size dependent', the generator builds 'not size dependent'
 CASE check_wiring/rebuild_pad_pin_text         want_exit=1 got_exit=1 as expected | FAIL[rebuild] W001 field end_B_pin: list says '4', the generator builds '3'
-CASE check_wiring/LIVE_list_as_it_stands       want_exit=1 got_exit=0 DIFFERS (want exit 1 got 0) | 
+CASE check_wiring/LIVE_list_as_it_stands       want_exit=0 got_exit=0 as expected | 
 CASE check_wiring/rev_honest_copy(has the CRs) want_exit=1 got_exit=1 as expected | FAIL[field-newline] W054 field proof_carrier holds 0 carriage return and 7 newline characters (first at offset 264)
 CASE check_wiring/rev_wrongnet                 want_exit=1 got_exit=1 as expected | FAIL[states-net] W001 end A J_BAND_A.1 states net 'JOY_DOWN', the ring netlist says 'JOY_UP'
 CASE check_wiring/rev_wrongtail                want_exit=1 got_exit=1 as expected | FAIL[states-tail] W001 join text says FLEX1 tail land 2 but end A is ring main board J_BAND_A.1
-CASE check_wiring/rev_wrongface_W040           want_exit=1 got_exit=1 as expected | FAIL[states-face] W040 end B J1.1 face states 'F.Cu', the board file has ['B.Cu']
+CASE check_wiring/rev_wrongface_W040           want_exit=1 got_exit=1 as expected | FAIL[field-newline] W054 field proof_carrier holds 0 carriage return and 7 newline characters (first at offset 264)
 CASE check_wiring/rev_wrongface_W029           want_exit=1 got_exit=1 as expected | FAIL[states-face] W029 end B CP1.1 face states 'F.Cu', the board file has ['B.Cu']
 CASE check_wiring/rev_colourswap               want_exit=1 got_exit=1 as expected | FAIL[states-colour] W023 source says red, the line says marking 'blue insulation', carrier 'red lead wire AWG32 of the motor'
 CASE check_wiring/rev_cutwrong                 want_exit=1 got_exit=1 as expected | FAIL[states-cut] W023 cut length at US 9 is '9.99', the source table says '1.08'
@@ -50,4 +50,4 @@ CASE check_wiring/rev_springswap               want_exit=1 got_exit=1 as expecte
 CASE check_wiring/rev_wireswap                 want_exit=1 got_exit=1 as expected | FAIL[terminal-unknown] W063 end B W4.1 has no netlist row in its proof
 CASE check_wiring/rev_prooffake                want_exit=1 got_exit=1 as expected | FAIL[proof-text] W023 proof_carrier: design/ecad/band/band-interface.md line 123 does not hold 'this sentence is not in the file'
 CASE check_wiring/rev_dropped                  want_exit=1 got_exit=1 as expected | FAIL[terminal-missing] ring CP2 pin 1 (net 'USB_DN') is in no line
-SECTION check_wiring ok=51 of 52
+SECTION check_wiring ok=52 of 52

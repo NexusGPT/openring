@@ -1,0 +1,62 @@
+19:  UNEXPECTED <where> <pin> (netlist net <net or none>)           (fails; also a gpio hog, and a property ending in
+179:def enabled(node):
+226:def psel_states(dt, node):
+302:    expected_places = set()   # (node path, property or function, pin) the table accounts for
+333:                expected_places.add((hn.path, "gpio-hog", npin))
+372:                expected_places.add((node.path, what, dpin))
+399:            states = psel_states(dt, node)
+414:                    expected_places.add((node.path, what, dpin))
+443:                if (node.path, "gpio-hog", dpin) in expected_places:
+445:                print("UNEXPECTED %s gpio-hog %s (netlist net %s)" % (node.path, dpin, pin_to_net.get(dpin) or "none"))
+453:                    print("UNEXPECTED %s/%s cannot be read as GPIOs: %s" % (node_name(node), pname, exc))
+461:                    if (node.path, pname, dpin) not in expected_places:
+462:                        print("UNEXPECTED %s/%s %s (netlist net %s)" % (node_name(node), pname, dpin,
+465:        for sname, ents in psel_states(dt, node).items():
+468:                if (node.path, fn, dpin) not in expected_places:
+469:                    print("UNEXPECTED %s/%s/%s %s (netlist net %s)" % (node_name(node), sname, fn, dpin,
+                    else:
+                        print("SAME FLAGS %s %s (%s)" % (net, names(want), exp[1]))
+                continue
+            # psel
+            states = psel_states(dt, node)
+            if not states:
+                print("NO NODE %s netlist %s: node %s has no pin-control state" % (net, npin, where))
+                failures.append(net)
+                continue
+            ok = True
+            seen = False
+            for sname, ents in states.items():
+                pins = [pin_text(po, pi) for (fn, po, pi) in map(decode, ents) if fn == what]
+                if not pins:
+                    print("NO NODE %s netlist %s: state %s of %s has no %s" % (net, npin, sname, where, what))
+                    ok = False
+                    continue
+                seen = True
+                for dpin in pins:
+                    expected_places.add((node.path, what, dpin))
+                    place = "%s/%s/%s" % (node_name(node), sname, what)
+                    if dpin != npin:
+                        print("DIFFERENT %s netlist %s devicetree %s %s" % (net, npin, place, dpin))
+                        ok = False
+                    else:
+                        print("SAME %s netlist %s devicetree %s %s" % (net, npin, place, dpin))
+            if not ok or not seen:
+                if not seen:
+                    print("NO NODE %s netlist %s: no pin-control state of %s names %s" % (net, npin, where, what))
+                failures.append(net)
+
+    # the other way round: every pin an enabled node names must be one the table accounts for
+    unexpected = 0
+    for node in dt.node_iter():
+        if not enabled(node):
+            continue
+        compats = node.props["compatible"].to_strings() if "compatible" in node.props else []
+        for c in compats:
+            if c in UNSEEN_COMPATS:
+                print("UNSEEN %s (%s) is enabled: its pins (analog inputs or NFC pads) are not checked" %
+                      (node_name(node), c))
+                unexpected += 1
+        if "gpio-hog" in node.props:
+            port = gpio_port(node.parent)
+            cells = node.props["gpios"].to_nums() if "gpios" in node.props else []
+            n = node.parent.props["#gpio-cells"].to_num()

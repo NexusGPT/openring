@@ -33,7 +33,7 @@ C.append(("no_cut_lead", mod({"W023": {"cut_mm_us9": ""}}), 1, "lead-length", "W
 C.append(("wrong_net_both", mod({"W001": {"carrier_net": "JOY_DOWN", "signal_A": "JOY_DOWN", "signal_B": "JOY_DOWN"}}), 1, "states-net", "W001"))
 C.append(("swap_B_ends", mod({"W001": {"end_B_ref": "SW3"}, "W002": {"end_B_ref": "SW1"}}), 1, None, None))
 C.append(("wrong_tail_land", mod({"W001": {"join_A": "hot bar (main board land to FLEX1 tail land 2)"}}), 1, "states-tail", "W001"))
-C.append(("wrong_face_W040", mod({"W040": {"end_B_face": "F.Cu"}}), 1, "states-face", "W040"))
+C.append(("wrong_face_W040", mod({"W040": {"end_B_face": "B.Cu"}}), 1, "states-face", "W040"))  # board A2 (2026-11-13): J1 is on F.Cu now, so the wrong face is B.Cu (was "F.Cu")
 C.append(("wrong_face_W029", mod({"W029": {"end_B_face": "F.Cu"}}), 1, "states-face", "W029"))
 C.append(("spring_pin_swap", mod({"W054": {"end_B_ref": "P4"}, "W057": {"end_B_ref": "P1"}}), 1, None, None))
 C.append(("case_wire_swap", mod({"W063": {"end_B_ref": "W4"}, "W066": {"end_B_ref": "W1"}}), 1, None, None))

@@ -1,0 +1,11 @@
+boot_partition addr 0x000000 size 65536 end 0x010000 | spec 9.2 addr 0x000000 size 65536 -> SAME
+slot0_partition addr 0x010000 size 999424 end 0x104000 | spec 9.2 addr 0x010000 size 999424 -> SAME
+slot1_partition addr 0x104000 size 999424 end 0x1f8000 | spec 9.2 addr 0x104000 size 999424 -> SAME
+storage_partition addr 0x1f8000 size 20480 end 0x1fd000 | spec 9.2 addr 0x1f8000 size 20480 -> SAME
+boot_partition ends 0x010000, slot0_partition starts 0x010000 -> adjacent
+slot0_partition ends 0x104000, slot1_partition starts 0x104000 -> adjacent
+slot1_partition ends 0x1f8000, storage_partition starts 0x1f8000 -> adjacent
+last end 0x1fd000, RRAM 2036 KB = 0x1fd000 -> fits
+cpuapp_sram 0x20000000..0x2007f800 (522240 bytes); retained 0x2007f800..0x2007fc00 (1024 bytes)
+overlap sram/retained: no; retained ends inside the SoC's 511 KB (0x2007fc00): yes; retained size 1024: yes
+exit 0

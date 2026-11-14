@@ -1,0 +1,30 @@
+diff --git a/firmware/boards/ringrec/ringrec_production.overlay b/firmware/boards/ringrec/ringrec_production.overlay
+new file mode 100644
+index 00000000..797a5543
+--- /dev/null
++++ b/firmware/boards/ringrec/ringrec_production.overlay
+@@ -0,0 +1,24 @@
++/*
++ * The ring's production devicetree changes (step 7 fix round 1; design/firmware.md l.1061: "Production builds: no UART
++ * output; DBG_TX is an input with pull-down"). Used by tools/build_all.sh stage ring-production for the application and
++ * for MCUboot (EXTRA_DTC_OVERLAY_FILE). The debug port uart20 is off and its pin DBG_TX (P1.15, ball B4, test pad TP1)
++ * is held as an input with the chip's pull-down by a GPIO hog.
++ */
++/ {
++	chosen {
++		/delete-property/ zephyr,console;
++		/delete-property/ zephyr,shell-uart;
++	};
++};
++
++&uart20 {
++	status = "disabled";
++};
++
++&gpio1 {
++	ring_dbg_tx_pulldown: dbg_tx_pulldown {
++		gpio-hog;
++		gpios = <15 GPIO_PULL_DOWN>;                                    /* DBG_TX */
++		input;
++	};
++};

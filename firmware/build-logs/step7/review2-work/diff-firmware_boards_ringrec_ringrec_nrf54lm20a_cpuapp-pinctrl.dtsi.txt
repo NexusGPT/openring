@@ -1,0 +1,19 @@
+diff --git a/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi b/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi
+index cf140361..c65c804c 100644
+--- a/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi
++++ b/firmware/boards/ringrec/ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi
+@@ -19,9 +19,11 @@
+ 		};
+ 	};
+ 
+-	/* storage card (design/firmware.md 5.1). Default: SCK and MOSI driven (low when idle); the chip select is a GPIO
+-	 * (cs-gpios of spi00). Sleep: every line an input with no pull (disconnected), so no line is driven high while
+-	 * VDD_SD is off (FW 5.1 rule; the pull-ups R60, R63 to R65 go to VDD_SD). */
++	/* storage card (design/firmware.md 5.1). Default: SCK and MOSI driven (low when idle). Sleep: SD_SCK, SD_MOSI and
++	 * SD_MISO inputs with no pull (disconnected), part of the FW 5.1 rule that no line is driven high while VDD_SD is
++	 * off (the pull-ups R60, R63 to R65 go to VDD_SD). The fourth line, SD_CS, is a GPIO (cs-gpios of spi00) and in no
++	 * pin state: the kit's SPI driver keeps it an output; modules/ring_store/src/rst_hw_real.c disconnects it after each
++	 * suspend and at boot and drives it again before each resume (firmware/docs/board-notes.md, fix round 1, S7-02). */
+ 	spi00_default: spi00_default {
+ 		group1 {
+ 			psels = <NRF_PSEL(SPIM_SCK, 2, 1)>,          /* SD_SCK */

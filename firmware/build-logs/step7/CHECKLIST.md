@@ -1,0 +1,37 @@
+# Step 7 checklist (ring board files). Start: ven. 13 nov. 2026 21:22:00 CET (from `date`). Limit: 5 hours of own work.
+
+- [x] 1. Zephyr board for the real ring (nRF54LM20A cpuapp, NCS 3.4.2) in firmware/boards/: devicetree, defconfig, board.yml, Kconfig files; board name stated in notes evidence: boards/ringrec, s7-full1 l.29284
+- [x] 2. App per-board .conf and .overlay in firmware/app/boards/ (no pin by number: stage recorder-no-raw-pins scans app/boards) evidence: app/boards/ringrec_*; recorder-no-raw-pins exit 0 in s7-full1
+- [x] 3. Every U1 pin from netlist.csv (with pin-changes.md: 3 spares dropped, LCD_TE and OLED_PWR_EN moved) in the devicetree evidence: s7-full1 l.29577
+- [x] 4. Each difference between design/firmware.md pins and the netlist listed in notes (design/firmware.md not edited) evidence: fw-pin-compare.txt: DIFFERENT 0
+- [x] 5. pdm20 enabled with default and sleep pin states evidence: s7-full1 rau real code
+- [x] 6. spi00 with zephyr,sdhc-spi-slot, zephyr,sdmmc-disk "SD", 16 MHz; CONFIG_DISK_ACCESS evidence: rst real code, sdhc_spi obj
+- [x] 7. nPM1304 nodes: mfd, regulators with two load switches (aliases ring-vdd-mic, ring-vdd-sd), charger; settings of FW 8.1 evidence: mfd/regulator/charger objs l.29411-29426
+- [x] 8. Cell model for the fuel gauge (rpw_battery_model.h) evidence: rpw_battery_model.h, s7-model sha
+- [x] 9. alias ring-motor evidence: rmo real code
+- [x] 10. wdt31 enabled evidence: wdt_nrfx obj
+- [x] 11. slot1_partition evidence: rsy ri_* functions
+- [x] 12. crashram retained-RAM node of 1,024 bytes (alias crashram) evidence: rr_* functions, retained_mem_zephyr_ram
+- [x] 13. alias gpregret1 evidence: retained_mem_nrf_gpregret
+- [x] 14. USB controller node (zephyr_udc0) evidence: rxf real code, udc_dwc2
+- [x] 15. Screen SPI bus and control pins; memory display stays the stand-in (said in notes) evidence: ring_lcd_dbi; notes sec 4
+- [x] 16. Settings back end proposal (K10) with reason, for the lead evidence: notes sec 4
+- [x] 17. Flash partitions (MCUboot, slot 0, slot 1, settings) with sizes and reason each evidence: notes sec 6
+- [-] 18. Ring build RAM figures and largest users (like lead-full4-kit-ram-symbols.txt) partly: only the 80 largest RAM symbols; full dump refused (s7-ramall.console)
+- [x] 19. Table "budget line of 4.6 | budget | measured | difference" evidence: ram-budget.txt
+- [x] 20. Proposal for the two chunk-size work buffers of storage and the 57,600-byte memory-display picture (no module code change) evidence: notes sec 8
+- [x] 21. New stage in tools/build_all.sh: ring build, sysbuild with MCUboot, memory report evidence: s7-full1 stage ring
+- [x] 22. tools/check_ring_pins.py: reads zephyr.dts of the ring build and the netlist; fails on differing pin or U1 signal without node; own stage evidence: s7-full1 l.29577
+- [x] 23. check_ring_pins.py self test: copy of board with one pin changed fails naming the signal evidence: l.29600/29622/29644
+- [x] 24. README.md step 7 section (what exists, how to build, what is unproven) evidence: README.md
+- [x] 25. Bar 1: ring stage builds with CONFIG_RING_RHW_SIM=n on the server; log and flash/RAM lines cited evidence: l.29309, 28967-28968
+- [x] 26. Bar 2: list of *_hw_real.c compiled with real code vs empty stubs, reason for each stub evidence: l.29312-29409
+- [x] 27. Bar 3: check_ring_pins.py passes on ring build, fails on broken copy naming the signal evidence: l.29577-29646
+- [x] 28. Bar 4: whole tools/build_all.sh once at the end; last result line cited; >= 44 stage end lines, all exit 0 evidence: 48 end lines, l.29648 RESULT PASS
+- [x] 29. Bar 5: table every U1 signal | chip pin | DT node/property | driver file | "builds only"/"not used yet" evidence: u1-table.md, notes sec 3
+- [x] 30. App CMakeLists/Kconfig change only if needed, listed evidence: no change needed
+- [x] 31. Open choices written in notes; unconfirmed devices/settings marked "not confirmed" with what was searched evidence: notes sec 4, 11
+- [x] 32. Notes start with start date; last line RESULT evidence: notes head and tail
+- [-] 33. Remove my finished run folder(s) under /root/ring-os/ws/out or say the lead must not done: removal refused by remote.sh (18 GB free < 25 GB, s7-ramall.console); lead must remove
+- [x] 34. No git; no stderr to /dev/null; no address/key printed evidence: no git; scan of logs clean
+- [x] 35. Report under 3,500 chars, ends with questions_for_owner evidence: final reply

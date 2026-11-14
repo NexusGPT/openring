@@ -1,0 +1,127 @@
+   155			rst_evbuf_pop(&S.ev);
+   156			k_spin_unlock(&st_lock, k);
+   157		}
+   158	}
+   159	
+   160	static void power_down(bool deinit, const char *caller)
+   161	{
+   162		if (deinit) {
+   163			(void)rhw_disk()->deinit();
+   164		}
+   165		(void)rhw_sdbus()->suspend();
+   166		(void)rhw_pmic()->rail_set(RHW_RAIL_SD, false, caller);
+   167	}
+   168	
+   169	static bool op_take(void)
+   170	{
+---
+   305	}
+   306	#endif
+   307	
+   308	int rst_init(const struct rst_cb *cb)
+   309	{
+   310		reset_state();
+   311		if (cb != NULL) {
+   312			S.cb = *cb;
+   313		}
+   314		(void)rhw_sdbus()->suspend();                 /* FW l.506: the sleep state at boot, before any SPI use */
+   315		if (!thr_started) {
+   316			thr_started = true;
+   317			k_thread_create(&thr, thr_stack, K_THREAD_STACK_SIZEOF(thr_stack), store_thread, NULL, NULL, NULL,
+   318					CONFIG_RING_STORE_THREAD_PRIORITY, 0, K_NO_WAIT);
+   319			k_thread_name_set(&thr, "rst");
+   320	#ifdef CONFIG_RING_RHW_SIM
+   321			(void)rhw_sim_add_reboot_hook(sim_reboot_hook);
+   322	#endif
+   323		}
+   324		S.inited = true;
+   325		return 0;
+   326	}
+   327	
+   328	/* ------------------------------------------------------------------ mount, unmount */
+   329	
+   330	static void fill_info(struct rst_mount_info *out)
+   331	{
+   332		memset(out, 0, sizeof(*out));
+   333		out->open_flag = S.sb.open_flag != 0;
+   334		out->open_recording_id = S.sb.open_flag ? S.sb.open_recording_id : 0;
+   335		out->boot_count = S.sb.boot_count;
+   336		out->card_sectors = S.sb.card_sectors;
+   337		out->recordings = S.recs.live_total;
+   338		out->space = S.space;
+   339	}
+   340	
+   341	static int card_up(void)
+   342	{
+   343		int r = -EIO;
+   344	
+   345		if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+   346			return -EIO;
+   347		}
+   348		k_msleep(RREC_SD_RAIL_WAIT_MS);                                                  /* wait 1 ms */
+   349		(void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+   350		for (uint32_t i = 0; i < RREC_INIT_TRIES; i++) {                                 /* FW l.138 */
+   351			r = rhw_disk()->init();
+   352			if (r == 0) {
+   353				break;
+   354			}
+   355			if (i + 1 < RREC_INIT_TRIES) {
+   356				k_msleep(RREC_INIT_GAP_MS);
+   357			}
+   358		}
+   359		if (r != 0) {
+   360			power_down(false, "rst_mount");
+   361			return -EIO;
+   362		}
+   363		return 0;
+   364	}
+   365	
+   366	static int mount_body(bool boot, struct rst_mount_info *out)
+   367	{
+   368		uint8_t *ca = scratch, *cb = scratch + RREC_SECTOR_BYTES;
+   369		uint32_t sectors = 0;
+   370		bool read_error = false, formatted = false;
+---
+   450		S.fault = false;                       /* a new mount starts clean; the open flag on the card still leads to RECOVERY */
+   451		S.closing = false;
+   452		S.op.active = false;
+   453		r = card_up();
+   454		if (r == 0) {
+   455			k_mutex_lock(&io_lock, K_FOREVER);
+   456			r = mount_body(boot, out);
+   457			if (r != 0) {
+   458				rst_recs_init(&S.recs, rec_store, RREC_LIST_CACHE);
+   459				power_down(true, "rst_mount");
+   460			}
+   461			k_mutex_unlock(&io_lock);
+   462		}
+   463		k_mutex_unlock(&op_lock);
+   464		return r;
+   465	}
+   466	
+   467	/* the body of rst_unmount and rst_unmount_wait, with op_lock held by the caller */
+   468	static int unmount_locked(void)
+   469	{
+   470		int r = 0;
+   471	
+   472		if (!S.mounted) {
+   473			k_mutex_unlock(&op_lock);
+   474			return 0;
+   475		}
+   476		drain_chunks();
+   477		k_mutex_lock(&io_lock, K_FOREVER);
+   478		if (flush_log() != 0) {
+   479			r = -EIO;
+   480		}
+   481		if (rhw_disk()->deinit() != 0) {                                                 /* FW l.506: deinit, */
+   482			r = -EIO;
+   483		}
+   484		(void)rhw_sdbus()->suspend();                                                    /* then suspend, */
+   485		if (rhw_pmic()->rail_set(RHW_RAIL_SD, false, "rst_unmount") != 0) {              /* then rail off */
+   486			r = -EIO;
+   487		}
+   488		S.mounted = false;
+   489		S.op.active = false;
+   490		S.closing = false;
+   491		k_mutex_unlock(&io_lock);
+   492		k_mutex_unlock(&op_lock);

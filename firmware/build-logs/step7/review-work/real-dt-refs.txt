@@ -1,0 +1,23 @@
+firmware/modules/ring_motor/src/rmo_hw_real.c:10:#if DT_NODE_EXISTS(DT_ALIAS(ring_motor))
+firmware/modules/ring_motor/src/rmo_hw_real.c:19:static const struct gpio_dt_spec motor = GPIO_DT_SPEC_GET(DT_ALIAS(ring_motor), gpios);
+firmware/modules/ring_audio/src/rau_hw_real.c:10:#if DT_NODE_HAS_STATUS(DT_NODELABEL(pdm20), okay)
+firmware/modules/ring_audio/src/rau_hw_real.c:24:#define PDM_NODE DT_NODELABEL(pdm20)
+firmware/modules/ring_audio/src/rau_hw_real.c:28:static const struct device *const pdm = DEVICE_DT_GET(PDM_NODE);
+firmware/modules/ring_store/src/rst_hw_real.c:20:#if DT_NODE_EXISTS(DT_NODELABEL(spi00)) && defined(CONFIG_DISK_ACCESS)
+firmware/modules/ring_store/src/rst_hw_real.c:56:	return pm_device_action_run(DEVICE_DT_GET(DT_NODELABEL(spi00)), PM_DEVICE_ACTION_SUSPEND);
+firmware/modules/ring_store/src/rst_hw_real.c:61:	return pm_device_action_run(DEVICE_DT_GET(DT_NODELABEL(spi00)), PM_DEVICE_ACTION_RESUME);
+firmware/modules/ring_sys/src/rsy_hw_real.c:29:#define SLOT1_NODE DT_NODELABEL(slot1_partition)
+firmware/modules/ring_sys/src/rsy_hw_real.c:30:#define SLOT1_DEV  DEVICE_DT_GET(DT_MTD_FROM_FIXED_PARTITION(SLOT1_NODE))
+firmware/modules/ring_sys/src/rsy_hw_real.c:152:#if DT_NODE_HAS_STATUS(DT_ALIAS(crashram), okay) && defined(CONFIG_RETAINED_MEM)
+firmware/modules/ring_sys/src/rsy_hw_real.c:155:static const struct device *const crash_dev = DEVICE_DT_GET(DT_ALIAS(crashram));
+firmware/modules/ring_sys/src/rsy_hw_real.c:172:#if DT_NODE_HAS_STATUS(DT_ALIAS(gpregret1), okay)
+firmware/modules/ring_sys/src/rsy_hw_real.c:173:static const struct device *const gp_dev = DEVICE_DT_GET(DT_ALIAS(gpregret1));
+firmware/modules/ring_sys/src/rsy_hw_real.c:204:#if DT_NODE_HAS_STATUS(DT_NODELABEL(wdt31), okay) && defined(CONFIG_WATCHDOG)
+firmware/modules/ring_sys/src/rsy_hw_real.c:207:static const struct device *const wdt_dev = DEVICE_DT_GET(DT_NODELABEL(wdt31));
+firmware/modules/ring_power/src/rpw_hw_real.c:36:#if !DT_NODE_EXISTS(DT_ALIAS(ring_vdd_mic)) || !DT_NODE_EXISTS(DT_ALIAS(ring_vdd_sd))
+firmware/modules/ring_power/src/rpw_hw_real.c:70:static const struct device *const pmic = DEVICE_DT_GET(PMIC_NODE);
+firmware/modules/ring_power/src/rpw_hw_real.c:71:static const struct device *const charger = DEVICE_DT_GET(CHARGER_NODE);
+firmware/modules/ring_power/src/rpw_hw_real.c:72:static const struct device *const ldsw_mic = DEVICE_DT_GET(DT_ALIAS(ring_vdd_mic));
+firmware/modules/ring_power/src/rpw_hw_real.c:73:static const struct device *const ldsw_sd = DEVICE_DT_GET(DT_ALIAS(ring_vdd_sd));
+firmware/modules/ring_xfer/src/rxf_hw_real.c:26:#if DT_NODE_HAS_STATUS(DT_NODELABEL(zephyr_udc0), okay)
+firmware/modules/ring_xfer/src/rxf_hw_real.c:48:USBD_DEVICE_DEFINE(rxf_usbd, DEVICE_DT_GET(DT_NODELABEL(zephyr_udc0)), RXF_VID, RXF_PID);

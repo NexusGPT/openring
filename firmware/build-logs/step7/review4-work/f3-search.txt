@@ -1,0 +1,12 @@
+firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h:184:#define RREC_INIT_TRIES               3u          /* FW l.138 */
+firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h:185:#define RREC_INIT_GAP_MS              200u        /* FW l.138 */
+firmware/modules/ring_rhw/include/ring_rhw/rrec_spec.h:186:#define RREC_SD_RAIL_WAIT_MS          1u          /* FW l.506: wait 1 ms after VDD_SD on */
+----
+firmware/modules/ring_recorder/src/rrec.c:149:	r = rst_mount(false, &mi);   /* VDD_SD on, mount (FW l.126, l.506) */
+firmware/modules/ring_recorder/src/rrec_bridge.c:132:		r = rst_mount(false, &mi);
+firmware/modules/ring_recorder/src/rrec_bridge.c:167:		r = rst_mount(false, &mi);
+firmware/modules/ring_recorder/src/rrec_boot.c:6: * (FW l.893), the mount (3 tries 200 ms apart, inside rst_mount), the facts, the event.
+firmware/modules/ring_recorder/src/rrec_boot.c:81:	mr = rst_mount(true, &mi);
+----
+firmware/modules/ring_recorder/src/rrec_bridge.c:157:/* ERR_STORAGE_FAULT, every 60 s: run the storage init and report the result (FW l.191 to l.194, ruling R3) */
+firmware/modules/ring_recorder/src/rrec_boot.c:95:		rglue_event(RC_EV_STORAGE_INIT_FAILED);  /* row FW l.138 */

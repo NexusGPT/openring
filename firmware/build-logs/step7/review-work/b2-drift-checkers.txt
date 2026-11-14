@@ -1,0 +1,13 @@
+firmware/tools/build_all.sh:516:RING_NETLIST="$FW/boards/ringrec/netlist.csv"
+firmware/tools/build_all.sh:517:RING_NETLIST_SRC="$FW/../design/ecad/ring/netlist.csv"
+firmware/tools/build_all.sh:555:	python3 "$FW/tools/check_ring_pins.py" "$OUT/ring/app/zephyr/zephyr.dts" "$RING_NETLIST" --source-netlist "$RING_NETLIST_SRC"
+firmware/tools/check_ring_pins.py:5:  python3 tools/check_ring_pins.py <zephyr.dts of the ring build> <netlist.csv> [--source-netlist <path>]
+firmware/tools/check_ring_pins.py:21:--source-netlist: when that file exists (the design copy, design/ecad/ring/netlist.csv, present on the Mac but not on
+firmware/tools/check_ring_pins.py:195:    if "--source-netlist" in argv:
+firmware/tools/check_ring_pins.py:196:        src = argv[argv.index("--source-netlist") + 1]
+grep exit 0
+=== stage ring-pins start 2026-11-13T22:44:25Z log /ws/out/20261113-214232-s7-full1/ring-pins.log
+check_ring_pins: devicetree /ws/out/20261113-214232-s7-full1/ring/app/zephyr/zephyr.dts
+check_ring_pins: netlist /ws/firmware/boards/ringrec/netlist.csv sha256 2727a3c748c3b8ccd44eedc76c228453f04d9c1eb372d7d4179a63916cad5442, 61 rows of U1
+check_ring_pins: pin-control layout from /ws/zephyr/include/zephyr/dt-bindings/pinctrl/nrf-pinctrl.h
+check_ring_pins: source netlist /ws/firmware/../design/ecad/ring/netlist.csv not present here (the build server receives firmware/ only): the copy's sha256 above is the one checked

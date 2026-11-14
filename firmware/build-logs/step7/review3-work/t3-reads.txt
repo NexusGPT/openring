@@ -1,0 +1,70 @@
+### 8.3 Battery measurement
+
+- The nPM1304's system monitor measures the battery voltage, the battery current and the thermistor [NPM p99, section 7.1]. The charger sensor driver gives voltage, current and temperature channels (`SENSOR_CHAN_GAUGE_VOLTAGE`, `SENSOR_CHAN_GAUGE_AVG_CURRENT`, `SENSOR_CHAN_GAUGE_TEMP`) [SRC 11; that the family driver serves the nPM1304 is TO CONFIRM, section 10.5 item 3]. Each sample feeds `nrf_fuel_gauge_process()`, which returns the state of charge [SRC 12]; `nrf_fuel_gauge_tte_get()` and `nrf_fuel_gauge_ttf_get()` give time to empty and to full [SRC 12].
+- **The motor's charge is added.** The chip measures the battery current inside its own path [NPM p99]; the motor draws from the cell through U11, outside that path (section 3.1). The motor player sums the charge of every pulse since the last sample (t_on x 80 mA + 10 ms x 175 mA per pulse, section 3.1; the allowance is an **[ESTIMATE]** until bench step B-M3 measures the start). The current fed to the gauge is I_fed = I_measured + Q_motor / t_sample, counted as a discharge [CALC example: one MF, 51.50 mA.s, in a 1 s sample adds 51.5 mA to that sample]. The sign the library expects for a discharge is TO CONFIRM (section 10.5, item 32). U11 is a linear regulator, so its input current equals the motor current within its own small ground current (motor-drive.md section 2.5).
+- Sampling: every 1 s in the recording states (thresholds use the mean of the last 10), every 60 s in the other awake states (thresholds use the single sample). Every sample also reads the battery current limit status (section 8.7).
+- The battery current during a discharge has a full scale of 140 mA [NPM p99]; the chip path stays at or under 55.7 mA with every load on (architecture 17.22).
+- The fuel gauge needs a battery model of the actual cells; Nordic makes it with its nPM PowerUP application [NPM p99]. One model per ring size or one for all is open (section 10.5, item 4).
+
+### 8.4 Ship mode entry and exit (nPM1304 ship task after VBUS removal, [NPM p116])
+---
+   170	static int r_sample(struct rhw_pmic_sample *out)
+   171	{
+   172		struct sensor_value v, i, t, d;
+   173		int rc = sensor_sample_fetch(charger);
+   174	
+   175		if (rc != 0) {
+   176			return rc;
+   177		}
+   178		rc = sensor_channel_get(charger, SENSOR_CHAN_GAUGE_VOLTAGE, &v);
+   179		if (rc == 0) {
+   180			rc = sensor_channel_get(charger, SENSOR_CHAN_GAUGE_AVG_CURRENT, &i);
+   181		}
+   182		if (rc == 0) {
+   183			rc = sensor_channel_get(charger, SENSOR_CHAN_GAUGE_TEMP, &t);
+   184		}
+   185		if (rc == 0) {
+   186			rc = sensor_channel_get(charger, SENSOR_CHAN_DIE_TEMP, &d);
+   187		}
+   188		if (rc != 0) {
+   189			return rc;
+   190		}
+   191		out->mv = (uint16_t)(sv_to_micro(&v) / 1000);
+   192		out->ua = chan_to_ua(&i);
+   193		out->temp_c_x10 = (int16_t)(sv_to_micro(&t) / 100000);
+   194		out->die_c_x10 = (int16_t)(sv_to_micro(&d) / 100000);
+   195		return 0;
+   196	}
+   197	
+   198	static int r_ilim(void)
+   199	{
+   200		uint8_t v = 0;
+
+struct rhw_pmic_sample {                 /* one system monitor sample (FW l.926) */
+	uint16_t mv;                     /* battery voltage, mV */
+	int32_t ua;                      /* battery current inside the chip's path, µA, positive = discharge (this
+	                                  * interface's sign; the real file converts, kit fact K6) */
+	int16_t temp_c_x10;              /* thermistor temperature, 0.1 °C */
+
+   125				script_i++;
+   126			}
+   127		} else if (cell_mode) {
+   128			int64_t dt = now - last_sample_ms;
+   129			int32_t ua = (int32_t)(base_ua + (rail[RHW_RAIL_MIC] ? mic_ua : 0) + (rail[RHW_RAIL_SD] ? sd_ua : 0));
+   130	
+   131			if (vbus && chg_on && !err_latched) {
+   132				ua = -(int32_t)chg_ua;
+   133			}
+   134			cell_uas -= (int64_t)ua * dt / 1000;
+   135			int64_t cap_uas = (int64_t)cell_cap * 3600;
+---
+firmware/modules/ring_power/src/rpw_logic.c:139:int32_t rpwl_fed_ua(int32_t measured_ua, uint32_t motor_uas, uint32_t dt_ms)
+firmware/modules/ring_power/src/rpw_logic.c:141:	int64_t fed = measured_ua;
+firmware/modules/ring_power/src/rpw_logic.c:144:		fed = fed + (int64_t)motor_uas * 1000 / dt_ms;
+firmware/modules/ring_power/src/rpw_logic.c:146:	if (fed > INT32_MAX) {
+firmware/modules/ring_power/src/rpw_logic.c:147:		fed = INT32_MAX;
+firmware/modules/ring_power/src/rpw_logic.c:149:	if (fed < INT32_MIN) {
+firmware/modules/ring_power/src/rpw_logic.c:150:		fed = INT32_MIN;
+firmware/modules/ring_power/src/rpw_logic.c:152:	return (int32_t)fed;
+firmware/modules/ring_power/src/rpw.c:235:	struct rhw_pmic_sample fed = *s;
+firmware/modules/ring_power/src/rpw.c:242:	fed.ua = rpwl_fed_ua(s->ua, q, dt_ms);

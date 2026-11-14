@@ -51,6 +51,8 @@ CBN = "design/ecad/case/pcb/board-notes.md"
 CELL = "design/mfg/specs/cell.md"
 RSN = "design/ecad/ring/sch-notes.md"
 SCS = "design/wiring/screen-cable-study.md"
+SPC = "design/mfg/specs/screen-panel-custom.md"  # board A2 (2026-11-13): the custom panel tail
+PLACEMENT = "design/ecad/ring/pcb/placement-final.csv"  # board A2 (2026-11-13): J1 row
 SYSTEM_JOINTS = "design/wiring/system-joints.csv"
 LD = "design/wiring/lead-decisions.md"
 LSPEC = "design/case/lead-specs.md"
@@ -624,16 +626,26 @@ def motor_lead_lines(rnx):
 
 
 def screen_lines(rn, rnx):
+    # Board A2 (lead's ruling of 2026-11-13, ring-apply-a2): the screen connects by the CUSTOM PANEL TAIL of option A, folded round
+    # the board's hand end into J1 on the under face (F.Cu). Before: the Tailor stock cable of layout C into J1 on the screen face
+    # (B.Cu) at (-4.933, -0.003); that face rule and those citations are replaced. A line is complete ("specified and landed") when
+    # J1's pad is on F.Cu with the net, J1 stands at its row of the placement table, and the tail's requirement page is cited.
     rows = []
     ring_b = board(RING_BOARD)
     mapping = tproof(RSN, r"contact k of the tail on position k of J1")
     plug = tproof(SCS, r"the cable is plugged into J1 with the lever open")
-    place = tproof(SCS, r"J1 centre at \(-4\.933, -0\.003\)")
     under = tproof(SCS, r"Face F is the board's under face")
     contact_no = tproof(SCS, r"back view draws the 15 fingers as pads")
     pinmap = tproof(RSN, r"closed by the table on page 5 of the Tailor sheet")
-    thick = tproof(SCS, r"0\.2 \+-0\.03 including the polyimide \(PI\) stiffener")
-    pitch = tproof(SCS, r"15 at 0\.297 pitch \(0\.3\)")
+    tail_w = tproof(SPC, r"a tail at most 5\.0 wide leaving the panel's hand end")
+    tail_end = tproof(SPC, r"The tail's contact end: 4\.8 wide, 0\.2 \+-0\.03 thick")
+    tail_map = tproof(SPC, r"contact k of the tail on contact k of the board connector")
+    j1_row = [r for r in csv.DictReader(open(p(PLACEMENT))) if r["reference"] == "J1"][0]
+    j1_place = tproof(PLACEMENT, r"^J1,[^,]*,%s,%s,%s,%s," % (j1_row["side"], re.escape(j1_row["x_mm"]), re.escape(j1_row["y_mm"]), j1_row["rotation_deg"]))
+    # the tail's path: screen-cable-study.md A1 was computed for J1 at (-11.650, -0.150), face F, turned 270 (its line 18), the A2 place
+    path_place = tproof(SCS, r"Today's place: \(-11\.650, -0\.150\), face F, turn 270 degrees")
+    path_len = tproof(SCS, r"the path needs 3\.487 mm")
+    path_entry = tproof(SCS, r"at J1's entry \(s 2\.04\)")
     # the cable contacts 1 to 15 only; J1's MP (the two fitting tabs, on GND since board round 4) is no cable contact
     pins = sorted({r["pin_number"] for r in rn if r["reference"] == "J1" and r["net"] and r["pin_number"].isdigit()}, key=lambda x: int(x))
     for k in pins:
@@ -645,39 +657,45 @@ def screen_lines(rn, rnx):
             "joint": "R13", "carrier_kind": "part cable",
             "signal_A": a["net"] or "(no connect, %s)" % a["pin_name"], "end_A_kind": "terminal",
             "end_A_board": "off board (screen DISP1)", "end_A_ref": "DISP1", "end_A_pin": k + " (" + a["pin_name"] + ")",
-            "end_A_face": "contact on the cable's back face", "join_A": "made by the screen maker (cable bonded on the glass)",
+            "end_A_face": "contact on the tail's contact end", "join_A": "made by the panel maker (tail part of the panel)",
             "signal_B": b["net"] or "(no connect, %s)" % b["pin_name"], "end_B_kind": "terminal",
             "end_B_board": "ring main board", "end_B_ref": "J1", "end_B_pin": k + " (" + b["pin_name"] + ")",
             "end_B_face": mb["layers"][0] if mb else "not on board",
-            "join_B": "pressed contact (cable plugged into J1, lever closed)",
-            "pairing_rule": "contact k of the screen cable on position k of J1",
-            "carrier": "the screen's own cable (Tailor TOH095XVT-01), contact %s" % k, "carrier_net": b["net"],
+            "join_B": "pressed contact (tail plugged into J1, lever closed)",
+            "pairing_rule": "contact k of the tail on contact k of J1",
+            "carrier": "custom panel tail, made by the panel maker to design/mfg/specs/screen-panel-custom.md section e "
+                       "(requirement page; no maker chosen yet), contact %s" % k, "carrier_net": b["net"],
             "proof_A": nproof(RING_NETLIST, a),
             "proof_B": nproof(RING_NETLIST, b) + ";" + bproof(RING_BOARD, "J1", k, mb["net"] if mb else "MISSING"),
-            "proof_carrier": mapping + ";" + place, "proof_join": plug,
+            "proof_carrier": mapping + ";" + tail_map + ";" + j1_place, "proof_join": plug,
             "main_board_land": "absent" if not mb else (
                 "open on main board (its copper cluster holds at most half of the net)" if ("J1", k) in ring_b["drc"]["open_pads"] else "joined on main board"),
         })
         ok = mb is not None and mb["net"] == b["net"] and a["net"] == b["net"]
-        face_ok = mb is not None and mb["layers"][0] == "B.Cu"
-        row["proof_carrier"] += ";" + under
+        fpos = mb["obj"].GetParentFootprint().GetPosition() if mb else None
+        at_row = fpos is not None and abs(fpos.x / 1e6 - 100.0 - float(j1_row["x_mm"])) < 0.001 and abs(fpos.y / 1e6 - 100.0 - float(j1_row["y_mm"])) < 0.001
+        face_ok = mb is not None and mb["layers"][0] == "F.Cu" and j1_row["side"] == "F" and at_row
+        row["proof_carrier"] += ";" + under + ";" + tail_w + ";" + tail_end + ";" + path_place + ";" + path_len + ";" + path_entry
         row["proof_A"] += ";" + contact_no + ";" + pinmap
-        row["proof_carrier"] += ";" + thick + ";" + pitch
-        row.update({"carrier_marking": "contact number %s of the maker drawing" % k,
-                    "carrier_gauge_or_model": "Tailor TOH095XVT-01 stock cable, 15 contacts at 0.3 pitch, 0.2 thick at the contact end",
+        row.update({"carrier_marking": "contact number %s of the tail (contact k on contact k)" % k,
+                    "carrier_gauge_or_model": "custom panel tail: at most 5.0 wide, contact end 4.8 wide and 0.2 +-0.03 thick at the "
+                                              "contacts with its stiffener, 15 contacts at 0.3 pitch; path from the panel end to J1 "
+                                              "3.487 mm, J1 entry at s 2.04 (screen-cable-study.md A1, J1 at the A2 place)",
                     "cut_note": "not size dependent", "solder_first": "no soldered end (pressed contact in J1)"})
         probs = []
         if not ok:
             probs.append("J1 pad %s %s on the main board" % (k, "missing" if not mb else "has net " + mb["net"]))
         elif not face_ok:
-            probs.append("J1 pad %s is on %s in the board file, the under face (screen-cable-study.md: Face F is the "
-                         "under face); the stock cable of layout C reaches J1 only on the screen face "
-                         "(screen-cable-study.md section 4.3)" % (k, mb["layers"][0]))
+            probs.append("J1 pad %s is on %s, J1 at %s, the placement table row says side %s at (%s, %s): the custom tail of option A "
+                         "reaches J1 only on the under face (F.Cu) at that row" % (
+                             k, mb["layers"][0], "(%.3f, %.3f)" % (fpos.x / 1e6 - 100.0, fpos.y / 1e6 - 100.0) if fpos else "?",
+                             j1_row["side"], j1_row["x_mm"], j1_row["y_mm"]))
         if mb is not None and ("J1", k) in ring_b["drc"]["open_pads"]:
             probs.append("main board copper: J1 pad %s not joined to its net" % k)
         why = spec_state(row, ok, probs)
-        row["state_reason"] = why or ("both pins in the netlist, J1 pad %s on the screen face (B.Cu) with net %s, no open "
-                                      "connection; cable specified in the maker drawing" % (k, mb["net"]))
+        row["state_reason"] = why or ("both pins in the netlist, J1 pad %s on the under face (F.Cu) with net %s at the placement "
+                                      "table's row, no open connection; tail specified by its requirement page "
+                                      "(screen-panel-custom.md section e)" % (k, mb["net"]))
         rows.append(row)
     return rows
 

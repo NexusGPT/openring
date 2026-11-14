@@ -1,0 +1,108 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-13T22:12:29",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.8",
+    "schematic_parity": [],
+    "source": "work.kicad_pcb",
+    "unconnected_items": [
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Zone 'GND_B.Cu' [GND] on B.Cu, priority 0",
+                    "pos": {
+                        "x": 86.4,
+                        "y": 93.7
+                    },
+                    "uuid": "76814546-1240-4cb2-b89b-c2334e55ad08"
+                },
+                {
+                    "description": "Zone 'GND_F.Cu' [GND] on F.Cu, priority 0",
+                    "pos": {
+                        "x": 86.4,
+                        "y": 93.7
+                    },
+                    "uuid": "37341fdc-a5be-451e-b7b3-2f02e5fd10fd"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        }
+    ],
+    "violations": [
+        {
+            "description": "Clearance violation (rule 'RF line 0.20 to other copper (d.1)' clearance 0.2000 mm; actual 0.1400 mm)",
+            "items": [
+                {
+                    "description": "Track [ANT3_NODE] on F.Cu, length 3.2930 mm",
+                    "pos": {
+                        "x": 100.0,
+                        "y": 99.807
+                    },
+                    "uuid": "1018f116-9922-48b3-96ce-bb5eefb0556c"
+                },
+                {
+                    "description": "Pad 1 [VDD_1V8] of C5 on F.Cu",
+                    "pos": {
+                        "x": 99.65,
+                        "y": 100.465
+                    },
+                    "uuid": "c432c06b-c20e-46f5-aed3-16fddefd0fb8"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Clearance violation (rule 'RF line 0.20 to other copper (d.1)' clearance 0.2000 mm; actual 0.1400 mm)",
+            "items": [
+                {
+                    "description": "Pad 2 [GND] of C5 on F.Cu",
+                    "pos": {
+                        "x": 99.65,
+                        "y": 101.035
+                    },
+                    "uuid": "02acc1f6-079e-40c9-aeeb-bc40ec6bcc30"
+                },
+                {
+                    "description": "Track [ANT3_NODE] on F.Cu, length 3.2930 mm",
+                    "pos": {
+                        "x": 100.0,
+                        "y": 99.807
+                    },
+                    "uuid": "1018f116-9922-48b3-96ce-bb5eefb0556c"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        }
+    ]
+}

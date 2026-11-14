@@ -1,0 +1,54 @@
+521:RING_NETLIST="$FW/boards/ringrec/netlist.csv"
+522:RING_NETLIST_SRC="$FW/../design/ecad/ring/netlist.csv"
+560:	echo "ring-pins: netlist copy $RING_NETLIST sha256 $(sha256sum "$RING_NETLIST" 2>&1 | cut -d' ' -f1)"
+561:	if [ -f "$RING_NETLIST_SRC" ]; then
+562:		echo "ring-pins: the copy is compared with $RING_NETLIST_SRC here (the check below, --source-netlist)"
+566:	python3 "$FW/tools/check_ring_pins.py" "$OUT/ring/app/zephyr/zephyr.dts" "$RING_NETLIST" --source-netlist "$RING_NETLIST_SRC"
+606:	python3 "$FW/tools/check_ring_pins.py" "$d/zephyr/zephyr.dts" "$RING_NETLIST" > "$d-check.log" 2>&1
+616:	cp "$RING_NETLIST" "$net"
+618:	diff "$RING_NETLIST" "$net"
+	echo "# ring build: every RAM symbol, largest first: address size type name file:line (nm -S -l --size-sort -r)"
+	"$nm" -S -l --size-sort -r "$elf" | awk '$1 ~ /^2/ && $3 ~ /^[bBdD]$/' | sed 's|/ws/||'
+}
+ring_pins() {
+	echo "ring-pins: netlist copy $RING_NETLIST sha256 $(sha256sum "$RING_NETLIST" 2>&1 | cut -d' ' -f1)"
+	if [ -f "$RING_NETLIST_SRC" ]; then
+		echo "ring-pins: the copy is compared with $RING_NETLIST_SRC here (the check below, --source-netlist)"
+	else
+		echo "ring-pins: the copy was compared with design/ecad/ring/netlist.csv on the Mac by tools/remote.sh before this copy was sent (its refusal rule, ruling S7-01); design/ is not here"
+	fi
+	python3 "$FW/tools/check_ring_pins.py" "$OUT/ring/app/zephyr/zephyr.dts" "$RING_NETLIST" --source-netlist "$RING_NETLIST_SRC"
+}
+# ring_pins_plant <file> <old text> <new text>: replaces the first <old text> of <file> (which must hold it)
+ring_pins_plant() {
+	python3 -c 'import sys
+p, old, new = sys.argv[1:4]
+s = open(p, newline="").read()
+if old not in s:
+    sys.exit("planted copy: text not found in " + p)
+open(p, "w", newline="").write(s.replace(old, new, 1))' "$1" "$2" "$3"
+}
+# ring_pins_verdict <name> <signal> <check log> <check exit>: 0 when the check exited 1 and its failing list is exactly <signal>
+ring_pins_verdict() {
+	local name=$1 sig=$2 log=$3 rc=$4 got
+	grep -E '^(DIFFERENT|NO NODE |UNEXPECTED|UNLISTED|UNSEEN)|RESULT' "$log"
+	if [ "$rc" -ne 1 ]; then
+		echo "ring-pins-broken: $name: SELF TEST FAILED: the check exited $rc on the planted copy (1 wanted)"
+		return 1
+	fi
+	got=$(sed -n 's/^check_ring_pins: RESULT FAIL [0-9]* signals checked; failing: //p' "$log")
+	if [ "$got" != "$sig" ]; then
+		echo "ring-pins-broken: $name: SELF TEST FAILED: the check failed on \"$got\", not on exactly \"$sig\""
+		return 1
+	fi
+	echo "ring-pins-broken: $name: self test ok: the planted copy fails on $sig alone"
+	return 0
+}
+# ring_pins_case <name> <signal> <file in boards/ringrec> <old text> <new text>: a copy of the board with the first
+# <old text> of <file> replaced, configured (cmake only, no sysbuild), checked; 0 when the check fails naming exactly <signal>
+ring_pins_case() {
+	local name=$1 sig=$2 file=$3 old=$4 new=$5 root="$OUT/ring-broken-$1-root" d="$OUT/ring-broken-$1" rc
+	rm -rf "$root" "$d"
+	mkdir -p "$root"
+	cp -r "$FW/boards" "$root/boards"
+	ring_pins_plant "$root/boards/ringrec/$file" "$old" "$new" || return 1

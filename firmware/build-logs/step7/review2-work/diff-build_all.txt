@@ -1,0 +1,185 @@
+diff --git a/firmware/tools/build_all.sh b/firmware/tools/build_all.sh
+index 00145f1d..b7331aa4 100755
+--- a/firmware/tools/build_all.sh
++++ b/firmware/tools/build_all.sh
+@@ -49,11 +49,16 @@
+ #   6a ring-drivers  step 7: the ring build's .config has CONFIG_RING_RHW_SIM off and the recorder's test read-outs off;
+ #            prints each real driver file the ring build compiled with its code size and functions ("real code" or
+ #            "empty stub"), and the power part's switch CONFIG_RING_POWER_REAL
+-#   6b ring-ram  step 7: the RAM symbols of the ring image, largest first (nm -S -l --size-sort -r)
+-#   6c ring-pins  step 7: tools/check_ring_pins.py: the ring build's zephyr.dts against the netlist (rows of U1)
+-#   6d ring-pins-broken  step 7: three planted copies of the board (MOTOR on another pin, SD_MISO on another pin in the
+-#            default state, LCD_TE's property removed), each configured (cmake only) and checked: each must fail, naming
+-#            exactly its signal
++#   6b ring-ram  step 7: every RAM symbol of the ring image, largest first (nm -S -l --size-sort -r)
++#   6c ring-pins  step 7: tools/check_ring_pins.py: the ring build's zephyr.dts against the netlist (rows of U1): pins,
++#            GPIO flags, the reverse scan; prints the netlist copy's sha256 and where it was compared with the design's
++#   6d ring-pins-broken  step 7 and fix round 1: planted copies of the board (MOTOR on another pin, SD_MISO on another
++#            pin in the default state, LCD_TE's property removed, PMIC_INT on another port, JOY_LEFT's node removed,
++#            JOY_DOWN's node disabled, an extra pin, JOY_UP without its pull-up), each configured (cmake only), and of the
++#            netlist (an unknown net, LCD_RST's row changed): each must fail, naming exactly its signal
++#   6e ring-production  fix round 1: the ring with its production settings (app/ringrec_production.conf,
++#            boards/ringrec/ringrec_production.overlay and _mcuboot.conf: no UART output, design/firmware.md l.1061),
++#            sysbuild, compile only; memory report; ring-production-check: no UART in either image, uart20 disabled
+ # Last line: "RESULT PASS" (exit 0) or "RESULT FAIL <stages>" (exit 1).
+ 
+ set -u
+@@ -548,12 +553,43 @@ ring_drivers() {
+ ring_ram() {
+ 	local nm elf="$OUT/ring/app/zephyr/zephyr.elf"
+ 	nm=$(sed -n 's/^CMAKE_NM:FILEPATH=//p' "$OUT/ring/app/CMakeCache.txt")
+-	echo "# ring build: RAM symbols, largest first: address size type name file:line (nm -S -l --size-sort -r)"
+-	"$nm" -S -l --size-sort -r "$elf" | awk '$1 ~ /^2/ && $3 ~ /^[bBdD]$/' | sed 's|/ws/||' | head -80
++	echo "# ring build: every RAM symbol, largest first: address size type name file:line (nm -S -l --size-sort -r)"
++	"$nm" -S -l --size-sort -r "$elf" | awk '$1 ~ /^2/ && $3 ~ /^[bBdD]$/' | sed 's|/ws/||'
+ }
+ ring_pins() {
++	echo "ring-pins: netlist copy $RING_NETLIST sha256 $(sha256sum "$RING_NETLIST" 2>&1 | cut -d' ' -f1)"
++	if [ -f "$RING_NETLIST_SRC" ]; then
++		echo "ring-pins: the copy is compared with $RING_NETLIST_SRC here (the check below, --source-netlist)"
++	else
++		echo "ring-pins: the copy was compared with design/ecad/ring/netlist.csv on the Mac by tools/remote.sh before this copy was sent (its refusal rule, ruling S7-01); design/ is not here"
++	fi
+ 	python3 "$FW/tools/check_ring_pins.py" "$OUT/ring/app/zephyr/zephyr.dts" "$RING_NETLIST" --source-netlist "$RING_NETLIST_SRC"
+ }
++# ring_pins_plant <file> <old text> <new text>: replaces the first <old text> of <file> (which must hold it)
++ring_pins_plant() {
++	python3 -c 'import sys
++p, old, new = sys.argv[1:4]
++s = open(p, newline="").read()
++if old not in s:
++    sys.exit("planted copy: text not found in " + p)
++open(p, "w", newline="").write(s.replace(old, new, 1))' "$1" "$2" "$3"
++}
++# ring_pins_verdict <name> <signal> <check log> <check exit>: 0 when the check exited 1 and its failing list is exactly <signal>
++ring_pins_verdict() {
++	local name=$1 sig=$2 log=$3 rc=$4 got
++	grep -E '^(DIFFERENT|NO NODE |UNEXPECTED|UNLISTED|UNSEEN)|RESULT' "$log"
++	if [ "$rc" -ne 1 ]; then
++		echo "ring-pins-broken: $name: SELF TEST FAILED: the check exited $rc on the planted copy (1 wanted)"
++		return 1
++	fi
++	got=$(sed -n 's/^check_ring_pins: RESULT FAIL [0-9]* signals checked; failing: //p' "$log")
++	if [ "$got" != "$sig" ]; then
++		echo "ring-pins-broken: $name: SELF TEST FAILED: the check failed on \"$got\", not on exactly \"$sig\""
++		return 1
++	fi
++	echo "ring-pins-broken: $name: self test ok: the planted copy fails on $sig alone"
++	return 0
++}
+ # ring_pins_case <name> <signal> <file in boards/ringrec> <old text> <new text>: a copy of the board with the first
+ # <old text> of <file> replaced, configured (cmake only, no sysbuild), checked; 0 when the check fails naming exactly <signal>
+ ring_pins_case() {
+@@ -561,14 +597,7 @@ ring_pins_case() {
+ 	rm -rf "$root" "$d"
+ 	mkdir -p "$root"
+ 	cp -r "$FW/boards" "$root/boards"
+-	if ! python3 -c 'import sys
+-p, old, new = sys.argv[1:4]
+-s = open(p).read()
+-if old not in s:
+-    sys.exit("planted copy: text not found in " + p)
+-open(p, "w").write(s.replace(old, new, 1))' "$root/boards/ringrec/$file" "$old" "$new"; then
+-		return 1
+-	fi
++	ring_pins_plant "$root/boards/ringrec/$file" "$old" "$new" || return 1
+ 	diff "$FW/boards/ringrec/$file" "$root/boards/ringrec/$file"
+ 	if ! west build -p always --cmake-only -b "$RING_BOARD" --no-sysbuild -d "$d" "$FW/app" -- -DBOARD_ROOT="$root" > "$d.log" 2>&1; then
+ 		echo "ring-pins-broken: $name: the planted copy did not configure (see $d.log)"
+@@ -576,27 +605,57 @@ open(p, "w").write(s.replace(old, new, 1))' "$root/boards/ringrec/$file" "$old"
+ 	fi
+ 	python3 "$FW/tools/check_ring_pins.py" "$d/zephyr/zephyr.dts" "$RING_NETLIST" > "$d-check.log" 2>&1
+ 	rc=$?
+-	grep -E '^(DIFFERENT|NO NODE|UNEXPECTED|UNLISTED) |RESULT' "$d-check.log"
+-	if [ $rc -ne 1 ]; then
+-		echo "ring-pins-broken: $name: SELF TEST FAILED: the check exited $rc on the planted copy (1 wanted)"
+-		return 1
+-	fi
+-	if ! grep -q -E "^check_ring_pins: RESULT FAIL [0-9]+ signals checked; failing: $sig\$" "$d-check.log"; then
+-		echo "ring-pins-broken: $name: SELF TEST FAILED: the check did not fail on exactly $sig"
+-		return 1
+-	fi
+-	echo "ring-pins-broken: $name: self test ok: the planted copy fails on $sig alone"
++	ring_pins_verdict "$name" "$sig" "$d-check.log" $rc || return 1
+ 	rm -rf "$root" "$d"
+ 	return 0
+ }
++# ring_pins_net_case <name> <signal> <old text> <new text>: a copy of the netlist with one row changed, checked against
++# the ring build's own devicetree
++ring_pins_net_case() {
++	local name=$1 sig=$2 net="$OUT/ring-broken-$1-netlist.csv" rc
++	cp "$RING_NETLIST" "$net"
++	ring_pins_plant "$net" "$3" "$4" || return 1
++	diff "$RING_NETLIST" "$net"
++	python3 "$FW/tools/check_ring_pins.py" "$OUT/ring/app/zephyr/zephyr.dts" "$net" > "$OUT/ring-broken-$name-check.log" 2>&1
++	rc=$?
++	ring_pins_verdict "$name" "$sig" "$OUT/ring-broken-$name-check.log" $rc
++}
+ ring_pins_broken() {
+ 	local rc=0
+-	ring_pins_case motor MOTOR ringrec_nrf54lm20a_cpuapp.dts \
+-		'gpios = <&gpio3 1 GPIO_ACTIVE_HIGH>;' 'gpios = <&gpio3 2 GPIO_ACTIVE_HIGH>;' || rc=1
+-	ring_pins_case sd-miso SD_MISO ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi \
+-		'<NRF_PSEL(SPIM_MISO, 2, 4)>;' '<NRF_PSEL(SPIM_MISO, 2, 3)>;' || rc=1
+-	ring_pins_case lcd-te LCD_TE ringrec_nrf54lm20a_cpuapp.dts \
+-		'te-gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>;' '' || rc=1
++	local D=ringrec_nrf54lm20a_cpuapp.dts P=ringrec_nrf54lm20a_cpuapp-pinctrl.dtsi
++	# a wrong pin in a GPIO property, in a default pin state; a removed property (step 7)
++	ring_pins_case motor MOTOR $D 'gpios = <&gpio3 1 GPIO_ACTIVE_HIGH>;' 'gpios = <&gpio3 2 GPIO_ACTIVE_HIGH>;' || rc=1
++	ring_pins_case sd-miso SD_MISO $P '<NRF_PSEL(SPIM_MISO, 2, 4)>;' '<NRF_PSEL(SPIM_MISO, 2, 3)>;' || rc=1
++	ring_pins_case lcd-te LCD_TE $D 'te-gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>;' '' || rc=1
++	# fix round 1 (S7-04): a wrong port, a removed node, a disabled node, an extra pin, a wrong flag
++	ring_pins_case port PMIC_INT $D 'host-int-gpios = <&gpio1 28 GPIO_ACTIVE_HIGH>;' \
++		'host-int-gpios = <&gpio2 28 GPIO_ACTIVE_HIGH>;' || rc=1
++	ring_pins_case node-removed JOY_LEFT $D '&wdt31 {' $'/delete-node/ &ring_joy_left;\n\n&wdt31 {' || rc=1
++	ring_pins_case node-disabled JOY_DOWN $D 'ring_joy_down: joy_down {' \
++		$'ring_joy_down: joy_down {\n\t\t\tstatus = "disabled";' || rc=1
++	ring_pins_case extra-pin 'unexpected-pins(1)' $D 'oled-pwr-en-gpios = ' \
++		$'extra-test-gpios = <&gpio1 24 0>;\n\t\toled-pwr-en-gpios = ' || rc=1
++	ring_pins_case flag JOY_UP $D '<&gpio0 6 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>' '<&gpio0 6 GPIO_ACTIVE_LOW>' || rc=1
++	# fix round 1 (S7-04): an unknown net and a changed row in a copy of the netlist
++	ring_pins_net_case unknown-net NEWNET ',U1,E6,P1.24,no_connect' 'NEWNET,U1,E6,P1.24,bidirectional' || rc=1
++	ring_pins_net_case netlist-row LCD_RST 'LCD_RST,U1,H5,P1.07,' 'LCD_RST,U1,H5,P1.08,' || rc=1
++	return $rc
++}
++# ring-production (fix round 1, design/firmware.md l.1061): the ring's production settings, no UART output: compile only
++ring_production_check() {
++	local a="$OUT/ring-prod/app/zephyr" m="$OUT/ring-prod/mcuboot/zephyr" rc=0 f
++	for f in "$a/.config" "$m/.config"; do
++		grep -E '^(# )?CONFIG_(SERIAL|UART_CONSOLE)[ =]' "$f" 2>&1 | sed "s|^|ring-production: ${f#$OUT/} |"
++		if grep -q -E '^CONFIG_(SERIAL|UART_CONSOLE)=y' "$f"; then
++			echo "ring-production: DIFFERENT a UART is on in ${f#$OUT/}"
++			rc=1
++		fi
++	done
++	if grep -q -E 'uart@c6000 \{' "$a/zephyr.dts" && awk '/uart20: uart@c6000 \{/{p=1} p&&/status =/{print; exit}' "$a/zephyr.dts" | grep -q okay; then
++		echo "ring-production: DIFFERENT uart20 is enabled in the production devicetree"
++		rc=1
++	fi
++	grep -n -A3 'dbg_tx_pulldown' "$a/zephyr.dts" 2>&1
+ 	return $rc
+ }
+ if run_stage ring west build -p always -b "$RING_BOARD" --sysbuild -d "$OUT/ring" -o=-j"$JOBS" "$FW/app" -- -DBOARD_ROOT="$FW"; then
+@@ -623,6 +682,22 @@ if run_stage ring west build -p always -b "$RING_BOARD" --sysbuild -d "$OUT/ring
+ else
+ 	FAILED="$FAILED ring-build"
+ fi
++if run_stage ring-production west build -p always -b "$RING_BOARD" --sysbuild -d "$OUT/ring-prod" -o=-j"$JOBS" "$FW/app" -- \
++	-DBOARD_ROOT="$FW" -Dapp_EXTRA_CONF_FILE="$FW/app/ringrec_production.conf" \
++	-Dapp_EXTRA_DTC_OVERLAY_FILE="$FW/boards/ringrec/ringrec_production.overlay" \
++	-Dmcuboot_EXTRA_CONF_FILE="$FW/boards/ringrec/ringrec_production_mcuboot.conf" \
++	-Dmcuboot_EXTRA_DTC_OVERLAY_FILE="$FW/boards/ringrec/ringrec_production.overlay"; then
++	echo "--- flash and RAM use, $RING_BOARD production settings (linker memory report)"
++	size_report "$OUT/ring-production.log" | tee "$OUT/ring-prod-size.txt"
++	if [ ! -s "$OUT/ring-prod-size.txt" ]; then
++		FAILED="$FAILED ring-production-size"
++	fi
++	if ! run_stage ring-production-check ring_production_check; then
++		FAILED="$FAILED ring-production-check"
++	fi
++else
++	FAILED="$FAILED ring-production"
++fi
+ # Step 7 end
+ 
+ echo "build_all: logs in $OUT"

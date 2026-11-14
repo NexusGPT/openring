@@ -1,0 +1,87 @@
+rst_hw_real.c:84 | static int lines_safe(void)
+rst_hw_real.c:90 | }
+rst_hw_real.c:108 | for (size_t i = 0; i < ARRAY_SIZE(devs); i++) {
+rst_hw_real.c:117 | return 0;
+rst_hw_real.c:139 | if (!bus_up) {
+rst_hw_real.c:141 | }
+rst_hw_real.c:143 | int r = pm_device_action_run(RST_BUS, PM_DEVICE_ACTION_SUSPEND);
+rst_hw_real.c:145 | return r == -EALREADY ? 0 : r;
+rst.c:345 | if (rhw_pmic()->rail_set(RHW_RAIL_SD, true, "rst_mount") != 0) {                  /* FW l.506: rail on */
+rst.c:349 | (void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+rst.c:166 | (void)rhw_pmic()->rail_set(RHW_RAIL_SD, false, caller);
+rst.c:166 | (void)rhw_pmic()->rail_set(RHW_RAIL_SD, false, caller);
+rst.c:485 | if (rhw_pmic()->rail_set(RHW_RAIL_SD, false, "rst_unmount") != 0) {              /* then rail off */
+rst.c:485 | if (rhw_pmic()->rail_set(RHW_RAIL_SD, false, "rst_unmount") != 0) {              /* then rail off */
+rst.c:360 | power_down(false, "rst_mount");
+rst.c:360 | power_down(false, "rst_mount");
+rst.c:349 | (void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+rst.c:349 | (void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+rst.c:350 | for (uint32_t i = 0; i < RREC_INIT_TRIES; i++) {                                 /* FW l.138 */
+rst.c:350 | for (uint32_t i = 0; i < RREC_INIT_TRIES; i++) {                                 /* FW l.138 */
+rst.c:360 | power_down(false, "rst_mount");
+rst.c:360 | power_down(false, "rst_mount");
+rst.c:361 | return -EIO;
+rst.c:361 | return -EIO;
+rst.c:349 | (void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+rst.c:349 | (void)rhw_sdbus()->resume();                                                     /* resume spi00 */
+rrec.c:424 | (void)ship_unmount(&usb_closed);         /* storage closed (R2-04: USB first when it cannot be) */
+rrec.c:424 | (void)ship_unmount(&usb_closed);         /* storage closed (R2-04: USB first when it cannot be) */
+rrec.c:343 | r = rst_unmount_wait(FINISH_WAIT_MS);   /* ship: the first try */
+rrec.c:352 | }
+rrec.c:343 | r = rst_unmount_wait(FINISH_WAIT_MS);   /* ship: the first try */
+rrec.c:352 | }
+rrec_boot.c:92 | if (mr != 0) {
+rrec_boot.c:95 | rglue_event(RC_EV_STORAGE_INIT_FAILED);  /* row FW l.138 */
+rpw_hw_real.c:101 | rc = on ? regulator_enable(d) : regulator_disable(d);
+rpw_hw_real.c:101 | rc = on ? regulator_enable(d) : regulator_disable(d);
+rpw_hw_real.c:167 | return -sv_to_micro(v);
+rpw_hw_real.c:167 | return -sv_to_micro(v);
+rpw.c:627 | (void)rhw_pmic()->ship_task();
+rpw.c:627 | (void)rhw_pmic()->ship_task();
+rsy_hw_real.c:80 | sys_reboot(SYS_REBOOT_COLD);
+rsy_hw_real.c:80 | sys_reboot(SYS_REBOOT_COLD);
+rrec_spec.h:184 | #define RREC_INIT_TRIES               3u          /* FW l.138 */
+rrec_spec.h:184 | #define RREC_INIT_TRIES               3u          /* FW l.138 */
+rhw.h:97 | int32_t ua;                      /* battery current inside the chip's path, µA, positive = discharge. The real
+rhw.h:100 | * positive = discharge (kit fact K6, settled in step 7 fix round 2) */
+f3-stages3 l.1343 | === stage dk end 2026-11-14T08:03:49Z exit 0
+f3-stages3 l.1418 | ring-lines-safe: SAME lines_safe: no condition, no device state; SD_CS GPIO_DISCONNECTED and spi00's sleep pin state: int c = gpio_pin_configure_dt(&s
+f3-stages3 l.1440 | ring-lines-safe: RESULT FAIL failing: b_suspend
+f3-stages3 l.1453 | ring-lines-safe: RESULT FAIL failing: lines_safe
+f3-stages3 l.1466 | ring-lines-safe: RESULT FAIL failing: b_resume
+f3-stages3 l.1468 | === stage ring-lines-safe-broken end 2026-11-14T08:03:50Z exit 0
+f3-stages3 l.2821 |            FLASH:      643288 B     982896 B     65.45%
+f3-stages3 l.2822 |              RAM:      471904 B       510 KB     90.36%
+f3-stages3 l.2934 | ring-drivers: rst_hw_real.c.obj text 522 bytes: real code
+f3-stages3 l.5420 | ring-production: check_ring_pins: RESULT FAIL 36 signals checked; failing: DBG_TX
+f3-stages3 l.5422 | ring-production-broken: pulldown: self test ok: refused with "failing=DBG_TX"
+f3-stages3 l.5429 | ring-production: /ws/out/s7-dev/f3stages/ring-prod-broken-uart-mcuboot/mcuboot/.config CONFIG_UART_CONSOLE=y
+f3-stages3 l.5430 | ring-production: DIFFERENT a UART is on in /ws/out/s7-dev/f3stages/ring-prod-broken-uart-mcuboot/mcuboot/.config
+f3-stages3 l.5448 | ring-production-broken: uart-mcuboot: self test ok: refused with "ring-production: DIFFERENT a UART is on in /ws/out/s7-dev/f3stages/ring-prod-broken-
+f3-stages3 l.5468 | ring-production: UNEXPECTED uart20/default/UART_TX P1.15 (netlist net DBG_TX)
+f3-stages3 l.5472 | ring-production-broken: uart20-on: self test ok: refused with "failing=unexpected-pins(2)"
+f3-stages3 l.5473 | === stage ring-production-broken end 2026-11-14T08:07:03Z exit 0
+FOUND in f3-stages3: rst_hw_real.c
+FOUND in f3-stages3: build_all.sh
+FOUND in f3-stages3: rst_hw_real.c
+FOUND in f3-stages3: build_all.sh
+FOUND in f3-stages3: GPIO_DISCONNECTED
+FOUND in f3-stages3: resume_inner
+FOUND in f3-stages3: bus_first_init
+FOUND in f3-stages3: resume_inner
+FOUND in f3-stages3: rst_hw_real.c
+FOUND in f3-stages3: build_all.sh
+FOUND in f3-stages3: failing: lines_safe
+FOUND in f3-stages3: failing: b_resume
+FOUND in f3-stages3: build_all.sh
+FOUND in f3-stages3: CONFIG_UART_CONSOLE=y
+FOUND in f3-stages3: uart20-on: self test ok: refused with "failing=unexpected-pins(2)"
+FOUND in f3-stages3: self test ok
+FOUND in f3-stages3: ring-drivers: rst_hw_real.c.obj text 522 bytes: real code
+FOUND in f3-stages3: rst_hw_real.c
+FOUND in f3-stages3: suspend_inner
+FOUND in f3-stages3: build-logs/step7/fix3/
+FOUND in f3-stages3: GPIO_DISCONNECTED
+FOUND in f3-stages3: GPIO_DISCONNECTED
+FOUND in f3-stages3: # local log: firmware/build-logs/step7/fix3/2026
+claims checked: 86
